@@ -6,30 +6,30 @@
 .balign 4
 
 glabel toupper
-/* 0C9008 800CE5A8 2C03FFFF */  cmpwi	r3, -1
-/* 0C900C 800CE5AC 4082000C */  bne		lbl_800CE5B8
-/* 0C9010 800CE5B0 3860FFFF */  li		r3, -1
-/* 0C9014 800CE5B4 4E800020 */  blr		
+/* 0C9008 800CE5A8 2C03FFFF */  cmpwi   r3, -1
+/* 0C900C 800CE5AC 4082000C */  bne     lbl_800CE5B8
+/* 0C9010 800CE5B0 3860FFFF */  li      r3, -1
+/* 0C9014 800CE5B4 4E800020 */  blr     
 lbl_800CE5B8:
-/* 0C9018 800CE5B8 3C80800D */  lis		r4, __upper_map@ha
-/* 0C901C 800CE5BC 5463063E */  clrlwi	r3, r3, 0x18
-/* 0C9020 800CE5C0 380435B0 */  addi	r0, r4, __upper_map@l
-/* 0C9024 800CE5C4 7C601A14 */  add		r3, r0, r3
-/* 0C9028 800CE5C8 88630000 */  lbz		r3, 0(r3)
-/* 0C902C 800CE5CC 4E800020 */  blr		
+/* 0C9018 800CE5B8 3C80800D */  lis     r4, __upper_map@ha
+/* 0C901C 800CE5BC 5463063E */  clrlwi  r3, r3, 0x18
+/* 0C9020 800CE5C0 380435B0 */  addi    r0, r4, __upper_map@l
+/* 0C9024 800CE5C4 7C601A14 */  add     r3, r0, r3
+/* 0C9028 800CE5C8 88630000 */  lbz     r3, 0(r3)
+/* 0C902C 800CE5CC 4E800020 */  blr     
 
 glabel tolower
-/* 0C9030 800CE5D0 2C03FFFF */  cmpwi	r3, -1
-/* 0C9034 800CE5D4 4082000C */  bne		lbl_800CE5E0
-/* 0C9038 800CE5D8 3860FFFF */  li		r3, -1
-/* 0C903C 800CE5DC 4E800020 */  blr		
+/* 0C9030 800CE5D0 2C03FFFF */  cmpwi   r3, -1
+/* 0C9034 800CE5D4 4082000C */  bne     lbl_800CE5E0
+/* 0C9038 800CE5D8 3860FFFF */  li      r3, -1
+/* 0C903C 800CE5DC 4E800020 */  blr     
 lbl_800CE5E0:
-/* 0C9040 800CE5E0 3C80800D */  lis		r4, __lower_map@ha
-/* 0C9044 800CE5E4 5463063E */  clrlwi	r3, r3, 0x18
-/* 0C9048 800CE5E8 380434B0 */  addi	r0, r4, __lower_map@l
-/* 0C904C 800CE5EC 7C601A14 */  add		r3, r0, r3
-/* 0C9050 800CE5F0 88630000 */  lbz		r3, 0(r3)
-/* 0C9054 800CE5F4 4E800020 */  blr		
+/* 0C9040 800CE5E0 3C80800D */  lis     r4, __lower_map@ha
+/* 0C9044 800CE5E4 5463063E */  clrlwi  r3, r3, 0x18
+/* 0C9048 800CE5E8 380434B0 */  addi    r0, r4, __lower_map@l
+/* 0C904C 800CE5EC 7C601A14 */  add     r3, r0, r3
+/* 0C9050 800CE5F0 88630000 */  lbz     r3, 0(r3)
+/* 0C9054 800CE5F4 4E800020 */  blr     
 
 
 .section .rodata, "a"

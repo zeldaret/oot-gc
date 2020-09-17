@@ -6,6 +6,6 @@
 .balign 4
 
 glabel usr_put_initialize
-/* 0C4A30 800C9FD0 4E800020 */  blr		
+/* 0C4A30 800C9FD0 4E800020 */  blr     
 
 
