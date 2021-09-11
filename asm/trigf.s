@@ -278,7 +278,6 @@ __sinit_trigf_c:
 /* 0CCE9C 800D243C D003000C */  stfs    f0, 0xc(r3)
 /* 0CCEA0 800D2440 4E800020 */  blr     
 
-
 .section .ctors, "a"
 
 .balign 4
@@ -287,15 +286,13 @@ __sinit_trigf_c:
 glabel _ctors
     .long __sinit_trigf_c
 
-
 .section .rodata, "a"
 
 .balign 8
 
 /* 000D0780 800D3700 0010 */
 tmp_float:
-    .long 0x3E800000, 0x3CBE6080, 0x34372200, 0x2DA44152
-
+    .float 0.25, 0.0232393741608, 1.70555722434e-7, 1.86736494323e-11
 
 .section .data, "wa"
 
@@ -303,8 +300,7 @@ tmp_float:
 
 /* 000F0F00 800F3E80 0010 */
 __four_over_pi_m1:
-    .long 0x00000000, 0x00000000, 0x00000000, 0x00000000
-
+    .float 0.0, 0.0, 0.0, 0.0
 
 .section .sdata2, "wa"
 
@@ -314,13 +310,9 @@ __four_over_pi_m1:
 D_801363F0:
     .float 0.6366197466850281
 
-.balign 4
-
 /* 000F1EF4 801363F4 0004 */
 D_801363F4:
     .float 0.5
-
-.balign 4
 
 /* 000F1EF8 801363F8 0004 */
 D_801363F8:
@@ -331,5 +323,3 @@ D_801363F8:
 /* 000F1F00 80136400 0008 */
 D_80136400:
     .double 4503601774854144.0
-
-

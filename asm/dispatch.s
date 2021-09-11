@@ -48,7 +48,6 @@ lbl_800CA050:
 /* 0C4AC4 800CA064 7C0803A6 */  mtlr    r0
 /* 0C4AC8 800CA068 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -61,7 +60,6 @@ glabel gTRKDispatchTable
     .long TRKDoContinue, TRKDoStep, TRKDoStop, TRKDoUnsupported, TRKDoUnsupported, TRKDoUnsupported, TRKDoUnsupported, TRKDoUnsupported
     .long 0x00000000
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -69,5 +67,3 @@ glabel gTRKDispatchTable
 /* 001315C8 80134548 0004 */
 glabel gTRKDispatchTableSize
     .skip 4
-
-

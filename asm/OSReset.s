@@ -71,11 +71,11 @@ lbl_8009FED4:
 lbl_8009FEEC:
 /* 09A94C 8009FEEC 48000020 */  b       lbl_8009FF0C
 lbl_8009FEF0:
-/* 09A950 8009FEF0 3D00CC00 */  lis     r8, 0xcc00
-/* 09A954 8009FEF4 61083000 */  ori     r8, r8, 0x3000
+/* 09A950 8009FEF0 3D00CC00 */  lis     r8, PI_REGS_BASE@ha
+/* 09A954 8009FEF4 61083000 */  ori     r8, r8, PI_REGS_BASE@l
 /* 09A958 8009FEF8 38800003 */  li      r4, 3
-/* 09A95C 8009FEFC 90880024 */  stw     r4, 0x24(r8)
-/* 09A960 8009FF00 90680024 */  stw     r3, 0x24(r8)
+/* 09A95C 8009FEFC 90880024 */  stw     r4, PI_24(r8)
+/* 09A960 8009FF00 90680024 */  stw     r3, PI_24(r8)
 /* 09A964 8009FF04 60000000 */  nop     
 /* 09A968 8009FF08 48000008 */  b       lbl_8009FF10
 lbl_8009FF0C:
@@ -93,10 +93,10 @@ glabel __OSDoHotReset
 /* 09A988 8009FF28 93E10014 */  stw     r31, 0x14(r1)
 /* 09A98C 8009FF2C 7C7F1B78 */  mr      r31, r3
 /* 09A990 8009FF30 4BFFEDCD */  bl      OSDisableInterrupts
-/* 09A994 8009FF34 3C60CC00 */  lis     r3, 0xcc00
-/* 09A998 8009FF38 38632000 */  addi    r3, r3, 0x2000
+/* 09A994 8009FF34 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 09A998 8009FF38 38632000 */  addi    r3, r3, VI_REGS_BASE@l
 /* 09A99C 8009FF3C 38000000 */  li      r0, 0
-/* 09A9A0 8009FF40 B0030002 */  sth     r0, 2(r3)
+/* 09A9A0 8009FF40 B0030002 */  sth     r0, VI_DCR(r3)
 /* 09A9A4 8009FF44 4BFFD925 */  bl      ICFlashInvalidate
 /* 09A9A8 8009FF48 57E31838 */  slwi    r3, r31, 3
 /* 09A9AC 8009FF4C 4BFFFF61 */  bl      Reset
@@ -213,10 +213,10 @@ lbl_800A00AC:
 /* 09AB14 800A00B4 2C1C0001 */  cmpwi   r28, 1
 /* 09AB18 800A00B8 40820028 */  bne     lbl_800A00E0
 /* 09AB1C 800A00BC 4BFFEC41 */  bl      OSDisableInterrupts
-/* 09AB20 800A00C0 3C60CC00 */  lis     r3, 0xcc00
-/* 09AB24 800A00C4 38632000 */  addi    r3, r3, 0x2000
+/* 09AB20 800A00C0 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 09AB24 800A00C4 38632000 */  addi    r3, r3, VI_REGS_BASE@l
 /* 09AB28 800A00C8 38000000 */  li      r0, 0
-/* 09AB2C 800A00CC B0030002 */  sth     r0, 2(r3)
+/* 09AB2C 800A00CC B0030002 */  sth     r0, VI_DCR(r3)
 /* 09AB30 800A00D0 4BFFD799 */  bl      ICFlashInvalidate
 /* 09AB34 800A00D4 57A31838 */  slwi    r3, r29, 3
 /* 09AB38 800A00D8 4BFFFDD5 */  bl      Reset
@@ -324,14 +324,13 @@ glabel OSGetResetCode
 /* 09AC8C 800A022C 3C608000 */  lis     r3, 0x8000
 /* 09AC90 800A0230 48000018 */  b       lbl_800A0248
 lbl_800A0234:
-/* 09AC94 800A0234 3C60CC00 */  lis     r3, 0xcc00
-/* 09AC98 800A0238 38633000 */  addi    r3, r3, 0x3000
-/* 09AC9C 800A023C 80030024 */  lwz     r0, 0x24(r3)
+/* 09AC94 800A0234 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
+/* 09AC98 800A0238 38633000 */  addi    r3, r3, PI_REGS_BASE@l
+/* 09AC9C 800A023C 80030024 */  lwz     r0, PI_24(r3)
 /* 09ACA0 800A0240 54000038 */  rlwinm  r0, r0, 0, 0, 0x1c
 /* 09ACA4 800A0244 5403E8FE */  srwi    r3, r0, 3
 lbl_800A0248:
 /* 09ACA8 800A0248 4E800020 */  blr     
-
 
 .section .sbss, "wa"
 
@@ -341,10 +340,6 @@ lbl_800A0248:
 ResetFunctionQueue:
     .skip 8
 
-.balign 4
-
 /* 000F1AC0 80135840 0004 */
 bootThisDol:
     .skip 4
-
-

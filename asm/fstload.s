@@ -160,7 +160,6 @@ lbl_800B5D5C:
 /* 0B07F4 800B5D94 7C0803A6 */  mtlr    r0
 /* 0B07F8 800B5D98 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -168,31 +167,27 @@ lbl_800B5D5C:
 /* 000EF6A8 800F2628 001A */
 D_800F2628:
     .asciz "  Game Name ... %c%c%c%c\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF6C4 800F2644 0016 */
 D_800F2644:
     .asciz "  Company ..... %c%c\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF6DC 800F265C 0014 */
 D_800F265C:
     .asciz "  Disk # ...... %d\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF6F0 800F2670 0014 */
 D_800F2670:
     .asciz "  Game ver .... %d\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF704 800F2684 0014 */
 D_800F2684:
     .asciz "  Streaming ... %s\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -208,7 +203,6 @@ bb2Buf:
 block$18:
     .skip 48
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -216,19 +210,17 @@ block$18:
 /* 000F1790 80135510 0002 */
 D_80135510:
     .asciz "\n"
-
-.balign 4
+    .balign 4
 
 /* 000F1794 80135514 0004 */
 D_80135514:
     .asciz "OFF"
-
-.balign 4
+    .balign 4
 
 /* 000F1798 80135518 0003 */
 D_80135518:
     .asciz "ON"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -238,16 +230,10 @@ D_80135518:
 status:
     .skip 4
 
-.balign 4
-
 /* 000F1CE4 80135A64 0004 */
 bb2:
     .skip 4
 
-.balign 4
-
 /* 000F1CE8 80135A68 0004 */
 idTmp:
     .skip 4
-
-

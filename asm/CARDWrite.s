@@ -232,5 +232,3 @@ lbl_800C0E7C:
 /* 0BB8E4 800C0E84 38210038 */  addi    r1, r1, 0x38
 /* 0BB8E8 800C0E88 7C0803A6 */  mtlr    r0
 /* 0BB8EC 800C0E8C 4E800020 */  blr     
-
-

@@ -14,5 +14,3 @@ glabel __files
     .long __read_console, __write_console, __close_console, 0x00000000, 0x00000000, 0x10800000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, __files + 0x9C, 0x00000001, __files + 0x9C, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, __read_console, __write_console, __close_console, 0x00000000
-
-

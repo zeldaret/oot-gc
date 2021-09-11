@@ -174,5 +174,3 @@ lbl_800BDB80:
 /* 0B85F4 800BDB94 38210028 */  addi    r1, r1, 0x28
 /* 0B85F8 800BDB98 7C0803A6 */  mtlr    r0
 /* 0B85FC 800BDB9C 4E800020 */  blr     
-
-

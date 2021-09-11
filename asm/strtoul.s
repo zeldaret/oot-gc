@@ -306,7 +306,6 @@ lbl_800D0E54:
 /* 0CB8E0 800D0E80 7C0803A6 */  mtlr    r0
 /* 0CB8E4 800D0E84 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -330,5 +329,3 @@ jtbl_800F3E30:
     .long lbl_800D0E24
     .long lbl_800D0E24
     .long lbl_800D0D3C
-
-

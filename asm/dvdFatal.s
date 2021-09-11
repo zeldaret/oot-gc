@@ -20,7 +20,6 @@ lbl_800B5B4C:
 /* 0B05B4 800B5B54 7C0803A6 */  mtlr    r0
 /* 0B05B8 800B5B58 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -28,5 +27,3 @@ lbl_800B5B4C:
 /* 000F1CD8 80135A58 0004 */
 FatalFunc:
     .skip 4
-
-

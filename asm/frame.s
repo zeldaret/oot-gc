@@ -17258,7 +17258,6 @@ lbl_8002CA00:
 /* 02746C 8002CA0C 7C0803A6 */  mtlr    r0
 /* 027470 8002CA10 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -17268,7 +17267,6 @@ D_800D31C0:
     .long 0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000
     .long 0x00000002, 0x0003C000, 0x00000001, 0x0003E000, 0x00000000, 0x0003F000, 0x00000000, 0x0003F800
 
-
 .section .data, "wa"
 
 .balign 8
@@ -17276,158 +17274,116 @@ D_800D31C0:
 /* 000E78B8 800EA838 000D */
 D_800EA838:
     .asciz "Frame-Buffer"
-
-.balign 4
+    .balign 4
 
 /* 000E78C8 800EA848 0010 */
 glabel gClassFrame
     .long D_800EA838, 0x0003D150, 0x00000000, frameEvent
 
-.balign 4
-
 /* 000E78D8 800EA858 0020 */
 glabel ganNameColor
     .long 0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004, 0x00000005, 0x00000006, 0x00000007
-
-.balign 4
 
 /* 000E78F8 800EA878 0020 */
 glabel ganNamePixel
     .long 0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004, 0x00000005, 0x00000006, 0x00000007
 
-.balign 4
-
 /* 000E7918 800EA898 0020 */
 glabel ganNameTexMtx
     .long 0x0000001E, 0x00000021, 0x00000024, 0x00000027, 0x0000002A, 0x0000002D, 0x00000030, 0x00000033
-
-.balign 4
 
 /* 000E7938 800EA8B8 0020 */
 glabel ganNameTexCoord
     .long 0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004, 0x00000005, 0x00000006, 0x00000007
 
-.balign 4
-
 /* 000E7958 800EA8D8 0012 */
 D_800EA8D8:
     .asciz "TEXRRR (obsolete)"
-
-.balign 4
+    .balign 4
 
 /* 000E796C 800EA8EC 0012 */
 D_800EA8EC:
     .asciz "TEXGGG (obsolete)"
-
-.balign 4
+    .balign 4
 
 /* 000E7980 800EA900 0012 */
 D_800EA900:
     .asciz "TEXBBB (obsolete)"
-
-.balign 4
+    .balign 4
 
 /* 000E7994 800EA914 000C */
 D_800EA914:
     .asciz "GX_CC_KONST"
-
-.balign 4
+    .balign 4
 
 /* 000E79A0 800EA920 0050 */
 gaszNameColor:
     .long D_80134DE0, D_80134DE8, D_80134DF0, D_80134DF4, D_80134DF8, D_80134DFC, D_80134E00, D_80134E04
     .long D_80134E08, D_80134E10, D_80134E18, D_80134E20, D_80134E28, D_80134E2C, D_80134E34, D_80134E3C
-    .long D_800EA838 + 0xA0, D_800EA838 + 0xB4, D_800EA838 + 0xC8, D_800EA838 + 0xDC
-
-.balign 4
+    .long D_800EA8D8, D_800EA8EC, D_800EA900, D_800EA914
 
 /* 000E79F0 800EA970 0024 */
 gaszNameAlpha:
     .long D_80134DE8, D_80134DF4, D_80134DFC, D_80134E04, D_80134E10, D_80134E20, D_80134E34, D_80134E3C
     .long D_80134E34
 
-.balign 4
-
 /* 000E7A14 800EA994 0020 */
 gapfDrawTriangle:
-    .long frameDrawTriangle_C0T0, frameDrawTriangle_C1T0, 0x00000000, frameDrawTriangle_C3T0, frameDrawTriangle_C0T3, frameDrawTriangle_C1T3, 0x00000000, frameDrawTriangle_C3T3
-
-.balign 4
+    .long frameDrawTriangle_C0T0, frameDrawTriangle_C1T0, 0x00000000, frameDrawTriangle_C3T0
+    .long frameDrawTriangle_C0T3, frameDrawTriangle_C1T3, 0x00000000, frameDrawTriangle_C3T3
 
 /* 000E7A34 800EA9B4 0018 */
 gapfDrawLine:
     .long frameDrawLine_C0T0, frameDrawLine_C1T0, frameDrawLine_C2T0, frameDrawLine_C0T2, frameDrawLine_C1T2, frameDrawLine_C2T2
-
-.balign 4
 
 /* 000E7A4C 800EA9CC 0040 */
 sZBufShift:
     .long 0x0003F800, 0x00000000, 0x0003F000, 0x00000000, 0x0003E000, 0x00000001, 0x0003C000, 0x00000002
     .long 0x00038000, 0x00000003, 0x00030000, 0x00000004, 0x00020000, 0x00000005, 0x00000000, 0x00000006
 
-.balign 4
-
 /* 000E7A8C 800EAA0C 000A */
 D_800EAA0C:
     .asciz "PRIMITIVE"
-
-.balign 4
+    .balign 4
 
 /* 000E7A98 800EAA18 000C */
 D_800EAA18:
     .asciz "ENVIRONMENT"
-
-.balign 4
+    .balign 4
 
 /* 000E7AA4 800EAA24 0014 */
 gaszNameColorType:
-    .long D_80134E44, D_80134E48, D_80134E50, D_800EA838 + 0x1D4, D_800EA838 + 0x1E0
-
-.balign 4
+    .long D_80134E44, D_80134E48, D_80134E50, D_800EAA0C, D_800EAA18
 
 /* 000E7AB8 800EAA38 0020 */
 sCommandCodes$1679:
     .long 0xF5500000, 0x07080200, 0xE6000000, 0x00000000, 0xF3000000, 0x073BF01A, 0xE7000000, 0x00000000
-
-.balign 4
 
 /* 000E7AD8 800EAA58 0028 */
 sCommandCodes$1702:
     .long 0xE7000000, 0x00000000, 0xEF000CF0, 0x0F0A4004, 0xFB000000, 0xFFFFFFFF, 0xFC12FE25, 0xFFFFFBFD
     .long 0xFF10013F, 0x804096C0
 
-.balign 4
-
 /* 000E7B00 800EAA80 0028 */
 sCommandCodes2$1722:
     .long 0xE7000000, 0x00000000, 0xE7000000, 0x00000000, 0xEF000CF0, 0x0F0A0004, 0xFCFFFFFF, 0xFFFCFE7F
     .long 0xFF88013F, 0x80784600
 
-.balign 4
-
 /* 000E7B28 800EAAA8 000C */
 GBIcode$1816:
     .long 0xED000000, 0x0B000000, 0x0A000000
-
-.balign 4
 
 /* 000E7B34 800EAAB4 001C */
 GBIcode2D2$1906:
     .long 0xB9000000, 0xBA000000, 0xE7000000, 0xBA000000, 0xC1000000, 0xE7000000, 0x02000000
 
-.balign 4
-
 /* 000E7B50 800EAAD0 0014 */
 GBIcode3D1$1907:
     .long 0xBA000000, 0xFC000000, 0xB9000000, 0xBA000000, 0xB9000000
 
-.balign 4
-
 /* 000E7B64 800EAAE4 0018 */
 GBIcode3D2$1908:
     .long 0xE7000000, 0xBA000000, 0xFC000000, 0xB9000000, 0xBA000000, 0xB9000000
-
-.balign 4
 
 /* 000E7B7C 800EAAFC 0190 */
 glabel anRenderModeDatabaseCycle2
@@ -17439,8 +17395,6 @@ glabel anRenderModeDatabaseCycle2
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000E7D0C 800EAC8C 0190 */
 glabel anRenderModeDatabaseCopy
     .long 0x0F0A7008, 0x00000001, 0x0F0A4001, 0x00442478, 0x00442479, 0x005041C9, 0x00552079, 0x00552078, 0x005045D8, 0x005045D9, 0x00504DD8, 0x00504DD9, 0x00553078, 0x00553079, 0x0F0A4000, 0x005049D8
@@ -17450,8 +17404,6 @@ glabel anRenderModeDatabaseCopy
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000
-
-.balign 4
 
 /* 000E7E9C 800EAE1C 0190 */
 glabel anRenderModeDatabaseFill
@@ -17463,8 +17415,6 @@ glabel anRenderModeDatabaseFill
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000E802C 800EAFAC 0190 */
 glabel anRenderModeDatabaseCycle1
     .long 0x0F0A4000, 0x00552048, 0x0F0A7008, 0x00552078, 0x0C084000, 0x00504241, 0x00504240, 0x0F0A4001, 0x005041C8, 0x00552D58, 0x0C184F50, 0x00504F50, 0x0C192078, 0x00504A50, 0x00000001, 0x005049D8
@@ -17475,13 +17425,10 @@ glabel anRenderModeDatabaseCycle1
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000E81BC 800EB13C 002C */
 D_800EB13C:
     .asciz "GetTextureInfo: Unknown texture-format: %d\n"
-
-.balign 4
+    .balign 4
 
 /* 000E81E8 800EB168 0028 */
 jtbl_800EB168:
@@ -17496,8 +17443,6 @@ jtbl_800EB168:
     .long lbl_8001D3FC
     .long lbl_8001D418
 
-.balign 4
-
 /* 000E8210 800EB190 0028 */
 jtbl_800EB190:
     .long lbl_80020074
@@ -17511,19 +17456,15 @@ jtbl_800EB190:
     .long lbl_80020144
     .long lbl_80020144
 
-.balign 4
-
 /* 000E8238 800EB1B8 003F */
 D_800EB1B8:
     .asciz "frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n"
-
-.balign 4
+    .balign 4
 
 /* 000E8278 800EB1F8 0014 */
 D_800EB1F8:
     .asciz "Waiting for valid?\n"
-
-.balign 4
+    .balign 4
 
 /* 000E828C 800EB20C 0020 */
 jtbl_800EB20C:
@@ -17535,8 +17476,6 @@ jtbl_800EB20C:
     .long lbl_80029818
     .long lbl_80029824
     .long lbl_80029830
-
-.balign 4
 
 /* 000E82AC 800EB22C 0080 */
 jtbl_800EB22C:
@@ -17573,18 +17512,15 @@ jtbl_800EB22C:
     .long lbl_80029938
     .long lbl_8002992C
 
-.balign 4
-
 /* 000E832C 800EB2AC 0027 */
 D_800EB2AC:
     .asciz "LoadTexture: Unknown FILTER mode (%d)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E8354 800EB2D4 0026 */
 D_800EB2D4:
     .asciz "MakeTexture: 'aTexture' is exhausted!"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -17600,84 +17536,57 @@ sConstantBufAddr:
 sTempZBuf:
     .skip 153600
 
-.balign 4
-
 /* 0012AE40 8012DDC0 0020 */
 sFrameObj1$1562:
     .skip 32
-
-.balign 4
 
 /* 0012AE60 8012DDE0 0020 */
 sFrameObj2$1563:
     .skip 32
 
-.balign 4
-
 /* 0012AE80 8012DE00 0020 */
 sFrameObj$1564:
     .skip 32
-
-.balign 4
 
 /* 0012AEA0 8012DE20 0020 */
 sFrameObj$1565:
     .skip 32
 
-.balign 4
-
 /* 0012AEC0 8012DE40 0020 */
 sFrameObj$1568:
     .skip 32
-
-.balign 4
 
 /* 0012AEE0 8012DE60 1400 */
 line$1582:
     .skip 5120
 
-.balign 4
-
 /* 0012C2E0 8012F260 0A00 */
 line$1606:
     .skip 2560
-
-.balign 4
 
 /* 0012CCE0 8012FC60 0A00 */
 line$1630:
     .skip 2560
 
-.balign 4
-
 /* 0012D6E0 80130660 0020 */
 sFrameObj$1647:
     .skip 32
-
-.balign 4
 
 /* 0012D700 80130680 0020 */
 sFrameObj$1660:
     .skip 32
 
-.balign 4
-
 /* 0012D720 801306A0 0020 */
 frameObj$1663:
     .skip 32
-
-.balign 4
 
 /* 0012D740 801306C0 0020 */
 frameObj$1673:
     .skip 32
 
-.balign 4
-
 /* 0012D760 801306E0 0200 */
 tempLine$1785:
     .skip 512
-
 
 .section .sdata, "wa"
 
@@ -17687,115 +17596,95 @@ tempLine$1785:
 sRemapI$746:
     .long 0x00020406, 0x080A0C0F
 
-.balign 4
-
 /* 000F1060 80134DE0 0006 */
 D_80134DE0:
     .asciz "CPREV"
-
-.balign 4
+    .balign 4
 
 /* 000F1068 80134DE8 0006 */
 D_80134DE8:
     .asciz "APREV"
-
-.balign 4
+    .balign 4
 
 /* 000F1070 80134DF0 0003 */
 D_80134DF0:
     .asciz "C0"
-
-.balign 4
+    .balign 4
 
 /* 000F1074 80134DF4 0003 */
 D_80134DF4:
     .asciz "A0"
-
-.balign 4
+    .balign 4
 
 /* 000F1078 80134DF8 0003 */
 D_80134DF8:
     .asciz "C1"
-
-.balign 4
+    .balign 4
 
 /* 000F107C 80134DFC 0003 */
 D_80134DFC:
     .asciz "A1"
-
-.balign 4
+    .balign 4
 
 /* 000F1080 80134E00 0003 */
 D_80134E00:
     .asciz "C2"
-
-.balign 4
+    .balign 4
 
 /* 000F1084 80134E04 0003 */
 D_80134E04:
     .asciz "A2"
-
-.balign 4
+    .balign 4
 
 /* 000F1088 80134E08 0005 */
 D_80134E08:
     .asciz "TEXC"
-
-.balign 4
+    .balign 4
 
 /* 000F1090 80134E10 0005 */
 D_80134E10:
     .asciz "TEXA"
-
-.balign 4
+    .balign 4
 
 /* 000F1098 80134E18 0005 */
 D_80134E18:
     .asciz "RASC"
-
-.balign 4
+    .balign 4
 
 /* 000F10A0 80134E20 0005 */
 D_80134E20:
     .asciz "RASA"
-
-.balign 4
+    .balign 4
 
 /* 000F10A8 80134E28 0004 */
 D_80134E28:
     .asciz "ONE"
-
-.balign 4
+    .balign 4
 
 /* 000F10AC 80134E2C 0005 */
 D_80134E2C:
     .asciz "HALF"
-
-.balign 4
+    .balign 4
 
 /* 000F10B4 80134E34 0006 */
 D_80134E34:
     .asciz "KONST"
-
-.balign 4
+    .balign 4
 
 /* 000F10BC 80134E3C 0005 */
 D_80134E3C:
     .asciz "ZERO"
-
-.balign 4
+    .balign 4
 
 /* 000F10C4 80134E44 0004 */
 D_80134E44:
     .asciz "FOG"
-
-.balign 4
+    .balign 4
 
 /* 000F10C8 80134E48 0005 */
 D_80134E48:
     .asciz "FILL"
-
-.balign 4
+    .balign 4
 
 /* 000F10D0 80134E50 0006 */
 D_80134E50:
@@ -17810,7 +17699,7 @@ cAlpha$1648:
 /* 000F10D8 80134E58 0008 */
 D_80134E58:
     .asciz "frame.c"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -17820,49 +17709,33 @@ D_80134E58:
 gbFrameValid:
     .skip 4
 
-.balign 4
-
 /* 000F190C 8013568C 0004 */
 gbFrameBegin:
     .skip 4
-
-.balign 4
 
 /* 000F1910 80135690 0004 */
 snScissorChanged:
     .skip 4
 
-.balign 4
-
 /* 000F1914 80135694 0004 */
 snScissorXOrig:
     .skip 4
-
-.balign 4
 
 /* 000F1918 80135698 0004 */
 snScissorYOrig:
     .skip 4
 
-.balign 4
-
 /* 000F191C 8013569C 0004 */
 snScissorWidth:
     .skip 4
-
-.balign 4
 
 /* 000F1920 801356A0 0004 */
 snScissorHeight:
     .skip 4
 
-.balign 4
-
 /* 000F1924 801356A4 0004 */
 sCopyFrameSyncReceived:
     .skip 4
-
-.balign 4
 
 /* 000F1928 801356A8 0001 */
 sSpecialZeldaHackON:
@@ -17874,60 +17747,41 @@ sSpecialZeldaHackON:
 sDestinationBuffer:
     .skip 4
 
-.balign 4
-
 /* 000F1930 801356B0 0004 */
 sSrcBuffer:
     .skip 4
-
-.balign 4
 
 /* 000F1934 801356B4 0004 */
 sNumAddr:
     .skip 4
 
-.balign 4
-
 /* 000F1938 801356B8 0004 */
 gHackCreditsColor:
     .skip 4
-
-.balign 4
 
 /* 000F193C 801356BC 0004 */
 glabel gNoSwapBuffer
     .skip 4
 
-.balign 4
-
 /* 000F1940 801356C0 0004 */
 gnCountMapHack:
     .skip 4
-
-.balign 4
 
 /* 000F1944 801356C4 0004 */
 nCounter$1367:
     .skip 4
 
-.balign 4
-
 /* 000F1948 801356C8 0004 */
 bSkip$1410:
     .skip 4
-
-.balign 4
 
 /* 000F194C 801356CC 0004 */
 nLastFrame$1695:
     .skip 4
 
-.balign 4
-
 /* 000F1950 801356D0 0004 */
 nCopyFrame$1697:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -17937,13 +17791,9 @@ nCopyFrame$1697:
 D_80135E00:
     .float 0.0
 
-.balign 4
-
 /* 000F1904 80135E04 0004 */
 D_80135E04:
     .float 0.25
-
-.balign 4
 
 /* 000F1908 80135E08 0004 */
 D_80135E08:
@@ -17955,49 +17805,33 @@ D_80135E08:
 D_80135E10:
     .double 4503601774854144.0
 
-.balign 4
-
 /* 000F1918 80135E18 0004 */
 D_80135E18:
     .float 0.0625
-
-.balign 4
 
 /* 000F191C 80135E1C 0004 */
 D_80135E1C:
     .float 0.0078125
 
-.balign 4
-
 /* 000F1920 80135E20 0004 */
 D_80135E20:
     .float 4096.0
-
-.balign 4
 
 /* 000F1924 80135E24 0004 */
 D_80135E24:
     .float 4194304.0
 
-.balign 8
-
 /* 000F1928 80135E28 0008 */
 D_80135E28:
     .double 4503599627370496.0
-
-.balign 4
 
 /* 000F1930 80135E30 0004 */
 D_80135E30:
     .float 0.5
 
-.balign 4
-
 /* 000F1934 80135E34 0004 */
 D_80135E34:
     .float 3.0
-
-.balign 4
 
 /* 000F1938 80135E38 0004 */
 D_80135E38:
@@ -18009,457 +17843,305 @@ D_80135E38:
 D_80135E40:
     .double 0.5
 
-.balign 8
-
 /* 000F1948 80135E48 0008 */
 D_80135E48:
     .double 3.0
-
-.balign 4
 
 /* 000F1950 80135E50 0004 */
 D_80135E50:
     .float 0.2267303466796875
 
-.balign 4
-
 /* 000F1954 80135E54 0004 */
 D_80135E54:
     .float 0.3183135986328125
-
-.balign 4
 
 /* 000F1958 80135E58 0004 */
 D_80135E58:
     .float 0.006240000016987324
 
-.balign 4
-
 /* 000F195C 80135E5C 0004 */
 D_80135E5C:
     .float 0.0062420000322163105
-
-.balign 4
 
 /* 000F1960 80135E60 0004 */
 D_80135E60:
     .float 640.0
 
-.balign 4
-
 /* 000F1964 80135E64 0004 */
 D_80135E64:
     .float 480.0
-
-.balign 4
 
 /* 000F1968 80135E68 0004 */
 D_80135E68:
     .float 320.0
 
-.balign 4
-
 /* 000F196C 80135E6C 0004 */
 D_80135E6C:
     .float 240.0
-
-.balign 8
 
 /* 000F1970 80135E70 0008 */
 D_80135E70:
     .double 262143.0
 
-.balign 8
-
 /* 000F1978 80135E78 0008 */
 D_80135E78:
     .double 43.52
-
-.balign 4
 
 /* 000F1980 80135E80 0004 */
 D_80135E80:
     .float 80.0
 
-.balign 4
-
 /* 000F1984 80135E84 0004 */
 D_80135E84:
     .float 31.0
-
-.balign 4
 
 /* 000F1988 80135E88 0004 */
 D_80135E88:
     .float 0.015625
 
-.balign 4
-
 /* 000F198C 80135E8C 0004 */
 D_80135E8C:
     .float 143.0
-
-.balign 4
 
 /* 000F1990 80135E90 0004 */
 D_80135E90:
     .float 0.859375
 
-.balign 4
-
 /* 000F1994 80135E94 0004 */
 D_80135E94:
     .float 0.949999988079071
-
-.balign 4
 
 /* 000F1998 80135E98 0004 */
 D_80135E98:
     .float 0.8999999761581421
 
-.balign 4
-
 /* 000F199C 80135E9C 0004 */
 D_80135E9C:
     .float 0.8500000238418579
-
-.balign 4
 
 /* 000F19A0 80135EA0 0004 */
 D_80135EA0:
     .float 0.800000011920929
 
-.balign 4
-
 /* 000F19A4 80135EA4 0004 */
 D_80135EA4:
     .float -1.0
-
-.balign 4
 
 /* 000F19A8 80135EA8 0004 */
 D_80135EA8:
     .float 319.0
 
-.balign 4
-
 /* 000F19AC 80135EAC 0004 */
 D_80135EAC:
     .float 239.0
-
-.balign 4
 
 /* 000F19B0 80135EB0 0004 */
 D_80135EB0:
     .float -1001.0
 
-.balign 4
-
 /* 000F19B4 80135EB4 0004 */
 D_80135EB4:
     .float -53.0
-
-.balign 4
 
 /* 000F19B8 80135EB8 0004 */
 D_80135EB8:
     .float -3080.0
 
-.balign 4
-
 /* 000F19BC 80135EBC 0004 */
 D_80135EBC:
     .float 6067.0
-
-.balign 4
 
 /* 000F19C0 80135EC0 0004 */
 D_80135EC0:
     .float -31.0
 
-.balign 4
-
 /* 000F19C4 80135EC4 0004 */
 D_80135EC4:
     .float 1669.0
-
-.balign 4
 
 /* 000F19C8 80135EC8 0004 */
 D_80135EC8:
     .float 1000.0
 
-.balign 4
-
 /* 000F19CC 80135ECC 0004 */
 D_80135ECC:
     .float 32000.0
-
-.balign 4
 
 /* 000F19D0 80135ED0 0004 */
 D_80135ED0:
     .float 30.0
 
-.balign 4
-
 /* 000F19D4 80135ED4 0004 */
 D_80135ED4:
     .float 1.3333333730697632
-
-.balign 4
 
 /* 000F19D8 80135ED8 0004 */
 D_80135ED8:
     .float 0.10000000149011612
 
-.balign 4
-
 /* 000F19DC 80135EDC 0004 */
 D_80135EDC:
     .float 0.001500000013038516
-
-.balign 4
 
 /* 000F19E0 80135EE0 0004 */
 D_80135EE0:
     .float 65536.0
 
-.balign 4
-
 /* 000F19E4 80135EE4 0004 */
 D_80135EE4:
     .float 1001.0
-
-.balign 4
 
 /* 000F19E8 80135EE8 0004 */
 D_80135EE8:
     .float 500.0
 
-.balign 4
-
 /* 000F19EC 80135EEC 0004 */
 D_80135EEC:
     .float 970.0
-
-.balign 4
 
 /* 000F19F0 80135EF0 0004 */
 D_80135EF0:
     .float 59.0
 
-.balign 4
-
 /* 000F19F4 80135EF4 0004 */
 D_80135EF4:
     .float 990.0
-
-.balign 4
 
 /* 000F19F8 80135EF8 0004 */
 D_80135EF8:
     .float 0.20999999344348907
 
-.balign 4
-
 /* 000F19FC 80135EFC 0004 */
 D_80135EFC:
     .float 0.3499999940395355
-
-.balign 4
 
 /* 000F1A00 80135F00 0004 */
 D_80135F00:
     .float 12800.0
 
-.balign 4
-
 /* 000F1A04 80135F04 0004 */
 D_80135F04:
     .float 0.6000000238418579
-
-.balign 4
 
 /* 000F1A08 80135F08 0004 */
 D_80135F08:
     .float 0.699999988079071
 
-.balign 4
-
 /* 000F1A0C 80135F0C 0004 */
 D_80135F0C:
     .float 44.0
-
-.balign 4
 
 /* 000F1A10 80135F10 0004 */
 D_80135F10:
     .float 0.12999999523162842
 
-.balign 4
-
 /* 000F1A14 80135F14 0004 */
 D_80135F14:
     .float 45.0
-
-.balign 4
 
 /* 000F1A18 80135F18 0004 */
 D_80135F18:
     .float 15.0
 
-.balign 4
-
 /* 000F1A1C 80135F1C 0004 */
 D_80135F1C:
     .float 0.3799999952316284
-
-.balign 4
 
 /* 000F1A20 80135F20 0004 */
 D_80135F20:
     .float 900.0
 
-.balign 4
-
 /* 000F1A24 80135F24 0004 */
 D_80135F24:
     .float 350.0
-
-.balign 4
 
 /* 000F1A28 80135F28 0004 */
 D_80135F28:
     .float 10.0
 
-.balign 4
-
 /* 000F1A2C 80135F2C 0004 */
 D_80135F2C:
     .float 200.0
-
-.balign 4
 
 /* 000F1A30 80135F30 0004 */
 D_80135F30:
     .float 128000.0
 
-.balign 4
-
 /* 000F1A34 80135F34 0004 */
 D_80135F34:
     .float -25344.0
-
-.balign 4
 
 /* 000F1A38 80135F38 0004 */
 D_80135F38:
     .float 25600.0
 
-.balign 4
-
 /* 000F1A3C 80135F3C 0004 */
 D_80135F3C:
     .float 2200.0
-
-.balign 4
 
 /* 000F1A40 80135F40 0004 */
 D_80135F40:
     .float 0.574999988079071
 
-.balign 4
-
 /* 000F1A44 80135F44 0004 */
 D_80135F44:
     .float 0.75
-
-.balign 4
 
 /* 000F1A48 80135F48 0004 */
 D_80135F48:
     .float -21077.0
 
-.balign 4
-
 /* 000F1A4C 80135F4C 0004 */
 D_80135F4C:
     .float 21333.0
-
-.balign 4
 
 /* 000F1A50 80135F50 0004 */
 D_80135F50:
     .float -90.0
 
-.balign 4
-
 /* 000F1A54 80135F54 0004 */
 D_80135F54:
     .float 258.0
-
-.balign 4
 
 /* 000F1A58 80135F58 0004 */
 D_80135F58:
     .float 0.44999998807907104
 
-.balign 4
-
 /* 000F1A5C 80135F5C 0004 */
 D_80135F5C:
     .float -667.0
-
-.balign 4
 
 /* 000F1A60 80135F60 0004 */
 D_80135F60:
     .float 688.0
 
-.balign 4
-
 /* 000F1A64 80135F64 0004 */
 D_80135F64:
     .float 0.00390625
-
-.balign 4
 
 /* 000F1A68 80135F68 0004 */
 D_80135F68:
     .float 860.0
 
-.balign 4
-
 /* 000F1A6C 80135F6C 0004 */
 D_80135F6C:
     .float 0.15000000596046448
-
-.balign 4
 
 /* 000F1A70 80135F70 0004 */
 D_80135F70:
     .float 140.0
 
-.balign 4
-
 /* 000F1A74 80135F74 0004 */
 D_80135F74:
     .float 0.2800000011920929
-
-.balign 4
 
 /* 000F1A78 80135F78 0004 */
 D_80135F78:
     .float 0.7200000286102295
 
-.balign 4
-
 /* 000F1A7C 80135F7C 0004 */
 D_80135F7C:
     .float 0.25999999046325684
-
-.balign 4
 
 /* 000F1A80 80135F80 0004 */
 D_80135F80:
@@ -18470,5 +18152,3 @@ D_80135F80:
 /* 000F1A88 80135F88 0008 */
 D_80135F88:
     .double 8.44
-
-

@@ -296,5 +296,3 @@ glabel __CARDUpdateFatBlock
 /* 0B8390 800BD930 38210028 */  addi    r1, r1, 0x28
 /* 0B8394 800BD934 7C0803A6 */  mtlr    r0
 /* 0B8398 800BD938 4E800020 */  blr     
-
-

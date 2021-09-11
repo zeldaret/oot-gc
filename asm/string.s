@@ -219,7 +219,6 @@ lbl_800D0A64:
 /* 0CB4D4 800D0A74 7C832378 */  mr      r3, r4
 /* 0CB4D8 800D0A78 4E800020 */  blr     
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -228,10 +227,6 @@ lbl_800D0A64:
 K1:
     .long 0x80808080
 
-.balign 4
-
 /* 000F17F4 80135574 0004 */
 K2:
     .long 0xFEFEFEFF
-
-

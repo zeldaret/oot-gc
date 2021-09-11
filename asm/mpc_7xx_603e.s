@@ -234,5 +234,3 @@ lbl_800CD2F8:
 /* 0C7E10 800CD3B0 7FD2FBA6 */  mtspr   0x3f2, r30
 /* 0C7E14 800CD3B4 7FFA43A6 */  mtspr   0x11a, r31
 /* 0C7E18 800CD3B8 4E800020 */  blr     
-
-

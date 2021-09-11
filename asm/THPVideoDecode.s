@@ -380,7 +380,6 @@ glabel PushDecodedTextureSet
 /* 00DE98 80013438 7C0803A6 */  mtlr    r0
 /* 00DE9C 8001343C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -388,7 +387,7 @@ glabel PushDecodedTextureSet
 /* 000E75A0 800EA520 0022 */
 D_800EA520:
     .asciz "Can't create video decode thread\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -398,36 +397,25 @@ D_800EA520:
 VideoDecodeThread:
     .skip 792
 
-.balign 4
-
 /* 000F9988 800FC908 1000 */
 VideoDecodeThreadStack:
     .skip 4096
-
-.balign 4
 
 /* 000FA988 800FD908 0020 */
 FreeTextureSetQueue:
     .skip 32
 
-.balign 4
-
 /* 000FA9A8 800FD928 0020 */
 DecodedTextureSetQueue:
     .skip 32
-
-.balign 4
 
 /* 000FA9C8 800FD948 000C */
 FreeTextureSetMessage:
     .skip 12
 
-.balign 4
-
 /* 000FA9D4 800FD954 000C */
 DecodedTextureSetMessage:
     .skip 12
-
 
 .section .sbss, "wa"
 
@@ -437,10 +425,6 @@ DecodedTextureSetMessage:
 VideoDecodeThreadCreated:
     .skip 4
 
-.balign 4
-
 /* 000F18DC 8013565C 0004 */
 First:
     .skip 4
-
-

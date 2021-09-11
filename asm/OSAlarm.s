@@ -533,7 +533,6 @@ lbl_8009CDFC:
 /* 097870 8009CE10 7C0803A6 */  mtlr    r0
 /* 097874 8009CE14 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -542,7 +541,6 @@ lbl_8009CDFC:
 ResetFunctionInfo:
     .long OnReset, 0xFFFFFFFF, 0x00000000, 0x00000000
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -550,5 +548,3 @@ ResetFunctionInfo:
 /* 000F1A70 801357F0 0008 */
 AlarmQueue:
     .skip 8
-
-

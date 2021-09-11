@@ -32,5 +32,3 @@ glabel EXI2_Unreserve
 glabel AMC_IsStub
 /* 0CCF5C 800D24FC 38600001 */  li      r3, 1
 /* 0CCF60 800D2500 4E800020 */  blr     
-
-

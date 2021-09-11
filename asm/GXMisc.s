@@ -131,10 +131,10 @@ lbl_800AAC84:
 /* 0A5704 800AACA4 7C1B0378 */  mr      r27, r0
 /* 0A5708 800AACA8 4082FF90 */  bne     lbl_800AAC38
 lbl_800AACAC:
-/* 0A570C 800AACAC 3C60CC00 */  lis     r3, 0xcc00
+/* 0A570C 800AACAC 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
 /* 0A5710 800AACB0 38000001 */  li      r0, 1
-/* 0A5714 800AACB4 3B633000 */  addi    r27, r3, 0x3000
-/* 0A5718 800AACB8 941B0018 */  stwu    r0, 0x18(r27)
+/* 0A5714 800AACB4 3B633000 */  addi    r27, r3, PI_REGS_BASE@l
+/* 0A5718 800AACB8 941B0018 */  stwu    r0, PI_18(r27)
 /* 0A571C 800AACBC 4BFF75ED */  bl      OSGetTime
 /* 0A5720 800AACC0 38000000 */  li      r0, 0
 /* 0A5724 800AACC4 3BE40000 */  addi    r31, r4, 0
@@ -152,7 +152,7 @@ lbl_800AACD4:
 /* 0A5750 800AACF0 7C6300D1 */  neg.    r3, r3
 /* 0A5754 800AACF4 4182FFE0 */  beq     lbl_800AACD4
 /* 0A5758 800AACF8 3BC00000 */  li      r30, 0
-/* 0A575C 800AACFC 93DB0000 */  stw     r30, 0(r27)
+/* 0A575C 800AACFC 93DB0000 */  stw     r30, PI_INTSR(r27)
 /* 0A5760 800AAD00 4BFF75A9 */  bl      OSGetTime
 /* 0A5764 800AAD04 3B840000 */  addi    r28, r4, 0
 /* 0A5768 800AAD08 3BA30000 */  addi    r29, r3, 0
@@ -231,10 +231,10 @@ lbl_800AADF0:
 /* 0A5870 800AAE10 7C1B0378 */  mr      r27, r0
 /* 0A5874 800AAE14 4082FF90 */  bne     lbl_800AADA4
 lbl_800AAE18:
-/* 0A5878 800AAE18 3C60CC00 */  lis     r3, 0xcc00
+/* 0A5878 800AAE18 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
 /* 0A587C 800AAE1C 38000001 */  li      r0, 1
-/* 0A5880 800AAE20 3B633000 */  addi    r27, r3, 0x3000
-/* 0A5884 800AAE24 941B0018 */  stwu    r0, 0x18(r27)
+/* 0A5880 800AAE20 3B633000 */  addi    r27, r3, PI_REGS_BASE@l
+/* 0A5884 800AAE24 941B0018 */  stwu    r0, PI_18(r27)
 /* 0A5888 800AAE28 4BFF7481 */  bl      OSGetTime
 /* 0A588C 800AAE2C 38000000 */  li      r0, 0
 /* 0A5890 800AAE30 3BE40000 */  addi    r31, r4, 0
@@ -252,7 +252,7 @@ lbl_800AAE40:
 /* 0A58BC 800AAE5C 7C6300D1 */  neg.    r3, r3
 /* 0A58C0 800AAE60 4182FFE0 */  beq     lbl_800AAE40
 /* 0A58C4 800AAE64 3BC00000 */  li      r30, 0
-/* 0A58C8 800AAE68 93DB0000 */  stw     r30, 0(r27)
+/* 0A58C8 800AAE68 93DB0000 */  stw     r30, PI_INTSR(r27)
 /* 0A58CC 800AAE6C 4BFF743D */  bl      OSGetTime
 /* 0A58D0 800AAE70 3B840000 */  addi    r28, r4, 0
 /* 0A58D4 800AAE74 3BA30000 */  addi    r29, r3, 0
@@ -647,7 +647,6 @@ glabel __GXPEInit
 /* 0A5E38 800AB3D8 7C0803A6 */  mtlr    r0
 /* 0A5E3C 800AB3DC 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -656,13 +655,9 @@ glabel __GXPEInit
 TokenCB:
     .skip 4
 
-.balign 4
-
 /* 000F1BE4 80135964 0004 */
 DrawDoneCB:
     .skip 4
-
-.balign 4
 
 /* 000F1BE8 80135968 0001 */
 DrawDone:
@@ -673,5 +668,3 @@ DrawDone:
 /* 000F1BEC 8013596C 0008 */
 FinishQueue:
     .skip 8
-
-

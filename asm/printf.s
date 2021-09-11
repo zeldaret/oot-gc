@@ -1933,7 +1933,6 @@ lbl_800D0724:
 /* 0CB198 800D0738 38210038 */  addi    r1, r1, 0x38
 /* 0CB19C 800D073C 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -1941,7 +1940,6 @@ lbl_800D0724:
 /* 000D0730 800D36B0 000E */
 D_800D36B0:
     .short 0x002D, 0x496E, 0x6600, 0x496E, 0x6600, 0x4E61, 0x4E00
-
 
 .section .data, "wa"
 
@@ -1983,8 +1981,6 @@ jtbl_800F3C10:
     .long lbl_800CFE6C
     .long lbl_800CFE5C
 
-.balign 4
-
 /* 000F0D14 800F3C94 0084 */
 jtbl_800F3C94:
     .long lbl_800D00EC
@@ -2020,8 +2016,6 @@ jtbl_800F3C94:
     .long lbl_800D00F8
     .long lbl_800D00F8
     .long lbl_800D00EC
-
-.balign 4
 
 /* 000F0D98 800F3D18 00D0 */
 jtbl_800F3D18:
@@ -2078,8 +2072,6 @@ jtbl_800F3D18:
     .long lbl_800D06F8
     .long lbl_800D0584
 
-.balign 4
-
 /* 000F0E68 800F3DE8 0044 */
 jtbl_800F3DE8:
     .long lbl_800D032C
@@ -2100,7 +2092,6 @@ jtbl_800F3DE8:
     .long lbl_800D0368
     .long lbl_800D0350
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -2109,7 +2100,6 @@ jtbl_800F3DE8:
 D_80135568:
     .short 0x0000
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -2117,5 +2107,3 @@ D_80135568:
 /* 000F1D68 80136268 0008 */
 D_80136268:
     .double 0.0
-
-

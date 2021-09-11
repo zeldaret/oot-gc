@@ -260,7 +260,6 @@ lbl_8008E494:
 /* 088F00 8008E4A0 7C0803A6 */  mtlr    r0
 /* 088F04 8008E4A4 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -269,7 +268,6 @@ lbl_8008E494:
 glabel gClassSram
     .long D_80135300, 0x00000004, 0x00000000, sramEvent
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -277,5 +275,4 @@ glabel gClassSram
 /* 000F1580 80135300 0005 */
 D_80135300:
     .asciz "SRAM"
-
-
+    .balign 4

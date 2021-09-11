@@ -484,7 +484,6 @@ lbl_8009D478:
 /* 097EE0 8009D480 7C0803A6 */  mtlr    r0
 /* 097EE4 8009D484 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -492,115 +491,97 @@ lbl_8009D478:
 /* 000ED8B0 800F0830 0024 */
 D_800F0830:
     .asciz "OSCheckHeap: Failed HeapArray in %d"
-
-.balign 4
+    .balign 4
 
 /* 000ED8D4 800F0854 0037 */
 D_800F0854:
     .asciz "OSCheckHeap: Failed 0 <= heap && heap < NumHeaps in %d"
-
-.balign 4
+    .balign 4
 
 /* 000ED90C 800F088C 0028 */
 D_800F088C:
     .asciz "OSCheckHeap: Failed 0 <= hd->size in %d"
-
-.balign 4
+    .balign 4
 
 /* 000ED934 800F08B4 004F */
 D_800F08B4:
     .asciz "OSCheckHeap: Failed hd->allocated == NULL || hd->allocated->prev == NULL in %d"
-
-.balign 4
+    .balign 4
 
 /* 000ED984 800F0904 003E */
 D_800F0904:
     .asciz "OSCheckHeap: Failed InRange(cell, ArenaStart, ArenaEnd) in %d"
-
-.balign 4
+    .balign 4
 
 /* 000ED9C4 800F0944 0037 */
 D_800F0944:
     .asciz "OSCheckHeap: Failed OFFSET(cell, ALIGNMENT) == 0 in %d"
-
-.balign 4
+    .balign 4
 
 /* 000ED9FC 800F097C 0049 */
 D_800F097C:
     .asciz "OSCheckHeap: Failed cell->next == NULL || cell->next->prev == cell in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDA48 800F09C8 0033 */
 D_800F09C8:
     .asciz "OSCheckHeap: Failed MINOBJSIZE <= cell->size in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDA7C 800F09FC 003D */
 D_800F09FC:
     .asciz "OSCheckHeap: Failed OFFSET(cell->size, ALIGNMENT) == 0 in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDABC 800F0A3C 0039 */
 D_800F0A3C:
     .asciz "OSCheckHeap: Failed 0 < total && total <= hd->size in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDAF8 800F0A78 0045 */
 D_800F0A78:
     .asciz "OSCheckHeap: Failed hd->free == NULL || hd->free->prev == NULL in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDB40 800F0AC0 005F */
 D_800F0AC0:
     .asciz "OSCheckHeap: Failed cell->next == NULL || (char*) cell + cell->size < (char*) cell->next in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDBA0 800F0B20 002C */
 D_800F0B20:
     .asciz "OSCheckHeap: Failed total == hd->size in %d"
-
-.balign 4
+    .balign 4
 
 /* 000EDBCC 800F0B4C 0012 */
 D_800F0B4C:
     .asciz "\nOSDumpHeap(%d):\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDBE0 800F0B60 0012 */
 D_800F0B60:
     .asciz "--------Inactive\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDBF4 800F0B74 001A */
 D_800F0B74:
     .asciz "addr\tsize\t\tend\tprev\tnext\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDC10 800F0B90 0013 */
 D_800F0B90:
     .asciz "--------Allocated\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDC24 800F0BA4 0010 */
 D_800F0BA4:
     .asciz "%x\t%d\t%x\t%x\t%x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDC34 800F0BB4 000E */
 D_800F0BB4:
     .asciz "--------Free\n"
-
+    .balign 4
 
 .section .sdata, "wa"
 
@@ -610,7 +591,6 @@ D_800F0BB4:
 glabel __OSCurrHeap
     .long 0xFFFFFFFF
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -619,22 +599,14 @@ glabel __OSCurrHeap
 HeapArray:
     .skip 4
 
-.balign 4
-
 /* 000F1A7C 801357FC 0004 */
 NumHeaps:
     .skip 4
-
-.balign 4
 
 /* 000F1A80 80135800 0004 */
 ArenaStart:
     .skip 4
 
-.balign 4
-
 /* 000F1A84 80135804 0004 */
 ArenaEnd:
     .skip 4
-
-

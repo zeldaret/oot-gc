@@ -525,7 +525,6 @@ lbl_8008E120:
 /* 088B90 8008E130 38210028 */  addi    r1, r1, 0x28
 /* 088B94 8008E134 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -534,7 +533,6 @@ lbl_8008E120:
 glabel gClassFlash
     .long D_801352F8, 0x00000010, 0x00000000, flashEvent
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -542,5 +540,4 @@ glabel gClassFlash
 /* 000F1578 801352F8 0006 */
 D_801352F8:
     .asciz "FLASH"
-
-
+    .balign 4

@@ -251,7 +251,6 @@ glabel TRK_board_display
 /* 0C81BC 800CD75C 7C0803A6 */  mtlr    r0
 /* 0C81C0 800CD760 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -259,5 +258,3 @@ glabel TRK_board_display
 /* 000F0B98 800F3B18 001C */
 glabel gDBCommTable
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
-
-

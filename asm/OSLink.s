@@ -12,5 +12,3 @@ glabel __OSModuleInit
 /* 099FD4 8009F574 900430C8 */  stw     r0, 0x30c8(r4)
 /* 099FD8 8009F578 900430D0 */  stw     r0, 0x30d0(r4)
 /* 099FDC 8009F57C 4E800020 */  blr     
-
-

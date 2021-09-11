@@ -955,7 +955,6 @@ lbl_800B7F68:
 /* 0B29DC 800B7F7C 7C0803A6 */  mtlr    r0
 /* 0B29E0 800B7F80 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -963,14 +962,12 @@ lbl_800B7F68:
 /* 000F04B0 800F3430 000C */
 D_800F3430:
     .asciz "DEMOStats.c"
-
-.balign 4
+    .balign 4
 
 /* 000F04BC 800F343C 0026 */
 D_800F343C:
     .asciz "DEMOSetStats: Unknown demo stat type\n"
-
-.balign 4
+    .balign 4
 
 /* 000F04E4 800F3464 0028 */
 jtbl_800F3464:
@@ -985,37 +982,30 @@ jtbl_800F3464:
     .long lbl_800B75AC
     .long lbl_800B75AC
 
-.balign 4
-
 /* 000F050C 800F348C 0009 */
 D_800F348C:
     .asciz "%s: %8d\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0518 800F3498 000B */
 D_800F3498:
     .asciz "%s: %8.2f\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0524 800F34A4 000B */
 D_800F34A4:
     .asciz "%s: %8.3f\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0530 800F34B0 000A */
 D_800F34B0:
     .asciz "%s: %8.3f"
-
-.balign 4
+    .balign 4
 
 /* 000F053C 800F34BC 002C */
 D_800F34BC:
     .asciz "Undefined stat type %d in DEMOPrintStats()\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0568 800F34E8 0028 */
 jtbl_800F34E8:
@@ -1030,8 +1020,6 @@ jtbl_800F34E8:
     .long lbl_800B7E9C
     .long lbl_800B7EBC
 
-.balign 4
-
 /* 000F0590 800F3510 0028 */
 jtbl_800F3510:
     .long lbl_800B7EDC
@@ -1044,8 +1032,6 @@ jtbl_800F3510:
     .long lbl_800B7CA4
     .long lbl_800B7EDC
     .long lbl_800B7EFC
-
-.balign 4
 
 /* 000F05B8 800F3538 0028 */
 jtbl_800F3538:
@@ -1060,8 +1046,6 @@ jtbl_800F3538:
     .long lbl_800B7980
     .long lbl_800B7994
 
-.balign 4
-
 /* 000F05E0 800F3560 0028 */
 jtbl_800F3560:
     .long lbl_800B79A8
@@ -1075,7 +1059,6 @@ jtbl_800F3560:
     .long lbl_800B79A8
     .long lbl_800B7888
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -1083,7 +1066,7 @@ jtbl_800F3560:
 /* 000F17A8 80135528 0008 */
 D_80135528:
     .asciz "%s: %8d"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -1099,144 +1082,97 @@ glabel DemoStatEnable
 DemoStat:
     .skip 4
 
-.balign 4
-
 /* 000F1D30 80135AB0 0004 */
 DemoStatIndx:
     .skip 4
-
-.balign 4
 
 /* 000F1D34 80135AB4 0004 */
 DemoStatMaxIndx:
     .skip 4
 
-.balign 4
-
 /* 000F1D38 80135AB8 0004 */
 DemoStatClocks:
     .skip 4
-
-.balign 4
 
 /* 000F1D3C 80135ABC 0004 */
 DemoStatDisp:
     .skip 4
 
-.balign 4
-
 /* 000F1D40 80135AC0 0004 */
 topPixIn:
     .skip 4
-
-.balign 4
 
 /* 000F1D44 80135AC4 0004 */
 topPixOut:
     .skip 4
 
-.balign 4
-
 /* 000F1D48 80135AC8 0004 */
 botPixIn:
     .skip 4
-
-.balign 4
 
 /* 000F1D4C 80135ACC 0004 */
 botPixOut:
     .skip 4
 
-.balign 4
-
 /* 000F1D50 80135AD0 0004 */
 clrPixIn:
     .skip 4
-
-.balign 4
 
 /* 000F1D54 80135AD4 0004 */
 copyClks:
     .skip 4
 
-.balign 4
-
 /* 000F1D58 80135AD8 0004 */
 vcCheck:
     .skip 4
-
-.balign 4
 
 /* 000F1D5C 80135ADC 0004 */
 vcMiss:
     .skip 4
 
-.balign 4
-
 /* 000F1D60 80135AE0 0004 */
 vcStall:
     .skip 4
-
-.balign 4
 
 /* 000F1D64 80135AE4 0004 */
 cpReq:
     .skip 4
 
-.balign 4
-
 /* 000F1D68 80135AE8 0004 */
 tcReq:
     .skip 4
-
-.balign 4
 
 /* 000F1D6C 80135AEC 0004 */
 cpuRdReq:
     .skip 4
 
-.balign 4
-
 /* 000F1D70 80135AF0 0004 */
 cpuWrReq:
     .skip 4
-
-.balign 4
 
 /* 000F1D74 80135AF4 0004 */
 dspReq:
     .skip 4
 
-.balign 4
-
 /* 000F1D78 80135AF8 0004 */
 ioReq:
     .skip 4
-
-.balign 4
 
 /* 000F1D7C 80135AFC 0004 */
 viReq:
     .skip 4
 
-.balign 4
-
 /* 000F1D80 80135B00 0004 */
 peReq:
     .skip 4
-
-.balign 4
 
 /* 000F1D84 80135B04 0004 */
 rfReq:
     .skip 4
 
-.balign 4
-
 /* 000F1D88 80135B08 0004 */
 fiReq:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -1251,5 +1187,3 @@ D_80136208:
 /* 000F1D10 80136210 0008 */
 D_80136210:
     .double 4503599627370496.0
-
-

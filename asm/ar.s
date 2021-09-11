@@ -11,8 +11,8 @@ glabel ARGetDMAStatus
 /* 0B330C 800B88AC 9421FFF0 */  stwu    r1, -0x10(r1)
 /* 0B3310 800B88B0 93E1000C */  stw     r31, 0xc(r1)
 /* 0B3314 800B88B4 4BFE6449 */  bl      OSDisableInterrupts
-/* 0B3318 800B88B8 3C80CC00 */  lis     r4, 0xcc00
-/* 0B331C 800B88BC A004500A */  lhz     r0, 0x500a(r4)
+/* 0B3318 800B88B8 3C80CC00 */  lis     r4, DSP_REGS_BASE@ha
+/* 0B331C 800B88BC A004500A */  lhz     r0, (DSP_REGS_BASE + DSP_0A)@l(r4)
 /* 0B3320 800B88C0 541F05AC */  rlwinm  r31, r0, 0, 0x16, 0x16
 /* 0B3324 800B88C4 4BFE6461 */  bl      OSRestoreInterrupts
 /* 0B3328 800B88C8 7FE3FB78 */  mr      r3, r31
@@ -35,45 +35,45 @@ glabel ARStartDMA
 /* 0B3364 800B8904 93810018 */  stw     r28, 0x18(r1)
 /* 0B3368 800B8908 3B840000 */  addi    r28, r4, 0
 /* 0B336C 800B890C 4BFE63F1 */  bl      OSDisableInterrupts
-/* 0B3370 800B8910 3CC0CC00 */  lis     r6, 0xcc00
-/* 0B3374 800B8914 A0065020 */  lhz     r0, 0x5020(r6)
-/* 0B3378 800B8918 39065000 */  addi    r8, r6, 0x5000
-/* 0B337C 800B891C 39265000 */  addi    r9, r6, 0x5000
+/* 0B3370 800B8910 3CC0CC00 */  lis     r6, DSP_REGS_BASE@ha
+/* 0B3374 800B8914 A0065020 */  lhz     r0, (DSP_REGS_BASE + DSP_20)@l(r6)
+/* 0B3378 800B8918 39065000 */  addi    r8, r6, DSP_REGS_BASE@l
+/* 0B337C 800B891C 39265000 */  addi    r9, r6, DSP_REGS_BASE@l
 /* 0B3380 800B8920 5404002A */  rlwinm  r4, r0, 0, 0, 0x15
 /* 0B3384 800B8924 5780843E */  srwi    r0, r28, 0x10
 /* 0B3388 800B8928 7C800378 */  or      r0, r4, r0
-/* 0B338C 800B892C B0065020 */  sth     r0, 0x5020(r6)
+/* 0B338C 800B892C B0065020 */  sth     r0, (DSP_REGS_BASE + DSP_20)@l(r6)
 /* 0B3390 800B8930 5780043E */  clrlwi  r0, r28, 0x10
-/* 0B3394 800B8934 38865000 */  addi    r4, r6, 0x5000
-/* 0B3398 800B8938 A0A65022 */  lhz     r5, 0x5022(r6)
+/* 0B3394 800B8934 38865000 */  addi    r4, r6, DSP_REGS_BASE@l
+/* 0B3398 800B8938 A0A65022 */  lhz     r5, (DSP_REGS_BASE + DSP_22)@l(r6)
 /* 0B339C 800B893C 54A506DE */  rlwinm  r5, r5, 0, 0x1b, 0xf
 /* 0B33A0 800B8940 7CA00378 */  or      r0, r5, r0
-/* 0B33A4 800B8944 B0065022 */  sth     r0, 0x5022(r6)
-/* 0B33A8 800B8948 38A65000 */  addi    r5, r6, 0x5000
+/* 0B33A4 800B8944 B0065022 */  sth     r0, (DSP_REGS_BASE + DSP_22)@l(r6)
+/* 0B33A8 800B8948 38A65000 */  addi    r5, r6, DSP_REGS_BASE@l
 /* 0B33AC 800B894C 57C0843E */  srwi    r0, r30, 0x10
-/* 0B33B0 800B8950 A0C65024 */  lhz     r6, 0x5024(r6)
+/* 0B33B0 800B8950 A0C65024 */  lhz     r6, (DSP_REGS_BASE + DSP_24)@l(r6)
 /* 0B33B4 800B8954 54C6002A */  rlwinm  r6, r6, 0, 0, 0x15
 /* 0B33B8 800B8958 7CC00378 */  or      r0, r6, r0
-/* 0B33BC 800B895C B0080024 */  sth     r0, 0x24(r8)
+/* 0B33BC 800B895C B0080024 */  sth     r0, DSP_24(r8)
 /* 0B33C0 800B8960 57C0043E */  clrlwi  r0, r30, 0x10
-/* 0B33C4 800B8964 A0C90026 */  lhz     r6, 0x26(r9)
+/* 0B33C4 800B8964 A0C90026 */  lhz     r6, DSP_26(r9)
 /* 0B33C8 800B8968 54C606DE */  rlwinm  r6, r6, 0, 0x1b, 0xf
 /* 0B33CC 800B896C 7CC00378 */  or      r0, r6, r0
-/* 0B33D0 800B8970 B0090026 */  sth     r0, 0x26(r9)
+/* 0B33D0 800B8970 B0090026 */  sth     r0, DSP_26(r9)
 /* 0B33D4 800B8974 57E6843E */  srwi    r6, r31, 0x10
 /* 0B33D8 800B8978 57E0043E */  clrlwi  r0, r31, 0x10
-/* 0B33DC 800B897C A0E40028 */  lhz     r7, 0x28(r4)
+/* 0B33DC 800B897C A0E40028 */  lhz     r7, DSP_28(r4)
 /* 0B33E0 800B8980 54E7045E */  rlwinm  r7, r7, 0, 0x11, 0xf
 /* 0B33E4 800B8984 53A77820 */  rlwimi  r7, r29, 0xf, 0, 0x10
-/* 0B33E8 800B8988 B0E40028 */  sth     r7, 0x28(r4)
-/* 0B33EC 800B898C A0E40028 */  lhz     r7, 0x28(r4)
+/* 0B33E8 800B8988 B0E40028 */  sth     r7, DSP_28(r4)
+/* 0B33EC 800B898C A0E40028 */  lhz     r7, DSP_28(r4)
 /* 0B33F0 800B8990 54E7002A */  rlwinm  r7, r7, 0, 0, 0x15
 /* 0B33F4 800B8994 7CE63378 */  or      r6, r7, r6
-/* 0B33F8 800B8998 B0C40028 */  sth     r6, 0x28(r4)
-/* 0B33FC 800B899C A085002A */  lhz     r4, 0x2a(r5)
+/* 0B33F8 800B8998 B0C40028 */  sth     r6, DSP_28(r4)
+/* 0B33FC 800B899C A085002A */  lhz     r4, DSP_2A(r5)
 /* 0B3400 800B89A0 548406DE */  rlwinm  r4, r4, 0, 0x1b, 0xf
 /* 0B3404 800B89A4 7C800378 */  or      r0, r4, r0
-/* 0B3408 800B89A8 B005002A */  sth     r0, 0x2a(r5)
+/* 0B3408 800B89A8 B005002A */  sth     r0, DSP_2A(r5)
 /* 0B340C 800B89AC 4BFE6379 */  bl      OSRestoreInterrupts
 /* 0B3410 800B89B0 8001002C */  lwz     r0, 0x2c(r1)
 /* 0B3414 800B89B4 83E10024 */  lwz     r31, 0x24(r1)
@@ -113,15 +113,15 @@ lbl_800B8A04:
 /* 0B3490 800B8A30 4BFE671D */  bl      __OSUnmaskInterrupts
 /* 0B3494 800B8A34 38004000 */  li      r0, 0x4000
 /* 0B3498 800B8A38 93CD8E84 */  stw     r30, __AR_FreeBlocks-_SDA_BASE_(r13)
-/* 0B349C 800B8A3C 3C60CC00 */  lis     r3, 0xcc00
+/* 0B349C 800B8A3C 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
 /* 0B34A0 800B8A40 900D8E80 */  stw     r0, __AR_StackPointer-_SDA_BASE_(r13)
-/* 0B34A4 800B8A44 38835000 */  addi    r4, r3, 0x5000
+/* 0B34A4 800B8A44 38835000 */  addi    r4, r3, DSP_REGS_BASE@l
 /* 0B34A8 800B8A48 93AD8E88 */  stw     r29, __AR_BlockLength-_SDA_BASE_(r13)
-/* 0B34AC 800B8A4C A004001A */  lhz     r0, 0x1a(r4)
-/* 0B34B0 800B8A50 A063501A */  lhz     r3, 0x501a(r3)
+/* 0B34AC 800B8A4C A004001A */  lhz     r0, DSP_1A(r4)
+/* 0B34B0 800B8A50 A063501A */  lhz     r3, (DSP_REGS_BASE + DSP_1A)@l(r3)
 /* 0B34B4 800B8A54 5400002E */  rlwinm  r0, r0, 0, 0, 0x17
 /* 0B34B8 800B8A58 5060063E */  rlwimi  r0, r3, 0, 0x18, 0x1f
-/* 0B34BC 800B8A5C B004001A */  sth     r0, 0x1a(r4)
+/* 0B34BC 800B8A5C B004001A */  sth     r0, DSP_1A(r4)
 /* 0B34C0 800B8A60 480000B5 */  bl      __ARChecksize
 /* 0B34C4 800B8A64 38000001 */  li      r0, 1
 /* 0B34C8 800B8A68 900D8E8C */  stw     r0, __AR_init_flag-_SDA_BASE_(r13)
@@ -143,17 +143,17 @@ glabel ARGetBaseAddress
 
 __ARHandler:
 /* 0B34FC 800B8A9C 7C0802A6 */  mflr    r0
-/* 0B3500 800B8AA0 3C60CC00 */  lis     r3, 0xcc00
+/* 0B3500 800B8AA0 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
 /* 0B3504 800B8AA4 90010004 */  stw     r0, 4(r1)
-/* 0B3508 800B8AA8 38635000 */  addi    r3, r3, 0x5000
+/* 0B3508 800B8AA8 38635000 */  addi    r3, r3, DSP_REGS_BASE@l
 /* 0B350C 800B8AAC 3800FF77 */  li      r0, -137
 /* 0B3510 800B8AB0 9421FD20 */  stwu    r1, -0x2e0(r1)
 /* 0B3514 800B8AB4 93E102DC */  stw     r31, 0x2dc(r1)
 /* 0B3518 800B8AB8 3BE40000 */  addi    r31, r4, 0
-/* 0B351C 800B8ABC A0A3000A */  lhz     r5, 0xa(r3)
+/* 0B351C 800B8ABC A0A3000A */  lhz     r5, DSP_0A(r3)
 /* 0B3520 800B8AC0 7CA00038 */  and     r0, r5, r0
 /* 0B3524 800B8AC4 60000020 */  ori     r0, r0, 0x20
-/* 0B3528 800B8AC8 B003000A */  sth     r0, 0xa(r3)
+/* 0B3528 800B8AC8 B003000A */  sth     r0, DSP_0A(r3)
 /* 0B352C 800B8ACC 38610010 */  addi    r3, r1, 0x10
 /* 0B3530 800B8AD0 4BFE56D5 */  bl      OSClearContext
 /* 0B3534 800B8AD4 38610010 */  addi    r3, r1, 0x10
@@ -176,17 +176,17 @@ lbl_800B8AF0:
 
 __ARChecksize:
 /* 0B3574 800B8B14 7C0802A6 */  mflr    r0
-/* 0B3578 800B8B18 3C60CC00 */  lis     r3, 0xcc00
+/* 0B3578 800B8B18 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
 /* 0B357C 800B8B1C 90010004 */  stw     r0, 4(r1)
-/* 0B3580 800B8B20 38635000 */  addi    r3, r3, 0x5000
+/* 0B3580 800B8B20 38635000 */  addi    r3, r3, DSP_REGS_BASE@l
 /* 0B3584 800B8B24 9421FD40 */  stwu    r1, -0x2c0(r1)
 /* 0B3588 800B8B28 BDC10278 */  stmw    r14, 0x278(r1)
 lbl_800B8B2C:
-/* 0B358C 800B8B2C A0030016 */  lhz     r0, 0x16(r3)
+/* 0B358C 800B8B2C A0030016 */  lhz     r0, DSP_16(r3)
 /* 0B3590 800B8B30 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0B3594 800B8B34 4182FFF8 */  beq     lbl_800B8B2C
-/* 0B3598 800B8B38 3EE0CC00 */  lis     r23, 0xcc00
-/* 0B359C 800B8B3C 38175000 */  addi    r0, r23, 0x5000
+/* 0B3598 800B8B38 3EE0CC00 */  lis     r23, DSP_REGS_BASE@ha
+/* 0B359C 800B8B3C 38175000 */  addi    r0, r23, DSP_REGS_BASE@l
 /* 0B35A0 800B8B40 90010248 */  stw     r0, 0x248(r1)
 /* 0B35A4 800B8B44 3C600100 */  lis     r3, 0x100
 /* 0B35A8 800B8B48 380101F3 */  addi    r0, r1, 0x1f3
@@ -1750,7 +1750,6 @@ lbl_800BA2E8:
 /* 0B4D60 800BA300 7C0803A6 */  mtlr    r0
 /* 0B4D64 800BA304 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1758,7 +1757,7 @@ lbl_800BA2E8:
 /* 000F0650 800F35D0 0044 */
 D_800F35D0:
     .asciz "<< Dolphin SDK - AR\trelease build: Apr 17 2003 12:33:55 (0x2301) >>"
-
+    .balign 4
 
 .section .sdata, "wa"
 
@@ -1768,7 +1767,6 @@ D_800F35D0:
 glabel __ARVersion
     .long D_800F35D0
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1777,46 +1775,30 @@ glabel __ARVersion
 __AR_Callback:
     .skip 4
 
-.balign 4
-
 /* 000F1DD4 80135B54 0004 */
 __AR_Size:
     .skip 4
-
-.balign 4
 
 /* 000F1DD8 80135B58 0004 */
 __AR_InternalSize:
     .skip 4
 
-.balign 4
-
 /* 000F1DDC 80135B5C 0004 */
 __AR_ExpansionSize:
     .skip 4
-
-.balign 4
 
 /* 000F1DE0 80135B60 0004 */
 __AR_StackPointer:
     .skip 4
 
-.balign 4
-
 /* 000F1DE4 80135B64 0004 */
 __AR_FreeBlocks:
     .skip 4
-
-.balign 4
 
 /* 000F1DE8 80135B68 0004 */
 __AR_BlockLength:
     .skip 4
 
-.balign 4
-
 /* 000F1DEC 80135B6C 0004 */
 __AR_init_flag:
     .skip 4
-
-

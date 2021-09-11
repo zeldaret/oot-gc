@@ -768,9 +768,9 @@ glabel __OSPSInit
 /* 0970D8 8009C678 4E800020 */  blr     
 
 glabel __OSGetDIConfig
-/* 0970DC 8009C67C 3C60CC00 */  lis     r3, 0xcc00
-/* 0970E0 8009C680 38636000 */  addi    r3, r3, 0x6000
-/* 0970E4 8009C684 80030024 */  lwz     r0, 0x24(r3)
+/* 0970DC 8009C67C 3C60CC00 */  lis     r3, DI_REGS_BASE@ha
+/* 0970E0 8009C680 38636000 */  addi    r3, r3, DI_REGS_BASE@l
+/* 0970E4 8009C684 80030024 */  lwz     r0, DI_DICFG(r3)
 /* 0970E8 8009C688 5403063E */  clrlwi  r3, r0, 0x18
 /* 0970EC 8009C68C 4E800020 */  blr     
 
@@ -787,7 +787,6 @@ glabel OSRegisterVersion
 /* 097114 8009C6B4 7C0803A6 */  mtlr    r0
 /* 097118 8009C6B8 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -795,116 +794,97 @@ glabel OSRegisterVersion
 /* 000ED6A8 800F0628 0044 */
 D_800F0628:
     .asciz "<< Dolphin SDK - OS\trelease build: Jul 23 2003 11:27:16 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000ED6EC 800F066C 000D */
 D_800F066C:
     .asciz "\nDolphin OS\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED6FC 800F067C 0016 */
 D_800F067C:
     .asciz "Kernel built : %s %s\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED714 800F0694 000C */
 D_800F0694:
     .asciz "Jul 23 2003"
-
-.balign 4
+    .balign 4
 
 /* 000ED720 800F06A0 0009 */
 D_800F06A0:
     .asciz "11:27:16"
-
-.balign 4
+    .balign 4
 
 /* 000ED72C 800F06AC 0010 */
 D_800F06AC:
     .asciz "Console Type : "
-
-.balign 4
+    .balign 4
 
 /* 000ED73C 800F06BC 000B */
 D_800F06BC:
     .asciz "Retail %d\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED748 800F06C8 000E */
 D_800F06C8:
     .asciz "Mac Emulator\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED758 800F06D8 000D */
 D_800F06D8:
     .asciz "PC Emulator\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED768 800F06E8 000D */
 D_800F06E8:
     .asciz "EPPC Arthur\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED778 800F06F8 000D */
 D_800F06F8:
     .asciz "EPPC Minnow\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED788 800F0708 0019 */
 D_800F0708:
     .asciz "Development HW%d (%08x)\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED7A4 800F0724 000E */
 D_800F0724:
     .asciz "Memory %d MB\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED7B4 800F0734 0015 */
 D_800F0734:
     .asciz "Arena : 0x%x - 0x%x\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED7CC 800F074C 003C */
 __OSExceptionLocations:
     .long 0x00000100, 0x00000200, 0x00000300, 0x00000400, 0x00000500, 0x00000600, 0x00000700, 0x00000800
     .long 0x00000900, 0x00000C00, 0x00000D00, 0x00000F00, 0x00001300, 0x00001400, 0x00001700
 
-.balign 4
-
 /* 000ED808 800F0788 001B */
 D_800F0788:
     .asciz "Installing OSDBIntegrator\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED824 800F07A4 002E */
 D_800F07A4:
     .asciz ">>> OSINIT: exception %d commandeered by TRK\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED854 800F07D4 002F */
 D_800F07D4:
     .asciz ">>> OSINIT: exception %d vectored to debugger\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED884 800F0804 001B */
 D_800F0804:
     .asciz "Exceptions initialized...\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -914,12 +894,9 @@ D_800F0804:
 DriveInfo:
     .skip 32
 
-.balign 4
-
 /* 0012DFC0 80130F40 0030 */
 DriveBlock:
     .skip 48
-
 
 .section .sdata, "wa"
 
@@ -929,18 +906,15 @@ DriveBlock:
 glabel __OSVersion
     .long D_800F0628
 
-.balign 4
-
 /* 000F1694 80135414 0006 */
 D_80135414:
     .asciz "%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000F169C 8013541C 0004 */
 D_8013541C:
     .asciz "%s\n"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -950,61 +924,41 @@ D_8013541C:
 BootInfo:
     .skip 4
 
-.balign 4
-
 /* 000F1A34 801357B4 0004 */
 BI2DebugFlag:
     .skip 4
-
-.balign 4
 
 /* 000F1A38 801357B8 0004 */
 BI2DebugFlagHolder:
     .skip 4
 
-.balign 4
-
 /* 000F1A3C 801357BC 0004 */
 glabel __OSIsGcam
     .skip 4
-
-.balign 8
 
 /* 000F1A40 801357C0 0008 */
 ZeroF:
     .skip 8
 
-.balign 8
-
 /* 000F1A48 801357C8 0008 */
 ZeroPS:
     .skip 8
-
-.balign 4
 
 /* 000F1A50 801357D0 0004 */
 AreWeInitialized:
     .skip 4
 
-.balign 4
-
 /* 000F1A54 801357D4 0004 */
 OSExceptionTable:
     .skip 4
-
-.balign 4
 
 /* 000F1A58 801357D8 0004 */
 glabel __OSSavedRegionEnd
     .skip 4
 
-.balign 4
-
 /* 000F1A5C 801357DC 0004 */
 glabel __OSSavedRegionStart
     .skip 4
-
-.balign 4
 
 /* 000F1A60 801357E0 0004 */
 glabel __OSInIPL
@@ -1015,5 +969,3 @@ glabel __OSInIPL
 /* 000F1A68 801357E8 0008 */
 glabel __OSStartTime
     .skip 8
-
-

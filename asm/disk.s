@@ -219,7 +219,6 @@ diskPutROM8:
 /* 088474 8008DA14 38600001 */  li      r3, 1
 /* 088478 8008DA18 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -228,7 +227,6 @@ diskPutROM8:
 glabel gClassDisk
     .long D_801352F0, 0x00000004, 0x00000000, diskEvent
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -236,5 +234,4 @@ glabel gClassDisk
 /* 000F1570 801352F0 0005 */
 D_801352F0:
     .asciz "DISK"
-
-
+    .balign 4

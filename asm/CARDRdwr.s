@@ -190,5 +190,3 @@ glabel CARDGetXferredBytes
 /* 0B7F8C 800BD52C 7C630214 */  add     r3, r3, r0
 /* 0B7F90 800BD530 806300B8 */  lwz     r3, 0xb8(r3)
 /* 0B7F94 800BD534 4E800020 */  blr     
-
-

@@ -14,5 +14,3 @@ glabel __float_nan
 /* 000F0EFC 800F3E7C 0004 */
 glabel __float_huge
     .float inf
-
-

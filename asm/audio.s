@@ -311,7 +311,6 @@ glabel audioPut8
 /* 0892F8 8008E898 38600000 */  li      r3, 0
 /* 0892FC 8008E89C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -320,19 +319,15 @@ glabel audioPut8
 glabel gClassAudio
     .long D_80135308, 0x00000020, 0x00000000, audioEvent
 
-.balign 4
-
 /* 000EB808 800EE788 001F */
 D_800EE788:
     .asciz "Get: DRAM Address: WRITE-ONLY?"
-
-.balign 4
+    .balign 4
 
 /* 000EB828 800EE7A8 001A */
 D_800EE7A8:
     .asciz "Get: CONTROL: WRITE-ONLY?"
-
-.balign 4
+    .balign 4
 
 /* 000EB844 800EE7C4 0054 */
 jtbl_800EE7C4:
@@ -358,8 +353,6 @@ jtbl_800EE7C4:
     .long lbl_8008E70C
     .long lbl_8008E700
 
-.balign 4
-
 /* 000EB898 800EE818 0054 */
 jtbl_800EE818:
     .long lbl_8008E780
@@ -384,7 +377,6 @@ jtbl_800EE818:
     .long lbl_8008E870
     .long lbl_8008E860
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -392,11 +384,9 @@ jtbl_800EE818:
 /* 000F1588 80135308 0006 */
 D_80135308:
     .asciz "AUDIO"
-
-.balign 8
+    .balign 4
 
 /* 000F1590 80135310 0008 */
 D_80135310:
     .asciz "audio.c"
-
-
+    .balign 4

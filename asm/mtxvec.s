@@ -27,5 +27,3 @@ glabel PSMTXMultVec
 /* 0A2A6C 800A800C 10C52994 */  ps_sum0 f6, f5, f6, f5
 /* 0A2A70 800A8010 F0C58008 */  psq_st  f6, 8(r5), 1, qr0
 /* 0A2A74 800A8014 4E800020 */  blr     
-
-

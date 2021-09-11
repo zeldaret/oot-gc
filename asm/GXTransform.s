@@ -402,7 +402,6 @@ lbl_800AECBC:
 /* 0A9724 800AECC4 B0030002 */  sth     r0, 2(r3)
 /* 0A9728 800AECC8 4E800020 */  blr     
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -411,16 +410,10 @@ lbl_800AECBC:
 D_801361C0:
     .float 0.0
 
-.balign 4
-
 /* 000F1CC4 801361C4 0004 */
 D_801361C4:
     .float 0.5
 
-.balign 4
-
 /* 000F1CC8 801361C8 0004 */
 D_801361C8:
     .float 342.0
-
-

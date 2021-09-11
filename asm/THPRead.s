@@ -1490,26 +1490,24 @@ lbl_80012D70:
 /* 00D978 80012F18 7C0803A6 */  mtlr    r0
 /* 00D97C 80012F1C 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
 
 /* 000D01B0 800D3130 0030 */
 D_800D3130:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D01E0 800D3160 0030 */
 D_800D3160:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D0210 800D3190 0030 */
 D_800D3190:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
-
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 .section .data, "wa"
 
@@ -1518,8 +1516,7 @@ D_800D3190:
 /* 000E7530 800EA4B0 001A */
 D_800EA4B0:
     .asciz "Can't create read thread\n"
-
-.balign 4
+    .balign 4
 
 /* 000E754C 800EA4CC 0034 */
 jtbl_800EA4CC:
@@ -1537,8 +1534,6 @@ jtbl_800EA4CC:
     .long lbl_80011F70
     .long lbl_80011F6C
 
-.balign 4
-
 /* 000E7580 800EA500 001C */
 jtbl_800EA500:
     .long lbl_8001219C
@@ -1549,7 +1544,6 @@ jtbl_800EA500:
     .long lbl_800122B4
     .long lbl_800122EC
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -1558,54 +1552,37 @@ jtbl_800EA500:
 FreeReadBufferQueue:
     .skip 32
 
-.balign 4
-
 /* 000F8260 800FB1E0 0020 */
 ReadedBufferQueue:
     .skip 32
-
-.balign 4
 
 /* 000F8280 800FB200 0020 */
 ReadedBufferQueue2:
     .skip 32
 
-.balign 4
-
 /* 000F82A0 800FB220 0028 */
 FreeReadBufferMessage:
     .skip 40
-
-.balign 4
 
 /* 000F82C8 800FB248 0028 */
 ReadedBufferMessage:
     .skip 40
 
-.balign 4
-
 /* 000F82F0 800FB270 0028 */
 ReadedBufferMessage2:
     .skip 40
-
-.balign 4
 
 /* 000F8318 800FB298 0318 */
 ReadThread:
     .skip 792
 
-.balign 4
-
 /* 000F8630 800FB5B0 1000 */
 ReadThreadStack:
     .skip 4096
 
-.balign 4
-
 /* 000F9630 800FC5B0 0040 */
 gOrthoMtx:
     .skip 64
-
 
 .section .sbss, "wa"
 
@@ -1615,30 +1592,21 @@ gOrthoMtx:
 ReadThreadCreated:
     .skip 4
 
-.balign 4
-
 /* 000F18C4 80135644 0004 */
 glabel gMovieErrorToggle
     .skip 4
-
-.balign 4
 
 /* 000F18C8 80135648 0004 */
 toggle$184:
     .skip 4
 
-.balign 4
-
 /* 000F18CC 8013564C 0004 */
 gbReset:
     .skip 4
 
-.balign 4
-
 /* 000F18D0 80135650 0004 */
 gnTickReset:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -1648,76 +1616,50 @@ gnTickReset:
 D_80135DA0:
     .long 0x00000000
 
-.balign 4
-
 /* 000F18A4 80135DA4 0004 */
 D_80135DA4:
     .long 0x00000000
-
-.balign 4
 
 /* 000F18A8 80135DA8 0004 */
 D_80135DA8:
     .long 0x00000000
 
-.balign 4
-
 /* 000F18AC 80135DAC 0004 */
 D_80135DAC:
     .float 0.5
-
-.balign 8
 
 /* 000F18B0 80135DB0 0008 */
 D_80135DB0:
     .double 4503599627370496.0
 
-.balign 4
-
 /* 000F18B8 80135DB8 0004 */
 D_80135DB8:
     .float 0.0
-
-.balign 4
 
 /* 000F18BC 80135DBC 0004 */
 D_80135DBC:
     .float 240.0
 
-.balign 4
-
 /* 000F18C0 80135DC0 0004 */
 D_80135DC0:
     .float 320.0
-
-.balign 4
 
 /* 000F18C4 80135DC4 0004 */
 D_80135DC4:
     .float 0.10000000149011612
 
-.balign 4
-
 /* 000F18C8 80135DC8 0004 */
 D_80135DC8:
     .float 10000.0
-
-.balign 4
 
 /* 000F18CC 80135DCC 0004 */
 D_80135DCC:
     .float 160.0
 
-.balign 4
-
 /* 000F18D0 80135DD0 0004 */
 D_80135DD0:
     .float 120.0
 
-.balign 4
-
 /* 000F18D4 80135DD4 0004 */
 D_80135DD4:
     .float 1.0
-
-

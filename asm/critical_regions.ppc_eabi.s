@@ -7,5 +7,3 @@
 
 glabel __kill_critical_regions
 /* 0C9004 800CE5A4 4E800020 */  blr     
-
-

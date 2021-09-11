@@ -232,7 +232,6 @@ lbl_800B7178:
 /* 0B1C84 800B7224 7C0803A6 */  mtlr    r0
 /* 0B1C88 800B7228 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -241,21 +240,17 @@ lbl_800B7178:
 PadChanMask:
     .long 0x80000000, 0x40000000, 0x20000000, 0x10000000
 
-
 .section .bss, "wa"
 
 .balign 4
 
 /* 0012F7A8 80132728 0030 */
 Pad:
-    .skip 48
-
-.balign 4
+    .skip 0x30
 
 /* 0012F7D8 80132758 0078 */
 glabel DemoPad
-    .skip 120
-
+    .skip 0x78
 
 .section .sbss, "wa"
 
@@ -264,5 +259,3 @@ glabel DemoPad
 /* 000F1D20 80135AA0 0004 */
 glabel DemoNumValidPads
     .skip 4
-
-

@@ -111,7 +111,6 @@ lbl_800D1E48:
 /* 0CC8B4 800D1E54 7C0803A6 */  mtlr    r0
 /* 0CC8B8 800D1E58 4E800020 */  blr     
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -120,28 +119,18 @@ lbl_800D1E48:
 D_801363A8:
     .double 0.0
 
-.balign 8
-
 /* 000F1EB0 801363B0 0008 */
 D_801363B0:
     .double 1.8014398509481984e+16
-
-.balign 8
 
 /* 000F1EB8 801363B8 0008 */
 D_801363B8:
     .double 1e-300
 
-.balign 8
-
 /* 000F1EC0 801363C0 0008 */
 D_801363C0:
     .double 1e+300
 
-.balign 8
-
 /* 000F1EC8 801363C8 0008 */
 D_801363C8:
     .double 5.551115123125783e-17
-
-

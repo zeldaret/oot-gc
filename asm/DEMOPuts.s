@@ -371,15 +371,13 @@ lbl_800B6E1C:
 /* 0B1888 800B6E28 7C0803A6 */  mtlr    r0
 /* 0B188C 800B6E2C 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 8
 
 /* 0012F788 80132708 0020 */
 fontTexObj:
-    .skip 32
-
+    .skip 0x20
 
 .section .sbss, "wa"
 
@@ -389,7 +387,6 @@ fontTexObj:
 fontShift:
     .skip 4
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -398,19 +395,13 @@ fontShift:
 D_801361E0:
     .float 0.0
 
-.balign 4
-
 /* 000F1CE4 801361E4 0004 */
 D_801361E4:
     .float 1.0
 
-.balign 8
-
 /* 000F1CE8 801361E8 0008 */
 D_801361E8:
     .double 4503599627370496.0
-
-.balign 4
 
 /* 000F1CF0 801361F0 0004 */
 D_801361F0:
@@ -422,10 +413,6 @@ D_801361F0:
 D_801361F8:
     .double 4503601774854144.0
 
-.balign 4
-
 /* 000F1D00 80136200 0004 */
 D_80136200:
     .float -100.0
-
-

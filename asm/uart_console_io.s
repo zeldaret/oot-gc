@@ -119,7 +119,6 @@ lbl_800D0FEC:
 /* 0CBA60 800D1000 38210030 */  addi    r1, r1, 0x30
 /* 0CBA64 800D1004 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -127,5 +126,3 @@ lbl_800D0FEC:
 /* 000F1F60 80135CE0 0004 */
 initialized$16:
     .skip 4
-
-

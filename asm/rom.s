@@ -3111,7 +3111,6 @@ lbl_8006FEB8:
 /* 06A918 8006FEB8 38600000 */  li      r3, 0
 /* 06A91C 8006FEBC 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -3119,8 +3118,6 @@ lbl_8006FEB8:
 /* 000EA968 800ED8E8 0010 */
 glabel gClassROM
     .long D_80135278, 0x00010EF8, 0x00000000, romEvent
-
-.balign 4
 
 /* 000EA978 800ED8F8 0318 */
 ganOffsetBlock_ZLJ:
@@ -3138,8 +3135,6 @@ ganOffsetBlock_ZLJ:
     .long 0x01EDD1F0, 0x01EEB1CF, 0x01EEB1D0, 0x01EF793F, 0x01EF7940, 0x01F0A15F, 0x01F0A160, 0x01F12BFF, 0x01F12C00, 0x01F1C5AF, 0x01F1C5B0, 0x01F2D9DF, 0x01F2D9E0, 0x01F440CF, 0x01F440D0, 0x01F4D90F
     .long 0x01F4D910, 0x01F5623F, 0x01F56240, 0x01F60C1F, 0x01F60C20, 0x01F7209F
 
-.balign 4
-
 /* 000EAC90 800EDC10 0318 */
 ganOffsetBlock_URAZLJ:
     .long 0x01684BD0, 0x016D355F, 0x016D3560, 0x0172B9AF, 0x0172B9B0, 0x0175E9CF, 0x0175E9D0, 0x017BEE5F, 0x017BEE60, 0x0182F2AF, 0x0182F2B0, 0x0189B35F, 0x0189B360, 0x0191BC0F, 0x0191BC10, 0x01985B8F
@@ -3156,18 +3151,15 @@ ganOffsetBlock_URAZLJ:
     .long 0x01EDEB30, 0x01EECB0F, 0x01EECB10, 0x01EF927F, 0x01EF9280, 0x01F0BA9F, 0x01F0BAA0, 0x01F1453F, 0x01F14540, 0x01F1DEEF, 0x01F1DEF0, 0x01F2F31F, 0x01F2F320, 0x01F45A0F, 0x01F45A10, 0x01F4F24F
     .long 0x01F4F250, 0x01F57B7F, 0x01F57B80, 0x01F6255F, 0x01F62560, 0x01F739DF
 
-.balign 4
-
 /* 000EAFA8 800EDF28 000B */
 D_800EDF28:
     .asciz "urazle.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000EAFB4 800EDF34 000B */
 D_800EDF34:
     .asciz "urazlj.tpl"
-
+    .balign 4
 
 .section .sdata, "wa"
 
@@ -3176,49 +3168,42 @@ D_800EDF34:
 /* 000F14F8 80135278 0004 */
 D_80135278:
     .asciz "ROM"
-
-.balign 4
+    .balign 4
 
 /* 000F14FC 8013527C 0005 */
 D_8013527C:
     .asciz "CZLE"
-
-.balign 4
+    .balign 4
 
 /* 000F1504 80135284 0005 */
 D_80135284:
     .asciz "CZLJ"
-
-.balign 4
+    .balign 4
 
 /* 000F150C 8013528C 0008 */
 D_8013528C:
     .asciz "zle.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000F1514 80135294 0008 */
 D_80135294:
     .asciz "zlj.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000F151C 8013529C 0001 */
 D_8013529C:
-    .byte 0x00
-
-.balign 4
+    .asciz ""
+    .balign 4
 
 /* 000F1520 801352A0 0005 */
 D_801352A0:
     .asciz "NZSJ"
-
-.balign 4
+    .balign 4
 
 /* 000F1528 801352A8 0005 */
 D_801352A8:
     .asciz "NZSE"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -3228,18 +3213,13 @@ D_801352A8:
 gbProgress:
     .skip 4
 
-.balign 4
-
 /* 000F19E4 80135764 0004 */
 gpImageBack:
     .skip 4
 
-.balign 4
-
 /* 000F19E8 80135768 0004 */
 iImage$294:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -3255,52 +3235,34 @@ D_80135FD0:
 D_80135FD8:
     .double 4503601774854144.0
 
-.balign 8
-
 /* 000F1AE0 80135FE0 0008 */
 D_80135FE0:
     .double 4503599627370496.0
-
-.balign 4
 
 /* 000F1AE8 80135FE8 0004 */
 D_80135FE8:
     .float 0.0
 
-.balign 4
-
 /* 000F1AEC 80135FEC 0004 */
 D_80135FEC:
     .float 640.0
-
-.balign 4
 
 /* 000F1AF0 80135FF0 0004 */
 D_80135FF0:
     .float 480.0
 
-.balign 4
-
 /* 000F1AF4 80135FF4 0004 */
 D_80135FF4:
     .float 479.0
-
-.balign 4
 
 /* 000F1AF8 80135FF8 0004 */
 D_80135FF8:
     .float 639.0
 
-.balign 4
-
 /* 000F1AFC 80135FFC 0004 */
 D_80135FFC:
     .float 0.5
 
-.balign 4
-
 /* 000F1B00 80136000 0004 */
 D_80136000:
     .float 400.0
-
-

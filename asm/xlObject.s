@@ -286,7 +286,6 @@ lbl_80007F60:
 /* 0029D8 80007F78 38210028 */  addi    r1, r1, 0x28
 /* 0029DC 80007F7C 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -294,5 +293,3 @@ lbl_80007F60:
 /* 000F1848 801355C8 0004 */
 gpListData:
     .skip 4
-
-

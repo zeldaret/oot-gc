@@ -46,7 +46,6 @@ lbl_800D24C8:
 /* 0CCF2C 800D24CC C0233E7C */  lfs     f1, __float_huge@l(r3)
 /* 0CCF30 800D24D0 4E800020 */  blr     
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -55,16 +54,10 @@ lbl_800D24C8:
 D_80136408:
     .double 0.0
 
-.balign 8
-
 /* 000F1F10 80136410 0008 */
 D_80136410:
     .double 0.5
 
-.balign 8
-
 /* 000F1F18 80136418 0008 */
 D_80136418:
     .double 3.0
-
-

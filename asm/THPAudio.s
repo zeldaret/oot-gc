@@ -370,5 +370,3 @@ __THPAudioInitialize:
 /* 0C39B0 800C8F50 38040001 */  addi    r0, r4, 1
 /* 0C39B4 800C8F54 90030000 */  stw     r0, 0(r3)
 /* 0C39B8 800C8F58 4E800020 */  blr     
-
-

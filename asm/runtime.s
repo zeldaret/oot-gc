@@ -539,7 +539,6 @@ lbl_800CDFDC:
 /* 0C8A3C 800CDFDC 38210010 */  addi    r1, r1, 0x10
 /* 0C8A40 800CDFE0 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -547,5 +546,3 @@ lbl_800CDFDC:
 /* 000D0390 800D3310 0018 */
 __constants:
     .long 0x00000000, 0x00000000, 0x41F00000, 0x00000000, 0x41E00000, 0x00000000
-
-

@@ -1770,7 +1770,6 @@ lbl_800B186C:
 /* 0AC2E4 800B1884 7C0803A6 */  mtlr    r0
 /* 0AC2E8 800B1888 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1778,13 +1777,11 @@ lbl_800B186C:
 /* 000EF320 800F22A0 0045 */
 D_800F22A0:
     .asciz "<< Dolphin SDK - PAD\trelease build: Aug  6 2003 04:30:02 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000EF368 800F22E8 0010 */
 ResetFunctionInfo:
     .long OnReset, 0x0000007F, 0x00000000, 0x00000000
-
 
 .section .bss, "wa"
 
@@ -1794,18 +1791,13 @@ ResetFunctionInfo:
 Type:
     .skip 16
 
-.balign 4
-
 /* 0012F4F8 80132478 0030 */
 Origin:
     .skip 48
 
-.balign 4
-
 /* 0012F528 801324A8 0010 */
 CmdProbeDevice:
     .skip 16
-
 
 .section .sdata, "wa"
 
@@ -1815,48 +1807,33 @@ CmdProbeDevice:
 glabel __PADVersion
     .long D_800F22A0
 
-.balign 4
-
 /* 000F174C 801354CC 0004 */
 ResettingChan:
     .long 0x00000020
-
-.balign 4
 
 /* 000F1750 801354D0 0004 */
 XPatchBits:
     .long 0xF0000000
 
-.balign 4
-
 /* 000F1754 801354D4 0004 */
 AnalogMode:
     .long 0x00000300
-
-.balign 4
 
 /* 000F1758 801354D8 0004 */
 Spec:
     .long 0x00000005
 
-.balign 4
-
 /* 000F175C 801354DC 0004 */
 MakeStatus:
     .long SPEC2_MakeStatus
-
-.balign 4
 
 /* 000F1760 801354E0 0004 */
 CmdReadOrigin:
     .long 0x41000000
 
-.balign 4
-
 /* 000F1764 801354E4 0004 */
 CmdCalibrate:
     .long 0x42000000
-
 
 .section .sbss, "wa"
 
@@ -1866,64 +1843,42 @@ CmdCalibrate:
 Initialized:
     .skip 4
 
-.balign 4
-
 /* 000F1BFC 8013597C 0004 */
 EnabledBits:
     .skip 4
-
-.balign 4
 
 /* 000F1C00 80135980 0004 */
 ResettingBits:
     .skip 4
 
-.balign 4
-
 /* 000F1C04 80135984 0004 */
 RecalibrateBits:
     .skip 4
-
-.balign 4
 
 /* 000F1C08 80135988 0004 */
 WaitingBits:
     .skip 4
 
-.balign 4
-
 /* 000F1C0C 8013598C 0004 */
 CheckingBits:
     .skip 4
-
-.balign 4
 
 /* 000F1C10 80135990 0004 */
 PendingBits:
     .skip 4
 
-.balign 4
-
 /* 000F1C14 80135994 0004 */
 BarrelBits:
     .skip 4
-
-.balign 4
 
 /* 000F1C18 80135998 0004 */
 SamplingCallback:
     .skip 4
 
-.balign 4
-
 /* 000F1C1C 8013599C 0004 */
 recalibrated$388:
     .skip 4
 
-.balign 4
-
 /* 000F1C20 801359A0 0004 */
 glabel __PADSpec
     .skip 4
-
-

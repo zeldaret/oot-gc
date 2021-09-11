@@ -980,7 +980,6 @@ glabel GXSetNumTexGens
 /* 0A5548 800AAAE8 900605AC */  stw     r0, 0x5ac(r6)
 /* 0A554C 800AAAEC 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1014,8 +1013,6 @@ jtbl_800F1D00:
     .long lbl_800A9FB0
     .long lbl_800A9EB8
 
-.balign 4
-
 /* 000EEDE8 800F1D68 0044 */
 jtbl_800F1D68:
     .long lbl_800AA25C
@@ -1035,8 +1032,6 @@ jtbl_800F1D68:
     .long lbl_800AA44C
     .long lbl_800AA44C
     .long lbl_800AA284
-
-.balign 4
 
 /* 000EEE2C 800F1DAC 0044 */
 jtbl_800F1DAC:
@@ -1058,8 +1053,6 @@ jtbl_800F1DAC:
     .long lbl_800AA6BC
     .long lbl_800AA4F4
 
-.balign 4
-
 /* 000EEE70 800F1DF0 001C */
 jtbl_800F1DF0:
     .long lbl_800AAA00
@@ -1069,8 +1062,6 @@ jtbl_800F1DF0:
     .long lbl_800AAA50
     .long lbl_800AAA64
     .long lbl_800AAA78
-
-.balign 4
 
 /* 000EEE8C 800F1E0C 0054 */
 jtbl_800F1E0C:
@@ -1096,7 +1087,6 @@ jtbl_800F1E0C:
     .long lbl_800AA89C
     .long lbl_800AA8A4
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -1105,16 +1095,10 @@ jtbl_800F1E0C:
 tbl1$263:
     .long 0x00040102
 
-.balign 4
-
 /* 000F16FC 8013547C 0004 */
 tbl2$264:
     .long 0x00080102
 
-.balign 4
-
 /* 000F1700 80135480 0004 */
 tbl3$265:
     .long 0x000C0102
-
-

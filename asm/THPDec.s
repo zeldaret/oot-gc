@@ -7919,7 +7919,6 @@ glabel THPInit
 /* 0C3484 800C8A24 7C0803A6 */  mtlr    r0
 /* 0C3488 800C8A28 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -7935,7 +7934,6 @@ __THPAANScaleFactor:
     .long 0x3FF00000, 0x00000000, 0x3FF63150, 0xC0000000, 0x3FF4E7AE, 0xA0000000, 0x3FF2D062, 0xE0000000
     .long 0x3FF00000, 0x00000000, 0x3FE92469, 0xC0000000, 0x3FE1517A, 0x80000000, 0x3FD1A855, 0xE0000000
 
-
 .section .data, "wa"
 
 .balign 8
@@ -7943,7 +7941,7 @@ __THPAANScaleFactor:
 /* 000F0A60 800F39E0 003C */
 D_800F39E0:
     .asciz "<< Dolphin SDK - THP\trelease build: Aug 27 2002 20:42:01 >>"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -7953,24 +7951,17 @@ D_800F39E0:
 __THPIDCTWorkspace:
     .skip 256
 
-.balign 4
-
 /* 0012FBA0 80132B20 000C */
 __THPLCWork512:
     .skip 12
-
-.balign 4
 
 /* 0012FBAC 80132B2C 000C */
 __THPLCWork640:
     .skip 12
 
-.balign 4
-
 /* 0012FBB8 80132B38 0018 */
 __THPMCUBuffer:
     .skip 24
-
 
 .section .sdata, "wa"
 
@@ -7979,7 +7970,6 @@ __THPMCUBuffer:
 /* 000F17E0 80135560 0004 */
 glabel __THPVersion
     .long D_800F39E0
-
 
 .section .sbss, "wa"
 
@@ -8019,19 +8009,13 @@ Uachuff:
 Vachuff:
     .skip 4
 
-.balign 4
-
 /* 000F1EC4 80135C44 0004 */
 __THPHuffmanBits:
     .skip 4
 
-.balign 4
-
 /* 000F1EC8 80135C48 0004 */
 __THPHuffmanSizeTab:
     .skip 4
-
-.balign 4
 
 /* 000F1ECC 80135C4C 0004 */
 __THPHuffmanCodeTab:
@@ -8055,36 +8039,25 @@ Gwid:
 Gq:
     .skip 4
 
-.balign 4
-
 /* 000F1F24 80135CA4 0004 */
 __THPOldGQR5:
     .skip 4
-
-.balign 4
 
 /* 000F1F28 80135CA8 0004 */
 __THPOldGQR6:
     .skip 4
 
-.balign 4
-
 /* 000F1F2C 80135CAC 0004 */
 __THPWorkArea:
     .skip 4
-
-.balign 4
 
 /* 000F1F30 80135CB0 0004 */
 __THPInfo:
     .skip 4
 
-.balign 4
-
 /* 000F1F34 80135CB4 0004 */
 __THPInitFlag:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -8094,34 +8067,22 @@ __THPInitFlag:
 D_80136218:
     .double 4503599627370496.0
 
-.balign 4
-
 /* 000F1D20 80136220 0004 */
 D_80136220:
     .float 1.4142135381698608
-
-.balign 4
 
 /* 000F1D24 80136224 0004 */
 D_80136224:
     .float 1.8477590084075928
 
-.balign 4
-
 /* 000F1D28 80136228 0004 */
 D_80136228:
     .float 1.0823922157287598
-
-.balign 4
 
 /* 000F1D2C 8013622C 0004 */
 D_8013622C:
     .float -2.613126039505005
 
-.balign 4
-
 /* 000F1D30 80136230 0004 */
 D_80136230:
     .float 1024.0
-
-

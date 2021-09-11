@@ -1069,7 +1069,6 @@ lbl_8001D334:
 /* 017DA4 8001D344 38210018 */  addi    r1, r1, 0x18
 /* 017DA8 8001D348 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1078,18 +1077,15 @@ lbl_8001D334:
 glabel gClassSound
     .long D_80134DC8, 0x000000D8, 0x00000000, soundEvent
 
-.balign 4
-
 /* 000E7868 800EA7E8 003E */
 D_800EA7E8:
     .asciz "SetBufferSize: ERROR: 'nSize' must be a multiple of 32! (%d)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E78A8 800EA828 000B */
 D_800EA828:
     .asciz "soundGCN.c"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -1099,7 +1095,6 @@ D_800EA828:
 glabel gVolumeCurve
     .skip 1028
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -1107,13 +1102,11 @@ glabel gVolumeCurve
 /* 000F1048 80134DC8 0006 */
 D_80134DC8:
     .asciz "SOUND"
-
-.balign 4
+    .balign 4
 
 /* 000F1050 80134DD0 0004 */
 D_80134DD0:
     .long 0x0000000A
-
 
 .section .sdata2, "wa"
 
@@ -1123,13 +1116,9 @@ D_80134DD0:
 D_80135DD8:
     .float 65536.0
 
-.balign 4
-
 /* 000F18DC 80135DDC 0004 */
 D_80135DDC:
     .float 20.0
-
-.balign 4
 
 /* 000F18E0 80135DE0 0004 */
 D_80135DE0:
@@ -1147,10 +1136,6 @@ D_80135DE8:
 D_80135DF0:
     .double 4503601774854144.0
 
-.balign 4
-
 /* 000F18F8 80135DF8 0004 */
 D_80135DF8:
     .float 0.5
-
-

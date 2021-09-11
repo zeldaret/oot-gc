@@ -249,7 +249,6 @@ lbl_8009FDE8:
 /* 09A880 8009FE20 7C0803A6 */  mtlr    r0
 /* 09A884 8009FE24 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 32
@@ -257,7 +256,6 @@ lbl_8009FDE8:
 /* 0012E040 80130FC0 0020 */
 Header:
     .skip 32
-
 
 .section .sbss, "wa"
 
@@ -267,16 +265,10 @@ Header:
 SaveStart:
     .skip 4
 
-.balign 4
-
 /* 000F1AAC 8013582C 0004 */
 SaveEnd:
     .skip 4
 
-.balign 4
-
 /* 000F1AB0 80135830 0004 */
 Prepared:
     .skip 4
-
-

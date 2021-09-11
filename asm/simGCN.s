@@ -8183,46 +8183,44 @@ lbl_8000F61C:
 /* 00A224 8000F7C4 7C0803A6 */  mtlr    r0
 /* 00A228 8000F7C8 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
 
 /* 000D0060 800D2FE0 0030 */
 D_800D2FE0:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D0090 800D3010 0030 */
 D_800D3010:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D00C0 800D3040 0030 */
 D_800D3040:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D00F0 800D3070 0030 */
 D_800D3070:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D0120 800D30A0 0030 */
 D_800D30A0:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D0150 800D30D0 0030 */
 D_800D30D0:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 /* 000D0180 800D3100 0030 */
 D_800D3100:
-    .long 0x3F800000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x3F800000, 0x00000000, 0x00000000
-    .long 0x00000000, 0x00000000, 0x3F800000, 0xBF800000
-
+    .float 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0
+    .float 0.0, 0.0, 1.0, -1.0
 
 .section .data, "wa"
 
@@ -10121,67 +10119,55 @@ glabel Colors_u32
 glabel TexCoords_u8
     .long 0x00000100, 0x01010001
 
-.balign 4
-
 /* 000E6AA8 800E9A28 000B */
 D_800E9A28:
     .asciz "Play Delay"
-
-.balign 4
+    .balign 4
 
 /* 000E6AB4 800E9A34 000E */
 D_800E9A34:
     .asciz "Silence Count"
-
-.balign 4
+    .balign 4
 
 /* 000E6AC4 800E9A44 000E */
 D_800E9A44:
     .asciz "Fade Up Count"
-
-.balign 4
+    .balign 4
 
 /* 000E6AD4 800E9A54 0054 */
 D_800E9A54:
     .asciz "How many audio frames the\ngame must be playing before it\nconsiders the sound stable"
-
-.balign 4
+    .balign 4
 
 /* 000E6B28 800E9AA8 0051 */
 D_800E9AA8:
     .asciz "How many audio frames the\ngame must NOT play before it\nconsiders itself unstable"
-
-.balign 4
+    .balign 4
 
 /* 000E6B7C 800E9AFC 0038 */
 D_800E9AFC:
     .asciz "How many audio frames to\nperform a fade up on the audio"
-
-.balign 4
+    .balign 4
 
 /* 000E6BB4 800E9B34 004B */
 D_800E9B34:
     .asciz "\n\nERROR: This program MUST be run on a system with 24MB (or less) memory!\n"
-
-.balign 4
+    .balign 4
 
 /* 000E6C00 800E9B80 004D */
 D_800E9B80:
     .asciz "       Please reduce memory-size to 24MB (using 'setsmemsize 0x1800000')...\n"
-
-.balign 4
+    .balign 4
 
 /* 000E6C50 800E9BD0 000A */
 D_800E9BD0:
     .asciz "zlj_f.n64"
-
-.balign 4
+    .balign 4
 
 /* 000E6C5C 800E9BDC 000B */
 D_800E9BDC:
     .asciz "cursor.raw"
-
-.balign 4
+    .balign 4
 
 /* 000E6C68 800E9BE8 00D8 */
 jtbl_800E9BE8:
@@ -10240,8 +10226,6 @@ jtbl_800E9BE8:
     .long lbl_800086B8
     .long lbl_800086A8
 
-.balign 4
-
 /* 000E6D40 800E9CC0 001C */
 jtbl_800E9CC0:
     .long lbl_8000882C
@@ -10252,193 +10236,160 @@ jtbl_800E9CC0:
     .long lbl_8000885C
     .long lbl_80008868
 
-.balign 4
-
 /* 000E6D5C 800E9CDC 002B */
 D_800E9CDC:
     .asciz "Invalid Message Image Data - Assuming SV09"
-
-.balign 4
+    .balign 4
 
 /* 000E6D88 800E9D08 0009 */
 D_800E9D08:
     .asciz "simGCN.c"
-
-.balign 4
+    .balign 4
 
 /* 000E6D94 800E9D14 0011 */
 D_800E9D14:
     .asciz "TPL/msg_ld01.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6DA8 800E9D28 0011 */
 D_800E9D28:
     .asciz "TPL/msg_ld02.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6DBC 800E9D3C 0011 */
 D_800E9D3C:
     .asciz "TPL/msg_ld03.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6DD0 800E9D50 0011 */
 D_800E9D50:
     .asciz "TPL/msg_ld04.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6DE4 800E9D64 0013 */
 D_800E9D64:
     .asciz "TPL/msg_ld05_1.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6DF8 800E9D78 0013 */
 D_800E9D78:
     .asciz "TPL/msg_ld06_1.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E0C 800E9D8C 0013 */
 D_800E9D8C:
     .asciz "TPL/msg_ld06_2.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E20 800E9DA0 0013 */
 D_800E9DA0:
     .asciz "TPL/msg_ld06_3.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E34 800E9DB4 0011 */
 D_800E9DB4:
     .asciz "TPL/msg_gf03.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E48 800E9DC8 0011 */
 D_800E9DC8:
     .asciz "TPL/msg_gf04.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E5C 800E9DDC 0011 */
 D_800E9DDC:
     .asciz "TPL/msg_gf05.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E70 800E9DF0 0011 */
 D_800E9DF0:
     .asciz "TPL/msg_gf06.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E84 800E9E04 0011 */
 D_800E9E04:
     .asciz "TPL/msg_in03.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6E98 800E9E18 0011 */
 D_800E9E18:
     .asciz "TPL/msg_in04.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6EAC 800E9E2C 0011 */
 D_800E9E2C:
     .asciz "TPL/msg_in05.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6EC0 800E9E40 0011 */
 D_800E9E40:
     .asciz "TPL/msg_sv01.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6ED4 800E9E54 0013 */
 D_800E9E54:
     .asciz "TPL/msg_sv01_2.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6EE8 800E9E68 0011 */
 D_800E9E68:
     .asciz "TPL/msg_sv02.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6EFC 800E9E7C 0011 */
 D_800E9E7C:
     .asciz "TPL/msg_sv03.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F10 800E9E90 0011 */
 D_800E9E90:
     .asciz "TPL/msg_sv04.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F24 800E9EA4 0013 */
 D_800E9EA4:
     .asciz "TPL/msg_sv05_1.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F38 800E9EB8 0013 */
 D_800E9EB8:
     .asciz "TPL/msg_sv06_1.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F4C 800E9ECC 0013 */
 D_800E9ECC:
     .asciz "TPL/msg_sv06_2.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F60 800E9EE0 0013 */
 D_800E9EE0:
     .asciz "TPL/msg_sv06_3.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F74 800E9EF4 0011 */
 D_800E9EF4:
     .asciz "TPL/msg_sv07.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F88 800E9F08 0011 */
 D_800E9F08:
     .asciz "TPL/msg_sv10.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6F9C 800E9F1C 0011 */
 D_800E9F1C:
     .asciz "TPL/msg_sv11.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6FB0 800E9F30 0011 */
 D_800E9F30:
     .asciz "TPL/msg_sv12.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6FC4 800E9F44 0015 */
 D_800E9F44:
     .asciz "TPL/msg_sv_share.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E6FDC 800E9F5C 00A0 */
 jtbl_800E9F5C:
@@ -10483,55 +10434,45 @@ jtbl_800E9F5C:
     .long lbl_8000C804
     .long lbl_8000C9B4
 
-.balign 4
-
 /* 000E707C 800E9FFC 0013 */
 D_800E9FFC:
     .asciz "TPL/msg_ld05_2.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E7090 800EA010 0013 */
 D_800EA010:
     .asciz "TPL/msg_ld06_4.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E70A4 800EA024 0011 */
 D_800EA024:
     .asciz "TPL/msg_ld07.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E70B8 800EA038 0011 */
 D_800EA038:
     .asciz "TPL/msg_gf01.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E70CC 800EA04C 0011 */
 D_800EA04C:
     .asciz "TPL/msg_in01.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E70E0 800EA060 0013 */
 D_800EA060:
     .asciz "TPL/msg_sv06_4.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E70F4 800EA074 0013 */
 D_800EA074:
     .asciz "TPL/msg_sv06_5.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E7108 800EA088 0011 */
 D_800EA088:
     .asciz "TPL/msg_sv08.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E711C 800EA09C 0078 */
 jtbl_800EA09C:
@@ -10566,25 +10507,20 @@ jtbl_800EA09C:
     .long lbl_8000CF08
     .long lbl_8000CEA0
 
-.balign 4
-
 /* 000E7194 800EA114 0011 */
 D_800EA114:
     .asciz "TPL/msg_in02.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E71A8 800EA128 0011 */
 D_800EA128:
     .asciz "TPL/msg_sv09.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E71BC 800EA13C 0011 */
 D_800EA13C:
     .asciz "TPL/msg_gf02.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E71D0 800EA150 001C */
 jtbl_800EA150:
@@ -10596,13 +10532,10 @@ jtbl_800EA150:
     .long lbl_8000D4EC
     .long lbl_8000D528
 
-.balign 4
-
 /* 000E71EC 800EA16C 0026 */
 D_800EA16C:
     .asciz "ShowError: Unknown FileInfoStatus: %d"
-
-.balign 4
+    .balign 4
 
 /* 000E7214 800EA194 0034 */
 jtbl_800EA194:
@@ -10620,7 +10553,6 @@ jtbl_800EA194:
     .long lbl_8000EEEC
     .long lbl_8000EEC8
 
-
 .section .bss, "wa"
 
 .balign 32
@@ -10629,18 +10561,13 @@ jtbl_800EA194:
 gOrthoMtx:
     .skip 64
 
-.balign 4
-
 /* 000F1600 800F4580 0140 */
 gContMap:
     .skip 320
 
-.balign 4
-
 /* 000F1740 800F46C0 0020 */
 gaszArgument:
     .skip 32
-
 
 .section .sdata, "wa"
 
@@ -10650,282 +10577,191 @@ gaszArgument:
 glabel gmsg_ld01Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F6C 80134CEC 0004 */
 glabel gmsg_ld02Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0F70 80134CF0 0004 */
 glabel gmsg_ld03Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F74 80134CF4 0004 */
 glabel gmsg_ld04Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0F78 80134CF8 0004 */
 glabel gmsg_ld05_1Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F7C 80134CFC 0004 */
 glabel gmsg_ld05_2Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0F80 80134D00 0004 */
 glabel gmsg_ld06_1Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F84 80134D04 0004 */
 glabel gmsg_ld06_2Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0F88 80134D08 0004 */
 glabel gmsg_ld06_3Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F8C 80134D0C 0004 */
 glabel gmsg_ld06_4Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0F90 80134D10 0004 */
 glabel gmsg_ld07Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F94 80134D14 0004 */
 glabel gmsg_gf01Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0F98 80134D18 0004 */
 glabel gmsg_gf02Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0F9C 80134D1C 0004 */
 glabel gmsg_gf03Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FA0 80134D20 0004 */
 glabel gmsg_gf04Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FA4 80134D24 0004 */
 glabel gmsg_gf05Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FA8 80134D28 0004 */
 glabel gmsg_gf06Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FAC 80134D2C 0004 */
 glabel gmsg_in01Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FB0 80134D30 0004 */
 glabel gmsg_in02Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FB4 80134D34 0004 */
 glabel gmsg_in03Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FB8 80134D38 0004 */
 glabel gmsg_in04Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FBC 80134D3C 0004 */
 glabel gmsg_in05Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FC0 80134D40 0004 */
 glabel gmsg_sv01Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FC4 80134D44 0004 */
 glabel gmsg_sv01_2Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FC8 80134D48 0004 */
 glabel gmsg_sv02Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FCC 80134D4C 0004 */
 glabel gmsg_sv03Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FD0 80134D50 0004 */
 glabel gmsg_sv04Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FD4 80134D54 0004 */
 glabel gmsg_sv05_1Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FD8 80134D58 0004 */
 glabel gmsg_sv06_1Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FDC 80134D5C 0004 */
 glabel gmsg_sv06_2Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FE0 80134D60 0004 */
 glabel gmsg_sv06_3Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FE4 80134D64 0004 */
 glabel gmsg_sv06_4Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FE8 80134D68 0004 */
 glabel gmsg_sv06_5Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FEC 80134D6C 0004 */
 glabel gmsg_sv07Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FF0 80134D70 0004 */
 glabel gmsg_sv08Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FF4 80134D74 0004 */
 glabel gmsg_sv09Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F0FF8 80134D78 0004 */
 glabel gmsg_sv10Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F0FFC 80134D7C 0004 */
 glabel gmsg_sv11Size
     .long 0x00003E20
-
-.balign 4
 
 /* 000F1000 80134D80 0004 */
 glabel gmsg_sv12Size
     .long 0x00003E20
 
-.balign 4
-
 /* 000F1004 80134D84 0004 */
 glabel gmsg_sv_shareSize
     .long 0x00003E20
-
-.balign 4
 
 /* 000F1008 80134D88 0004 */
 glabel gz_bnrSize
     .long 0x00001840
 
-.balign 4
-
 /* 000F100C 80134D8C 0004 */
 glabel gz_iconSize
     .long 0x00001840
-
-.balign 4
 
 /* 000F1010 80134D90 0004 */
 glabel gHighlightChoice
     .long 0x00000001
 
-.balign 4
-
 /* 000F1014 80134D94 0004 */
 glabel simulatorMessageCurrent
     .long 0xFFFFFFFF
-
-.balign 4
 
 /* 000F1018 80134D98 0004 */
 glabel gResetBeginFlag
     .long 0x00000001
 
-.balign 4
-
 /* 000F101C 80134D9C 0008 */
 D_80134D9C:
     .asciz "yes.raw"
-
-.balign 4
+    .balign 4
 
 /* 000F1024 80134DA4 0007 */
 D_80134DA4:
     .asciz "no.raw"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -10935,90 +10771,61 @@ D_80134DA4:
 gpCode:
     .skip 4
 
-.balign 4
-
 /* 000F1854 801355D4 0004 */
 glabel gButtonDownToggle
     .skip 4
-
-.balign 4
 
 /* 000F1858 801355D8 0004 */
 glabel gDVDResetToggle
     .skip 4
 
-.balign 4
-
 /* 000F185C 801355DC 0004 */
 toggle$192:
     .skip 4
-
-.balign 4
 
 /* 000F1860 801355E0 0004 */
 nPrevButton$701:
     .skip 4
 
-.balign 4
-
 /* 000F1864 801355E4 0004 */
 nCurrButton$702:
     .skip 4
-
-.balign 4
 
 /* 000F1868 801355E8 0004 */
 gbReset:
     .skip 4
 
-.balign 4
-
 /* 000F186C 801355EC 0004 */
 gnTickReset:
     .skip 4
-
-.balign 4
 
 /* 000F1870 801355F0 0004 */
 glabel gPreviousIPLSetting
     .skip 4
 
-.balign 4
-
 /* 000F1874 801355F4 0004 */
 glabel gPreviousForceMenuSetting
     .skip 4
-
-.balign 4
 
 /* 000F1878 801355F8 0004 */
 glabel gPreviousAllowResetSetting
     .skip 4
 
-.balign 4
-
 /* 000F187C 801355FC 0004 */
 glabel gbDisplayedError
     .skip 4
-
-.balign 4
 
 /* 000F1880 80135600 0004 */
 glabel gpSystem
     .skip 4
 
-.balign 4
-
 /* 000F1884 80135604 0004 */
 glabel gpSound
     .skip 4
 
-.balign 4
-
 /* 000F1888 80135608 0004 */
 glabel gpFrame
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -11028,37 +10835,25 @@ glabel gpFrame
 D_80135D18:
     .long 0x00000000
 
-.balign 4
-
 /* 000F181C 80135D1C 0004 */
 D_80135D1C:
     .long 0x00000000
-
-.balign 4
 
 /* 000F1820 80135D20 0004 */
 D_80135D20:
     .long 0x00000000
 
-.balign 4
-
 /* 000F1824 80135D24 0004 */
 D_80135D24:
     .float 0.0
-
-.balign 4
 
 /* 000F1828 80135D28 0004 */
 D_80135D28:
     .float 1.0
 
-.balign 4
-
 /* 000F182C 80135D2C 0004 */
 D_80135D2C:
     .float 0.10000000149011612
-
-.balign 4
 
 /* 000F1830 80135D30 0004 */
 D_80135D30:
@@ -11070,8 +10865,6 @@ D_80135D30:
 D_80135D38:
     .double 4503601774854144.0
 
-.balign 4
-
 /* 000F1840 80135D40 0004 */
 D_80135D40:
     .float 0.5
@@ -11082,52 +10875,34 @@ D_80135D40:
 D_80135D48:
     .double 4503599627370496.0
 
-.balign 4
-
 /* 000F1850 80135D50 0004 */
 D_80135D50:
     .float -1.0
-
-.balign 4
 
 /* 000F1854 80135D54 0004 */
 D_80135D54:
     .float 1.100000023841858
 
-.balign 4
-
 /* 000F1858 80135D58 0004 */
 D_80135D58:
     .float 0.9090908765792847
-
-.balign 4
 
 /* 000F185C 80135D5C 0004 */
 D_80135D5C:
     .float 240.0
 
-.balign 4
-
 /* 000F1860 80135D60 0004 */
 D_80135D60:
     .float 320.0
-
-.balign 4
 
 /* 000F1864 80135D64 0004 */
 D_80135D64:
     .float 10000.0
 
-.balign 4
-
 /* 000F1868 80135D68 0004 */
 D_80135D68:
     .float 160.0
 
-.balign 4
-
 /* 000F186C 80135D6C 0004 */
 D_80135D6C:
     .float 120.0
-
-

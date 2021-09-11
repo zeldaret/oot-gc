@@ -136,15 +136,16 @@ lbl_800D2050:
 /* 0CCAB0 800D2050 38210030 */  addi    r1, r1, 0x30
 /* 0CCAB4 800D2054 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
 
 /* 000D0770 800D36F0 0010 */
 _log10_poly:
-    .long 0x3F5E5BD9, 0x3E943D64, 0x3E31BC23, 0x3E05DC87
-
+    .float 0.868588984013
+    .float 0.289530873299
+    .float 0.173569247127
+    .float 0.130724057555
 
 .section .sdata2, "wa"
 
@@ -154,40 +155,26 @@ _log10_poly:
 D_801363D0:
     .float 0.15051500499248505
 
-.balign 4
-
 /* 000F1ED4 801363D4 0004 */
 D_801363D4:
     .float 0.3010300099849701
-
-.balign 4
 
 /* 000F1ED8 801363D8 0004 */
 D_801363D8:
     .float 0.4142135679721832
 
-.balign 4
-
 /* 000F1EDC 801363DC 0004 */
 D_801363DC:
     .float 0.0
-
-.balign 4
 
 /* 000F1EE0 801363E0 0004 */
 D_801363E0:
     .float 1.0
 
-.balign 4
-
 /* 000F1EE4 801363E4 0004 */
 D_801363E4:
     .float 2.0
 
-.balign 8
-
 /* 000F1EE8 801363E8 0008 */
 D_801363E8:
     .double 4503601774854144.0
-
-

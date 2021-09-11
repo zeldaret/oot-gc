@@ -67944,7 +67944,6 @@ lbl_8006BE54:
 /* 0668C0 8006BE60 7C0803A6 */  mtlr    r0
 /* 0668C4 8006BE64 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -67953,16 +67952,12 @@ lbl_8006BE54:
 glabel gClassCPU
     .long D_801350A8, 0x00012090, 0x00000000, cpuEvent
 
-.balign 4
-
 /* 000E86E8 800EB668 0080 */
 gaszNameGPR:
     .long D_801350AC, D_801350B4, D_801350B8, D_801350BC, D_801350C0, D_801350C4, D_801350C8, D_801350CC
     .long D_801350D0, D_801350D4, D_801350D8, D_801350DC, D_801350E0, D_801350E4, D_801350E8, D_801350EC
     .long D_801350F0, D_801350F4, D_801350F8, D_801350FC, D_80135100, D_80135104, D_80135108, D_8013510C
     .long D_80135110, D_80135114, D_80135118, D_8013511C, D_80135120, D_80135124, D_80135128, D_8013512C
-
-.balign 4
 
 /* 000E8768 800EB6E8 0080 */
 gaszNameFPR:
@@ -67971,305 +67966,254 @@ gaszNameFPR:
     .long D_80135170, D_80135174, D_80135178, D_8013517C, D_80135180, D_80135184, D_80135188, D_8013518C
     .long D_80135190, D_80135194, D_80135198, D_8013519C, D_801351A0, D_801351A4, D_801351A8, D_80135184
 
-.balign 4
-
 /* 000E87E8 800EB768 000A */
 D_800EB768:
     .asciz "ENTRY-LO0"
-
-.balign 4
+    .balign 4
 
 /* 000E87F4 800EB774 000A */
 D_800EB774:
     .asciz "ENTRY-LO1"
-
-.balign 4
+    .balign 4
 
 /* 000E8800 800EB780 000A */
 D_800EB780:
     .asciz "PAGE-MASK"
-
-.balign 4
+    .balign 4
 
 /* 000E880C 800EB78C 000D */
 D_800EB78C:
     .asciz "(RESERVED-7)"
-
-.balign 4
+    .balign 4
 
 /* 000E881C 800EB79C 000A */
 D_800EB79C:
     .asciz "BAD-VADDR"
-
-.balign 4
+    .balign 4
 
 /* 000E8828 800EB7A8 0009 */
 D_800EB7A8:
     .asciz "ENTRY-HI"
-
-.balign 4
+    .balign 4
 
 /* 000E8834 800EB7B4 0009 */
 D_800EB7B4:
     .asciz "WATCH-LO"
-
-.balign 4
+    .balign 4
 
 /* 000E8840 800EB7C0 0009 */
 D_800EB7C0:
     .asciz "WATCH-HI"
-
-.balign 4
+    .balign 4
 
 /* 000E884C 800EB7CC 000A */
 D_800EB7CC:
     .asciz "X-CONTEXT"
-
-.balign 4
+    .balign 4
 
 /* 000E8858 800EB7D8 000E */
 D_800EB7D8:
     .asciz "(RESERVED-21)"
-
-.balign 4
+    .balign 4
 
 /* 000E8868 800EB7E8 000E */
 D_800EB7E8:
     .asciz "(RESERVED-22)"
-
-.balign 4
+    .balign 4
 
 /* 000E8878 800EB7F8 000E */
 D_800EB7F8:
     .asciz "(RESERVED-23)"
-
-.balign 4
+    .balign 4
 
 /* 000E8888 800EB808 000E */
 D_800EB808:
     .asciz "(RESERVED-24)"
-
-.balign 4
+    .balign 4
 
 /* 000E8898 800EB818 000E */
 D_800EB818:
     .asciz "(RESERVED-25)"
-
-.balign 4
+    .balign 4
 
 /* 000E88A8 800EB828 000C */
 D_800EB828:
     .asciz "CACHE-ERROR"
-
-.balign 4
+    .balign 4
 
 /* 000E88B4 800EB834 000A */
 D_800EB834:
     .asciz "ERROR-EPC"
-
-.balign 4
+    .balign 4
 
 /* 000E88C0 800EB840 000E */
 D_800EB840:
     .asciz "(RESERVED-31)"
-
-.balign 4
+    .balign 4
 
 /* 000E88D0 800EB850 0080 */
 gaszNameCP0:
-    .long D_801351AC, D_801351B4, gClassCPU + 0x110, gClassCPU + 0x11C, D_801351BC, gClassCPU + 0x128, D_801351C4, gClassCPU + 0x134
-    .long gClassCPU + 0x144, D_801351CC, gClassCPU + 0x150, D_801351D4, D_801351DC, D_801351E4, D_801351EC, D_801351F0
-    .long D_801351F8, D_80135200, gClassCPU + 0x15C, gClassCPU + 0x168, gClassCPU + 0x174, gClassCPU + 0x180, gClassCPU + 0x190, gClassCPU + 0x1A0
-    .long gClassCPU + 0x1B0, gClassCPU + 0x1C0, D_80135208, gClassCPU + 0x1D0, D_8013520C, D_80135214, gClassCPU + 0x1DC, gClassCPU + 0x1E8
-
-.balign 4
+    .long D_801351AC, D_801351B4, D_800EB768, D_800EB774, D_801351BC, D_800EB780, D_801351C4, D_800EB78C
+    .long D_800EB79C, D_801351CC, D_800EB7A8, D_801351D4, D_801351DC, D_801351E4, D_801351EC, D_801351F0
+    .long D_801351F8, D_80135200, D_800EB7B4, D_800EB7C0, D_800EB7CC, D_800EB7D8, D_800EB7E8, D_800EB7F8
+    .long D_800EB808, D_800EB818, D_80135208, D_800EB828, D_8013520C, D_80135214, D_800EB834, D_800EB840
 
 /* 000E8950 800EB8D0 0010 */
 D_800EB8D0:
     .asciz "FCR1 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8960 800EB8E0 0010 */
 D_800EB8E0:
     .asciz "FCR2 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8970 800EB8F0 0010 */
 D_800EB8F0:
     .asciz "FCR3 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8980 800EB900 0010 */
 D_800EB900:
     .asciz "FCR4 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8990 800EB910 0010 */
 D_800EB910:
     .asciz "FCR5 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E89A0 800EB920 0010 */
 D_800EB920:
     .asciz "FCR6 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E89B0 800EB930 0010 */
 D_800EB930:
     .asciz "FCR7 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E89C0 800EB940 0010 */
 D_800EB940:
     .asciz "FCR8 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E89D0 800EB950 0010 */
 D_800EB950:
     .asciz "FCR9 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E89E0 800EB960 0011 */
 D_800EB960:
     .asciz "FCR10 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E89F4 800EB974 0011 */
 D_800EB974:
     .asciz "FCR11 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A08 800EB988 0011 */
 D_800EB988:
     .asciz "FCR12 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A1C 800EB99C 0011 */
 D_800EB99C:
     .asciz "FCR13 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A30 800EB9B0 0011 */
 D_800EB9B0:
     .asciz "FCR14 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A44 800EB9C4 0011 */
 D_800EB9C4:
     .asciz "FCR15 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A58 800EB9D8 0011 */
 D_800EB9D8:
     .asciz "FCR16 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A6C 800EB9EC 0011 */
 D_800EB9EC:
     .asciz "FCR17 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A80 800EBA00 0011 */
 D_800EBA00:
     .asciz "FCR18 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8A94 800EBA14 0011 */
 D_800EBA14:
     .asciz "FCR19 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8AA8 800EBA28 0011 */
 D_800EBA28:
     .asciz "FCR20 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8ABC 800EBA3C 0011 */
 D_800EBA3C:
     .asciz "FCR21 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8AD0 800EBA50 0011 */
 D_800EBA50:
     .asciz "FCR22 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8AE4 800EBA64 0011 */
 D_800EBA64:
     .asciz "FCR23 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8AF8 800EBA78 0011 */
 D_800EBA78:
     .asciz "FCR24 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B0C 800EBA8C 0011 */
 D_800EBA8C:
     .asciz "FCR25 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B20 800EBAA0 0011 */
 D_800EBAA0:
     .asciz "FCR26 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B34 800EBAB4 0011 */
 D_800EBAB4:
     .asciz "FCR27 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B48 800EBAC8 0011 */
 D_800EBAC8:
     .asciz "FCR28 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B5C 800EBADC 0011 */
 D_800EBADC:
     .asciz "FCR29 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B70 800EBAF0 0011 */
 D_800EBAF0:
     .asciz "FCR30 (RESERVED)"
-
-.balign 4
+    .balign 4
 
 /* 000E8B84 800EBB04 0080 */
 gaszNameCP1:
-    .long D_8013521C, gClassCPU + 0x278, gClassCPU + 0x288, gClassCPU + 0x298, gClassCPU + 0x2A8, gClassCPU + 0x2B8, gClassCPU + 0x2C8, gClassCPU + 0x2D8
-    .long gClassCPU + 0x2E8, gClassCPU + 0x2F8, gClassCPU + 0x308, gClassCPU + 0x31C, gClassCPU + 0x330, gClassCPU + 0x344, gClassCPU + 0x358, gClassCPU + 0x36C
-    .long gClassCPU + 0x380, gClassCPU + 0x394, gClassCPU + 0x3A8, gClassCPU + 0x3BC, gClassCPU + 0x3D0, gClassCPU + 0x3E4, gClassCPU + 0x3F8, gClassCPU + 0x40C
-    .long gClassCPU + 0x420, gClassCPU + 0x434, gClassCPU + 0x448, gClassCPU + 0x45C, gClassCPU + 0x470, gClassCPU + 0x484, gClassCPU + 0x498, D_80135224
+    .long D_8013521C, D_800EB8D0, D_800EB8E0, D_800EB8F0, D_800EB900, D_800EB910, D_800EB920, D_800EB930
+    .long D_800EB940, D_800EB950, D_800EB960, D_800EB974, D_800EB988, D_800EB99C, D_800EB9B0, D_800EB9C4
+    .long D_800EB9D8, D_800EB9EC, D_800EBA00, D_800EBA14, D_800EBA28, D_800EBA3C, D_800EBA50, D_800EBA64
+    .long D_800EBA78, D_800EBA8C, D_800EBAA0, D_800EBAB4, D_800EBAC8, D_800EBADC, D_800EBAF0, D_80135224
 
 .balign 8
 
@@ -68280,8 +68224,6 @@ ganMaskGetCP0:
     .long 0x00000000, 0xFFFFEFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFB, 0x00000000, 0x0000000F, 0x00000000, 0xFFFFFFF0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x000000FF, 0x00000000, 0xFFBFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000E8D08 800EBC88 0100 */
 ganMaskSetCP0:
     .long 0x00000000, 0x0000003F, 0x00000000, 0x0000003F, 0x00000000, 0x3FFFFFFF, 0x00000000, 0x3FFFFFFF, 0xFFFFFFFF, 0xFFFFFFF0, 0x00000000, 0x01FFE000, 0x00000000, 0x0000001F, 0x00000000, 0x00000000
@@ -68289,51 +68231,35 @@ ganMaskSetCP0:
     .long 0x00000000, 0xFFFFEFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFB, 0x00000000, 0x0000000F, 0x00000000, 0xFFFFFFF0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x000000FF, 0x00000000, 0xFFBFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000E8E08 800EBD88 0040 */
 Opcode:
     .long 0x01010101, 0x01010101, 0x01010101, 0x01010101, 0x01010100, 0x01010101, 0x01010101, 0x00000001
     .long 0x01010101, 0x01010101, 0x01010101, 0x01010101, 0x01010100, 0x01010101, 0x01010100, 0x01010101
-
-.balign 4
 
 /* 000E8E48 800EBDC8 0040 */
 SpecialOpcode:
     .long 0x01000101, 0x01000101, 0x01010000, 0x01010001, 0x01010101, 0x01000101, 0x01010101, 0x01010101
     .long 0x01010101, 0x01010101, 0x00000101, 0x01010101, 0x01010101, 0x01000100, 0x01000101, 0x01000101
 
-.balign 4
-
 /* 000E8E88 800EBE08 0020 */
 RegimmOpcode:
     .long 0x01010101, 0x00000000, 0x01010101, 0x01000100, 0x01010101, 0x00000000, 0x00000000, 0x00000000
-
-.balign 4
 
 /* 000E8EA8 800EBE28 0014 */
 ganOpcodeSaveFP1:
     .long 0x8F480018, 0x11000014, 0x00000000, 0x4448F800, 0x00000000
 
-.balign 4
-
 /* 000E8EBC 800EBE3C 0014 */
 ganOpcodeSaveFP2_0:
     .long 0x8CBB0018, 0x1360000A, 0x00000000, 0x445BF800, 0x00000000
-
-.balign 4
 
 /* 000E8ED0 800EBE50 000C */
 ganOpcodeSaveFP2_1:
     .long 0x13600009, 0xACBF011C, 0x445BF800
 
-.balign 4
-
 /* 000E8EDC 800EBE5C 0014 */
 ganOpcodeLoadFP:
     .long 0x8F5B0018, 0x13600013, 0x00000000, 0x8F5B012C, 0x44DBF800
-
-.balign 4
 
 /* 000E8EF0 800EBE70 0080 */
 glabel ganMapGPR
@@ -68341,8 +68267,6 @@ glabel ganMapGPR
     .long 0x00000013, 0x00000014, 0x00000015, 0x00000016, 0x00000017, 0x00000018, 0x00000019, 0x0000001A
     .long 0x00000110, 0x00000111, 0x00000112, 0x00000113, 0x00000114, 0x00000115, 0x00000116, 0x00000117
     .long 0x0000001B, 0x0000001C, 0x0000001D, 0x0000001E, 0x0000011C, 0x0000001F, 0x0000011E, 0x0000011F
-
-.balign 4
 
 /* 000E8F70 800EBEF0 0064 */
 jtbl_800EBEF0:
@@ -68371,8 +68295,6 @@ jtbl_800EBEF0:
     .long lbl_80030EFC
     .long lbl_80030EFC
     .long lbl_80030F7C
-
-.balign 4
 
 /* 000E8FD4 800EBF54 0100 */
 jtbl_800EBF54:
@@ -68441,31 +68363,25 @@ jtbl_800EBF54:
     .long lbl_80030F7C
     .long lbl_80030F78
 
-.balign 4
-
 /* 000E90D4 800EC054 0022 */
 D_800EC054:
     .asciz "start=%p, end=%p (%d) (size: %d)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E90F8 800EC078 0016 */
 D_800EC078:
     .asciz "tree range (%p - %p)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9110 800EC090 0026 */
 D_800EC090:
     .asciz "total nodes: %d (tree height: %d %d)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9138 800EC0B8 0012 */
 D_800EC0B8:
     .asciz "total memory: %d\n"
-
-.balign 4
+    .balign 4
 
 /* 000E914C 800EC0CC 0064 */
 jtbl_800EC0CC:
@@ -68494,8 +68410,6 @@ jtbl_800EC0CC:
     .long lbl_8003381C
     .long lbl_8003381C
     .long lbl_800337F0
-
-.balign 4
 
 /* 000E91B0 800EC130 00B0 */
 jtbl_800EC130:
@@ -68544,13 +68458,10 @@ jtbl_800EC130:
     .long lbl_80033A5C
     .long lbl_80033938
 
-.balign 4
-
 /* 000E9260 800EC1E0 000A */
 D_800EC1E0:
     .asciz "_cpuGCN.c"
-
-.balign 4
+    .balign 4
 
 /* 000E926C 800EC1EC 003C */
 jtbl_800EC1EC:
@@ -68570,8 +68481,6 @@ jtbl_800EC1EC:
     .long lbl_80038010
     .long lbl_80037E90
 
-.balign 4
-
 /* 000E92A8 800EC228 0030 */
 jtbl_800EC228:
     .long lbl_800383F4
@@ -68586,8 +68495,6 @@ jtbl_800EC228:
     .long lbl_80038BF0
     .long lbl_80038E70
     .long lbl_80038D30
-
-.balign 4
 
 /* 000E92D8 800EC258 0100 */
 jtbl_800EC258:
@@ -68656,8 +68563,6 @@ jtbl_800EC258:
     .long lbl_8003CEA0
     .long lbl_8003CEFC
 
-.balign 4
-
 /* 000E93D8 800EC358 0100 */
 jtbl_800EC358:
     .long lbl_8003BEA4
@@ -68724,8 +68629,6 @@ jtbl_800EC358:
     .long lbl_8003C5AC
     .long lbl_8003C5EC
     .long lbl_8003C62C
-
-.balign 4
 
 /* 000E94D8 800EC458 0100 */
 jtbl_800EC458:
@@ -68794,8 +68697,6 @@ jtbl_800EC458:
     .long lbl_8003BDF8
     .long lbl_8003BE3C
 
-.balign 4
-
 /* 000E95D8 800EC558 0100 */
 jtbl_800EC558:
     .long lbl_8003B040
@@ -68863,8 +68764,6 @@ jtbl_800EC558:
     .long lbl_8003B6C8
     .long lbl_8003B70C
 
-.balign 4
-
 /* 000E96D8 800EC658 001C */
 jtbl_800EC658:
     .long lbl_8003AD84
@@ -68874,8 +68773,6 @@ jtbl_800EC658:
     .long lbl_8003AE14
     .long lbl_8003AE98
     .long lbl_8003AEBC
-
-.balign 4
 
 /* 000E96F4 800EC674 0024 */
 jtbl_800EC674:
@@ -68888,8 +68785,6 @@ jtbl_800EC674:
     .long lbl_8003DEAC
     .long lbl_8003DEAC
     .long lbl_8003DEAC
-
-.balign 4
 
 /* 000E9718 800EC698 0064 */
 jtbl_800EC698:
@@ -68919,8 +68814,6 @@ jtbl_800EC698:
     .long lbl_8003AC70
     .long lbl_8003ABD8
 
-.balign 4
-
 /* 000E977C 800EC6FC 0050 */
 jtbl_800EC6FC:
     .long lbl_8003A1A8
@@ -68943,8 +68836,6 @@ jtbl_800EC6FC:
     .long lbl_8003A400
     .long lbl_8003A440
     .long lbl_8003A498
-
-.balign 4
 
 /* 000E97CC 800EC74C 0100 */
 jtbl_800EC74C:
@@ -69013,8 +68904,6 @@ jtbl_800EC74C:
     .long lbl_8003A124
     .long lbl_8003A154
 
-.balign 4
-
 /* 000E98CC 800EC84C 0100 */
 jtbl_800EC84C:
     .long lbl_8003965C
@@ -69082,397 +68971,330 @@ jtbl_800EC84C:
     .long lbl_8003DEAC
     .long lbl_8003DE50
 
-.balign 4
-
 /* 000E99CC 800EC94C 0034 */
 D_800EC94C:
     .asciz "ERROR in cpuNextInstruction() with opcode %p at %p\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A00 800EC980 001C */
 D_800EC980:
     .asciz "CALLED: ceil_w single (%p)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A1C 800EC99C 001D */
 D_800EC99C:
     .asciz "CALLED: floor_w single (%p)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A3C 800EC9BC 0010 */
 D_800EC9BC:
     .asciz "ERROR: CVT_S_S\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A4C 800EC9CC 001C */
 D_800EC9CC:
     .asciz "CALLED: ceil_w double (%p)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A68 800EC9E8 001D */
 D_800EC9E8:
     .asciz "CALLED: floor_w double (%p)\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A88 800ECA08 0010 */
 D_800ECA08:
     .asciz "ERROR: CVT_S_D\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9A98 800ECA18 000E */
 D_800ECA18:
     .asciz "ERROR: ADD_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9AA8 800ECA28 000E */
 D_800ECA28:
     .asciz "ERROR: SUB_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9AB8 800ECA38 000E */
 D_800ECA38:
     .asciz "ERROR: MUL_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9AC8 800ECA48 000E */
 D_800ECA48:
     .asciz "ERROR: DIV_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9AD8 800ECA58 000F */
 D_800ECA58:
     .asciz "ERROR: SQRT_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9AE8 800ECA68 000E */
 D_800ECA68:
     .asciz "ERROR: ABS_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9AF8 800ECA78 000F */
 D_800ECA78:
     .asciz "ERROR: MOVE_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B08 800ECA88 000E */
 D_800ECA88:
     .asciz "ERROR: NEG_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B18 800ECA98 0012 */
 D_800ECA98:
     .asciz "ERROR: ROUND_W_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B2C 800ECAAC 0012 */
 D_800ECAAC:
     .asciz "ERROR: TRUNC_W_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B40 800ECAC0 0011 */
 D_800ECAC0:
     .asciz "ERROR: CEIL_W_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B54 800ECAD4 0012 */
 D_800ECAD4:
     .asciz "ERROR: FLOOR_W_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B68 800ECAE8 0010 */
 D_800ECAE8:
     .asciz "ERROR: CVT_W_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B78 800ECAF8 000E */
 D_800ECAF8:
     .asciz "ERROR: C.F_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B88 800ECB08 000F */
 D_800ECB08:
     .asciz "ERROR: C.UN_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9B98 800ECB18 000F */
 D_800ECB18:
     .asciz "ERROR: C.EQ_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9BA8 800ECB28 0010 */
 D_800ECB28:
     .asciz "ERROR: C.UEQ_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9BB8 800ECB38 0010 */
 D_800ECB38:
     .asciz "ERROR: C.OLT_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9BC8 800ECB48 0010 */
 D_800ECB48:
     .asciz "ERROR: C.ULT_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9BD8 800ECB58 0010 */
 D_800ECB58:
     .asciz "ERROR: C.OLE_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9BE8 800ECB68 0010 */
 D_800ECB68:
     .asciz "ERROR: C.ULE_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9BF8 800ECB78 000F */
 D_800ECB78:
     .asciz "ERROR: C.SF_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C08 800ECB88 0011 */
 D_800ECB88:
     .asciz "ERROR: C.NGLE_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C1C 800ECB9C 0010 */
 D_800ECB9C:
     .asciz "ERROR: C.SEQ_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C2C 800ECBAC 0010 */
 D_800ECBAC:
     .asciz "ERROR: C.NGL_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C3C 800ECBBC 000F */
 D_800ECBBC:
     .asciz "ERROR: C.LT_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C4C 800ECBCC 0010 */
 D_800ECBCC:
     .asciz "ERROR: C.NGE_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C5C 800ECBDC 000F */
 D_800ECBDC:
     .asciz "ERROR: C.LE_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C6C 800ECBEC 0010 */
 D_800ECBEC:
     .asciz "ERROR: C.NGT_W\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C7C 800ECBFC 000E */
 D_800ECBFC:
     .asciz "ERROR: ADD_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C8C 800ECC0C 000E */
 D_800ECC0C:
     .asciz "ERROR: SUB_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9C9C 800ECC1C 000E */
 D_800ECC1C:
     .asciz "ERROR: MUL_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9CAC 800ECC2C 000E */
 D_800ECC2C:
     .asciz "ERROR: DIV_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9CBC 800ECC3C 000F */
 D_800ECC3C:
     .asciz "ERROR: SQRT_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9CCC 800ECC4C 000E */
 D_800ECC4C:
     .asciz "ERROR: ABS_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9CDC 800ECC5C 000F */
 D_800ECC5C:
     .asciz "ERROR: MOVE_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9CEC 800ECC6C 000E */
 D_800ECC6C:
     .asciz "ERROR: NEG_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9CFC 800ECC7C 0012 */
 D_800ECC7C:
     .asciz "ERROR: ROUND_W_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D10 800ECC90 0012 */
 D_800ECC90:
     .asciz "ERROR: TRUNC_W_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D24 800ECCA4 0011 */
 D_800ECCA4:
     .asciz "ERROR: CEIL_W_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D38 800ECCB8 0012 */
 D_800ECCB8:
     .asciz "ERROR: FLOOR_W_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D4C 800ECCCC 0010 */
 D_800ECCCC:
     .asciz "ERROR: CVT_W_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D5C 800ECCDC 000E */
 D_800ECCDC:
     .asciz "ERROR: C.F_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D6C 800ECCEC 000F */
 D_800ECCEC:
     .asciz "ERROR: C.UN_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D7C 800ECCFC 000F */
 D_800ECCFC:
     .asciz "ERROR: C.EQ_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D8C 800ECD0C 0010 */
 D_800ECD0C:
     .asciz "ERROR: C.UEQ_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9D9C 800ECD1C 0010 */
 D_800ECD1C:
     .asciz "ERROR: C.OLT_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9DAC 800ECD2C 0010 */
 D_800ECD2C:
     .asciz "ERROR: C.ULT_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9DBC 800ECD3C 0010 */
 D_800ECD3C:
     .asciz "ERROR: C.OLE_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9DCC 800ECD4C 0010 */
 D_800ECD4C:
     .asciz "ERROR: C.ULE_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9DDC 800ECD5C 000F */
 D_800ECD5C:
     .asciz "ERROR: C.SF_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9DEC 800ECD6C 0011 */
 D_800ECD6C:
     .asciz "ERROR: C.NGLE_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E00 800ECD80 0010 */
 D_800ECD80:
     .asciz "ERROR: C.SEQ_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E10 800ECD90 0010 */
 D_800ECD90:
     .asciz "ERROR: C.NGL_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E20 800ECDA0 000F */
 D_800ECDA0:
     .asciz "ERROR: C.LT_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E30 800ECDB0 0010 */
 D_800ECDB0:
     .asciz "ERROR: C.NGE_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E40 800ECDC0 000F */
 D_800ECDC0:
     .asciz "ERROR: C.LE_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E50 800ECDD0 0010 */
 D_800ECDD0:
     .asciz "ERROR: C.NGT_L\n"
-
-.balign 4
+    .balign 4
 
 /* 000E9E60 800ECDE0 0100 */
 jtbl_800ECDE0:
@@ -69541,8 +69363,6 @@ jtbl_800ECDE0:
     .long lbl_8005A668
     .long lbl_8005A678
 
-.balign 4
-
 /* 000E9F60 800ECEE0 0100 */
 jtbl_800ECEE0:
     .long lbl_80059DC0
@@ -69609,8 +69429,6 @@ jtbl_800ECEE0:
     .long lbl_8005A184
     .long lbl_8005A194
     .long lbl_8005A1A4
-
-.balign 4
 
 /* 000EA060 800ECFE0 0100 */
 jtbl_800ECFE0:
@@ -69679,8 +69497,6 @@ jtbl_800ECFE0:
     .long lbl_80059554
     .long lbl_80059974
 
-.balign 4
-
 /* 000EA160 800ED0E0 0100 */
 jtbl_800ED0E0:
     .long lbl_8004F91C
@@ -69748,8 +69564,6 @@ jtbl_800ED0E0:
     .long lbl_80054358
     .long lbl_80054780
 
-.balign 4
-
 /* 000EA260 800ED1E0 001C */
 jtbl_800ED1E0:
     .long lbl_8004E8E8
@@ -69759,8 +69573,6 @@ jtbl_800ED1E0:
     .long lbl_8004ECB0
     .long lbl_8004EE70
     .long lbl_8004EFE4
-
-.balign 4
 
 /* 000EA27C 800ED1FC 0064 */
 jtbl_800ED1FC:
@@ -69790,8 +69602,6 @@ jtbl_800ED1FC:
     .long lbl_8004E810
     .long lbl_80067F34
 
-.balign 4
-
 /* 000EA2E0 800ED260 0050 */
 jtbl_800ED260:
     .long lbl_800496CC
@@ -69814,8 +69624,6 @@ jtbl_800ED260:
     .long lbl_8004A700
     .long lbl_8004ABAC
     .long lbl_8004B084
-
-.balign 4
 
 /* 000EA330 800ED2B0 0100 */
 jtbl_800ED2B0:
@@ -69884,8 +69692,6 @@ jtbl_800ED2B0:
     .long lbl_800490FC
     .long lbl_800493D4
 
-.balign 4
-
 /* 000EA430 800ED3B0 0100 */
 jtbl_800ED3B0:
     .long lbl_8003F268
@@ -69953,8 +69759,6 @@ jtbl_800ED3B0:
     .long lbl_80067F30
     .long lbl_800678FC
 
-.balign 4
-
 /* 000EA530 800ED4B0 0064 */
 jtbl_800ED4B0:
     .long lbl_800682F0
@@ -69983,8 +69787,6 @@ jtbl_800ED4B0:
     .long lbl_800682F0
     .long lbl_80068360
 
-.balign 4
-
 /* 000EA594 800ED514 0060 */
 jtbl_800ED514:
     .long lbl_80068270
@@ -70011,8 +69813,6 @@ jtbl_800ED514:
     .long lbl_8006835C
     .long lbl_8006835C
     .long lbl_8006835C
-
-.balign 4
 
 /* 000EA5F4 800ED574 0080 */
 jtbl_800ED574:
@@ -70049,8 +69849,6 @@ jtbl_800ED574:
     .long lbl_8003551C
     .long lbl_8003550C
 
-.balign 4
-
 /* 000EA674 800ED5F4 0080 */
 jtbl_800ED5F4:
     .long lbl_800356F4
@@ -70086,12 +69884,9 @@ jtbl_800ED5F4:
     .long lbl_800356F4
     .long lbl_800356F8
 
-.balign 4
-
 /* 000EA6F4 800ED674 0044 */
 D_800ED674:
     .asciz "Exception: #### INTERNAL ERROR #### Cannot match exception-handler!"
-
 
 .section .bss, "wa"
 
@@ -70101,7 +69896,6 @@ D_800ED674:
 glabel aHeapTreeFlag
     .skip 500
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -70109,535 +69903,447 @@ glabel aHeapTreeFlag
 /* 000F1328 801350A8 0004 */
 D_801350A8:
     .asciz "CPU"
-
-.balign 4
+    .balign 4
 
 /* 000F132C 801350AC 0005 */
 D_801350AC:
     .asciz "ZERO"
-
-.balign 4
+    .balign 4
 
 /* 000F1334 801350B4 0003 */
 D_801350B4:
     .asciz "AT"
-
-.balign 4
+    .balign 4
 
 /* 000F1338 801350B8 0003 */
 D_801350B8:
     .asciz "V0"
-
-.balign 4
+    .balign 4
 
 /* 000F133C 801350BC 0003 */
 D_801350BC:
     .asciz "V1"
-
-.balign 4
+    .balign 4
 
 /* 000F1340 801350C0 0003 */
 D_801350C0:
     .asciz "A0"
-
-.balign 4
+    .balign 4
 
 /* 000F1344 801350C4 0003 */
 D_801350C4:
     .asciz "A1"
-
-.balign 4
+    .balign 4
 
 /* 000F1348 801350C8 0003 */
 D_801350C8:
     .asciz "A2"
-
-.balign 4
+    .balign 4
 
 /* 000F134C 801350CC 0003 */
 D_801350CC:
     .asciz "A3"
-
-.balign 4
+    .balign 4
 
 /* 000F1350 801350D0 0003 */
 D_801350D0:
     .asciz "T0"
-
-.balign 4
+    .balign 4
 
 /* 000F1354 801350D4 0003 */
 D_801350D4:
     .asciz "T1"
-
-.balign 4
+    .balign 4
 
 /* 000F1358 801350D8 0003 */
 D_801350D8:
     .asciz "T2"
-
-.balign 4
+    .balign 4
 
 /* 000F135C 801350DC 0003 */
 D_801350DC:
     .asciz "T3"
-
-.balign 4
+    .balign 4
 
 /* 000F1360 801350E0 0003 */
 D_801350E0:
     .asciz "T4"
-
-.balign 4
+    .balign 4
 
 /* 000F1364 801350E4 0003 */
 D_801350E4:
     .asciz "T5"
-
-.balign 4
+    .balign 4
 
 /* 000F1368 801350E8 0003 */
 D_801350E8:
     .asciz "T6"
-
-.balign 4
+    .balign 4
 
 /* 000F136C 801350EC 0003 */
 D_801350EC:
     .asciz "T7"
-
-.balign 4
+    .balign 4
 
 /* 000F1370 801350F0 0003 */
 D_801350F0:
     .asciz "S0"
-
-.balign 4
+    .balign 4
 
 /* 000F1374 801350F4 0003 */
 D_801350F4:
     .asciz "S1"
-
-.balign 4
+    .balign 4
 
 /* 000F1378 801350F8 0003 */
 D_801350F8:
     .asciz "S2"
-
-.balign 4
+    .balign 4
 
 /* 000F137C 801350FC 0003 */
 D_801350FC:
     .asciz "S3"
-
-.balign 4
+    .balign 4
 
 /* 000F1380 80135100 0003 */
 D_80135100:
     .asciz "S4"
-
-.balign 4
+    .balign 4
 
 /* 000F1384 80135104 0003 */
 D_80135104:
     .asciz "S5"
-
-.balign 4
+    .balign 4
 
 /* 000F1388 80135108 0003 */
 D_80135108:
     .asciz "S6"
-
-.balign 4
+    .balign 4
 
 /* 000F138C 8013510C 0003 */
 D_8013510C:
     .asciz "S7"
-
-.balign 4
+    .balign 4
 
 /* 000F1390 80135110 0003 */
 D_80135110:
     .asciz "T8"
-
-.balign 4
+    .balign 4
 
 /* 000F1394 80135114 0003 */
 D_80135114:
     .asciz "T9"
-
-.balign 4
+    .balign 4
 
 /* 000F1398 80135118 0003 */
 D_80135118:
     .asciz "K0"
-
-.balign 4
+    .balign 4
 
 /* 000F139C 8013511C 0003 */
 D_8013511C:
     .asciz "K1"
-
-.balign 4
+    .balign 4
 
 /* 000F13A0 80135120 0003 */
 D_80135120:
     .asciz "GP"
-
-.balign 4
+    .balign 4
 
 /* 000F13A4 80135124 0003 */
 D_80135124:
     .asciz "SP"
-
-.balign 4
+    .balign 4
 
 /* 000F13A8 80135128 0003 */
 D_80135128:
     .asciz "S8"
-
-.balign 4
+    .balign 4
 
 /* 000F13AC 8013512C 0003 */
 D_8013512C:
     .asciz "RA"
-
-.balign 4
+    .balign 4
 
 /* 000F13B0 80135130 0003 */
 D_80135130:
     .asciz "F0"
-
-.balign 4
+    .balign 4
 
 /* 000F13B4 80135134 0003 */
 D_80135134:
     .asciz "F1"
-
-.balign 4
+    .balign 4
 
 /* 000F13B8 80135138 0003 */
 D_80135138:
     .asciz "F2"
-
-.balign 4
+    .balign 4
 
 /* 000F13BC 8013513C 0003 */
 D_8013513C:
     .asciz "F3"
-
-.balign 4
+    .balign 4
 
 /* 000F13C0 80135140 0003 */
 D_80135140:
     .asciz "F4"
-
-.balign 4
+    .balign 4
 
 /* 000F13C4 80135144 0003 */
 D_80135144:
     .asciz "F5"
-
-.balign 4
+    .balign 4
 
 /* 000F13C8 80135148 0003 */
 D_80135148:
     .asciz "F6"
-
-.balign 4
+    .balign 4
 
 /* 000F13CC 8013514C 0003 */
 D_8013514C:
     .asciz "F7"
-
-.balign 4
+    .balign 4
 
 /* 000F13D0 80135150 0003 */
 D_80135150:
     .asciz "F8"
-
-.balign 4
+    .balign 4
 
 /* 000F13D4 80135154 0003 */
 D_80135154:
     .asciz "F9"
-
-.balign 4
+    .balign 4
 
 /* 000F13D8 80135158 0004 */
 D_80135158:
     .asciz "F10"
-
-.balign 4
+    .balign 4
 
 /* 000F13DC 8013515C 0004 */
 D_8013515C:
     .asciz "F11"
-
-.balign 4
+    .balign 4
 
 /* 000F13E0 80135160 0004 */
 D_80135160:
     .asciz "F12"
-
-.balign 4
+    .balign 4
 
 /* 000F13E4 80135164 0004 */
 D_80135164:
     .asciz "F13"
-
-.balign 4
+    .balign 4
 
 /* 000F13E8 80135168 0004 */
 D_80135168:
     .asciz "F14"
-
-.balign 4
+    .balign 4
 
 /* 000F13EC 8013516C 0004 */
 D_8013516C:
     .asciz "F15"
-
-.balign 4
+    .balign 4
 
 /* 000F13F0 80135170 0004 */
 D_80135170:
     .asciz "F16"
-
-.balign 4
+    .balign 4
 
 /* 000F13F4 80135174 0004 */
 D_80135174:
     .asciz "F17"
-
-.balign 4
+    .balign 4
 
 /* 000F13F8 80135178 0004 */
 D_80135178:
     .asciz "F18"
-
-.balign 4
+    .balign 4
 
 /* 000F13FC 8013517C 0004 */
 D_8013517C:
     .asciz "F19"
-
-.balign 4
+    .balign 4
 
 /* 000F1400 80135180 0004 */
 D_80135180:
     .asciz "F20"
-
-.balign 4
+    .balign 4
 
 /* 000F1404 80135184 0004 */
 D_80135184:
     .asciz "F21"
-
-.balign 4
+    .balign 4
 
 /* 000F1408 80135188 0004 */
 D_80135188:
     .asciz "F22"
-
-.balign 4
+    .balign 4
 
 /* 000F140C 8013518C 0004 */
 D_8013518C:
     .asciz "F23"
-
-.balign 4
+    .balign 4
 
 /* 000F1410 80135190 0004 */
 D_80135190:
     .asciz "F24"
-
-.balign 4
+    .balign 4
 
 /* 000F1414 80135194 0004 */
 D_80135194:
     .asciz "F25"
-
-.balign 4
+    .balign 4
 
 /* 000F1418 80135198 0004 */
 D_80135198:
     .asciz "F26"
-
-.balign 4
+    .balign 4
 
 /* 000F141C 8013519C 0004 */
 D_8013519C:
     .asciz "F27"
-
-.balign 4
+    .balign 4
 
 /* 000F1420 801351A0 0004 */
 D_801351A0:
     .asciz "F28"
-
-.balign 4
+    .balign 4
 
 /* 000F1424 801351A4 0004 */
 D_801351A4:
     .asciz "F29"
-
-.balign 4
+    .balign 4
 
 /* 000F1428 801351A8 0004 */
 D_801351A8:
     .asciz "F30"
-
-.balign 4
+    .balign 4
 
 /* 000F142C 801351AC 0006 */
 D_801351AC:
     .asciz "INDEX"
-
-.balign 4
+    .balign 4
 
 /* 000F1434 801351B4 0007 */
 D_801351B4:
     .asciz "RANDOM"
-
-.balign 4
+    .balign 4
 
 /* 000F143C 801351BC 0008 */
 D_801351BC:
     .asciz "CONTEXT"
-
-.balign 4
+    .balign 4
 
 /* 000F1444 801351C4 0006 */
 D_801351C4:
     .asciz "WIRED"
-
-.balign 4
+    .balign 4
 
 /* 000F144C 801351CC 0006 */
 D_801351CC:
     .asciz "COUNT"
-
-.balign 4
+    .balign 4
 
 /* 000F1454 801351D4 0008 */
 D_801351D4:
     .asciz "COMPARE"
-
-.balign 4
+    .balign 4
 
 /* 000F145C 801351DC 0007 */
 D_801351DC:
     .asciz "STATUS"
-
-.balign 4
+    .balign 4
 
 /* 000F1464 801351E4 0006 */
 D_801351E4:
     .asciz "CAUSE"
-
-.balign 4
+    .balign 4
 
 /* 000F146C 801351EC 0004 */
 D_801351EC:
     .asciz "EPC"
-
-.balign 4
+    .balign 4
 
 /* 000F1470 801351F0 0007 */
 D_801351F0:
     .asciz "uPC-ID"
-
-.balign 4
+    .balign 4
 
 /* 000F1478 801351F8 0007 */
 D_801351F8:
     .asciz "CONFIG"
-
-.balign 4
+    .balign 4
 
 /* 000F1480 80135200 0007 */
 D_80135200:
     .asciz "LLADDR"
-
-.balign 4
+    .balign 4
 
 /* 000F1488 80135208 0004 */
 D_80135208:
     .asciz "ECC"
-
-.balign 4
+    .balign 4
 
 /* 000F148C 8013520C 0007 */
 D_8013520C:
     .asciz "TAG-LO"
-
-.balign 4
+    .balign 4
 
 /* 000F1494 80135214 0007 */
 D_80135214:
     .asciz "TAG-HI"
-
-.balign 4
+    .balign 4
 
 /* 000F149C 8013521C 0005 */
 D_8013521C:
     .asciz "FCR0"
-
-.balign 4
+    .balign 4
 
 /* 000F14A4 80135224 0006 */
 D_80135224:
     .asciz "FCR31"
-
-.balign 4
+    .balign 4
 
 /* 000F14AC 8013522C 0005 */
 D_8013522C:
     .asciz "CFZE"
-
-.balign 4
+    .balign 4
 
 /* 000F14B4 80135234 0005 */
 D_80135234:
     .asciz "NYLJ"
-
-.balign 4
+    .balign 4
 
 /* 000F14BC 8013523C 0005 */
 D_8013523C:
     .asciz "NM3E"
-
-.balign 4
+    .balign 4
 
 /* 000F14C4 80135244 0005 */
 D_80135244:
     .asciz "CLBE"
-
-.balign 4
+    .balign 4
 
 /* 000F14CC 8013524C 0005 */
 D_8013524C:
     .asciz "NN6J"
-
-.balign 4
+    .balign 4
 
 /* 000F14D4 80135254 0005 */
 D_80135254:
     .asciz "NN6E"
-
-.balign 4
+    .balign 4
 
 /* 000F14DC 8013525C 0001 */
 D_8013525C:
-    .byte 0x00
-
-.balign 4
+    .asciz ""
+    .balign 4
 
 /* 000F14E0 80135260 0006 */
 D_80135260:
     .asciz "cpu.c"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -70647,192 +70353,129 @@ D_80135260:
 glabel gHeapTree
     .skip 4
 
-.balign 4
-
 /* 000F1964 801356E4 0004 */
 cpuCompile_DSLLV_function:
     .skip 4
-
-.balign 4
 
 /* 000F1968 801356E8 0004 */
 cpuCompile_DSRLV_function:
     .skip 4
 
-.balign 4
-
 /* 000F196C 801356EC 0004 */
 cpuCompile_DSRAV_function:
     .skip 4
-
-.balign 4
 
 /* 000F1970 801356F0 0004 */
 cpuCompile_DMULT_function:
     .skip 4
 
-.balign 4
-
 /* 000F1974 801356F4 0004 */
 cpuCompile_DMULTU_function:
     .skip 4
-
-.balign 4
 
 /* 000F1978 801356F8 0004 */
 cpuCompile_DDIV_function:
     .skip 4
 
-.balign 4
-
 /* 000F197C 801356FC 0004 */
 cpuCompile_DDIVU_function:
     .skip 4
-
-.balign 4
 
 /* 000F1980 80135700 0004 */
 cpuCompile_DADD_function:
     .skip 4
 
-.balign 4
-
 /* 000F1984 80135704 0004 */
 cpuCompile_DADDU_function:
     .skip 4
-
-.balign 4
 
 /* 000F1988 80135708 0004 */
 cpuCompile_DSUB_function:
     .skip 4
 
-.balign 4
-
 /* 000F198C 8013570C 0004 */
 cpuCompile_DSUBU_function:
     .skip 4
-
-.balign 4
 
 /* 000F1990 80135710 0004 */
 cpuCompile_S_SQRT_function:
     .skip 4
 
-.balign 4
-
 /* 000F1994 80135714 0004 */
 cpuCompile_D_SQRT_function:
     .skip 4
-
-.balign 4
 
 /* 000F1998 80135718 0004 */
 cpuCompile_W_CVT_SD_function:
     .skip 4
 
-.balign 4
-
 /* 000F199C 8013571C 0004 */
 cpuCompile_L_CVT_SD_function:
     .skip 4
-
-.balign 4
 
 /* 000F19A0 80135720 0004 */
 cpuCompile_CEIL_W_function:
     .skip 4
 
-.balign 4
-
 /* 000F19A4 80135724 0004 */
 cpuCompile_FLOOR_W_function:
     .skip 4
-
-.balign 4
 
 /* 000F19A8 80135728 0004 */
 cpuCompile_ROUND_W_function:
     .skip 4
 
-.balign 4
-
 /* 000F19AC 8013572C 0004 */
 cpuCompile_TRUNC_W_function:
     .skip 4
-
-.balign 4
 
 /* 000F19B0 80135730 0004 */
 cpuCompile_LB_function:
     .skip 4
 
-.balign 4
-
 /* 000F19B4 80135734 0004 */
 cpuCompile_LH_function:
     .skip 4
-
-.balign 4
 
 /* 000F19B8 80135738 0004 */
 cpuCompile_LW_function:
     .skip 4
 
-.balign 4
-
 /* 000F19BC 8013573C 0004 */
 cpuCompile_LBU_function:
     .skip 4
-
-.balign 4
 
 /* 000F19C0 80135740 0004 */
 cpuCompile_LHU_function:
     .skip 4
 
-.balign 4
-
 /* 000F19C4 80135744 0004 */
 cpuCompile_SB_function:
     .skip 4
-
-.balign 4
 
 /* 000F19C8 80135748 0004 */
 cpuCompile_SH_function:
     .skip 4
 
-.balign 4
-
 /* 000F19CC 8013574C 0004 */
 cpuCompile_SW_function:
     .skip 4
-
-.balign 4
 
 /* 000F19D0 80135750 0004 */
 cpuCompile_LDC_function:
     .skip 4
 
-.balign 4
-
 /* 000F19D4 80135754 0004 */
 cpuCompile_SDC_function:
     .skip 4
-
-.balign 4
 
 /* 000F19D8 80135758 0004 */
 cpuCompile_LWL_function:
     .skip 4
 
-.balign 4
-
 /* 000F19DC 8013575C 0004 */
 cpuCompile_LWR_function:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -70842,19 +70485,13 @@ cpuCompile_LWR_function:
 D_80135FA0:
     .double 0.0
 
-.balign 8
-
 /* 000F1AA8 80135FA8 0008 */
 D_80135FA8:
     .double 0.5
 
-.balign 8
-
 /* 000F1AB0 80135FB0 0008 */
 D_80135FB0:
     .double 3.0
-
-.balign 4
 
 /* 000F1AB8 80135FB8 0004 */
 D_80135FB8:
@@ -70866,10 +70503,6 @@ D_80135FB8:
 D_80135FC0:
     .double 4503601774854144.0
 
-.balign 8
-
 /* 000F1AC8 80135FC8 0008 */
 D_80135FC8:
     .double 4503599627370496.0
-
-

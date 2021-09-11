@@ -1657,7 +1657,6 @@ lbl_800715AC:
 /* 06C028 800715C8 38210120 */  addi    r1, r1, 0x120
 /* 06C02C 800715CC 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1666,13 +1665,9 @@ lbl_800715AC:
 glabel gClassRDP
     .long D_801352B0, 0x00000030, 0x00000000, rdpEvent
 
-.balign 4
-
 /* 000EAFD0 800EDF50 000C */
 sCommandCodes$168:
     .long 0xED000000, 0x005003C0, 0xDE010000
-
-.balign 4
 
 /* 000EAFDC 800EDF5C 0034 */
 jtbl_800EDF5C:
@@ -1690,8 +1685,6 @@ jtbl_800EDF5C:
     .long lbl_800700CC
     .long lbl_800700C0
 
-.balign 4
-
 /* 000EB010 800EDF90 0034 */
 jtbl_800EDF90:
     .long lbl_80070118
@@ -1707,8 +1700,6 @@ jtbl_800EDF90:
     .long lbl_80070150
     .long lbl_80070150
     .long lbl_80070148
-
-.balign 4
 
 /* 000EB044 800EDFC4 0074 */
 jtbl_800EDFC4:
@@ -1742,8 +1733,6 @@ jtbl_800EDFC4:
     .long lbl_80070204
     .long lbl_800701F4
 
-.balign 4
-
 /* 000EB0B8 800EE038 0074 */
 jtbl_800EE038:
     .long lbl_8007025C
@@ -1775,8 +1764,6 @@ jtbl_800EE038:
     .long lbl_80070314
     .long lbl_80070314
     .long lbl_8007031C
-
-.balign 4
 
 /* 000EB12C 800EE0AC 0100 */
 jtbl_800EE0AC:
@@ -1845,7 +1832,6 @@ jtbl_800EE0AC:
     .long lbl_8007077C
     .long lbl_800703CC
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -1853,7 +1839,7 @@ jtbl_800EE0AC:
 /* 000F1530 801352B0 0004 */
 D_801352B0:
     .asciz "RDP"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -1863,30 +1849,21 @@ D_801352B0:
 nCount$122:
     .skip 4
 
-.balign 4
-
 /* 000F19F4 80135774 0004 */
 nBlurCount$123:
     .skip 4
-
-.balign 4
 
 /* 000F19F8 80135778 0004 */
 nNoteCount$124:
     .skip 4
 
-.balign 4
-
 /* 000F19FC 8013577C 0004 */
 nZCount$125:
     .skip 4
 
-.balign 4
-
 /* 000F1A00 80135780 0004 */
 nZBufferCount$126:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -1896,37 +1873,25 @@ nZBufferCount$126:
 D_80136008:
     .float 32768.0
 
-.balign 4
-
 /* 000F1B0C 8013600C 0004 */
 D_8013600C:
     .float 65536.0
-
-.balign 4
 
 /* 000F1B10 80136010 0004 */
 D_80136010:
     .float 0.03125
 
-.balign 4
-
 /* 000F1B14 80136014 0004 */
 D_80136014:
     .float 0.0009765625
-
-.balign 4
 
 /* 000F1B18 80136018 0004 */
 D_80136018:
     .float 0.0
 
-.balign 4
-
 /* 000F1B1C 8013601C 0004 */
 D_8013601C:
     .float 320.0
-
-.balign 4
 
 /* 000F1B20 80136020 0004 */
 D_80136020:
@@ -1938,10 +1903,6 @@ D_80136020:
 D_80136028:
     .double 4503599627370496.0
 
-.balign 8
-
 /* 000F1B30 80136030 0008 */
 D_80136030:
     .double 4503601774854144.0
-
-

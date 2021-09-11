@@ -3647,7 +3647,6 @@ lbl_8009BA84:
 /* 096514 8009BAB4 98030003 */  stb     r0, 3(r3)
 /* 096518 8009BAB8 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -3657,14 +3656,10 @@ glabel gColorArgs
     .long 0x00000000, 0x00000008, 0x00000008, 0x00000004, 0x0000000A, 0x00000006, 0x0000000C, 0x00000001
     .long 0x00000009, 0x00000009, 0x00000005, 0x0000000B, 0x00000007, 0x0000000C, 0x00000002, 0x0000000F
 
-.balign 4
-
 /* 000ED520 800F04A0 0028 */
 glabel gAlphaArgs
     .long 0x00000006, 0x00000004, 0x00000004, 0x00000002, 0x00000005, 0x00000003, 0x00000006, 0x00000007
     .long 0x00000000, 0x00000001
-
-.balign 4
 
 /* 000ED548 800F04C8 0050 */
 sUsualOps:
@@ -3672,54 +3667,41 @@ sUsualOps:
     .long 0x00000000, 0x00000000, 0x00000001, 0x00000000, 0x00000000, 0x01000000, 0x00000000, 0x00000000
     .long 0x00000000, 0x00000000, 0x01000000, 0x00000000
 
-.balign 4
-
 /* 000ED598 800F0518 0010 */
 sUsualCArgs:
     .long 0x0000000F, 0x0000000F, 0x0000000F, 0x0000000F
-
-.balign 4
 
 /* 000ED5A8 800F0528 0010 */
 sUsualAArgs:
     .long 0x00000007, 0x00000007, 0x00000007, 0x00000007
 
-.balign 4
-
 /* 000ED5B8 800F0538 0020 */
 texelType$183:
     .long 0x00000001, 0x00000002, 0x00000008, 0x00000009, 0x00000001, 0x00000002, 0x00000004, 0x00000002
-
-.balign 4
 
 /* 000ED5D8 800F0558 0010 */
 lightType$184:
     .long 0x00000004, 0x0000000B, 0x00000004, 0x00000004
 
-.balign 4
-
 /* 000ED5E8 800F0568 0027 */
 D_800F0568:
     .asciz "TEXCOORD0 twice -> should NOT happen!\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED610 800F0590 0027 */
 D_800F0590:
     .asciz "TEXCOORD1 twice -> should NOT happen!\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED638 800F05B8 0027 */
 D_800F05B8:
     .asciz "BAD MODE in two-texture, no C texture\n"
-
-.balign 4
+    .balign 4
 
 /* 000ED660 800F05E0 0045 */
 D_800F05E0:
     .asciz "case of multi-texture, with C value being a texture -> NOT HANDLED!\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -3727,8 +3709,7 @@ D_800F05E0:
 
 /* 0012DCD0 80130C50 02B8 */
 tevStages$519:
-    .skip 696
-
+    .skip 0x2B8
 
 .section .sdata, "wa"
 
@@ -3738,12 +3719,10 @@ tevStages$519:
 zeroType$182:
     .long 0x0000000F, 0x00000007
 
-.balign 4
-
 /* 000F1688 80135408 0006 */
 D_80135408:
     .asciz "NOO!!"
-
+    .balign 4
 
 .section .sdata2, "wa"
 
@@ -3752,5 +3731,3 @@ D_80135408:
 /* 000F1BD8 801360D8 0008 */
 D_801360D8:
     .long 0x00000000, 0x00000000
-
-

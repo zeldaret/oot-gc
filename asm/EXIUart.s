@@ -429,7 +429,6 @@ lbl_800A4708:
 /* 09F174 800A4714 7C0803A6 */  mtlr    r0
 /* 09F178 800A4718 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -438,22 +437,14 @@ lbl_800A4708:
 Chan:
     .skip 4
 
-.balign 4
-
 /* 000F1B0C 8013588C 0004 */
 Dev:
     .skip 4
-
-.balign 4
 
 /* 000F1B10 80135890 0004 */
 Enabled:
     .skip 4
 
-.balign 4
-
 /* 000F1B14 80135894 0004 */
 BarnacleEnabled:
     .skip 4
-
-

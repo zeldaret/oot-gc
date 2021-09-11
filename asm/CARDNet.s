@@ -12,5 +12,3 @@ glabel __CARDVendorID
 /* 000F17DA 8013555A 0001 */
 glabel __CARDPermMask
     .byte 0x1C
-
-

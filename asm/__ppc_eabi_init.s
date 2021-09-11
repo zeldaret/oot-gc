@@ -32,7 +32,6 @@ lbl_80003438:
 /* 000350 80003450 4C00012C */  isync   
 /* 000354 80003454 4E800020 */  blr     
 
-
 .section .text, "ax"
 
 .balign 4
@@ -86,5 +85,3 @@ glabel _ExitProcess
 /* 09D1B8 800A2758 38210008 */  addi    r1, r1, 8
 /* 09D1BC 800A275C 7C0803A6 */  mtlr    r0
 /* 09D1C0 800A2760 4E800020 */  blr     
-
-

@@ -173,7 +173,6 @@ glabel TRKDestructEvent
 /* 0C3E5C 800C93FC 7C0803A6 */  mtlr    r0
 /* 0C3E60 800C9400 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -181,5 +180,3 @@ glabel TRKDestructEvent
 /* 0012FBD0 80132B50 0028 */
 glabel gTRKEventQueue
     .skip 40
-
-

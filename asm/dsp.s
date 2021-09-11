@@ -6,30 +6,30 @@
 .balign 4
 
 glabel DSPCheckMailToDSP
-/* 0B4D68 800BA308 3C60CC00 */  lis     r3, 0xcc00
-/* 0B4D6C 800BA30C A0035000 */  lhz     r0, 0x5000(r3)
+/* 0B4D68 800BA308 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
+/* 0B4D6C 800BA30C A0035000 */  lhz     r0, (DSP_REGS_BASE + DSP_00)@l(r3)
 /* 0B4D70 800BA310 54038FFE */  rlwinm  r3, r0, 0x11, 0x1f, 0x1f
 /* 0B4D74 800BA314 4E800020 */  blr     
 
 glabel DSPCheckMailFromDSP
-/* 0B4D78 800BA318 3C60CC00 */  lis     r3, 0xcc00
-/* 0B4D7C 800BA31C A0035004 */  lhz     r0, 0x5004(r3)
+/* 0B4D78 800BA318 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
+/* 0B4D7C 800BA31C A0035004 */  lhz     r0, (DSP_REGS_BASE + DSP_04)@l(r3)
 /* 0B4D80 800BA320 54038FFE */  rlwinm  r3, r0, 0x11, 0x1f, 0x1f
 /* 0B4D84 800BA324 4E800020 */  blr     
 
 glabel DSPReadMailFromDSP
-/* 0B4D88 800BA328 3C60CC00 */  lis     r3, 0xcc00
-/* 0B4D8C 800BA32C 38635000 */  addi    r3, r3, 0x5000
-/* 0B4D90 800BA330 A0030004 */  lhz     r0, 4(r3)
-/* 0B4D94 800BA334 A0630006 */  lhz     r3, 6(r3)
+/* 0B4D88 800BA328 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
+/* 0B4D8C 800BA32C 38635000 */  addi    r3, r3, DSP_REGS_BASE@l
+/* 0B4D90 800BA330 A0030004 */  lhz     r0, DSP_04(r3)
+/* 0B4D94 800BA334 A0630006 */  lhz     r3, DSP_06(r3)
 /* 0B4D98 800BA338 5003801E */  rlwimi  r3, r0, 0x10, 0, 0xf
 /* 0B4D9C 800BA33C 4E800020 */  blr     
 
 glabel DSPSendMailToDSP
-/* 0B4DA0 800BA340 3C80CC00 */  lis     r4, 0xcc00
+/* 0B4DA0 800BA340 3C80CC00 */  lis     r4, DSP_REGS_BASE@ha
 /* 0B4DA4 800BA344 5460843E */  srwi    r0, r3, 0x10
-/* 0B4DA8 800BA348 B0045000 */  sth     r0, 0x5000(r4)
-/* 0B4DAC 800BA34C B0645002 */  sth     r3, 0x5002(r4)
+/* 0B4DA8 800BA348 B0045000 */  sth     r0, (DSP_REGS_BASE + DSP_00)@l(r4)
+/* 0B4DAC 800BA34C B0645002 */  sth     r3, (DSP_REGS_BASE + DSP_02)@l(r4)
 /* 0B4DB0 800BA350 4E800020 */  blr     
 
 glabel DSPInit
@@ -57,20 +57,20 @@ glabel DSPInit
 /* 0B4E08 800BA3A8 4BFE49A1 */  bl      __OSSetInterruptHandler
 /* 0B4E0C 800BA3AC 3C600100 */  lis     r3, 0x100
 /* 0B4E10 800BA3B0 4BFE4D9D */  bl      __OSUnmaskInterrupts
-/* 0B4E14 800BA3B4 3C60CC00 */  lis     r3, 0xcc00
-/* 0B4E18 800BA3B8 38C35000 */  addi    r6, r3, 0x5000
-/* 0B4E1C 800BA3BC A063500A */  lhz     r3, 0x500a(r3)
+/* 0B4E14 800BA3B4 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
+/* 0B4E18 800BA3B8 38C35000 */  addi    r6, r3, DSP_REGS_BASE@l
+/* 0B4E1C 800BA3BC A063500A */  lhz     r3, (DSP_REGS_BASE + DSP_0A)@l(r3)
 /* 0B4E20 800BA3C0 3800FF57 */  li      r0, -169
 /* 0B4E24 800BA3C4 7C600038 */  and     r0, r3, r0
 /* 0B4E28 800BA3C8 60000800 */  ori     r0, r0, 0x800
-/* 0B4E2C 800BA3CC B006000A */  sth     r0, 0xa(r6)
+/* 0B4E2C 800BA3CC B006000A */  sth     r0, DSP_0A(r6)
 /* 0B4E30 800BA3D0 38A0FF53 */  li      r5, -173
 /* 0B4E34 800BA3D4 38800000 */  li      r4, 0
-/* 0B4E38 800BA3D8 A0E6000A */  lhz     r7, 0xa(r6)
+/* 0B4E38 800BA3D8 A0E6000A */  lhz     r7, DSP_0A(r6)
 /* 0B4E3C 800BA3DC 38000001 */  li      r0, 1
 /* 0B4E40 800BA3E0 387F0000 */  addi    r3, r31, 0
 /* 0B4E44 800BA3E4 7CE52838 */  and     r5, r7, r5
-/* 0B4E48 800BA3E8 B0A6000A */  sth     r5, 0xa(r6)
+/* 0B4E48 800BA3E8 B0A6000A */  sth     r5, DSP_0A(r6)
 /* 0B4E4C 800BA3EC 908D8EA0 */  stw     r4, __DSP_tmp_task-_SDA_BASE_(r13)
 /* 0B4E50 800BA3F0 908D8EAC */  stw     r4, __DSP_curr_task-_SDA_BASE_(r13)
 /* 0B4E54 800BA3F4 908D8EA4 */  stw     r4, __DSP_last_task-_SDA_BASE_(r13)
@@ -115,7 +115,6 @@ lbl_800BA46C:
 /* 0B4EE0 800BA480 7C0803A6 */  mtlr    r0
 /* 0B4EE4 800BA484 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -123,25 +122,22 @@ lbl_800BA46C:
 /* 000F0698 800F3618 0045 */
 D_800F3618:
     .asciz "<< Dolphin SDK - DSP\trelease build: Apr 17 2003 12:34:16 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000F06E0 800F3660 001E */
 D_800F3660:
     .asciz "DSPInit(): Build Date: %s %s\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0700 800F3680 000C */
 D_800F3680:
     .asciz "Apr 17 2003"
-
-.balign 4
+    .balign 4
 
 /* 000F070C 800F368C 0009 */
 D_800F368C:
     .asciz "12:34:16"
-
+    .balign 4
 
 .section .sdata, "wa"
 
@@ -151,7 +147,6 @@ D_800F368C:
 glabel __DSPVersion
     .long D_800F3618
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -159,5 +154,3 @@ glabel __DSPVersion
 /* 000F1DF0 80135B70 0004 */
 __DSP_init_flag:
     .skip 4
-
-

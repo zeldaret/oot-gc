@@ -545,7 +545,6 @@ glabel GXGetGPFifo
 /* 0A47F4 800A9D94 806D8C64 */  lwz     r3, GPFifo-_SDA_BASE_(r13)
 /* 0A47F8 800A9D98 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -554,19 +553,13 @@ glabel GXGetGPFifo
 CPUFifo:
     .skip 4
 
-.balign 4
-
 /* 000F1BC4 80135944 0004 */
 GPFifo:
     .skip 4
 
-.balign 4
-
 /* 000F1BC8 80135948 0004 */
 __GXCurrentThread:
     .skip 4
-
-.balign 4
 
 /* 000F1BCC 8013594C 0001 */
 CPGPLinked:
@@ -578,16 +571,10 @@ CPGPLinked:
 GXOverflowSuspendInProgress:
     .skip 4
 
-.balign 4
-
 /* 000F1BD4 80135954 0004 */
 BreakPointCB:
     .skip 4
 
-.balign 4
-
 /* 000F1BD8 80135958 0004 */
 __GXOverflowCount:
     .skip 4
-
-

@@ -37,7 +37,6 @@ lbl_80005E3C:
 /* 0008C0 80005E60 38210078 */  addi    r1, r1, 0x78
 /* 0008C4 80005E64 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -45,5 +44,3 @@ lbl_80005E3C:
 /* 000F0F9C 800F3F1C 0080 */
 glabel g_texMap
     .skip 128
-
-

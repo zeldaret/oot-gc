@@ -1580,7 +1580,6 @@ glabel TRKTargetSetInputPendingPtr
 /* 0C78B0 800CCE50 906400A0 */  stw     r3, 0xa0(r4)
 /* 0C78B4 800CCE54 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -1601,7 +1600,6 @@ D_800D32E4:
 D_800D32F8:
     .long 0x60000000, 0x60000000, 0x60000000, 0x60000000, 0x60000000
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1616,12 +1614,9 @@ glabel gTRKRestoreFlags
 gTRKExceptionStatus:
     .long 0x00000000, 0x00000000, 0x00000000, 0x01000000
 
-.balign 4
-
 /* 000F0B44 800F3AC4 0014 */
 gTRKStepStatus:
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000
-
 
 .section .bss, "wa"
 
@@ -1637,13 +1632,9 @@ TRK_saved_exceptionID:
 glabel gTRKSaveState
     .skip 148
 
-.balign 4
-
 /* 00131668 801345E8 0010 */
 glabel TRKvalue128_temp
     .skip 16
-
-.balign 4
 
 /* 00131678 801345F8 00A4 */
 glabel gTRKState
@@ -1654,5 +1645,3 @@ glabel gTRKState
 /* 00131720 801346A0 0430 */
 glabel gTRKCPUState
     .skip 1072
-
-

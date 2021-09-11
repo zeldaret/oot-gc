@@ -423,7 +423,6 @@ glabel videoPut8
 /* 089878 8008EE18 38600000 */  li      r3, 0
 /* 08987C 8008EE1C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -431,8 +430,6 @@ glabel videoPut8
 /* 000EB8F0 800EE870 0010 */
 glabel gClassVideo
     .long D_80135318, 0x00000040, 0x00000000, videoEvent
-
-.balign 4
 
 /* 000EB900 800EE880 00D4 */
 jtbl_800EE880:
@@ -490,8 +487,6 @@ jtbl_800EE880:
     .long lbl_8008EB60
     .long lbl_8008EB54
 
-.balign 4
-
 /* 000EB9D4 800EE954 00D4 */
 jtbl_800EE954:
     .long lbl_8008EBDC
@@ -548,7 +543,6 @@ jtbl_800EE954:
     .long lbl_8008EDE8
     .long lbl_8008EDA8
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -556,5 +550,4 @@ jtbl_800EE954:
 /* 000F1598 80135318 0006 */
 D_80135318:
     .asciz "VIDEO"
-
-
+    .balign 4

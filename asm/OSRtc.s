@@ -751,7 +751,6 @@ lbl_800A103C:
 /* 09BAAC 800A104C 7C0803A6 */  mtlr    r0
 /* 09BAB0 800A1050 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -759,5 +758,3 @@ lbl_800A103C:
 /* 0012E060 80130FE0 0054 */
 Scb:
     .skip 84
-
-

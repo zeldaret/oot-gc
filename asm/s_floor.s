@@ -111,7 +111,6 @@ lbl_800D1C40:
 /* 0CC6A0 800D1C40 38210010 */  addi    r1, r1, 0x10
 /* 0CC6A4 800D1C44 4E800020 */  blr     
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -120,10 +119,6 @@ lbl_800D1C40:
 D_80136390:
     .double 1e+300
 
-.balign 8
-
 /* 000F1E98 80136398 0008 */
 D_80136398:
     .double 0.0
-
-

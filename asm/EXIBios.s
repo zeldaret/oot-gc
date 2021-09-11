@@ -206,11 +206,11 @@ lbl_800A2A10:
 /* 09D488 800A2A28 38840001 */  addi    r4, r4, 1
 /* 09D48C 800A2A2C 4200FFE4 */  bdnz    lbl_800A2A10
 lbl_800A2A30:
-/* 09D490 800A2A30 3C60CC00 */  lis     r3, 0xcc00
-/* 09D494 800A2A34 38836800 */  addi    r4, r3, 0x6800
+/* 09D490 800A2A30 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D494 800A2A34 38836800 */  addi    r4, r3, EXI_REGS_BASE@l
 /* 09D498 800A2A38 1C7A0014 */  mulli   r3, r26, 0x14
 /* 09D49C 800A2A3C 7C641A14 */  add     r3, r4, r3
-/* 09D4A0 800A2A40 90030010 */  stw     r0, 0x10(r3)
+/* 09D4A0 800A2A40 90030010 */  stw     r0, EXI_0DATA(r3)
 lbl_800A2A44:
 /* 09D4A4 800A2A44 937F0014 */  stw     r27, 0x14(r31)
 /* 09D4A8 800A2A48 281D0001 */  cmplwi  r29, 1
@@ -226,11 +226,11 @@ lbl_800A2A5C:
 /* 09D4C8 800A2A68 381CFFFF */  addi    r0, r28, -1
 /* 09D4CC 800A2A6C 54002036 */  slwi    r0, r0, 4
 /* 09D4D0 800A2A70 7C640378 */  or      r4, r3, r0
-/* 09D4D4 800A2A74 3C60CC00 */  lis     r3, 0xcc00
-/* 09D4D8 800A2A78 38636800 */  addi    r3, r3, 0x6800
+/* 09D4D4 800A2A74 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D4D8 800A2A78 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
 /* 09D4DC 800A2A7C 1C1A0014 */  mulli   r0, r26, 0x14
 /* 09D4E0 800A2A80 7C630214 */  add     r3, r3, r0
-/* 09D4E4 800A2A84 9083000C */  stw     r4, 0xc(r3)
+/* 09D4E4 800A2A84 9083000C */  stw     r4, EXI_0CR(r3)
 /* 09D4E8 800A2A88 7FC3F378 */  mr      r3, r30
 /* 09D4EC 800A2A8C 4BFFC299 */  bl      OSRestoreInterrupts
 /* 09D4F0 800A2A90 38600001 */  li      r3, 1
@@ -340,15 +340,15 @@ lbl_800A2BEC:
 /* 09D650 800A2BF0 60000001 */  ori     r0, r0, 1
 /* 09D654 800A2BF4 901A000C */  stw     r0, 0xc(r26)
 /* 09D658 800A2BF8 578401B4 */  rlwinm  r4, r28, 0, 6, 0x1a
-/* 09D65C 800A2BFC 3C60CC00 */  lis     r3, 0xcc00
-/* 09D660 800A2C00 38036800 */  addi    r0, r3, 0x6800
+/* 09D65C 800A2BFC 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D660 800A2C00 38036800 */  addi    r0, r3, EXI_REGS_BASE@l
 /* 09D664 800A2C04 1C7B0014 */  mulli   r3, r27, 0x14
 /* 09D668 800A2C08 7C601A14 */  add     r3, r0, r3
-/* 09D66C 800A2C0C 90830004 */  stw     r4, 4(r3)
-/* 09D670 800A2C10 93A30008 */  stw     r29, 8(r3)
+/* 09D66C 800A2C0C 90830004 */  stw     r4, EXI_04(r3)
+/* 09D670 800A2C10 93A30008 */  stw     r29, EXI_08(r3)
 /* 09D674 800A2C14 57C0103A */  slwi    r0, r30, 2
 /* 09D678 800A2C18 60000003 */  ori     r0, r0, 3
-/* 09D67C 800A2C1C 9003000C */  stw     r0, 0xc(r3)
+/* 09D67C 800A2C1C 9003000C */  stw     r0, EXI_0CR(r3)
 /* 09D680 800A2C20 7FE3FB78 */  mr      r3, r31
 /* 09D684 800A2C24 4BFFC101 */  bl      OSRestoreInterrupts
 /* 09D688 800A2C28 38600001 */  li      r3, 1
@@ -370,12 +370,12 @@ glabel EXISync
 /* 09D6BC 800A2C5C 7FE02A14 */  add     r31, r0, r5
 /* 09D6C0 800A2C60 3B800000 */  li      r28, 0
 /* 09D6C4 800A2C64 1FC30014 */  mulli   r30, r3, 0x14
-/* 09D6C8 800A2C68 3C60CC00 */  lis     r3, 0xcc00
-/* 09D6CC 800A2C6C 3BA36800 */  addi    r29, r3, 0x6800
+/* 09D6C8 800A2C68 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D6CC 800A2C6C 3BA36800 */  addi    r29, r3, EXI_REGS_BASE@l
 /* 09D6D0 800A2C70 7FBDF214 */  add     r29, r29, r30
 /* 09D6D4 800A2C74 480001F4 */  b       lbl_800A2E68
 lbl_800A2C78:
-/* 09D6D8 800A2C78 801D000C */  lwz     r0, 0xc(r29)
+/* 09D6D8 800A2C78 801D000C */  lwz     r0, EXI_0CR(r29)
 /* 09D6DC 800A2C7C 540007FF */  clrlwi. r0, r0, 0x1f
 /* 09D6E0 800A2C80 408201E8 */  bne     lbl_800A2E68
 /* 09D6E4 800A2C84 4BFFC079 */  bl      OSDisableInterrupts
@@ -393,10 +393,10 @@ lbl_800A2C78:
 /* 09D714 800A2CB4 2C030000 */  cmpwi   r3, 0
 /* 09D718 800A2CB8 41820110 */  beq     lbl_800A2DC8
 /* 09D71C 800A2CBC 80BF0014 */  lwz     r5, 0x14(r31)
-/* 09D720 800A2CC0 3C80CC00 */  lis     r4, 0xcc00
-/* 09D724 800A2CC4 38046800 */  addi    r0, r4, 0x6800
+/* 09D720 800A2CC0 3C80CC00 */  lis     r4, EXI_REGS_BASE@ha
+/* 09D724 800A2CC4 38046800 */  addi    r0, r4, EXI_REGS_BASE@l
 /* 09D728 800A2CC8 7C80F214 */  add     r4, r0, r30
-/* 09D72C 800A2CCC 80040010 */  lwz     r0, 0x10(r4)
+/* 09D72C 800A2CCC 80040010 */  lwz     r0, EXI_0DATA(r4)
 /* 09D730 800A2CD0 38800000 */  li      r4, 0
 /* 09D734 800A2CD4 408100F4 */  ble     lbl_800A2DC8
 /* 09D738 800A2CD8 38E3FFF8 */  addi    r7, r3, -8
@@ -478,21 +478,21 @@ lbl_800A2DD4:
 /* 09D854 800A2DF4 801F0010 */  lwz     r0, 0x10(r31)
 /* 09D858 800A2DF8 2C000004 */  cmpwi   r0, 4
 /* 09D85C 800A2DFC 4082005C */  bne     lbl_800A2E58
-/* 09D860 800A2E00 801D0000 */  lwz     r0, 0(r29)
+/* 09D860 800A2E00 801D0000 */  lwz     r0, EXI_00(r29)
 /* 09D864 800A2E04 54000677 */  rlwinm. r0, r0, 0, 0x19, 0x1b
 /* 09D868 800A2E08 40820050 */  bne     lbl_800A2E58
-/* 09D86C 800A2E0C 3C60CC00 */  lis     r3, 0xcc00
-/* 09D870 800A2E10 38036800 */  addi    r0, r3, 0x6800
+/* 09D86C 800A2E0C 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D870 800A2E10 38036800 */  addi    r0, r3, EXI_REGS_BASE@l
 /* 09D874 800A2E14 7C80F214 */  add     r4, r0, r30
-/* 09D878 800A2E18 84640010 */  lwzu    r3, 0x10(r4)
+/* 09D878 800A2E18 84640010 */  lwzu    r3, EXI_0DATA(r4)
 /* 09D87C 800A2E1C 3C03FEFF */  addis   r0, r3, 0xfeff
 /* 09D880 800A2E20 28000000 */  cmplwi  r0, 0
 /* 09D884 800A2E24 41820024 */  beq     lbl_800A2E48
-/* 09D888 800A2E28 80640000 */  lwz     r3, 0(r4)
+/* 09D888 800A2E28 80640000 */  lwz     r3, EXI_00(r4)
 /* 09D88C 800A2E2C 3C03FAF9 */  addis   r0, r3, 0xfaf9
 /* 09D890 800A2E30 28000000 */  cmplwi  r0, 0
 /* 09D894 800A2E34 41820014 */  beq     lbl_800A2E48
-/* 09D898 800A2E38 80640000 */  lwz     r3, 0(r4)
+/* 09D898 800A2E38 80640000 */  lwz     r3, EXI_00(r4)
 /* 09D89C 800A2E3C 3C03FBDE */  addis   r0, r3, 0xfbde
 /* 09D8A0 800A2E40 28000001 */  cmplwi  r0, 1
 /* 09D8A4 800A2E44 40820014 */  bne     lbl_800A2E58
@@ -521,10 +521,10 @@ lbl_800A2E74:
 
 glabel EXIClearInterrupts
 /* 09D8EC 800A2E8C 1C030014 */  mulli   r0, r3, 0x14
-/* 09D8F0 800A2E90 3C60CC00 */  lis     r3, 0xcc00
-/* 09D8F4 800A2E94 38E36800 */  addi    r7, r3, 0x6800
+/* 09D8F0 800A2E90 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D8F4 800A2E94 38E36800 */  addi    r7, r3, EXI_REGS_BASE@l
 /* 09D8F8 800A2E98 7CE70214 */  add     r7, r7, r0
-/* 09D8FC 800A2E9C 80070000 */  lwz     r0, 0(r7)
+/* 09D8FC 800A2E9C 80070000 */  lwz     r0, EXI_00(r7)
 /* 09D900 800A2EA0 7C030378 */  mr      r3, r0
 /* 09D904 800A2EA4 700007F5 */  andi.   r0, r0, 0x7f5
 /* 09D908 800A2EA8 2C040000 */  cmpwi   r4, 0
@@ -539,7 +539,7 @@ lbl_800A2EC0:
 /* 09D924 800A2EC4 41820008 */  beq     lbl_800A2ECC
 /* 09D928 800A2EC8 60000800 */  ori     r0, r0, 0x800
 lbl_800A2ECC:
-/* 09D92C 800A2ECC 90070000 */  stw     r0, 0(r7)
+/* 09D92C 800A2ECC 90070000 */  stw     r0, EXI_00(r7)
 /* 09D930 800A2ED0 4E800020 */  blr     
 
 glabel EXISetExiCallback
@@ -596,19 +596,19 @@ lbl_800A2F84:
 /* 09D9E8 800A2F88 4BFFBD75 */  bl      OSDisableInterrupts
 /* 09D9EC 800A2F8C 3BC30000 */  addi    r30, r3, 0
 /* 09D9F0 800A2F90 1C1C0014 */  mulli   r0, r28, 0x14
-/* 09D9F4 800A2F94 3C60CC00 */  lis     r3, 0xcc00
-/* 09D9F8 800A2F98 38636800 */  addi    r3, r3, 0x6800
+/* 09D9F4 800A2F94 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09D9F8 800A2F98 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
 /* 09D9FC 800A2F9C 7C630214 */  add     r3, r3, r0
-/* 09DA00 800A2FA0 80A30000 */  lwz     r5, 0(r3)
-/* 09DA04 800A2FA4 801F000C */  lwz     r0, 0xc(r31)
+/* 09DA00 800A2FA0 80A30000 */  lwz     r5, EXI_00(r3)
+/* 09DA04 800A2FA4 801F000C */  lwz     r0, EXI_0CR(r31)
 /* 09DA08 800A2FA8 54000739 */  rlwinm. r0, r0, 0, 0x1c, 0x1c
 /* 09DA0C 800A2FAC 408200CC */  bne     lbl_800A3078
 /* 09DA10 800A2FB0 54A00529 */  rlwinm. r0, r5, 0, 0x14, 0x14
 /* 09DA14 800A2FB4 4182002C */  beq     lbl_800A2FE0
-/* 09DA18 800A2FB8 80030000 */  lwz     r0, 0(r3)
+/* 09DA18 800A2FB8 80030000 */  lwz     r0, EXI_00(r3)
 /* 09DA1C 800A2FBC 700007F5 */  andi.   r0, r0, 0x7f5
 /* 09DA20 800A2FC0 60000800 */  ori     r0, r0, 0x800
-/* 09DA24 800A2FC4 90030000 */  stw     r0, 0(r3)
+/* 09DA24 800A2FC4 90030000 */  stw     r0, EXI_00(r3)
 /* 09DA28 800A2FC8 38800000 */  li      r4, 0
 /* 09DA2C 800A2FCC 909F0020 */  stw     r4, 0x20(r31)
 /* 09DA30 800A2FD0 5780103A */  slwi    r0, r28, 2
@@ -940,10 +940,10 @@ lbl_800A3454:
 /* 09DEB8 800A3458 60000004 */  ori     r0, r0, 4
 /* 09DEBC 800A345C 901F000C */  stw     r0, 0xc(r31)
 /* 09DEC0 800A3460 1C1B0014 */  mulli   r0, r27, 0x14
-/* 09DEC4 800A3464 3C60CC00 */  lis     r3, 0xcc00
-/* 09DEC8 800A3468 38836800 */  addi    r4, r3, 0x6800
+/* 09DEC4 800A3464 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09DEC8 800A3468 38836800 */  addi    r4, r3, EXI_REGS_BASE@l
 /* 09DECC 800A346C 7C840214 */  add     r4, r4, r0
-/* 09DED0 800A3470 80A40000 */  lwz     r5, 0(r4)
+/* 09DED0 800A3470 80A40000 */  lwz     r5, EXI_00(r4)
 /* 09DED4 800A3474 70A50405 */  andi.   r5, r5, 0x405
 /* 09DED8 800A3478 38000001 */  li      r0, 1
 /* 09DEDC 800A347C 7C00E030 */  slw     r0, r0, r28
@@ -951,7 +951,7 @@ lbl_800A3454:
 /* 09DEE4 800A3484 57A02036 */  slwi    r0, r29, 4
 /* 09DEE8 800A3488 7C600378 */  or      r0, r3, r0
 /* 09DEEC 800A348C 7CA50378 */  or      r5, r5, r0
-/* 09DEF0 800A3490 90A40000 */  stw     r5, 0(r4)
+/* 09DEF0 800A3490 90A40000 */  stw     r5, EXI_00(r4)
 /* 09DEF4 800A3494 801F000C */  lwz     r0, 0xc(r31)
 /* 09DEF8 800A3498 54000739 */  rlwinm. r0, r0, 0, 0x1c, 0x1c
 /* 09DEFC 800A349C 41820030 */  beq     lbl_800A34CC
@@ -1006,13 +1006,13 @@ lbl_800A3540:
 /* 09DFA4 800A3544 540007B8 */  rlwinm  r0, r0, 0, 0x1e, 0x1c
 /* 09DFA8 800A3548 901E000C */  stw     r0, 0xc(r30)
 /* 09DFAC 800A354C 1C1F0014 */  mulli   r0, r31, 0x14
-/* 09DFB0 800A3550 3C60CC00 */  lis     r3, 0xcc00
-/* 09DFB4 800A3554 38636800 */  addi    r3, r3, 0x6800
+/* 09DFB0 800A3550 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09DFB4 800A3554 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
 /* 09DFB8 800A3558 7C630214 */  add     r3, r3, r0
-/* 09DFBC 800A355C 83A30000 */  lwz     r29, 0(r3)
+/* 09DFBC 800A355C 83A30000 */  lwz     r29, EXI_00(r3)
 /* 09DFC0 800A3560 73A00405 */  andi.   r0, r29, 0x405
-/* 09DFC4 800A3564 90030000 */  stw     r0, 0(r3)
-/* 09DFC8 800A3568 801E000C */  lwz     r0, 0xc(r30)
+/* 09DFC4 800A3564 90030000 */  stw     r0, EXI_00(r3)
+/* 09DFC8 800A3568 801E000C */  lwz     r0, EXI_0CR(r30)
 /* 09DFCC 800A356C 54000739 */  rlwinm. r0, r0, 0, 0x1c, 0x1c
 /* 09DFD0 800A3570 41820030 */  beq     lbl_800A35A0
 /* 09DFD4 800A3574 2C1F0001 */  cmpwi   r31, 1
@@ -1072,13 +1072,13 @@ EXIIntrruptHandler:
 /* 09E08C 800A362C 54600FFE */  srwi    r0, r3, 0x1f
 /* 09E090 800A3630 7FC30214 */  add     r30, r3, r0
 /* 09E094 800A3634 1C1E0014 */  mulli   r0, r30, 0x14
-/* 09E098 800A3638 3C60CC00 */  lis     r3, 0xcc00
-/* 09E09C 800A363C 38636800 */  addi    r3, r3, 0x6800
+/* 09E098 800A3638 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09E09C 800A363C 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
 /* 09E0A0 800A3640 7C630214 */  add     r3, r3, r0
-/* 09E0A4 800A3644 80030000 */  lwz     r0, 0(r3)
+/* 09E0A4 800A3644 80030000 */  lwz     r0, EXI_00(r3)
 /* 09E0A8 800A3648 700007F5 */  andi.   r0, r0, 0x7f5
 /* 09E0AC 800A364C 60000002 */  ori     r0, r0, 2
-/* 09E0B0 800A3650 90030000 */  stw     r0, 0(r3)
+/* 09E0B0 800A3650 90030000 */  stw     r0, EXI_00(r3)
 /* 09E0B4 800A3654 57C43032 */  slwi    r4, r30, 6
 /* 09E0B8 800A3658 3C608013 */  lis     r3, Ecb@ha
 /* 09E0BC 800A365C 38031A30 */  addi    r0, r3, Ecb@l
@@ -1133,13 +1133,13 @@ TCIntrruptHandler:
 /* 09E174 800A3714 7C032C30 */  srw     r3, r0, r5
 /* 09E178 800A3718 4BFFB9AD */  bl      __OSMaskInterrupts
 /* 09E17C 800A371C 1CFE0014 */  mulli   r7, r30, 0x14
-/* 09E180 800A3720 3CC0CC00 */  lis     r6, 0xcc00
-/* 09E184 800A3724 38666800 */  addi    r3, r6, 0x6800
+/* 09E180 800A3720 3CC0CC00 */  lis     r6, EXI_REGS_BASE@ha
+/* 09E184 800A3724 38666800 */  addi    r3, r6, EXI_REGS_BASE@l
 /* 09E188 800A3728 7C633A14 */  add     r3, r3, r7
-/* 09E18C 800A372C 80030000 */  lwz     r0, 0(r3)
+/* 09E18C 800A372C 80030000 */  lwz     r0, EXI_00(r3)
 /* 09E190 800A3730 700007F5 */  andi.   r0, r0, 0x7f5
 /* 09E194 800A3734 60000008 */  ori     r0, r0, 8
-/* 09E198 800A3738 90030000 */  stw     r0, 0(r3)
+/* 09E198 800A3738 90030000 */  stw     r0, EXI_00(r3)
 /* 09E19C 800A373C 801F0004 */  lwz     r0, 4(r31)
 /* 09E1A0 800A3740 7C1D0378 */  mr      r29, r0
 /* 09E1A4 800A3744 28000000 */  cmplwi  r0, 0
@@ -1314,18 +1314,18 @@ glabel EXIInit
 /* 09E41C 800A39BC 93C10018 */  stw     r30, 0x18(r1)
 /* 09E420 800A39C0 93A10014 */  stw     r29, 0x14(r1)
 /* 09E424 800A39C4 93810010 */  stw     r28, 0x10(r1)
-/* 09E428 800A39C8 3C60CC00 */  lis     r3, 0xcc00
-/* 09E42C 800A39CC 38636800 */  addi    r3, r3, 0x6800
+/* 09E428 800A39C8 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 09E42C 800A39CC 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
 lbl_800A39D0:
-/* 09E430 800A39D0 8003000C */  lwz     r0, 0xc(r3)
+/* 09E430 800A39D0 8003000C */  lwz     r0, EXI_0CR(r3)
 /* 09E434 800A39D4 540007FE */  clrlwi  r0, r0, 0x1f
 /* 09E438 800A39D8 28000001 */  cmplwi  r0, 1
 /* 09E43C 800A39DC 4182FFF4 */  beq     lbl_800A39D0
-/* 09E440 800A39E0 80030020 */  lwz     r0, 0x20(r3)
+/* 09E440 800A39E0 80030020 */  lwz     r0, EXI_1CR(r3)
 /* 09E444 800A39E4 540007FE */  clrlwi  r0, r0, 0x1f
 /* 09E448 800A39E8 28000001 */  cmplwi  r0, 1
 /* 09E44C 800A39EC 4182FFE4 */  beq     lbl_800A39D0
-/* 09E450 800A39F0 80030034 */  lwz     r0, 0x34(r3)
+/* 09E450 800A39F0 80030034 */  lwz     r0, EXI_2CR(r3)
 /* 09E454 800A39F4 540007FE */  clrlwi  r0, r0, 0x1f
 /* 09E458 800A39F8 28000001 */  cmplwi  r0, 1
 /* 09E45C 800A39FC 4182FFD4 */  beq     lbl_800A39D0
@@ -1333,12 +1333,12 @@ lbl_800A39D0:
 /* 09E464 800A3A04 38638000 */  addi    r3, r3, -32768
 /* 09E468 800A3A08 4BFFB6BD */  bl      __OSMaskInterrupts
 /* 09E46C 800A3A0C 3BE00000 */  li      r31, 0
-/* 09E470 800A3A10 3C80CC00 */  lis     r4, 0xcc00
-/* 09E474 800A3A14 93E46800 */  stw     r31, 0x6800(r4)
-/* 09E478 800A3A18 93E46814 */  stw     r31, 0x6814(r4)
-/* 09E47C 800A3A1C 93E46828 */  stw     r31, 0x6828(r4)
+/* 09E470 800A3A10 3C80CC00 */  lis     r4, EXI_REGS_BASE@ha
+/* 09E474 800A3A14 93E46800 */  stw     r31, (EXI_REGS_BASE + EXI_00)@l(r4)
+/* 09E478 800A3A18 93E46814 */  stw     r31, (EXI_REGS_BASE + EXI_14)@l(r4)
+/* 09E47C 800A3A1C 93E46828 */  stw     r31, (EXI_REGS_BASE + EXI_28)@l(r4)
 /* 09E480 800A3A20 38002000 */  li      r0, 0x2000
-/* 09E484 800A3A24 90046800 */  stw     r0, 0x6800(r4)
+/* 09E484 800A3A24 90046800 */  stw     r0, (EXI_REGS_BASE + EXI_00)@l(r4)
 /* 09E488 800A3A28 38600009 */  li      r3, 9
 /* 09E48C 800A3A2C 3C80800A */  lis     r4, EXIIntrruptHandler@ha
 /* 09E490 800A3A30 3B8435FC */  addi    r28, r4, EXIIntrruptHandler@l
@@ -1841,7 +1841,6 @@ lbl_800A412C:
 /* 09EB98 800A4138 7C0803A6 */  mtlr    r0
 /* 09EB9C 800A413C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1849,79 +1848,67 @@ lbl_800A412C:
 /* 000EE490 800F1410 0045 */
 D_800F1410:
     .asciz "<< Dolphin SDK - EXI\trelease build: Apr 17 2003 12:33:17 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000EE4D8 800F1458 000F */
 D_800F1458:
     .asciz "Memory Card 59"
-
-.balign 4
+    .balign 4
 
 /* 000EE4E8 800F1468 0010 */
 D_800F1468:
     .asciz "Memory Card 123"
-
-.balign 4
+    .balign 4
 
 /* 000EE4F8 800F1478 0010 */
 D_800F1478:
     .asciz "Memory Card 251"
-
-.balign 4
+    .balign 4
 
 /* 000EE508 800F1488 0010 */
 D_800F1488:
     .asciz "Memory Card 507"
-
-.balign 4
+    .balign 4
 
 /* 000EE518 800F1498 0011 */
 D_800F1498:
     .asciz "Memory Card 1019"
-
-.balign 4
+    .balign 4
 
 /* 000EE52C 800F14AC 0011 */
 D_800F14AC:
     .asciz "Memory Card 2043"
-
-.balign 4
+    .balign 4
 
 /* 000EE540 800F14C0 000C */
 D_800F14C0:
     .asciz "USB Adapter"
-
-.balign 4
+    .balign 4
 
 /* 000EE54C 800F14CC 0009 */
 D_800F14CC:
     .asciz "Net Card"
-
-.balign 4
+    .balign 4
 
 /* 000EE558 800F14D8 000D */
 D_800F14D8:
     .asciz "Artist Ether"
-
-.balign 4
+    .balign 4
 
 /* 000EE568 800F14E8 0012 */
 D_800F14E8:
     .asciz "Broadband Adapter"
-
-.balign 4
+    .balign 4
 
 /* 000EE57C 800F14FC 000E */
 D_800F14FC:
     .asciz "Stream Hanger"
-
-.balign 4
+    .balign 4
 
 /* 000EE58C 800F150C 000E */
 D_800F150C:
     .asciz "IS-DOL-VIEWER"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -1929,8 +1916,7 @@ D_800F150C:
 
 /* 0012EAB0 80131A30 00C0 */
 Ecb:
-    .skip 192
-
+    .skip 0xC0
 
 .section .sdata, "wa"
 
@@ -1940,7 +1926,6 @@ Ecb:
 glabel __EXIVersion
     .long D_800F1410
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1948,5 +1933,3 @@ glabel __EXIVersion
 /* 000F1B00 80135880 0004 */
 IDSerialPort1:
     .skip 4
-
-

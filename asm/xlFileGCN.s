@@ -316,7 +316,6 @@ glabel xlFileSetOpen
 /* 000CD8 80006278 38600001 */  li      r3, 1
 /* 000CDC 8000627C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -325,7 +324,6 @@ glabel xlFileSetOpen
 glabel gTypeFile
     .long D_80134CE0, 0x00000058, 0x00000000, xlFileEvent
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -333,7 +331,7 @@ glabel gTypeFile
 /* 000F0F60 80134CE0 0005 */
 D_80134CE0:
     .asciz "FILE"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -343,10 +341,6 @@ D_80134CE0:
 gpfOpen:
     .skip 4
 
-.balign 4
-
 /* 000F1824 801355A4 0004 */
 gpfRead:
     .skip 4
-
-

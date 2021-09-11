@@ -641,7 +641,6 @@ lbl_80098690:
 /* 0930FC 8009869C 7C0803A6 */  mtlr    r0
 /* 093100 800986A0 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -651,20 +650,14 @@ glabel gCombinedColor
     .long 0x00000000, 0x00000008, 0x00000008, 0x00000006, 0x0000000A, 0x0000000E, 0x0000000C, 0x00000001
     .long 0x00000009, 0x00000009, 0x00000007, 0x0000000B, 0x0000000E, 0x0000000F, 0x0000000F, 0x0000000F
 
-.balign 4
-
 /* 000ED218 800F0198 0020 */
 glabel gCombinedAlpha
     .long 0x00000000, 0x00000004, 0x00000004, 0x00000003, 0x00000005, 0x00000006, 0x00000006, 0x00000007
-
-.balign 4
 
 /* 000ED238 800F01B8 0040 */
 ganNameTevStage:
     .long 0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004, 0x00000005, 0x00000006, 0x00000007
     .long 0x00000008, 0x00000009, 0x0000000A, 0x0000000B, 0x0000000C, 0x0000000D, 0x0000000E, 0x0000000F
-
-.balign 4
 
 /* 000ED278 800F01F8 0064 */
 sTevColorOp:
@@ -673,15 +666,11 @@ sTevColorOp:
     .long 0x00000000, 0x00000000, 0x00000000, 0x00000001, 0x00000000, 0x00000000, 0x00000000, 0x00000000
     .long 0x00000000
 
-.balign 4
-
 /* 000ED2DC 800F025C 0050 */
 sTevColorArg:
     .long 0x0000000F, 0x0000000F, 0x0000000F, 0x00000000, 0x0000000F, 0x0000000F, 0x0000000F, 0x00000000
     .long 0x0000000F, 0x00000002, 0x00000004, 0x0000000F, 0x0000000F, 0x00000000, 0x00000004, 0x00000002
     .long 0x0000000F, 0x00000002, 0x0000000C, 0x00000000
-
-.balign 4
 
 /* 000ED32C 800F02AC 0050 */
 sTevAlphaArg:
@@ -689,99 +678,80 @@ sTevAlphaArg:
     .long 0x00000007, 0x00000001, 0x00000002, 0x00000007, 0x00000007, 0x00000000, 0x00000002, 0x00000001
     .long 0x00000007, 0x00000001, 0x00000006, 0x00000000
 
-.balign 4
-
 /* 000ED37C 800F02FC 0009 */
 D_800F02FC:
     .asciz "COMBINED"
-
-.balign 4
+    .balign 4
 
 /* 000ED388 800F0308 000A */
 D_800F0308:
     .asciz "PRIMITIVE"
-
-.balign 4
+    .balign 4
 
 /* 000ED394 800F0314 000C */
 D_800F0314:
     .asciz "ENVIRONMENT"
-
-.balign 4
+    .balign 4
 
 /* 000ED3A0 800F0320 000F */
 D_800F0320:
     .asciz "COMBINED_ALPHA"
-
-.balign 4
+    .balign 4
 
 /* 000ED3B0 800F0330 000D */
 D_800F0330:
     .asciz "TEXEL0_ALPHA"
-
-.balign 4
+    .balign 4
 
 /* 000ED3C0 800F0340 000D */
 D_800F0340:
     .asciz "TEXEL1_ALPHA"
-
-.balign 4
+    .balign 4
 
 /* 000ED3D0 800F0350 000B */
 D_800F0350:
     .asciz "PRIM_ALPHA"
-
-.balign 4
+    .balign 4
 
 /* 000ED3DC 800F035C 000C */
 D_800F035C:
     .asciz "SHADE_ALPHA"
-
-.balign 4
+    .balign 4
 
 /* 000ED3E8 800F0368 000A */
 D_800F0368:
     .asciz "ENV_ALPHA"
-
-.balign 4
+    .balign 4
 
 /* 000ED3F4 800F0374 0009 */
 D_800F0374:
     .asciz "LOD_FRAC"
-
-.balign 4
+    .balign 4
 
 /* 000ED400 800F0380 000E */
 D_800F0380:
     .asciz "PRIM_LOD_FRAC"
-
-.balign 4
+    .balign 4
 
 /* 000ED410 800F0390 0040 */
 sColorNames:
-    .long gCombinedColor + 0x1A4, D_80135380, D_80135388, gCombinedColor + 0x1B0, D_80135390, gCombinedColor + 0x1BC, D_80135398, gCombinedColor + 0x1C8
-    .long gCombinedColor + 0x1D8, gCombinedColor + 0x1E8, gCombinedColor + 0x1F8, gCombinedColor + 0x204, gCombinedColor + 0x210, gCombinedColor + 0x21C, gCombinedColor + 0x228, D_8013539C
-
-.balign 4
+    .long D_800F02FC, D_80135380, D_80135388, D_800F0308, D_80135390, D_800F0314, D_80135398, D_800F0320
+    .long D_800F0330, D_800F0340, D_800F0350, D_800F035C, D_800F0368, D_800F0374, D_800F0380, D_8013539C
 
 /* 000ED450 800F03D0 0040 */
 sAlphaNames:
-    .long gCombinedColor + 0x21C, D_80135380, D_80135388, gCombinedColor + 0x1B0, D_80135390, gCombinedColor + 0x1BC, D_80135398, D_8013539C
-    .long gCombinedColor + 0x1A4, D_80135380, D_80135388, gCombinedColor + 0x1B0, D_80135390, gCombinedColor + 0x1BC, D_80135398, D_8013539C
-
-.balign 4
+    .long D_800F0374, D_80135380, D_80135388, D_800F0308, D_80135390, D_800F0314, D_80135398, D_8013539C
+    .long D_800F02FC, D_80135380, D_80135388, D_800F0308, D_80135390, D_800F0314, D_80135398, D_8013539C
 
 /* 000ED490 800F0410 0040 */
 strings$288:
     .long D_801353A0, D_801353A8, D_801353B0, D_801353B8, D_801353C0, D_801353C8, D_801353D0, D_801353D8
     .long D_801353A0, D_801353A8, D_801353B0, D_801353B8, D_801353E0, D_801353E8, D_801353F0, D_801353F8
 
-.balign 4
-
 /* 000ED4D0 800F0450 000C */
 D_800F0450:
     .asciz "0x%08x = ( "
-
+    .balign 4
 
 .section .sdata, "wa"
 
@@ -790,113 +760,94 @@ D_800F0450:
 /* 000F15F0 80135370 0005 */
 sOrder:
     .byte 0x00, 0x03, 0x01, 0x04, 0x02
-
-.balign 4
+    .balign 4
 
 /* 000F15F8 80135378 0005 */
 sReplace:
     .byte 0x03, 0x03, 0x00, 0x01, 0x03
-
-.balign 4
+    .balign 4
 
 /* 000F1600 80135380 0007 */
 D_80135380:
     .asciz "TEXEL0"
-
-.balign 4
+    .balign 4
 
 /* 000F1608 80135388 0007 */
 D_80135388:
     .asciz "TEXEL1"
-
-.balign 4
+    .balign 4
 
 /* 000F1610 80135390 0006 */
 D_80135390:
     .asciz "SHADE"
-
-.balign 4
+    .balign 4
 
 /* 000F1618 80135398 0002 */
 D_80135398:
     .asciz "1"
-
-.balign 4
+    .balign 4
 
 /* 000F161C 8013539C 0002 */
 D_8013539C:
     .asciz "0"
-
-.balign 4
+    .balign 4
 
 /* 000F1620 801353A0 0007 */
 D_801353A0:
     .asciz "PIXEL "
-
-.balign 4
+    .balign 4
 
 /* 000F1628 801353A8 0007 */
 D_801353A8:
     .asciz "MEMORY"
-
-.balign 4
+    .balign 4
 
 /* 000F1630 801353B0 0007 */
 D_801353B0:
     .asciz "BL_REG"
-
-.balign 4
+    .balign 4
 
 /* 000F1638 801353B8 0007 */
 D_801353B8:
     .asciz "FOGREG"
-
-.balign 4
+    .balign 4
 
 /* 000F1640 801353C0 0007 */
 D_801353C0:
     .asciz "CC_A  "
-
-.balign 4
+    .balign 4
 
 /* 000F1648 801353C8 0007 */
 D_801353C8:
     .asciz "FOG_A "
-
-.balign 4
+    .balign 4
 
 /* 000F1650 801353D0 0007 */
 D_801353D0:
     .asciz "STEP_A"
-
-.balign 4
+    .balign 4
 
 /* 000F1658 801353D8 0007 */
 D_801353D8:
     .asciz "ZERO  "
-
-.balign 4
+    .balign 4
 
 /* 000F1660 801353E0 0006 */
 D_801353E0:
     .asciz "A_INV"
-
-.balign 4
+    .balign 4
 
 /* 000F1668 801353E8 0006 */
 D_801353E8:
     .asciz "MEM_A"
-
-.balign 4
+    .balign 4
 
 /* 000F1670 801353F0 0006 */
 D_801353F0:
     .asciz "ONE  "
-
-.balign 4
+    .balign 4
 
 /* 000F1678 801353F8 0006 */
 D_801353F8:
     .asciz "ZERO "
-
-
+    .balign 4

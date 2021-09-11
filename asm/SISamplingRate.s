@@ -47,8 +47,8 @@ lbl_800A5E84:
 /* 0A08F0 800A5E90 3BA00000 */  li      r29, 0
 /* 0A08F4 800A5E94 389F0000 */  addi    r4, r31, 0
 lbl_800A5E98:
-/* 0A08F8 800A5E98 3C60CC00 */  lis     r3, 0xcc00
-/* 0A08FC 800A5E9C A003206C */  lhz     r0, 0x206c(r3)
+/* 0A08F8 800A5E98 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A08FC 800A5E9C A003206C */  lhz     r0, (VI_REGS_BASE + VI_CLK)@l(r3)
 /* 0A0900 800A5EA0 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0A0904 800A5EA4 4182000C */  beq     lbl_800A5EB0
 /* 0A0908 800A5EA8 38A00002 */  li      r5, 2
@@ -83,7 +83,6 @@ glabel SIRefreshSamplingRate
 /* 0A096C 800A5F0C 7C0803A6 */  mtlr    r0
 /* 0A0970 800A5F10 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -93,19 +92,15 @@ XYNTSC:
     .long 0x00F60200, 0x000F1200, 0x001E0900, 0x002C0600, 0x00340500, 0x00410400, 0x00570300, 0x00570300
     .long 0x00570300, 0x00830200, 0x00830200, 0x00830200
 
-.balign 4
-
 /* 000EE6E8 800F1668 0030 */
 XYPAL:
     .long 0x01280200, 0x000F1500, 0x001D0B00, 0x002D0700, 0x00340600, 0x003F0500, 0x004E0400, 0x00680300
     .long 0x00680300, 0x00680300, 0x00680300, 0x009C0200
 
-.balign 4
-
 /* 000EE718 800F1698 0033 */
 D_800F1698:
     .asciz "SISetSamplingRate: unknown TV format. Use default."
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -114,5 +109,3 @@ D_800F1698:
 /* 000F1B28 801358A8 0004 */
 SamplingRate:
     .skip 4
-
-

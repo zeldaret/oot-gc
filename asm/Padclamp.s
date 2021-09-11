@@ -172,7 +172,6 @@ lbl_800AFF14:
 /* 0AA99C 800AFF3C 7C0803A6 */  mtlr    r0
 /* 0AA9A0 800AFF40 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -180,5 +179,3 @@ lbl_800AFF14:
 /* 000D0280 800D3200 000A */
 ClampRegion:
     .short 0x1EB4, 0x0F48, 0x280F, 0x3B1F, 0x382C
-
-

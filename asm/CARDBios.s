@@ -1371,7 +1371,6 @@ lbl_800BC030:
 /* 0B6A98 800BC038 7C0803A6 */  mtlr    r0
 /* 0B6A9C 800BC03C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1379,13 +1378,11 @@ lbl_800BC030:
 /* 000F0858 800F37D8 0046 */
 D_800F37D8:
     .asciz "<< Dolphin SDK - CARD\trelease build: Apr 17 2003 12:34:19 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000F08A0 800F3820 0010 */
 ResetFunctionInfo:
     .long OnReset, 0x0000007F, 0x00000000, 0x00000000
-
 
 .section .bss, "wa"
 
@@ -1393,14 +1390,11 @@ ResetFunctionInfo:
 
 /* 0012F850 801327D0 0220 */
 glabel __CARDBlock
-    .skip 544
-
-.balign 4
+    .skip 0x220
 
 /* 0012FA70 801329F0 0020 */
 glabel __CARDDiskNone
     .skip 32
-
 
 .section .sdata, "wa"
 
@@ -1410,7 +1404,6 @@ glabel __CARDDiskNone
 glabel __CARDVersion
     .long D_800F37D8
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1418,5 +1411,3 @@ glabel __CARDVersion
 /* 000F1E10 80135B90 0002 */
 __CARDEncode:
     .skip 2
-
-

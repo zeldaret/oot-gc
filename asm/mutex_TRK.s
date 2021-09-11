@@ -16,5 +16,3 @@ glabel TRKAcquireMutex
 glabel TRKReleaseMutex
 /* 0C61C4 800CB764 38600000 */  li      r3, 0
 /* 0C61C8 800CB768 4E800020 */  blr     
-
-

@@ -143,15 +143,13 @@ glabel PSMTXScaleApply
 /* 0A2A1C 800A7FBC F0440028 */  psq_st  f2, 40(r4), 0, qr0
 /* 0A2A20 800A7FC0 4E800020 */  blr     
 
-
 .section .sdata, "wa"
 
 .balign 8
 
 /* 000F16E8 80135468 0008 */
 Unit01:
-    .long 0x00000000, 0x3F800000
-
+    .float 0.0, 1.0
 
 .section .sdata2, "wa"
 
@@ -161,10 +159,6 @@ Unit01:
 D_801360E0:
     .float 1.0
 
-.balign 4
-
 /* 000F1BE4 801360E4 0004 */
 D_801360E4:
     .float 0.0
-
-

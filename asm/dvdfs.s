@@ -641,7 +641,6 @@ cbForReadSync:
 /* 0AD9C8 800B2F68 7C0803A6 */  mtlr    r0
 /* 0AD9CC 800B2F6C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -649,25 +648,22 @@ cbForReadSync:
 /* 000EF378 800F22F8 00C8 */
 D_800F22F8:
     .asciz "DVDConvertEntrynumToPath(possibly DVDOpen or DVDChangeDir or DVDOpenDir): specified directory or file (%s) doesn't match standard 8.3 format. This is a temporary restriction and will be removed soon\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF440 800F23C0 0037 */
 D_800F23C0:
     .asciz "Warning: DVDOpen(): file '%s' was not found under %s.\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF478 800F23F8 0034 */
 D_800F23F8:
     .asciz "DVDReadAsync(): specified area is out of the file  "
-
-.balign 4
+    .balign 4
 
 /* 000EF4AC 800F242C 002F */
 D_800F242C:
     .asciz "DVDRead(): specified area is out of the file  "
-
+    .balign 4
 
 .section .sdata, "wa"
 
@@ -676,7 +672,7 @@ D_800F242C:
 /* 000F1770 801354F0 0008 */
 D_801354F0:
     .asciz "dvdfs.c"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -686,40 +682,26 @@ D_801354F0:
 BootInfo:
     .skip 4
 
-.balign 4
-
 /* 000F1C74 801359F4 0004 */
 FstStart:
     .skip 4
-
-.balign 4
 
 /* 000F1C78 801359F8 0004 */
 FstStringStart:
     .skip 4
 
-.balign 4
-
 /* 000F1C7C 801359FC 0004 */
 MaxEntryNum:
     .skip 4
-
-.balign 4
 
 /* 000F1C80 80135A00 0004 */
 currentDirectory:
     .skip 4
 
-.balign 4
-
 /* 000F1C84 80135A04 0004 */
 glabel __DVDLongFileNameFlag
     .skip 4
 
-.balign 8
-
 /* 000F1C88 80135A08 0008 */
 glabel __DVDThreadQueue
     .skip 8
-
-

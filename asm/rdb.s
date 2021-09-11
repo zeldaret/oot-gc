@@ -478,7 +478,6 @@ rdbPut8:
 /* 06C610 80071BB0 38600000 */  li      r3, 0
 /* 06C614 80071BB4 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -486,8 +485,6 @@ rdbPut8:
 /* 000EB230 800EE1B0 0010 */
 glabel gClassRdb
     .long D_801352B8, 0x00000110, 0x00000000, rdbEvent
-
-.balign 4
 
 /* 000EB240 800EE1C0 005C */
 jtbl_800EE1C0:
@@ -515,7 +512,6 @@ jtbl_800EE1C0:
     .long lbl_80071B68
     .long lbl_80071B20
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -523,5 +519,4 @@ jtbl_800EE1C0:
 /* 000F1538 801352B8 0004 */
 D_801352B8:
     .asciz "RDB"
-
-
+    .balign 4

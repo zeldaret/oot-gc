@@ -474,7 +474,6 @@ lbl_8009DD54:
 /* 0987E0 8009DD80 7C0803A6 */  mtlr    r0
 /* 0987E4 8009DD84 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -482,83 +481,69 @@ lbl_8009DD54:
 /* 000EDCC8 800F0C48 0029 */
 D_800F0C48:
     .asciz ">>> L2 INVALIDATE : SHOULD NEVER HAPPEN\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDCF4 800F0C74 0018 */
 D_800F0C74:
     .asciz "Machine check received\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDD0C 800F0C8C 001B */
 D_800F0C8C:
     .asciz "HID2 = 0x%x   SRR1 = 0x%x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDD28 800F0CA8 0030 */
 D_800F0CA8:
     .asciz "Machine check was not DMA/locked cache related\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDD58 800F0CD8 003C */
 D_800F0CD8:
     .asciz "DMAErrorHandler(): An error occurred while processing DMA.\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDD94 800F0D14 0037 */
 D_800F0D14:
     .asciz "The following errors have been detected and cleared :\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDDCC 800F0D4C 003F */
 D_800F0D4C:
     .asciz "\t- Requested a locked cache tag that was already in the cache\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDE0C 800F0D8C 0029 */
 D_800F0D8C:
     .asciz "\t- DMA attempted to access normal cache\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDE38 800F0DB8 001D */
 D_800F0DB8:
     .asciz "\t- DMA missed in data cache\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDE58 800F0DD8 0019 */
 D_800F0DD8:
     .asciz "\t- DMA queue overflowed\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDE74 800F0DF4 0019 */
 D_800F0DF4:
     .asciz "L1 i-caches initialized\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDE90 800F0E10 0019 */
 D_800F0E10:
     .asciz "L1 d-caches initialized\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDEAC 800F0E2C 0016 */
 D_800F0E2C:
     .asciz "L2 cache initialized\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDEC4 800F0E44 002E */
 D_800F0E44:
     .asciz "Locked cache machine check handler installed\n"
-
-
+    .balign 4

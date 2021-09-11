@@ -27,7 +27,6 @@ lbl_800CD8B8:
 /* 0C832C 800CD8CC 7C0803A6 */  mtlr    r0
 /* 0C8330 800CD8D0 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -35,5 +34,3 @@ lbl_800CD8B8:
 /* 000F1F38 80135CB8 0004 */
 glabel __global_destructor_chain
     .skip 4
-
-

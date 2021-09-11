@@ -75,7 +75,6 @@ lbl_800A7DA4:
 /* 0A2824 800A7DC4 38210070 */  addi    r1, r1, 0x70
 /* 0A2828 800A7DC8 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -83,7 +82,7 @@ lbl_800A7DA4:
 /* 000EEB20 800F1AA0 0018 */
 D_800F1AA0:
     .asciz "DBExceptionDestination\n"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -93,10 +92,6 @@ D_800F1AA0:
 glabel __DBInterface
     .skip 4
 
-.balign 4
-
 /* 000F1B94 80135914 0004 */
 glabel DBVerbose
     .skip 4
-
-

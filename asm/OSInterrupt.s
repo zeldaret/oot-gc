@@ -63,12 +63,12 @@ glabel __OSInterruptInit
 /* 099800 8009EDA0 4BF66631 */  bl      memset
 /* 099804 8009EDA4 38000000 */  li      r0, 0
 /* 099808 8009EDA8 901F00C4 */  stw     r0, 0xc4(r31)
-/* 09980C 8009EDAC 3C60CC00 */  lis     r3, 0xcc00
-/* 099810 8009EDB0 38833000 */  addi    r4, r3, 0x3000
+/* 09980C 8009EDAC 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
+/* 099810 8009EDB0 38833000 */  addi    r4, r3, PI_REGS_BASE@l
 /* 099814 8009EDB4 901F00C8 */  stw     r0, 0xc8(r31)
 /* 099818 8009EDB8 380000F0 */  li      r0, 0xf0
 /* 09981C 8009EDBC 3860FFE0 */  li      r3, -32
-/* 099820 8009EDC0 90040004 */  stw     r0, 4(r4)
+/* 099820 8009EDC0 90040004 */  stw     r0, PI_INTMR(r4)
 /* 099824 8009EDC4 48000301 */  bl      __OSMaskInterrupts
 /* 099828 8009EDC8 3C60800A */  lis     r3, ExternalInterruptHandler@ha
 /* 09982C 8009EDCC 3883F518 */  addi    r4, r3, ExternalInterruptHandler@l
@@ -129,16 +129,16 @@ lbl_8009EE7C:
 /* 0998E4 8009EE84 40820008 */  bne     lbl_8009EE8C
 /* 0998E8 8009EE88 60A50010 */  ori     r5, r5, 0x10
 lbl_8009EE8C:
-/* 0998EC 8009EE8C 3C80CC00 */  lis     r4, 0xcc00
+/* 0998EC 8009EE8C 3C80CC00 */  lis     r4, MI_REGS_BASE@ha
 /* 0998F0 8009EE90 54A0043E */  clrlwi  r0, r5, 0x10
-/* 0998F4 8009EE94 38844000 */  addi    r4, r4, 0x4000
-/* 0998F8 8009EE98 B004001C */  sth     r0, 0x1c(r4)
+/* 0998F4 8009EE94 38844000 */  addi    r4, r4, MI_REGS_BASE@l
+/* 0998F8 8009EE98 B004001C */  sth     r0, MI_1C(r4)
 /* 0998FC 8009EE9C 5463017E */  clrlwi  r3, r3, 5
 /* 099900 8009EEA0 48000220 */  b       lbl_8009F0C0
 lbl_8009EEA4:
-/* 099904 8009EEA4 3CA0CC00 */  lis     r5, 0xcc00
-/* 099908 8009EEA8 38A55000 */  addi    r5, r5, 0x5000
-/* 09990C 8009EEAC 38A5000A */  addi    r5, r5, 0xa
+/* 099904 8009EEA4 3CA0CC00 */  lis     r5, DSP_REGS_BASE@ha
+/* 099908 8009EEA8 38A55000 */  addi    r5, r5, DSP_REGS_BASE@l
+/* 09990C 8009EEAC 38A5000A */  addi    r5, r5, DSP_0A
 /* 099910 8009EEB0 5480014A */  rlwinm  r0, r4, 0, 5, 5
 /* 099914 8009EEB4 A0C50000 */  lhz     r6, 0(r5)
 /* 099918 8009EEB8 28000000 */  cmplwi  r0, 0
@@ -162,23 +162,23 @@ lbl_8009EEE8:
 /* 099954 8009EEF4 480001CC */  b       lbl_8009F0C0
 lbl_8009EEF8:
 /* 099958 8009EEF8 54800210 */  rlwinm  r0, r4, 0, 8, 8
-/* 09995C 8009EEFC 3C80CC00 */  lis     r4, 0xcc00
+/* 09995C 8009EEFC 3C80CC00 */  lis     r4, AI_REGS_BASE@ha
 /* 099960 8009EF00 28000000 */  cmplwi  r0, 0
-/* 099964 8009EF04 80A46C00 */  lwz     r5, 0x6c00(r4)
+/* 099964 8009EF04 80A46C00 */  lwz     r5, (AI_REGS_BASE + AI_CR)@l(r4)
 /* 099968 8009EF08 3800FFD3 */  li      r0, -45
 /* 09996C 8009EF0C 7CA50038 */  and     r5, r5, r0
 /* 099970 8009EF10 40820008 */  bne     lbl_8009EF18
 /* 099974 8009EF14 60A50004 */  ori     r5, r5, 4
 lbl_8009EF18:
-/* 099978 8009EF18 3C80CC00 */  lis     r4, 0xcc00
-/* 09997C 8009EF1C 90A46C00 */  stw     r5, 0x6c00(r4)
+/* 099978 8009EF18 3C80CC00 */  lis     r4, AI_REGS_BASE@ha
+/* 09997C 8009EF1C 90A46C00 */  stw     r5, (AI_REGS_BASE + AI_CR)@l(r4)
 /* 099980 8009EF20 5463024E */  rlwinm  r3, r3, 0, 9, 7
 /* 099984 8009EF24 4800019C */  b       lbl_8009F0C0
 lbl_8009EF28:
 /* 099988 8009EF28 54800252 */  rlwinm  r0, r4, 0, 9, 9
-/* 09998C 8009EF2C 3CA0CC00 */  lis     r5, 0xcc00
+/* 09998C 8009EF2C 3CA0CC00 */  lis     r5, EXI_REGS_BASE@ha
 /* 099990 8009EF30 28000000 */  cmplwi  r0, 0
-/* 099994 8009EF34 80A56800 */  lwz     r5, 0x6800(r5)
+/* 099994 8009EF34 80A56800 */  lwz     r5, (EXI_REGS_BASE + EXI_00)@l(r5)
 /* 099998 8009EF38 3800D3F0 */  li      r0, -11280
 /* 09999C 8009EF3C 7CA50038 */  and     r5, r5, r0
 /* 0999A0 8009EF40 40820008 */  bne     lbl_8009EF48
@@ -194,14 +194,14 @@ lbl_8009EF58:
 /* 0999C0 8009EF60 40820008 */  bne     lbl_8009EF68
 /* 0999C4 8009EF64 60A50400 */  ori     r5, r5, 0x400
 lbl_8009EF68:
-/* 0999C8 8009EF68 3C80CC00 */  lis     r4, 0xcc00
-/* 0999CC 8009EF6C 90A46800 */  stw     r5, 0x6800(r4)
+/* 0999C8 8009EF68 3C80CC00 */  lis     r4, EXI_REGS_BASE@ha
+/* 0999CC 8009EF6C 90A46800 */  stw     r5, (EXI_REGS_BASE + EXI_00)@l(r4)
 /* 0999D0 8009EF70 54630310 */  rlwinm  r3, r3, 0, 0xc, 8
 /* 0999D4 8009EF74 4800014C */  b       lbl_8009F0C0
 lbl_8009EF78:
-/* 0999D8 8009EF78 3CA0CC00 */  lis     r5, 0xcc00
-/* 0999DC 8009EF7C 38C56800 */  addi    r6, r5, 0x6800
-/* 0999E0 8009EF80 38C60014 */  addi    r6, r6, 0x14
+/* 0999D8 8009EF78 3CA0CC00 */  lis     r5, EXI_REGS_BASE@ha
+/* 0999DC 8009EF7C 38C56800 */  addi    r6, r5, EXI_REGS_BASE@l
+/* 0999E0 8009EF80 38C60014 */  addi    r6, r6, EXI_14
 /* 0999E4 8009EF84 54800318 */  rlwinm  r0, r4, 0, 0xc, 0xc
 /* 0999E8 8009EF88 80E60000 */  lwz     r7, 0(r6)
 /* 0999EC 8009EF8C 38A0F3F0 */  li      r5, -3088
@@ -224,9 +224,9 @@ lbl_8009EFC0:
 /* 099A24 8009EFC4 546303D6 */  rlwinm  r3, r3, 0, 0xf, 0xb
 /* 099A28 8009EFC8 480000F8 */  b       lbl_8009F0C0
 lbl_8009EFCC:
-/* 099A2C 8009EFCC 3CA0CC00 */  lis     r5, 0xcc00
-/* 099A30 8009EFD0 38A56800 */  addi    r5, r5, 0x6800
-/* 099A34 8009EFD4 38A50028 */  addi    r5, r5, 0x28
+/* 099A2C 8009EFCC 3CA0CC00 */  lis     r5, EXI_REGS_BASE@ha
+/* 099A30 8009EFD0 38A56800 */  addi    r5, r5, EXI_REGS_BASE@l
+/* 099A34 8009EFD4 38A50028 */  addi    r5, r5, EXI_28
 /* 099A38 8009EFD8 548003DE */  rlwinm  r0, r4, 0, 0xf, 0xf
 /* 099A3C 8009EFDC 80C50000 */  lwz     r6, 0(r5)
 /* 099A40 8009EFE0 28000000 */  cmplwi  r0, 0
@@ -294,9 +294,9 @@ lbl_8009F0A0:
 /* 099B08 8009F0A8 40820008 */  bne     lbl_8009F0B0
 /* 099B0C 8009F0AC 60A52000 */  ori     r5, r5, 0x2000
 lbl_8009F0B0:
-/* 099B10 8009F0B0 3C80CC00 */  lis     r4, 0xcc00
-/* 099B14 8009F0B4 38843000 */  addi    r4, r4, 0x3000
-/* 099B18 8009F0B8 90A40004 */  stw     r5, 4(r4)
+/* 099B10 8009F0B0 3C80CC00 */  lis     r4, PI_REGS_BASE@ha
+/* 099B14 8009F0B4 38843000 */  addi    r4, r4, PI_REGS_BASE@l
+/* 099B18 8009F0B8 90A40004 */  stw     r5, PI_INTMR(r4)
 /* 099B1C 8009F0BC 546306E0 */  rlwinm  r3, r3, 0, 0x1b, 0x10
 lbl_8009F0C0:
 /* 099B20 8009F0C0 4E800020 */  blr     
@@ -389,13 +389,13 @@ glabel __OSDispatchInterrupt
 /* 099C44 8009F1E4 93C10020 */  stw     r30, 0x20(r1)
 /* 099C48 8009F1E8 93A1001C */  stw     r29, 0x1c(r1)
 /* 099C4C 8009F1EC 7C9E2378 */  mr      r30, r4
-/* 099C50 8009F1F0 3C60CC00 */  lis     r3, 0xcc00
-/* 099C54 8009F1F4 83E33000 */  lwz     r31, 0x3000(r3)
+/* 099C50 8009F1F0 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
+/* 099C54 8009F1F4 83E33000 */  lwz     r31, (PI_REGS_BASE + PI_INTSR)@l(r3)
 /* 099C58 8009F1F8 57FF041C */  rlwinm  r31, r31, 0, 0x10, 0xe
 /* 099C5C 8009F1FC 281F0000 */  cmplwi  r31, 0
 /* 099C60 8009F200 41820018 */  beq     lbl_8009F218
-/* 099C64 8009F204 38633000 */  addi    r3, r3, 0x3000
-/* 099C68 8009F208 80030004 */  lwz     r0, 4(r3)
+/* 099C64 8009F204 38633000 */  addi    r3, r3, PI_REGS_BASE@l
+/* 099C68 8009F208 80030004 */  lwz     r0, PI_INTMR(r3)
 /* 099C6C 8009F20C 7FE00038 */  and     r0, r31, r0
 /* 099C70 8009F210 28000000 */  cmplwi  r0, 0
 /* 099C74 8009F214 4082000C */  bne     lbl_8009F220
@@ -407,9 +407,9 @@ lbl_8009F220:
 /* 099C84 8009F224 28000000 */  cmplwi  r0, 0
 /* 099C88 8009F228 38000000 */  li      r0, 0
 /* 099C8C 8009F22C 41820060 */  beq     lbl_8009F28C
-/* 099C90 8009F230 3C60CC00 */  lis     r3, 0xcc00
-/* 099C94 8009F234 38634000 */  addi    r3, r3, 0x4000
-/* 099C98 8009F238 A083001E */  lhz     r4, 0x1e(r3)
+/* 099C90 8009F230 3C60CC00 */  lis     r3, MI_REGS_BASE@ha
+/* 099C94 8009F234 38634000 */  addi    r3, r3, MI_REGS_BASE@l
+/* 099C98 8009F238 A083001E */  lhz     r4, MI_1E(r3)
 /* 099C9C 8009F23C 548307FE */  clrlwi  r3, r4, 0x1f
 /* 099CA0 8009F240 28030000 */  cmplwi  r3, 0
 /* 099CA4 8009F244 41820008 */  beq     lbl_8009F24C
@@ -438,9 +438,9 @@ lbl_8009F28C:
 /* 099CEC 8009F28C 57E30672 */  rlwinm  r3, r31, 0, 0x19, 0x19
 /* 099CF0 8009F290 28030000 */  cmplwi  r3, 0
 /* 099CF4 8009F294 41820040 */  beq     lbl_8009F2D4
-/* 099CF8 8009F298 3C60CC00 */  lis     r3, 0xcc00
-/* 099CFC 8009F29C 38635000 */  addi    r3, r3, 0x5000
-/* 099D00 8009F2A0 A083000A */  lhz     r4, 0xa(r3)
+/* 099CF8 8009F298 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
+/* 099CFC 8009F29C 38635000 */  addi    r3, r3, DSP_REGS_BASE@l
+/* 099D00 8009F2A0 A083000A */  lhz     r4, DSP_0A(r3)
 /* 099D04 8009F2A4 54830738 */  rlwinm  r3, r4, 0, 0x1c, 0x1c
 /* 099D08 8009F2A8 28030000 */  cmplwi  r3, 0
 /* 099D0C 8009F2AC 41820008 */  beq     lbl_8009F2B4
@@ -459,8 +459,8 @@ lbl_8009F2D4:
 /* 099D34 8009F2D4 57E306B4 */  rlwinm  r3, r31, 0, 0x1a, 0x1a
 /* 099D38 8009F2D8 28030000 */  cmplwi  r3, 0
 /* 099D3C 8009F2DC 4182001C */  beq     lbl_8009F2F8
-/* 099D40 8009F2E0 3C60CC00 */  lis     r3, 0xcc00
-/* 099D44 8009F2E4 80636C00 */  lwz     r3, 0x6c00(r3)
+/* 099D40 8009F2E0 3C60CC00 */  lis     r3, AI_REGS_BASE@ha
+/* 099D44 8009F2E4 80636C00 */  lwz     r3, (AI_REGS_BASE + AI_CR)@l(r3)
 /* 099D48 8009F2E8 54630738 */  rlwinm  r3, r3, 0, 0x1c, 0x1c
 /* 099D4C 8009F2EC 28030000 */  cmplwi  r3, 0
 /* 099D50 8009F2F0 41820008 */  beq     lbl_8009F2F8
@@ -469,8 +469,8 @@ lbl_8009F2F8:
 /* 099D58 8009F2F8 57E306F6 */  rlwinm  r3, r31, 0, 0x1b, 0x1b
 /* 099D5C 8009F2FC 28030000 */  cmplwi  r3, 0
 /* 099D60 8009F300 418200A4 */  beq     lbl_8009F3A4
-/* 099D64 8009F304 3C60CC00 */  lis     r3, 0xcc00
-/* 099D68 8009F308 80836800 */  lwz     r4, 0x6800(r3)
+/* 099D64 8009F304 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 099D68 8009F308 80836800 */  lwz     r4, (EXI_REGS_BASE + EXI_00)@l(r3)
 /* 099D6C 8009F30C 548307BC */  rlwinm  r3, r4, 0, 0x1e, 0x1e
 /* 099D70 8009F310 28030000 */  cmplwi  r3, 0
 /* 099D74 8009F314 41820008 */  beq     lbl_8009F31C
@@ -486,9 +486,9 @@ lbl_8009F32C:
 /* 099D94 8009F334 41820008 */  beq     lbl_8009F33C
 /* 099D98 8009F338 64000010 */  oris    r0, r0, 0x10
 lbl_8009F33C:
-/* 099D9C 8009F33C 3C60CC00 */  lis     r3, 0xcc00
-/* 099DA0 8009F340 38636800 */  addi    r3, r3, 0x6800
-/* 099DA4 8009F344 80830014 */  lwz     r4, 0x14(r3)
+/* 099D9C 8009F33C 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 099DA0 8009F340 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
+/* 099DA4 8009F344 80830014 */  lwz     r4, EXI_14(r3)
 /* 099DA8 8009F348 548307BC */  rlwinm  r3, r4, 0, 0x1e, 0x1e
 /* 099DAC 8009F34C 28030000 */  cmplwi  r3, 0
 /* 099DB0 8009F350 41820008 */  beq     lbl_8009F358
@@ -504,9 +504,9 @@ lbl_8009F368:
 /* 099DD0 8009F370 41820008 */  beq     lbl_8009F378
 /* 099DD4 8009F374 64000002 */  oris    r0, r0, 2
 lbl_8009F378:
-/* 099DD8 8009F378 3C60CC00 */  lis     r3, 0xcc00
-/* 099DDC 8009F37C 38636800 */  addi    r3, r3, 0x6800
-/* 099DE0 8009F380 80830028 */  lwz     r4, 0x28(r3)
+/* 099DD8 8009F378 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
+/* 099DDC 8009F37C 38636800 */  addi    r3, r3, EXI_REGS_BASE@l
+/* 099DE0 8009F380 80830028 */  lwz     r4, EXI_28(r3)
 /* 099DE4 8009F384 548307BC */  rlwinm  r3, r4, 0, 0x1e, 0x1e
 /* 099DE8 8009F388 28030000 */  cmplwi  r3, 0
 /* 099DEC 8009F38C 41820008 */  beq     lbl_8009F394
@@ -649,7 +649,6 @@ ExternalInterruptHandler:
 /* 099FC0 8009F560 9421FFF8 */  stwu    r1, -8(r1)
 /* 099FC4 8009F564 4BFFFC70 */  b       __OSDispatchInterrupt
 
-
 .section .data, "wa"
 
 .balign 8
@@ -659,7 +658,6 @@ InterruptPrioTable:
     .long 0x00000100, 0x00000040, 0xF8000000, 0x00000200, 0x00000080, 0x00003000, 0x00000020, 0x03FF8C00
     .long 0x04000000, 0x00004000, 0xFFFFFFFF
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -668,13 +666,9 @@ InterruptPrioTable:
 InterruptHandlerTable:
     .skip 4
 
-.balign 4
-
 /* 000F1A94 80135814 0004 */
 glabel __OSLastInterruptSrr0
     .skip 4
-
-.balign 4
 
 /* 000F1A98 80135818 0002 */
 glabel __OSLastInterrupt
@@ -685,5 +679,3 @@ glabel __OSLastInterrupt
 /* 000F1AA0 80135820 0008 */
 glabel __OSLastInterruptTime
     .skip 8
-
-

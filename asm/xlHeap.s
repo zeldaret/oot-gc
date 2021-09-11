@@ -1571,7 +1571,6 @@ lbl_80007BA8:
 /* 002618 80007BB8 38600000 */  li      r3, 0
 /* 00261C 80007BBC 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -1579,7 +1578,6 @@ lbl_80007BA8:
 /* 000F1030 800F3FB0 0580 */
 gapHeapBlockCache:
     .skip 1408
-
 
 .section .sbss, "wa"
 
@@ -1589,40 +1587,26 @@ gapHeapBlockCache:
 gpHeap:
     .skip 4
 
-.balign 4
-
 /* 000F182C 801355AC 0004 */
 gpHeapBlockFirst:
     .skip 4
-
-.balign 4
 
 /* 000F1830 801355B0 0004 */
 gpHeapBlockLast:
     .skip 4
 
-.balign 4
-
 /* 000F1834 801355B4 0004 */
 gnHeapTakeCount:
     .skip 4
-
-.balign 4
 
 /* 000F1838 801355B8 0004 */
 gnHeapFreeCount:
     .skip 4
 
-.balign 4
-
 /* 000F183C 801355BC 0004 */
 gnHeapTakeCacheCount:
     .skip 4
 
-.balign 4
-
 /* 000F1840 801355C0 0004 */
 glabel gnSizeHeap
     .skip 4
-
-

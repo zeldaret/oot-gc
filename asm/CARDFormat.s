@@ -112,8 +112,8 @@ lbl_800BF73C:
 /* 0BA1A8 800BF748 83630080 */  lwz     r27, 0x80(r3)
 /* 0BA1AC 800BF74C 7F63DB78 */  mr      r3, r27
 /* 0BA1B0 800BF750 4BF45C81 */  bl      memset
-/* 0BA1B4 800BF754 3C60CC00 */  lis     r3, 0xcc00
-/* 0BA1B8 800BF758 A243206E */  lhz     r18, 0x206e(r3)
+/* 0BA1B4 800BF754 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0BA1B8 800BF758 A243206E */  lhz     r18, (VI_REGS_BASE + VI_SEL)@l(r3)
 /* 0BA1BC 800BF75C B29B0024 */  sth     r20, 0x24(r27)
 /* 0BA1C0 800BF760 4BFE112D */  bl      __OSLockSram
 /* 0BA1C4 800BF764 8003000C */  lwz     r0, 0xc(r3)
@@ -534,5 +534,3 @@ glabel CARDFormatAsync
 /* 0BA800 800BFDA0 38210018 */  addi    r1, r1, 0x18
 /* 0BA804 800BFDA4 7C0803A6 */  mtlr    r0
 /* 0BA808 800BFDA8 4E800020 */  blr     
-
-

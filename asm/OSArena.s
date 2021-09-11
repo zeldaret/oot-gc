@@ -21,7 +21,6 @@ glabel OSSetArenaLo
 /* 097F00 8009D4A0 906D8748 */  stw     r3, __OSArenaLo-_SDA_BASE_(r13)
 /* 097F04 8009D4A4 4E800020 */  blr     
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -30,7 +29,6 @@ glabel OSSetArenaLo
 __OSArenaLo:
     .long 0xFFFFFFFF
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -38,5 +36,3 @@ __OSArenaLo:
 /* 000F1A88 80135808 0004 */
 __OSArenaHi:
     .skip 4
-
-

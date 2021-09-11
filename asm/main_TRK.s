@@ -30,7 +30,6 @@ lbl_800CD3F0:
 /* 0C7E64 800CD404 7C0803A6 */  mtlr    r0
 /* 0C7E68 800CD408 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -38,5 +37,3 @@ lbl_800CD3F0:
 /* 00131B50 80134AD0 0004 */
 TRK_mainError:
     .skip 4
-
-

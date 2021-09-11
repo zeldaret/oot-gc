@@ -223,11 +223,11 @@ glabel GXInit
 /* 0A2FDC 800A857C 90050594 */  stw     r0, 0x594(r5)
 /* 0A2FE0 800A8580 90050598 */  stw     r0, 0x598(r5)
 /* 0A2FE4 800A8584 4800256D */  bl      GXSetMisc
-/* 0A2FE8 800A8588 3C80CC00 */  lis     r4, 0xcc00
-/* 0A2FEC 800A858C 38A43000 */  addi    r5, r4, 0x3000
+/* 0A2FE8 800A8588 3C80CC00 */  lis     r4, HW_REGS_BASE@ha
+/* 0A2FEC 800A858C 38A43000 */  addi    r5, r4, PI_REGS_BASE@l
 /* 0A2FF0 800A8590 908D8C3C */  stw     r4, __cpReg-_SDA_BASE_(r13)
-/* 0A2FF4 800A8594 38641000 */  addi    r3, r4, 0x1000
-/* 0A2FF8 800A8598 38044000 */  addi    r0, r4, 0x4000
+/* 0A2FF4 800A8594 38641000 */  addi    r3, r4, PE_REGS_BASE@l
+/* 0A2FF8 800A8598 38044000 */  addi    r0, r4, MI_REGS_BASE@l
 /* 0A2FFC 800A859C 90AD8C38 */  stw     r5, __piReg-_SDA_BASE_(r13)
 /* 0A3000 800A85A0 906D8C40 */  stw     r3, __peReg-_SDA_BASE_(r13)
 /* 0A3004 800A85A4 900D8C44 */  stw     r0, __memReg-_SDA_BASE_(r13)
@@ -1321,7 +1321,6 @@ lbl_800A94EC:
 /* 0A405C 800A95FC 7C0803A6 */  mtlr    r0
 /* 0A4060 800A9600 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1329,6 +1328,7 @@ lbl_800A94EC:
 /* 000EEB40 800F1AC0 0044 */
 D_800F1AC0:
     .asciz "<< Dolphin SDK - GX\trelease build: Jul 23 2003 11:27:39 (0x2301) >>"
+    .balign 4
 
 .balign 32
 
@@ -1348,13 +1348,9 @@ GXDefaultVATList:
     .long 0x00000013, 0x00000001, 0x00000004, 0x00000000, 0x00000014, 0x00000001, 0x00000004, 0x00000000
     .long 0x000000FF, 0x00000000, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000EEC90 800F1C10 001C */
 GXDefaultProjData:
-    .long 0x3F800000, 0x00000000, 0x3F800000, 0x00000000, 0xBF800000, 0xC0000000, 0x00000000
-
-.balign 4
+    .float 1.0, 0.0, 1.0, 0.0, -1.0, -2.0, 0.0
 
 /* 000EECAC 800F1C2C 00C0 */
 GXTexRegionAddrTable:
@@ -1365,12 +1361,9 @@ GXTexRegionAddrTable:
     .long 0x00000000, 0x00090000, 0x00020000, 0x000B0000, 0x00040000, 0x00090000, 0x00060000, 0x000B0000
     .long 0x00080000, 0x00010000, 0x000A0000, 0x00030000, 0x00080000, 0x00050000, 0x000A0000, 0x00070000
 
-.balign 4
-
 /* 000EED6C 800F1CEC 0010 */
 GXResetFuncInfo:
     .long __GXShutdown, 0x0000007F, 0x00000000, 0x00000000
-
 
 .section .bss, "wa"
 
@@ -1380,12 +1373,9 @@ GXResetFuncInfo:
 FifoObj:
     .skip 128
 
-.balign 4
-
 /* 0012EF38 80131EB8 05B0 */
 gxData:
     .skip 1456
-
 
 .section .sdata, "wa"
 
@@ -1395,7 +1385,6 @@ gxData:
 glabel __GXVersion
     .long D_800F1AC0
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1404,25 +1393,17 @@ glabel __GXVersion
 glabel __piReg
     .skip 4
 
-.balign 4
-
 /* 000F1B9C 8013591C 0004 */
 glabel __cpReg
     .skip 4
-
-.balign 4
 
 /* 000F1BA0 80135920 0004 */
 glabel __peReg
     .skip 4
 
-.balign 4
-
 /* 000F1BA4 80135924 0004 */
 glabel __memReg
     .skip 4
-
-.balign 4
 
 /* 000F1BA8 80135928 0004 */
 peCount$35:
@@ -1434,18 +1415,13 @@ peCount$35:
 time$36:
     .skip 8
 
-.balign 4
-
 /* 000F1BB8 80135938 0004 */
 calledOnce$37:
     .skip 4
 
-.balign 4
-
 /* 000F1BBC 8013593C 0004 */
 resetFuncRegistered$70:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -1453,54 +1429,36 @@ resetFuncRegistered$70:
 
 /* 000F1C00 80136100 0004 */
 glabel __GXData
-    .long FifoObj + 0x80
-
-.balign 4
+    .long gxData
 
 /* 000F1C04 80136104 0004 */
 D_80136104:
     .float 16777216.0
 
-.balign 4
-
 /* 000F1C08 80136108 0004 */
 D_80136108:
     .float 0.0
-
-.balign 4
 
 /* 000F1C0C 8013610C 0004 */
 D_8013610C:
     .long 0x404040FF
 
-.balign 4
-
 /* 000F1C10 80136110 0004 */
 D_80136110:
     .long 0x00000000
-
-.balign 4
 
 /* 000F1C14 80136114 0004 */
 D_80136114:
     .long 0xFFFFFFFF
 
-.balign 4
-
 /* 000F1C18 80136118 0004 */
 D_80136118:
     .float 1.0
-
-.balign 4
 
 /* 000F1C1C 8013611C 0004 */
 D_8013611C:
     .float 0.10000000149011612
 
-.balign 8
-
 /* 000F1C20 80136120 0008 */
 D_80136120:
     .double 4503599627370496.0
-
-

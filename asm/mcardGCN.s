@@ -10274,28 +10274,24 @@ lbl_8001C434:
 /* 016E9C 8001C43C 38600000 */  li      r3, 0
 /* 016EA0 8001C440 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
 
 /* 000E75C8 800EA548 001C */
 D_800EA548:
-    .long 0x835B838B, 0x835F82CC, 0x936090E0, 0x81468E9E, 0x82CC8349, 0x834A838A, 0x83690000
-
-.balign 4
+    .asciz "ゼルダの伝説：時のオカリナ"
+    .balign 4
 
 /* 000E75E4 800EA564 0035 */
 D_800EA564:
     .asciz "Invalid Memory Card Command %d - Assuming Go To Game"
-
-.balign 4
+    .balign 4
 
 /* 000E761C 800EA59C 000B */
 D_800EA59C:
     .asciz "mcardGCN.c"
-
-.balign 4
+    .balign 4
 
 /* 000E7628 800EA5A8 0060 */
 jtbl_800EA5A8:
@@ -10324,8 +10320,6 @@ jtbl_800EA5A8:
     .long lbl_80016D74
     .long lbl_80016D64
 
-.balign 4
-
 /* 000E7688 800EA608 0060 */
 jtbl_800EA608:
     .long lbl_80016E54
@@ -10352,8 +10346,6 @@ jtbl_800EA608:
     .long lbl_80016E54
     .long lbl_80016E54
     .long lbl_80016E34
-
-.balign 4
 
 /* 000E76E8 800EA668 00C8 */
 jtbl_800EA668:
@@ -10408,54 +10400,45 @@ jtbl_800EA668:
     .long lbl_8001779C
     .long lbl_800177C4
 
-.balign 4
-
 /* 000E77B0 800EA730 000F */
 D_800EA730:
     .asciz "Accessing Card"
-
-.balign 4
+    .balign 4
 
 /* 000E77C0 800EA740 0012 */
 D_800EA740:
     .asciz "Writing Game Data"
-
-.balign 4
+    .balign 4
 
 /* 000E77D4 800EA754 000E */
 D_800EA754:
     .asciz "Creating File"
-
-.balign 4
+    .balign 4
 
 /* 000E77E4 800EA764 0012 */
 D_800EA764:
     .asciz "Reading Game Data"
-
-.balign 4
+    .balign 4
 
 /* 000E77F8 800EA778 0014 */
 D_800EA778:
     .asciz "Reading Card Header"
-
-.balign 4
+    .balign 4
 
 /* 000E780C 800EA78C 0014 */
 D_800EA78C:
     .asciz "Writing Card Header"
-
-.balign 4
+    .balign 4
 
 /* 000E7820 800EA7A0 0014 */
 D_800EA7A0:
     .asciz "Writing File Header"
-
-.balign 4
+    .balign 4
 
 /* 000E7834 800EA7B4 0014 */
 D_800EA7B4:
     .asciz "Reading File Header"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -10465,24 +10448,17 @@ D_800EA7B4:
 gMCardCardWorkArea:
     .skip 40960
 
-.balign 4
-
 /* 001049E0 80107960 0028 */
 glabel gDate
     .skip 40
-
-.balign 4
 
 /* 00104A08 80107988 0028 */
 glabel bNoWriteInCurrentFrame
     .skip 40
 
-.balign 4
-
 /* 00104A30 801079B0 07B8 */
 glabel mCard
     .skip 1976
-
 
 .section .sdata, "wa"
 
@@ -10492,7 +10468,6 @@ glabel mCard
 toggle$1034:
     .long 0x00000001
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -10501,40 +10476,26 @@ toggle$1034:
 glabel currentIdx
     .skip 4
 
-.balign 4
-
 /* 000F18E4 80135664 0004 */
 yes$771:
     .skip 4
-
-.balign 4
 
 /* 000F18E8 80135668 0004 */
 prevMenuEntry$772:
     .skip 4
 
-.balign 4
-
 /* 000F18EC 8013566C 0004 */
 nextMenuEntry$773:
     .skip 4
-
-.balign 4
 
 /* 000F18F0 80135670 0004 */
 toggle2$1029:
     .skip 4
 
-.balign 4
-
 /* 000F18F4 80135674 0004 */
 checkFailCount$1490:
     .skip 4
 
-.balign 4
-
 /* 000F18F8 80135678 0004 */
 glabel bWrite2Card
     .skip 4
-
-

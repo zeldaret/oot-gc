@@ -60,7 +60,6 @@ lbl_8000F84C:
 /* 00A2E8 8000F888 7C0803A6 */  mtlr    r0
 /* 00A2EC 8000F88C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -68,7 +67,7 @@ lbl_8000F84C:
 /* 000E7248 800EA1C8 001E */
 D_800EA1C8:
     .asciz "final_zelda_credits_sound.thp"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -77,5 +76,3 @@ D_800EA1C8:
 /* 000F1890 80135610 0004 */
 glabel gBufferP
     .skip 4
-
-

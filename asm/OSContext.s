@@ -636,7 +636,6 @@ lbl_8009E628:
 /* 0990D0 8009E670 7C0803A6 */  mtlr    r0
 /* 0990D4 8009E674 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -644,77 +643,64 @@ lbl_8009E628:
 /* 000EDEF8 800F0E78 0044 */
 D_800F0E78:
     .asciz "------------------------- Context 0x%08x -------------------------\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDF3C 800F0EBC 0030 */
 D_800F0EBC:
     .asciz "r%-2d  = 0x%08x (%14d)  r%-2d  = 0x%08x (%14d)\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDF6C 800F0EEC 002F */
 D_800F0EEC:
     .asciz "LR   = 0x%08x                   CR   = 0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDF9C 800F0F1C 002F */
 D_800F0F1C:
     .asciz "SRR0 = 0x%08x                   SRR1 = 0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDFCC 800F0F4C 0011 */
 D_800F0F4C:
     .asciz "\nGQRs----------\n"
-
-.balign 4
+    .balign 4
 
 /* 000EDFE0 800F0F60 0021 */
 D_800F0F60:
     .asciz "gqr%d = 0x%08x \t gqr%d = 0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE004 800F0F84 0012 */
 D_800F0F84:
     .asciz "\n\nFPRs----------\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE018 800F0F98 0019 */
 D_800F0F98:
     .asciz "fr%d \t= %d \t fr%d \t= %d\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE034 800F0FB4 0012 */
 D_800F0FB4:
     .asciz "\n\nPSFs----------\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE048 800F0FC8 001D */
 D_800F0FC8:
     .asciz "ps%d \t= 0x%x \t ps%d \t= 0x%x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE068 800F0FE8 0026 */
 D_800F0FE8:
     .asciz "\nAddress:      Back Chain    LR Save\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE090 800F1010 001C */
 D_800F1010:
     .asciz "0x%08x:   0x%08x    0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE0AC 800F102C 0023 */
 D_800F102C:
     .asciz "FPU-unavailable handler installed\n"
-
-
+    .balign 4

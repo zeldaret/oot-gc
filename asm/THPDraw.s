@@ -523,7 +523,6 @@ glabel THPGXYuv2RgbDraw
 /* 00C390 80011930 7C0803A6 */  mtlr    r0
 /* 00C394 80011934 4E800020 */  blr     
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -532,46 +531,30 @@ glabel THPGXYuv2RgbDraw
 D_80135D78:
     .long 0xFFA60000, 0xFF8E0087
 
-.balign 4
-
 /* 000F1880 80135D80 0004 */
 D_80135D80:
     .long 0x0000E258
-
-.balign 4
 
 /* 000F1884 80135D84 0004 */
 D_80135D84:
     .long 0xB30000B6
 
-.balign 4
-
 /* 000F1888 80135D88 0004 */
 D_80135D88:
     .long 0xFF00FF80
-
-.balign 4
 
 /* 000F188C 80135D8C 0004 */
 D_80135D8C:
     .float 0.0
 
-.balign 4
-
 /* 000F1890 80135D90 0004 */
 D_80135D90:
     .float -1.0
-
-.balign 4
 
 /* 000F1894 80135D94 0004 */
 D_80135D94:
     .float 1.0
 
-.balign 8
-
 /* 000F1898 80135D98 0008 */
 D_80135D98:
     .double 4503601774854144.0
-
-

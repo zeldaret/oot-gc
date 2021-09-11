@@ -458,7 +458,6 @@ peripheralDMA_Complete:
 /* 0927F4 80097D94 7C0803A6 */  mtlr    r0
 /* 0927F8 80097D98 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -466,14 +465,11 @@ peripheralDMA_Complete:
 /* 000ED030 800EFFB0 000B */
 D_800EFFB0:
     .asciz "PERIPHERAL"
-
-.balign 4
+    .balign 4
 
 /* 000ED03C 800EFFBC 0010 */
 glabel gClassPeripheral
     .long D_800EFFB0, 0x00000038, 0x00000000, peripheralEvent
-
-.balign 4
 
 /* 000ED04C 800EFFCC 00C4 */
 jtbl_800EFFCC:
@@ -527,8 +523,6 @@ jtbl_800EFFCC:
     .long lbl_8009799C
     .long lbl_8009798C
 
-.balign 4
-
 /* 000ED110 800F0090 00C4 */
 jtbl_800F0090:
     .long lbl_80097A04
@@ -580,5 +574,3 @@ jtbl_800F0090:
     .long lbl_80097D24
     .long lbl_80097D24
     .long lbl_80097D14
-
-

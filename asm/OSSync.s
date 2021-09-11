@@ -42,5 +42,3 @@ glabel __OSInitSystemCall
 /* 09BB2C 800A10CC 38210010 */  addi    r1, r1, 0x10
 /* 09BB30 800A10D0 7C0803A6 */  mtlr    r0
 /* 09BB34 800A10D4 4E800020 */  blr     
-
-

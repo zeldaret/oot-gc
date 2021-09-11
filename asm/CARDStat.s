@@ -335,5 +335,3 @@ lbl_800C14A4:
 /* 0BBF18 800C14B8 38210030 */  addi    r1, r1, 0x30
 /* 0BBF1C 800C14BC 7C0803A6 */  mtlr    r0
 /* 0BBF20 800C14C0 4E800020 */  blr     
-
-

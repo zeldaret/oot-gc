@@ -16,8 +16,8 @@ glabel OSGetFontEncode
 /* 099720 8009ECC0 4180002C */  blt     lbl_8009ECEC
 /* 099724 8009ECC4 48000028 */  b       lbl_8009ECEC
 lbl_8009ECC8:
-/* 099728 8009ECC8 3C60CC00 */  lis     r3, 0xcc00
-/* 09972C 8009ECCC A003206E */  lhz     r0, 0x206e(r3)
+/* 099728 8009ECC8 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 09972C 8009ECCC A003206E */  lhz     r0, (VI_REGS_BASE + VI_SEL)@l(r3)
 /* 099730 8009ECD0 540007BD */  rlwinm. r0, r0, 0, 0x1e, 0x1e
 /* 099734 8009ECD4 4182000C */  beq     lbl_8009ECE0
 /* 099738 8009ECD8 38000001 */  li      r0, 1
@@ -34,7 +34,6 @@ lbl_8009ECF4:
 /* 099754 8009ECF4 A06D8758 */  lhz     r3, fontEncode$80-_SDA_BASE_(r13)
 /* 099758 8009ECF8 4E800020 */  blr     
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -42,5 +41,3 @@ lbl_8009ECF4:
 /* 000F16B8 80135438 0002 */
 fontEncode$80:
     .short 0xFFFF
-
-

@@ -29622,7 +29622,6 @@ lbl_8008D20C:
 /* 087CA0 8008D240 7C0803A6 */  mtlr    r0
 /* 087CA4 8008D244 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -29631,19 +29630,13 @@ lbl_8008D20C:
 glabel gClassRSP
     .long D_801352C0, 0x000039CC, 0x00000000, rspEvent
 
-.balign 4
-
 /* 000EB2B0 800EE230 0020 */
 glabel cmask_tab
     .long 0x00000007, 0x0000000E, 0x0000000C, 0x0000000C, 0x00000000, 0x00000000, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000EB2D0 800EE250 0020 */
 glabel emask_tab
     .long 0x00000000, 0x00000001, 0x00000003, 0x00000003, 0x00000007, 0x00000007, 0x00000007, 0x00000007
-
-.balign 4
 
 /* 000EB2F0 800EE270 000A */
 TMEMSIZE$3463:
@@ -29654,8 +29647,7 @@ TMEMSIZE$3463:
 /* 000EB2FC 800EE27C 0028 */
 D_800EE27C:
     .asciz "FrameComplete: Yielded task pending...\n"
-
-.balign 4
+    .balign 4
 
 /* 000EB324 800EE2A4 0074 */
 jtbl_800EE2A4:
@@ -29689,8 +29681,6 @@ jtbl_800EE2A4:
     .long lbl_80072218
     .long lbl_80072204
 
-.balign 4
-
 /* 000EB398 800EE318 0020 */
 jtbl_800EE318:
     .long lbl_80072718
@@ -29701,8 +29691,6 @@ jtbl_800EE318:
     .long lbl_80072670
     .long lbl_800726D8
     .long lbl_800726F8
-
-.balign 4
 
 /* 000EB3B8 800EE338 0074 */
 jtbl_800EE338:
@@ -29736,8 +29724,6 @@ jtbl_800EE338:
     .long lbl_80072948
     .long lbl_8007293C
 
-.balign 4
-
 /* 000EB42C 800EE3AC 002C */
 jtbl_800EE3AC:
     .long lbl_80072AC0
@@ -29751,8 +29737,6 @@ jtbl_800EE3AC:
     .long lbl_80072AD4
     .long lbl_80072AC0
     .long lbl_80072AD4
-
-.balign 4
 
 /* 000EB458 800EE3D8 0034 */
 jtbl_800EE3D8:
@@ -29769,8 +29753,6 @@ jtbl_800EE3D8:
     .long lbl_8007600C
     .long lbl_8007600C
     .long lbl_8007600C
-
-.balign 4
 
 /* 000EB48C 800EE40C 003C */
 jtbl_800EE40C:
@@ -29790,8 +29772,6 @@ jtbl_800EE40C:
     .long lbl_800750A4
     .long lbl_8007600C
 
-.balign 4
-
 /* 000EB4C8 800EE448 0034 */
 jtbl_800EE448:
     .long lbl_80074A78
@@ -29808,8 +29788,6 @@ jtbl_800EE448:
     .long lbl_80074D04
     .long lbl_800749F0
 
-.balign 4
-
 /* 000EB4FC 800EE47C 0034 */
 jtbl_800EE47C:
     .long lbl_80077440
@@ -29825,8 +29803,6 @@ jtbl_800EE47C:
     .long lbl_80077778
     .long lbl_80077778
     .long lbl_80077778
-
-.balign 4
 
 /* 000EB530 800EE4B0 003C */
 jtbl_800EE4B0:
@@ -29845,8 +29821,6 @@ jtbl_800EE4B0:
     .long lbl_80077778
     .long lbl_80076F5C
     .long lbl_80077778
-
-.balign 4
 
 /* 000EB56C 800EE4EC 007C */
 jtbl_800EE4EC:
@@ -29882,8 +29856,6 @@ jtbl_800EE4EC:
     .long lbl_8007685C
     .long lbl_800767FC
 
-.balign 4
-
 /* 000EB5E8 800EE568 006C */
 jtbl_800EE568:
     .long lbl_8008118C
@@ -29914,8 +29886,6 @@ jtbl_800EE568:
     .long lbl_8008118C
     .long lbl_8008113C
 
-.balign 4
-
 /* 000EB654 800EE5D4 005C */
 jtbl_800EE5D4:
     .long lbl_80082B60
@@ -29941,8 +29911,6 @@ jtbl_800EE5D4:
     .long lbl_80082708
     .long lbl_80082774
     .long lbl_80082B40
-
-.balign 4
 
 /* 000EB6B0 800EE630 0060 */
 jtbl_800EE630:
@@ -29971,8 +29939,6 @@ jtbl_800EE630:
     .long lbl_80084904
     .long lbl_80084930
 
-.balign 4
-
 /* 000EB710 800EE690 0040 */
 jtbl_800EE690:
     .long lbl_80088B18
@@ -29992,7 +29958,6 @@ jtbl_800EE690:
     .long lbl_80088AFC
     .long lbl_80088ABC
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -30000,32 +29965,23 @@ jtbl_800EE690:
 /* 000F1540 801352C0 0004 */
 D_801352C0:
     .asciz "RSP"
-
-.balign 4
+    .balign 4
 
 /* 000F1544 801352C4 0004 */
 nFirstTime$2148:
     .long 0x00000001
 
-.balign 4
-
 /* 000F1548 801352C8 0004 */
 nFirstTime$2648:
     .long 0x00000001
-
-.balign 4
 
 /* 000F154C 801352CC 0004 */
 nFirstTime$2757:
     .long 0x00000001
 
-.balign 4
-
 /* 000F1550 801352D0 0004 */
 nFirstTime$2796:
     .long 0x00000001
-
-.balign 4
 
 /* 000F1554 801352D4 0002 */
 scissorX1:
@@ -30035,18 +29991,13 @@ scissorX1:
 scissorY1:
     .short 0x03C0
 
-.balign 8
-
 /* 000F1558 801352D8 0008 */
 TMEMMASK$3464:
     .long 0x01FF00FF, 0x007F003F
 
-.balign 8
-
 /* 000F1560 801352E0 0008 */
 TMEMSHIFT$3465:
     .long 0x02000100, 0x00800040
-
 
 .section .sbss, "wa"
 
@@ -30056,8 +30007,6 @@ TMEMSHIFT$3465:
 counter$2409:
     .skip 4
 
-.balign 4
-
 /* 000F1A0C 8013578C 0002 */
 scissorX0:
     .skip 2
@@ -30065,8 +30014,6 @@ scissorX0:
 /* 000F1A0E 8013578E 0002 */
 scissorY0:
     .skip 2
-
-.balign 4
 
 /* 000F1A10 80135790 0001 */
 flagBilerp:
@@ -30078,13 +30025,9 @@ flagBilerp:
 rdpSetTimg_w0:
     .skip 4
 
-.balign 4
-
 /* 000F1A18 80135798 0004 */
 rdpSetTile_w0:
     .skip 4
-
-.balign 4
 
 /* 000F1A1C 8013579C 0002 */
 tmemSliceWmax:
@@ -30094,8 +30037,6 @@ tmemSliceWmax:
 imageSrcWsize:
     .skip 2
 
-.balign 4
-
 /* 000F1A20 801357A0 0002 */
 flagSplit:
     .skip 2
@@ -30104,18 +30045,13 @@ flagSplit:
 imagePtrX0:
     .skip 2
 
-.balign 4
-
 /* 000F1A24 801357A4 0004 */
 imageTop:
     .skip 4
 
-.balign 4
-
 /* 000F1A28 801357A8 0002 */
 tmemSrcLines:
     .skip 2
-
 
 .section .sdata2, "wa"
 
@@ -30125,13 +30061,9 @@ tmemSrcLines:
 D_80136038:
     .float 0.25
 
-.balign 4
-
 /* 000F1B3C 8013603C 0004 */
 D_8013603C:
     .float 1024.0
-
-.balign 4
 
 /* 000F1B40 80136040 0004 */
 D_80136040:
@@ -30143,58 +30075,38 @@ D_80136040:
 D_80136048:
     .double 4503601774854144.0
 
-.balign 8
-
 /* 000F1B50 80136050 0008 */
 D_80136050:
     .double 4503599627370496.0
-
-.balign 4
 
 /* 000F1B58 80136058 0004 */
 D_80136058:
     .float 1.0
 
-.balign 4
-
 /* 000F1B5C 8013605C 0004 */
 D_8013605C:
     .float 0.0
-
-.balign 4
 
 /* 000F1B60 80136060 0004 */
 D_80136060:
     .float 0.5
 
-.balign 4
-
 /* 000F1B64 80136064 0004 */
 D_80136064:
     .float 2.0
-
-.balign 4
 
 /* 000F1B68 80136068 0004 */
 D_80136068:
     .float -1.0
 
-.balign 4
-
 /* 000F1B6C 8013606C 0004 */
 D_8013606C:
     .float 65536.0
-
-.balign 4
 
 /* 000F1B70 80136070 0004 */
 D_80136070:
     .float 0.0009765625
 
-.balign 4
-
 /* 000F1B74 80136074 0004 */
 D_80136074:
     .float 1.52587890625e-05
-
-

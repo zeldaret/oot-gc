@@ -1163,7 +1163,6 @@ lbl_8006CD90:
 /* 0677F0 8006CD90 38600001 */  li      r3, 1
 /* 0677F4 8006CD94 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1172,7 +1171,6 @@ lbl_8006CD90:
 glabel gClassPIF
     .long D_80135268, 0x00000030, 0x00000000, pifEvent
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -1180,5 +1178,4 @@ glabel gClassPIF
 /* 000F14E8 80135268 0004 */
 D_80135268:
     .asciz "PIF"
-
-
+    .balign 4

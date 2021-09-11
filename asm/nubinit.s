@@ -124,7 +124,6 @@ lbl_800C9590:
 /* 0C3FF0 800C9590 38210010 */  addi    r1, r1, 0x10
 /* 0C3FF4 800C9594 4E800020 */  blr     
 
-
 .section .rodata, "a"
 
 .balign 8
@@ -132,7 +131,7 @@ lbl_800C9590:
 /* 000D0320 800D32A0 001A */
 D_800D32A0:
     .asciz "MetroTRK for Dolphin v0.5"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -141,5 +140,3 @@ D_800D32A0:
 /* 0012FBF8 80132B78 0004 */
 glabel gTRKBigEndian
     .skip 4
-
-

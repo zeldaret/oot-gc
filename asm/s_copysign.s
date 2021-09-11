@@ -17,5 +17,3 @@ glabel copysign
 /* 0CC530 800D1AD0 C8210008 */  lfd     f1, 8(r1)
 /* 0CC534 800D1AD4 38210018 */  addi    r1, r1, 0x18
 /* 0CC538 800D1AD8 4E800020 */  blr     
-
-

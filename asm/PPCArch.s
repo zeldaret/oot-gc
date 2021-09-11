@@ -118,5 +118,3 @@ glabel PPCDisableSpeculation
 glabel PPCSetFpNonIEEEMode
 /* 096628 8009BBC8 FFA0004C */  mtfsb1  0x1d
 /* 09662C 8009BBCC 4E800020 */  blr     
-
-

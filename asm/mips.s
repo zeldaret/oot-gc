@@ -418,7 +418,6 @@ lbl_8008D780:
 /* 0881E0 8008D780 38600000 */  li      r3, 0
 /* 0881E4 8008D784 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -426,8 +425,6 @@ lbl_8008D780:
 /* 000EB750 800EE6D0 0010 */
 glabel gClassMips
     .long D_801352E8, 0x00000010, 0x00000000, mipsEvent
-
-.balign 4
 
 /* 000EB760 800EE6E0 0034 */
 jtbl_800EE6E0:
@@ -445,8 +442,6 @@ jtbl_800EE6E0:
     .long lbl_8008D3B8
     .long lbl_8008D3AC
 
-.balign 4
-
 /* 000EB794 800EE714 0034 */
 jtbl_800EE714:
     .long lbl_8008D41C
@@ -463,7 +458,6 @@ jtbl_800EE714:
     .long lbl_8008D5C4
     .long lbl_8008D4C8
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -471,5 +465,4 @@ jtbl_800EE714:
 /* 000F1568 801352E8 0005 */
 D_801352E8:
     .asciz "MIPS"
-
-
+    .balign 4

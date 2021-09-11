@@ -32,7 +32,6 @@ lbl_8001C490:
 /* 016EF0 8001C490 38600001 */  li      r3, 1
 /* 016EF4 8001C494 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -41,7 +40,6 @@ lbl_8001C490:
 glabel gClassCode
     .long D_80134DC0, 0x00000004, 0x00000000, codeEvent
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -49,7 +47,7 @@ glabel gClassCode
 /* 000F1040 80134DC0 0005 */
 D_80134DC0:
     .asciz "Code"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -59,10 +57,6 @@ D_80134DC0:
 gpBufferFunction:
     .skip 4
 
-.balign 4
-
 /* 000F1904 80135684 0004 */
 ganDataCode:
     .skip 4
-
-

@@ -7,40 +7,40 @@
 
 __VIRetraceHandler:
 /* 0A0974 800A5F14 7C0802A6 */  mflr    r0
-/* 0A0978 800A5F18 3C60CC00 */  lis     r3, 0xcc00
+/* 0A0978 800A5F18 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
 /* 0A097C 800A5F1C 90010004 */  stw     r0, 4(r1)
-/* 0A0980 800A5F20 38A32000 */  addi    r5, r3, 0x2000
+/* 0A0980 800A5F20 38A32000 */  addi    r5, r3, VI_REGS_BASE@l
 /* 0A0984 800A5F24 3C608013 */  lis     r3, regs@ha
 /* 0A0988 800A5F28 9421FD08 */  stwu    r1, -0x2f8(r1)
 /* 0A098C 800A5F2C 38E00000 */  li      r7, 0
 /* 0A0990 800A5F30 BF6102E4 */  stmw    r27, 0x2e4(r1)
 /* 0A0994 800A5F34 3BC40000 */  addi    r30, r4, 0
 /* 0A0998 800A5F38 3BE31CF0 */  addi    r31, r3, regs@l
-/* 0A099C 800A5F3C A4C50030 */  lhzu    r6, 0x30(r5)
+/* 0A099C 800A5F3C A4C50030 */  lhzu    r6, VI_DI0(r5)
 /* 0A09A0 800A5F40 54C00421 */  rlwinm. r0, r6, 0, 0x10, 0x10
 /* 0A09A4 800A5F44 41820010 */  beq     lbl_800A5F54
 /* 0A09A8 800A5F48 54C0045E */  rlwinm  r0, r6, 0, 0x11, 0xf
-/* 0A09AC 800A5F4C B0050000 */  sth     r0, 0(r5)
+/* 0A09AC 800A5F4C B0050000 */  sth     r0, VI_VTR(r5)
 /* 0A09B0 800A5F50 60E70001 */  ori     r7, r7, 1
 lbl_800A5F54:
-/* 0A09B4 800A5F54 3C60CC00 */  lis     r3, 0xcc00
-/* 0A09B8 800A5F58 A4832034 */  lhzu    r4, 0x2034(r3)
+/* 0A09B4 800A5F54 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A09B8 800A5F58 A4832034 */  lhzu    r4, (VI_REGS_BASE + VI_DI1)@l(r3)
 /* 0A09BC 800A5F5C 54800421 */  rlwinm. r0, r4, 0, 0x10, 0x10
 /* 0A09C0 800A5F60 41820010 */  beq     lbl_800A5F70
 /* 0A09C4 800A5F64 5480045E */  rlwinm  r0, r4, 0, 0x11, 0xf
 /* 0A09C8 800A5F68 B0030000 */  sth     r0, 0(r3)
 /* 0A09CC 800A5F6C 60E70002 */  ori     r7, r7, 2
 lbl_800A5F70:
-/* 0A09D0 800A5F70 3C60CC00 */  lis     r3, 0xcc00
-/* 0A09D4 800A5F74 A4832038 */  lhzu    r4, 0x2038(r3)
+/* 0A09D0 800A5F70 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A09D4 800A5F74 A4832038 */  lhzu    r4, (VI_REGS_BASE + VI_DI2)@l(r3)
 /* 0A09D8 800A5F78 54800421 */  rlwinm. r0, r4, 0, 0x10, 0x10
 /* 0A09DC 800A5F7C 41820010 */  beq     lbl_800A5F8C
 /* 0A09E0 800A5F80 5480045E */  rlwinm  r0, r4, 0, 0x11, 0xf
 /* 0A09E4 800A5F84 B0030000 */  sth     r0, 0(r3)
 /* 0A09E8 800A5F88 60E70004 */  ori     r7, r7, 4
 lbl_800A5F8C:
-/* 0A09EC 800A5F8C 3C60CC00 */  lis     r3, 0xcc00
-/* 0A09F0 800A5F90 A483203C */  lhzu    r4, 0x203c(r3)
+/* 0A09EC 800A5F8C 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A09F0 800A5F90 A483203C */  lhzu    r4, (VI_REGS_BASE + VI_DI3)@l(r3)
 /* 0A09F4 800A5F94 54800421 */  rlwinm. r0, r4, 0, 0x10, 0x10
 /* 0A09F8 800A5F98 41820010 */  beq     lbl_800A5FA8
 /* 0A09FC 800A5F9C 5480045E */  rlwinm  r0, r4, 0, 0x11, 0xf
@@ -98,8 +98,8 @@ lbl_800A603C:
 /* 0A0AB8 800A6058 28030000 */  cmplwi  r3, 0
 /* 0A0ABC 800A605C 418200C4 */  beq     lbl_800A6120
 lbl_800A6060:
-/* 0A0AC0 800A6060 3C60CC00 */  lis     r3, 0xcc00
-/* 0A0AC4 800A6064 3BA32000 */  addi    r29, r3, 0x2000
+/* 0A0AC0 800A6060 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A0AC4 800A6064 3BA32000 */  addi    r29, r3, VI_REGS_BASE@l
 /* 0A0AC8 800A6068 48000078 */  b       lbl_800A60E0
 lbl_800A606C:
 /* 0A0ACC 800A606C 806D8C10 */  lwz     r3, shdwChanged-_SDA_BASE_(r13)
@@ -272,10 +272,10 @@ glabel __VIInit
 /* 0A0CF4 800A6294 387D0000 */  addi    r3, r29, 0
 /* 0A0CF8 800A6298 57BE07BC */  rlwinm  r30, r29, 0, 0x1e, 0x1e
 /* 0A0CFC 800A629C 4BFFFF31 */  bl      getTiming
-/* 0A0D00 800A62A0 3C80CC00 */  lis     r4, 0xcc00
+/* 0A0D00 800A62A0 3C80CC00 */  lis     r4, VI_REGS_BASE@ha
 /* 0A0D04 800A62A4 38000002 */  li      r0, 2
-/* 0A0D08 800A62A8 38A42000 */  addi    r5, r4, 0x2000
-/* 0A0D0C 800A62AC B4050002 */  sthu    r0, 2(r5)
+/* 0A0D08 800A62A8 38A42000 */  addi    r5, r4, VI_REGS_BASE@l
+/* 0A0D0C 800A62AC B4050002 */  sthu    r0, VI_DCR(r5)
 /* 0A0D10 800A62B0 38000000 */  li      r0, 0
 /* 0A0D14 800A62B4 9001001C */  stw     r0, 0x1c(r1)
 /* 0A0D18 800A62B8 8001001C */  lwz     r0, 0x1c(r1)
@@ -292,79 +292,79 @@ lbl_800A62D4:
 /* 0A0D3C 800A62DC 4180FFEC */  blt     lbl_800A62C8
 lbl_800A62E0:
 /* 0A0D40 800A62E0 38000000 */  li      r0, 0
-/* 0A0D44 800A62E4 B0050000 */  sth     r0, 0(r5)
-/* 0A0D48 800A62E8 3D80CC00 */  lis     r12, 0xcc00
+/* 0A0D44 800A62E4 B0050000 */  sth     r0, VI_VTR(r5)
+/* 0A0D48 800A62E8 3D80CC00 */  lis     r12, VI_REGS_BASE@ha
 /* 0A0D4C 800A62EC 39002828 */  li      r8, 0x2828
 /* 0A0D50 800A62F0 A0C3001A */  lhz     r6, 0x1a(r3)
 /* 0A0D54 800A62F4 38E00001 */  li      r7, 1
 /* 0A0D58 800A62F8 2C1D0002 */  cmpwi   r29, 2
-/* 0A0D5C 800A62FC B0CC2006 */  sth     r6, 0x2006(r12)
+/* 0A0D5C 800A62FC B0CC2006 */  sth     r6, (VI_REGS_BASE + VI_06)@l(r12)
 /* 0A0D60 800A6300 38C01001 */  li      r6, 0x1001
-/* 0A0D64 800A6304 388C2000 */  addi    r4, r12, 0x2000
+/* 0A0D64 800A6304 388C2000 */  addi    r4, r12, VI_REGS_BASE@l
 /* 0A0D68 800A6308 8923001D */  lbz     r9, 0x1d(r3)
 /* 0A0D6C 800A630C 8943001E */  lbz     r10, 0x1e(r3)
 /* 0A0D70 800A6310 512A442E */  rlwimi  r10, r9, 8, 0x10, 0x17
-/* 0A0D74 800A6314 B14C2004 */  sth     r10, 0x2004(r12)
+/* 0A0D74 800A6314 B14C2004 */  sth     r10, (VI_REGS_BASE + VI_HTR0)@l(r12)
 /* 0A0D78 800A6318 8923001F */  lbz     r9, 0x1f(r3)
 /* 0A0D7C 800A631C 8943001C */  lbz     r10, 0x1c(r3)
 /* 0A0D80 800A6320 55293830 */  slwi    r9, r9, 7
 /* 0A0D84 800A6324 7D494B78 */  or      r9, r10, r9
-/* 0A0D88 800A6328 B12C200A */  sth     r9, 0x200a(r12)
+/* 0A0D88 800A6328 B12C200A */  sth     r9, (VI_REGS_BASE + VI_0A)@l(r12)
 /* 0A0D8C 800A632C A1230020 */  lhz     r9, 0x20(r3)
 /* 0A0D90 800A6330 55290C3C */  rlwinm  r9, r9, 1, 0x10, 0x1e
-/* 0A0D94 800A6334 B12C2008 */  sth     r9, 0x2008(r12)
+/* 0A0D94 800A6334 B12C2008 */  sth     r9, (VI_REGS_BASE + VI_HTR1)@l(r12)
 /* 0A0D98 800A6338 A1230002 */  lhz     r9, 2(r3)
 /* 0A0D9C 800A633C 89630000 */  lbz     r11, 0(r3)
 /* 0A0DA0 800A6340 5529083C */  slwi    r9, r9, 1
 /* 0A0DA4 800A6344 A1430004 */  lhz     r10, 4(r3)
 /* 0A0DA8 800A6348 3929FFFE */  addi    r9, r9, -2
-/* 0A0DAC 800A634C B16C2000 */  sth     r11, 0x2000(r12)
+/* 0A0DAC 800A634C B16C2000 */  sth     r11, (VI_REGS_BASE + VI_VTR)@l(r12)
 /* 0A0DB0 800A6350 7D2A4A14 */  add     r9, r10, r9
-/* 0A0DB4 800A6354 B12C200E */  sth     r9, 0x200e(r12)
+/* 0A0DB4 800A6354 B12C200E */  sth     r9, (VI_REGS_BASE + VI_0E)@l(r12)
 /* 0A0DB8 800A6358 A1230008 */  lhz     r9, 8(r3)
 /* 0A0DBC 800A635C 39290002 */  addi    r9, r9, 2
-/* 0A0DC0 800A6360 B12C200C */  sth     r9, 0x200c(r12)
+/* 0A0DC0 800A6360 B12C200C */  sth     r9, (VI_REGS_BASE + VI_VTO)@l(r12)
 /* 0A0DC4 800A6364 A1230002 */  lhz     r9, 2(r3)
 /* 0A0DC8 800A6368 A1430006 */  lhz     r10, 6(r3)
 /* 0A0DCC 800A636C 5529083C */  slwi    r9, r9, 1
 /* 0A0DD0 800A6370 3929FFFE */  addi    r9, r9, -2
 /* 0A0DD4 800A6374 7D2A4A14 */  add     r9, r10, r9
-/* 0A0DD8 800A6378 B12C2012 */  sth     r9, 0x2012(r12)
+/* 0A0DD8 800A6378 B12C2012 */  sth     r9, (VI_REGS_BASE + VI_12)@l(r12)
 /* 0A0DDC 800A637C A123000A */  lhz     r9, 0xa(r3)
 /* 0A0DE0 800A6380 39290002 */  addi    r9, r9, 2
-/* 0A0DE4 800A6384 B12C2010 */  sth     r9, 0x2010(r12)
+/* 0A0DE4 800A6384 B12C2010 */  sth     r9, (VI_REGS_BASE + VI_VTE)@l(r12)
 /* 0A0DE8 800A6388 A1230010 */  lhz     r9, 0x10(r3)
 /* 0A0DEC 800A638C 8943000C */  lbz     r10, 0xc(r3)
 /* 0A0DF0 800A6390 55292834 */  slwi    r9, r9, 5
 /* 0A0DF4 800A6394 7D494B78 */  or      r9, r10, r9
-/* 0A0DF8 800A6398 B12C2016 */  sth     r9, 0x2016(r12)
+/* 0A0DF8 800A6398 B12C2016 */  sth     r9, (VI_REGS_BASE + VI_16)@l(r12)
 /* 0A0DFC 800A639C A1230014 */  lhz     r9, 0x14(r3)
 /* 0A0E00 800A63A0 8943000E */  lbz     r10, 0xe(r3)
 /* 0A0E04 800A63A4 55292834 */  slwi    r9, r9, 5
 /* 0A0E08 800A63A8 7D494B78 */  or      r9, r10, r9
-/* 0A0E0C 800A63AC B12C2014 */  sth     r9, 0x2014(r12)
+/* 0A0E0C 800A63AC B12C2014 */  sth     r9, (VI_REGS_BASE + VI_BBEI)@l(r12)
 /* 0A0E10 800A63B0 A1230012 */  lhz     r9, 0x12(r3)
 /* 0A0E14 800A63B4 8943000D */  lbz     r10, 0xd(r3)
 /* 0A0E18 800A63B8 55292834 */  slwi    r9, r9, 5
 /* 0A0E1C 800A63BC 7D494B78 */  or      r9, r10, r9
-/* 0A0E20 800A63C0 B12C201A */  sth     r9, 0x201a(r12)
+/* 0A0E20 800A63C0 B12C201A */  sth     r9, (VI_REGS_BASE + VI_1A)@l(r12)
 /* 0A0E24 800A63C4 A1230016 */  lhz     r9, 0x16(r3)
 /* 0A0E28 800A63C8 8943000F */  lbz     r10, 0xf(r3)
 /* 0A0E2C 800A63CC 55292834 */  slwi    r9, r9, 5
 /* 0A0E30 800A63D0 7D494B78 */  or      r9, r10, r9
-/* 0A0E34 800A63D4 B12C2018 */  sth     r9, 0x2018(r12)
-/* 0A0E38 800A63D8 B10C2048 */  sth     r8, 0x2048(r12)
-/* 0A0E3C 800A63DC B0EC2036 */  sth     r7, 0x2036(r12)
-/* 0A0E40 800A63E0 B0CC2034 */  sth     r6, 0x2034(r12)
+/* 0A0E34 800A63D4 B12C2018 */  sth     r9, (VI_REGS_BASE + VI_BBOI)@l(r12)
+/* 0A0E38 800A63D8 B10C2048 */  sth     r8, (VI_REGS_BASE + VI_HSW)@l(r12)
+/* 0A0E3C 800A63DC B0EC2036 */  sth     r7, (VI_REGS_BASE + VI_36)@l(r12)
+/* 0A0E40 800A63E0 B0CC2034 */  sth     r6, (VI_REGS_BASE + VI_DI1)@l(r12)
 /* 0A0E44 800A63E4 A0C30018 */  lhz     r6, 0x18(r3)
 /* 0A0E48 800A63E8 A063001A */  lhz     r3, 0x1a(r3)
 /* 0A0E4C 800A63EC 7CC60E70 */  srawi   r6, r6, 1
 /* 0A0E50 800A63F0 38630001 */  addi    r3, r3, 1
 /* 0A0E54 800A63F4 7CC60194 */  addze   r6, r6
-/* 0A0E58 800A63F8 B06C2032 */  sth     r3, 0x2032(r12)
+/* 0A0E58 800A63F8 B06C2032 */  sth     r3, (VI_REGS_BASE + VI_32)@l(r12)
 /* 0A0E5C 800A63FC 38C60001 */  addi    r6, r6, 1
 /* 0A0E60 800A6400 60C31000 */  ori     r3, r6, 0x1000
-/* 0A0E64 800A6404 B06C2030 */  sth     r3, 0x2030(r12)
+/* 0A0E64 800A6404 B06C2030 */  sth     r3, (VI_REGS_BASE + VI_DI0)@l(r12)
 /* 0A0E68 800A6408 41820030 */  beq     lbl_800A6438
 /* 0A0E6C 800A640C 2C1D0003 */  cmpwi   r29, 3
 /* 0A0E70 800A6410 41820028 */  beq     lbl_800A6438
@@ -375,15 +375,15 @@ lbl_800A62E0:
 /* 0A0E84 800A6424 57E3402E */  slwi    r3, r31, 8
 /* 0A0E88 800A6428 7CC31B78 */  or      r3, r6, r3
 /* 0A0E8C 800A642C B0650000 */  sth     r3, 0(r5)
-/* 0A0E90 800A6430 B004006C */  sth     r0, 0x6c(r4)
+/* 0A0E90 800A6430 B004006C */  sth     r0, VI_CLK(r4)
 /* 0A0E94 800A6434 4800001C */  b       lbl_800A6450
 lbl_800A6438:
 /* 0A0E98 800A6438 57E0402E */  slwi    r0, r31, 8
 /* 0A0E9C 800A643C 60000005 */  ori     r0, r0, 5
 /* 0A0EA0 800A6440 B0050000 */  sth     r0, 0(r5)
-/* 0A0EA4 800A6444 3C60CC00 */  lis     r3, 0xcc00
+/* 0A0EA4 800A6444 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
 /* 0A0EA8 800A6448 38000001 */  li      r0, 1
-/* 0A0EAC 800A644C B003206C */  sth     r0, 0x206c(r3)
+/* 0A0EAC 800A644C B003206C */  sth     r0, (VI_REGS_BASE + VI_CLK)@l(r3)
 lbl_800A6450:
 /* 0A0EB0 800A6450 80010034 */  lwz     r0, 0x34(r1)
 /* 0A0EB4 800A6454 83E1002C */  lwz     r31, 0x2c(r1)
@@ -412,10 +412,10 @@ glabel VIInit
 /* 0A0F08 800A64A8 4BFF61E9 */  bl      OSRegisterVersion
 /* 0A0F0C 800A64AC 38000001 */  li      r0, 1
 /* 0A0F10 800A64B0 900D8BD0 */  stw     r0, IsInitialized-_SDA_BASE_(r13)
-/* 0A0F14 800A64B4 3C60CC00 */  lis     r3, 0xcc00
-/* 0A0F18 800A64B8 3B832000 */  addi    r28, r3, 0x2000
+/* 0A0F14 800A64B4 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A0F18 800A64B8 3B832000 */  addi    r28, r3, VI_REGS_BASE@l
 /* 0A0F1C 800A64BC 900D8BF0 */  stw     r0, encoderType-_SDA_BASE_(r13)
-/* 0A0F20 800A64C0 A41C0002 */  lhzu    r0, 2(r28)
+/* 0A0F20 800A64C0 A41C0002 */  lhzu    r0, VI_DCR(r28)
 /* 0A0F24 800A64C4 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0A0F28 800A64C8 4082000C */  bne     lbl_800A64D4
 /* 0A0F2C 800A64CC 38600000 */  li      r3, 0
@@ -423,8 +423,8 @@ glabel VIInit
 lbl_800A64D4:
 /* 0A0F34 800A64D4 3BE00000 */  li      r31, 0
 /* 0A0F38 800A64D8 93ED8BD4 */  stw     r31, retraceCount-_SDA_BASE_(r13)
-/* 0A0F3C 800A64DC 3C60CC00 */  lis     r3, 0xcc00
-/* 0A0F40 800A64E0 38632000 */  addi    r3, r3, 0x2000
+/* 0A0F3C 800A64DC 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A0F40 800A64E0 38632000 */  addi    r3, r3, VI_REGS_BASE@l
 /* 0A0F44 800A64E4 93ED8C04 */  stw     r31, (changed + 4)-_SDA_BASE_(r13)
 /* 0A0F48 800A64E8 38000280 */  li      r0, 0x280
 /* 0A0F4C 800A64EC 93ED8C00 */  stw     r31, changed-_SDA_BASE_(r13)
@@ -437,76 +437,76 @@ lbl_800A64D4:
 /* 0A0F68 800A6508 A0DD01C0 */  lhz     r6, 0x1c0(r29)
 /* 0A0F6C 800A650C 54A5542A */  rlwinm  r5, r5, 0xa, 0x10, 0x15
 /* 0A0F70 800A6510 7CC52B78 */  or      r5, r6, r5
-/* 0A0F74 800A6514 B0A3004E */  sth     r5, 0x4e(r3)
+/* 0A0F74 800A6514 B0A3004E */  sth     r5, VI_4E(r3)
 /* 0A0F78 800A6518 A0DD01C2 */  lhz     r6, 0x1c2(r29)
 /* 0A0F7C 800A651C A0BD01C4 */  lhz     r5, 0x1c4(r29)
 /* 0A0F80 800A6520 7CC63670 */  srawi   r6, r6, 6
 /* 0A0F84 800A6524 54A52036 */  slwi    r5, r5, 4
 /* 0A0F88 800A6528 7CC52B78 */  or      r5, r6, r5
-/* 0A0F8C 800A652C B0A3004C */  sth     r5, 0x4c(r3)
+/* 0A0F8C 800A652C B0A3004C */  sth     r5, VI_FCT0(r3)
 /* 0A0F90 800A6530 A0BD01C8 */  lhz     r5, 0x1c8(r29)
 /* 0A0F94 800A6534 A0DD01C6 */  lhz     r6, 0x1c6(r29)
 /* 0A0F98 800A6538 54A5542A */  rlwinm  r5, r5, 0xa, 0x10, 0x15
 /* 0A0F9C 800A653C 7CC52B78 */  or      r5, r6, r5
-/* 0A0FA0 800A6540 B0A30052 */  sth     r5, 0x52(r3)
+/* 0A0FA0 800A6540 B0A30052 */  sth     r5, VI_52(r3)
 /* 0A0FA4 800A6544 A0DD01C8 */  lhz     r6, 0x1c8(r29)
 /* 0A0FA8 800A6548 A0BD01CA */  lhz     r5, 0x1ca(r29)
 /* 0A0FAC 800A654C 7CC63670 */  srawi   r6, r6, 6
 /* 0A0FB0 800A6550 54A52036 */  slwi    r5, r5, 4
 /* 0A0FB4 800A6554 7CC52B78 */  or      r5, r6, r5
-/* 0A0FB8 800A6558 B0A30050 */  sth     r5, 0x50(r3)
+/* 0A0FB8 800A6558 B0A30050 */  sth     r5, VI_FCT1(r3)
 /* 0A0FBC 800A655C A0BD01CE */  lhz     r5, 0x1ce(r29)
 /* 0A0FC0 800A6560 A0DD01CC */  lhz     r6, 0x1cc(r29)
 /* 0A0FC4 800A6564 54A5542A */  rlwinm  r5, r5, 0xa, 0x10, 0x15
 /* 0A0FC8 800A6568 7CC52B78 */  or      r5, r6, r5
-/* 0A0FCC 800A656C B0A30056 */  sth     r5, 0x56(r3)
+/* 0A0FCC 800A656C B0A30056 */  sth     r5, VI_56(r3)
 /* 0A0FD0 800A6570 A0BD01CE */  lhz     r5, 0x1ce(r29)
 /* 0A0FD4 800A6574 A09D01D0 */  lhz     r4, 0x1d0(r29)
 /* 0A0FD8 800A6578 7CA53670 */  srawi   r5, r5, 6
 /* 0A0FDC 800A657C 54842036 */  slwi    r4, r4, 4
 /* 0A0FE0 800A6580 7CA42378 */  or      r4, r5, r4
-/* 0A0FE4 800A6584 B0830054 */  sth     r4, 0x54(r3)
+/* 0A0FE4 800A6584 B0830054 */  sth     r4, VI_FCT2(r3)
 /* 0A0FE8 800A6588 A09D01D4 */  lhz     r4, 0x1d4(r29)
 /* 0A0FEC 800A658C A0BD01D2 */  lhz     r5, 0x1d2(r29)
 /* 0A0FF0 800A6590 5484402E */  slwi    r4, r4, 8
 /* 0A0FF4 800A6594 7CA42378 */  or      r4, r5, r4
-/* 0A0FF8 800A6598 B083005A */  sth     r4, 0x5a(r3)
+/* 0A0FF8 800A6598 B083005A */  sth     r4, VI_5A(r3)
 /* 0A0FFC 800A659C A09D01D8 */  lhz     r4, 0x1d8(r29)
 /* 0A1000 800A65A0 A0BD01D6 */  lhz     r5, 0x1d6(r29)
 /* 0A1004 800A65A4 5484402E */  slwi    r4, r4, 8
 /* 0A1008 800A65A8 7CA42378 */  or      r4, r5, r4
-/* 0A100C 800A65AC B0830058 */  sth     r4, 0x58(r3)
+/* 0A100C 800A65AC B0830058 */  sth     r4, VI_FCT3(r3)
 /* 0A1010 800A65B0 A09D01DC */  lhz     r4, 0x1dc(r29)
 /* 0A1014 800A65B4 A0BD01DA */  lhz     r5, 0x1da(r29)
 /* 0A1018 800A65B8 5484402E */  slwi    r4, r4, 8
 /* 0A101C 800A65BC 7CA42378 */  or      r4, r5, r4
-/* 0A1020 800A65C0 B083005E */  sth     r4, 0x5e(r3)
+/* 0A1020 800A65C0 B083005E */  sth     r4, VI_5E(r3)
 /* 0A1024 800A65C4 A09D01E0 */  lhz     r4, 0x1e0(r29)
 /* 0A1028 800A65C8 A0BD01DE */  lhz     r5, 0x1de(r29)
 /* 0A102C 800A65CC 5484402E */  slwi    r4, r4, 8
 /* 0A1030 800A65D0 7CA42378 */  or      r4, r5, r4
-/* 0A1034 800A65D4 B083005C */  sth     r4, 0x5c(r3)
+/* 0A1034 800A65D4 B083005C */  sth     r4, VI_FCT4(r3)
 /* 0A1038 800A65D8 A09D01E4 */  lhz     r4, 0x1e4(r29)
 /* 0A103C 800A65DC A0BD01E2 */  lhz     r5, 0x1e2(r29)
 /* 0A1040 800A65E0 5484402E */  slwi    r4, r4, 8
 /* 0A1044 800A65E4 7CA42378 */  or      r4, r5, r4
-/* 0A1048 800A65E8 B0830062 */  sth     r4, 0x62(r3)
+/* 0A1048 800A65E8 B0830062 */  sth     r4, VI_62(r3)
 /* 0A104C 800A65EC A09D01E8 */  lhz     r4, 0x1e8(r29)
 /* 0A1050 800A65F0 A0BD01E6 */  lhz     r5, 0x1e6(r29)
 /* 0A1054 800A65F4 5484402E */  slwi    r4, r4, 8
 /* 0A1058 800A65F8 7CA42378 */  or      r4, r5, r4
-/* 0A105C 800A65FC B0830060 */  sth     r4, 0x60(r3)
+/* 0A105C 800A65FC B0830060 */  sth     r4, VI_FCT5(r3)
 /* 0A1060 800A6600 A09D01EC */  lhz     r4, 0x1ec(r29)
 /* 0A1064 800A6604 A0BD01EA */  lhz     r5, 0x1ea(r29)
 /* 0A1068 800A6608 5484402E */  slwi    r4, r4, 8
 /* 0A106C 800A660C 7CA42378 */  or      r4, r5, r4
-/* 0A1070 800A6610 B0830066 */  sth     r4, 0x66(r3)
+/* 0A1070 800A6610 B0830066 */  sth     r4, VI_66(r3)
 /* 0A1074 800A6614 A09D01F0 */  lhz     r4, 0x1f0(r29)
 /* 0A1078 800A6618 A0BD01EE */  lhz     r5, 0x1ee(r29)
 /* 0A107C 800A661C 5484402E */  slwi    r4, r4, 8
 /* 0A1080 800A6620 7CA42378 */  or      r4, r5, r4
-/* 0A1084 800A6624 B0830064 */  sth     r4, 0x64(r3)
-/* 0A1088 800A6628 B0030070 */  sth     r0, 0x70(r3)
+/* 0A1084 800A6624 B0830064 */  sth     r4, VI_FCT6(r3)
+/* 0A1088 800A6628 B0030070 */  sth     r0, VI_70(r3)
 /* 0A108C 800A662C 4BFFA261 */  bl      __OSLockSram
 /* 0A1090 800A6630 88030010 */  lbz     r0, 0x10(r3)
 /* 0A1094 800A6634 38600000 */  li      r3, 0
@@ -690,18 +690,18 @@ lbl_800A6844:
 /* 0A130C 800A68AC 901E0130 */  stw     r0, 0x130(r30)
 /* 0A1310 800A68B0 939E0134 */  stw     r28, 0x134(r30)
 /* 0A1314 800A68B4 4BFFA981 */  bl      OSInitThreadQueue
-/* 0A1318 800A68B8 3C60CC00 */  lis     r3, 0xcc00
-/* 0A131C 800A68BC A0032030 */  lhz     r0, 0x2030(r3)
-/* 0A1320 800A68C0 38832000 */  addi    r4, r3, 0x2000
-/* 0A1324 800A68C4 38A32000 */  addi    r5, r3, 0x2000
+/* 0A1318 800A68B8 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A131C 800A68BC A0032030 */  lhz     r0, (VI_REGS_BASE + VI_DI0)@l(r3)
+/* 0A1320 800A68C0 38832000 */  addi    r4, r3, VI_REGS_BASE@l
+/* 0A1324 800A68C4 38A32000 */  addi    r5, r3, VI_REGS_BASE@l
 /* 0A1328 800A68C8 5400047E */  clrlwi  r0, r0, 0x11
-/* 0A132C 800A68CC B0040030 */  sth     r0, 0x30(r4)
+/* 0A132C 800A68CC B0040030 */  sth     r0, VI_DI0(r4)
 /* 0A1330 800A68D0 3C60800A */  lis     r3, __VIRetraceHandler@ha
 /* 0A1334 800A68D4 38835F14 */  addi    r4, r3, __VIRetraceHandler@l
-/* 0A1338 800A68D8 A0050034 */  lhz     r0, 0x34(r5)
+/* 0A1338 800A68D8 A0050034 */  lhz     r0, VI_DI1(r5)
 /* 0A133C 800A68DC 38600018 */  li      r3, 0x18
 /* 0A1340 800A68E0 5400047E */  clrlwi  r0, r0, 0x11
-/* 0A1344 800A68E4 B0050034 */  sth     r0, 0x34(r5)
+/* 0A1344 800A68E4 B0050034 */  sth     r0, VI_DI1(r5)
 /* 0A1348 800A68E8 938D8BE4 */  stw     r28, PreCB-_SDA_BASE_(r13)
 /* 0A134C 800A68EC 938D8BE8 */  stw     r28, PostCB-_SDA_BASE_(r13)
 /* 0A1350 800A68F0 4BFF8459 */  bl      __OSSetInterruptHandler
@@ -1769,15 +1769,15 @@ glabel VISetBlack
 /* 0A2280 800A7820 4E800020 */  blr     
 
 GetCurrentDisplayPosition:
-/* 0A2284 800A7824 3CA0CC00 */  lis     r5, 0xcc00
-/* 0A2288 800A7828 38E52000 */  addi    r7, r5, 0x2000
-/* 0A228C 800A782C A407002C */  lhzu    r0, 0x2c(r7)
-/* 0A2290 800A7830 38C52000 */  addi    r6, r5, 0x2000
+/* 0A2284 800A7824 3CA0CC00 */  lis     r5, VI_REGS_BASE@ha
+/* 0A2288 800A7828 38E52000 */  addi    r7, r5, VI_REGS_BASE@l
+/* 0A228C 800A782C A407002C */  lhzu    r0, VI_DPV(r7)
+/* 0A2290 800A7830 38C52000 */  addi    r6, r5, VI_REGS_BASE@l
 /* 0A2294 800A7834 5409057E */  clrlwi  r9, r0, 0x15
 lbl_800A7838:
-/* 0A2298 800A7838 A0070000 */  lhz     r0, 0(r7)
+/* 0A2298 800A7838 A0070000 */  lhz     r0, VI_VTR(r7)
 /* 0A229C 800A783C 7D284B78 */  mr      r8, r9
-/* 0A22A0 800A7840 A0A6002E */  lhz     r5, 0x2e(r6)
+/* 0A22A0 800A7840 A0A6002E */  lhz     r5, VI_DPH(r6)
 /* 0A22A4 800A7844 5409057E */  clrlwi  r9, r0, 0x15
 /* 0A22A8 800A7848 7C084840 */  cmplw   r8, r9
 /* 0A22AC 800A784C 54A0057E */  clrlwi  r0, r5, 0x15
@@ -1787,15 +1787,15 @@ lbl_800A7838:
 /* 0A22BC 800A785C 4E800020 */  blr     
 
 getCurrentFieldEvenOdd:
-/* 0A22C0 800A7860 3C60CC00 */  lis     r3, 0xcc00
-/* 0A22C4 800A7864 38E32000 */  addi    r7, r3, 0x2000
-/* 0A22C8 800A7868 A407002C */  lhzu    r0, 0x2c(r7)
-/* 0A22CC 800A786C 38832000 */  addi    r4, r3, 0x2000
+/* 0A22C0 800A7860 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
+/* 0A22C4 800A7864 38E32000 */  addi    r7, r3, VI_REGS_BASE@l
+/* 0A22C8 800A7868 A407002C */  lhzu    r0, VI_DPV(r7)
+/* 0A22CC 800A786C 38832000 */  addi    r4, r3, VI_REGS_BASE@l
 /* 0A22D0 800A7870 5405057E */  clrlwi  r5, r0, 0x15
 lbl_800A7874:
-/* 0A22D4 800A7874 A0070000 */  lhz     r0, 0(r7)
+/* 0A22D4 800A7874 A0070000 */  lhz     r0, VI_VTR(r7)
 /* 0A22D8 800A7878 7CA62B78 */  mr      r6, r5
-/* 0A22DC 800A787C A064002E */  lhz     r3, 0x2e(r4)
+/* 0A22DC 800A787C A064002E */  lhz     r3, VI_DPH(r4)
 /* 0A22E0 800A7880 5405057E */  clrlwi  r5, r0, 0x15
 /* 0A22E4 800A7884 7C062840 */  cmplw   r6, r5
 /* 0A22E8 800A7888 5463057E */  clrlwi  r3, r3, 0x15
@@ -1867,15 +1867,15 @@ glabel VIGetCurrentLine
 /* 0A23D4 800A7974 93C10018 */  stw     r30, 0x18(r1)
 /* 0A23D8 800A7978 83ED8C18 */  lwz     r31, CurrTiming-_SDA_BASE_(r13)
 /* 0A23DC 800A797C 4BFF7381 */  bl      OSDisableInterrupts
-/* 0A23E0 800A7980 3C80CC00 */  lis     r4, 0xcc00
-/* 0A23E4 800A7984 39042000 */  addi    r8, r4, 0x2000
-/* 0A23E8 800A7988 A408002C */  lhzu    r0, 0x2c(r8)
-/* 0A23EC 800A798C 38A42000 */  addi    r5, r4, 0x2000
+/* 0A23E0 800A7980 3C80CC00 */  lis     r4, VI_REGS_BASE@ha
+/* 0A23E4 800A7984 39042000 */  addi    r8, r4, VI_REGS_BASE@l
+/* 0A23E8 800A7988 A408002C */  lhzu    r0, VI_DPV(r8)
+/* 0A23EC 800A798C 38A42000 */  addi    r5, r4, VI_REGS_BASE@l
 /* 0A23F0 800A7990 5406057E */  clrlwi  r6, r0, 0x15
 lbl_800A7994:
-/* 0A23F4 800A7994 A0080000 */  lhz     r0, 0(r8)
+/* 0A23F4 800A7994 A0080000 */  lhz     r0, VI_VTR(r8)
 /* 0A23F8 800A7998 7CC73378 */  mr      r7, r6
-/* 0A23FC 800A799C A085002E */  lhz     r4, 0x2e(r5)
+/* 0A23FC 800A799C A085002E */  lhz     r4, VI_DPH(r5)
 /* 0A2400 800A79A0 5406057E */  clrlwi  r6, r0, 0x15
 /* 0A2404 800A79A4 7C073040 */  cmplw   r7, r6
 /* 0A2408 800A79A8 5487057E */  clrlwi  r7, r4, 0x15
@@ -2088,19 +2088,19 @@ lbl_800A7C74:
 
 glabel __VIGetCurrentPosition
 /* 0A26E0 800A7C80 7C0802A6 */  mflr    r0
-/* 0A26E4 800A7C84 3CE0CC00 */  lis     r7, 0xcc00
+/* 0A26E4 800A7C84 3CE0CC00 */  lis     r7, VI_REGS_BASE@ha
 /* 0A26E8 800A7C88 90010004 */  stw     r0, 4(r1)
 /* 0A26EC 800A7C8C 38C40000 */  addi    r6, r4, 0
-/* 0A26F0 800A7C90 39272000 */  addi    r9, r7, 0x2000
+/* 0A26F0 800A7C90 39272000 */  addi    r9, r7, VI_REGS_BASE@l
 /* 0A26F4 800A7C94 9421FFF8 */  stwu    r1, -8(r1)
 /* 0A26F8 800A7C98 38A30000 */  addi    r5, r3, 0
-/* 0A26FC 800A7C9C 38872000 */  addi    r4, r7, 0x2000
-/* 0A2700 800A7CA0 A409002C */  lhzu    r0, 0x2c(r9)
+/* 0A26FC 800A7C9C 38872000 */  addi    r4, r7, VI_REGS_BASE@l
+/* 0A2700 800A7CA0 A409002C */  lhzu    r0, VI_DPV(r9)
 /* 0A2704 800A7CA4 5408057E */  clrlwi  r8, r0, 0x15
 lbl_800A7CA8:
-/* 0A2708 800A7CA8 A0090000 */  lhz     r0, 0(r9)
+/* 0A2708 800A7CA8 A0090000 */  lhz     r0, VI_VTR(r9)
 /* 0A270C 800A7CAC 7D074378 */  mr      r7, r8
-/* 0A2710 800A7CB0 A064002E */  lhz     r3, 0x2e(r4)
+/* 0A2710 800A7CB0 A064002E */  lhz     r3, VI_DPH(r4)
 /* 0A2714 800A7CB4 5408057E */  clrlwi  r8, r0, 0x15
 /* 0A2718 800A7CB8 7C074040 */  cmplw   r7, r8
 /* 0A271C 800A7CBC 5460057E */  clrlwi  r0, r3, 0x15
@@ -2113,7 +2113,6 @@ lbl_800A7CA8:
 /* 0A2738 800A7CD8 7C0803A6 */  mtlr    r0
 /* 0A273C 800A7CDC 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -2121,8 +2120,7 @@ lbl_800A7CA8:
 /* 000EE750 800F16D0 0044 */
 D_800F16D0:
     .asciz "<< Dolphin SDK - VI\trelease build: Apr 17 2003 12:33:22 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000EE794 800F1714 017C */
 timing:
@@ -2132,8 +2130,6 @@ timing:
     .long 0x00F00018, 0x00180004, 0x0004100E, 0x100E0206, 0x02080206, 0x0208020E, 0x01AD404E, 0x70A20175, 0x7A00019C, 0x0C0001E0, 0x00300030, 0x00060006, 0x18181818, 0x040E040E, 0x040E040E, 0x041A01AD
     .long 0x404769A2, 0x01757A00, 0x019C0C00, 0x01E0002C, 0x002C000A, 0x000A1818, 0x1818040E, 0x040E040E, 0x040E041A, 0x01AD4047, 0x69A8017B, 0x7A00019C, 0x060000F1, 0x00180019, 0x00010000, 0x0C0D0C0D
     .long 0x02080207, 0x02080207, 0x020D01AD, 0x4047699F, 0x01727A00, 0x019C0C00, 0x01E00030, 0x00300006, 0x00061818, 0x1818040E, 0x040E040E, 0x040E041A, 0x01AD4047, 0x69B40187, 0x7A00019C
-
-.balign 4
 
 /* 000EE910 800F1890 0032 */
 taps:
@@ -2173,49 +2169,40 @@ jtbl_800F18C4:
     .long lbl_800A6264
     .long lbl_800A625C
 
-.balign 4
-
 /* 000EE9B0 800F1930 0029 */
 D_800F1930:
     .asciz "***************************************\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE9DC 800F195C 0029 */
 D_800F195C:
     .asciz " ! ! ! C A U T I O N ! ! !             \n"
-
-.balign 4
+    .balign 4
 
 /* 000EEA08 800F1988 0029 */
 D_800F1988:
     .asciz "This TV format \"DEBUG_PAL\" is only for \n"
-
-.balign 4
+    .balign 4
 
 /* 000EEA34 800F19B4 0029 */
 D_800F19B4:
     .asciz "temporary solution until PAL DAC board \n"
-
-.balign 4
+    .balign 4
 
 /* 000EEA60 800F19E0 0029 */
 D_800F19E0:
     .asciz "is available. Please do NOT use this   \n"
-
-.balign 4
+    .balign 4
 
 /* 000EEA8C 800F1A0C 0029 */
 D_800F1A0C:
     .asciz "mode in real games!!!                  \n"
-
-.balign 4
+    .balign 4
 
 /* 000EEAB8 800F1A38 004B */
 D_800F1A38:
     .asciz "VIConfigure(): Tried to change mode from (%d) to (%d), which is forbidden\n"
-
-.balign 4
+    .balign 4
 
 /* 000EEB04 800F1A84 001C */
 jtbl_800F1A84:
@@ -2226,7 +2213,6 @@ jtbl_800F1A84:
     .long lbl_800A7A3C
     .long lbl_800A7A44
     .long lbl_800A7A34
-
 
 .section .bss, "wa"
 
@@ -2248,7 +2234,6 @@ shdwRegs:
 HorVer:
     .skip 88
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -2257,12 +2242,10 @@ HorVer:
 glabel __VIVersion
     .long D_800F16D0
 
-.balign 4
-
 /* 000F16DC 8013545C 0005 */
 D_8013545C:
     .asciz "vi.c"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -2272,49 +2255,33 @@ D_8013545C:
 IsInitialized:
     .skip 4
 
-.balign 4
-
 /* 000F1B34 801358B4 0004 */
 retraceCount:
     .skip 4
-
-.balign 4
 
 /* 000F1B38 801358B8 0004 */
 flushFlag:
     .skip 4
 
-.balign 4
-
 /* 000F1B3C 801358BC 0008 */
 retraceQueue:
     .skip 8
-
-.balign 4
 
 /* 000F1B44 801358C4 0004 */
 PreCB:
     .skip 4
 
-.balign 4
-
 /* 000F1B48 801358C8 0004 */
 PostCB:
     .skip 4
-
-.balign 4
 
 /* 000F1B4C 801358CC 0004 */
 PositionCallback:
     .skip 4
 
-.balign 4
-
 /* 000F1B50 801358D0 0004 */
 encoderType:
     .skip 4
-
-.balign 4
 
 /* 000F1B54 801358D4 0002 */
 displayOffsetH:
@@ -2323,8 +2290,6 @@ displayOffsetH:
 /* 000F1B56 801358D6 0002 */
 displayOffsetV:
     .skip 2
-
-.balign 4
 
 /* 000F1B58 801358D8 0004 */
 changeMode:
@@ -2336,8 +2301,6 @@ changeMode:
 changed:
     .skip 8
 
-.balign 4
-
 /* 000F1B68 801358E8 0004 */
 shdwChangeMode:
     .skip 4
@@ -2348,40 +2311,26 @@ shdwChangeMode:
 shdwChanged:
     .skip 8
 
-.balign 4
-
 /* 000F1B78 801358F8 0004 */
 CurrTiming:
     .skip 4
-
-.balign 4
 
 /* 000F1B7C 801358FC 0004 */
 CurrTvMode:
     .skip 4
 
-.balign 4
-
 /* 000F1B80 80135900 0004 */
 NextBufAddr:
     .skip 4
-
-.balign 4
 
 /* 000F1B84 80135904 0004 */
 CurrBufAddr:
     .skip 4
 
-.balign 4
-
 /* 000F1B88 80135908 0004 */
 FBSet:
     .skip 4
 
-.balign 4
-
 /* 000F1B8C 8013590C 0004 */
 message$343:
     .skip 4
-
-

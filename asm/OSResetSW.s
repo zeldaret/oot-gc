@@ -25,7 +25,7 @@ glabel __OSResetSWInterruptHandler
 /* 09ACEC 800A028C 1C000064 */  mulli   r0, r0, 0x64
 /* 09ACF0 800A0290 541DE8FE */  srwi    r29, r0, 3
 /* 09ACF4 800A0294 3BC00000 */  li      r30, 0
-/* 09ACF8 800A0298 3FE0CC00 */  lis     r31, 0xcc00
+/* 09ACF8 800A0298 3FE0CC00 */  lis     r31, PI_REGS_BASE@ha
 lbl_800A029C:
 /* 09ACFC 800A029C 4800202D */  bl      __OSGetSystemTime
 /* 09AD00 800A02A0 80CD8B84 */  lwz     r6, (HoldDown + 4)-_SDA_BASE_(r13)
@@ -39,12 +39,12 @@ lbl_800A029C:
 /* 09AD20 800A02C0 7CA31910 */  subfe   r5, r3, r3
 /* 09AD24 800A02C4 7CA500D1 */  neg.    r5, r5
 /* 09AD28 800A02C8 41820010 */  beq     lbl_800A02D8
-/* 09AD2C 800A02CC 801F3000 */  lwz     r0, 0x3000(r31)
+/* 09AD2C 800A02CC 801F3000 */  lwz     r0, (PI_REGS_BASE + PI_INTSR)@l(r31)
 /* 09AD30 800A02D0 540003DF */  rlwinm. r0, r0, 0, 0xf, 0xf
 /* 09AD34 800A02D4 4182FFC8 */  beq     lbl_800A029C
 lbl_800A02D8:
-/* 09AD38 800A02D8 3C60CC00 */  lis     r3, 0xcc00
-/* 09AD3C 800A02DC 80033000 */  lwz     r0, 0x3000(r3)
+/* 09AD38 800A02D8 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
+/* 09AD3C 800A02DC 80033000 */  lwz     r0, (PI_REGS_BASE + PI_INTSR)@l(r3)
 /* 09AD40 800A02E0 540003DF */  rlwinm. r0, r0, 0, 0xf, 0xf
 /* 09AD44 800A02E4 40820034 */  bne     lbl_800A0318
 /* 09AD48 800A02E8 38000001 */  li      r0, 1
@@ -61,8 +61,8 @@ lbl_800A02D8:
 /* 09AD74 800A0314 4E800021 */  blrl    
 lbl_800A0318:
 /* 09AD78 800A0318 38000002 */  li      r0, 2
-/* 09AD7C 800A031C 3C60CC00 */  lis     r3, 0xcc00
-/* 09AD80 800A0320 90033000 */  stw     r0, 0x3000(r3)
+/* 09AD7C 800A031C 3C60CC00 */  lis     r3, PI_REGS_BASE@ha
+/* 09AD80 800A0320 90033000 */  stw     r0, (PI_REGS_BASE + PI_INTSR)@l(r3)
 /* 09AD84 800A0324 8001002C */  lwz     r0, 0x2c(r1)
 /* 09AD88 800A0328 83E10024 */  lwz     r31, 0x24(r1)
 /* 09AD8C 800A032C 83C10020 */  lwz     r30, 0x20(r1)
@@ -81,8 +81,8 @@ glabel OSGetResetButtonState
 /* 09ADB8 800A0358 4BFFE9A5 */  bl      OSDisableInterrupts
 /* 09ADBC 800A035C 7C7E1B78 */  mr      r30, r3
 /* 09ADC0 800A0360 48001F69 */  bl      __OSGetSystemTime
-/* 09ADC4 800A0364 3CA0CC00 */  lis     r5, 0xcc00
-/* 09ADC8 800A0368 80053000 */  lwz     r0, 0x3000(r5)
+/* 09ADC4 800A0364 3CA0CC00 */  lis     r5, PI_REGS_BASE@ha
+/* 09ADC8 800A0368 80053000 */  lwz     r0, (PI_REGS_BASE + PI_INTSR)@l(r5)
 /* 09ADCC 800A036C 540003DF */  rlwinm. r0, r0, 0, 0xf, 0xf
 /* 09ADD0 800A0370 408200DC */  bne     lbl_800A044C
 /* 09ADD4 800A0374 800D8B6C */  lwz     r0, Down-_SDA_BASE_(r13)
@@ -252,7 +252,6 @@ lbl_800A05B0:
 /* 09B030 800A05D0 7C0803A6 */  mtlr    r0
 /* 09B034 800A05D4 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -261,13 +260,9 @@ lbl_800A05B0:
 ResetCallback:
     .skip 4
 
-.balign 4
-
 /* 000F1ACC 8013584C 0004 */
 Down:
     .skip 4
-
-.balign 4
 
 /* 000F1AD0 80135850 0004 */
 LastState:
@@ -279,10 +274,6 @@ LastState:
 HoldUp:
     .skip 8
 
-.balign 8
-
 /* 000F1AE0 80135860 0008 */
 HoldDown:
     .skip 8
-
-

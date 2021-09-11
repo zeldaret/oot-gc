@@ -1179,7 +1179,6 @@ lbl_800AFCDC:
 /* 0AA758 800AFCF8 90040000 */  stw     r0, 0(r4)
 /* 0AA75C 800AFCFC 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1209,8 +1208,6 @@ jtbl_800F2158:
     .long lbl_800AF4F8
     .long lbl_800AF2C0
     .long lbl_800AF504
-
-.balign 4
 
 /* 000EF234 800F21B4 0090 */
 jtbl_800F21B4:
@@ -1251,8 +1248,6 @@ jtbl_800F21B4:
     .long lbl_800AEF48
     .long lbl_800AF208
 
-.balign 4
-
 /* 000EF2C4 800F2244 005C */
 jtbl_800F2244:
     .long lbl_800AF63C
@@ -1278,5 +1273,3 @@ jtbl_800F2244:
     .long lbl_800AF69C
     .long lbl_800AF694
     .long lbl_800AF6A4
-
-

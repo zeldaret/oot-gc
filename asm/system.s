@@ -4773,7 +4773,6 @@ lbl_80030E5C:
 /* 02B8C8 80030E68 7C0803A6 */  mtlr    r0
 /* 02B8CC 80030E6C 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -4781,14 +4780,11 @@ lbl_80030E5C:
 /* 000E8380 800EB300 000D */
 D_800EB300:
     .asciz "SYSTEM (N64)"
-
-.balign 4
+    .balign 4
 
 /* 000E8390 800EB310 0010 */
 glabel gClassSystem
     .long D_800EB300, 0x00000088, 0x00000000, systemEvent
-
-.balign 4
 
 /* 000E83A0 800EB320 0140 */
 contMap:
@@ -4797,8 +4793,6 @@ contMap:
     .long 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000, 0x80000000, 0x40000000, 0x00010000, 0x00020000, 0x20000000, 0x00100000, 0x00040000, 0x10000000
     .long 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00200000, 0x00200000, 0x00200000, 0x00200000, 0x00080000, 0x00040000, 0x00020000, 0x00010000, 0x80000000, 0x40000000, 0x00200000, 0x00000000
     .long 0x20000000, 0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000
-
-.balign 4
 
 /* 000E84E0 800EB460 0040 */
 jtbl_800EB460:
@@ -4819,25 +4813,20 @@ jtbl_800EB460:
     .long lbl_8002D090
     .long lbl_8002D0DC
 
-.balign 4
-
 /* 000E8520 800EB4A0 000C */
 D_800EB4A0:
     .asciz "BREAK (CPU)"
-
-.balign 4
+    .balign 4
 
 /* 000E852C 800EB4AC 000B */
 D_800EB4AC:
     .asciz "BREAK (SP)"
-
-.balign 4
+    .balign 4
 
 /* 000E8538 800EB4B8 000D */
 D_800EB4B8:
     .asciz "THREADSTATUS"
-
-.balign 4
+    .balign 4
 
 /* 000E8548 800EB4C8 0040 */
 jtbl_800EB4C8:
@@ -4858,138 +4847,115 @@ jtbl_800EB4C8:
     .long lbl_8002DD44
     .long lbl_8002DD50
 
-.balign 4
-
 /* 000E8588 800EB508 000F */
 D_800EB508:
     .asciz "TPL/z_icon.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E8598 800EB518 000E */
 D_800EB518:
     .asciz "TPL/z_bnr.tpl"
-
-.balign 4
+    .balign 4
 
 /* 000E85A8 800EB528 0009 */
 D_800EB528:
     .asciz "Mario 64"
-
-.balign 4
+    .balign 4
 
 /* 000E85B4 800EB534 0014 */
 D_800EB534:
-    .long 0x835B838B, 0x835F8352, 0x838C834E, 0x83568387, 0x83930000
-
-.balign 4
+    .asciz "ゼルダコレクション"
+    .balign 4
 
 /* 000E85C8 800EB548 001A */
 D_800EB548:
     .asciz "The Legend of Zelda Debug"
-
-.balign 4
+    .balign 4
 
 /* 000E85E4 800EB564 0010 */
 D_800EB564:
     .asciz "Legend of Zelda"
-
-.balign 4
+    .balign 4
 
 /* 000E85F4 800EB574 000B */
 D_800EB574:
     .asciz "Pilotwings"
-
-.balign 4
+    .balign 4
 
 /* 000E8600 800EB580 000E */
 D_800EB580:
     .asciz "Animal Forest"
-
-.balign 4
+    .balign 4
 
 /* 000E8610 800EB590 000E */
 D_800EB590:
     .asciz "Cruise 'n USA"
-
-.balign 4
+    .balign 4
 
 /* 000E8620 800EB5A0 000A */
 D_800EB5A0:
     .asciz "Dr. Mario"
-
-.balign 4
+    .balign 4
 
 /* 000E862C 800EB5AC 000B */
 D_800EB5AC:
     .asciz "Mario Kart"
-
-.balign 4
+    .balign 4
 
 /* 000E8638 800EB5B8 000E */
 D_800EB5B8:
     .asciz "Mario Party 1"
-
-.balign 4
+    .balign 4
 
 /* 000E8648 800EB5C8 000E */
 D_800EB5C8:
     .asciz "Mario Party 2"
-
-.balign 4
+    .balign 4
 
 /* 000E8658 800EB5D8 000E */
 D_800EB5D8:
     .asciz "Mario Party 3"
-
-.balign 4
+    .balign 4
 
 /* 000E8668 800EB5E8 000B */
 D_800EB5E8:
     .asciz "PaperMario"
-
-.balign 4
+    .balign 4
 
 /* 000E8674 800EB5F4 000C */
 D_800EB5F4:
     .asciz "Paper Mario"
-
-.balign 4
+    .balign 4
 
 /* 000E8680 800EB600 000B */
 D_800EB600:
     .asciz "PAPERMARIO"
-
-.balign 4
+    .balign 4
 
 /* 000E868C 800EB60C 000F */
 D_800EB60C:
     .asciz "PokemonStadium"
-
-.balign 4
+    .balign 4
 
 /* 000E869C 800EB61C 0010 */
 D_800EB61C:
     .asciz "Pokemon Stadium"
-
-.balign 4
+    .balign 4
 
 /* 000E86AC 800EB62C 000F */
 D_800EB62C:
     .asciz "POKEMONSTADIUM"
-
-.balign 4
+    .balign 4
 
 /* 000E86BC 800EB63C 000D */
 D_800EB63C:
     .asciz "Panel de Pon"
-
-.balign 4
+    .balign 4
 
 /* 000E86CC 800EB64C 000B */
 D_800EB64C:
     .asciz "YoshiStory"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -4997,8 +4963,7 @@ D_800EB64C:
 
 /* 0012D960 801308E0 0174 */
 glabel gSystemRomConfigurationList
-    .skip 372
-
+    .skip 0x174
 
 .section .sdata, "wa"
 
@@ -5008,13 +4973,9 @@ glabel gSystemRomConfigurationList
 glabel nTickMultiplier
     .long 0x00000002
 
-.balign 4
-
 /* 000F10E4 80134E64 0004 */
 glabel fTickScale
-    .long 0x3F800000
-
-.balign 4
+    .float 1.0
 
 /* 000F10E8 80134E68 0001 */
 D_80134E68:
@@ -5025,469 +4986,392 @@ D_80134E68:
 /* 000F10EC 80134E6C 0004 */
 D_80134E6C:
     .asciz "SW0"
-
-.balign 4
+    .balign 4
 
 /* 000F10F0 80134E70 0004 */
 D_80134E70:
     .asciz "SW1"
-
-.balign 4
+    .balign 4
 
 /* 000F10F4 80134E74 0005 */
 D_80134E74:
     .asciz "CART"
-
-.balign 4
+    .balign 4
 
 /* 000F10FC 80134E7C 0008 */
 D_80134E7C:
     .asciz "COUNTER"
-
-.balign 4
+    .balign 4
 
 /* 000F1104 80134E84 0004 */
 D_80134E84:
     .asciz "RDB"
-
-.balign 4
+    .balign 4
 
 /* 000F1108 80134E88 0003 */
 D_80134E88:
     .asciz "SP"
-
-.balign 4
+    .balign 4
 
 /* 000F110C 80134E8C 0003 */
 D_80134E8C:
     .asciz "SI"
-
-.balign 4
+    .balign 4
 
 /* 000F1110 80134E90 0003 */
 D_80134E90:
     .asciz "AI"
-
-.balign 4
+    .balign 4
 
 /* 000F1114 80134E94 0003 */
 D_80134E94:
     .asciz "VI"
-
-.balign 4
+    .balign 4
 
 /* 000F1118 80134E98 0003 */
 D_80134E98:
     .asciz "PI"
-
-.balign 4
+    .balign 4
 
 /* 000F111C 80134E9C 0003 */
 D_80134E9C:
     .asciz "DP"
-
-.balign 4
+    .balign 4
 
 /* 000F1120 80134EA0 0006 */
 D_80134EA0:
     .asciz "FAULT"
-
-.balign 4
+    .balign 4
 
 /* 000F1128 80134EA8 0007 */
 D_80134EA8:
     .asciz "PRENMI"
-
-.balign 4
+    .balign 4
 
 /* 000F1130 80134EB0 0005 */
 D_80134EB0:
     .asciz "NSME"
-
-.balign 4
+    .balign 4
 
 /* 000F1138 80134EB8 0005 */
 D_80134EB8:
     .asciz "NSMJ"
-
-.balign 4
+    .balign 4
 
 /* 000F1140 80134EC0 0006 */
 D_80134EC0:
     .asciz "MARIO"
-
-.balign 4
+    .balign 4
 
 /* 000F1148 80134EC8 0005 */
 D_80134EC8:
     .asciz "CZLE"
-
-.balign 4
+    .balign 4
 
 /* 000F1150 80134ED0 0005 */
 D_80134ED0:
     .asciz "CZLJ"
-
-.balign 4
+    .balign 4
 
 /* 000F1158 80134ED8 0007 */
 D_80134ED8:
     .asciz "ZELDA1"
-
-.balign 4
+    .balign 4
 
 /* 000F1160 80134EE0 0007 */
 D_80134EE0:
     .asciz "ZELDAX"
-
-.balign 4
+    .balign 4
 
 /* 000F1168 80134EE8 0006 */
 D_80134EE8:
     .asciz "ZELDA"
-
-.balign 4
+    .balign 4
 
 /* 000F1170 80134EF0 0007 */
 D_80134EF0:
     .asciz "ZELDAD"
-
-.balign 4
+    .balign 4
 
 /* 000F1178 80134EF8 0005 */
 D_80134EF8:
     .asciz "NZSJ"
-
-.balign 4
+    .balign 4
 
 /* 000F1180 80134F00 0005 */
 D_80134F00:
     .asciz "NZSE"
-
-.balign 4
+    .balign 4
 
 /* 000F1188 80134F08 0007 */
 D_80134F08:
     .asciz "ZELDA3"
-
-.balign 4
+    .balign 4
 
 /* 000F1190 80134F10 0005 */
 D_80134F10:
     .asciz "NPWE"
-
-.balign 4
+    .balign 4
 
 /* 000F1198 80134F18 0006 */
 D_80134F18:
     .asciz "PILOT"
-
-.balign 4
+    .balign 4
 
 /* 000F11A0 80134F20 0005 */
 D_80134F20:
     .asciz "NAFJ"
-
-.balign 4
+    .balign 4
 
 /* 000F11A8 80134F28 0003 */
 D_80134F28:
     .asciz "AF"
-
-.balign 4
+    .balign 4
 
 /* 000F11AC 80134F2C 0005 */
 D_80134F2C:
     .asciz "NBCE"
-
-.balign 4
+    .balign 4
 
 /* 000F11B4 80134F34 0005 */
 D_80134F34:
     .asciz "NBKE"
-
-.balign 4
+    .balign 4
 
 /* 000F11BC 80134F3C 0005 */
 D_80134F3C:
     .asciz "NGEE"
-
-.balign 4
+    .balign 4
 
 /* 000F11C4 80134F44 0005 */
 D_80134F44:
     .asciz "NFUE"
-
-.balign 4
+    .balign 4
 
 /* 000F11CC 80134F4C 0005 */
 D_80134F4C:
     .asciz "NBYE"
-
-.balign 4
+    .balign 4
 
 /* 000F11D4 80134F54 0005 */
 D_80134F54:
     .asciz "NCUE"
-
-.balign 4
+    .balign 4
 
 /* 000F11DC 80134F5C 0007 */
 D_80134F5C:
     .asciz "CRUISE"
-
-.balign 4
+    .balign 4
 
 /* 000F11E4 80134F64 0005 */
 D_80134F64:
     .asciz "NDNE"
-
-.balign 4
+    .balign 4
 
 /* 000F11EC 80134F6C 0005 */
 D_80134F6C:
     .asciz "NDOE"
-
-.balign 4
+    .balign 4
 
 /* 000F11F4 80134F74 0005 */
 D_80134F74:
     .asciz "NN6E"
-
-.balign 4
+    .balign 4
 
 /* 000F11FC 80134F7C 0005 */
 D_80134F7C:
     .asciz "NN6J"
-
-.balign 4
+    .balign 4
 
 /* 000F1204 80134F84 0008 */
 D_80134F84:
     .asciz "DRMARIO"
-
-.balign 4
+    .balign 4
 
 /* 000F120C 80134F8C 0005 */
 D_80134F8C:
     .asciz "CFZE"
-
-.balign 4
+    .balign 4
 
 /* 000F1214 80134F94 0005 */
 D_80134F94:
     .asciz "NLRE"
-
-.balign 4
+    .balign 4
 
 /* 000F121C 80134F9C 0005 */
 D_80134F9C:
     .asciz "NMFE"
-
-.balign 4
+    .balign 4
 
 /* 000F1224 80134FA4 0005 */
 D_80134FA4:
     .asciz "NKTE"
-
-.balign 4
+    .balign 4
 
 /* 000F122C 80134FAC 0005 */
 D_80134FAC:
     .asciz "KART"
-
-.balign 4
+    .balign 4
 
 /* 000F1234 80134FB4 0005 */
 D_80134FB4:
     .asciz "NK4E"
-
-.balign 4
+    .balign 4
 
 /* 000F123C 80134FBC 0005 */
 D_80134FBC:
     .asciz "CLBE"
-
-.balign 4
+    .balign 4
 
 /* 000F1244 80134FC4 0004 */
 D_80134FC4:
     .asciz "MP1"
-
-.balign 4
+    .balign 4
 
 /* 000F1248 80134FC8 0005 */
 D_80134FC8:
     .asciz "NMWE"
-
-.balign 4
+    .balign 4
 
 /* 000F1250 80134FD0 0004 */
 D_80134FD0:
     .asciz "MP2"
-
-.balign 4
+    .balign 4
 
 /* 000F1254 80134FD4 0005 */
 D_80134FD4:
     .asciz "NMVE"
-
-.balign 4
+    .balign 4
 
 /* 000F125C 80134FDC 0004 */
 D_80134FDC:
     .asciz "MP3"
-
-.balign 4
+    .balign 4
 
 /* 000F1260 80134FE0 0005 */
 D_80134FE0:
     .asciz "NM3E"
-
-.balign 4
+    .balign 4
 
 /* 000F1268 80134FE8 0005 */
 D_80134FE8:
     .asciz "NRIE"
-
-.balign 4
+    .balign 4
 
 /* 000F1270 80134FF0 0005 */
 D_80134FF0:
     .asciz "NMQE"
-
-.balign 4
+    .balign 4
 
 /* 000F1278 80134FF8 0005 */
 D_80134FF8:
     .asciz "NPOE"
-
-.balign 4
+    .balign 4
 
 /* 000F1280 80135000 0005 */
 D_80135000:
     .asciz "NQKE"
-
-.balign 4
+    .balign 4
 
 /* 000F1288 80135008 0005 */
 D_80135008:
     .asciz "NRSE"
-
-.balign 4
+    .balign 4
 
 /* 000F1290 80135010 0005 */
 D_80135010:
     .asciz "NRZE"
-
-.balign 4
+    .balign 4
 
 /* 000F1298 80135018 0005 */
 D_80135018:
     .asciz "NFXE"
-
-.balign 4
+    .balign 4
 
 /* 000F12A0 80135020 0005 */
 D_80135020:
     .asciz "NFXJ"
-
-.balign 8
+    .balign 4
 
 /* 000F12A8 80135028 0008 */
 D_80135028:
     .asciz "STARFOX"
-
-.balign 8
+    .balign 4
 
 /* 000F12B0 80135030 0008 */
 D_80135030:
     .asciz "Starfox"
-
-.balign 4
+    .balign 4
 
 /* 000F12B8 80135038 0005 */
 D_80135038:
     .asciz "NGUJ"
-
-.balign 4
+    .balign 4
 
 /* 000F12C0 80135040 0005 */
 D_80135040:
     .asciz "NALE"
-
-.balign 4
+    .balign 4
 
 /* 000F12C8 80135048 0005 */
 D_80135048:
     .asciz "NTEA"
-
-.balign 4
+    .balign 4
 
 /* 000F12D0 80135050 0005 */
 D_80135050:
     .asciz "1080"
-
-.balign 4
+    .balign 4
 
 /* 000F12D8 80135058 0005 */
 D_80135058:
     .asciz "NTPE"
-
-.balign 4
+    .balign 4
 
 /* 000F12E0 80135060 0005 */
 D_80135060:
     .asciz "NEPE"
-
-.balign 4
+    .balign 4
 
 /* 000F12E8 80135068 0005 */
 D_80135068:
     .asciz "NM8E"
-
-.balign 4
+    .balign 4
 
 /* 000F12F0 80135070 0005 */
 D_80135070:
     .asciz "NYLJ"
-
-.balign 4
+    .balign 4
 
 /* 000F12F8 80135078 0006 */
 D_80135078:
     .asciz "PANEL"
-
-.balign 4
+    .balign 4
 
 /* 000F1300 80135080 0005 */
 D_80135080:
     .asciz "NTUE"
-
-.balign 4
+    .balign 4
 
 /* 000F1308 80135088 0005 */
 D_80135088:
     .asciz "NWRE"
-
-.balign 4
+    .balign 4
 
 /* 000F1310 80135090 0005 */
 D_80135090:
     .asciz "NYSE"
-
-.balign 4
+    .balign 4
 
 /* 000F1318 80135098 0005 */
 D_80135098:
     .asciz "NBNJ"
-
-.balign 4
+    .balign 4
 
 /* 000F1320 801350A0 0004 */
 D_801350A0:
     .asciz "XXX"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -5497,7 +5381,6 @@ D_801350A0:
 glabel gnFlagZelda
     .skip 4
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -5506,16 +5389,10 @@ glabel gnFlagZelda
 D_80135F90:
     .float 0.01666666753590107
 
-.balign 4
-
 /* 000F1A94 80135F94 0004 */
 D_80135F94:
     .float 1.100000023841858
 
-.balign 8
-
 /* 000F1A98 80135F98 0008 */
 D_80135F98:
     .double 4503599627370496.0
-
-

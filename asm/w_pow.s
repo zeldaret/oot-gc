@@ -14,5 +14,3 @@ glabel pow
 /* 0CC8D0 800D1E70 38210008 */  addi    r1, r1, 8
 /* 0CC8D4 800D1E74 7C0803A6 */  mtlr    r0
 /* 0CC8D8 800D1E78 4E800020 */  blr     
-
-

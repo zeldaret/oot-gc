@@ -228,7 +228,6 @@ lbl_800033E4:
 /* 0002F8 800033F8 7C0803A6 */  mtlr    r0
 /* 0002FC 800033FC 4E800020 */  blr     
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -236,5 +235,3 @@ lbl_800033E4:
 /* 000F1AF8 80135878 0001 */
 Debug_BBA:
     .skip 1
-
-

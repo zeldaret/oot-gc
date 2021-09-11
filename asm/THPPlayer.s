@@ -1505,7 +1505,6 @@ lbl_80010D88:
 /* 00B7F4 80010D94 7C0803A6 */  mtlr    r0
 /* 00B7F8 80010D98 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1517,66 +1516,55 @@ VolumeTable:
     .long 0x20812187, 0x2291239F, 0x24B225C8, 0x26E22801, 0x29232A4A, 0x2B752CA3, 0x2DD62F0D, 0x30483187, 0x32CA3411, 0x355C36AB, 0x37FF3956, 0x3AB13C11, 0x3D743EDC, 0x404841B7, 0x432B44A3, 0x461F479F
     .long 0x49234AAB, 0x4C374DC7, 0x4F5C50F4, 0x52905431, 0x55D6577E, 0x592B5ADC, 0x5C905E49, 0x600661C7, 0x638C6555, 0x672268F4, 0x6AC96CA2, 0x6E807061, 0x72477430, 0x761E7810, 0x7A067C00, 0x7DFE8000
 
-.balign 4
-
 /* 000E7368 800EA2E8 003C */
 D_800EA2E8:
     .asciz "Pleae call AXInit or sndInit before you call THPPlayerInit\n"
-
-.balign 4
+    .balign 4
 
 /* 000E73A4 800EA324 003B */
 D_800EA324:
     .asciz "You must call THPPlayerInit before you call this function\n"
-
-.balign 4
+    .balign 4
 
 /* 000E73E0 800EA360 0035 */
 D_800EA360:
     .asciz "Can't open %s because a thp file is already opened.\n"
-
-.balign 4
+    .balign 4
 
 /* 000E7418 800EA398 0010 */
 D_800EA398:
     .asciz "Can't open %s.\n"
-
-.balign 4
+    .balign 4
 
 /* 000E7428 800EA3A8 001E */
 D_800EA3A8:
     .asciz "This file is not a THP file.\n"
-
-.balign 4
+    .balign 4
 
 /* 000E7448 800EA3C8 0012 */
 D_800EA3C8:
     .asciz "invalid version.\n"
-
-.balign 4
+    .balign 4
 
 /* 000E745C 800EA3DC 001B */
 D_800EA3DC:
     .asciz "Unknown frame components.\n"
-
-.balign 4
+    .balign 4
 
 /* 000E7478 800EA3F8 002C */
 D_800EA3F8:
     .asciz "This thp file doesn't have the offset data\n"
-
-.balign 4
+    .balign 4
 
 /* 000E74A4 800EA424 0033 */
 D_800EA424:
     .asciz "Specified frame number is over total frame number\n"
-
-.balign 4
+    .balign 4
 
 /* 000E74D8 800EA458 0029 */
 D_800EA458:
     .asciz "Specified audio track number is invalid\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -1586,25 +1574,17 @@ D_800EA458:
 glabel gpErrorMessageBuffer
     .skip 20480
 
-.balign 4
-
 /* 000F6760 800F96E0 0040 */
 WorkBuffer:
     .skip 64
-
-.balign 4
 
 /* 000F67A0 800F9720 0020 */
 PrepareReadyQueue:
     .skip 32
 
-.balign 4
-
 /* 000F67C0 800F9740 0020 */
 UsedTextureSetQueue:
     .skip 32
-
-.balign 4
 
 /* 000F67E0 800F9760 000C */
 UsedTextureSetMessage:
@@ -1616,12 +1596,9 @@ UsedTextureSetMessage:
 SoundBuffer:
     .skip 1280
 
-.balign 4
-
 /* 000F6D00 800F9C80 01D0 */
 glabel ActivePlayer
     .skip 464
-
 
 .section .sdata, "wa"
 
@@ -1630,7 +1607,7 @@ glabel ActivePlayer
 /* 000F1030 80134DB0 0004 */
 D_80134DB0:
     .asciz "THP"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -1640,48 +1617,33 @@ D_80134DB0:
 Initialized:
     .skip 4
 
-.balign 4
-
 /* 000F189C 8013561C 0004 */
 PrepareReadyMessage:
     .skip 4
-
-.balign 4
 
 /* 000F18A0 80135620 0004 */
 OldVIPostCallback:
     .skip 4
 
-.balign 4
-
 /* 000F18A4 80135624 0004 */
 SoundBufferIndex:
     .skip 4
-
-.balign 4
 
 /* 000F18A8 80135628 0004 */
 OldAIDCallback:
     .skip 4
 
-.balign 4
-
 /* 000F18AC 8013562C 0004 */
 LastAudioBuffer:
     .skip 4
-
-.balign 4
 
 /* 000F18B0 80135630 0004 */
 CurAudioBuffer:
     .skip 4
 
-.balign 4
-
 /* 000F18B4 80135634 0004 */
 AudioSystem:
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -1691,10 +1653,6 @@ AudioSystem:
 D_80135D70:
     .float 127.0
 
-.balign 4
-
 /* 000F1874 80135D74 0004 */
 D_80135D74:
     .float 100.0
-
-

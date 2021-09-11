@@ -76,5 +76,3 @@ glabel __prep_buffer
 /* 0C8FF8 800CE598 80030014 */  lwz     r0, 0x14(r3)
 /* 0C8FFC 800CE59C 90030030 */  stw     r0, 0x30(r3)
 /* 0C9000 800CE5A0 4E800020 */  blr     
-
-

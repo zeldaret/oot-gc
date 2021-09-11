@@ -269,7 +269,6 @@ glabel PushDecodedAudioBuffer
 /* 00BB90 80011130 7C0803A6 */  mtlr    r0
 /* 00BB94 80011134 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -277,7 +276,7 @@ glabel PushDecodedAudioBuffer
 /* 000E7508 800EA488 0022 */
 D_800EA488:
     .asciz "Can't create audio decode thread\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -287,36 +286,25 @@ D_800EA488:
 AudioDecodeThread:
     .skip 792
 
-.balign 4
-
 /* 000F71E8 800FA168 1000 */
 AudioDecodeThreadStack:
     .skip 4096
-
-.balign 4
 
 /* 000F81E8 800FB168 0020 */
 FreeAudioBufferQueue:
     .skip 32
 
-.balign 4
-
 /* 000F8208 800FB188 0020 */
 DecodedAudioBufferQueue:
     .skip 32
-
-.balign 4
 
 /* 000F8228 800FB1A8 000C */
 FreeAudioBufferMessage:
     .skip 12
 
-.balign 4
-
 /* 000F8234 800FB1B4 000C */
 DecodedAudioBufferMessage:
     .skip 12
-
 
 .section .sbss, "wa"
 
@@ -325,5 +313,3 @@ DecodedAudioBufferMessage:
 /* 000F18B8 80135638 0004 */
 AudioDecodeThreadCreated:
     .skip 4
-
-

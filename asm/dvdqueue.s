@@ -150,7 +150,6 @@ lbl_800B5888:
 /* 0B02F4 800B5894 7C0803A6 */  mtlr    r0
 /* 0B02F8 800B5898 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -158,5 +157,3 @@ lbl_800B5888:
 /* 0012F6B8 80132638 0020 */
 WaitingQueue:
     .skip 32
-
-

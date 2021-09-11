@@ -11,9 +11,9 @@ OnReset:
 /* 09A1EC 8009F78C 90010004 */  stw     r0, 4(r1)
 /* 09A1F0 8009F790 9421FFF8 */  stwu    r1, -8(r1)
 /* 09A1F4 8009F794 41820018 */  beq     lbl_8009F7AC
-/* 09A1F8 8009F798 3C60CC00 */  lis     r3, 0xcc00
+/* 09A1F8 8009F798 3C60CC00 */  lis     r3, MI_REGS_BASE@ha
 /* 09A1FC 8009F79C 380000FF */  li      r0, 0xff
-/* 09A200 8009F7A0 B0034010 */  sth     r0, 0x4010(r3)
+/* 09A200 8009F7A0 B0034010 */  sth     r0, (MI_REGS_BASE + MI_10)@l(r3)
 /* 09A204 8009F7A4 3C60F000 */  lis     r3, 0xf000
 /* 09A208 8009F7A8 4BFFF91D */  bl      __OSMaskInterrupts
 lbl_8009F7AC:
@@ -25,18 +25,18 @@ lbl_8009F7AC:
 
 MEMIntrruptHandler:
 /* 09A220 8009F7C0 7C0802A6 */  mflr    r0
-/* 09A224 8009F7C4 3C60CC00 */  lis     r3, 0xcc00
+/* 09A224 8009F7C4 3C60CC00 */  lis     r3, MI_REGS_BASE@ha
 /* 09A228 8009F7C8 90010004 */  stw     r0, 4(r1)
-/* 09A22C 8009F7CC 39034000 */  addi    r8, r3, 0x4000
+/* 09A22C 8009F7CC 39034000 */  addi    r8, r3, MI_REGS_BASE@l
 /* 09A230 8009F7D0 38000000 */  li      r0, 0
 /* 09A234 8009F7D4 9421FFF8 */  stwu    r1, -8(r1)
-/* 09A238 8009F7D8 A0E34024 */  lhz     r7, 0x4024(r3)
+/* 09A238 8009F7D8 A0E34024 */  lhz     r7, (MI_REGS_BASE + MI_24)@l(r3)
 /* 09A23C 8009F7DC 3C608013 */  lis     r3, __OSErrorTable@ha
-/* 09A240 8009F7E0 A0C80022 */  lhz     r6, 0x22(r8)
+/* 09A240 8009F7E0 A0C80022 */  lhz     r6, MI_22(r8)
 /* 09A244 8009F7E4 38630F70 */  addi    r3, r3, __OSErrorTable@l
-/* 09A248 8009F7E8 A0A8001E */  lhz     r5, 0x1e(r8)
+/* 09A248 8009F7E8 A0A8001E */  lhz     r5, MI_1E(r8)
 /* 09A24C 8009F7EC 50E6819E */  rlwimi  r6, r7, 0x10, 6, 0xf
-/* 09A250 8009F7F0 B0080020 */  sth     r0, 0x20(r8)
+/* 09A250 8009F7F0 B0080020 */  sth     r0, MI_20(r8)
 /* 09A254 8009F7F4 8183003C */  lwz     r12, 0x3c(r3)
 /* 09A258 8009F7F8 280C0000 */  cmplwi  r12, 0
 /* 09A25C 8009F7FC 41820018 */  beq     lbl_8009F814
@@ -138,13 +138,13 @@ glabel __OSInitMemoryProtection
 /* 09A3B4 8009F954 3F608000 */  lis     r27, 0x8000
 /* 09A3B8 8009F958 83FB00F0 */  lwz     r31, 0xf0(r27)
 /* 09A3BC 8009F95C 4BFFF3A1 */  bl      OSDisableInterrupts
-/* 09A3C0 8009F960 3C80CC00 */  lis     r4, 0xcc00
-/* 09A3C4 8009F964 3B844000 */  addi    r28, r4, 0x4000
+/* 09A3C0 8009F960 3C80CC00 */  lis     r4, MI_REGS_BASE@ha
+/* 09A3C4 8009F964 3B844000 */  addi    r28, r4, MI_REGS_BASE@l
 /* 09A3C8 8009F968 38000000 */  li      r0, 0
-/* 09A3CC 8009F96C B01C0020 */  sth     r0, 0x20(r28)
+/* 09A3CC 8009F96C B01C0020 */  sth     r0, MI_20(r28)
 /* 09A3D0 8009F970 380000FF */  li      r0, 0xff
 /* 09A3D4 8009F974 7C7E1B78 */  mr      r30, r3
-/* 09A3D8 8009F978 B01C0010 */  sth     r0, 0x10(r28)
+/* 09A3D8 8009F978 B01C0010 */  sth     r0, MI_10(r28)
 /* 09A3DC 8009F97C 3C60F000 */  lis     r3, 0xf000
 /* 09A3E0 8009F980 4BFFF745 */  bl      __OSMaskInterrupts
 /* 09A3E4 8009F984 3C60800A */  lis     r3, MEMIntrruptHandler@ha
@@ -178,7 +178,7 @@ glabel __OSInitMemoryProtection
 /* 09A454 8009F9F4 3C800180 */  lis     r4, 0x180
 /* 09A458 8009F9F8 4BFFDD59 */  bl      DCInvalidateRange
 /* 09A45C 8009F9FC 38000002 */  li      r0, 2
-/* 09A460 8009FA00 B01C0028 */  sth     r0, 0x28(r28)
+/* 09A460 8009FA00 B01C0028 */  sth     r0, MI_28(r28)
 lbl_8009FA04:
 /* 09A464 8009FA04 3C000180 */  lis     r0, 0x180
 /* 09A468 8009FA08 7C1F0040 */  cmplw   r31, r0
@@ -205,7 +205,6 @@ lbl_8009FA38:
 /* 09A4B4 8009FA54 7C0803A6 */  mtlr    r0
 /* 09A4B8 8009FA58 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -213,5 +212,3 @@ lbl_8009FA38:
 /* 000EE420 800F13A0 0010 */
 ResetFunctionInfo:
     .long OnReset, 0x0000007F, 0x00000000, 0x00000000
-
-

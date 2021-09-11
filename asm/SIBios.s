@@ -36,21 +36,21 @@ lbl_800A4770:
 
 CompleteTransfer:
 /* 09F1D8 800A4778 7C0802A6 */  mflr    r0
-/* 09F1DC 800A477C 3C60CC00 */  lis     r3, 0xcc00
+/* 09F1DC 800A477C 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
 /* 09F1E0 800A4780 90010004 */  stw     r0, 4(r1)
 /* 09F1E4 800A4784 9421FFE0 */  stwu    r1, -0x20(r1)
 /* 09F1E8 800A4788 93E1001C */  stw     r31, 0x1c(r1)
 /* 09F1EC 800A478C 93C10018 */  stw     r30, 0x18(r1)
-/* 09F1F0 800A4790 3BC36400 */  addi    r30, r3, 0x6400
+/* 09F1F0 800A4790 3BC36400 */  addi    r30, r3, SI_REGS_BASE@l
 /* 09F1F4 800A4794 93A10014 */  stw     r29, 0x14(r1)
-/* 09F1F8 800A4798 3BBE0034 */  addi    r29, r30, 0x34
+/* 09F1F8 800A4798 3BBE0034 */  addi    r29, r30, SI_COMCSR
 /* 09F1FC 800A479C 93810010 */  stw     r28, 0x10(r1)
-/* 09F200 800A47A0 80036434 */  lwz     r0, 0x6434(r3)
-/* 09F204 800A47A4 83836438 */  lwz     r28, 0x6438(r3)
+/* 09F200 800A47A0 80036434 */  lwz     r0, (SI_REGS_BASE + SI_COMCSR)@l(r3)
+/* 09F204 800A47A4 83836438 */  lwz     r28, (SI_REGS_BASE + SI_SR)@l(r3)
 /* 09F208 800A47A8 3C60800F */  lis     r3, D_800F1520@ha
 /* 09F20C 800A47AC 64008000 */  oris    r0, r0, 0x8000
 /* 09F210 800A47B0 5400003C */  rlwinm  r0, r0, 0, 0, 0x1e
-/* 09F214 800A47B4 901E0034 */  stw     r0, 0x34(r30)
+/* 09F214 800A47B4 901E0034 */  stw     r0, SI_COMCSR(r30)
 /* 09F218 800A47B8 3BE31520 */  addi    r31, r3, D_800F1520@l
 /* 09F21C 800A47BC 801F0044 */  lwz     r0, 0x44(r31)
 /* 09F220 800A47C0 2C00FFFF */  cmpwi   r0, -1
@@ -106,7 +106,7 @@ lbl_800A4878:
 /* 09F2E0 800A4880 7C0903A6 */  mtctr   r0
 /* 09F2E4 800A4884 4080001C */  bge     lbl_800A48A0
 lbl_800A4888:
-/* 09F2E8 800A4888 80030080 */  lwz     r0, 0x80(r3)
+/* 09F2E8 800A4888 80030080 */  lwz     r0, SI_IOBUF(r3)
 /* 09F2EC 800A488C 38630004 */  addi    r3, r3, 4
 /* 09F2F0 800A4890 38840001 */  addi    r4, r4, 1
 /* 09F2F4 800A4894 90050000 */  stw     r0, 0(r5)
@@ -116,11 +116,11 @@ lbl_800A48A0:
 /* 09F300 800A48A0 80060000 */  lwz     r0, 0(r6)
 /* 09F304 800A48A4 540307BF */  clrlwi. r3, r0, 0x1e
 /* 09F308 800A48A8 41820110 */  beq     lbl_800A49B8
-/* 09F30C 800A48AC 3CC0CC00 */  lis     r6, 0xcc00
-/* 09F310 800A48B0 38C66400 */  addi    r6, r6, 0x6400
+/* 09F30C 800A48AC 3CC0CC00 */  lis     r6, SI_REGS_BASE@ha
+/* 09F310 800A48B0 38C66400 */  addi    r6, r6, SI_REGS_BASE@l
 /* 09F314 800A48B4 5480103A */  slwi    r0, r4, 2
 /* 09F318 800A48B8 7C860214 */  add     r4, r6, r0
-/* 09F31C 800A48BC 80C40080 */  lwz     r6, 0x80(r4)
+/* 09F31C 800A48BC 80C40080 */  lwz     r6, SI_IOBUF(r4)
 /* 09F320 800A48C0 38800000 */  li      r4, 0
 /* 09F324 800A48C4 408100F4 */  ble     lbl_800A49B8
 /* 09F328 800A48C8 28030008 */  cmplwi  r3, 8
@@ -226,9 +226,9 @@ lbl_800A4A38:
 /* 09F498 800A4A38 7F83E378 */  mr      r3, r28
 /* 09F49C 800A4A3C 48000018 */  b       lbl_800A4A54
 lbl_800A4A40:
-/* 09F4A0 800A4A40 3C60CC00 */  lis     r3, 0xcc00
+/* 09F4A0 800A4A40 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
 /* 09F4A4 800A4A44 5480103A */  slwi    r0, r4, 2
-/* 09F4A8 800A4A48 38636400 */  addi    r3, r3, 0x6400
+/* 09F4A8 800A4A48 38636400 */  addi    r3, r3, SI_REGS_BASE@l
 /* 09F4AC 800A4A4C 7C630214 */  add     r3, r3, r0
 /* 09F4B0 800A4A50 4BFFFE28 */  b       lbl_800A4878
 lbl_800A4A54:
@@ -243,7 +243,7 @@ lbl_800A4A54:
 
 SIInterruptHandler:
 /* 09F4D4 800A4A74 7C0802A6 */  mflr    r0
-/* 09F4D8 800A4A78 3CA0CC00 */  lis     r5, 0xcc00
+/* 09F4D8 800A4A78 3CA0CC00 */  lis     r5, SI_REGS_BASE@ha
 /* 09F4DC 800A4A7C 90010004 */  stw     r0, 4(r1)
 /* 09F4E0 800A4A80 3CE08013 */  lis     r7, Packet@ha
 /* 09F4E4 800A4A84 3CC0800F */  lis     r6, D_800F1520@ha
@@ -253,7 +253,7 @@ SIInterruptHandler:
 /* 09F4F4 800A4A94 3BE40000 */  addi    r31, r4, 0
 /* 09F4F8 800A4A98 3B871AF0 */  addi    r28, r7, Packet@l
 /* 09F4FC 800A4A9C 3BA61520 */  addi    r29, r6, D_800F1520@l
-/* 09F500 800A4AA0 83056434 */  lwz     r24, 0x6434(r5)
+/* 09F500 800A4AA0 83056434 */  lwz     r24, (SI_REGS_BASE + SI_COMCSR)@l(r5)
 /* 09F504 800A4AA4 57050002 */  rlwinm  r5, r24, 0, 0, 1
 /* 09F508 800A4AA8 3C054000 */  addis   r0, r5, 0x4000
 /* 09F50C 800A4AAC 28000000 */  cmplwi  r0, 0
@@ -317,15 +317,15 @@ lbl_800A4B70:
 /* 09F5E8 800A4B88 38BF0000 */  addi    r5, r31, 0
 /* 09F5EC 800A4B8C 4E800021 */  blrl    
 lbl_800A4B90:
-/* 09F5F0 800A4B90 3C60CC00 */  lis     r3, 0xcc00
-/* 09F5F4 800A4B94 38836400 */  addi    r4, r3, 0x6400
-/* 09F5F8 800A4B98 80A36438 */  lwz     r5, 0x6438(r3)
+/* 09F5F0 800A4B90 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
+/* 09F5F4 800A4B94 38836400 */  addi    r4, r3, SI_REGS_BASE@l
+/* 09F5F8 800A4B98 80A36438 */  lwz     r5, (SI_REGS_BASE + SI_SR)@l(r3)
 /* 09F5FC 800A4B9C 56E01838 */  slwi    r0, r23, 3
 /* 09F600 800A4BA0 3C600F00 */  lis     r3, 0xf00
 /* 09F604 800A4BA4 7C600630 */  sraw    r0, r3, r0
 /* 09F608 800A4BA8 7CA50038 */  and     r5, r5, r0
 /* 09F60C 800A4BAC 56E0103A */  slwi    r0, r23, 2
-/* 09F610 800A4BB0 90A40038 */  stw     r5, 0x38(r4)
+/* 09F610 800A4BB0 90A40038 */  stw     r5, SI_SR(r4)
 /* 09F614 800A4BB4 7CDD0214 */  add     r6, r29, r0
 /* 09F618 800A4BB8 84060058 */  lwzu    r0, 0x58(r6)
 /* 09F61C 800A4BBC 28000080 */  cmplwi  r0, 0x80
@@ -478,8 +478,8 @@ SIEnablePollingInterrupt:
 /* 09F834 800A4DD4 93A10024 */  stw     r29, 0x24(r1)
 /* 09F838 800A4DD8 3BA30000 */  addi    r29, r3, 0
 /* 09F83C 800A4DDC 4BFF9F21 */  bl      OSDisableInterrupts
-/* 09F840 800A4DE0 3C80CC00 */  lis     r4, 0xcc00
-/* 09F844 800A4DE4 84A46434 */  lwzu    r5, 0x6434(r4)
+/* 09F840 800A4DE0 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
+/* 09F844 800A4DE4 84A46434 */  lwzu    r5, (SI_REGS_BASE + SI_COMCSR)@l(r4)
 /* 09F848 800A4DE8 54A00109 */  rlwinm. r0, r5, 0, 4, 4
 /* 09F84C 800A4DEC 4182000C */  beq     lbl_800A4DF8
 /* 09F850 800A4DF0 3BC00001 */  li      r30, 1
@@ -657,15 +657,15 @@ glabel SIInit
 /* 09FAB0 800A5050 90BF0000 */  stw     r5, 0(r31)
 /* 09FAB4 800A5054 90040004 */  stw     r0, 4(r4)
 /* 09FAB8 800A5058 48000DB5 */  bl      SISetSamplingRate
-/* 09FABC 800A505C 3C60CC00 */  lis     r3, 0xcc00
+/* 09FABC 800A505C 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
 lbl_800A5060:
-/* 09FAC0 800A5060 38836400 */  addi    r4, r3, 0x6400
-/* 09FAC4 800A5064 84040034 */  lwzu    r0, 0x34(r4)
+/* 09FAC0 800A5060 38836400 */  addi    r4, r3, SI_REGS_BASE@l
+/* 09FAC4 800A5064 84040034 */  lwzu    r0, SI_COMCSR(r4)
 /* 09FAC8 800A5068 540007FF */  clrlwi. r0, r0, 0x1f
 /* 09FACC 800A506C 4082FFF4 */  bne     lbl_800A5060
 /* 09FAD0 800A5070 3C008000 */  lis     r0, 0x8000
 /* 09FAD4 800A5074 3C60800A */  lis     r3, SIInterruptHandler@ha
-/* 09FAD8 800A5078 90040000 */  stw     r0, 0(r4)
+/* 09FAD8 800A5078 90040000 */  stw     r0, SI_C0OUTBUF(r4)
 /* 09FADC 800A507C 38834A74 */  addi    r4, r3, SIInterruptHandler@l
 /* 09FAE0 800A5080 38600014 */  li      r3, 0x14
 /* 09FAE4 800A5084 4BFF9CC5 */  bl      __OSSetInterruptHandler
@@ -706,13 +706,13 @@ __SITransfer:
 /* 09FB68 800A5108 38600000 */  li      r3, 0
 /* 09FB6C 800A510C 480001B0 */  b       lbl_800A52BC
 lbl_800A5110:
-/* 09FB70 800A5110 3CC0CC00 */  lis     r6, 0xcc00
+/* 09FB70 800A5110 3CC0CC00 */  lis     r6, SI_REGS_BASE@ha
 /* 09FB74 800A5114 57401838 */  slwi    r0, r26, 3
-/* 09FB78 800A5118 80E66438 */  lwz     r7, 0x6438(r6)
+/* 09FB78 800A5118 80E66438 */  lwz     r7, (SI_REGS_BASE + SI_SR)@l(r6)
 /* 09FB7C 800A511C 3C800F00 */  lis     r4, 0xf00
 /* 09FB80 800A5120 7C800630 */  sraw    r0, r4, r0
 /* 09FB84 800A5124 7CE70038 */  and     r7, r7, r0
-/* 09FB88 800A5128 90E66438 */  stw     r7, 0x6438(r6)
+/* 09FB88 800A5128 90E66438 */  stw     r7, (SI_REGS_BASE + SI_SR)@l(r6)
 /* 09FB8C 800A512C 381C0003 */  addi    r0, r28, 3
 /* 09FB90 800A5130 5404F0BE */  srwi    r4, r0, 2
 /* 09FB94 800A5134 93590044 */  stw     r26, 0x44(r25)
@@ -730,27 +730,27 @@ lbl_800A5110:
 /* 09FBC4 800A5164 28070000 */  cmplwi  r7, 0
 /* 09FBC8 800A5168 7C0903A6 */  mtctr   r0
 /* 09FBCC 800A516C 38FB0000 */  addi    r7, r27, 0
-/* 09FBD0 800A5170 38C66400 */  addi    r6, r6, 0x6400
+/* 09FBD0 800A5170 38C66400 */  addi    r6, r6, SI_REGS_BASE@l
 /* 09FBD4 800A5174 40810130 */  ble     lbl_800A52A4
 lbl_800A5178:
 /* 09FBD8 800A5178 80070000 */  lwz     r0, 0(r7)
 /* 09FBDC 800A517C 38A50008 */  addi    r5, r5, 8
-/* 09FBE0 800A5180 90060080 */  stw     r0, 0x80(r6)
+/* 09FBE0 800A5180 90060080 */  stw     r0, SI_IOBUF(r6)
 /* 09FBE4 800A5184 80070004 */  lwz     r0, 4(r7)
-/* 09FBE8 800A5188 90060084 */  stw     r0, 0x84(r6)
+/* 09FBE8 800A5188 90060084 */  stw     r0, (SI_IOBUF + 0x4)(r6)
 /* 09FBEC 800A518C 80070008 */  lwz     r0, 8(r7)
-/* 09FBF0 800A5190 90060088 */  stw     r0, 0x88(r6)
+/* 09FBF0 800A5190 90060088 */  stw     r0, (SI_IOBUF + 0x8)(r6)
 /* 09FBF4 800A5194 8007000C */  lwz     r0, 0xc(r7)
-/* 09FBF8 800A5198 9006008C */  stw     r0, 0x8c(r6)
+/* 09FBF8 800A5198 9006008C */  stw     r0, (SI_IOBUF + 0xC)(r6)
 /* 09FBFC 800A519C 80070010 */  lwz     r0, 0x10(r7)
-/* 09FC00 800A51A0 90060090 */  stw     r0, 0x90(r6)
+/* 09FC00 800A51A0 90060090 */  stw     r0, (SI_IOBUF + 0x10)(r6)
 /* 09FC04 800A51A4 80070014 */  lwz     r0, 0x14(r7)
-/* 09FC08 800A51A8 90060094 */  stw     r0, 0x94(r6)
+/* 09FC08 800A51A8 90060094 */  stw     r0, (SI_IOBUF + 0x14)(r6)
 /* 09FC0C 800A51AC 80070018 */  lwz     r0, 0x18(r7)
-/* 09FC10 800A51B0 90060098 */  stw     r0, 0x98(r6)
+/* 09FC10 800A51B0 90060098 */  stw     r0, (SI_IOBUF + 0x18)(r6)
 /* 09FC14 800A51B4 8007001C */  lwz     r0, 0x1c(r7)
 /* 09FC18 800A51B8 38E70020 */  addi    r7, r7, 0x20
-/* 09FC1C 800A51BC 9006009C */  stw     r0, 0x9c(r6)
+/* 09FC1C 800A51BC 9006009C */  stw     r0, (SI_IOBUF + 0x1C)(r6)
 /* 09FC20 800A51C0 38C60020 */  addi    r6, r6, 0x20
 /* 09FC24 800A51C4 4200FFB4 */  bdnz    lbl_800A5178
 /* 09FC28 800A51C8 480000DC */  b       lbl_800A52A4
@@ -766,9 +766,9 @@ lbl_800A51DC:
 /* 09FC48 800A51E8 38E70004 */  addi    r7, r7, 4
 /* 09FC4C 800A51EC 4200FFF0 */  bdnz    lbl_800A51DC
 lbl_800A51F0:
-/* 09FC50 800A51F0 3C80CC00 */  lis     r4, 0xcc00
-/* 09FC54 800A51F4 38C46400 */  addi    r6, r4, 0x6400
-/* 09FC58 800A51F8 84060034 */  lwzu    r0, 0x34(r6)
+/* 09FC50 800A51F0 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
+/* 09FC54 800A51F4 38C46400 */  addi    r6, r4, SI_REGS_BASE@l
+/* 09FC58 800A51F8 84060034 */  lwzu    r0, SI_COMCSR(r6)
 /* 09FC5C 800A51FC 38800001 */  li      r4, 1
 /* 09FC60 800A5200 90010024 */  stw     r0, 0x24(r1)
 /* 09FC64 800A5204 281F0000 */  cmplwi  r31, 0
@@ -818,9 +818,9 @@ lbl_800A5264:
 /* 09FCFC 800A529C 38600001 */  li      r3, 1
 /* 09FD00 800A52A0 4800001C */  b       lbl_800A52BC
 lbl_800A52A4:
-/* 09FD04 800A52A4 3CC0CC00 */  lis     r6, 0xcc00
+/* 09FD04 800A52A4 3CC0CC00 */  lis     r6, SI_REGS_BASE@ha
 /* 09FD08 800A52A8 54A0103A */  slwi    r0, r5, 2
-/* 09FD0C 800A52AC 38E66400 */  addi    r7, r6, 0x6400
+/* 09FD0C 800A52AC 38E66400 */  addi    r7, r6, SI_REGS_BASE@l
 /* 09FD10 800A52B0 7CDB0214 */  add     r6, r27, r0
 /* 09FD14 800A52B4 7CE70214 */  add     r7, r7, r0
 /* 09FD18 800A52B8 4BFFFF14 */  b       lbl_800A51CC
@@ -839,9 +839,9 @@ glabel SIGetStatus
 /* 09FD40 800A52E0 93C10010 */  stw     r30, 0x10(r1)
 /* 09FD44 800A52E4 7C7E1B78 */  mr      r30, r3
 /* 09FD48 800A52E8 4BFF9A15 */  bl      OSDisableInterrupts
-/* 09FD4C 800A52EC 3C80CC00 */  lis     r4, 0xcc00
+/* 09FD4C 800A52EC 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
 /* 09FD50 800A52F0 201E0003 */  subfic  r0, r30, 3
-/* 09FD54 800A52F4 83E46438 */  lwz     r31, 0x6438(r4)
+/* 09FD54 800A52F4 83E46438 */  lwz     r31, (SI_REGS_BASE + SI_SR)@l(r4)
 /* 09FD58 800A52F8 54001838 */  slwi    r0, r0, 3
 /* 09FD5C 800A52FC 7FFF0430 */  srw     r31, r31, r0
 /* 09FD60 800A5300 57E00739 */  rlwinm. r0, r31, 0, 0x1c, 0x1c
@@ -867,15 +867,15 @@ lbl_800A532C:
 
 glabel SISetCommand
 /* 09FDAC 800A534C 1C03000C */  mulli   r0, r3, 0xc
-/* 09FDB0 800A5350 3C60CC00 */  lis     r3, 0xcc00
-/* 09FDB4 800A5354 38636400 */  addi    r3, r3, 0x6400
+/* 09FDB0 800A5350 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
+/* 09FDB4 800A5354 38636400 */  addi    r3, r3, SI_REGS_BASE@l
 /* 09FDB8 800A5358 7C83012E */  stwx    r4, r3, r0
 /* 09FDBC 800A535C 4E800020 */  blr     
 
 glabel SITransferCommands
-/* 09FDC0 800A5360 3C60CC00 */  lis     r3, 0xcc00
+/* 09FDC0 800A5360 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
 /* 09FDC4 800A5364 3C008000 */  lis     r0, 0x8000
-/* 09FDC8 800A5368 90036438 */  stw     r0, 0x6438(r3)
+/* 09FDC8 800A5368 90036438 */  stw     r0, (SI_REGS_BASE + SI_SR)@l(r3)
 /* 09FDCC 800A536C 4E800020 */  blr     
 
 glabel SISetXY
@@ -891,14 +891,14 @@ glabel SISetXY
 /* 09FDF4 800A5394 38841564 */  addi    r4, r4, Si@l
 /* 09FDF8 800A5398 80040004 */  lwz     r0, 4(r4)
 /* 09FDFC 800A539C 38A40004 */  addi    r5, r4, 4
-/* 09FE00 800A53A0 3C80CC00 */  lis     r4, 0xcc00
+/* 09FE00 800A53A0 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
 /* 09FE04 800A53A4 5400060A */  rlwinm  r0, r0, 0, 0x18, 5
 /* 09FE08 800A53A8 90050000 */  stw     r0, 0(r5)
 /* 09FE0C 800A53AC 80050000 */  lwz     r0, 0(r5)
 /* 09FE10 800A53B0 7C00FB78 */  or      r0, r0, r31
 /* 09FE14 800A53B4 90050000 */  stw     r0, 0(r5)
 /* 09FE18 800A53B8 83E50000 */  lwz     r31, 0(r5)
-/* 09FE1C 800A53BC 93E46430 */  stw     r31, 0x6430(r4)
+/* 09FE1C 800A53BC 93E46430 */  stw     r31, (SI_REGS_BASE + SI_POLL)@l(r4)
 /* 09FE20 800A53C0 4BFF9965 */  bl      OSRestoreInterrupts
 /* 09FE24 800A53C4 7FE3FB78 */  mr      r3, r31
 /* 09FE28 800A53C8 8001001C */  lwz     r0, 0x1c(r1)
@@ -935,12 +935,12 @@ lbl_800A5404:
 /* 09FE98 800A5438 57FF060A */  rlwinm  r31, r31, 0, 0x18, 5
 /* 09FE9C 800A543C 7C00FB78 */  or      r0, r0, r31
 /* 09FEA0 800A5440 90050000 */  stw     r0, 0(r5)
-/* 09FEA4 800A5444 3C80CC00 */  lis     r4, 0xcc00
-/* 09FEA8 800A5448 38846400 */  addi    r4, r4, 0x6400
+/* 09FEA4 800A5444 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
+/* 09FEA8 800A5448 38846400 */  addi    r4, r4, SI_REGS_BASE@l
 /* 09FEAC 800A544C 83E50000 */  lwz     r31, 0(r5)
 /* 09FEB0 800A5450 3C008000 */  lis     r0, 0x8000
-/* 09FEB4 800A5454 90040038 */  stw     r0, 0x38(r4)
-/* 09FEB8 800A5458 93E40030 */  stw     r31, 0x30(r4)
+/* 09FEB4 800A5454 90040038 */  stw     r0, SI_SR(r4)
+/* 09FEB8 800A5458 93E40030 */  stw     r31, SI_POLL(r4)
 /* 09FEBC 800A545C 4BFF98C9 */  bl      OSRestoreInterrupts
 /* 09FEC0 800A5460 7FE3FB78 */  mr      r3, r31
 lbl_800A5464:
@@ -968,9 +968,9 @@ lbl_800A54A0:
 /* 09FF0C 800A54AC 80040004 */  lwz     r0, 4(r4)
 /* 09FF10 800A54B0 57FF4636 */  rlwinm  r31, r31, 8, 0x18, 0x1b
 /* 09FF14 800A54B4 38A40004 */  addi    r5, r4, 4
-/* 09FF18 800A54B8 3C80CC00 */  lis     r4, 0xcc00
+/* 09FF18 800A54B8 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
 /* 09FF1C 800A54BC 7C1FF878 */  andc    r31, r0, r31
-/* 09FF20 800A54C0 93E46430 */  stw     r31, 0x6430(r4)
+/* 09FF20 800A54C0 93E46430 */  stw     r31, (SI_REGS_BASE + SI_POLL)@l(r4)
 /* 09FF24 800A54C4 93E50000 */  stw     r31, 0(r5)
 /* 09FF28 800A54C8 4BFF985D */  bl      OSRestoreInterrupts
 /* 09FF2C 800A54CC 7FE3FB78 */  mr      r3, r31
@@ -992,9 +992,9 @@ SIGetResponseRaw:
 /* 09FF60 800A5500 3BC30000 */  addi    r30, r3, 0
 /* 09FF64 800A5504 93A1001C */  stw     r29, 0x1c(r1)
 /* 09FF68 800A5508 4BFF97F5 */  bl      OSDisableInterrupts
-/* 09FF6C 800A550C 3C80CC00 */  lis     r4, 0xcc00
+/* 09FF6C 800A550C 3C80CC00 */  lis     r4, SI_REGS_BASE@ha
 /* 09FF70 800A5510 201E0003 */  subfic  r0, r30, 3
-/* 09FF74 800A5514 83A46438 */  lwz     r29, 0x6438(r4)
+/* 09FF74 800A5514 83A46438 */  lwz     r29, (SI_REGS_BASE + SI_SR)@l(r4)
 /* 09FF78 800A5518 54001838 */  slwi    r0, r0, 3
 /* 09FF7C 800A551C 7FBD0430 */  srw     r29, r29, r0
 /* 09FF80 800A5520 57A00739 */  rlwinm. r0, r29, 0, 0x1c, 0x1c
@@ -1013,16 +1013,16 @@ lbl_800A554C:
 /* 09FFB0 800A5550 57A006B5 */  rlwinm. r0, r29, 0, 0x1a, 0x1a
 /* 09FFB4 800A5554 41820044 */  beq     lbl_800A5598
 /* 09FFB8 800A5558 1C9E000C */  mulli   r4, r30, 0xc
-/* 09FFBC 800A555C 3C60CC00 */  lis     r3, 0xcc00
-/* 09FFC0 800A5560 38036400 */  addi    r0, r3, 0x6400
+/* 09FFBC 800A555C 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
+/* 09FFC0 800A5560 38036400 */  addi    r0, r3, SI_REGS_BASE@l
 /* 09FFC4 800A5564 7C602214 */  add     r3, r0, r4
 /* 09FFC8 800A5568 57C41838 */  slwi    r4, r30, 3
-/* 09FFCC 800A556C 80030004 */  lwz     r0, 4(r3)
+/* 09FFCC 800A556C 80030004 */  lwz     r0, SI_04(r3)
 /* 09FFD0 800A5570 7CDF2214 */  add     r6, r31, r4
 /* 09FFD4 800A5574 900601C0 */  stw     r0, 0x1c0(r6)
 /* 09FFD8 800A5578 57C0103A */  slwi    r0, r30, 2
 /* 09FFDC 800A557C 7C9F0214 */  add     r4, r31, r0
-/* 09FFE0 800A5580 80A30008 */  lwz     r5, 8(r3)
+/* 09FFE0 800A5580 80A30008 */  lwz     r5, SI_08(r3)
 /* 09FFE4 800A5584 38000001 */  li      r0, 1
 /* 09FFE8 800A5588 38600001 */  li      r3, 1
 /* 09FFEC 800A558C 90A601C4 */  stw     r5, 0x1c4(r6)
@@ -1055,16 +1055,16 @@ glabel SIGetResponse
 /* 0A0048 800A55E8 546006B5 */  rlwinm. r0, r3, 0, 0x1a, 0x1a
 /* 0A004C 800A55EC 4182003C */  beq     lbl_800A5628
 /* 0A0050 800A55F0 1C9D000C */  mulli   r4, r29, 0xc
-/* 0A0054 800A55F4 3C60CC00 */  lis     r3, 0xcc00
-/* 0A0058 800A55F8 38036400 */  addi    r0, r3, 0x6400
+/* 0A0054 800A55F4 3C60CC00 */  lis     r3, SI_REGS_BASE@ha
+/* 0A0058 800A55F8 38036400 */  addi    r0, r3, SI_REGS_BASE@l
 /* 0A005C 800A55FC 7C802214 */  add     r4, r0, r4
 /* 0A0060 800A5600 57A31838 */  slwi    r3, r29, 3
-/* 0A0064 800A5604 80040004 */  lwz     r0, 4(r4)
+/* 0A0064 800A5604 80040004 */  lwz     r0, SI_04(r4)
 /* 0A0068 800A5608 7CBC1A14 */  add     r5, r28, r3
 /* 0A006C 800A560C 900501C0 */  stw     r0, 0x1c0(r5)
 /* 0A0070 800A5610 57A0103A */  slwi    r0, r29, 2
 /* 0A0074 800A5614 7C7C0214 */  add     r3, r28, r0
-/* 0A0078 800A5618 80840008 */  lwz     r4, 8(r4)
+/* 0A0078 800A5618 80840008 */  lwz     r4, SI_08(r4)
 /* 0A007C 800A561C 38000001 */  li      r0, 1
 /* 0A0080 800A5620 908501C4 */  stw     r4, 0x1c4(r5)
 /* 0A0084 800A5624 900301B0 */  stw     r0, 0x1b0(r3)
@@ -1617,7 +1617,6 @@ lbl_800A5DE0:
 /* 0A0864 800A5E04 7C0803A6 */  mtlr    r0
 /* 0A0868 800A5E08 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1625,85 +1624,70 @@ lbl_800A5DE0:
 /* 000EE5A0 800F1520 0044 */
 D_800F1520:
     .asciz "<< Dolphin SDK - SI\trelease build: Apr 17 2003 12:33:19 (0x2301) >>"
-
-.balign 4
+    .balign 4
 
 /* 000EE5E4 800F1564 0014 */
 Si:
     .long 0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000, 0x00000000
 
-.balign 4
-
 /* 000EE5F8 800F1578 0010 */
 Type:
     .long 0x00000008, 0x00000008, 0x00000008, 0x00000008
 
-.balign 4
-
 /* 000EE608 800F1588 000C */
 D_800F1588:
     .asciz "No response"
-
-.balign 4
+    .balign 4
 
 /* 000EE614 800F1594 000F */
 D_800F1594:
     .asciz "N64 controller"
-
-.balign 4
+    .balign 4
 
 /* 000EE624 800F15A4 000F */
 D_800F15A4:
     .asciz "N64 microphone"
-
-.balign 4
+    .balign 4
 
 /* 000EE634 800F15B4 000D */
 D_800F15B4:
     .asciz "N64 keyboard"
-
-.balign 4
+    .balign 4
 
 /* 000EE644 800F15C4 000A */
 D_800F15C4:
     .asciz "N64 mouse"
-
-.balign 4
+    .balign 4
 
 /* 000EE650 800F15D0 0010 */
 D_800F15D0:
     .asciz "GameBoy Advance"
-
-.balign 4
+    .balign 4
 
 /* 000EE660 800F15E0 0014 */
 D_800F15E0:
     .asciz "Standard controller"
-
-.balign 4
+    .balign 4
 
 /* 000EE674 800F15F4 0012 */
 D_800F15F4:
     .asciz "Wireless receiver"
-
-.balign 4
+    .balign 4
 
 /* 000EE688 800F1608 0014 */
 D_800F1608:
     .asciz "WaveBird controller"
-
-.balign 4
+    .balign 4
 
 /* 000EE69C 800F161C 0009 */
 D_800F161C:
     .asciz "Keyboard"
-
-.balign 4
+    .balign 4
 
 /* 000EE6A8 800F1628 0009 */
 D_800F1628:
     .asciz "Steering"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -1713,60 +1697,41 @@ D_800F1628:
 Packet:
     .skip 128
 
-.balign 4
-
 /* 0012EBF0 80131B70 00A0 */
 Alarm:
     .skip 160
-
-.balign 4
 
 /* 0012EC90 80131C10 0020 */
 TypeTime:
     .skip 32
 
-.balign 4
-
 /* 0012ECB0 80131C30 0020 */
 XferTime:
     .skip 32
-
-.balign 4
 
 /* 0012ECD0 80131C50 0040 */
 TypeCallback:
     .skip 64
 
-.balign 4
-
 /* 0012ED10 80131C90 0010 */
 RDSTHandler:
     .skip 16
-
-.balign 4
 
 /* 0012ED20 80131CA0 0010 */
 InputBufferValid:
     .skip 16
 
-.balign 4
-
 /* 0012ED30 80131CB0 0020 */
 InputBuffer:
     .skip 32
-
-.balign 4
 
 /* 0012ED50 80131CD0 0010 */
 InputBufferVcount:
     .skip 16
 
-.balign 4
-
 /* 0012ED60 80131CE0 0010 */
 cmdFixDevice$327:
     .skip 16
-
 
 .section .sdata, "wa"
 
@@ -1776,7 +1741,6 @@ cmdFixDevice$327:
 glabel __SIVersion
     .long D_800F1520
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1785,16 +1749,10 @@ glabel __SIVersion
 cmdTypeAndStatus$78:
     .skip 4
 
-.balign 4
-
 /* 000F1B1C 8013589C 0004 */
 cmdTypeAndStatus$372:
     .skip 4
 
-.balign 4
-
 /* 000F1B20 801358A0 0004 */
 glabel __PADFixBits
     .skip 4
-
-

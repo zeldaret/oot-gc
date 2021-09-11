@@ -166,7 +166,6 @@ glabel PSMTX44Concat
 /* 0A2CDC 800A827C F1A50038 */  psq_st  f13, 56(r5), 0, qr0
 /* 0A2CE0 800A8280 4E800020 */  blr     
 
-
 .section .sdata2, "wa"
 
 .balign 8
@@ -175,34 +174,22 @@ glabel PSMTX44Concat
 D_801360E8:
     .float 1.0
 
-.balign 4
-
 /* 000F1BEC 801360EC 0004 */
 D_801360EC:
     .float 2.0
-
-.balign 4
 
 /* 000F1BF0 801360F0 0004 */
 D_801360F0:
     .float 0.0
 
-.balign 4
-
 /* 000F1BF4 801360F4 0004 */
 D_801360F4:
     .float -1.0
-
-.balign 4
 
 /* 000F1BF8 801360F8 0004 */
 D_801360F8:
     .float 0.5
 
-.balign 4
-
 /* 000F1BFC 801360FC 0004 */
 D_801360FC:
     .float 0.01745329238474369
-
-

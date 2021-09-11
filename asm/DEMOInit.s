@@ -782,7 +782,6 @@ lbl_800B6898:
 /* 0B131C 800B68BC 7C0803A6 */  mtlr    r0
 /* 0B1320 800B68C0 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -790,67 +789,57 @@ lbl_800B6898:
 /* 000EF718 800F2698 000B */
 D_800F2698:
     .asciz "DEMOInit.c"
-
-.balign 4
+    .balign 4
 
 /* 000EF724 800F26A4 001D */
 D_800F26A4:
     .asciz "DEMOInit: invalid TV format\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF744 800F26C4 0035 */
 D_800F26C4:
     .asciz "---------WARNING : HANG AT HIGH WATERMARK----------\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF77C 800F26FC 0010 */
 D_800F26FC:
     .asciz "Halting program"
-
-.balign 4
+    .balign 4
 
 /* 000EF78C 800F270C 002D */
 D_800F270C:
     .asciz "---------WARNING : ABORTING FRAME----------\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF7BC 800F273C 001C */
 D_800F273C:
     .asciz "GP status %d%d%d%d%d%d --> "
-
-.balign 4
+    .balign 4
 
 /* 000EF7D8 800F2758 001E */
 D_800F2758:
     .asciz "GP hang due to XF stall bug.\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF7F8 800F2778 0028 */
 D_800F2778:
     .asciz "GP hang due to unterminated primitive.\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF820 800F27A0 0025 */
 D_800F27A0:
     .asciz "GP hang due to illegal instruction.\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF848 800F27C8 0030 */
 D_800F27C8:
     .asciz "GP appears to be not hung (waiting for input).\n"
-
-.balign 4
+    .balign 4
 
 /* 000EF878 800F27F8 0019 */
 D_800F27F8:
     .asciz "GP is in unknown state.\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -860,7 +849,6 @@ D_800F27F8:
 rmodeobj:
     .skip 60
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -868,7 +856,6 @@ rmodeobj:
 /* 000F17A0 80135520 0001 */
 DemoFirstFrame:
     .byte 0x01
-
 
 .section .sbss, "wa"
 
@@ -878,60 +865,41 @@ DemoFirstFrame:
 DefaultFifo:
     .skip 4
 
-.balign 4
-
 /* 000F1CF4 80135A74 0004 */
 DefaultFifoObj:
     .skip 4
-
-.balign 4
 
 /* 000F1CF8 80135A78 0004 */
 rmode:
     .skip 4
 
-.balign 4
-
 /* 000F1CFC 80135A7C 0004 */
 allocatedFrameBufferSize:
     .skip 4
-
-.balign 4
 
 /* 000F1D00 80135A80 0004 */
 GPHangWorkaround:
     .skip 4
 
-.balign 4
-
 /* 000F1D04 80135A84 0004 */
 FrameCount:
     .skip 4
-
-.balign 4
 
 /* 000F1D08 80135A88 0004 */
 FrameMissThreshold:
     .skip 4
 
-.balign 4
-
 /* 000F1D0C 80135A8C 0004 */
 glabel DemoCurrentBuffer
     .skip 4
-
-.balign 4
 
 /* 000F1D10 80135A90 0004 */
 glabel DemoFrameBuffer2
     .skip 4
 
-.balign 4
-
 /* 000F1D14 80135A94 0004 */
 glabel DemoFrameBuffer1
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -941,16 +909,10 @@ glabel DemoFrameBuffer1
 D_801361D0:
     .float 0.0
 
-.balign 4
-
 /* 000F1CD4 801361D4 0004 */
 D_801361D4:
     .float 1.0
 
-.balign 8
-
 /* 000F1CD8 801361D8 0008 */
 D_801361D8:
     .double 4503599627370496.0
-
-

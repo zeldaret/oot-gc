@@ -1041,7 +1041,6 @@ lbl_800AD558:
 /* 0A7FC0 800AD560 38210018 */  addi    r1, r1, 0x18
 /* 0A7FC4 800AD564 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1110,8 +1109,6 @@ jtbl_800F1F90:
     .long lbl_800AC714
     .long lbl_800AC708
 
-.balign 4
-
 /* 000EF104 800F2084 003C */
 jtbl_800F2084:
     .long lbl_800AC918
@@ -1130,7 +1127,6 @@ jtbl_800F2084:
     .long lbl_800AC97C
     .long lbl_800AC968
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -1139,48 +1135,33 @@ jtbl_800F2084:
 GXTexMode0Ids:
     .long 0x80818283, 0xA0A1A2A3
 
-.balign 8
-
 /* 000F1710 80135490 0008 */
 GXTexMode1Ids:
     .long 0x84858687, 0xA4A5A6A7
-
-.balign 8
 
 /* 000F1718 80135498 0008 */
 GXTexImage0Ids:
     .long 0x88898A8B, 0xA8A9AAAB
 
-.balign 8
-
 /* 000F1720 801354A0 0008 */
 GXTexImage1Ids:
     .long 0x8C8D8E8F, 0xACADAEAF
-
-.balign 8
 
 /* 000F1728 801354A8 0008 */
 GXTexImage2Ids:
     .long 0x90919293, 0xB0B1B2B3
 
-.balign 8
-
 /* 000F1730 801354B0 0008 */
 GXTexImage3Ids:
     .long 0x94959697, 0xB4B5B6B7
-
-.balign 8
 
 /* 000F1738 801354B8 0008 */
 GXTexTlutIds:
     .long 0x98999A9B, 0xB8B9BABB
 
-.balign 4
-
 /* 000F1740 801354C0 0006 */
 GX2HWFiltConv:
     .short 0x0004, 0x0105, 0x0206
-
 
 .section .sdata2, "wa"
 
@@ -1196,40 +1177,26 @@ D_80136138:
 D_80136140:
     .double 4503599627370496.0
 
-.balign 4
-
 /* 000F1C48 80136148 0004 */
 D_80136148:
     .float -4.0
-
-.balign 4
 
 /* 000F1C4C 8013614C 0004 */
 D_8013614C:
     .float 4.0
 
-.balign 4
-
 /* 000F1C50 80136150 0004 */
 D_80136150:
     .float 3.990000009536743
-
-.balign 4
 
 /* 000F1C54 80136154 0004 */
 D_80136154:
     .float 32.0
 
-.balign 4
-
 /* 000F1C58 80136158 0004 */
 D_80136158:
     .float 0.0
 
-.balign 4
-
 /* 000F1C5C 8013615C 0004 */
 D_8013615C:
     .float 10.0
-
-

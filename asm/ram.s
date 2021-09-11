@@ -493,7 +493,6 @@ ramPutControl8:
 /* 067E04 8006D3A4 38600000 */  li      r3, 0
 /* 067E08 8006D3A8 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -501,8 +500,6 @@ ramPutControl8:
 /* 000EA748 800ED6C8 0010 */
 glabel gClassRAM
     .long D_80135270, 0x0000000C, 0x00000000, ramEvent
-
-.balign 4
 
 /* 000EA758 800ED6D8 0074 */
 jtbl_800ED6D8:
@@ -536,8 +533,6 @@ jtbl_800ED6D8:
     .long lbl_8006D2A8
     .long lbl_8006D2B0
 
-.balign 4
-
 /* 000EA7CC 800ED74C 0074 */
 jtbl_800ED74C:
     .long lbl_8006D2FC
@@ -569,8 +564,6 @@ jtbl_800ED74C:
     .long lbl_8006D2F4
     .long lbl_8006D2F4
     .long lbl_8006D2FC
-
-.balign 4
 
 /* 000EA840 800ED7C0 0094 */
 jtbl_800ED7C0:
@@ -612,8 +605,6 @@ jtbl_800ED7C0:
     .long lbl_8006D340
     .long lbl_8006D348
 
-.balign 4
-
 /* 000EA8D4 800ED854 0094 */
 jtbl_800ED854:
     .long lbl_8006D394
@@ -654,7 +645,6 @@ jtbl_800ED854:
     .long lbl_8006D38C
     .long lbl_8006D394
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -662,5 +652,4 @@ jtbl_800ED854:
 /* 000F14F0 80135270 0004 */
 D_80135270:
     .asciz "RAM"
-
-
+    .balign 4

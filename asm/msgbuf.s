@@ -621,7 +621,6 @@ lbl_800C9DE8:
 /* 0C4860 800C9E00 7C0803A6 */  mtlr    r0
 /* 0C4864 800C9E04 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 8
@@ -629,5 +628,3 @@ lbl_800C9DE8:
 /* 0012FC00 80132B80 19B0 */
 glabel gTRKMsgBufs
     .skip 6576
-
-

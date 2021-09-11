@@ -7,17 +7,17 @@
 
 glabel __DSPHandler
 /* 0B4F38 800BA4D8 7C0802A6 */  mflr    r0
-/* 0B4F3C 800BA4DC 3C60CC00 */  lis     r3, 0xcc00
+/* 0B4F3C 800BA4DC 3C60CC00 */  lis     r3, DSP_REGS_BASE@ha
 /* 0B4F40 800BA4E0 90010004 */  stw     r0, 4(r1)
-/* 0B4F44 800BA4E4 38635000 */  addi    r3, r3, 0x5000
+/* 0B4F44 800BA4E4 38635000 */  addi    r3, r3, DSP_REGS_BASE@l
 /* 0B4F48 800BA4E8 3800FFD7 */  li      r0, -41
 /* 0B4F4C 800BA4EC 9421FD18 */  stwu    r1, -0x2e8(r1)
 /* 0B4F50 800BA4F0 93E102E4 */  stw     r31, 0x2e4(r1)
 /* 0B4F54 800BA4F4 3BE40000 */  addi    r31, r4, 0
-/* 0B4F58 800BA4F8 A0A3000A */  lhz     r5, 0xa(r3)
+/* 0B4F58 800BA4F8 A0A3000A */  lhz     r5, DSP_0A(r3)
 /* 0B4F5C 800BA4FC 7CA00038 */  and     r0, r5, r0
 /* 0B4F60 800BA500 60000080 */  ori     r0, r0, 0x80
-/* 0B4F64 800BA504 B003000A */  sth     r0, 0xa(r3)
+/* 0B4F64 800BA504 B003000A */  sth     r0, DSP_0A(r3)
 /* 0B4F68 800BA508 38610010 */  addi    r3, r1, 0x10
 /* 0B4F6C 800BA50C 4BFE3C99 */  bl      OSClearContext
 /* 0B4F70 800BA510 38610010 */  addi    r3, r1, 0x10
@@ -630,7 +630,6 @@ lbl_800BAD38:
 /* 0B57B4 800BAD54 9003003C */  stw     r0, 0x3c(r3)
 /* 0B57B8 800BAD58 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -638,43 +637,37 @@ lbl_800BAD38:
 /* 000F0718 800F3698 001D */
 D_800F3698:
     .asciz "DSP is booting task: 0x%08X\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0738 800F36B8 002D */
 D_800F36B8:
     .asciz "__DSP_boot_task()  : IRAM MMEM ADDR: 0x%08X\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0768 800F36E8 002D */
 D_800F36E8:
     .asciz "__DSP_boot_task()  : IRAM DSP ADDR : 0x%08X\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0798 800F3718 002D */
 D_800F3718:
     .asciz "__DSP_boot_task()  : IRAM LENGTH   : 0x%08X\n"
-
-.balign 4
+    .balign 4
 
 /* 000F07C8 800F3748 002D */
 D_800F3748:
     .asciz "__DSP_boot_task()  : DRAM MMEM ADDR: 0x%08X\n"
-
-.balign 4
+    .balign 4
 
 /* 000F07F8 800F3778 002D */
 D_800F3778:
     .asciz "__DSP_boot_task()  : Start Vector  : 0x%08X\n"
-
-.balign 4
+    .balign 4
 
 /* 000F0828 800F37A8 002B */
 D_800F37A8:
     .asciz "__DSP_add_task() : Added task    : 0x%08X\n"
-
+    .balign 4
 
 .section .sbss, "wa"
 
@@ -684,34 +677,22 @@ D_800F37A8:
 glabel __DSP_rude_task_pending
     .skip 4
 
-.balign 4
-
 /* 000F1DFC 80135B7C 0004 */
 glabel __DSP_rude_task
     .skip 4
-
-.balign 4
 
 /* 000F1E00 80135B80 0004 */
 glabel __DSP_tmp_task
     .skip 4
 
-.balign 4
-
 /* 000F1E04 80135B84 0004 */
 glabel __DSP_last_task
     .skip 4
-
-.balign 4
 
 /* 000F1E08 80135B88 0004 */
 glabel __DSP_first_task
     .skip 4
 
-.balign 4
-
 /* 000F1E0C 80135B8C 0004 */
 glabel __DSP_curr_task
     .skip 4
-
-

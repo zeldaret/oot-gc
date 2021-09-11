@@ -16,5 +16,3 @@ glabel TRKMessageSend
 /* 0C4014 800C95B4 80010004 */  lwz     r0, 4(r1)
 /* 0C4018 800C95B8 7C0803A6 */  mtlr    r0
 /* 0C401C 800C95BC 4E800020 */  blr     
-
-

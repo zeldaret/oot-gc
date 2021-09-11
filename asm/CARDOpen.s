@@ -442,5 +442,3 @@ lbl_800C037C:
 glabel __CARDIsOpened
 /* 0BADF0 800C0390 38600000 */  li      r3, 0
 /* 0BADF4 800C0394 4E800020 */  blr     
-
-

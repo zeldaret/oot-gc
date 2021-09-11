@@ -1321,33 +1321,25 @@ lbl_800A2294:
 /* 09CD00 800A22A0 7C0803A6 */  mtlr    r0
 /* 09CD04 800A22A4 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 8
 
 /* 0012E0B8 80131038 0100 */
 RunQueue:
-    .skip 256
-
-.balign 4
+    .skip 0x100
 
 /* 0012E1B8 80131138 0318 */
 IdleThread:
-    .skip 792
-
-.balign 4
+    .skip 0x318
 
 /* 0012E4D0 80131450 0318 */
 DefaultThread:
-    .skip 792
-
-.balign 4
+    .skip 0x318
 
 /* 0012E7E8 80131768 02C8 */
 IdleContext:
-    .skip 712
-
+    .skip 0x2C8
 
 .section .sdata, "wa"
 
@@ -1357,7 +1349,6 @@ IdleContext:
 SwitchThreadCallback:
     .long DefaultSwitchThreadCallback
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1366,16 +1357,10 @@ SwitchThreadCallback:
 RunQueueBits:
     .skip 4
 
-.balign 4
-
 /* 000F1AEC 8013586C 0004 */
 RunQueueHint:
     .skip 4
 
-.balign 4
-
 /* 000F1AF0 80135870 0004 */
 Reschedule:
     .skip 4
-
-

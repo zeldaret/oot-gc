@@ -592,7 +592,6 @@ glabel xlCoreReset
 /* 00085C 80005DFC 7C0803A6 */  mtlr    r0
 /* 000860 80005E00 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -1634,19 +1633,17 @@ glabel gTgPcTPL
 /* 000D8824 800DB7A4 000C */
 D_800DB7A4:
     .asciz "xlCoreGCN.c"
-
-.balign 4
+    .balign 4
 
 /* 000D8830 800DB7B0 000B */
 D_800DB7B0:
     .asciz "CORE DONE!"
-
-.balign 4
+    .balign 4
 
 /* 000D883C 800DB7BC 001D */
 D_800DB7BC:
     .asciz "DEMOInit: invalid TV format\n"
-
+    .balign 4
 
 .section .bss, "wa"
 
@@ -1656,7 +1653,6 @@ D_800DB7BC:
 rmodeobj:
     .skip 60
 
-
 .section .sbss, "wa"
 
 .balign 8
@@ -1665,48 +1661,33 @@ rmodeobj:
 gnCountArgument:
     .skip 4
 
-.balign 4
-
 /* 000F1804 80135584 0004 */
 gaszArgument:
     .skip 4
-
-.balign 4
 
 /* 000F1808 80135588 0004 */
 DefaultFifo:
     .skip 4
 
-.balign 4
-
 /* 000F180C 8013558C 0004 */
 DefaultFifoObj:
     .skip 4
-
-.balign 4
 
 /* 000F1810 80135590 0004 */
 gpHeap:
     .skip 4
 
-.balign 4
-
 /* 000F1814 80135594 0004 */
 gArenaHi:
     .skip 4
-
-.balign 4
 
 /* 000F1818 80135598 0004 */
 gArenaLo:
     .skip 4
 
-.balign 4
-
 /* 000F181C 8013559C 0004 */
 glabel rmode
     .skip 4
-
 
 .section .sdata2, "wa"
 
@@ -1716,13 +1697,9 @@ glabel rmode
 D_80135D00:
     .long 0x00000000
 
-.balign 4
-
 /* 000F1804 80135D04 0004 */
 D_80135D04:
     .float 0.0
-
-.balign 4
 
 /* 000F1808 80135D08 0004 */
 D_80135D08:
@@ -1733,5 +1710,3 @@ D_80135D08:
 /* 000F1810 80135D10 0008 */
 D_80135D10:
     .double 4503599627370496.0
-
-

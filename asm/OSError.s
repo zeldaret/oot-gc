@@ -402,19 +402,19 @@ glabel lbl_8009EC24
 /* 099684 8009EC24 386D8754 */  addi    r3, r13, D_80135434-_SDA_BASE_
 /* 099688 8009EC28 4CC63182 */  crclr   6
 /* 09968C 8009EC2C 4BFFF9CD */  bl      OSReport
-/* 099690 8009EC30 3F20CC00 */  lis     r25, 0xcc00
+/* 099690 8009EC30 3F20CC00 */  lis     r25, DSP_REGS_BASE@ha
 /* 099694 8009EC34 4CC63182 */  crclr   6
-/* 099698 8009EC38 3B195000 */  addi    r24, r25, 0x5000
-/* 09969C 8009EC3C A0995030 */  lhz     r4, 0x5030(r25)
+/* 099698 8009EC38 3B195000 */  addi    r24, r25, DSP_REGS_BASE@l
+/* 09969C 8009EC3C A0995030 */  lhz     r4, (DSP_REGS_BASE + DSP_30)@l(r25)
 /* 0996A0 8009EC40 387F0248 */  addi    r3, r31, 0x248
-/* 0996A4 8009EC44 A0B95032 */  lhz     r5, 0x5032(r25)
+/* 0996A4 8009EC44 A0B95032 */  lhz     r5, (DSP_REGS_BASE + DSP_32)@l(r25)
 /* 0996A8 8009EC48 4BFFF9B1 */  bl      OSReport
-/* 0996AC 8009EC4C A0980020 */  lhz     r4, 0x20(r24)
+/* 0996AC 8009EC4C A0980020 */  lhz     r4, DSP_20(r24)
 /* 0996B0 8009EC50 387F0268 */  addi    r3, r31, 0x268
-/* 0996B4 8009EC54 A0B80022 */  lhz     r5, 0x22(r24)
+/* 0996B4 8009EC54 A0B80022 */  lhz     r5, DSP_22(r24)
 /* 0996B8 8009EC58 4CC63182 */  crclr   6
 /* 0996BC 8009EC5C 4BFFF99D */  bl      OSReport
-/* 0996C0 8009EC60 80996014 */  lwz     r4, 0x6014(r25)
+/* 0996C0 8009EC60 80996014 */  lwz     r4, (DI_REGS_BASE + DI_DIMAR)@l(r25)
 /* 0996C4 8009EC64 4CC63182 */  crclr   6
 /* 0996C8 8009EC68 387F0288 */  addi    r3, r31, 0x288
 /* 0996CC 8009EC6C 4BFFF98D */  bl      OSReport
@@ -433,7 +433,6 @@ glabel lbl_8009EC70
 /* 0996FC 8009EC9C 7C0803A6 */  mtlr    r0
 /* 099700 8009ECA0 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -441,92 +440,77 @@ glabel lbl_8009EC70
 /* 000EE0D0 800F1050 0016 */
 D_800F1050:
     .asciz " in \"%s\" on line %d.\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE0E8 800F1068 0026 */
 D_800F1068:
     .asciz "\nAddress:      Back Chain    LR Save\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE110 800F1090 001C */
 D_800F1090:
     .asciz "0x%08x:   0x%08x    0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE12C 800F10AC 001D */
 D_800F10AC:
     .asciz "Non-recoverable Exception %d"
-
-.balign 4
+    .balign 4
 
 /* 000EE14C 800F10CC 0017 */
 D_800F10CC:
     .asciz "Unhandled Exception %d"
-
-.balign 4
+    .balign 4
 
 /* 000EE164 800F10E4 0031 */
 D_800F10E4:
     .asciz "\nDSISR = 0x%08x                   DAR  = 0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE198 800F1118 0010 */
 D_800F1118:
     .asciz "TB = 0x%016llx\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE1A8 800F1128 0060 */
 D_800F1128:
     .asciz "\nInstruction at 0x%x (read from SRR0) attempted to access invalid address 0x%x (read from DAR)\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE208 800F1188 004C */
 D_800F1188:
     .asciz "\nAttempted to fetch instruction from invalid address 0x%x (read from SRR0)\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE254 800F11D4 0062 */
 D_800F11D4:
     .asciz "\nInstruction at 0x%x (read from SRR0) attempted to access unaligned address 0x%x (read from DAR)\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE2B8 800F1238 0060 */
 D_800F1238:
     .asciz "\nProgram exception : Possible illegal instruction/operation at or around 0x%x (read from SRR0)\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE318 800F1298 001F */
 D_800F1298:
     .asciz "AI DMA Address =   0x%04x%04x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE338 800F12B8 001F */
 D_800F12B8:
     .asciz "ARAM DMA Address = 0x%04x%04x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE358 800F12D8 001B */
 D_800F12D8:
     .asciz "DI DMA Address =   0x%08x\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE374 800F12F4 0035 */
 D_800F12F4:
     .asciz "\nLast interrupt (%d): SRR0 = 0x%08x  TB = 0x%016llx\n"
-
-.balign 4
+    .balign 4
 
 /* 000EE3AC 800F132C 0040 */
 jtbl_800F132C:
@@ -547,7 +531,6 @@ jtbl_800F132C:
     .long lbl_8009EC70
     .long lbl_8009EC24
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -555,7 +538,6 @@ jtbl_800F132C:
 /* 0012DFF0 80130F70 0044 */
 glabel __OSErrorTable
     .skip 68
-
 
 .section .sdata, "wa"
 
@@ -565,10 +547,7 @@ glabel __OSErrorTable
 glabel __OSFpscrEnableBits
     .long 0x000000F8
 
-.balign 4
-
 /* 000F16B4 80135434 0002 */
 D_80135434:
     .asciz "\n"
-
-
+    .balign 4

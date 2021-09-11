@@ -139,7 +139,6 @@ glabel TRKTerminateSerialHandler
 /* 0C4A28 800C9FC8 38600000 */  li      r3, 0
 /* 0C4A2C 800C9FCC 4E800020 */  blr     
 
-
 .section .bss, "wa"
 
 .balign 4
@@ -148,10 +147,6 @@ glabel TRKTerminateSerialHandler
 gTRKFramingState:
     .skip 20
 
-.balign 4
-
 /* 001315C4 80134544 0004 */
 glabel gTRKInputPendingPtr
     .skip 4
-
-

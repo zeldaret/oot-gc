@@ -19,5 +19,3 @@ glabel TRKTargetContinue
 /* 0C81EC 800CD78C 80010004 */  lwz     r0, 4(r1)
 /* 0C81F0 800CD790 7C0803A6 */  mtlr    r0
 /* 0C81F4 800CD794 4E800020 */  blr     
-
-

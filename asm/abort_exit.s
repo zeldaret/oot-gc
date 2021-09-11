@@ -82,7 +82,6 @@ lbl_800CE0D8:
 /* 0C8B48 800CE0E8 7C0803A6 */  mtlr    r0
 /* 0C8B4C 800CE0EC 4E800020 */  blr     
 
-
 .section .dtors, "a"
 
 .balign 4
@@ -91,21 +90,17 @@ lbl_800CE0D8:
 glabel _dtors
     .long __destroy_global_chain
 
-
 .section .bss, "wa"
 
 .balign 8
 
 /* 00131B58 80134AD8 0100 */
 atexit_funcs:
-    .skip 256
-
-.balign 4
+    .skip 0x100
 
 /* 00131C58 80134BD8 0100 */
 __atexit_funcs:
-    .skip 256
-
+    .skip 0x100
 
 .section .sbss, "wa"
 
@@ -115,28 +110,18 @@ __atexit_funcs:
 glabel __aborting
     .skip 4
 
-.balign 4
-
 /* 000F1F44 80135CC4 0004 */
 atexit_curr_func:
     .skip 4
-
-.balign 4
 
 /* 000F1F48 80135CC8 0004 */
 __atexit_curr_func:
     .skip 4
 
-.balign 4
-
 /* 000F1F4C 80135CCC 0004 */
 glabel __stdio_exit
     .skip 4
 
-.balign 4
-
 /* 000F1F50 80135CD0 0004 */
 glabel __console_exit
     .skip 4
-
-

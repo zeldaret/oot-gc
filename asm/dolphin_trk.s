@@ -15,7 +15,6 @@ glabel __TRK_reset
 /* 0022C8 800053C8 7C0803A6 */  mtlr    r0
 /* 0022CC 800053CC 4E800020 */  blr     
 
-
 .section .text, "ax"
 
 .balign 4
@@ -162,7 +161,6 @@ glabel TRKInitializeTarget
 /* 0C7AA4 800CD044 7C0803A6 */  mtlr    r0
 /* 0C7AA8 800CD048 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -171,5 +169,3 @@ glabel TRKInitializeTarget
 TRK_ISR_OFFSETS:
     .long 0x00000100, 0x00000200, 0x00000300, 0x00000400, 0x00000500, 0x00000600, 0x00000700, 0x00000800
     .long 0x00000900, 0x00000C00, 0x00000D00, 0x00000F00, 0x00001300, 0x00001400, 0x00001700
-
-

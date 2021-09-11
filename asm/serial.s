@@ -228,7 +228,6 @@ glabel serialPut8
 /* 089B4C 8008F0EC 38600000 */  li      r3, 0
 /* 089B50 8008F0F0 4E800020 */  blr     
 
-
 .section .data, "wa"
 
 .balign 8
@@ -236,8 +235,6 @@ glabel serialPut8
 /* 000EBAA8 800EEA28 0010 */
 glabel gClassSerial
     .long D_80135320, 0x00000008, 0x00000000, serialEvent
-
-.balign 4
 
 /* 000EBAB8 800EEA38 0064 */
 jtbl_800EEA38:
@@ -267,8 +264,6 @@ jtbl_800EEA38:
     .long lbl_8008EF7C
     .long lbl_8008EF70
 
-.balign 4
-
 /* 000EBB1C 800EEA9C 0064 */
 jtbl_800EEA9C:
     .long lbl_8008EFDC
@@ -297,7 +292,6 @@ jtbl_800EEA9C:
     .long lbl_8008F0C4
     .long lbl_8008F0B0
 
-
 .section .sdata, "wa"
 
 .balign 8
@@ -305,5 +299,4 @@ jtbl_800EEA9C:
 /* 000F15A0 80135320 0007 */
 D_80135320:
     .asciz "SERIAL"
-
-
+    .balign 4
