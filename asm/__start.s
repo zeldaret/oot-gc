@@ -26,11 +26,11 @@ lbl_80003130:
 
 __set_debug_bba:
 /* 000040 80003140 38000001 */  li      r0, 1
-/* 000044 80003144 980D8B98 */  stb     r0, Debug_BBA-_SDA_BASE_(r13)
+/* 000044 80003144 980D8B98 */  stb     r0, Debug_BBA@sda21(r13)
 /* 000048 80003148 4E800020 */  blr     
 
 __get_debug_bba:
-/* 00004C 8000314C 886D8B98 */  lbz     r3, Debug_BBA-_SDA_BASE_(r13)
+/* 00004C 8000314C 886D8B98 */  lbz     r3, Debug_BBA@sda21(r13)
 /* 000050 80003150 4E800020 */  blr     
 
 glabel __start

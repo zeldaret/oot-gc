@@ -13,7 +13,7 @@ glabel MovieDraw
 /* 00A23C 8000F7DC 38C00280 */  li      r6, 0x280
 /* 00A240 8000F7E0 9421FFF8 */  stwu    r1, -8(r1)
 /* 00A244 8000F7E4 38E001B8 */  li      r7, 0x1b8
-/* 00A248 8000F7E8 806D88BC */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 00A248 8000F7E8 806D88BC */  lwz     r3, rmode@sda21(r13)
 /* 00A24C 8000F7EC 48000F31 */  bl      THPPlayerDrawCurrentFrame
 /* 00A250 8000F7F0 48001029 */  bl      THPPlayerDrawDone
 /* 00A254 8000F7F4 8001000C */  lwz     r0, 0xc(r1)
@@ -44,11 +44,11 @@ lbl_8000F840:
 lbl_8000F84C:
 /* 00A2AC 8000F84C 480003F5 */  bl      THPPlayerCalcNeedMemory
 /* 00A2B0 8000F850 7C601B78 */  mr      r0, r3
-/* 00A2B4 8000F854 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 00A2B4 8000F854 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 00A2B8 8000F858 7C040378 */  mr      r4, r0
 /* 00A2BC 8000F85C 4808D669 */  bl      OSAllocFromHeap
-/* 00A2C0 8000F860 906D8930 */  stw     r3, gBufferP-_SDA_BASE_(r13)
-/* 00A2C4 8000F864 806D8930 */  lwz     r3, gBufferP-_SDA_BASE_(r13)
+/* 00A2C0 8000F860 906D8930 */  stw     r3, gBufferP@sda21(r13)
+/* 00A2C4 8000F864 806D8930 */  lwz     r3, gBufferP@sda21(r13)
 /* 00A2C8 8000F868 48000481 */  bl      THPPlayerSetBuffer
 /* 00A2CC 8000F86C 38600000 */  li      r3, 0
 /* 00A2D0 8000F870 38800000 */  li      r4, 0

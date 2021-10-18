@@ -9,12 +9,12 @@ glabel DBInit
 /* 0A2740 800A7CE0 3C808000 */  lis     r4, 0x8000
 /* 0A2744 800A7CE4 38040040 */  addi    r0, r4, 0x40
 /* 0A2748 800A7CE8 3C60800A */  lis     r3, __DBExceptionDestination@ha
-/* 0A274C 800A7CEC 900D8C30 */  stw     r0, __DBInterface-_SDA_BASE_(r13)
+/* 0A274C 800A7CEC 900D8C30 */  stw     r0, __DBInterface@sda21(r13)
 /* 0A2750 800A7CF0 38637D50 */  addi    r3, r3, __DBExceptionDestination@l
 /* 0A2754 800A7CF4 3C038000 */  addis   r0, r3, 0x8000
 /* 0A2758 800A7CF8 90040048 */  stw     r0, 0x48(r4)
 /* 0A275C 800A7CFC 38000001 */  li      r0, 1
-/* 0A2760 800A7D00 900D8C34 */  stw     r0, DBVerbose-_SDA_BASE_(r13)
+/* 0A2760 800A7D00 900D8C34 */  stw     r0, DBVerbose@sda21(r13)
 /* 0A2764 800A7D04 4E800020 */  blr     
 
 glabel __DBExceptionDestinationAux
@@ -44,7 +44,7 @@ glabel __DBExceptionDestination
 /* 0A27BC 800A7D5C 4BFFFFAC */  b       __DBExceptionDestinationAux
 
 glabel __DBIsExceptionMarked
-/* 0A27C0 800A7D60 808D8C30 */  lwz     r4, __DBInterface-_SDA_BASE_(r13)
+/* 0A27C0 800A7D60 808D8C30 */  lwz     r4, __DBInterface@sda21(r13)
 /* 0A27C4 800A7D64 5460063E */  clrlwi  r0, r3, 0x18
 /* 0A27C8 800A7D68 38600001 */  li      r3, 1
 /* 0A27CC 800A7D6C 80840004 */  lwz     r4, 4(r4)

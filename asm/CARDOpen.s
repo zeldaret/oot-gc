@@ -118,7 +118,7 @@ lbl_800BFF20:
 /* 0BA980 800BFF20 2C1EFFF6 */  cmpwi   r30, -10
 /* 0BA984 800BFF24 408200A0 */  bne     lbl_800BFFC4
 /* 0BA988 800BFF28 887B0034 */  lbz     r3, 0x34(r27)
-/* 0BA98C 800BFF2C 880D887A */  lbz     r0, __CARDPermMask-_SDA_BASE_(r13)
+/* 0BA98C 800BFF2C 880D887A */  lbz     r0, __CARDPermMask@sda21(r13)
 /* 0BA990 800BFF30 7C600038 */  and     r0, r3, r0
 /* 0BA994 800BFF34 541C063E */  clrlwi  r28, r0, 0x18
 /* 0BA998 800BFF38 540006B5 */  rlwinm. r0, r0, 0, 0x1a, 0x1a
@@ -178,7 +178,7 @@ glabel __CARDIsReadable
 /* 0BAA5C 800BFFFC 2C1DFFF6 */  cmpwi   r29, -10
 /* 0BAA60 800C0000 4082009C */  bne     lbl_800C009C
 /* 0BAA64 800C0004 887B0034 */  lbz     r3, 0x34(r27)
-/* 0BAA68 800C0008 880D887A */  lbz     r0, __CARDPermMask-_SDA_BASE_(r13)
+/* 0BAA68 800C0008 880D887A */  lbz     r0, __CARDPermMask@sda21(r13)
 /* 0BAA6C 800C000C 7C600038 */  and     r0, r3, r0
 /* 0BAA70 800C0010 541E063E */  clrlwi  r30, r0, 0x18
 /* 0BAA74 800C0014 540006B5 */  rlwinm. r0, r0, 0, 0x1a, 0x1a

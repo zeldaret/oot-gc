@@ -12,7 +12,7 @@ glabel SetTevStageTable
 /* 092808 80097DA8 9421FFE8 */  stwu    r1, -0x18(r1)
 /* 09280C 80097DAC 93E10014 */  stw     r31, 0x14(r1)
 /* 092810 80097DB0 3BE30000 */  addi    r31, r3, 0
-/* 092814 80097DB4 80AD8920 */  lwz     r5, gpSystem-_SDA_BASE_(r13)
+/* 092814 80097DB4 80AD8920 */  lwz     r5, gpSystem@sda21(r13)
 /* 092818 80097DB8 80050020 */  lwz     r0, 0x20(r5)
 /* 09281C 80097DBC 2C000005 */  cmpwi   r0, 5
 /* 092820 80097DC0 40820050 */  bne     lbl_80097E10
@@ -123,7 +123,7 @@ lbl_80097E94:
 /* 0929A8 80097F48 3BC3A878 */  addi    r30, r3, ganNamePixel@l
 /* 0929AC 80097F4C 80050060 */  lwz     r0, 0x60(r5)
 /* 0929B0 80097F50 3A600000 */  li      r19, 0
-/* 0929B4 80097F54 3B6D8690 */  addi    r27, r13, sOrder-_SDA_BASE_
+/* 0929B4 80097F54 3B6D8690 */  addi    r27, r13, sOrder@sda21
 /* 0929B8 80097F58 90010034 */  stw     r0, 0x34(r1)
 lbl_80097F5C:
 /* 0929BC 80097F5C 8ADB0000 */  lbz     r22, 0(r27)
@@ -220,7 +220,7 @@ lbl_80098090:
 /* 092AFC 8009809C 48015AED */  bl      GXSetTevKAlphaSel
 lbl_800980A0:
 /* 092B00 800980A0 881A0000 */  lbz     r0, 0(r26)
-/* 092B04 800980A4 388D8698 */  addi    r4, r13, sReplace-_SDA_BASE_
+/* 092B04 800980A4 388D8698 */  addi    r4, r13, sReplace@sda21
 /* 092B08 800980A8 3A730001 */  addi    r19, r19, 1
 /* 092B0C 800980AC 5400103A */  slwi    r0, r0, 2
 /* 092B10 800980B0 7C1C002E */  lwzx    r0, r28, r0
@@ -246,7 +246,7 @@ lbl_800980A0:
 /* 092B60 80098100 5400103A */  slwi    r0, r0, 2
 /* 092B64 80098104 7C74012E */  stwx    r3, r20, r0
 /* 092B68 80098108 4180FE54 */  blt     lbl_80097F5C
-/* 092B6C 8009810C 386D8690 */  addi    r3, r13, sOrder-_SDA_BASE_
+/* 092B6C 8009810C 386D8690 */  addi    r3, r13, sOrder@sda21
 /* 092B70 80098110 7C0398AE */  lbzx    r0, r3, r19
 /* 092B74 80098114 3A210024 */  addi    r17, r1, 0x24
 /* 092B78 80098118 388000FF */  li      r4, 0xff

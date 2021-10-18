@@ -10,21 +10,21 @@ glabel xlHeapReset
 /* 0010AC 8000664C 90010004 */  stw     r0, 4(r1)
 /* 0010B0 80006650 38000000 */  li      r0, 0
 /* 0010B4 80006654 9421FFF8 */  stwu    r1, -8(r1)
-/* 0010B8 80006658 806D88E0 */  lwz     r3, gnSizeHeap-_SDA_BASE_(r13)
-/* 0010BC 8000665C 80AD88C8 */  lwz     r5, gpHeap-_SDA_BASE_(r13)
+/* 0010B8 80006658 806D88E0 */  lwz     r3, gnSizeHeap@sda21(r13)
+/* 0010BC 8000665C 80AD88C8 */  lwz     r5, gpHeap@sda21(r13)
 /* 0010C0 80006660 7C631670 */  srawi   r3, r3, 2
 /* 0010C4 80006664 38C3FFFE */  addi    r6, r3, -2
-/* 0010C8 80006668 90AD88CC */  stw     r5, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 0010C8 80006668 90AD88CC */  stw     r5, gpHeapBlockFirst@sda21(r13)
 /* 0010CC 8000666C 54C3103A */  slwi    r3, r6, 2
 /* 0010D0 80006670 38830004 */  addi    r4, r3, 4
-/* 0010D4 80006674 806D88CC */  lwz     r3, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 0010D4 80006674 806D88CC */  lwz     r3, gpHeapBlockFirst@sda21(r13)
 /* 0010D8 80006678 7CA52214 */  add     r5, r5, r4
 /* 0010DC 8000667C 54C4D00A */  slwi    r4, r6, 0x1a
-/* 0010E0 80006680 90AD88D0 */  stw     r5, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 0010E0 80006680 90AD88D0 */  stw     r5, gpHeapBlockLast@sda21(r13)
 /* 0010E4 80006684 7CC42378 */  or      r4, r6, r4
 /* 0010E8 80006688 64840100 */  oris    r4, r4, 0x100
 /* 0010EC 8000668C 90830000 */  stw     r4, 0(r3)
-/* 0010F0 80006690 806D88D0 */  lwz     r3, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 0010F0 80006690 806D88D0 */  lwz     r3, gpHeapBlockLast@sda21(r13)
 /* 0010F4 80006694 90030000 */  stw     r0, 0(r3)
 /* 0010F8 80006698 48000EA9 */  bl      xlHeapBlockCacheReset
 /* 0010FC 8000669C 8001000C */  lwz     r0, 0xc(r1)
@@ -42,8 +42,8 @@ glabel xlHeapSetup
 /* 001124 800066C4 9421FFF8 */  stwu    r1, -8(r1)
 /* 001128 800066C8 2C050008 */  cmpwi   r5, 8
 /* 00112C 800066CC 54A3E8FE */  srwi    r3, r5, 3
-/* 001130 800066D0 908D88E0 */  stw     r4, gnSizeHeap-_SDA_BASE_(r13)
-/* 001134 800066D4 90CD88C8 */  stw     r6, gpHeap-_SDA_BASE_(r13)
+/* 001130 800066D0 908D88E0 */  stw     r4, gnSizeHeap@sda21(r13)
+/* 001134 800066D4 90CD88C8 */  stw     r6, gpHeap@sda21(r13)
 /* 001138 800066D8 418000E0 */  blt     lbl_800067B8
 /* 00113C 800066DC 5460F0BF */  rlwinm. r0, r3, 0x1e, 2, 0x1f
 /* 001140 800066E0 7C0903A6 */  mtctr   r0
@@ -132,22 +132,22 @@ lbl_80006808:
 /* 00126C 8000680C 38C60004 */  addi    r6, r6, 4
 /* 001270 80006810 4200FFF8 */  bdnz    lbl_80006808
 lbl_80006814:
-/* 001274 80006814 806D88E0 */  lwz     r3, gnSizeHeap-_SDA_BASE_(r13)
+/* 001274 80006814 806D88E0 */  lwz     r3, gnSizeHeap@sda21(r13)
 /* 001278 80006818 38000000 */  li      r0, 0
-/* 00127C 8000681C 80AD88C8 */  lwz     r5, gpHeap-_SDA_BASE_(r13)
+/* 00127C 8000681C 80AD88C8 */  lwz     r5, gpHeap@sda21(r13)
 /* 001280 80006820 7C631670 */  srawi   r3, r3, 2
 /* 001284 80006824 38C3FFFE */  addi    r6, r3, -2
-/* 001288 80006828 90AD88CC */  stw     r5, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 001288 80006828 90AD88CC */  stw     r5, gpHeapBlockFirst@sda21(r13)
 /* 00128C 8000682C 54C3103A */  slwi    r3, r6, 2
 /* 001290 80006830 38830004 */  addi    r4, r3, 4
-/* 001294 80006834 806D88CC */  lwz     r3, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 001294 80006834 806D88CC */  lwz     r3, gpHeapBlockFirst@sda21(r13)
 /* 001298 80006838 7CA52214 */  add     r5, r5, r4
 /* 00129C 8000683C 54C4D00A */  slwi    r4, r6, 0x1a
-/* 0012A0 80006840 90AD88D0 */  stw     r5, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 0012A0 80006840 90AD88D0 */  stw     r5, gpHeapBlockLast@sda21(r13)
 /* 0012A4 80006844 7CC42378 */  or      r4, r6, r4
 /* 0012A8 80006848 64840100 */  oris    r4, r4, 0x100
 /* 0012AC 8000684C 90830000 */  stw     r4, 0(r3)
-/* 0012B0 80006850 806D88D0 */  lwz     r3, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 0012B0 80006850 806D88D0 */  lwz     r3, gpHeapBlockLast@sda21(r13)
 /* 0012B4 80006854 90030000 */  stw     r0, 0(r3)
 /* 0012B8 80006858 48000CE9 */  bl      xlHeapBlockCacheReset
 /* 0012BC 8000685C 8001000C */  lwz     r0, 0xc(r1)
@@ -168,9 +168,9 @@ glabel xlHeapGetFree
 /* 0012F0 80006890 38600000 */  li      r3, 0
 /* 0012F4 80006894 48000060 */  b       lbl_800068F4
 lbl_80006898:
-/* 0012F8 80006898 80CD88CC */  lwz     r6, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 0012F8 80006898 80CD88CC */  lwz     r6, gpHeapBlockFirst@sda21(r13)
 /* 0012FC 8000689C 38A00000 */  li      r5, 0
-/* 001300 800068A0 808D88D0 */  lwz     r4, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 001300 800068A0 808D88D0 */  lwz     r4, gpHeapBlockLast@sda21(r13)
 /* 001304 800068A4 48000040 */  b       lbl_800068E4
 lbl_800068A8:
 /* 001308 800068A8 80E60000 */  lwz     r7, 0(r6)
@@ -651,7 +651,7 @@ glabel xlHeapCompact
 /* 0019CC 80006F6C 38C00000 */  li      r6, 0
 /* 0019D0 80006F70 90010004 */  stw     r0, 4(r1)
 /* 0019D4 80006F74 9421FFE0 */  stwu    r1, -0x20(r1)
-/* 0019D8 80006F78 80AD88CC */  lwz     r5, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 0019D8 80006F78 80AD88CC */  lwz     r5, gpHeapBlockFirst@sda21(r13)
 /* 0019DC 80006F7C 480000F8 */  b       lbl_80007074
 lbl_80006F80:
 /* 0019E0 80006F80 5483103A */  slwi    r3, r4, 2
@@ -747,10 +747,10 @@ glabel xlHeapFree
 /* 001B14 800070B4 93810010 */  stw     r28, 0x10(r1)
 /* 001B18 800070B8 41820020 */  beq     lbl_800070D8
 /* 001B1C 800070BC 807F0000 */  lwz     r3, 0(r31)
-/* 001B20 800070C0 800D88CC */  lwz     r0, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 001B20 800070C0 800D88CC */  lwz     r0, gpHeapBlockFirst@sda21(r13)
 /* 001B24 800070C4 7C030040 */  cmplw   r3, r0
 /* 001B28 800070C8 41800010 */  blt     lbl_800070D8
-/* 001B2C 800070CC 800D88D0 */  lwz     r0, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 001B2C 800070CC 800D88D0 */  lwz     r0, gpHeapBlockLast@sda21(r13)
 /* 001B30 800070D0 7C030040 */  cmplw   r3, r0
 /* 001B34 800070D4 4081000C */  ble     lbl_800070E0
 lbl_800070D8:
@@ -802,11 +802,11 @@ lbl_80007164:
 /* 001BD0 80007170 901C0000 */  stw     r0, 0(r28)
 /* 001BD4 80007174 7F83E378 */  mr      r3, r28
 /* 001BD8 80007178 480005E1 */  bl      xlHeapBlockCacheAdd
-/* 001BDC 8000717C 808D88D8 */  lwz     r4, gnHeapFreeCount-_SDA_BASE_(r13)
+/* 001BDC 8000717C 808D88D8 */  lwz     r4, gnHeapFreeCount@sda21(r13)
 /* 001BE0 80007180 38000000 */  li      r0, 0
 /* 001BE4 80007184 38600001 */  li      r3, 1
 /* 001BE8 80007188 38840001 */  addi    r4, r4, 1
-/* 001BEC 8000718C 908D88D8 */  stw     r4, gnHeapFreeCount-_SDA_BASE_(r13)
+/* 001BEC 8000718C 908D88D8 */  stw     r4, gnHeapFreeCount@sda21(r13)
 /* 001BF0 80007190 901F0000 */  stw     r0, 0(r31)
 lbl_80007194:
 /* 001BF4 80007194 80010024 */  lwz     r0, 0x24(r1)
@@ -892,8 +892,8 @@ lbl_8000728C:
 /* 001D04 800072A4 3BC00001 */  li      r30, 1
 /* 001D08 800072A8 48000078 */  b       lbl_80007320
 lbl_800072AC:
-/* 001D0C 800072AC 800D88CC */  lwz     r0, gpHeapBlockFirst-_SDA_BASE_(r13)
-/* 001D10 800072B0 80AD88D0 */  lwz     r5, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 001D0C 800072AC 800D88CC */  lwz     r0, gpHeapBlockFirst@sda21(r13)
+/* 001D10 800072B0 80AD88D0 */  lwz     r5, gpHeapBlockLast@sda21(r13)
 /* 001D14 800072B4 90010010 */  stw     r0, 0x10(r1)
 /* 001D18 800072B8 4800005C */  b       lbl_80007314
 lbl_800072BC:
@@ -969,11 +969,11 @@ lbl_800073A4:
 /* 001E14 800073B4 90030000 */  stw     r0, 0(r3)
 /* 001E18 800073B8 3C601235 */  lis     r3, 0x1235
 /* 001E1C 800073BC 3883ABCD */  addi    r4, r3, -21555
-/* 001E20 800073C0 80AD88D4 */  lwz     r5, gnHeapTakeCount-_SDA_BASE_(r13)
+/* 001E20 800073C0 80AD88D4 */  lwz     r5, gnHeapTakeCount@sda21(r13)
 /* 001E24 800073C4 80610010 */  lwz     r3, 0x10(r1)
 /* 001E28 800073C8 38A50001 */  addi    r5, r5, 1
 /* 001E2C 800073CC 38030004 */  addi    r0, r3, 4
-/* 001E30 800073D0 90AD88D4 */  stw     r5, gnHeapTakeCount-_SDA_BASE_(r13)
+/* 001E30 800073D0 90AD88D4 */  stw     r5, gnHeapTakeCount@sda21(r13)
 /* 001E34 800073D4 90010010 */  stw     r0, 0x10(r1)
 /* 001E38 800073D8 48000014 */  b       lbl_800073EC
 lbl_800073DC:
@@ -1015,8 +1015,8 @@ xlHeapFindUpperBlock:
 /* 001EB0 80007450 3BA40000 */  addi    r29, r4, 0
 /* 001EB4 80007454 3BC50000 */  addi    r30, r5, 0
 /* 001EB8 80007458 3BE00000 */  li      r31, 0
-/* 001EBC 8000745C 80ED88CC */  lwz     r7, gpHeapBlockFirst-_SDA_BASE_(r13)
-/* 001EC0 80007460 80CD88D0 */  lwz     r6, gpHeapBlockLast-_SDA_BASE_(r13)
+/* 001EBC 8000745C 80ED88CC */  lwz     r7, gpHeapBlockFirst@sda21(r13)
+/* 001EC0 80007460 80CD88D0 */  lwz     r6, gpHeapBlockLast@sda21(r13)
 /* 001EC4 80007464 48000044 */  b       lbl_800074A8
 lbl_80007468:
 /* 001EC8 80007468 80870000 */  lwz     r4, 0(r7)
@@ -1092,9 +1092,9 @@ xlHeapBlockCacheReset:
 /* 001FBC 8000755C 38A33FB0 */  addi    r5, r3, gapHeapBlockCache@l
 /* 001FC0 80007560 93E1001C */  stw     r31, 0x1c(r1)
 /* 001FC4 80007564 93C10018 */  stw     r30, 0x18(r1)
-/* 001FC8 80007568 908D88DC */  stw     r4, gnHeapTakeCacheCount-_SDA_BASE_(r13)
-/* 001FCC 8000756C 908D88D8 */  stw     r4, gnHeapFreeCount-_SDA_BASE_(r13)
-/* 001FD0 80007570 908D88D4 */  stw     r4, gnHeapTakeCount-_SDA_BASE_(r13)
+/* 001FC8 80007568 908D88DC */  stw     r4, gnHeapTakeCacheCount@sda21(r13)
+/* 001FCC 8000756C 908D88D8 */  stw     r4, gnHeapFreeCount@sda21(r13)
+/* 001FD0 80007570 908D88D4 */  stw     r4, gnHeapTakeCount@sda21(r13)
 lbl_80007574:
 /* 001FD4 80007574 38000000 */  li      r0, 0
 /* 001FD8 80007578 90050000 */  stw     r0, 0(r5)
@@ -1131,7 +1131,7 @@ lbl_80007574:
 /* 002054 800075F4 9005007C */  stw     r0, 0x7c(r5)
 /* 002058 800075F8 38A50080 */  addi    r5, r5, 0x80
 /* 00205C 800075FC 4200FF78 */  bdnz    lbl_80007574
-/* 002060 80007600 83CD88CC */  lwz     r30, gpHeapBlockFirst-_SDA_BASE_(r13)
+/* 002060 80007600 83CD88CC */  lwz     r30, gpHeapBlockFirst@sda21(r13)
 /* 002064 80007604 48000020 */  b       lbl_80007624
 lbl_80007608:
 /* 002068 80007608 540001CF */  rlwinm. r0, r0, 0, 7, 7
@@ -1556,9 +1556,9 @@ lbl_80007B4C:
 /* 0025E4 80007B84 38600001 */  li      r3, 1
 /* 0025E8 80007B88 90A40000 */  stw     r5, 0(r4)
 /* 0025EC 80007B8C 90060000 */  stw     r0, 0(r6)
-/* 0025F0 80007B90 808D88DC */  lwz     r4, gnHeapTakeCacheCount-_SDA_BASE_(r13)
+/* 0025F0 80007B90 808D88DC */  lwz     r4, gnHeapTakeCacheCount@sda21(r13)
 /* 0025F4 80007B94 38040001 */  addi    r0, r4, 1
-/* 0025F8 80007B98 900D88DC */  stw     r0, gnHeapTakeCacheCount-_SDA_BASE_(r13)
+/* 0025F8 80007B98 900D88DC */  stw     r0, gnHeapTakeCacheCount@sda21(r13)
 /* 0025FC 80007B9C 4E800020 */  blr     
 lbl_80007BA0:
 /* 002600 80007BA0 38E70080 */  addi    r7, r7, 0x80

@@ -31,20 +31,20 @@ glabel THPPlayerInit
 lbl_8000F8E8:
 /* 00A348 8000F8E8 4808F415 */  bl      OSDisableInterrupts
 /* 00A34C 8000F8EC 38A00000 */  li      r5, 0
-/* 00A350 8000F8F0 93CD8954 */  stw     r30, AudioSystem-_SDA_BASE_(r13)
+/* 00A350 8000F8F0 93CD8954 */  stw     r30, AudioSystem@sda21(r13)
 /* 00A354 8000F8F4 3C808001 */  lis     r4, THPAudioMixCallback@ha
-/* 00A358 8000F8F8 90AD8944 */  stw     r5, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00A358 8000F8F8 90AD8944 */  stw     r5, SoundBufferIndex@sda21(r13)
 /* 00A35C 8000F8FC 38040888 */  addi    r0, r4, THPAudioMixCallback@l
 /* 00A360 8000F900 3BC30000 */  addi    r30, r3, 0
-/* 00A364 8000F904 90AD894C */  stw     r5, LastAudioBuffer-_SDA_BASE_(r13)
+/* 00A364 8000F904 90AD894C */  stw     r5, LastAudioBuffer@sda21(r13)
 /* 00A368 8000F908 7C030378 */  mr      r3, r0
-/* 00A36C 8000F90C 90AD8950 */  stw     r5, CurAudioBuffer-_SDA_BASE_(r13)
+/* 00A36C 8000F90C 90AD8950 */  stw     r5, CurAudioBuffer@sda21(r13)
 /* 00A370 8000F910 480A8675 */  bl      AIRegisterDMACallback
-/* 00A374 8000F914 906D8948 */  stw     r3, OldAIDCallback-_SDA_BASE_(r13)
-/* 00A378 8000F918 800D8948 */  lwz     r0, OldAIDCallback-_SDA_BASE_(r13)
+/* 00A374 8000F914 906D8948 */  stw     r3, OldAIDCallback@sda21(r13)
+/* 00A378 8000F918 800D8948 */  lwz     r0, OldAIDCallback@sda21(r13)
 /* 00A37C 8000F91C 28000000 */  cmplwi  r0, 0
 /* 00A380 8000F920 40820038 */  bne     lbl_8000F958
-/* 00A384 8000F924 800D8954 */  lwz     r0, AudioSystem-_SDA_BASE_(r13)
+/* 00A384 8000F924 800D8954 */  lwz     r0, AudioSystem@sda21(r13)
 /* 00A388 8000F928 2C000000 */  cmpwi   r0, 0
 /* 00A38C 8000F92C 4182002C */  beq     lbl_8000F958
 /* 00A390 8000F930 38600000 */  li      r3, 0
@@ -60,7 +60,7 @@ lbl_8000F8E8:
 lbl_8000F958:
 /* 00A3B8 8000F958 7FC3F378 */  mr      r3, r30
 /* 00A3BC 8000F95C 4808F3C9 */  bl      OSRestoreInterrupts
-/* 00A3C0 8000F960 800D8954 */  lwz     r0, AudioSystem-_SDA_BASE_(r13)
+/* 00A3C0 8000F960 800D8954 */  lwz     r0, AudioSystem@sda21(r13)
 /* 00A3C4 8000F964 2C000000 */  cmpwi   r0, 0
 /* 00A3C8 8000F968 4082003C */  bne     lbl_8000F9A4
 /* 00A3CC 8000F96C 387F00A0 */  addi    r3, r31, 0xa0
@@ -70,7 +70,7 @@ lbl_8000F958:
 /* 00A3DC 8000F97C 387F00A0 */  addi    r3, r31, 0xa0
 /* 00A3E0 8000F980 38800500 */  li      r4, 0x500
 /* 00A3E4 8000F984 4808DDF9 */  bl      DCFlushRange
-/* 00A3E8 8000F988 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00A3E8 8000F988 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00A3EC 8000F98C 38800280 */  li      r4, 0x280
 /* 00A3F0 8000F990 1C000280 */  mulli   r0, r0, 0x280
 /* 00A3F4 8000F994 7C7F0214 */  add     r3, r31, r0
@@ -79,7 +79,7 @@ lbl_8000F958:
 /* 00A400 8000F9A0 480A86C1 */  bl      AIStartDMA
 lbl_8000F9A4:
 /* 00A404 8000F9A4 38000001 */  li      r0, 1
-/* 00A408 8000F9A8 900D8938 */  stw     r0, Initialized-_SDA_BASE_(r13)
+/* 00A408 8000F9A8 900D8938 */  stw     r0, Initialized@sda21(r13)
 /* 00A40C 8000F9AC 38600001 */  li      r3, 1
 lbl_8000F9B0:
 /* 00A410 8000F9B0 8001001C */  lwz     r0, 0x1c(r1)
@@ -100,7 +100,7 @@ glabel THPPlayerOpen
 /* 00A444 8000F9E4 3AA30000 */  addi    r21, r3, 0
 /* 00A448 8000F9E8 3BC40000 */  addi    r30, r4, 0
 /* 00A44C 8000F9EC 3BA5A1E8 */  addi    r29, r5, VolumeTable@l
-/* 00A450 8000F9F0 800D8938 */  lwz     r0, Initialized-_SDA_BASE_(r13)
+/* 00A450 8000F9F0 800D8938 */  lwz     r0, Initialized@sda21(r13)
 /* 00A454 8000F9F4 2C000000 */  cmpwi   r0, 0
 /* 00A458 8000F9F8 40820018 */  bne     lbl_8000FA10
 /* 00A45C 8000F9FC 387D013C */  addi    r3, r29, 0x13c
@@ -152,7 +152,7 @@ lbl_8000FA88:
 /* 00A508 8000FAA8 38A00030 */  li      r5, 0x30
 /* 00A50C 8000FAAC 4BFF5A19 */  bl      memcpy
 /* 00A510 8000FAB0 387B0000 */  addi    r3, r27, 0
-/* 00A514 8000FAB4 388D80D0 */  addi    r4, r13, D_80134DB0-_SDA_BASE_
+/* 00A514 8000FAB4 388D80D0 */  addi    r4, r13, D_80134DB0@sda21
 /* 00A518 8000FAB8 480C0D89 */  bl      strcmp
 /* 00A51C 8000FABC 2C030000 */  cmpwi   r3, 0
 /* 00A520 8000FAC0 41820020 */  beq     lbl_8000FAE0
@@ -249,7 +249,7 @@ lbl_8000FBEC:
 /* 00A66C 8000FC0C 989C0646 */  stb     r4, 0x646(r28)
 /* 00A670 8000FC10 93DC0650 */  stw     r30, 0x650(r28)
 /* 00A674 8000FC14 901F0000 */  stw     r0, 0(r31)
-/* 00A678 8000FC18 C0028070 */  lfs     f0, D_80135D70-_SDA2_BASE_(r2)
+/* 00A678 8000FC18 C0028070 */  lfs     f0, D_80135D70@sda21(r2)
 /* 00A67C 8000FC1C D01C067C */  stfs    f0, 0x67c(r28)
 /* 00A680 8000FC20 C01C067C */  lfs     f0, 0x67c(r28)
 /* 00A684 8000FC24 D01C0680 */  stfs    f0, 0x680(r28)
@@ -509,7 +509,7 @@ lbl_8000FFA8:
 /* 00AA1C 8000FFBC 4180FFEC */  blt     lbl_8000FFA8
 lbl_8000FFC0:
 /* 00AA20 8000FFC0 387F0040 */  addi    r3, r31, 0x40
-/* 00AA24 8000FFC4 388D893C */  addi    r4, r13, PrepareReadyMessage-_SDA_BASE_
+/* 00AA24 8000FFC4 388D893C */  addi    r4, r13, PrepareReadyMessage@sda21
 /* 00AA28 8000FFC8 38A00001 */  li      r5, 1
 /* 00AA2C 8000FFCC 4808F5B5 */  bl      OSInitMessageQueue
 /* 00AA30 8000FFD0 8001001C */  lwz     r0, 0x1c(r1)
@@ -699,7 +699,7 @@ lbl_80010244:
 /* 00ACC4 80010264 901E0690 */  stw     r0, 0x690(r30)
 /* 00ACC8 80010268 901E0694 */  stw     r0, 0x694(r30)
 /* 00ACCC 8001026C 48095F1D */  bl      VISetPostRetraceCallback
-/* 00ACD0 80010270 906D8940 */  stw     r3, OldVIPostCallback-_SDA_BASE_(r13)
+/* 00ACD0 80010270 906D8940 */  stw     r3, OldVIPostCallback@sda21(r13)
 /* 00ACD4 80010274 38600001 */  li      r3, 1
 /* 00ACD8 80010278 48000008 */  b       lbl_80010280
 lbl_8001027C:
@@ -748,7 +748,7 @@ PlayControl:
 /* 00AD68 80010308 93C10018 */  stw     r30, 0x18(r1)
 /* 00AD6C 8001030C 93A10014 */  stw     r29, 0x14(r1)
 /* 00AD70 80010310 93810010 */  stw     r28, 0x10(r1)
-/* 00AD74 80010314 818D8940 */  lwz     r12, OldVIPostCallback-_SDA_BASE_(r13)
+/* 00AD74 80010314 818D8940 */  lwz     r12, OldVIPostCallback@sda21(r13)
 /* 00AD78 80010318 280C0000 */  cmplwi  r12, 0
 /* 00AD7C 8001031C 4182000C */  beq     lbl_80010328
 /* 00AD80 80010320 7D8803A6 */  mtlr    r12
@@ -981,7 +981,7 @@ lbl_80010634:
 /* 00B0A8 80010648 38600001 */  li      r3, 1
 /* 00B0AC 8001064C 480000B8 */  b       lbl_80010704
 lbl_80010650:
-/* 00B0B0 80010650 C0228074 */  lfs     f1, D_80135D74-_SDA2_BASE_(r2)
+/* 00B0B0 80010650 C0228074 */  lfs     f1, D_80135D74@sda21(r2)
 /* 00B0B4 80010654 C01F05EC */  lfs     f0, 0x5ec(r31)
 /* 00B0B8 80010658 EC010032 */  fmuls   f0, f1, f0
 /* 00B0BC 8001065C FC00001E */  fctiwz  f0, f0
@@ -1111,7 +1111,7 @@ glabel THPPlayerDrawDone
 /* 00B27C 8001081C 90010004 */  stw     r0, 4(r1)
 /* 00B280 80010820 9421FFE8 */  stwu    r1, -0x18(r1)
 /* 00B284 80010824 93E10014 */  stw     r31, 0x14(r1)
-/* 00B288 80010828 800D8938 */  lwz     r0, Initialized-_SDA_BASE_(r13)
+/* 00B288 80010828 800D8938 */  lwz     r0, Initialized@sda21(r13)
 /* 00B28C 8001082C 2C000000 */  cmpwi   r0, 0
 /* 00B290 80010830 41820044 */  beq     lbl_80010874
 /* 00B294 80010834 3C608010 */  lis     r3, UsedTextureSetQueue@ha
@@ -1148,20 +1148,20 @@ THPAudioMixCallback:
 /* 00B2F8 80010898 93E1000C */  stw     r31, 0xc(r1)
 /* 00B2FC 8001089C 3BE396E0 */  addi    r31, r3, WorkBuffer@l
 /* 00B300 800108A0 93C10008 */  stw     r30, 8(r1)
-/* 00B304 800108A4 800D8954 */  lwz     r0, AudioSystem-_SDA_BASE_(r13)
+/* 00B304 800108A4 800D8954 */  lwz     r0, AudioSystem@sda21(r13)
 /* 00B308 800108A8 2C000000 */  cmpwi   r0, 0
 /* 00B30C 800108AC 40820070 */  bne     lbl_8001091C
-/* 00B310 800108B0 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B310 800108B0 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B314 800108B4 38800280 */  li      r4, 0x280
 /* 00B318 800108B8 68000001 */  xori    r0, r0, 1
-/* 00B31C 800108BC 900D8944 */  stw     r0, SoundBufferIndex-_SDA_BASE_(r13)
-/* 00B320 800108C0 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B31C 800108BC 900D8944 */  stw     r0, SoundBufferIndex@sda21(r13)
+/* 00B320 800108C0 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B324 800108C4 1C000280 */  mulli   r0, r0, 0x280
 /* 00B328 800108C8 7C7F0214 */  add     r3, r31, r0
 /* 00B32C 800108CC 386300A0 */  addi    r3, r3, 0xa0
 /* 00B330 800108D0 480A76F9 */  bl      AIInitDMA
 /* 00B334 800108D4 4808E43D */  bl      OSEnableInterrupts
-/* 00B338 800108D8 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B338 800108D8 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B33C 800108DC 3BC30000 */  addi    r30, r3, 0
 /* 00B340 800108E0 38800000 */  li      r4, 0
 /* 00B344 800108E4 1C000280 */  mulli   r0, r0, 0x280
@@ -1169,7 +1169,7 @@ THPAudioMixCallback:
 /* 00B34C 800108EC 38A000A0 */  li      r5, 0xa0
 /* 00B350 800108F0 386300A0 */  addi    r3, r3, 0xa0
 /* 00B354 800108F4 4800010D */  bl      MixAudio
-/* 00B358 800108F8 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B358 800108F8 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B35C 800108FC 38800280 */  li      r4, 0x280
 /* 00B360 80010900 1C000280 */  mulli   r0, r0, 0x280
 /* 00B364 80010904 7C7F0214 */  add     r3, r31, r0
@@ -1181,37 +1181,37 @@ THPAudioMixCallback:
 lbl_8001091C:
 /* 00B37C 8001091C 2C000001 */  cmpwi   r0, 1
 /* 00B380 80010920 40820030 */  bne     lbl_80010950
-/* 00B384 80010924 800D894C */  lwz     r0, LastAudioBuffer-_SDA_BASE_(r13)
+/* 00B384 80010924 800D894C */  lwz     r0, LastAudioBuffer@sda21(r13)
 /* 00B388 80010928 28000000 */  cmplwi  r0, 0
 /* 00B38C 8001092C 41820008 */  beq     lbl_80010934
-/* 00B390 80010930 900D8950 */  stw     r0, CurAudioBuffer-_SDA_BASE_(r13)
+/* 00B390 80010930 900D8950 */  stw     r0, CurAudioBuffer@sda21(r13)
 lbl_80010934:
-/* 00B394 80010934 818D8948 */  lwz     r12, OldAIDCallback-_SDA_BASE_(r13)
+/* 00B394 80010934 818D8948 */  lwz     r12, OldAIDCallback@sda21(r13)
 /* 00B398 80010938 7D8803A6 */  mtlr    r12
 /* 00B39C 8001093C 4E800021 */  blrl    
 /* 00B3A0 80010940 480A7761 */  bl      AIGetDMAStartAddr
 /* 00B3A4 80010944 3C038000 */  addis   r0, r3, 0x8000
-/* 00B3A8 80010948 900D894C */  stw     r0, LastAudioBuffer-_SDA_BASE_(r13)
+/* 00B3A8 80010948 900D894C */  stw     r0, LastAudioBuffer@sda21(r13)
 /* 00B3AC 8001094C 4800001C */  b       lbl_80010968
 lbl_80010950:
-/* 00B3B0 80010950 818D8948 */  lwz     r12, OldAIDCallback-_SDA_BASE_(r13)
+/* 00B3B0 80010950 818D8948 */  lwz     r12, OldAIDCallback@sda21(r13)
 /* 00B3B4 80010954 7D8803A6 */  mtlr    r12
 /* 00B3B8 80010958 4E800021 */  blrl    
 /* 00B3BC 8001095C 480A7745 */  bl      AIGetDMAStartAddr
 /* 00B3C0 80010960 3C038000 */  addis   r0, r3, 0x8000
-/* 00B3C4 80010964 900D8950 */  stw     r0, CurAudioBuffer-_SDA_BASE_(r13)
+/* 00B3C4 80010964 900D8950 */  stw     r0, CurAudioBuffer@sda21(r13)
 lbl_80010968:
-/* 00B3C8 80010968 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B3C8 80010968 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B3CC 8001096C 38800280 */  li      r4, 0x280
 /* 00B3D0 80010970 68000001 */  xori    r0, r0, 1
-/* 00B3D4 80010974 900D8944 */  stw     r0, SoundBufferIndex-_SDA_BASE_(r13)
-/* 00B3D8 80010978 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B3D4 80010974 900D8944 */  stw     r0, SoundBufferIndex@sda21(r13)
+/* 00B3D8 80010978 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B3DC 8001097C 1C000280 */  mulli   r0, r0, 0x280
 /* 00B3E0 80010980 7C7F0214 */  add     r3, r31, r0
 /* 00B3E4 80010984 386300A0 */  addi    r3, r3, 0xa0
 /* 00B3E8 80010988 480A7641 */  bl      AIInitDMA
 /* 00B3EC 8001098C 4808E385 */  bl      OSEnableInterrupts
-/* 00B3F0 80010990 800D8950 */  lwz     r0, CurAudioBuffer-_SDA_BASE_(r13)
+/* 00B3F0 80010990 800D8950 */  lwz     r0, CurAudioBuffer@sda21(r13)
 /* 00B3F4 80010994 3BC30000 */  addi    r30, r3, 0
 /* 00B3F8 80010998 28000000 */  cmplwi  r0, 0
 /* 00B3FC 8001099C 41820010 */  beq     lbl_800109AC
@@ -1219,14 +1219,14 @@ lbl_80010968:
 /* 00B404 800109A4 38800280 */  li      r4, 0x280
 /* 00B408 800109A8 4808CDA9 */  bl      DCInvalidateRange
 lbl_800109AC:
-/* 00B40C 800109AC 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B40C 800109AC 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B410 800109B0 38A000A0 */  li      r5, 0xa0
-/* 00B414 800109B4 808D8950 */  lwz     r4, CurAudioBuffer-_SDA_BASE_(r13)
+/* 00B414 800109B4 808D8950 */  lwz     r4, CurAudioBuffer@sda21(r13)
 /* 00B418 800109B8 1C000280 */  mulli   r0, r0, 0x280
 /* 00B41C 800109BC 7C7F0214 */  add     r3, r31, r0
 /* 00B420 800109C0 386300A0 */  addi    r3, r3, 0xa0
 /* 00B424 800109C4 4800003D */  bl      MixAudio
-/* 00B428 800109C8 800D8944 */  lwz     r0, SoundBufferIndex-_SDA_BASE_(r13)
+/* 00B428 800109C8 800D8944 */  lwz     r0, SoundBufferIndex@sda21(r13)
 /* 00B42C 800109CC 38800280 */  li      r4, 0x280
 /* 00B430 800109D0 1C000280 */  mulli   r0, r0, 0x280
 /* 00B434 800109D4 7C7F0214 */  add     r3, r31, r0

@@ -1048,8 +1048,8 @@ glabel CARDInit
 /* 0B6664 800BBC04 4082005C */  bne     lbl_800BBC60
 lbl_800BBC08:
 /* 0B6668 800BBC08 4BFE309D */  bl      OSGetFontEncode
-/* 0B666C 800BBC0C B06D8EB0 */  sth     r3, __CARDEncode-_SDA_BASE_(r13)
-/* 0B6670 800BBC10 806D8868 */  lwz     r3, __CARDVersion-_SDA_BASE_(r13)
+/* 0B666C 800BBC0C B06D8EB0 */  sth     r3, __CARDEncode@sda21(r13)
+/* 0B6670 800BBC10 806D8868 */  lwz     r3, __CARDVersion@sda21(r13)
 /* 0B6674 800BBC14 4BFE0A7D */  bl      OSRegisterVersion
 /* 0B6678 800BBC18 4BFFE73D */  bl      DSPInit
 /* 0B667C 800BBC1C 4BFE0AA1 */  bl      OSInitAlarm
@@ -1080,7 +1080,7 @@ lbl_800BBC60:
 /* 0B66D8 800BBC78 4E800020 */  blr     
 
 glabel __CARDGetFontEncode
-/* 0B66DC 800BBC7C A06D8EB0 */  lhz     r3, __CARDEncode-_SDA_BASE_(r13)
+/* 0B66DC 800BBC7C A06D8EB0 */  lhz     r3, __CARDEncode@sda21(r13)
 /* 0B66E0 800BBC80 4E800020 */  blr     
 
 glabel __CARDSetDiskID

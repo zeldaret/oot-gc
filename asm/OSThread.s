@@ -52,17 +52,17 @@ glabel __OSThreadInit
 /* 09BBDC 800A117C 807C0720 */  lwz     r3, 0x720(r28)
 /* 09BBE0 800A1180 7FE4FB78 */  mr      r4, r31
 /* 09BBE4 800A1184 90030000 */  stw     r0, 0(r3)
-/* 09BBE8 800A1188 818D8760 */  lwz     r12, SwitchThreadCallback-_SDA_BASE_(r13)
+/* 09BBE8 800A1188 818D8760 */  lwz     r12, SwitchThreadCallback@sda21(r13)
 /* 09BBEC 800A118C 807E00E4 */  lwz     r3, 0xe4(r30)
 /* 09BBF0 800A1190 7D8803A6 */  mtlr    r12
 /* 09BBF4 800A1194 4E800021 */  blrl    
 /* 09BBF8 800A1198 93FE00E4 */  stw     r31, 0xe4(r30)
 /* 09BBFC 800A119C 38600000 */  li      r3, 0
 /* 09BC00 800A11A0 4800105D */  bl      OSClearStack
-/* 09BC04 800A11A4 93AD8B88 */  stw     r29, RunQueueBits-_SDA_BASE_(r13)
+/* 09BC04 800A11A4 93AD8B88 */  stw     r29, RunQueueBits@sda21(r13)
 /* 09BC08 800A11A8 3BC00000 */  li      r30, 0
 /* 09BC0C 800A11AC 57C01838 */  slwi    r0, r30, 3
-/* 09BC10 800A11B0 93AD8B8C */  stw     r29, RunQueueHint-_SDA_BASE_(r13)
+/* 09BC10 800A11B0 93AD8B8C */  stw     r29, RunQueueHint@sda21(r13)
 /* 09BC14 800A11B4 7FBC0214 */  add     r29, r28, r0
 lbl_800A11B8:
 /* 09BC18 800A11B8 7FA3EB78 */  mr      r3, r29
@@ -89,7 +89,7 @@ lbl_800A11F8:
 /* 09BC64 800A1204 93DF02FC */  stw     r30, 0x2fc(r31)
 /* 09BC68 800A1208 93E40000 */  stw     r31, 0(r4)
 /* 09BC6C 800A120C 4BFFCF99 */  bl      OSClearContext
-/* 09BC70 800A1210 93CD8B90 */  stw     r30, Reschedule-_SDA_BASE_(r13)
+/* 09BC70 800A1210 93CD8B90 */  stw     r30, Reschedule@sda21(r13)
 /* 09BC74 800A1214 8001001C */  lwz     r0, 0x1c(r1)
 /* 09BC78 800A1218 83E10014 */  lwz     r31, 0x14(r1)
 /* 09BC7C 800A121C 83C10010 */  lwz     r30, 0x10(r1)
@@ -116,9 +116,9 @@ glabel OSDisableScheduler
 /* 09BCB8 800A1258 9421FFF0 */  stwu    r1, -0x10(r1)
 /* 09BCBC 800A125C 93E1000C */  stw     r31, 0xc(r1)
 /* 09BCC0 800A1260 4BFFDA9D */  bl      OSDisableInterrupts
-/* 09BCC4 800A1264 808D8B90 */  lwz     r4, Reschedule-_SDA_BASE_(r13)
+/* 09BCC4 800A1264 808D8B90 */  lwz     r4, Reschedule@sda21(r13)
 /* 09BCC8 800A1268 38040001 */  addi    r0, r4, 1
-/* 09BCCC 800A126C 900D8B90 */  stw     r0, Reschedule-_SDA_BASE_(r13)
+/* 09BCCC 800A126C 900D8B90 */  stw     r0, Reschedule@sda21(r13)
 /* 09BCD0 800A1270 7C9F2378 */  mr      r31, r4
 /* 09BCD4 800A1274 4BFFDAB1 */  bl      OSRestoreInterrupts
 /* 09BCD8 800A1278 7FE3FB78 */  mr      r3, r31
@@ -134,9 +134,9 @@ glabel OSEnableScheduler
 /* 09BCF8 800A1298 9421FFF0 */  stwu    r1, -0x10(r1)
 /* 09BCFC 800A129C 93E1000C */  stw     r31, 0xc(r1)
 /* 09BD00 800A12A0 4BFFDA5D */  bl      OSDisableInterrupts
-/* 09BD04 800A12A4 808D8B90 */  lwz     r4, Reschedule-_SDA_BASE_(r13)
+/* 09BD04 800A12A4 808D8B90 */  lwz     r4, Reschedule@sda21(r13)
 /* 09BD08 800A12A8 3804FFFF */  addi    r0, r4, -1
-/* 09BD0C 800A12AC 900D8B90 */  stw     r0, Reschedule-_SDA_BASE_(r13)
+/* 09BD0C 800A12AC 900D8B90 */  stw     r0, Reschedule@sda21(r13)
 /* 09BD10 800A12B0 7C9F2378 */  mr      r31, r4
 /* 09BD14 800A12B4 4BFFDA71 */  bl      OSRestoreInterrupts
 /* 09BD18 800A12B8 7FE3FB78 */  mr      r3, r31
@@ -169,11 +169,11 @@ lbl_800A1304:
 /* 09BD6C 800A130C 40820020 */  bne     lbl_800A132C
 /* 09BD70 800A1310 800302D0 */  lwz     r0, 0x2d0(r3)
 /* 09BD74 800A1314 38800001 */  li      r4, 1
-/* 09BD78 800A1318 80AD8B88 */  lwz     r5, RunQueueBits-_SDA_BASE_(r13)
+/* 09BD78 800A1318 80AD8B88 */  lwz     r5, RunQueueBits@sda21(r13)
 /* 09BD7C 800A131C 2000001F */  subfic  r0, r0, 0x1f
 /* 09BD80 800A1320 7C800030 */  slw     r0, r4, r0
 /* 09BD84 800A1324 7CA00078 */  andc    r0, r5, r0
-/* 09BD88 800A1328 900D8B88 */  stw     r0, RunQueueBits-_SDA_BASE_(r13)
+/* 09BD88 800A1328 900D8B88 */  stw     r0, RunQueueBits@sda21(r13)
 lbl_800A132C:
 /* 09BD8C 800A132C 38000000 */  li      r0, 0
 /* 09BD90 800A1330 900302DC */  stw     r0, 0x2dc(r3)
@@ -245,12 +245,12 @@ lbl_800A13FC:
 /* 09BE6C 800A140C 809F02DC */  lwz     r4, 0x2dc(r31)
 /* 09BE70 800A1410 93E40004 */  stw     r31, 4(r4)
 /* 09BE74 800A1414 801F02D0 */  lwz     r0, 0x2d0(r31)
-/* 09BE78 800A1418 808D8B88 */  lwz     r4, RunQueueBits-_SDA_BASE_(r13)
+/* 09BE78 800A1418 808D8B88 */  lwz     r4, RunQueueBits@sda21(r13)
 /* 09BE7C 800A141C 2000001F */  subfic  r0, r0, 0x1f
 /* 09BE80 800A1420 7C600030 */  slw     r0, r3, r0
 /* 09BE84 800A1424 7C800378 */  or      r0, r4, r0
-/* 09BE88 800A1428 900D8B88 */  stw     r0, RunQueueBits-_SDA_BASE_(r13)
-/* 09BE8C 800A142C 906D8B8C */  stw     r3, RunQueueHint-_SDA_BASE_(r13)
+/* 09BE88 800A1428 900D8B88 */  stw     r0, RunQueueBits@sda21(r13)
+/* 09BE8C 800A142C 906D8B8C */  stw     r3, RunQueueHint@sda21(r13)
 /* 09BE90 800A1430 480000E8 */  b       lbl_800A1518
 lbl_800A1434:
 /* 09BE94 800A1434 809F02E0 */  lwz     r4, 0x2e0(r31)
@@ -321,7 +321,7 @@ lbl_800A14F8:
 /* 09BF68 800A1508 48000014 */  b       lbl_800A151C
 lbl_800A150C:
 /* 09BF6C 800A150C 38000001 */  li      r0, 1
-/* 09BF70 800A1510 900D8B8C */  stw     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09BF70 800A1510 900D8B8C */  stw     r0, RunQueueHint@sda21(r13)
 /* 09BF74 800A1514 93DF02D0 */  stw     r30, 0x2d0(r31)
 lbl_800A1518:
 /* 09BF78 800A1518 38600000 */  li      r3, 0
@@ -342,7 +342,7 @@ SelectThread:
 /* 09BFA8 800A1548 3BE41038 */  addi    r31, r4, RunQueue@l
 /* 09BFAC 800A154C 93C10010 */  stw     r30, 0x10(r1)
 /* 09BFB0 800A1550 3BC30000 */  addi    r30, r3, 0
-/* 09BFB4 800A1554 800D8B90 */  lwz     r0, Reschedule-_SDA_BASE_(r13)
+/* 09BFB4 800A1554 800D8B90 */  lwz     r0, Reschedule@sda21(r13)
 /* 09BFB8 800A1558 2C000000 */  cmpwi   r0, 0
 /* 09BFBC 800A155C 4081000C */  ble     lbl_800A1568
 /* 09BFC0 800A1560 38600000 */  li      r3, 0
@@ -364,7 +364,7 @@ lbl_800A1588:
 /* 09BFF8 800A1598 40820090 */  bne     lbl_800A1628
 /* 09BFFC 800A159C 2C1E0000 */  cmpwi   r30, 0
 /* 09C000 800A15A0 40820020 */  bne     lbl_800A15C0
-/* 09C004 800A15A4 808D8B88 */  lwz     r4, RunQueueBits-_SDA_BASE_(r13)
+/* 09C004 800A15A4 808D8B88 */  lwz     r4, RunQueueBits@sda21(r13)
 /* 09C008 800A15A8 800602D0 */  lwz     r0, 0x2d0(r6)
 /* 09C00C 800A15AC 7C840034 */  cntlzw  r4, r4
 /* 09C010 800A15B0 7C002000 */  cmpw    r0, r4
@@ -394,12 +394,12 @@ lbl_800A15F4:
 /* 09C064 800A1604 80A602DC */  lwz     r5, 0x2dc(r6)
 /* 09C068 800A1608 90C50004 */  stw     r6, 4(r5)
 /* 09C06C 800A160C 800602D0 */  lwz     r0, 0x2d0(r6)
-/* 09C070 800A1610 80AD8B88 */  lwz     r5, RunQueueBits-_SDA_BASE_(r13)
+/* 09C070 800A1610 80AD8B88 */  lwz     r5, RunQueueBits@sda21(r13)
 /* 09C074 800A1614 2000001F */  subfic  r0, r0, 0x1f
 /* 09C078 800A1618 7C800030 */  slw     r0, r4, r0
 /* 09C07C 800A161C 7CA00378 */  or      r0, r5, r0
-/* 09C080 800A1620 900D8B88 */  stw     r0, RunQueueBits-_SDA_BASE_(r13)
-/* 09C084 800A1624 908D8B8C */  stw     r4, RunQueueHint-_SDA_BASE_(r13)
+/* 09C080 800A1620 900D8B88 */  stw     r0, RunQueueBits@sda21(r13)
+/* 09C084 800A1624 908D8B8C */  stw     r4, RunQueueHint@sda21(r13)
 lbl_800A1628:
 /* 09C088 800A1628 A00601A2 */  lhz     r0, 0x1a2(r6)
 /* 09C08C 800A162C 540007BD */  rlwinm. r0, r0, 0, 0x1e, 0x1e
@@ -410,10 +410,10 @@ lbl_800A1628:
 /* 09C0A0 800A1640 38600000 */  li      r3, 0
 /* 09C0A4 800A1644 48000100 */  b       lbl_800A1744
 lbl_800A1648:
-/* 09C0A8 800A1648 800D8B88 */  lwz     r0, RunQueueBits-_SDA_BASE_(r13)
+/* 09C0A8 800A1648 800D8B88 */  lwz     r0, RunQueueBits@sda21(r13)
 /* 09C0AC 800A164C 28000000 */  cmplwi  r0, 0
 /* 09C0B0 800A1650 40820054 */  bne     lbl_800A16A4
-/* 09C0B4 800A1654 818D8760 */  lwz     r12, SwitchThreadCallback-_SDA_BASE_(r13)
+/* 09C0B4 800A1654 818D8760 */  lwz     r12, SwitchThreadCallback@sda21(r13)
 /* 09C0B8 800A1658 3FC08000 */  lis     r30, 0x8000
 /* 09C0BC 800A165C 807E00E4 */  lwz     r3, 0xe4(r30)
 /* 09C0C0 800A1660 38800000 */  li      r4, 0
@@ -426,19 +426,19 @@ lbl_800A1648:
 lbl_800A167C:
 /* 09C0DC 800A167C 4BFFD695 */  bl      OSEnableInterrupts
 lbl_800A1680:
-/* 09C0E0 800A1680 800D8B88 */  lwz     r0, RunQueueBits-_SDA_BASE_(r13)
+/* 09C0E0 800A1680 800D8B88 */  lwz     r0, RunQueueBits@sda21(r13)
 /* 09C0E4 800A1684 28000000 */  cmplwi  r0, 0
 /* 09C0E8 800A1688 4182FFF8 */  beq     lbl_800A1680
 /* 09C0EC 800A168C 4BFFD671 */  bl      OSDisableInterrupts
-/* 09C0F0 800A1690 800D8B88 */  lwz     r0, RunQueueBits-_SDA_BASE_(r13)
+/* 09C0F0 800A1690 800D8B88 */  lwz     r0, RunQueueBits@sda21(r13)
 /* 09C0F4 800A1694 28000000 */  cmplwi  r0, 0
 /* 09C0F8 800A1698 4182FFE4 */  beq     lbl_800A167C
 /* 09C0FC 800A169C 387F0730 */  addi    r3, r31, 0x730
 /* 09C100 800A16A0 4BFFCB05 */  bl      OSClearContext
 lbl_800A16A4:
 /* 09C104 800A16A4 38600000 */  li      r3, 0
-/* 09C108 800A16A8 906D8B8C */  stw     r3, RunQueueHint-_SDA_BASE_(r13)
-/* 09C10C 800A16AC 800D8B88 */  lwz     r0, RunQueueBits-_SDA_BASE_(r13)
+/* 09C108 800A16A8 906D8B8C */  stw     r3, RunQueueHint@sda21(r13)
+/* 09C10C 800A16AC 800D8B88 */  lwz     r0, RunQueueBits@sda21(r13)
 /* 09C110 800A16B0 7C070034 */  cntlzw  r7, r0
 /* 09C114 800A16B4 54E01838 */  slwi    r0, r7, 3
 /* 09C118 800A16B8 7C9F0214 */  add     r4, r31, r0
@@ -457,11 +457,11 @@ lbl_800A16DC:
 /* 09C144 800A16E4 28000000 */  cmplwi  r0, 0
 /* 09C148 800A16E8 4082001C */  bne     lbl_800A1704
 /* 09C14C 800A16EC 2007001F */  subfic  r0, r7, 0x1f
-/* 09C150 800A16F0 808D8B88 */  lwz     r4, RunQueueBits-_SDA_BASE_(r13)
+/* 09C150 800A16F0 808D8B88 */  lwz     r4, RunQueueBits@sda21(r13)
 /* 09C154 800A16F4 38600001 */  li      r3, 1
 /* 09C158 800A16F8 7C600030 */  slw     r0, r3, r0
 /* 09C15C 800A16FC 7C800078 */  andc    r0, r4, r0
-/* 09C160 800A1700 900D8B88 */  stw     r0, RunQueueBits-_SDA_BASE_(r13)
+/* 09C160 800A1700 900D8B88 */  stw     r0, RunQueueBits@sda21(r13)
 lbl_800A1704:
 /* 09C164 800A1704 38000000 */  li      r0, 0
 /* 09C168 800A1708 901E02DC */  stw     r0, 0x2dc(r30)
@@ -469,7 +469,7 @@ lbl_800A1704:
 /* 09C170 800A1710 3FE08000 */  lis     r31, 0x8000
 /* 09C174 800A1714 B01E02C8 */  sth     r0, 0x2c8(r30)
 /* 09C178 800A1718 7FC4F378 */  mr      r4, r30
-/* 09C17C 800A171C 818D8760 */  lwz     r12, SwitchThreadCallback-_SDA_BASE_(r13)
+/* 09C17C 800A171C 818D8760 */  lwz     r12, SwitchThreadCallback@sda21(r13)
 /* 09C180 800A1720 807F00E4 */  lwz     r3, 0xe4(r31)
 /* 09C184 800A1724 7D8803A6 */  mtlr    r12
 /* 09C188 800A1728 4E800021 */  blrl    
@@ -491,7 +491,7 @@ glabel __OSReschedule
 /* 09C1BC 800A175C 7C0802A6 */  mflr    r0
 /* 09C1C0 800A1760 90010004 */  stw     r0, 4(r1)
 /* 09C1C4 800A1764 9421FFF8 */  stwu    r1, -8(r1)
-/* 09C1C8 800A1768 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09C1C8 800A1768 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09C1CC 800A176C 2C000000 */  cmpwi   r0, 0
 /* 09C1D0 800A1770 4182000C */  beq     lbl_800A177C
 /* 09C1D4 800A1774 38600000 */  li      r3, 0
@@ -569,7 +569,7 @@ lbl_800A17C4:
 /* 09C2E0 800A1880 A01F01A2 */  lhz     r0, 0x1a2(r31)
 /* 09C2E4 800A1884 60000001 */  ori     r0, r0, 1
 /* 09C2E8 800A1888 B01F01A2 */  sth     r0, 0x1a2(r31)
-/* 09C2EC 800A188C 800D8750 */  lwz     r0, __OSFpscrEnableBits-_SDA_BASE_(r13)
+/* 09C2EC 800A188C 800D8750 */  lwz     r0, __OSFpscrEnableBits@sda21(r13)
 /* 09C2F0 800A1890 54000638 */  rlwinm  r0, r0, 0, 0x18, 0x1c
 /* 09C2F4 800A1894 60000004 */  ori     r0, r0, 4
 /* 09C2F8 800A1898 901F0194 */  stw     r0, 0x194(r31)
@@ -681,8 +681,8 @@ lbl_800A1A04:
 /* 09C46C 800A1A0C 387E02E8 */  addi    r3, r30, 0x2e8
 /* 09C470 800A1A10 480006E9 */  bl      OSWakeupThread
 /* 09C474 800A1A14 38000001 */  li      r0, 1
-/* 09C478 800A1A18 900D8B8C */  stw     r0, RunQueueHint-_SDA_BASE_(r13)
-/* 09C47C 800A1A1C 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09C478 800A1A18 900D8B8C */  stw     r0, RunQueueHint@sda21(r13)
+/* 09C47C 800A1A1C 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09C480 800A1A20 2C000000 */  cmpwi   r0, 0
 /* 09C484 800A1A24 4182000C */  beq     lbl_800A1A30
 /* 09C488 800A1A28 38600000 */  li      r3, 0
@@ -730,7 +730,7 @@ lbl_800A1AA8:
 /* 09C51C 800A1ABC 480000B0 */  b       lbl_800A1B6C
 lbl_800A1AC0:
 /* 09C520 800A1AC0 38000001 */  li      r0, 1
-/* 09C524 800A1AC4 900D8B8C */  stw     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09C524 800A1AC4 900D8B8C */  stw     r0, RunQueueHint@sda21(r13)
 /* 09C528 800A1AC8 480000A4 */  b       lbl_800A1B6C
 lbl_800A1ACC:
 /* 09C52C 800A1ACC 809E02E0 */  lwz     r4, 0x2e0(r30)
@@ -814,7 +814,7 @@ lbl_800A1BCC:
 /* 09C630 800A1BD0 4BFFDE8D */  bl      __OSUnlockAllMutex
 /* 09C634 800A1BD4 387E02E8 */  addi    r3, r30, 0x2e8
 /* 09C638 800A1BD8 48000521 */  bl      OSWakeupThread
-/* 09C63C 800A1BDC 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09C63C 800A1BDC 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09C640 800A1BE0 2C000000 */  cmpwi   r0, 0
 /* 09C644 800A1BE4 4182000C */  beq     lbl_800A1BF0
 /* 09C648 800A1BE8 38600000 */  li      r3, 0
@@ -900,12 +900,12 @@ lbl_800A1CEC:
 /* 09C75C 800A1CFC 809D02DC */  lwz     r4, 0x2dc(r29)
 /* 09C760 800A1D00 93A40004 */  stw     r29, 4(r4)
 /* 09C764 800A1D04 801D02D0 */  lwz     r0, 0x2d0(r29)
-/* 09C768 800A1D08 808D8B88 */  lwz     r4, RunQueueBits-_SDA_BASE_(r13)
+/* 09C768 800A1D08 808D8B88 */  lwz     r4, RunQueueBits@sda21(r13)
 /* 09C76C 800A1D0C 2000001F */  subfic  r0, r0, 0x1f
 /* 09C770 800A1D10 7C600030 */  slw     r0, r3, r0
 /* 09C774 800A1D14 7C800378 */  or      r0, r4, r0
-/* 09C778 800A1D18 900D8B88 */  stw     r0, RunQueueBits-_SDA_BASE_(r13)
-/* 09C77C 800A1D1C 906D8B8C */  stw     r3, RunQueueHint-_SDA_BASE_(r13)
+/* 09C778 800A1D18 900D8B88 */  stw     r0, RunQueueBits@sda21(r13)
+/* 09C77C 800A1D1C 906D8B8C */  stw     r3, RunQueueHint@sda21(r13)
 /* 09C780 800A1D20 48000140 */  b       lbl_800A1E60
 lbl_800A1D24:
 /* 09C784 800A1D24 809D02E0 */  lwz     r4, 0x2e0(r29)
@@ -1004,7 +1004,7 @@ lbl_800A1E2C:
 /* 09C8B8 800A1E58 7C7D1B79 */  or.     r29, r3, r3
 /* 09C8BC 800A1E5C 4082FFD0 */  bne     lbl_800A1E2C
 lbl_800A1E60:
-/* 09C8C0 800A1E60 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09C8C0 800A1E60 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09C8C4 800A1E64 2C000000 */  cmpwi   r0, 0
 /* 09C8C8 800A1E68 4182000C */  beq     lbl_800A1E74
 /* 09C8CC 800A1E6C 38600000 */  li      r3, 0
@@ -1050,7 +1050,7 @@ lbl_800A1EF4:
 /* 09C95C 800A1EFC 48000020 */  b       lbl_800A1F1C
 lbl_800A1F00:
 /* 09C960 800A1F00 38000001 */  li      r0, 1
-/* 09C964 800A1F04 900D8B8C */  stw     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09C964 800A1F04 900D8B8C */  stw     r0, RunQueueHint@sda21(r13)
 /* 09C968 800A1F08 B01D02C8 */  sth     r0, 0x2c8(r29)
 /* 09C96C 800A1F0C 480000C4 */  b       lbl_800A1FD0
 lbl_800A1F10:
@@ -1111,7 +1111,7 @@ lbl_800A1F9C:
 /* 09CA28 800A1FC8 7C7D1B79 */  or.     r29, r3, r3
 /* 09CA2C 800A1FCC 4082FFD0 */  bne     lbl_800A1F9C
 lbl_800A1FD0:
-/* 09CA30 800A1FD0 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09CA30 800A1FD0 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09CA34 800A1FD4 2C000000 */  cmpwi   r0, 0
 /* 09CA38 800A1FD8 4182000C */  beq     lbl_800A1FE4
 /* 09CA3C 800A1FDC 38600000 */  li      r3, 0
@@ -1182,8 +1182,8 @@ lbl_800A20B8:
 /* 09CB18 800A20B8 908302E0 */  stw     r4, 0x2e0(r3)
 lbl_800A20BC:
 /* 09CB1C 800A20BC 38000001 */  li      r0, 1
-/* 09CB20 800A20C0 900D8B8C */  stw     r0, RunQueueHint-_SDA_BASE_(r13)
-/* 09CB24 800A20C4 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09CB20 800A20C0 900D8B8C */  stw     r0, RunQueueHint@sda21(r13)
+/* 09CB24 800A20C4 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09CB28 800A20C8 2C000000 */  cmpwi   r0, 0
 /* 09CB2C 800A20CC 4182000C */  beq     lbl_800A20D8
 /* 09CB30 800A20D0 38600000 */  li      r3, 0
@@ -1247,17 +1247,17 @@ lbl_800A2188:
 /* 09CBF8 800A2198 808602DC */  lwz     r4, 0x2dc(r6)
 /* 09CBFC 800A219C 90C40004 */  stw     r6, 4(r4)
 /* 09CC00 800A21A0 800602D0 */  lwz     r0, 0x2d0(r6)
-/* 09CC04 800A21A4 808D8B88 */  lwz     r4, RunQueueBits-_SDA_BASE_(r13)
+/* 09CC04 800A21A4 808D8B88 */  lwz     r4, RunQueueBits@sda21(r13)
 /* 09CC08 800A21A8 2000001F */  subfic  r0, r0, 0x1f
 /* 09CC0C 800A21AC 7C600030 */  slw     r0, r3, r0
 /* 09CC10 800A21B0 7C800378 */  or      r0, r4, r0
-/* 09CC14 800A21B4 900D8B88 */  stw     r0, RunQueueBits-_SDA_BASE_(r13)
-/* 09CC18 800A21B8 906D8B8C */  stw     r3, RunQueueHint-_SDA_BASE_(r13)
+/* 09CC14 800A21B4 900D8B88 */  stw     r0, RunQueueBits@sda21(r13)
+/* 09CC18 800A21B8 906D8B8C */  stw     r3, RunQueueHint@sda21(r13)
 lbl_800A21BC:
 /* 09CC1C 800A21BC 80DE0000 */  lwz     r6, 0(r30)
 /* 09CC20 800A21C0 28060000 */  cmplwi  r6, 0
 /* 09CC24 800A21C4 4082FF60 */  bne     lbl_800A2124
-/* 09CC28 800A21C8 800D8B8C */  lwz     r0, RunQueueHint-_SDA_BASE_(r13)
+/* 09CC28 800A21C8 800D8B8C */  lwz     r0, RunQueueHint@sda21(r13)
 /* 09CC2C 800A21CC 2C000000 */  cmpwi   r0, 0
 /* 09CC30 800A21D0 4182000C */  beq     lbl_800A21DC
 /* 09CC34 800A21D4 38600000 */  li      r3, 0

@@ -1371,9 +1371,9 @@ lbl_800A39D0:
 /* 09E4FC 800A3A9C 4BFFB2AD */  bl      __OSSetInterruptHandler
 /* 09E500 800A3AA0 38600000 */  li      r3, 0
 /* 09E504 800A3AA4 38800002 */  li      r4, 2
-/* 09E508 800A3AA8 38AD8BA0 */  addi    r5, r13, IDSerialPort1-_SDA_BASE_
+/* 09E508 800A3AA8 38AD8BA0 */  addi    r5, r13, IDSerialPort1@sda21
 /* 09E50C 800A3AAC 480002E5 */  bl      EXIGetID
-/* 09E510 800A3AB0 800D8B00 */  lwz     r0, __OSInIPL-_SDA_BASE_(r13)
+/* 09E510 800A3AB0 800D8B00 */  lwz     r0, __OSInIPL@sda21(r13)
 /* 09E514 800A3AB4 2C000000 */  cmpwi   r0, 0
 /* 09E518 800A3AB8 41820034 */  beq     lbl_800A3AEC
 /* 09E51C 800A3ABC 3C808000 */  lis     r4, 0x8000
@@ -1418,7 +1418,7 @@ lbl_800A3B24:
 /* 09E5B0 800A3B50 38800002 */  li      r4, 2
 /* 09E5B4 800A3B54 48000779 */  bl      __OSEnableBarnacle
 lbl_800A3B58:
-/* 09E5B8 800A3B58 806D8768 */  lwz     r3, __EXIVersion-_SDA_BASE_(r13)
+/* 09E5B8 800A3B58 806D8768 */  lwz     r3, __EXIVersion@sda21(r13)
 /* 09E5BC 800A3B5C 4BFF8B35 */  bl      OSRegisterVersion
 /* 09E5C0 800A3B60 80010024 */  lwz     r0, 0x24(r1)
 /* 09E5C4 800A3B64 83E1001C */  lwz     r31, 0x1c(r1)
@@ -1594,7 +1594,7 @@ glabel EXIGetID
 /* 09E81C 800A3DBC 40820024 */  bne     lbl_800A3DE0
 /* 09E820 800A3DC0 281A0002 */  cmplwi  r26, 2
 /* 09E824 800A3DC4 4082001C */  bne     lbl_800A3DE0
-/* 09E828 800A3DC8 800D8BA0 */  lwz     r0, IDSerialPort1-_SDA_BASE_(r13)
+/* 09E828 800A3DC8 800D8BA0 */  lwz     r0, IDSerialPort1@sda21(r13)
 /* 09E82C 800A3DCC 28000000 */  cmplwi  r0, 0
 /* 09E830 800A3DD0 41820010 */  beq     lbl_800A3DE0
 /* 09E834 800A3DD4 901B0000 */  stw     r0, 0(r27)

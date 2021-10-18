@@ -10,7 +10,7 @@ glabel xlCoreBeforeRender
 /* 000004 800055A4 90010004 */  stw     r0, 4(r1)
 /* 000008 800055A8 9421FFE0 */  stwu    r1, -0x20(r1)
 /* 00000C 800055AC 93E1001C */  stw     r31, 0x1c(r1)
-/* 000010 800055B0 83ED88BC */  lwz     r31, rmode-_SDA_BASE_(r13)
+/* 000010 800055B0 83ED88BC */  lwz     r31, rmode@sda21(r13)
 /* 000014 800055B4 881F0018 */  lbz     r0, 0x18(r31)
 /* 000018 800055B8 28000000 */  cmplwi  r0, 0
 /* 00001C 800055BC 41820050 */  beq     lbl_8000560C
@@ -19,13 +19,13 @@ glabel xlCoreBeforeRender
 /* 000028 800055C8 3C804330 */  lis     r4, 0x4330
 /* 00002C 800055CC A01F0006 */  lhz     r0, 6(r31)
 /* 000030 800055D0 90A10014 */  stw     r5, 0x14(r1)
-/* 000034 800055D4 C0228004 */  lfs     f1, D_80135D04-_SDA2_BASE_(r2)
+/* 000034 800055D4 C0228004 */  lfs     f1, D_80135D04@sda21(r2)
 /* 000038 800055D8 9001000C */  stw     r0, 0xc(r1)
-/* 00003C 800055DC C8828010 */  lfd     f4, D_80135D10-_SDA2_BASE_(r2)
+/* 00003C 800055DC C8828010 */  lfd     f4, D_80135D10@sda21(r2)
 /* 000040 800055E0 FC400890 */  fmr     f2, f1
 /* 000044 800055E4 90810010 */  stw     r4, 0x10(r1)
 /* 000048 800055E8 FCA00890 */  fmr     f5, f1
-/* 00004C 800055EC C0C28008 */  lfs     f6, D_80135D08-_SDA2_BASE_(r2)
+/* 00004C 800055EC C0C28008 */  lfs     f6, D_80135D08@sda21(r2)
 /* 000050 800055F0 90810008 */  stw     r4, 8(r1)
 /* 000054 800055F4 C8610010 */  lfd     f3, 0x10(r1)
 /* 000058 800055F8 C8010008 */  lfd     f0, 8(r1)
@@ -38,13 +38,13 @@ lbl_8000560C:
 /* 000070 80005610 3C604330 */  lis     r3, 0x4330
 /* 000074 80005614 A01F0006 */  lhz     r0, 6(r31)
 /* 000078 80005618 9081000C */  stw     r4, 0xc(r1)
-/* 00007C 8000561C C0228004 */  lfs     f1, D_80135D04-_SDA2_BASE_(r2)
+/* 00007C 8000561C C0228004 */  lfs     f1, D_80135D04@sda21(r2)
 /* 000080 80005620 90010014 */  stw     r0, 0x14(r1)
-/* 000084 80005624 C8828010 */  lfd     f4, D_80135D10-_SDA2_BASE_(r2)
+/* 000084 80005624 C8828010 */  lfd     f4, D_80135D10@sda21(r2)
 /* 000088 80005628 FC400890 */  fmr     f2, f1
 /* 00008C 8000562C 90610008 */  stw     r3, 8(r1)
 /* 000090 80005630 FCA00890 */  fmr     f5, f1
-/* 000094 80005634 C0C28008 */  lfs     f6, D_80135D08-_SDA2_BASE_(r2)
+/* 000094 80005634 C0C28008 */  lfs     f6, D_80135D08@sda21(r2)
 /* 000098 80005638 90610010 */  stw     r3, 0x10(r1)
 /* 00009C 8000563C C8610008 */  lfd     f3, 8(r1)
 /* 0000A0 80005640 C8010010 */  lfd     f0, 0x10(r1)
@@ -69,9 +69,9 @@ glabel main
 /* 0000E0 80005680 9421FFD0 */  stwu    r1, -0x30(r1)
 /* 0000E4 80005684 BF410018 */  stmw    r26, 0x18(r1)
 /* 0000E8 80005688 3B853720 */  addi    r28, r5, gTgPcTPL@l
-/* 0000EC 8000568C 906D88A0 */  stw     r3, gnCountArgument-_SDA_BASE_(r13)
+/* 0000EC 8000568C 906D88A0 */  stw     r3, gnCountArgument@sda21(r13)
 /* 0000F0 80005690 38600001 */  li      r3, 1
-/* 0000F4 80005694 908D88A4 */  stw     r4, gaszArgument-_SDA_BASE_(r13)
+/* 0000F4 80005694 908D88A4 */  stw     r4, gaszArgument@sda21(r13)
 /* 0000F8 80005698 480AC179 */  bl      __PADDisableRecalibration
 /* 0000FC 8000569C 48097021 */  bl      OSInitAlarm
 /* 000100 800056A0 38600004 */  li      r3, 4
@@ -96,24 +96,24 @@ glabel main
 /* 00014C 800056EC 38600000 */  li      r3, 0
 /* 000150 800056F0 48000565 */  bl      xlCoreInitRenderMode
 /* 000154 800056F4 48000489 */  bl      xlCoreInitMem
-/* 000158 800056F8 806D88BC */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 000158 800056F8 806D88BC */  lwz     r3, rmode@sda21(r13)
 /* 00015C 800056FC 480A16E9 */  bl      VIConfigure
-/* 000160 80005700 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 000160 80005700 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 000164 80005704 3C800004 */  lis     r4, 4
 /* 000168 80005708 480977BD */  bl      OSAllocFromHeap
-/* 00016C 8000570C 906D88A8 */  stw     r3, DefaultFifo-_SDA_BASE_(r13)
+/* 00016C 8000570C 906D88A8 */  stw     r3, DefaultFifo@sda21(r13)
 /* 000170 80005710 3C800004 */  lis     r4, 4
-/* 000174 80005714 806D88A8 */  lwz     r3, DefaultFifo-_SDA_BASE_(r13)
+/* 000174 80005714 806D88A8 */  lwz     r3, DefaultFifo@sda21(r13)
 /* 000178 80005718 480A2E1D */  bl      GXInit
-/* 00017C 8000571C 906D88AC */  stw     r3, DefaultFifoObj-_SDA_BASE_(r13)
+/* 00017C 8000571C 906D88AC */  stw     r3, DefaultFifoObj@sda21(r13)
 /* 000180 80005720 48000201 */  bl      xlCoreInitGX
-/* 000184 80005724 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 000184 80005724 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 000188 80005728 480A2015 */  bl      VISetNextFrameBuffer
-/* 00018C 8000572C 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 000190 80005730 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 00018C 8000572C 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 000190 80005730 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 000194 80005734 480A1ED9 */  bl      VIFlush
 /* 000198 80005738 480A11E5 */  bl      VIWaitForRetrace
-/* 00019C 8000573C 808D88BC */  lwz     r4, rmode-_SDA_BASE_(r13)
+/* 00019C 8000573C 808D88BC */  lwz     r4, rmode@sda21(r13)
 /* 0001A0 80005740 80040000 */  lwz     r0, 0(r4)
 /* 0001A4 80005744 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0001A8 80005748 41820008 */  beq     lbl_80005750
@@ -121,7 +121,7 @@ glabel main
 lbl_80005750:
 /* 0001B0 80005750 7F83E378 */  mr      r3, r28
 /* 0001B4 80005754 480098CD */  bl      simulatorUnpackTexPalette
-/* 0001B8 80005758 80028000 */  lwz     r0, D_80135D00-_SDA2_BASE_(r2)
+/* 0001B8 80005758 80028000 */  lwz     r0, D_80135D00@sda21(r2)
 /* 0001BC 8000575C 3C80800F */  lis     r4, g_texMap@ha
 /* 0001C0 80005760 3BA43F1C */  addi    r29, r4, g_texMap@l
 /* 0001C4 80005764 90010010 */  stw     r0, 0x10(r1)
@@ -147,7 +147,7 @@ lbl_80005770:
 /* 000210 800057B0 4180FFC0 */  blt     lbl_80005770
 /* 000214 800057B4 38600000 */  li      r3, 0
 /* 000218 800057B8 480A6905 */  bl      GXSetDispCopyGamma
-/* 00021C 800057BC 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 00021C 800057BC 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 000220 800057C0 48097969 */  bl      OSCheckHeap
 /* 000224 800057C4 2C03FFFF */  cmpwi   r3, -1
 /* 000228 800057C8 4182002C */  beq     lbl_800057F4
@@ -157,11 +157,11 @@ lbl_80005770:
 /* 000238 800057D8 40810008 */  ble     lbl_800057E0
 /* 00023C 800057DC 3FE00400 */  lis     r31, 0x400
 lbl_800057E0:
-/* 000240 800057E0 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 000240 800057E0 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 000244 800057E4 7FE4FB78 */  mr      r4, r31
 /* 000248 800057E8 480976DD */  bl      OSAllocFromHeap
 /* 00024C 800057EC 7C7B1B78 */  mr      r27, r3
-/* 000250 800057F0 936D88B0 */  stw     r27, gpHeap-_SDA_BASE_(r13)
+/* 000250 800057F0 936D88B0 */  stw     r27, gpHeap@sda21(r13)
 lbl_800057F4:
 /* 000254 800057F4 48000619 */  bl      xlPostSetup
 /* 000258 800057F8 2C030000 */  cmpwi   r3, 0
@@ -238,10 +238,10 @@ glabel xlCoreHiResolution
 glabel xlCoreGetArgument
 /* 000344 800058E4 2C030000 */  cmpwi   r3, 0
 /* 000348 800058E8 41800028 */  blt     lbl_80005910
-/* 00034C 800058EC 800D88A0 */  lwz     r0, gnCountArgument-_SDA_BASE_(r13)
+/* 00034C 800058EC 800D88A0 */  lwz     r0, gnCountArgument@sda21(r13)
 /* 000350 800058F0 7C030000 */  cmpw    r3, r0
 /* 000354 800058F4 4080001C */  bge     lbl_80005910
-/* 000358 800058F8 80AD88A4 */  lwz     r5, gaszArgument-_SDA_BASE_(r13)
+/* 000358 800058F8 80AD88A4 */  lwz     r5, gaszArgument@sda21(r13)
 /* 00035C 800058FC 5460103A */  slwi    r0, r3, 2
 /* 000360 80005900 38600001 */  li      r3, 1
 /* 000364 80005904 7C05002E */  lwzx    r0, r5, r0
@@ -252,7 +252,7 @@ lbl_80005910:
 /* 000374 80005914 4E800020 */  blr     
 
 glabel xlCoreGetArgumentCount
-/* 000378 80005918 806D88A0 */  lwz     r3, gnCountArgument-_SDA_BASE_(r13)
+/* 000378 80005918 806D88A0 */  lwz     r3, gnCountArgument@sda21(r13)
 /* 00037C 8000591C 4E800020 */  blr     
 
 xlCoreInitGX:
@@ -261,16 +261,16 @@ xlCoreInitGX:
 /* 000388 80005928 9421FF40 */  stwu    r1, -0xc0(r1)
 /* 00038C 8000592C 93E100BC */  stw     r31, 0xbc(r1)
 /* 000390 80005930 3FE04330 */  lis     r31, 0x4330
-/* 000394 80005934 808D88BC */  lwz     r4, rmode-_SDA_BASE_(r13)
-/* 000398 80005938 C0228004 */  lfs     f1, D_80135D04-_SDA2_BASE_(r2)
+/* 000394 80005934 808D88BC */  lwz     r4, rmode@sda21(r13)
+/* 000398 80005938 C0228004 */  lfs     f1, D_80135D04@sda21(r2)
 /* 00039C 8000593C A0640004 */  lhz     r3, 4(r4)
 /* 0003A0 80005940 A0040006 */  lhz     r0, 6(r4)
 /* 0003A4 80005944 FC400890 */  fmr     f2, f1
 /* 0003A8 80005948 906100B4 */  stw     r3, 0xb4(r1)
 /* 0003AC 8000594C FCA00890 */  fmr     f5, f1
-/* 0003B0 80005950 C8828010 */  lfd     f4, D_80135D10-_SDA2_BASE_(r2)
+/* 0003B0 80005950 C8828010 */  lfd     f4, D_80135D10@sda21(r2)
 /* 0003B4 80005954 900100AC */  stw     r0, 0xac(r1)
-/* 0003B8 80005958 C0C28008 */  lfs     f6, D_80135D08-_SDA2_BASE_(r2)
+/* 0003B8 80005958 C0C28008 */  lfs     f6, D_80135D08@sda21(r2)
 /* 0003BC 8000595C 93E100B0 */  stw     r31, 0xb0(r1)
 /* 0003C0 80005960 93E100A8 */  stw     r31, 0xa8(r1)
 /* 0003C4 80005964 C86100B0 */  lfd     f3, 0xb0(r1)
@@ -278,24 +278,24 @@ xlCoreInitGX:
 /* 0003CC 8000596C EC632028 */  fsubs   f3, f3, f4
 /* 0003D0 80005970 EC802028 */  fsubs   f4, f0, f4
 /* 0003D4 80005974 480A9165 */  bl      GXSetViewport
-/* 0003D8 80005978 80CD88BC */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0003D8 80005978 80CD88BC */  lwz     r6, rmode@sda21(r13)
 /* 0003DC 8000597C 38600000 */  li      r3, 0
 /* 0003E0 80005980 38800000 */  li      r4, 0
 /* 0003E4 80005984 A0A60004 */  lhz     r5, 4(r6)
 /* 0003E8 80005988 A0C60006 */  lhz     r6, 6(r6)
 /* 0003EC 8000598C 480A9195 */  bl      GXSetScissor
-/* 0003F0 80005990 80CD88BC */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0003F0 80005990 80CD88BC */  lwz     r6, rmode@sda21(r13)
 /* 0003F4 80005994 38600000 */  li      r3, 0
 /* 0003F8 80005998 38800000 */  li      r4, 0
 /* 0003FC 8000599C A0A60004 */  lhz     r5, 4(r6)
 /* 000400 800059A0 A0C60006 */  lhz     r6, 6(r6)
 /* 000404 800059A4 480A5EBD */  bl      GXSetDispCopySrc
-/* 000408 800059A8 808D88BC */  lwz     r4, rmode-_SDA_BASE_(r13)
+/* 000408 800059A8 808D88BC */  lwz     r4, rmode@sda21(r13)
 /* 00040C 800059AC A0640004 */  lhz     r3, 4(r4)
 /* 000410 800059B0 A0840008 */  lhz     r4, 8(r4)
 /* 000414 800059B4 480A5FA5 */  bl      GXSetDispCopyDst
-/* 000418 800059B8 808D88BC */  lwz     r4, rmode-_SDA_BASE_(r13)
-/* 00041C 800059BC C8428010 */  lfd     f2, D_80135D10-_SDA2_BASE_(r2)
+/* 000418 800059B8 808D88BC */  lwz     r4, rmode@sda21(r13)
+/* 00041C 800059BC C8428010 */  lfd     f2, D_80135D10@sda21(r2)
 /* 000420 800059C0 A0640008 */  lhz     r3, 8(r4)
 /* 000424 800059C4 A0040006 */  lhz     r0, 6(r4)
 /* 000428 800059C8 906100A4 */  stw     r3, 0xa4(r1)
@@ -308,12 +308,12 @@ xlCoreInitGX:
 /* 000444 800059E4 EC001028 */  fsubs   f0, f0, f2
 /* 000448 800059E8 EC210024 */  fdivs   f1, f1, f0
 /* 00044C 800059EC 480A6385 */  bl      GXSetDispCopyYScale
-/* 000450 800059F0 80ED88BC */  lwz     r7, rmode-_SDA_BASE_(r13)
+/* 000450 800059F0 80ED88BC */  lwz     r7, rmode@sda21(r13)
 /* 000454 800059F4 38C10018 */  addi    r6, r1, 0x18
-/* 000458 800059F8 C8428010 */  lfd     f2, D_80135D10-_SDA2_BASE_(r2)
+/* 000458 800059F8 C8428010 */  lfd     f2, D_80135D10@sda21(r2)
 /* 00045C 800059FC 38A00001 */  li      r5, 1
 /* 000460 80005A00 88070032 */  lbz     r0, 0x32(r7)
-/* 000464 80005A04 C0228008 */  lfs     f1, D_80135D08-_SDA2_BASE_(r2)
+/* 000464 80005A04 C0228008 */  lfs     f1, D_80135D08@sda21(r2)
 /* 000468 80005A08 3887001A */  addi    r4, r7, 0x1a
 /* 00046C 80005A0C 90010094 */  stw     r0, 0x94(r1)
 /* 000470 80005A10 93E10090 */  stw     r31, 0x90(r1)
@@ -386,7 +386,7 @@ xlCoreInitGX:
 /* 00057C 80005B1C 9801001E */  stb     r0, 0x1e(r1)
 /* 000580 80005B20 88670019 */  lbz     r3, 0x19(r7)
 /* 000584 80005B24 480A6391 */  bl      GXSetCopyFilter
-/* 000588 80005B28 806D88BC */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 000588 80005B28 806D88BC */  lwz     r3, rmode@sda21(r13)
 /* 00058C 80005B2C 88030019 */  lbz     r0, 0x19(r3)
 /* 000590 80005B30 28000000 */  cmplwi  r0, 0
 /* 000594 80005B34 41820014 */  beq     lbl_80005B48
@@ -399,7 +399,7 @@ lbl_80005B48:
 /* 0005AC 80005B4C 38800000 */  li      r4, 0
 /* 0005B0 80005B50 480A89FD */  bl      GXSetPixelFmt
 lbl_80005B54:
-/* 0005B4 80005B54 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0005B4 80005B54 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0005B8 80005B58 38800001 */  li      r4, 1
 /* 0005BC 80005B5C 480A6575 */  bl      GXCopyDisp
 /* 0005C0 80005B60 38600000 */  li      r3, 0
@@ -418,27 +418,27 @@ xlCoreInitMem:
 /* 0005EC 80005B8C 93C10008 */  stw     r30, 8(r1)
 /* 0005F0 80005B90 48097901 */  bl      OSGetArenaLo
 /* 0005F4 80005B94 7C7F1B78 */  mr      r31, r3
-/* 0005F8 80005B98 93ED88B8 */  stw     r31, gArenaLo-_SDA_BASE_(r13)
+/* 0005F8 80005B98 93ED88B8 */  stw     r31, gArenaLo@sda21(r13)
 /* 0005FC 80005B9C 480978ED */  bl      OSGetArenaHi
-/* 000600 80005BA0 906D88B4 */  stw     r3, gArenaHi-_SDA_BASE_(r13)
+/* 000600 80005BA0 906D88B4 */  stw     r3, gArenaHi@sda21(r13)
 /* 000604 80005BA4 381F001F */  addi    r0, r31, 0x1f
-/* 000608 80005BA8 806D88BC */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 000608 80005BA8 806D88BC */  lwz     r3, rmode@sda21(r13)
 /* 00060C 80005BAC 54000034 */  rlwinm  r0, r0, 0, 0, 0x1a
 /* 000610 80005BB0 A0830004 */  lhz     r4, 4(r3)
 /* 000614 80005BB4 A0630008 */  lhz     r3, 8(r3)
 /* 000618 80005BB8 3884000F */  addi    r4, r4, 0xf
-/* 00061C 80005BBC 900D8DB4 */  stw     r0, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 00061C 80005BBC 900D8DB4 */  stw     r0, DemoFrameBuffer1@sda21(r13)
 /* 000620 80005BC0 54800436 */  rlwinm  r0, r4, 0, 0x10, 0x1b
 /* 000624 80005BC4 7C6019D6 */  mullw   r3, r0, r3
-/* 000628 80005BC8 800D8DB4 */  lwz     r0, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 000628 80005BC8 800D8DB4 */  lwz     r0, DemoFrameBuffer1@sda21(r13)
 /* 00062C 80005BCC 5463083C */  slwi    r3, r3, 1
 /* 000630 80005BD0 3863001F */  addi    r3, r3, 0x1f
 /* 000634 80005BD4 7C001A14 */  add     r0, r0, r3
 /* 000638 80005BD8 54000034 */  rlwinm  r0, r0, 0, 0, 0x1a
-/* 00063C 80005BDC 900D8DB0 */  stw     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 000640 80005BE0 808D8DB0 */  lwz     r4, DemoFrameBuffer2-_SDA_BASE_(r13)
+/* 00063C 80005BDC 900D8DB0 */  stw     r0, DemoFrameBuffer2@sda21(r13)
+/* 000640 80005BE0 808D8DB0 */  lwz     r4, DemoFrameBuffer2@sda21(r13)
 /* 000644 80005BE4 7C041A14 */  add     r0, r4, r3
-/* 000648 80005BE8 908D8DAC */  stw     r4, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 000648 80005BE8 908D8DAC */  stw     r4, DemoCurrentBuffer@sda21(r13)
 /* 00064C 80005BEC 54030034 */  rlwinm  r3, r0, 0, 0, 0x1a
 /* 000650 80005BF0 480978B1 */  bl      OSSetArenaLo
 /* 000654 80005BF4 4809789D */  bl      OSGetArenaLo
@@ -473,7 +473,7 @@ xlCoreInitRenderMode:
 /* 0006C0 80005C60 9421FFE8 */  stwu    r1, -0x18(r1)
 /* 0006C4 80005C64 93E10014 */  stw     r31, 0x14(r1)
 /* 0006C8 80005C68 4182000C */  beq     lbl_80005C74
-/* 0006CC 80005C6C 906D88BC */  stw     r3, rmode-_SDA_BASE_(r13)
+/* 0006CC 80005C6C 906D88BC */  stw     r3, rmode@sda21(r13)
 /* 0006D0 80005C70 48000144 */  b       lbl_80005DB4
 lbl_80005C74:
 /* 0006D4 80005C74 480A1D89 */  bl      VIGetTvFormat
@@ -488,12 +488,12 @@ lbl_80005C90:
 /* 0006F4 80005C94 408000E4 */  bge     lbl_80005D78
 /* 0006F8 80005C98 480000D0 */  b       lbl_80005D68
 lbl_80005C9C:
-/* 0006FC 80005C9C 808D88A0 */  lwz     r4, gnCountArgument-_SDA_BASE_(r13)
+/* 0006FC 80005C9C 808D88A0 */  lwz     r4, gnCountArgument@sda21(r13)
 /* 000700 80005CA0 3C60800F */  lis     r3, GXNtsc480IntDf@ha
 /* 000704 80005CA4 38031E60 */  addi    r0, r3, GXNtsc480IntDf@l
-/* 000708 80005CA8 806D88A4 */  lwz     r3, gaszArgument-_SDA_BASE_(r13)
+/* 000708 80005CA8 806D88A4 */  lwz     r3, gaszArgument@sda21(r13)
 /* 00070C 80005CAC 2C040000 */  cmpwi   r4, 0
-/* 000710 80005CB0 900D88BC */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 000710 80005CB0 900D88BC */  stw     r0, rmode@sda21(r13)
 /* 000714 80005CB4 7C8903A6 */  mtctr   r4
 /* 000718 80005CB8 38A00000 */  li      r5, 0
 /* 00071C 80005CBC 40810078 */  ble     lbl_80005D34
@@ -525,18 +525,18 @@ lbl_80005D0C:
 /* 000774 80005D14 40820014 */  bne     lbl_80005D28
 /* 000778 80005D18 3C60800F */  lis     r3, GXNtsc480Prog@ha
 /* 00077C 80005D1C 38031E9C */  addi    r0, r3, GXNtsc480Prog@l
-/* 000780 80005D20 900D88BC */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 000780 80005D20 900D88BC */  stw     r0, rmode@sda21(r13)
 /* 000784 80005D24 48000010 */  b       lbl_80005D34
 lbl_80005D28:
 /* 000788 80005D28 38630004 */  addi    r3, r3, 4
 /* 00078C 80005D2C 38A50001 */  addi    r5, r5, 1
 /* 000790 80005D30 4200FF90 */  bdnz    lbl_80005CC0
 lbl_80005D34:
-/* 000794 80005D34 808D88BC */  lwz     r4, rmode-_SDA_BASE_(r13)
+/* 000794 80005D34 808D88BC */  lwz     r4, rmode@sda21(r13)
 /* 000798 80005D38 A064000A */  lhz     r3, 0xa(r4)
 /* 00079C 80005D3C 3803FFE0 */  addi    r0, r3, -32
 /* 0007A0 80005D40 B004000A */  sth     r0, 0xa(r4)
-/* 0007A4 80005D44 808D88BC */  lwz     r4, rmode-_SDA_BASE_(r13)
+/* 0007A4 80005D44 808D88BC */  lwz     r4, rmode@sda21(r13)
 /* 0007A8 80005D48 A064000E */  lhz     r3, 0xe(r4)
 /* 0007AC 80005D4C 38030040 */  addi    r0, r3, 0x40
 /* 0007B0 80005D50 B004000E */  sth     r0, 0xe(r4)
@@ -544,12 +544,12 @@ lbl_80005D34:
 lbl_80005D58:
 /* 0007B8 80005D58 3C60800F */  lis     r3, GXPal528IntDf@ha
 /* 0007BC 80005D5C 38031F14 */  addi    r0, r3, GXPal528IntDf@l
-/* 0007C0 80005D60 900D88BC */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 0007C0 80005D60 900D88BC */  stw     r0, rmode@sda21(r13)
 /* 0007C4 80005D64 48000030 */  b       lbl_80005D94
 lbl_80005D68:
 /* 0007C8 80005D68 3C60800F */  lis     r3, GXMpal480IntDf@ha
 /* 0007CC 80005D6C 38031ED8 */  addi    r0, r3, GXMpal480IntDf@l
-/* 0007D0 80005D70 900D88BC */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 0007D0 80005D70 900D88BC */  stw     r0, rmode@sda21(r13)
 /* 0007D4 80005D74 48000020 */  b       lbl_80005D94
 lbl_80005D78:
 /* 0007D8 80005D78 3C60800E */  lis     r3, D_800DB7A4@ha
@@ -561,13 +561,13 @@ lbl_80005D78:
 /* 0007F0 80005D90 480988E9 */  bl      OSPanic
 lbl_80005D94:
 /* 0007F4 80005D94 3C80800F */  lis     r4, rmodeobj@ha
-/* 0007F8 80005D98 806D88BC */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0007F8 80005D98 806D88BC */  lwz     r3, rmode@sda21(r13)
 /* 0007FC 80005D9C 3BE43EE0 */  addi    r31, r4, rmodeobj@l
 /* 000800 80005DA0 389F0000 */  addi    r4, r31, 0
 /* 000804 80005DA4 38A00000 */  li      r5, 0
 /* 000808 80005DA8 38C00000 */  li      r6, 0
 /* 00080C 80005DAC 480A5971 */  bl      GXAdjustForOverscan
-/* 000810 80005DB0 93ED88BC */  stw     r31, rmode-_SDA_BASE_(r13)
+/* 000810 80005DB0 93ED88BC */  stw     r31, rmode@sda21(r13)
 lbl_80005DB4:
 /* 000814 80005DB4 8001001C */  lwz     r0, 0x1c(r1)
 /* 000818 80005DB8 83E10014 */  lwz     r31, 0x14(r1)
@@ -579,12 +579,12 @@ glabel xlCoreReset
 /* 000828 80005DC8 7C0802A6 */  mflr    r0
 /* 00082C 80005DCC 90010004 */  stw     r0, 4(r1)
 /* 000830 80005DD0 9421FFF8 */  stwu    r1, -8(r1)
-/* 000834 80005DD4 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
-/* 000838 80005DD8 808D88B0 */  lwz     r4, gpHeap-_SDA_BASE_(r13)
+/* 000834 80005DD4 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
+/* 000838 80005DD8 808D88B0 */  lwz     r4, gpHeap@sda21(r13)
 /* 00083C 80005DDC 480971E5 */  bl      OSFreeToHeap
-/* 000840 80005DE0 806D88B8 */  lwz     r3, gArenaLo-_SDA_BASE_(r13)
+/* 000840 80005DE0 806D88B8 */  lwz     r3, gArenaLo@sda21(r13)
 /* 000844 80005DE4 480976BD */  bl      OSSetArenaLo
-/* 000848 80005DE8 806D88B4 */  lwz     r3, gArenaHi-_SDA_BASE_(r13)
+/* 000848 80005DE8 806D88B4 */  lwz     r3, gArenaHi@sda21(r13)
 /* 00084C 80005DEC 480976AD */  bl      OSSetArenaHi
 /* 000850 80005DF0 8001000C */  lwz     r0, 0xc(r1)
 /* 000854 80005DF4 38600001 */  li      r3, 1

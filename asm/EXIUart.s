@@ -222,11 +222,11 @@ lbl_800A4440:
 /* 09EEB0 800A4450 2C030000 */  cmpwi   r3, 0
 /* 09EEB4 800A4454 4182001C */  beq     lbl_800A4470
 /* 09EEB8 800A4458 3C60A5FF */  lis     r3, 0xa5ff
-/* 09EEBC 800A445C 93CD8BA8 */  stw     r30, Chan-_SDA_BASE_(r13)
+/* 09EEBC 800A445C 93CD8BA8 */  stw     r30, Chan@sda21(r13)
 /* 09EEC0 800A4460 3803005A */  addi    r0, r3, 0x5a
-/* 09EEC4 800A4464 93ED8BAC */  stw     r31, Dev-_SDA_BASE_(r13)
-/* 09EEC8 800A4468 900D8BB4 */  stw     r0, BarnacleEnabled-_SDA_BASE_(r13)
-/* 09EECC 800A446C 900D8BB0 */  stw     r0, Enabled-_SDA_BASE_(r13)
+/* 09EEC4 800A4464 93ED8BAC */  stw     r31, Dev@sda21(r13)
+/* 09EEC8 800A4468 900D8BB4 */  stw     r0, BarnacleEnabled@sda21(r13)
+/* 09EECC 800A446C 900D8BB0 */  stw     r0, Enabled@sda21(r13)
 lbl_800A4470:
 /* 09EED0 800A4470 80010024 */  lwz     r0, 0x24(r1)
 /* 09EED4 800A4474 83E1001C */  lwz     r31, 0x1c(r1)
@@ -239,7 +239,7 @@ glabel InitializeUART
 /* 09EEE8 800A4488 7C0802A6 */  mflr    r0
 /* 09EEEC 800A448C 90010004 */  stw     r0, 4(r1)
 /* 09EEF0 800A4490 9421FFF8 */  stwu    r1, -8(r1)
-/* 09EEF4 800A4494 806D8BB4 */  lwz     r3, BarnacleEnabled-_SDA_BASE_(r13)
+/* 09EEF4 800A4494 806D8BB4 */  lwz     r3, BarnacleEnabled@sda21(r13)
 /* 09EEF8 800A4498 3C035A01 */  addis   r0, r3, 0x5a01
 /* 09EEFC 800A449C 2800005A */  cmplwi  r0, 0x5a
 /* 09EF00 800A44A0 4082000C */  bne     lbl_800A44AC
@@ -250,18 +250,18 @@ lbl_800A44AC:
 /* 09EF10 800A44B0 546000C7 */  rlwinm. r0, r3, 0, 3, 3
 /* 09EF14 800A44B4 40820014 */  bne     lbl_800A44C8
 /* 09EF18 800A44B8 38000000 */  li      r0, 0
-/* 09EF1C 800A44BC 900D8BB0 */  stw     r0, Enabled-_SDA_BASE_(r13)
+/* 09EF1C 800A44BC 900D8BB0 */  stw     r0, Enabled@sda21(r13)
 /* 09EF20 800A44C0 38600002 */  li      r3, 2
 /* 09EF24 800A44C4 48000024 */  b       lbl_800A44E8
 lbl_800A44C8:
 /* 09EF28 800A44C8 3C60A5FF */  lis     r3, 0xa5ff
 /* 09EF2C 800A44CC 3803005A */  addi    r0, r3, 0x5a
 /* 09EF30 800A44D0 38600000 */  li      r3, 0
-/* 09EF34 800A44D4 900D8BB0 */  stw     r0, Enabled-_SDA_BASE_(r13)
+/* 09EF34 800A44D4 900D8BB0 */  stw     r0, Enabled@sda21(r13)
 /* 09EF38 800A44D8 38000001 */  li      r0, 1
-/* 09EF3C 800A44DC 906D8BA8 */  stw     r3, Chan-_SDA_BASE_(r13)
+/* 09EF3C 800A44DC 906D8BA8 */  stw     r3, Chan@sda21(r13)
 /* 09EF40 800A44E0 38600000 */  li      r3, 0
-/* 09EF44 800A44E4 900D8BAC */  stw     r0, Dev-_SDA_BASE_(r13)
+/* 09EF44 800A44E4 900D8BAC */  stw     r0, Dev@sda21(r13)
 lbl_800A44E8:
 /* 09EF48 800A44E8 8001000C */  lwz     r0, 0xc(r1)
 /* 09EF4C 800A44EC 38210008 */  addi    r1, r1, 8
@@ -279,7 +279,7 @@ glabel WriteUARTN
 /* 09EF6C 800A450C BF21001C */  stmw    r25, 0x1c(r1)
 /* 09EF70 800A4510 3BC30000 */  addi    r30, r3, 0
 /* 09EF74 800A4514 3BE40000 */  addi    r31, r4, 0
-/* 09EF78 800A4518 80AD8BB0 */  lwz     r5, Enabled-_SDA_BASE_(r13)
+/* 09EF78 800A4518 80AD8BB0 */  lwz     r5, Enabled@sda21(r13)
 /* 09EF7C 800A451C 3C055A01 */  addis   r0, r5, 0x5a01
 /* 09EF80 800A4520 2800005A */  cmplwi  r0, 0x5a
 /* 09EF84 800A4524 4182000C */  beq     lbl_800A4530
@@ -288,8 +288,8 @@ glabel WriteUARTN
 lbl_800A4530:
 /* 09EF90 800A4530 4BFFA7CD */  bl      OSDisableInterrupts
 /* 09EF94 800A4534 7C601B78 */  mr      r0, r3
-/* 09EF98 800A4538 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
-/* 09EF9C 800A453C 808D8BAC */  lwz     r4, Dev-_SDA_BASE_(r13)
+/* 09EF98 800A4538 806D8BA8 */  lwz     r3, Chan@sda21(r13)
+/* 09EF9C 800A453C 808D8BAC */  lwz     r4, Dev@sda21(r13)
 /* 09EFA0 800A4540 7C1B0378 */  mr      r27, r0
 /* 09EFA4 800A4544 38A00000 */  li      r5, 0
 /* 09EFA8 800A4548 4BFFF639 */  bl      EXILock
@@ -320,9 +320,9 @@ lbl_800A4584:
 /* 09EFFC 800A459C 3FA02001 */  lis     r29, 0x2001
 /* 09F000 800A45A0 4800014C */  b       lbl_800A46EC
 lbl_800A45A4:
-/* 09F004 800A45A4 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F004 800A45A4 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F008 800A45A8 38A00003 */  li      r5, 3
-/* 09F00C 800A45AC 808D8BAC */  lwz     r4, Dev-_SDA_BASE_(r13)
+/* 09F00C 800A45AC 808D8BAC */  lwz     r4, Dev@sda21(r13)
 /* 09F010 800A45B0 4BFFEE11 */  bl      EXISelect
 /* 09F014 800A45B4 2C030000 */  cmpwi   r3, 0
 /* 09F018 800A45B8 4082000C */  bne     lbl_800A45C4
@@ -331,22 +331,22 @@ lbl_800A45A4:
 lbl_800A45C4:
 /* 09F024 800A45C4 93A10010 */  stw     r29, 0x10(r1)
 /* 09F028 800A45C8 38810010 */  addi    r4, r1, 0x10
-/* 09F02C 800A45CC 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F02C 800A45CC 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F030 800A45D0 38A00004 */  li      r5, 4
 /* 09F034 800A45D4 38C00001 */  li      r6, 1
 /* 09F038 800A45D8 38E00000 */  li      r7, 0
 /* 09F03C 800A45DC 4BFFE27D */  bl      EXIImm
-/* 09F040 800A45E0 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F040 800A45E0 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F044 800A45E4 4BFFE65D */  bl      EXISync
-/* 09F048 800A45E8 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F048 800A45E8 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F04C 800A45EC 38810010 */  addi    r4, r1, 0x10
 /* 09F050 800A45F0 38A00001 */  li      r5, 1
 /* 09F054 800A45F4 38C00000 */  li      r6, 0
 /* 09F058 800A45F8 38E00000 */  li      r7, 0
 /* 09F05C 800A45FC 4BFFE25D */  bl      EXIImm
-/* 09F060 800A4600 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F060 800A4600 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F064 800A4604 4BFFE63D */  bl      EXISync
-/* 09F068 800A4608 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F068 800A4608 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F06C 800A460C 4BFFEEE1 */  bl      EXIDeselect
 /* 09F070 800A4610 80010010 */  lwz     r0, 0x10(r1)
 /* 09F074 800A4614 5400463E */  srwi    r0, r0, 0x18
@@ -363,22 +363,22 @@ lbl_800A4630:
 /* 09F098 800A4638 7C00F840 */  cmplw   r0, r31
 /* 09F09C 800A463C 418000B0 */  blt     lbl_800A46EC
 lbl_800A4640:
-/* 09F0A0 800A4640 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F0A0 800A4640 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F0A4 800A4644 38A00003 */  li      r5, 3
-/* 09F0A8 800A4648 808D8BAC */  lwz     r4, Dev-_SDA_BASE_(r13)
+/* 09F0A8 800A4648 808D8BAC */  lwz     r4, Dev@sda21(r13)
 /* 09F0AC 800A464C 4BFFED75 */  bl      EXISelect
 /* 09F0B0 800A4650 2C030000 */  cmpwi   r3, 0
 /* 09F0B4 800A4654 4082000C */  bne     lbl_800A4660
 /* 09F0B8 800A4658 3B200003 */  li      r25, 3
 /* 09F0BC 800A465C 48000098 */  b       lbl_800A46F4
 lbl_800A4660:
-/* 09F0C0 800A4660 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F0C0 800A4660 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F0C4 800A4664 38810014 */  addi    r4, r1, 0x14
 /* 09F0C8 800A4668 38A00004 */  li      r5, 4
 /* 09F0CC 800A466C 38C00001 */  li      r6, 1
 /* 09F0D0 800A4670 38E00000 */  li      r7, 0
 /* 09F0D4 800A4674 4BFFE1E5 */  bl      EXIImm
-/* 09F0D8 800A4678 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F0D8 800A4678 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F0DC 800A467C 4BFFE5C5 */  bl      EXISync
 /* 09F0E0 800A4680 48000054 */  b       lbl_800A46D4
 lbl_800A4684:
@@ -394,13 +394,13 @@ lbl_800A4694:
 lbl_800A46A4:
 /* 09F104 800A46A4 3B800004 */  li      r28, 4
 lbl_800A46A8:
-/* 09F108 800A46A8 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F108 800A46A8 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F10C 800A46AC 7F85E378 */  mr      r5, r28
 /* 09F110 800A46B0 389E0000 */  addi    r4, r30, 0
 /* 09F114 800A46B4 38C00001 */  li      r6, 1
 /* 09F118 800A46B8 38E00000 */  li      r7, 0
 /* 09F11C 800A46BC 4BFFE19D */  bl      EXIImm
-/* 09F120 800A46C0 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F120 800A46C0 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F124 800A46C4 7FDEE214 */  add     r30, r30, r28
 /* 09F128 800A46C8 7FFCF850 */  subf    r31, r28, r31
 /* 09F12C 800A46CC 7F5CD050 */  subf    r26, r28, r26
@@ -411,13 +411,13 @@ lbl_800A46D4:
 /* 09F13C 800A46DC 281F0000 */  cmplwi  r31, 0
 /* 09F140 800A46E0 4082FFA4 */  bne     lbl_800A4684
 lbl_800A46E4:
-/* 09F144 800A46E4 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F144 800A46E4 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F148 800A46E8 4BFFEE05 */  bl      EXIDeselect
 lbl_800A46EC:
 /* 09F14C 800A46EC 281F0000 */  cmplwi  r31, 0
 /* 09F150 800A46F0 4082FEB4 */  bne     lbl_800A45A4
 lbl_800A46F4:
-/* 09F154 800A46F4 806D8BA8 */  lwz     r3, Chan-_SDA_BASE_(r13)
+/* 09F154 800A46F4 806D8BA8 */  lwz     r3, Chan@sda21(r13)
 /* 09F158 800A46F8 4BFFF57D */  bl      EXIUnlock
 /* 09F15C 800A46FC 7F63DB78 */  mr      r3, r27
 /* 09F160 800A4700 4BFFA625 */  bl      OSRestoreInterrupts

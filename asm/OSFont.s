@@ -6,7 +6,7 @@
 .balign 4
 
 glabel OSGetFontEncode
-/* 099704 8009ECA4 A06D8758 */  lhz     r3, fontEncode$80-_SDA_BASE_(r13)
+/* 099704 8009ECA4 A06D8758 */  lhz     r3, fontEncode$80@sda21(r13)
 /* 099708 8009ECA8 28030001 */  cmplwi  r3, 1
 /* 09970C 8009ECAC 4C810020 */  blelr   
 /* 099710 8009ECB0 3C608000 */  lis     r3, 0x8000
@@ -25,13 +25,13 @@ lbl_8009ECC8:
 lbl_8009ECE0:
 /* 099740 8009ECE0 38000000 */  li      r0, 0
 lbl_8009ECE4:
-/* 099744 8009ECE4 B00D8758 */  sth     r0, fontEncode$80-_SDA_BASE_(r13)
+/* 099744 8009ECE4 B00D8758 */  sth     r0, fontEncode$80@sda21(r13)
 /* 099748 8009ECE8 4800000C */  b       lbl_8009ECF4
 lbl_8009ECEC:
 /* 09974C 8009ECEC 38000000 */  li      r0, 0
-/* 099750 8009ECF0 B00D8758 */  sth     r0, fontEncode$80-_SDA_BASE_(r13)
+/* 099750 8009ECF0 B00D8758 */  sth     r0, fontEncode$80@sda21(r13)
 lbl_8009ECF4:
-/* 099754 8009ECF4 A06D8758 */  lhz     r3, fontEncode$80-_SDA_BASE_(r13)
+/* 099754 8009ECF4 A06D8758 */  lhz     r3, fontEncode$80@sda21(r13)
 /* 099758 8009ECF8 4E800020 */  blr     
 
 .section .sdata, "wa"

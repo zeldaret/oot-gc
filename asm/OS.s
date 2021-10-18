@@ -47,7 +47,7 @@ glabel __OSFPRInit
 /* 0966C8 8009BC68 13C00090 */  ps_mr   f30, f0
 /* 0966CC 8009BC6C 13E00090 */  ps_mr   f31, f0
 lbl_8009BC70:
-/* 0966D0 8009BC70 C80D8AE0 */  lfd     f0, ZeroF-_SDA_BASE_(r13)
+/* 0966D0 8009BC70 C80D8AE0 */  lfd     f0, ZeroF@sda21(r13)
 /* 0966D4 8009BC74 FC200090 */  fmr     f1, f0
 /* 0966D8 8009BC78 FC400090 */  fmr     f2, f0
 /* 0966DC 8009BC7C FC600090 */  fmr     f3, f0
@@ -83,7 +83,7 @@ lbl_8009BC70:
 /* 096754 8009BCF4 4E800020 */  blr     
 
 glabel OSGetConsoleType
-/* 096758 8009BCF8 806D8AD0 */  lwz     r3, BootInfo-_SDA_BASE_(r13)
+/* 096758 8009BCF8 806D8AD0 */  lwz     r3, BootInfo@sda21(r13)
 /* 09675C 8009BCFC 28030000 */  cmplwi  r3, 0
 /* 096760 8009BD00 41820010 */  beq     lbl_8009BD10
 /* 096764 8009BD04 8063002C */  lwz     r3, 0x2c(r3)
@@ -106,8 +106,8 @@ ClearArena:
 /* 096798 8009BD38 28000000 */  cmplwi  r0, 0
 /* 09679C 8009BD3C 41820034 */  beq     lbl_8009BD70
 /* 0967A0 8009BD40 38000000 */  li      r0, 0
-/* 0967A4 8009BD44 900D8AFC */  stw     r0, __OSSavedRegionStart-_SDA_BASE_(r13)
-/* 0967A8 8009BD48 900D8AF8 */  stw     r0, __OSSavedRegionEnd-_SDA_BASE_(r13)
+/* 0967A4 8009BD44 900D8AFC */  stw     r0, __OSSavedRegionStart@sda21(r13)
+/* 0967A8 8009BD48 900D8AF8 */  stw     r0, __OSSavedRegionEnd@sda21(r13)
 /* 0967AC 8009BD4C 4800173D */  bl      OSGetArenaHi
 /* 0967B0 8009BD50 7C7F1B78 */  mr      r31, r3
 /* 0967B4 8009BD54 4800173D */  bl      OSGetArenaLo
@@ -122,8 +122,8 @@ lbl_8009BD70:
 /* 0967D4 8009BD74 8064DFF0 */  lwz     r3, -0x2010(r4)
 /* 0967D8 8009BD78 8004DFEC */  lwz     r0, -0x2014(r4)
 /* 0967DC 8009BD7C 28030000 */  cmplwi  r3, 0
-/* 0967E0 8009BD80 906D8AFC */  stw     r3, __OSSavedRegionStart-_SDA_BASE_(r13)
-/* 0967E4 8009BD84 900D8AF8 */  stw     r0, __OSSavedRegionEnd-_SDA_BASE_(r13)
+/* 0967E0 8009BD80 906D8AFC */  stw     r3, __OSSavedRegionStart@sda21(r13)
+/* 0967E4 8009BD84 900D8AF8 */  stw     r0, __OSSavedRegionEnd@sda21(r13)
 /* 0967E8 8009BD88 40820028 */  bne     lbl_8009BDB0
 /* 0967EC 8009BD8C 480016FD */  bl      OSGetArenaHi
 /* 0967F0 8009BD90 7C7F1B78 */  mr      r31, r3
@@ -136,11 +136,11 @@ lbl_8009BD70:
 /* 09680C 8009BDAC 48000088 */  b       lbl_8009BE34
 lbl_8009BDB0:
 /* 096810 8009BDB0 480016E1 */  bl      OSGetArenaLo
-/* 096814 8009BDB4 800D8AFC */  lwz     r0, __OSSavedRegionStart-_SDA_BASE_(r13)
+/* 096814 8009BDB4 800D8AFC */  lwz     r0, __OSSavedRegionStart@sda21(r13)
 /* 096818 8009BDB8 7C030040 */  cmplw   r3, r0
 /* 09681C 8009BDBC 40800078 */  bge     lbl_8009BE34
 /* 096820 8009BDC0 480016C9 */  bl      OSGetArenaHi
-/* 096824 8009BDC4 800D8AFC */  lwz     r0, __OSSavedRegionStart-_SDA_BASE_(r13)
+/* 096824 8009BDC4 800D8AFC */  lwz     r0, __OSSavedRegionStart@sda21(r13)
 /* 096828 8009BDC8 7C030040 */  cmplw   r3, r0
 /* 09682C 8009BDCC 41810028 */  bgt     lbl_8009BDF4
 /* 096830 8009BDD0 480016B9 */  bl      OSGetArenaHi
@@ -154,14 +154,14 @@ lbl_8009BDB0:
 /* 096850 8009BDF0 48000044 */  b       lbl_8009BE34
 lbl_8009BDF4:
 /* 096854 8009BDF4 4800169D */  bl      OSGetArenaLo
-/* 096858 8009BDF8 800D8AFC */  lwz     r0, __OSSavedRegionStart-_SDA_BASE_(r13)
+/* 096858 8009BDF8 800D8AFC */  lwz     r0, __OSSavedRegionStart@sda21(r13)
 /* 09685C 8009BDFC 7FE30050 */  subf    r31, r3, r0
 /* 096860 8009BE00 48001691 */  bl      OSGetArenaLo
 /* 096864 8009BE04 7FE5FB78 */  mr      r5, r31
 /* 096868 8009BE08 38800000 */  li      r4, 0
 /* 09686C 8009BE0C 4BF695C5 */  bl      memset
 /* 096870 8009BE10 48001679 */  bl      OSGetArenaHi
-/* 096874 8009BE14 83ED8AF8 */  lwz     r31, __OSSavedRegionEnd-_SDA_BASE_(r13)
+/* 096874 8009BE14 83ED8AF8 */  lwz     r31, __OSSavedRegionEnd@sda21(r13)
 /* 096878 8009BE18 7C03F840 */  cmplw   r3, r31
 /* 09687C 8009BE1C 40810018 */  ble     lbl_8009BE34
 /* 096880 8009BE20 48001669 */  bl      OSGetArenaHi
@@ -203,7 +203,7 @@ glabel OSInit
 /* 0968F0 8009BE90 93E10014 */  stw     r31, 0x14(r1)
 /* 0968F4 8009BE94 93C10010 */  stw     r30, 0x10(r1)
 /* 0968F8 8009BE98 93A1000C */  stw     r29, 0xc(r1)
-/* 0968FC 8009BE9C 800D8AF0 */  lwz     r0, AreWeInitialized-_SDA_BASE_(r13)
+/* 0968FC 8009BE9C 800D8AF0 */  lwz     r0, AreWeInitialized@sda21(r13)
 /* 096900 8009BEA0 3C608013 */  lis     r3, DriveInfo@ha
 /* 096904 8009BEA4 3BC30F20 */  addi    r30, r3, DriveInfo@l
 /* 096908 8009BEA8 2C000000 */  cmpwi   r0, 0
@@ -211,10 +211,10 @@ glabel OSInit
 /* 096910 8009BEB0 3BE30628 */  addi    r31, r3, D_800F0628@l
 /* 096914 8009BEB4 4082038C */  bne     lbl_8009C240
 /* 096918 8009BEB8 38000001 */  li      r0, 1
-/* 09691C 8009BEBC 900D8AF0 */  stw     r0, AreWeInitialized-_SDA_BASE_(r13)
+/* 09691C 8009BEBC 900D8AF0 */  stw     r0, AreWeInitialized@sda21(r13)
 /* 096920 8009BEC0 48006409 */  bl      __OSGetSystemTime
-/* 096924 8009BEC4 908D8B0C */  stw     r4, (__OSStartTime + 4)-_SDA_BASE_(r13)
-/* 096928 8009BEC8 906D8B08 */  stw     r3, __OSStartTime-_SDA_BASE_(r13)
+/* 096924 8009BEC4 908D8B0C */  stw     r4, (__OSStartTime + 4)@sda21(r13)
+/* 096928 8009BEC8 906D8B08 */  stw     r3, __OSStartTime@sda21(r13)
 /* 09692C 8009BECC 48002E31 */  bl      OSDisableInterrupts
 /* 096930 8009BED0 38600000 */  li      r3, 0
 /* 096934 8009BED4 4BFFFC3D */  bl      PPCMtmmcr0
@@ -232,21 +232,21 @@ glabel OSInit
 /* 096964 8009BF04 4BFFFCC5 */  bl      PPCSetFpNonIEEEMode
 /* 096968 8009BF08 38000000 */  li      r0, 0
 /* 09696C 8009BF0C 3C808000 */  lis     r4, 0x8000
-/* 096970 8009BF10 900D8AD4 */  stw     r0, BI2DebugFlag-_SDA_BASE_(r13)
-/* 096974 8009BF14 908D8AD0 */  stw     r4, BootInfo-_SDA_BASE_(r13)
-/* 096978 8009BF18 900D8D24 */  stw     r0, __DVDLongFileNameFlag-_SDA_BASE_(r13)
+/* 096970 8009BF10 900D8AD4 */  stw     r0, BI2DebugFlag@sda21(r13)
+/* 096974 8009BF14 908D8AD0 */  stw     r4, BootInfo@sda21(r13)
+/* 096978 8009BF18 900D8D24 */  stw     r0, __DVDLongFileNameFlag@sda21(r13)
 /* 09697C 8009BF1C 806400F4 */  lwz     r3, 0xf4(r4)
 /* 096980 8009BF20 28030000 */  cmplwi  r3, 0
 /* 096984 8009BF24 41820034 */  beq     lbl_8009BF58
 /* 096988 8009BF28 3803000C */  addi    r0, r3, 0xc
-/* 09698C 8009BF2C 900D8AD4 */  stw     r0, BI2DebugFlag-_SDA_BASE_(r13)
+/* 09698C 8009BF2C 900D8AD4 */  stw     r0, BI2DebugFlag@sda21(r13)
 /* 096990 8009BF30 80030024 */  lwz     r0, 0x24(r3)
-/* 096994 8009BF34 806D8AD4 */  lwz     r3, BI2DebugFlag-_SDA_BASE_(r13)
-/* 096998 8009BF38 900D8CC0 */  stw     r0, __PADSpec-_SDA_BASE_(r13)
+/* 096994 8009BF34 806D8AD4 */  lwz     r3, BI2DebugFlag@sda21(r13)
+/* 096998 8009BF38 900D8CC0 */  stw     r0, __PADSpec@sda21(r13)
 /* 09699C 8009BF3C 80030000 */  lwz     r0, 0(r3)
 /* 0969A0 8009BF40 5400063E */  clrlwi  r0, r0, 0x18
 /* 0969A4 8009BF44 980430E8 */  stb     r0, 0x30e8(r4)
-/* 0969A8 8009BF48 800D8CC0 */  lwz     r0, __PADSpec-_SDA_BASE_(r13)
+/* 0969A8 8009BF48 800D8CC0 */  lwz     r0, __PADSpec@sda21(r13)
 /* 0969AC 8009BF4C 5400063E */  clrlwi  r0, r0, 0x18
 /* 0969B0 8009BF50 980430E9 */  stb     r0, 0x30e9(r4)
 /* 0969B4 8009BF54 48000028 */  b       lbl_8009BF7C
@@ -255,15 +255,15 @@ lbl_8009BF58:
 /* 0969BC 8009BF5C 28000000 */  cmplwi  r0, 0
 /* 0969C0 8009BF60 4182001C */  beq     lbl_8009BF7C
 /* 0969C4 8009BF64 886430E8 */  lbz     r3, 0x30e8(r4)
-/* 0969C8 8009BF68 380D8AD8 */  addi    r0, r13, BI2DebugFlagHolder-_SDA_BASE_
-/* 0969CC 8009BF6C 906D8AD8 */  stw     r3, BI2DebugFlagHolder-_SDA_BASE_(r13)
-/* 0969D0 8009BF70 900D8AD4 */  stw     r0, BI2DebugFlag-_SDA_BASE_(r13)
+/* 0969C8 8009BF68 380D8AD8 */  addi    r0, r13, BI2DebugFlagHolder@sda21
+/* 0969CC 8009BF6C 906D8AD8 */  stw     r3, BI2DebugFlagHolder@sda21(r13)
+/* 0969D0 8009BF70 900D8AD4 */  stw     r0, BI2DebugFlag@sda21(r13)
 /* 0969D4 8009BF74 880430E9 */  lbz     r0, 0x30e9(r4)
-/* 0969D8 8009BF78 900D8CC0 */  stw     r0, __PADSpec-_SDA_BASE_(r13)
+/* 0969D8 8009BF78 900D8CC0 */  stw     r0, __PADSpec@sda21(r13)
 lbl_8009BF7C:
 /* 0969DC 8009BF7C 38000001 */  li      r0, 1
-/* 0969E0 8009BF80 806D8AD0 */  lwz     r3, BootInfo-_SDA_BASE_(r13)
-/* 0969E4 8009BF84 900D8D24 */  stw     r0, __DVDLongFileNameFlag-_SDA_BASE_(r13)
+/* 0969E0 8009BF80 806D8AD0 */  lwz     r3, BootInfo@sda21(r13)
+/* 0969E4 8009BF84 900D8D24 */  stw     r0, __DVDLongFileNameFlag@sda21(r13)
 /* 0969E8 8009BF88 80630030 */  lwz     r3, 0x30(r3)
 /* 0969EC 8009BF8C 28030000 */  cmplwi  r3, 0
 /* 0969F0 8009BF90 40820010 */  bne     lbl_8009BFA0
@@ -272,11 +272,11 @@ lbl_8009BF7C:
 /* 0969FC 8009BF9C 48000004 */  b       lbl_8009BFA0
 lbl_8009BFA0:
 /* 096A00 8009BFA0 48001501 */  bl      OSSetArenaLo
-/* 096A04 8009BFA4 806D8AD0 */  lwz     r3, BootInfo-_SDA_BASE_(r13)
+/* 096A04 8009BFA4 806D8AD0 */  lwz     r3, BootInfo@sda21(r13)
 /* 096A08 8009BFA8 80030030 */  lwz     r0, 0x30(r3)
 /* 096A0C 8009BFAC 28000000 */  cmplwi  r0, 0
 /* 096A10 8009BFB0 40820030 */  bne     lbl_8009BFE0
-/* 096A14 8009BFB4 806D8AD4 */  lwz     r3, BI2DebugFlag-_SDA_BASE_(r13)
+/* 096A14 8009BFB4 806D8AD4 */  lwz     r3, BI2DebugFlag@sda21(r13)
 /* 096A18 8009BFB8 28030000 */  cmplwi  r3, 0
 /* 096A1C 8009BFBC 41820024 */  beq     lbl_8009BFE0
 /* 096A20 8009BFC0 80030000 */  lwz     r0, 0(r3)
@@ -288,7 +288,7 @@ lbl_8009BFA0:
 /* 096A38 8009BFD8 54030034 */  rlwinm  r3, r0, 0, 0, 0x1a
 /* 096A3C 8009BFDC 480014C5 */  bl      OSSetArenaLo
 lbl_8009BFE0:
-/* 096A40 8009BFE0 806D8AD0 */  lwz     r3, BootInfo-_SDA_BASE_(r13)
+/* 096A40 8009BFE0 806D8AD0 */  lwz     r3, BootInfo@sda21(r13)
 /* 096A44 8009BFE4 80630034 */  lwz     r3, 0x34(r3)
 /* 096A48 8009BFE8 28030000 */  cmplwi  r3, 0
 /* 096A4C 8009BFEC 40820010 */  bne     lbl_8009BFFC
@@ -316,7 +316,7 @@ lbl_8009BFFC:
 /* 096AA0 8009C040 4BFFFB49 */  bl      PPCMfhid2
 /* 096AA4 8009C044 54630080 */  rlwinm  r3, r3, 0, 2, 0
 /* 096AA8 8009C048 4BFFFB49 */  bl      PPCMthid2
-/* 096AAC 8009C04C 800D8B00 */  lwz     r0, __OSInIPL-_SDA_BASE_(r13)
+/* 096AAC 8009C04C 800D8B00 */  lwz     r0, __OSInIPL@sda21(r13)
 /* 096AB0 8009C050 2C000000 */  cmpwi   r0, 0
 /* 096AB4 8009C054 40820008 */  bne     lbl_8009C05C
 /* 096AB8 8009C058 480038ED */  bl      __OSInitMemoryProtection
@@ -332,7 +332,7 @@ lbl_8009C05C:
 /* 096ADC 8009C07C 387F0084 */  addi    r3, r31, 0x84
 /* 096AE0 8009C080 4CC63182 */  crclr   6
 /* 096AE4 8009C084 48002575 */  bl      OSReport
-/* 096AE8 8009C088 806D8AD0 */  lwz     r3, BootInfo-_SDA_BASE_(r13)
+/* 096AE8 8009C088 806D8AD0 */  lwz     r3, BootInfo@sda21(r13)
 /* 096AEC 8009C08C 28030000 */  cmplwi  r3, 0
 /* 096AF0 8009C090 41820010 */  beq     lbl_8009C0A0
 /* 096AF4 8009C094 8083002C */  lwz     r4, 0x2c(r3)
@@ -407,10 +407,10 @@ lbl_8009C164:
 /* 096BDC 8009C17C 48000010 */  b       lbl_8009C18C
 lbl_8009C180:
 /* 096BE0 8009C180 4CC63182 */  crclr   6
-/* 096BE4 8009C184 386D8734 */  addi    r3, r13, D_80135414-_SDA_BASE_
+/* 096BE4 8009C184 386D8734 */  addi    r3, r13, D_80135414@sda21
 /* 096BE8 8009C188 48002471 */  bl      OSReport
 lbl_8009C18C:
-/* 096BEC 8009C18C 808D8AD0 */  lwz     r4, BootInfo-_SDA_BASE_(r13)
+/* 096BEC 8009C18C 808D8AD0 */  lwz     r4, BootInfo@sda21(r13)
 /* 096BF0 8009C190 387F00FC */  addi    r3, r31, 0xfc
 /* 096BF4 8009C194 4CC63182 */  crclr   6
 /* 096BF8 8009C198 80040028 */  lwz     r0, 0x28(r4)
@@ -424,9 +424,9 @@ lbl_8009C18C:
 /* 096C18 8009C1B8 7FA5EB78 */  mr      r5, r29
 /* 096C1C 8009C1BC 387F010C */  addi    r3, r31, 0x10c
 /* 096C20 8009C1C0 48002439 */  bl      OSReport
-/* 096C24 8009C1C4 806D8730 */  lwz     r3, __OSVersion-_SDA_BASE_(r13)
+/* 096C24 8009C1C4 806D8730 */  lwz     r3, __OSVersion@sda21(r13)
 /* 096C28 8009C1C8 480004C9 */  bl      OSRegisterVersion
-/* 096C2C 8009C1CC 806D8AD4 */  lwz     r3, BI2DebugFlag-_SDA_BASE_(r13)
+/* 096C2C 8009C1CC 806D8AD4 */  lwz     r3, BI2DebugFlag@sda21(r13)
 /* 096C30 8009C1D0 28030000 */  cmplwi  r3, 0
 /* 096C34 8009C1D4 41820014 */  beq     lbl_8009C1E8
 /* 096C38 8009C1D8 80030000 */  lwz     r0, 0(r3)
@@ -436,11 +436,11 @@ lbl_8009C18C:
 lbl_8009C1E8:
 /* 096C48 8009C1E8 4BFFFB39 */  bl      ClearArena
 /* 096C4C 8009C1EC 48002B25 */  bl      OSEnableInterrupts
-/* 096C50 8009C1F0 800D8B00 */  lwz     r0, __OSInIPL-_SDA_BASE_(r13)
+/* 096C50 8009C1F0 800D8B00 */  lwz     r0, __OSInIPL@sda21(r13)
 /* 096C54 8009C1F4 2C000000 */  cmpwi   r0, 0
 /* 096C58 8009C1F8 40820048 */  bne     lbl_8009C240
 /* 096C5C 8009C1FC 48016D79 */  bl      DVDInit
-/* 096C60 8009C200 800D8ADC */  lwz     r0, __OSIsGcam-_SDA_BASE_(r13)
+/* 096C60 8009C200 800D8ADC */  lwz     r0, __OSIsGcam@sda21(r13)
 /* 096C64 8009C204 2C000000 */  cmpwi   r0, 0
 /* 096C68 8009C208 41820018 */  beq     lbl_8009C220
 /* 096C6C 8009C20C 3C600001 */  lis     r3, 1
@@ -522,7 +522,7 @@ lbl_8009C314:
 lbl_8009C324:
 /* 096D84 8009C324 48000148 */  b       lbl_8009C46C
 lbl_8009C328:
-/* 096D88 8009C328 806D8AD4 */  lwz     r3, BI2DebugFlag-_SDA_BASE_(r13)
+/* 096D88 8009C328 806D8AD4 */  lwz     r3, BI2DebugFlag@sda21(r13)
 /* 096D8C 8009C32C 28030000 */  cmplwi  r3, 0
 /* 096D90 8009C330 41820034 */  beq     lbl_8009C364
 /* 096D94 8009C334 80030000 */  lwz     r0, 0(r3)
@@ -617,7 +617,7 @@ lbl_8009C46C:
 /* 096ED4 8009C474 4180FEB4 */  blt     lbl_8009C328
 /* 096ED8 8009C478 3C608000 */  lis     r3, 0x8000
 /* 096EDC 8009C47C 38033000 */  addi    r0, r3, 0x3000
-/* 096EE0 8009C480 900D8AF4 */  stw     r0, OSExceptionTable-_SDA_BASE_(r13)
+/* 096EE0 8009C480 900D8AF4 */  stw     r0, OSExceptionTable@sda21(r13)
 /* 096EE4 8009C484 3A800000 */  li      r20, 0
 /* 096EE8 8009C488 48000004 */  b       lbl_8009C48C
 lbl_8009C48C:
@@ -661,7 +661,7 @@ __OSDBJump:
 
 glabel __OSSetExceptionHandler
 /* 096F64 8009C504 5460063E */  clrlwi  r0, r3, 0x18
-/* 096F68 8009C508 806D8AF4 */  lwz     r3, OSExceptionTable-_SDA_BASE_(r13)
+/* 096F68 8009C508 806D8AF4 */  lwz     r3, OSExceptionTable@sda21(r13)
 /* 096F6C 8009C50C 5400103A */  slwi    r0, r0, 2
 /* 096F70 8009C510 7CA30214 */  add     r5, r3, r0
 /* 096F74 8009C514 80650000 */  lwz     r3, 0(r5)
@@ -670,7 +670,7 @@ glabel __OSSetExceptionHandler
 
 glabel __OSGetExceptionHandler
 /* 096F80 8009C520 5460063E */  clrlwi  r0, r3, 0x18
-/* 096F84 8009C524 806D8AF4 */  lwz     r3, OSExceptionTable-_SDA_BASE_(r13)
+/* 096F84 8009C524 806D8AF4 */  lwz     r3, OSExceptionTable@sda21(r13)
 /* 096F88 8009C528 5400103A */  slwi    r0, r0, 2
 /* 096F8C 8009C52C 7C63002E */  lwzx    r3, r3, r0
 /* 096F90 8009C530 4E800020 */  blr     
@@ -780,7 +780,7 @@ glabel OSRegisterVersion
 /* 0970F8 8009C698 9421FFF8 */  stwu    r1, -8(r1)
 /* 0970FC 8009C69C 7C641B78 */  mr      r4, r3
 /* 097100 8009C6A0 4CC63182 */  crclr   6
-/* 097104 8009C6A4 386D873C */  addi    r3, r13, D_8013541C-_SDA_BASE_
+/* 097104 8009C6A4 386D873C */  addi    r3, r13, D_8013541C@sda21
 /* 097108 8009C6A8 48001F51 */  bl      OSReport
 /* 09710C 8009C6AC 8001000C */  lwz     r0, 0xc(r1)
 /* 097110 8009C6B0 38210008 */  addi    r1, r1, 8

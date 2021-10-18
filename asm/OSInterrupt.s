@@ -35,7 +35,7 @@ lbl_8009ED3C:
 
 glabel __OSSetInterruptHandler
 /* 0997A8 8009ED48 7C600734 */  extsh   r0, r3
-/* 0997AC 8009ED4C 806D8B30 */  lwz     r3, InterruptHandlerTable-_SDA_BASE_(r13)
+/* 0997AC 8009ED4C 806D8B30 */  lwz     r3, InterruptHandlerTable@sda21(r13)
 /* 0997B0 8009ED50 5400103A */  slwi    r0, r0, 2
 /* 0997B4 8009ED54 7CA30214 */  add     r5, r3, r0
 /* 0997B8 8009ED58 80650000 */  lwz     r3, 0(r5)
@@ -44,7 +44,7 @@ glabel __OSSetInterruptHandler
 
 glabel __OSGetInterruptHandler
 /* 0997C4 8009ED64 7C600734 */  extsh   r0, r3
-/* 0997C8 8009ED68 806D8B30 */  lwz     r3, InterruptHandlerTable-_SDA_BASE_(r13)
+/* 0997C8 8009ED68 806D8B30 */  lwz     r3, InterruptHandlerTable@sda21(r13)
 /* 0997CC 8009ED6C 5400103A */  slwi    r0, r0, 2
 /* 0997D0 8009ED70 7C63002E */  lwzx    r3, r3, r0
 /* 0997D4 8009ED74 4E800020 */  blr     
@@ -56,10 +56,10 @@ glabel __OSInterruptInit
 /* 0997E4 8009ED84 93E1000C */  stw     r31, 0xc(r1)
 /* 0997E8 8009ED88 3FE08000 */  lis     r31, 0x8000
 /* 0997EC 8009ED8C 381F3040 */  addi    r0, r31, 0x3040
-/* 0997F0 8009ED90 900D8B30 */  stw     r0, InterruptHandlerTable-_SDA_BASE_(r13)
+/* 0997F0 8009ED90 900D8B30 */  stw     r0, InterruptHandlerTable@sda21(r13)
 /* 0997F4 8009ED94 38800000 */  li      r4, 0
 /* 0997F8 8009ED98 38A00080 */  li      r5, 0x80
-/* 0997FC 8009ED9C 806D8B30 */  lwz     r3, InterruptHandlerTable-_SDA_BASE_(r13)
+/* 0997FC 8009ED9C 806D8B30 */  lwz     r3, InterruptHandlerTable@sda21(r13)
 /* 099800 8009EDA0 4BF66631 */  bl      memset
 /* 099804 8009EDA4 38000000 */  li      r0, 0
 /* 099808 8009EDA8 901F00C4 */  stw     r0, 0xc4(r31)
@@ -592,19 +592,19 @@ lbl_8009F490:
 /* 099EF0 8009F490 38630004 */  addi    r3, r3, 4
 /* 099EF4 8009F494 4BFFFFE0 */  b       lbl_8009F474
 lbl_8009F498:
-/* 099EF8 8009F498 806D8B30 */  lwz     r3, InterruptHandlerTable-_SDA_BASE_(r13)
+/* 099EF8 8009F498 806D8B30 */  lwz     r3, InterruptHandlerTable@sda21(r13)
 /* 099EFC 8009F49C 57A0103A */  slwi    r0, r29, 2
 /* 099F00 8009F4A0 7FE3002E */  lwzx    r31, r3, r0
 /* 099F04 8009F4A4 281F0000 */  cmplwi  r31, 0
 /* 099F08 8009F4A8 4182004C */  beq     lbl_8009F4F4
 /* 099F0C 8009F4AC 2C1D0004 */  cmpwi   r29, 4
 /* 099F10 8009F4B0 4081001C */  ble     lbl_8009F4CC
-/* 099F14 8009F4B4 B3AD8B38 */  sth     r29, __OSLastInterrupt-_SDA_BASE_(r13)
+/* 099F14 8009F4B4 B3AD8B38 */  sth     r29, __OSLastInterrupt@sda21(r13)
 /* 099F18 8009F4B8 48002DF1 */  bl      OSGetTime
-/* 099F1C 8009F4BC 908D8B44 */  stw     r4, (__OSLastInterruptTime + 4)-_SDA_BASE_(r13)
-/* 099F20 8009F4C0 906D8B40 */  stw     r3, __OSLastInterruptTime-_SDA_BASE_(r13)
+/* 099F1C 8009F4BC 908D8B44 */  stw     r4, (__OSLastInterruptTime + 4)@sda21(r13)
+/* 099F20 8009F4C0 906D8B40 */  stw     r3, __OSLastInterruptTime@sda21(r13)
 /* 099F24 8009F4C4 801E0198 */  lwz     r0, 0x198(r30)
-/* 099F28 8009F4C8 900D8B34 */  stw     r0, __OSLastInterruptSrr0-_SDA_BASE_(r13)
+/* 099F28 8009F4C8 900D8B34 */  stw     r0, __OSLastInterruptSrr0@sda21(r13)
 lbl_8009F4CC:
 /* 099F2C 8009F4CC 48001D85 */  bl      OSDisableScheduler
 /* 099F30 8009F4D0 7FA3EB78 */  mr      r3, r29

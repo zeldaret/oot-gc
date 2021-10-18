@@ -354,7 +354,7 @@ lbl_800A4BE8:
 /* 09F674 800A4C14 39045874 */  addi    r8, r4, GetTypeCallback@l
 /* 09F678 800A4C18 540AE8FE */  srwi    r10, r0, 3
 /* 09F67C 800A4C1C 38770000 */  addi    r3, r23, 0
-/* 09F680 800A4C20 388D8BB8 */  addi    r4, r13, cmdTypeAndStatus$78-_SDA_BASE_
+/* 09F680 800A4C20 388D8BB8 */  addi    r4, r13, cmdTypeAndStatus$78@sda21
 /* 09F684 800A4C24 38A00001 */  li      r5, 1
 /* 09F688 800A4C28 38E00003 */  li      r7, 3
 /* 09F68C 800A4C2C 39200000 */  li      r9, 0
@@ -644,7 +644,7 @@ glabel SIInit
 /* 09FA7C 800A501C 9421FFF0 */  stwu    r1, -0x10(r1)
 /* 09FA80 800A5020 93E1000C */  stw     r31, 0xc(r1)
 /* 09FA84 800A5024 3BE41AF0 */  addi    r31, r4, Packet@l
-/* 09FA88 800A5028 806D8770 */  lwz     r3, __SIVersion-_SDA_BASE_(r13)
+/* 09FA88 800A5028 806D8770 */  lwz     r3, __SIVersion@sda21(r13)
 /* 09FA8C 800A502C 4BFF7665 */  bl      OSRegisterVersion
 /* 09FA90 800A5030 38A0FFFF */  li      r5, -1
 /* 09FA94 800A5034 90BF0060 */  stw     r5, 0x60(r31)
@@ -1257,10 +1257,10 @@ GetTypeCallback:
 /* 0A0330 800A58D0 5740073F */  clrlwi. r0, r26, 0x1c
 /* 0A0334 800A58D4 90650120 */  stw     r3, 0x120(r5)
 /* 0A0338 800A58D8 7C84DC30 */  srw     r4, r4, r27
-/* 0A033C 800A58DC 806D8BC0 */  lwz     r3, __PADFixBits-_SDA_BASE_(r13)
+/* 0A033C 800A58DC 806D8BC0 */  lwz     r3, __PADFixBits@sda21(r13)
 /* 0A0340 800A58E0 839E0000 */  lwz     r28, 0(r30)
 /* 0A0344 800A58E4 7C602078 */  andc    r0, r3, r4
-/* 0A0348 800A58E8 900D8BC0 */  stw     r0, __PADFixBits-_SDA_BASE_(r13)
+/* 0A0348 800A58E8 900D8BC0 */  stw     r0, __PADFixBits@sda21(r13)
 /* 0A034C 800A58EC 7C7A2038 */  and     r26, r3, r4
 /* 0A0350 800A58F0 40820024 */  bne     lbl_800A5914
 /* 0A0354 800A58F4 578300C8 */  rlwinm  r3, r28, 0, 3, 4
@@ -1516,7 +1516,7 @@ lbl_800A5C5C:
 /* 0A06F0 800A5C90 1C000041 */  mulli   r0, r0, 0x41
 /* 0A06F4 800A5C94 540AE8FE */  srwi    r10, r0, 3
 /* 0A06F8 800A5C98 38DE0000 */  addi    r6, r30, 0
-/* 0A06FC 800A5C9C 388D8BBC */  addi    r4, r13, cmdTypeAndStatus$372-_SDA_BASE_
+/* 0A06FC 800A5C9C 388D8BBC */  addi    r4, r13, cmdTypeAndStatus$372@sda21
 /* 0A0700 800A5CA0 38A00001 */  li      r5, 1
 /* 0A0704 800A5CA4 38E00003 */  li      r7, 3
 /* 0A0708 800A5CA8 39200000 */  li      r9, 0

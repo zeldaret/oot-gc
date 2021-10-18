@@ -12,9 +12,9 @@ glabel AIRegisterDMACallback
 /* 0B29F0 800B7F90 93E10014 */  stw     r31, 0x14(r1)
 /* 0B29F4 800B7F94 93C10010 */  stw     r30, 0x10(r1)
 /* 0B29F8 800B7F98 7C7E1B78 */  mr      r30, r3
-/* 0B29FC 800B7F9C 83ED8E34 */  lwz     r31, __AID_Callback-_SDA_BASE_(r13)
+/* 0B29FC 800B7F9C 83ED8E34 */  lwz     r31, __AID_Callback@sda21(r13)
 /* 0B2A00 800B7FA0 4BFE6D5D */  bl      OSDisableInterrupts
-/* 0B2A04 800B7FA4 93CD8E34 */  stw     r30, __AID_Callback-_SDA_BASE_(r13)
+/* 0B2A04 800B7FA4 93CD8E34 */  stw     r30, __AID_Callback@sda21(r13)
 /* 0B2A08 800B7FA8 4BFE6D7D */  bl      OSRestoreInterrupts
 /* 0B2A0C 800B7FAC 7FE3FB78 */  mr      r3, r31
 /* 0B2A10 800B7FB0 8001001C */  lwz     r0, 0x1c(r1)
@@ -326,10 +326,10 @@ glabel AIInit
 /* 0B2E40 800B83E0 93E10014 */  stw     r31, 0x14(r1)
 /* 0B2E44 800B83E4 93C10010 */  stw     r30, 0x10(r1)
 /* 0B2E48 800B83E8 3BC30000 */  addi    r30, r3, 0
-/* 0B2E4C 800B83EC 800D8E40 */  lwz     r0, __AI_init_flag-_SDA_BASE_(r13)
+/* 0B2E4C 800B83EC 800D8E40 */  lwz     r0, __AI_init_flag@sda21(r13)
 /* 0B2E50 800B83F0 2C000001 */  cmpwi   r0, 1
 /* 0B2E54 800B83F4 41820134 */  beq     lbl_800B8528
-/* 0B2E58 800B83F8 806D8850 */  lwz     r3, __AIVersion-_SDA_BASE_(r13)
+/* 0B2E58 800B83F8 806D8850 */  lwz     r3, __AIVersion@sda21(r13)
 /* 0B2E5C 800B83FC 4BFE4295 */  bl      OSRegisterVersion
 /* 0B2E60 800B8400 3C608000 */  lis     r3, 0x8000
 /* 0B2E64 800B8404 800300F8 */  lwz     r0, 0xf8(r3)
@@ -356,25 +356,25 @@ glabel AIInit
 /* 0B2EB8 800B8458 7C6A1816 */  mulhwu  r3, r10, r3
 /* 0B2EBC 800B845C 5508BA7E */  srwi    r8, r8, 9
 /* 0B2EC0 800B8460 54E7BA7E */  srwi    r7, r7, 9
-/* 0B2EC4 800B8464 910D8E4C */  stw     r8, (bound_32KHz + 4)-_SDA_BASE_(r13)
+/* 0B2EC4 800B8464 910D8E4C */  stw     r8, (bound_32KHz + 4)@sda21(r13)
 /* 0B2EC8 800B8468 54A5BA7E */  srwi    r5, r5, 9
 /* 0B2ECC 800B846C 5484BA7E */  srwi    r4, r4, 9
-/* 0B2ED0 800B8470 90ED8E54 */  stw     r7, (bound_48KHz + 4)-_SDA_BASE_(r13)
+/* 0B2ED0 800B8470 90ED8E54 */  stw     r7, (bound_48KHz + 4)@sda21(r13)
 /* 0B2ED4 800B8474 3BE00000 */  li      r31, 0
 /* 0B2ED8 800B8478 5463BA7E */  srwi    r3, r3, 9
-/* 0B2EDC 800B847C 90AD8E5C */  stw     r5, (min_wait + 4)-_SDA_BASE_(r13)
+/* 0B2EDC 800B847C 90AD8E5C */  stw     r5, (min_wait + 4)@sda21(r13)
 /* 0B2EE0 800B8480 3CC0CC00 */  lis     r6, AI_REGS_BASE@ha
-/* 0B2EE4 800B8484 906D8E6C */  stw     r3, (buffer + 4)-_SDA_BASE_(r13)
+/* 0B2EE4 800B8484 906D8E6C */  stw     r3, (buffer + 4)@sda21(r13)
 /* 0B2EE8 800B8488 38600001 */  li      r3, 1
 /* 0B2EEC 800B848C 80066C00 */  lwz     r0, (AI_REGS_BASE + AI_CR)@l(r6)
-/* 0B2EF0 800B8490 908D8E64 */  stw     r4, (max_wait + 4)-_SDA_BASE_(r13)
+/* 0B2EF0 800B8490 908D8E64 */  stw     r4, (max_wait + 4)@sda21(r13)
 /* 0B2EF4 800B8494 540006F2 */  rlwinm  r0, r0, 0, 0x1b, 0x19
 /* 0B2EF8 800B8498 60000020 */  ori     r0, r0, 0x20
-/* 0B2EFC 800B849C 93ED8E48 */  stw     r31, bound_32KHz-_SDA_BASE_(r13)
-/* 0B2F00 800B84A0 93ED8E50 */  stw     r31, bound_48KHz-_SDA_BASE_(r13)
-/* 0B2F04 800B84A4 93ED8E58 */  stw     r31, min_wait-_SDA_BASE_(r13)
-/* 0B2F08 800B84A8 93ED8E60 */  stw     r31, max_wait-_SDA_BASE_(r13)
-/* 0B2F0C 800B84AC 93ED8E68 */  stw     r31, buffer-_SDA_BASE_(r13)
+/* 0B2EFC 800B849C 93ED8E48 */  stw     r31, bound_32KHz@sda21(r13)
+/* 0B2F00 800B84A0 93ED8E50 */  stw     r31, bound_48KHz@sda21(r13)
+/* 0B2F04 800B84A4 93ED8E58 */  stw     r31, min_wait@sda21(r13)
+/* 0B2F08 800B84A8 93ED8E60 */  stw     r31, max_wait@sda21(r13)
+/* 0B2F0C 800B84AC 93ED8E68 */  stw     r31, buffer@sda21(r13)
 /* 0B2F10 800B84B0 80A66C04 */  lwz     r5, (AI_REGS_BASE + AI_VR)@l(r6)
 /* 0B2F14 800B84B4 90066C00 */  stw     r0, (AI_REGS_BASE + AI_CR)@l(r6)
 /* 0B2F18 800B84B8 54A0061E */  rlwinm  r0, r5, 0, 0x18, 0xf
@@ -389,11 +389,11 @@ glabel AIInit
 /* 0B2F3C 800B84DC 38600000 */  li      r3, 0
 /* 0B2F40 800B84E0 4BFFFCC5 */  bl      AISetDSPSampleRate
 /* 0B2F44 800B84E4 3C60800C */  lis     r3, __AIDHandler@ha
-/* 0B2F48 800B84E8 93ED8E30 */  stw     r31, __AIS_Callback-_SDA_BASE_(r13)
+/* 0B2F48 800B84E8 93ED8E30 */  stw     r31, __AIS_Callback@sda21(r13)
 /* 0B2F4C 800B84EC 388385BC */  addi    r4, r3, __AIDHandler@l
-/* 0B2F50 800B84F0 93ED8E34 */  stw     r31, __AID_Callback-_SDA_BASE_(r13)
+/* 0B2F50 800B84F0 93ED8E34 */  stw     r31, __AID_Callback@sda21(r13)
 /* 0B2F54 800B84F4 38600005 */  li      r3, 5
-/* 0B2F58 800B84F8 93CD8E38 */  stw     r30, __CallbackStack-_SDA_BASE_(r13)
+/* 0B2F58 800B84F8 93CD8E38 */  stw     r30, __CallbackStack@sda21(r13)
 /* 0B2F5C 800B84FC 4BFE684D */  bl      __OSSetInterruptHandler
 /* 0B2F60 800B8500 3C600400 */  lis     r3, 0x400
 /* 0B2F64 800B8504 4BFE6C49 */  bl      __OSUnmaskInterrupts
@@ -404,7 +404,7 @@ glabel AIInit
 /* 0B2F78 800B8518 3C600080 */  lis     r3, 0x80
 /* 0B2F7C 800B851C 4BFE6C31 */  bl      __OSUnmaskInterrupts
 /* 0B2F80 800B8520 38000001 */  li      r0, 1
-/* 0B2F84 800B8524 900D8E40 */  stw     r0, __AI_init_flag-_SDA_BASE_(r13)
+/* 0B2F84 800B8524 900D8E40 */  stw     r0, __AI_init_flag@sda21(r13)
 lbl_800B8528:
 /* 0B2F88 800B8528 8001001C */  lwz     r0, 0x1c(r1)
 /* 0B2F8C 800B852C 83E10014 */  lwz     r31, 0x14(r1)
@@ -428,7 +428,7 @@ __AISHandler:
 /* 0B2FCC 800B856C 4BFE5C39 */  bl      OSClearContext
 /* 0B2FD0 800B8570 38610010 */  addi    r3, r1, 0x10
 /* 0B2FD4 800B8574 4BFE5A69 */  bl      OSSetCurrentContext
-/* 0B2FD8 800B8578 818D8E30 */  lwz     r12, __AIS_Callback-_SDA_BASE_(r13)
+/* 0B2FD8 800B8578 818D8E30 */  lwz     r12, __AIS_Callback@sda21(r13)
 /* 0B2FDC 800B857C 280C0000 */  cmplwi  r12, 0
 /* 0B2FE0 800B8580 41820014 */  beq     lbl_800B8594
 /* 0B2FE4 800B8584 387F6C00 */  addi    r3, r31, AI_REGS_BASE@l
@@ -464,15 +464,15 @@ __AIDHandler:
 /* 0B3050 800B85F0 4BFE5BB5 */  bl      OSClearContext
 /* 0B3054 800B85F4 38610010 */  addi    r3, r1, 0x10
 /* 0B3058 800B85F8 4BFE59E5 */  bl      OSSetCurrentContext
-/* 0B305C 800B85FC 806D8E34 */  lwz     r3, __AID_Callback-_SDA_BASE_(r13)
+/* 0B305C 800B85FC 806D8E34 */  lwz     r3, __AID_Callback@sda21(r13)
 /* 0B3060 800B8600 28030000 */  cmplwi  r3, 0
 /* 0B3064 800B8604 41820040 */  beq     lbl_800B8644
-/* 0B3068 800B8608 800D8E44 */  lwz     r0, __AID_Active-_SDA_BASE_(r13)
+/* 0B3068 800B8608 800D8E44 */  lwz     r0, __AID_Active@sda21(r13)
 /* 0B306C 800B860C 2C000000 */  cmpwi   r0, 0
 /* 0B3070 800B8610 40820034 */  bne     lbl_800B8644
-/* 0B3074 800B8614 800D8E38 */  lwz     r0, __CallbackStack-_SDA_BASE_(r13)
+/* 0B3074 800B8614 800D8E38 */  lwz     r0, __CallbackStack@sda21(r13)
 /* 0B3078 800B8618 38800001 */  li      r4, 1
-/* 0B307C 800B861C 908D8E44 */  stw     r4, __AID_Active-_SDA_BASE_(r13)
+/* 0B307C 800B861C 908D8E44 */  stw     r4, __AID_Active@sda21(r13)
 /* 0B3080 800B8620 28000000 */  cmplwi  r0, 0
 /* 0B3084 800B8624 4182000C */  beq     lbl_800B8630
 /* 0B3088 800B8628 48000041 */  bl      __AICallbackStackSwitch
@@ -483,7 +483,7 @@ lbl_800B8630:
 /* 0B3098 800B8638 4E800021 */  blrl    
 lbl_800B863C:
 /* 0B309C 800B863C 38000000 */  li      r0, 0
-/* 0B30A0 800B8640 900D8E44 */  stw     r0, __AID_Active-_SDA_BASE_(r13)
+/* 0B30A0 800B8640 900D8E44 */  stw     r0, __AID_Active@sda21(r13)
 lbl_800B8644:
 /* 0B30A4 800B8644 38610010 */  addi    r3, r1, 0x10
 /* 0B30A8 800B8648 4BFE5B5D */  bl      OSClearContext
@@ -578,15 +578,15 @@ lbl_800B8778:
 /* 0B31E0 800B8780 4182FFF8 */  beq     lbl_800B8778
 /* 0B31E4 800B8784 4BFE9B25 */  bl      OSGetTime
 /* 0B31E8 800B8788 7D1A2010 */  subfc   r8, r26, r4
-/* 0B31EC 800B878C 818D8E4C */  lwz     r12, (bound_32KHz + 4)-_SDA_BASE_(r13)
+/* 0B31EC 800B878C 818D8E4C */  lwz     r12, (bound_32KHz + 4)@sda21(r13)
 /* 0B31F0 800B8790 80BF6C00 */  lwz     r5, (AI_REGS_BASE + AI_CR)@l(r31)
 /* 0B31F4 800B8794 7CFB1910 */  subfe   r7, r27, r3
-/* 0B31F8 800B8798 814D8E6C */  lwz     r10, (buffer + 4)-_SDA_BASE_(r13)
+/* 0B31F8 800B8798 814D8E6C */  lwz     r10, (buffer + 4)@sda21(r13)
 /* 0B31FC 800B879C 6CE78000 */  xoris   r7, r7, 0x8000
 /* 0B3200 800B87A0 54A507FA */  rlwinm  r5, r5, 0, 0x1f, 0x1d
-/* 0B3204 800B87A4 816D8E48 */  lwz     r11, bound_32KHz-_SDA_BASE_(r13)
+/* 0B3204 800B87A4 816D8E48 */  lwz     r11, bound_32KHz@sda21(r13)
 /* 0B3208 800B87A8 7CCA6010 */  subfc   r6, r10, r12
-/* 0B320C 800B87AC 812D8E68 */  lwz     r9, buffer-_SDA_BASE_(r13)
+/* 0B320C 800B87AC 812D8E68 */  lwz     r9, buffer@sda21(r13)
 /* 0B3210 800B87B0 90BF6C00 */  stw     r5, (AI_REGS_BASE + AI_CR)@l(r31)
 /* 0B3214 800B87B4 7C095910 */  subfe   r0, r9, r11
 /* 0B3218 800B87B8 6C058000 */  xoris   r5, r0, 0x8000
@@ -599,9 +599,9 @@ lbl_800B8778:
 /* 0B3234 800B87D4 2C050000 */  cmpwi   r5, 0
 /* 0B3238 800B87D8 901F6C00 */  stw     r0, (AI_REGS_BASE + AI_CR)@l(r31)
 /* 0B323C 800B87DC 41820014 */  beq     lbl_800B87F0
-/* 0B3240 800B87E0 83AD8E58 */  lwz     r29, min_wait-_SDA_BASE_(r13)
+/* 0B3240 800B87E0 83AD8E58 */  lwz     r29, min_wait@sda21(r13)
 /* 0B3244 800B87E4 38000001 */  li      r0, 1
-/* 0B3248 800B87E8 838D8E5C */  lwz     r28, (min_wait + 4)-_SDA_BASE_(r13)
+/* 0B3248 800B87E8 838D8E5C */  lwz     r28, (min_wait + 4)@sda21(r13)
 /* 0B324C 800B87EC 48000068 */  b       lbl_800B8854
 lbl_800B87F0:
 /* 0B3250 800B87F0 7CCC5014 */  addc    r6, r12, r10
@@ -613,8 +613,8 @@ lbl_800B87F0:
 /* 0B3268 800B8808 7CA500D0 */  neg     r5, r5
 /* 0B326C 800B880C 2C050000 */  cmpwi   r5, 0
 /* 0B3270 800B8810 40820040 */  bne     lbl_800B8850
-/* 0B3274 800B8814 80AD8E54 */  lwz     r5, (bound_48KHz + 4)-_SDA_BASE_(r13)
-/* 0B3278 800B8818 800D8E50 */  lwz     r0, bound_48KHz-_SDA_BASE_(r13)
+/* 0B3274 800B8814 80AD8E54 */  lwz     r5, (bound_48KHz + 4)@sda21(r13)
+/* 0B3278 800B8818 800D8E50 */  lwz     r0, bound_48KHz@sda21(r13)
 /* 0B327C 800B881C 7CCA2810 */  subfc   r6, r10, r5
 /* 0B3280 800B8820 7C090110 */  subfe   r0, r9, r0
 /* 0B3284 800B8824 6C058000 */  xoris   r5, r0, 0x8000
@@ -624,9 +624,9 @@ lbl_800B87F0:
 /* 0B3294 800B8834 7CA500D0 */  neg     r5, r5
 /* 0B3298 800B8838 2C050000 */  cmpwi   r5, 0
 /* 0B329C 800B883C 41820014 */  beq     lbl_800B8850
-/* 0B32A0 800B8840 83AD8E60 */  lwz     r29, max_wait-_SDA_BASE_(r13)
+/* 0B32A0 800B8840 83AD8E60 */  lwz     r29, max_wait@sda21(r13)
 /* 0B32A4 800B8844 38000001 */  li      r0, 1
-/* 0B32A8 800B8848 838D8E64 */  lwz     r28, (max_wait + 4)-_SDA_BASE_(r13)
+/* 0B32A8 800B8848 838D8E64 */  lwz     r28, (max_wait + 4)@sda21(r13)
 /* 0B32AC 800B884C 48000008 */  b       lbl_800B8854
 lbl_800B8850:
 /* 0B32B0 800B8850 38000000 */  li      r0, 0

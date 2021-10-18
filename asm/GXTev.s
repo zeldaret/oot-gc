@@ -21,7 +21,7 @@ lbl_800AD7FC:
 /* 0A8268 800AD808 38A50014 */  addi    r5, r5, 0x14
 /* 0A826C 800AD80C 3929003C */  addi    r9, r9, 0x3c
 lbl_800AD810:
-/* 0A8270 800AD810 80E28400 */  lwz     r7, __GXData-_SDA2_BASE_(r2)
+/* 0A8270 800AD810 80E28400 */  lwz     r7, __GXData@sda21(r2)
 /* 0A8274 800AD814 5463103A */  slwi    r3, r3, 2
 /* 0A8278 800AD818 80050000 */  lwz     r0, 0(r5)
 /* 0A827C 800AD81C 38A00061 */  li      r5, 0x61
@@ -45,7 +45,7 @@ lbl_800AD810:
 /* 0A82C4 800AD864 4E800020 */  blr     
 
 glabel GXSetTevColorIn
-/* 0A82C8 800AD868 81228400 */  lwz     r9, __GXData-_SDA2_BASE_(r2)
+/* 0A82C8 800AD868 81228400 */  lwz     r9, __GXData@sda21(r2)
 /* 0A82CC 800AD86C 5463103A */  slwi    r3, r3, 2
 /* 0A82D0 800AD870 38000061 */  li      r0, 0x61
 /* 0A82D4 800AD874 7D091A14 */  add     r8, r9, r3
@@ -64,7 +64,7 @@ glabel GXSetTevColorIn
 /* 0A8308 800AD8A8 4E800020 */  blr     
 
 glabel GXSetTevAlphaIn
-/* 0A830C 800AD8AC 81228400 */  lwz     r9, __GXData-_SDA2_BASE_(r2)
+/* 0A830C 800AD8AC 81228400 */  lwz     r9, __GXData@sda21(r2)
 /* 0A8310 800AD8B0 5463103A */  slwi    r3, r3, 2
 /* 0A8314 800AD8B4 38000061 */  li      r0, 0x61
 /* 0A8318 800AD8B8 7D091A14 */  add     r8, r9, r3
@@ -83,7 +83,7 @@ glabel GXSetTevAlphaIn
 /* 0A834C 800AD8EC 4E800020 */  blr     
 
 glabel GXSetTevColorOp
-/* 0A8350 800AD8F0 80028400 */  lwz     r0, __GXData-_SDA2_BASE_(r2)
+/* 0A8350 800AD8F0 80028400 */  lwz     r0, __GXData@sda21(r2)
 /* 0A8354 800AD8F4 5469103A */  slwi    r9, r3, 2
 /* 0A8358 800AD8F8 2C040001 */  cmpwi   r4, 1
 /* 0A835C 800AD8FC 7C604A14 */  add     r3, r0, r9
@@ -100,7 +100,7 @@ lbl_800AD91C:
 /* 0A8384 800AD924 500A839E */  rlwimi  r10, r0, 0x10, 0xe, 0xf
 lbl_800AD928:
 /* 0A8388 800AD928 38000061 */  li      r0, 0x61
-/* 0A838C 800AD92C 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A838C 800AD92C 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A8390 800AD930 3CA0CC01 */  lis     r5, 0xcc01
 /* 0A8394 800AD934 98058000 */  stb     r0, -0x8000(r5)
 /* 0A8398 800AD938 50EA9B18 */  rlwimi  r10, r7, 0x13, 0xc, 0xc
@@ -113,7 +113,7 @@ lbl_800AD928:
 /* 0A83B4 800AD954 4E800020 */  blr     
 
 glabel GXSetTevAlphaOp
-/* 0A83B8 800AD958 80028400 */  lwz     r0, __GXData-_SDA2_BASE_(r2)
+/* 0A83B8 800AD958 80028400 */  lwz     r0, __GXData@sda21(r2)
 /* 0A83BC 800AD95C 5469103A */  slwi    r9, r3, 2
 /* 0A83C0 800AD960 2C040001 */  cmpwi   r4, 1
 /* 0A83C4 800AD964 7C604A14 */  add     r3, r0, r9
@@ -130,7 +130,7 @@ lbl_800AD984:
 /* 0A83EC 800AD98C 500A839E */  rlwimi  r10, r0, 0x10, 0xe, 0xf
 lbl_800AD990:
 /* 0A83F0 800AD990 38000061 */  li      r0, 0x61
-/* 0A83F4 800AD994 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A83F4 800AD994 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A83F8 800AD998 3CA0CC01 */  lis     r5, 0xcc01
 /* 0A83FC 800AD99C 98058000 */  stb     r0, -0x8000(r5)
 /* 0A8400 800AD9A0 50EA9B18 */  rlwimi  r10, r7, 0x13, 0xc, 0xc
@@ -153,7 +153,7 @@ glabel GXSetTevColor
 /* 0A843C 800AD9DC 50086266 */  rlwimi  r8, r0, 0xc, 9, 0x13
 /* 0A8440 800AD9E0 88040001 */  lbz     r0, 1(r4)
 /* 0A8444 800AD9E4 39200000 */  li      r9, 0
-/* 0A8448 800AD9E8 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A8448 800AD9E8 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A844C 800AD9EC 50C9057E */  rlwimi  r9, r6, 0, 0x15, 0x1f
 /* 0A8450 800AD9F0 38C90000 */  addi    r6, r9, 0
 /* 0A8454 800AD9F4 50066266 */  rlwimi  r6, r0, 0xc, 9, 0x13
@@ -189,7 +189,7 @@ glabel GXSetTevColorS10
 /* 0A84C4 800ADA64 50696266 */  rlwimi  r9, r3, 0xc, 9, 0x13
 /* 0A84C8 800ADA68 98A48000 */  stb     r5, -0x8000(r4)
 /* 0A84CC 800ADA6C 38E800E0 */  addi    r7, r8, 0xe0
-/* 0A84D0 800ADA70 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A84D0 800ADA70 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A84D4 800ADA74 50E9C00E */  rlwimi  r9, r7, 0x18, 0, 7
 /* 0A84D8 800ADA78 91248000 */  stw     r9, -0x8000(r4)
 /* 0A84DC 800ADA7C 38E00000 */  li      r7, 0
@@ -219,7 +219,7 @@ glabel GXSetTevKColor
 /* 0A8534 800ADAD4 50076326 */  rlwimi  r7, r0, 0xc, 0xc, 0x13
 /* 0A8538 800ADAD8 88040001 */  lbz     r0, 1(r4)
 /* 0A853C 800ADADC 38800008 */  li      r4, 8
-/* 0A8540 800ADAE0 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A8540 800ADAE0 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A8544 800ADAE4 39000000 */  li      r8, 0
 /* 0A8548 800ADAE8 50A8063E */  rlwimi  r8, r5, 0, 0x18, 0x1f
 /* 0A854C 800ADAEC 50086326 */  rlwimi  r8, r0, 0xc, 0xc, 0x13
@@ -241,7 +241,7 @@ glabel GXSetTevKColor
 
 glabel GXSetTevKColorSel
 /* 0A858C 800ADB2C 7C650E70 */  srawi   r5, r3, 1
-/* 0A8590 800ADB30 80C28400 */  lwz     r6, __GXData-_SDA2_BASE_(r2)
+/* 0A8590 800ADB30 80C28400 */  lwz     r6, __GXData@sda21(r2)
 /* 0A8594 800ADB34 546007FF */  clrlwi. r0, r3, 0x1f
 /* 0A8598 800ADB38 54A3103A */  slwi    r3, r5, 2
 /* 0A859C 800ADB3C 38E301B0 */  addi    r7, r3, 0x1b0
@@ -257,7 +257,7 @@ lbl_800ADB58:
 /* 0A85C0 800ADB60 90070000 */  stw     r0, 0(r7)
 lbl_800ADB64:
 /* 0A85C4 800ADB64 38000061 */  li      r0, 0x61
-/* 0A85C8 800ADB68 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A85C8 800ADB68 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A85CC 800ADB6C 3CA0CC01 */  lis     r5, 0xcc01
 /* 0A85D0 800ADB70 98058000 */  stb     r0, -0x8000(r5)
 /* 0A85D4 800ADB74 38000000 */  li      r0, 0
@@ -268,7 +268,7 @@ lbl_800ADB64:
 
 glabel GXSetTevKAlphaSel
 /* 0A85E8 800ADB88 7C650E70 */  srawi   r5, r3, 1
-/* 0A85EC 800ADB8C 80C28400 */  lwz     r6, __GXData-_SDA2_BASE_(r2)
+/* 0A85EC 800ADB8C 80C28400 */  lwz     r6, __GXData@sda21(r2)
 /* 0A85F0 800ADB90 546007FF */  clrlwi. r0, r3, 0x1f
 /* 0A85F4 800ADB94 54A3103A */  slwi    r3, r5, 2
 /* 0A85F8 800ADB98 38E301B0 */  addi    r7, r3, 0x1b0
@@ -284,7 +284,7 @@ lbl_800ADBB4:
 /* 0A861C 800ADBBC 90070000 */  stw     r0, 0(r7)
 lbl_800ADBC0:
 /* 0A8620 800ADBC0 38000061 */  li      r0, 0x61
-/* 0A8624 800ADBC4 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A8624 800ADBC4 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A8628 800ADBC8 3CA0CC01 */  lis     r5, 0xcc01
 /* 0A862C 800ADBCC 98058000 */  stb     r0, -0x8000(r5)
 /* 0A8630 800ADBD0 38000000 */  li      r0, 0
@@ -295,7 +295,7 @@ lbl_800ADBC0:
 
 glabel GXSetTevSwapMode
 /* 0A8644 800ADBE4 5463103A */  slwi    r3, r3, 2
-/* 0A8648 800ADBE8 80E28400 */  lwz     r7, __GXData-_SDA2_BASE_(r2)
+/* 0A8648 800ADBE8 80E28400 */  lwz     r7, __GXData@sda21(r2)
 /* 0A864C 800ADBEC 39030170 */  addi    r8, r3, 0x170
 /* 0A8650 800ADBF0 7D074214 */  add     r8, r7, r8
 /* 0A8654 800ADBF4 80080000 */  lwz     r0, 0(r8)
@@ -315,7 +315,7 @@ glabel GXSetTevSwapMode
 
 glabel GXSetTevSwapModeTable
 /* 0A868C 800ADC2C 5469083C */  slwi    r9, r3, 1
-/* 0A8690 800ADC30 81028400 */  lwz     r8, __GXData-_SDA2_BASE_(r2)
+/* 0A8690 800ADC30 81028400 */  lwz     r8, __GXData@sda21(r2)
 /* 0A8694 800ADC34 54631838 */  slwi    r3, r3, 3
 /* 0A8698 800ADC38 394301B0 */  addi    r10, r3, 0x1b0
 /* 0A869C 800ADC3C 7D485214 */  add     r10, r8, r10
@@ -349,7 +349,7 @@ glabel GXSetTevSwapModeTable
 
 glabel GXSetAlphaCompare
 /* 0A870C 800ADCAC 5480063E */  clrlwi  r0, r4, 0x18
-/* 0A8710 800ADCB0 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A8710 800ADCB0 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A8714 800ADCB4 3D00F300 */  lis     r8, 0xf300
 /* 0A8718 800ADCB8 5008063E */  rlwimi  r8, r0, 0, 0x18, 0x1f
 /* 0A871C 800ADCBC 54E0063E */  clrlwi  r0, r7, 0x18
@@ -395,7 +395,7 @@ lbl_800ADD40:
 /* 0A87A0 800ADD40 39000002 */  li      r8, 2
 lbl_800ADD44:
 /* 0A87A4 800ADD44 38000061 */  li      r0, 0x61
-/* 0A87A8 800ADD48 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A87A8 800ADD48 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A87AC 800ADD4C 3CA0CC01 */  lis     r5, 0xcc01
 /* 0A87B0 800ADD50 98058000 */  stb     r0, -0x8000(r5)
 /* 0A87B4 800ADD54 510707BE */  rlwimi  r7, r8, 0, 0x1e, 0x1f
@@ -411,7 +411,7 @@ lbl_800ADD44:
 
 glabel GXSetTevOrder
 /* 0A87DC 800ADD7C 7C670E70 */  srawi   r7, r3, 1
-/* 0A87E0 800ADD80 81228400 */  lwz     r9, __GXData-_SDA2_BASE_(r2)
+/* 0A87E0 800ADD80 81228400 */  lwz     r9, __GXData@sda21(r2)
 /* 0A87E4 800ADD84 54AA062C */  rlwinm  r10, r5, 0, 0x18, 0x16
 /* 0A87E8 800ADD88 7CE70194 */  addze   r7, r7
 /* 0A87EC 800ADD8C 5460103A */  slwi    r0, r3, 2
@@ -430,7 +430,7 @@ lbl_800ADDB8:
 lbl_800ADDBC:
 /* 0A881C 800ADDBC 2C040008 */  cmpwi   r4, 8
 /* 0A8820 800ADDC0 41800028 */  blt     lbl_800ADDE8
-/* 0A8824 800ADDC4 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A8824 800ADDC4 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A8828 800ADDC8 38000001 */  li      r0, 1
 /* 0A882C 800ADDCC 7C001830 */  slw     r0, r0, r3
 /* 0A8830 800ADDD0 81040598 */  lwz     r8, 0x598(r4)
@@ -440,7 +440,7 @@ lbl_800ADDBC:
 /* 0A8840 800ADDE0 900A0000 */  stw     r0, 0(r10)
 /* 0A8844 800ADDE4 48000020 */  b       lbl_800ADE04
 lbl_800ADDE8:
-/* 0A8848 800ADDE8 81028400 */  lwz     r8, __GXData-_SDA2_BASE_(r2)
+/* 0A8848 800ADDE8 81028400 */  lwz     r8, __GXData@sda21(r2)
 /* 0A884C 800ADDEC 38000001 */  li      r0, 1
 /* 0A8850 800ADDF0 7C001830 */  slw     r0, r0, r3
 /* 0A8854 800ADDF4 39480598 */  addi    r10, r8, 0x598
@@ -514,7 +514,7 @@ lbl_800ADEDC:
 /* 0A8944 800ADEE4 90070000 */  stw     r0, 0(r7)
 lbl_800ADEE8:
 /* 0A8948 800ADEE8 38000061 */  li      r0, 0x61
-/* 0A894C 800ADEEC 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A894C 800ADEEC 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A8950 800ADEF0 3CA0CC01 */  lis     r5, 0xcc01
 /* 0A8954 800ADEF4 98058000 */  stb     r0, -0x8000(r5)
 /* 0A8958 800ADEF8 38000000 */  li      r0, 0
@@ -527,7 +527,7 @@ lbl_800ADEE8:
 /* 0A8974 800ADF14 4E800020 */  blr     
 
 glabel GXSetNumTevStages
-/* 0A8978 800ADF18 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A8978 800ADF18 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A897C 800ADF1C 5463063E */  clrlwi  r3, r3, 0x18
 /* 0A8980 800ADF20 3803FFFF */  addi    r0, r3, -1
 /* 0A8984 800ADF24 80640204 */  lwz     r3, 0x204(r4)

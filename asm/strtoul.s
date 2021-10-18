@@ -49,7 +49,7 @@ lbl_800D0B0C:
 /* 0CB570 800D0B10 3863FFFF */  addi    r3, r3, -1
 lbl_800D0B14:
 /* 0CB574 800D0B14 38000022 */  li      r0, 0x22
-/* 0CB578 800D0B18 900D8FF8 */  stw     r0, errno-_SDA_BASE_(r13)
+/* 0CB578 800D0B18 900D8FF8 */  stw     r0, errno@sda21(r13)
 /* 0CB57C 800D0B1C 48000010 */  b       lbl_800D0B2C
 lbl_800D0B20:
 /* 0CB580 800D0B20 2C040000 */  cmpwi   r4, 0

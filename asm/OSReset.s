@@ -6,7 +6,7 @@
 .balign 4
 
 glabel OSRegisterResetFunction
-/* 09A888 8009FE28 80AD8B58 */  lwz     r5, ResetFunctionQueue-_SDA_BASE_(r13)
+/* 09A888 8009FE28 80AD8B58 */  lwz     r5, ResetFunctionQueue@sda21(r13)
 /* 09A88C 8009FE2C 48000008 */  b       lbl_8009FE34
 lbl_8009FE30:
 /* 09A890 8009FE30 80A50008 */  lwz     r5, 8(r5)
@@ -20,11 +20,11 @@ lbl_8009FE34:
 lbl_8009FE4C:
 /* 09A8AC 8009FE4C 28050000 */  cmplwi  r5, 0
 /* 09A8B0 8009FE50 40820034 */  bne     lbl_8009FE84
-/* 09A8B4 8009FE54 38AD8B58 */  addi    r5, r13, ResetFunctionQueue-_SDA_BASE_
+/* 09A8B4 8009FE54 38AD8B58 */  addi    r5, r13, ResetFunctionQueue@sda21
 /* 09A8B8 8009FE58 84850004 */  lwzu    r4, 4(r5)
 /* 09A8BC 8009FE5C 28040000 */  cmplwi  r4, 0
 /* 09A8C0 8009FE60 4082000C */  bne     lbl_8009FE6C
-/* 09A8C4 8009FE64 906D8B58 */  stw     r3, ResetFunctionQueue-_SDA_BASE_(r13)
+/* 09A8C4 8009FE64 906D8B58 */  stw     r3, ResetFunctionQueue@sda21(r13)
 /* 09A8C8 8009FE68 48000008 */  b       lbl_8009FE70
 lbl_8009FE6C:
 /* 09A8CC 8009FE6C 90640008 */  stw     r3, 8(r4)
@@ -41,7 +41,7 @@ lbl_8009FE84:
 /* 09A8F0 8009FE90 28040000 */  cmplwi  r4, 0
 /* 09A8F4 8009FE94 9083000C */  stw     r4, 0xc(r3)
 /* 09A8F8 8009FE98 4082000C */  bne     lbl_8009FEA4
-/* 09A8FC 8009FE9C 906D8B58 */  stw     r3, ResetFunctionQueue-_SDA_BASE_(r13)
+/* 09A8FC 8009FE9C 906D8B58 */  stw     r3, ResetFunctionQueue@sda21(r13)
 /* 09A900 8009FEA0 4E800020 */  blr     
 lbl_8009FEA4:
 /* 09A904 8009FEA4 90640008 */  stw     r3, 8(r4)
@@ -120,7 +120,7 @@ glabel OSResetSystem
 /* 09A9EC 8009FF8C 41820018 */  beq     lbl_8009FFA4
 /* 09A9F0 8009FF90 2C1C0000 */  cmpwi   r28, 0
 /* 09A9F4 8009FF94 4082001C */  bne     lbl_8009FFB0
-/* 09A9F8 8009FF98 800D8B60 */  lwz     r0, bootThisDol-_SDA_BASE_(r13)
+/* 09A9F8 8009FF98 800D8B60 */  lwz     r0, bootThisDol@sda21(r13)
 /* 09A9FC 8009FF9C 28000000 */  cmplwi  r0, 0
 /* 09AA00 8009FFA0 41820010 */  beq     lbl_8009FFB0
 lbl_8009FFA4:
@@ -132,7 +132,7 @@ lbl_8009FFB0:
 lbl_8009FFB4:
 /* 09AA14 8009FFB4 48000004 */  b       lbl_8009FFB8
 lbl_8009FFB8:
-/* 09AA18 8009FFB8 834D8B58 */  lwz     r26, ResetFunctionQueue-_SDA_BASE_(r13)
+/* 09AA18 8009FFB8 834D8B58 */  lwz     r26, ResetFunctionQueue@sda21(r13)
 /* 09AA1C 8009FFBC 3B600000 */  li      r27, 0
 /* 09AA20 8009FFC0 48000004 */  b       lbl_8009FFC4
 lbl_8009FFC4:
@@ -186,7 +186,7 @@ lbl_800A0058:
 /* 09AAC0 800A0060 4182FFF8 */  beq     lbl_800A0058
 lbl_800A0064:
 /* 09AAC4 800A0064 4BFFEC99 */  bl      OSDisableInterrupts
-/* 09AAC8 800A0068 836D8B58 */  lwz     r27, ResetFunctionQueue-_SDA_BASE_(r13)
+/* 09AAC8 800A0068 836D8B58 */  lwz     r27, ResetFunctionQueue@sda21(r13)
 /* 09AACC 800A006C 3B400000 */  li      r26, 0
 /* 09AAD0 800A0070 48000004 */  b       lbl_800A0074
 lbl_800A0074:
@@ -224,7 +224,7 @@ lbl_800A00AC:
 lbl_800A00E0:
 /* 09AB40 800A00E0 2C1C0000 */  cmpwi   r28, 0
 /* 09AB44 800A00E4 40820074 */  bne     lbl_800A0158
-/* 09AB48 800A00E8 800D8B60 */  lwz     r0, bootThisDol-_SDA_BASE_(r13)
+/* 09AB48 800A00E8 800D8B60 */  lwz     r0, bootThisDol@sda21(r13)
 /* 09AB4C 800A00EC 3C608000 */  lis     r3, 0x8000
 /* 09AB50 800A00F0 28000000 */  cmplwi  r0, 0
 /* 09AB54 800A00F4 900330EC */  stw     r0, 0x30ec(r3)

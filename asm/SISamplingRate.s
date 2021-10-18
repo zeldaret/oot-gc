@@ -20,7 +20,7 @@ glabel SISetSamplingRate
 /* 0A0898 800A5E38 3BA0000B */  li      r29, 0xb
 lbl_800A5E3C:
 /* 0A089C 800A5E3C 4BFF8EC1 */  bl      OSDisableInterrupts
-/* 0A08A0 800A5E40 93AD8BC8 */  stw     r29, SamplingRate-_SDA_BASE_(r13)
+/* 0A08A0 800A5E40 93AD8BC8 */  stw     r29, SamplingRate@sda21(r13)
 /* 0A08A4 800A5E44 7C7E1B78 */  mr      r30, r3
 /* 0A08A8 800A5E48 48001BB5 */  bl      VIGetTvFormat
 /* 0A08AC 800A5E4C 2C030002 */  cmpwi   r3, 2
@@ -76,7 +76,7 @@ glabel SIRefreshSamplingRate
 /* 0A0950 800A5EF0 7C0802A6 */  mflr    r0
 /* 0A0954 800A5EF4 90010004 */  stw     r0, 4(r1)
 /* 0A0958 800A5EF8 9421FFF8 */  stwu    r1, -8(r1)
-/* 0A095C 800A5EFC 806D8BC8 */  lwz     r3, SamplingRate-_SDA_BASE_(r13)
+/* 0A095C 800A5EFC 806D8BC8 */  lwz     r3, SamplingRate@sda21(r13)
 /* 0A0960 800A5F00 4BFFFF0D */  bl      SISetSamplingRate
 /* 0A0964 800A5F04 8001000C */  lwz     r0, 0xc(r1)
 /* 0A0968 800A5F08 38210008 */  addi    r1, r1, 8

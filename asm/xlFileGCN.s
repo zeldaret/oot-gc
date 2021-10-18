@@ -99,7 +99,7 @@ lbl_80005F90:
 /* 0009FC 80005F9C 3BC01000 */  li      r30, 0x1000
 lbl_80005FA0:
 /* 000A00 80005FA0 807B0014 */  lwz     r3, 0x14(r27)
-/* 000A04 80005FA4 818D88C4 */  lwz     r12, gpfRead-_SDA_BASE_(r13)
+/* 000A04 80005FA4 818D88C4 */  lwz     r12, gpfRead@sda21(r13)
 /* 000A08 80005FA8 547F07BE */  clrlwi  r31, r3, 0x1e
 /* 000A0C 80005FAC 381F001F */  addi    r0, r31, 0x1f
 /* 000A10 80005FB0 7C1E0214 */  add     r0, r30, r0
@@ -182,7 +182,7 @@ glabel xlFileOpen
 /* 000B18 800060B8 38600000 */  li      r3, 0
 /* 000B1C 800060BC 48000074 */  b       lbl_80006130
 lbl_800060C0:
-/* 000B20 800060C0 818D88C0 */  lwz     r12, gpfOpen-_SDA_BASE_(r13)
+/* 000B20 800060C0 818D88C0 */  lwz     r12, gpfOpen@sda21(r13)
 /* 000B24 800060C4 280C0000 */  cmplwi  r12, 0
 /* 000B28 800060C8 4182001C */  beq     lbl_800060E4
 /* 000B2C 800060CC 809D0000 */  lwz     r4, 0(r29)
@@ -240,7 +240,7 @@ glabel xlFileGetSize
 /* 000BE4 80006184 38800000 */  li      r4, 0
 /* 000BE8 80006188 48000074 */  b       lbl_800061FC
 lbl_8000618C:
-/* 000BEC 8000618C 818D88C0 */  lwz     r12, gpfOpen-_SDA_BASE_(r13)
+/* 000BEC 8000618C 818D88C0 */  lwz     r12, gpfOpen@sda21(r13)
 /* 000BF0 80006190 280C0000 */  cmplwi  r12, 0
 /* 000BF4 80006194 4182001C */  beq     lbl_800061B0
 /* 000BF8 80006198 80810010 */  lwz     r4, 0x10(r1)
@@ -307,12 +307,12 @@ lbl_80006250:
 /* 000CC4 80006264 4E800020 */  blr     
 
 glabel xlFileSetRead
-/* 000CC8 80006268 906D88C4 */  stw     r3, gpfRead-_SDA_BASE_(r13)
+/* 000CC8 80006268 906D88C4 */  stw     r3, gpfRead@sda21(r13)
 /* 000CCC 8000626C 38600001 */  li      r3, 1
 /* 000CD0 80006270 4E800020 */  blr     
 
 glabel xlFileSetOpen
-/* 000CD4 80006274 906D88C0 */  stw     r3, gpfOpen-_SDA_BASE_(r13)
+/* 000CD4 80006274 906D88C0 */  stw     r3, gpfOpen@sda21(r13)
 /* 000CD8 80006278 38600001 */  li      r3, 1
 /* 000CDC 8000627C 4E800020 */  blr     
 

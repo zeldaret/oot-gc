@@ -57,7 +57,7 @@ lbl_80010E3C:
 /* 00B8B4 80010E54 38A00003 */  li      r5, 3
 /* 00B8B8 80010E58 4808E729 */  bl      OSInitMessageQueue
 /* 00B8BC 80010E5C 38000001 */  li      r0, 1
-/* 00B8C0 80010E60 900D8958 */  stw     r0, AudioDecodeThreadCreated-_SDA_BASE_(r13)
+/* 00B8C0 80010E60 900D8958 */  stw     r0, AudioDecodeThreadCreated@sda21(r13)
 /* 00B8C4 80010E64 38600001 */  li      r3, 1
 lbl_80010E68:
 /* 00B8C8 80010E68 8001001C */  lwz     r0, 0x1c(r1)
@@ -70,7 +70,7 @@ glabel AudioDecodeThreadStart
 /* 00B8DC 80010E7C 7C0802A6 */  mflr    r0
 /* 00B8E0 80010E80 90010004 */  stw     r0, 4(r1)
 /* 00B8E4 80010E84 9421FFF8 */  stwu    r1, -8(r1)
-/* 00B8E8 80010E88 800D8958 */  lwz     r0, AudioDecodeThreadCreated-_SDA_BASE_(r13)
+/* 00B8E8 80010E88 800D8958 */  lwz     r0, AudioDecodeThreadCreated@sda21(r13)
 /* 00B8EC 80010E8C 2C000000 */  cmpwi   r0, 0
 /* 00B8F0 80010E90 41820010 */  beq     lbl_80010EA0
 /* 00B8F4 80010E94 3C608010 */  lis     r3, AudioDecodeThread@ha

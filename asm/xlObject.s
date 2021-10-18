@@ -10,7 +10,7 @@ glabel xlObjectReset
 /* 002624 80007BC4 90010004 */  stw     r0, 4(r1)
 /* 002628 80007BC8 9421FFF0 */  stwu    r1, -0x10(r1)
 /* 00262C 80007BCC 93E1000C */  stw     r31, 0xc(r1)
-/* 002630 80007BD0 806D88E8 */  lwz     r3, gpListData-_SDA_BASE_(r13)
+/* 002630 80007BD0 806D88E8 */  lwz     r3, gpListData@sda21(r13)
 /* 002634 80007BD4 83E30008 */  lwz     r31, 8(r3)
 /* 002638 80007BD8 48000020 */  b       lbl_80007BF8
 lbl_80007BDC:
@@ -25,7 +25,7 @@ lbl_80007BF4:
 lbl_80007BF8:
 /* 002658 80007BF8 281F0000 */  cmplwi  r31, 0
 /* 00265C 80007BFC 4082FFE0 */  bne     lbl_80007BDC
-/* 002660 80007C00 386D88E8 */  addi    r3, r13, gpListData-_SDA_BASE_
+/* 002660 80007C00 386D88E8 */  addi    r3, r13, gpListData@sda21
 /* 002664 80007C04 4BFFE891 */  bl      xlListFree
 /* 002668 80007C08 2C030000 */  cmpwi   r3, 0
 /* 00266C 80007C0C 4082000C */  bne     lbl_80007C18
@@ -42,7 +42,7 @@ lbl_80007C1C:
 
 glabel xlObjectSetup
 /* 002690 80007C30 7C0802A6 */  mflr    r0
-/* 002694 80007C34 386D88E8 */  addi    r3, r13, gpListData-_SDA_BASE_
+/* 002694 80007C34 386D88E8 */  addi    r3, r13, gpListData@sda21
 /* 002698 80007C38 90010004 */  stw     r0, 4(r1)
 /* 00269C 80007C3C 38800008 */  li      r4, 8
 /* 0026A0 80007C40 9421FFF8 */  stwu    r1, -8(r1)
@@ -69,7 +69,7 @@ glabel xlObjectEvent
 /* 0026E4 80007C84 3B850000 */  addi    r28, r5, 0
 /* 0026E8 80007C88 41820084 */  beq     lbl_80007D0C
 /* 0026EC 80007C8C 3BFAFFFC */  addi    r31, r26, -4
-/* 0026F0 80007C90 806D88E8 */  lwz     r3, gpListData-_SDA_BASE_(r13)
+/* 0026F0 80007C90 806D88E8 */  lwz     r3, gpListData@sda21(r13)
 /* 0026F4 80007C94 83BAFFFC */  lwz     r29, -4(r26)
 /* 0026F8 80007C98 7FA4EB78 */  mr      r4, r29
 /* 0026FC 80007C9C 4BFFE615 */  bl      xlListTestItem
@@ -79,7 +79,7 @@ glabel xlObjectEvent
 /* 00270C 80007CAC 83DD0004 */  lwz     r30, 4(r29)
 /* 002710 80007CB0 41820030 */  beq     lbl_80007CE0
 /* 002714 80007CB4 83FF0000 */  lwz     r31, 0(r31)
-/* 002718 80007CB8 806D88E8 */  lwz     r3, gpListData-_SDA_BASE_(r13)
+/* 002718 80007CB8 806D88E8 */  lwz     r3, gpListData@sda21(r13)
 /* 00271C 80007CBC 7FE4FB78 */  mr      r4, r31
 /* 002720 80007CC0 4BFFE5F1 */  bl      xlListTestItem
 /* 002724 80007CC4 2C030000 */  cmpwi   r3, 0
@@ -121,7 +121,7 @@ glabel xlObjectTest
 /* 00279C 80007D3C 3BC40000 */  addi    r30, r4, 0
 /* 0027A0 80007D40 41820030 */  beq     lbl_80007D70
 /* 0027A4 80007D44 83E3FFFC */  lwz     r31, -4(r3)
-/* 0027A8 80007D48 806D88E8 */  lwz     r3, gpListData-_SDA_BASE_(r13)
+/* 0027A8 80007D48 806D88E8 */  lwz     r3, gpListData@sda21(r13)
 /* 0027AC 80007D4C 7FE4FB78 */  mr      r4, r31
 /* 0027B0 80007D50 4BFFE561 */  bl      xlListTestItem
 /* 0027B4 80007D54 2C030000 */  cmpwi   r3, 0
@@ -195,7 +195,7 @@ glabel xlObjectMake
 /* 0028A0 80007E40 3BA40000 */  addi    r29, r4, 0
 /* 0028A4 80007E44 93810018 */  stw     r28, 0x18(r1)
 /* 0028A8 80007E48 3B830000 */  addi    r28, r3, 0
-/* 0028AC 80007E4C 80CD88E8 */  lwz     r6, gpListData-_SDA_BASE_(r13)
+/* 0028AC 80007E4C 80CD88E8 */  lwz     r6, gpListData@sda21(r13)
 /* 0028B0 80007E50 80860008 */  lwz     r4, 8(r6)
 /* 0028B4 80007E54 48000028 */  b       lbl_80007E7C
 lbl_80007E58:

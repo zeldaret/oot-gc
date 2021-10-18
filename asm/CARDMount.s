@@ -11,7 +11,7 @@ IsCard:
 /* 0B9570 800BEB10 3C038000 */  addis   r0, r3, 0x8000
 /* 0B9574 800BEB14 28000004 */  cmplwi  r0, 4
 /* 0B9578 800BEB18 40820010 */  bne     lbl_800BEB28
-/* 0B957C 800BEB1C A00D8878 */  lhz     r0, __CARDVendorID-_SDA_BASE_(r13)
+/* 0B957C 800BEB1C A00D8878 */  lhz     r0, __CARDVendorID@sda21(r13)
 /* 0B9580 800BEB20 2800FFFF */  cmplwi  r0, 0xffff
 /* 0B9584 800BEB24 4082000C */  bne     lbl_800BEB30
 lbl_800BEB28:
@@ -391,7 +391,7 @@ lbl_800BF038:
 /* 0B9ABC 800BF05C 7F83022E */  lhzx    r28, r3, r0
 /* 0B9AC0 800BF060 38600000 */  li      r3, 0
 /* 0B9AC4 800BF064 4BFE1C41 */  bl      __OSUnlockSramEx
-/* 0B9AC8 800BF068 A00D8878 */  lhz     r0, __CARDVendorID-_SDA_BASE_(r13)
+/* 0B9AC8 800BF068 A00D8878 */  lhz     r0, __CARDVendorID@sda21(r13)
 /* 0B9ACC 800BF06C 2800FFFF */  cmplwi  r0, 0xffff
 /* 0B9AD0 800BF070 4182000C */  beq     lbl_800BF07C
 /* 0B9AD4 800BF074 7C1C0040 */  cmplw   r28, r0

@@ -57,9 +57,9 @@ lbl_80012FC0:
 /* 00DA38 80012FD8 38A00003 */  li      r5, 3
 /* 00DA3C 80012FDC 4808C5A5 */  bl      OSInitMessageQueue
 /* 00DA40 80012FE0 38000001 */  li      r0, 1
-/* 00DA44 80012FE4 900D8978 */  stw     r0, VideoDecodeThreadCreated-_SDA_BASE_(r13)
+/* 00DA44 80012FE4 900D8978 */  stw     r0, VideoDecodeThreadCreated@sda21(r13)
 /* 00DA48 80012FE8 38600001 */  li      r3, 1
-/* 00DA4C 80012FEC 900D897C */  stw     r0, First-_SDA_BASE_(r13)
+/* 00DA4C 80012FEC 900D897C */  stw     r0, First@sda21(r13)
 lbl_80012FF0:
 /* 00DA50 80012FF0 8001001C */  lwz     r0, 0x1c(r1)
 /* 00DA54 80012FF4 83E10014 */  lwz     r31, 0x14(r1)
@@ -71,7 +71,7 @@ glabel VideoDecodeThreadStart
 /* 00DA64 80013004 7C0802A6 */  mflr    r0
 /* 00DA68 80013008 90010004 */  stw     r0, 4(r1)
 /* 00DA6C 8001300C 9421FFF8 */  stwu    r1, -8(r1)
-/* 00DA70 80013010 800D8978 */  lwz     r0, VideoDecodeThreadCreated-_SDA_BASE_(r13)
+/* 00DA70 80013010 800D8978 */  lwz     r0, VideoDecodeThreadCreated@sda21(r13)
 /* 00DA74 80013014 2C000000 */  cmpwi   r0, 0
 /* 00DA78 80013018 41820010 */  beq     lbl_80013028
 /* 00DA7C 8001301C 3C608010 */  lis     r3, VideoDecodeThread@ha
@@ -272,13 +272,13 @@ lbl_800132AC:
 /* 00DD24 800132C4 2C030000 */  cmpwi   r3, 0
 /* 00DD28 800132C8 907F00AC */  stw     r3, 0xac(r31)
 /* 00DD2C 800132CC 41820028 */  beq     lbl_800132F4
-/* 00DD30 800132D0 800D897C */  lwz     r0, First-_SDA_BASE_(r13)
+/* 00DD30 800132D0 800D897C */  lwz     r0, First@sda21(r13)
 /* 00DD34 800132D4 2C000000 */  cmpwi   r0, 0
 /* 00DD38 800132D8 41820014 */  beq     lbl_800132EC
 /* 00DD3C 800132DC 38600000 */  li      r3, 0
 /* 00DD40 800132E0 4BFFCD11 */  bl      PrepareReady
 /* 00DD44 800132E4 38000000 */  li      r0, 0
-/* 00DD48 800132E8 900D897C */  stw     r0, First-_SDA_BASE_(r13)
+/* 00DD48 800132E8 900D897C */  stw     r0, First@sda21(r13)
 lbl_800132EC:
 /* 00DD4C 800132EC 7EE3BB78 */  mr      r3, r23
 /* 00DD50 800132F0 4808EBAD */  bl      OSSuspendThread
@@ -302,13 +302,13 @@ lbl_8001332C:
 /* 00DD8C 8001332C 801D0000 */  lwz     r0, 0(r29)
 /* 00DD90 80013330 7C1B0040 */  cmplw   r27, r0
 /* 00DD94 80013334 4180FF68 */  blt     lbl_8001329C
-/* 00DD98 80013338 800D897C */  lwz     r0, First-_SDA_BASE_(r13)
+/* 00DD98 80013338 800D897C */  lwz     r0, First@sda21(r13)
 /* 00DD9C 8001333C 2C000000 */  cmpwi   r0, 0
 /* 00DDA0 80013340 41820014 */  beq     lbl_80013354
 /* 00DDA4 80013344 38600001 */  li      r3, 1
 /* 00DDA8 80013348 4BFFCCA9 */  bl      PrepareReady
 /* 00DDAC 8001334C 38000000 */  li      r0, 0
-/* 00DDB0 80013350 900D897C */  stw     r0, First-_SDA_BASE_(r13)
+/* 00DDB0 80013350 900D897C */  stw     r0, First@sda21(r13)
 lbl_80013354:
 /* 00DDB4 80013354 BAE10014 */  lmw     r23, 0x14(r1)
 /* 00DDB8 80013358 8001003C */  lwz     r0, 0x3c(r1)

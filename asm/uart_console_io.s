@@ -18,7 +18,7 @@ glabel __write_console
 /* 0CB904 800D0EA4 3BE50000 */  addi    r31, r5, 0
 /* 0CB908 800D0EA8 93C10020 */  stw     r30, 0x20(r1)
 /* 0CB90C 800D0EAC 3BC40000 */  addi    r30, r4, 0
-/* 0CB910 800D0EB0 800D9000 */  lwz     r0, initialized$16-_SDA_BASE_(r13)
+/* 0CB910 800D0EB0 800D9000 */  lwz     r0, initialized$16@sda21(r13)
 /* 0CB914 800D0EB4 2C000000 */  cmpwi   r0, 0
 /* 0CB918 800D0EB8 40820020 */  bne     lbl_800D0ED8
 /* 0CB91C 800D0EBC 3C600001 */  lis     r3, 1
@@ -27,7 +27,7 @@ glabel __write_console
 /* 0CB928 800D0EC8 2C030000 */  cmpwi   r3, 0
 /* 0CB92C 800D0ECC 4082000C */  bne     lbl_800D0ED8
 /* 0CB930 800D0ED0 38000001 */  li      r0, 1
-/* 0CB934 800D0ED4 900D9000 */  stw     r0, initialized$16-_SDA_BASE_(r13)
+/* 0CB934 800D0ED4 900D9000 */  stw     r0, initialized$16@sda21(r13)
 lbl_800D0ED8:
 /* 0CB938 800D0ED8 2C030000 */  cmpwi   r3, 0
 /* 0CB93C 800D0EDC 4182000C */  beq     lbl_800D0EE8
@@ -63,7 +63,7 @@ glabel __read_console
 /* 0CB9A0 800D0F40 3BC50000 */  addi    r30, r5, 0
 /* 0CB9A4 800D0F44 93A10024 */  stw     r29, 0x24(r1)
 /* 0CB9A8 800D0F48 3BA40000 */  addi    r29, r4, 0
-/* 0CB9AC 800D0F4C 800D9000 */  lwz     r0, initialized$16-_SDA_BASE_(r13)
+/* 0CB9AC 800D0F4C 800D9000 */  lwz     r0, initialized$16@sda21(r13)
 /* 0CB9B0 800D0F50 2C000000 */  cmpwi   r0, 0
 /* 0CB9B4 800D0F54 40820020 */  bne     lbl_800D0F74
 /* 0CB9B8 800D0F58 3C600001 */  lis     r3, 1
@@ -72,7 +72,7 @@ glabel __read_console
 /* 0CB9C4 800D0F64 2C030000 */  cmpwi   r3, 0
 /* 0CB9C8 800D0F68 4082000C */  bne     lbl_800D0F74
 /* 0CB9CC 800D0F6C 38000001 */  li      r0, 1
-/* 0CB9D0 800D0F70 900D9000 */  stw     r0, initialized$16-_SDA_BASE_(r13)
+/* 0CB9D0 800D0F70 900D9000 */  stw     r0, initialized$16@sda21(r13)
 lbl_800D0F74:
 /* 0CB9D4 800D0F74 2C030000 */  cmpwi   r3, 0
 /* 0CB9D8 800D0F78 4182000C */  beq     lbl_800D0F84

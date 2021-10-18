@@ -13,7 +13,7 @@ Run:
 
 Callback:
 /* 09A53C 8009FADC 38000001 */  li      r0, 1
-/* 09A540 8009FAE0 900D8B50 */  stw     r0, Prepared-_SDA_BASE_(r13)
+/* 09A540 8009FAE0 900D8B50 */  stw     r0, Prepared@sda21(r13)
 /* 09A544 8009FAE4 4E800020 */  blr     
 
 glabel __OSReboot
@@ -24,9 +24,9 @@ glabel __OSReboot
 /* 09A558 8009FAF8 3C608013 */  lis     r3, Header@ha
 /* 09A55C 8009FAFC 3BC30FC0 */  addi    r30, r3, Header@l
 /* 09A560 8009FB00 4BFFF1FD */  bl      OSDisableInterrupts
-/* 09A564 8009FB04 80AD8B48 */  lwz     r5, SaveStart-_SDA_BASE_(r13)
+/* 09A564 8009FB04 80AD8B48 */  lwz     r5, SaveStart@sda21(r13)
 /* 09A568 8009FB08 3C808130 */  lis     r4, 0x8130
-/* 09A56C 8009FB0C 800D8B4C */  lwz     r0, SaveEnd-_SDA_BASE_(r13)
+/* 09A56C 8009FB0C 800D8B4C */  lwz     r0, SaveEnd@sda21(r13)
 /* 09A570 8009FB10 3B600000 */  li      r27, 0
 /* 09A574 8009FB14 3FE08180 */  lis     r31, 0x8180
 /* 09A578 8009FB18 38C00001 */  li      r6, 1
@@ -45,7 +45,7 @@ glabel __OSReboot
 /* 09A5AC 8009FB4C 48015559 */  bl      DVDSetAutoInvalidation
 /* 09A5B0 8009FB50 48015565 */  bl      DVDResume
 /* 09A5B4 8009FB54 3C60800A */  lis     r3, Callback@ha
-/* 09A5B8 8009FB58 936D8B50 */  stw     r27, Prepared-_SDA_BASE_(r13)
+/* 09A5B8 8009FB58 936D8B50 */  stw     r27, Prepared@sda21(r13)
 /* 09A5BC 8009FB5C 3863FADC */  addi    r3, r3, Callback@l
 /* 09A5C0 8009FB60 480159F1 */  bl      __DVDPrepareResetAsync
 /* 09A5C4 8009FB64 3860FFE0 */  li      r3, -32
@@ -82,10 +82,10 @@ lbl_8009FBD0:
 /* 09A630 8009FBD0 807FFFFC */  lwz     r3, -4(r31)
 /* 09A634 8009FBD4 48000349 */  bl      __OSDoHotReset
 lbl_8009FBD8:
-/* 09A638 8009FBD8 800D8B50 */  lwz     r0, Prepared-_SDA_BASE_(r13)
+/* 09A638 8009FBD8 800D8B50 */  lwz     r0, Prepared@sda21(r13)
 /* 09A63C 8009FBDC 2C000001 */  cmpwi   r0, 1
 /* 09A640 8009FBE0 4082FFBC */  bne     lbl_8009FB9C
-/* 09A644 8009FBE4 800D8ADC */  lwz     r0, __OSIsGcam-_SDA_BASE_(r13)
+/* 09A644 8009FBE4 800D8ADC */  lwz     r0, __OSIsGcam@sda21(r13)
 /* 09A648 8009FBE8 2C000000 */  cmpwi   r0, 0
 /* 09A64C 8009FBEC 408200C8 */  bne     lbl_8009FCB4
 /* 09A650 8009FBF0 48015861 */  bl      DVDGetCurrentDiskID

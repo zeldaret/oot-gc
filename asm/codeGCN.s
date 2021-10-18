@@ -22,8 +22,8 @@ lbl_8001C464:
 /* 016ED4 8001C474 48000014 */  b       lbl_8001C488
 lbl_8001C478:
 /* 016ED8 8001C478 38000000 */  li      r0, 0
-/* 016EDC 8001C47C 900D89A0 */  stw     r0, gpBufferFunction-_SDA_BASE_(r13)
-/* 016EE0 8001C480 900D89A4 */  stw     r0, ganDataCode-_SDA_BASE_(r13)
+/* 016EDC 8001C47C 900D89A0 */  stw     r0, gpBufferFunction@sda21(r13)
+/* 016EE0 8001C480 900D89A4 */  stw     r0, ganDataCode@sda21(r13)
 /* 016EE4 8001C484 4800000C */  b       lbl_8001C490
 lbl_8001C488:
 /* 016EE8 8001C488 38600000 */  li      r3, 0

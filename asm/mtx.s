@@ -6,8 +6,8 @@
 .balign 4
 
 glabel PSMTXIdentity
-/* 0A282C 800A7DCC C00283E4 */  lfs     f0, D_801360E4-_SDA2_BASE_(r2)
-/* 0A2830 800A7DD0 C02283E0 */  lfs     f1, D_801360E0-_SDA2_BASE_(r2)
+/* 0A282C 800A7DCC C00283E4 */  lfs     f0, D_801360E4@sda21(r2)
+/* 0A2830 800A7DD0 C02283E0 */  lfs     f1, D_801360E0@sda21(r2)
 /* 0A2834 800A7DD4 F0030008 */  psq_st  f0, 8(r3), 0, qr0
 /* 0A2838 800A7DD8 10400C60 */  ps_merge01  f2, f0, f1
 /* 0A283C 800A7DDC F0030018 */  psq_st  f0, 24(r3), 0, qr0
@@ -72,8 +72,8 @@ glabel PSMTXConcat
 /* 0A2920 800A7EC0 4E800020 */  blr     
 
 glabel PSMTXTrans
-/* 0A2924 800A7EC4 C00283E4 */  lfs     f0, D_801360E4-_SDA2_BASE_(r2)
-/* 0A2928 800A7EC8 C08283E0 */  lfs     f4, D_801360E0-_SDA2_BASE_(r2)
+/* 0A2924 800A7EC4 C00283E4 */  lfs     f0, D_801360E4@sda21(r2)
+/* 0A2928 800A7EC8 C08283E0 */  lfs     f4, D_801360E0@sda21(r2)
 /* 0A292C 800A7ECC D023000C */  stfs    f1, 0xc(r3)
 /* 0A2930 800A7ED0 D043001C */  stfs    f2, 0x1c(r3)
 /* 0A2934 800A7ED4 F0030004 */  psq_st  f0, 4(r3), 0, qr0
@@ -108,7 +108,7 @@ glabel PSMTXTransApply
 /* 0A29A0 800A7F40 4E800020 */  blr     
 
 glabel PSMTXScale
-/* 0A29A4 800A7F44 C00283E4 */  lfs     f0, D_801360E4-_SDA2_BASE_(r2)
+/* 0A29A4 800A7F44 C00283E4 */  lfs     f0, D_801360E4@sda21(r2)
 /* 0A29A8 800A7F48 D0230000 */  stfs    f1, 0(r3)
 /* 0A29AC 800A7F4C F0030004 */  psq_st  f0, 4(r3), 0, qr0
 /* 0A29B0 800A7F50 F003000C */  psq_st  f0, 12(r3), 0, qr0

@@ -56,13 +56,13 @@ lbl_800A5FB8:
 /* 0A0A1C 800A5FBC 4BFF81E9 */  bl      OSClearContext
 /* 0A0A20 800A5FC0 38610018 */  addi    r3, r1, 0x18
 /* 0A0A24 800A5FC4 4BFF8019 */  bl      OSSetCurrentContext
-/* 0A0A28 800A5FC8 800D8BEC */  lwz     r0, PositionCallback-_SDA_BASE_(r13)
+/* 0A0A28 800A5FC8 800D8BEC */  lwz     r0, PositionCallback@sda21(r13)
 /* 0A0A2C 800A5FCC 28000000 */  cmplwi  r0, 0
 /* 0A0A30 800A5FD0 41820024 */  beq     lbl_800A5FF4
 /* 0A0A34 800A5FD4 38610016 */  addi    r3, r1, 0x16
 /* 0A0A38 800A5FD8 38810014 */  addi    r4, r1, 0x14
 /* 0A0A3C 800A5FDC 48001CA5 */  bl      __VIGetCurrentPosition
-/* 0A0A40 800A5FE0 818D8BEC */  lwz     r12, PositionCallback-_SDA_BASE_(r13)
+/* 0A0A40 800A5FE0 818D8BEC */  lwz     r12, PositionCallback@sda21(r13)
 /* 0A0A44 800A5FE4 A8610016 */  lha     r3, 0x16(r1)
 /* 0A0A48 800A5FE8 7D8803A6 */  mtlr    r12
 /* 0A0A4C 800A5FEC A8810014 */  lha     r4, 0x14(r1)
@@ -74,24 +74,24 @@ lbl_800A5FF4:
 /* 0A0A60 800A6000 4BFF7FDD */  bl      OSSetCurrentContext
 /* 0A0A64 800A6004 48000170 */  b       lbl_800A6174
 lbl_800A6008:
-/* 0A0A68 800A6008 808D8BD4 */  lwz     r4, retraceCount-_SDA_BASE_(r13)
+/* 0A0A68 800A6008 808D8BD4 */  lwz     r4, retraceCount@sda21(r13)
 /* 0A0A6C 800A600C 38610018 */  addi    r3, r1, 0x18
 /* 0A0A70 800A6010 38040001 */  addi    r0, r4, 1
-/* 0A0A74 800A6014 900D8BD4 */  stw     r0, retraceCount-_SDA_BASE_(r13)
+/* 0A0A74 800A6014 900D8BD4 */  stw     r0, retraceCount@sda21(r13)
 /* 0A0A78 800A6018 4BFF818D */  bl      OSClearContext
 /* 0A0A7C 800A601C 38610018 */  addi    r3, r1, 0x18
 /* 0A0A80 800A6020 4BFF7FBD */  bl      OSSetCurrentContext
-/* 0A0A84 800A6024 818D8BE4 */  lwz     r12, PreCB-_SDA_BASE_(r13)
+/* 0A0A84 800A6024 818D8BE4 */  lwz     r12, PreCB@sda21(r13)
 /* 0A0A88 800A6028 280C0000 */  cmplwi  r12, 0
 /* 0A0A8C 800A602C 41820010 */  beq     lbl_800A603C
-/* 0A0A90 800A6030 806D8BD4 */  lwz     r3, retraceCount-_SDA_BASE_(r13)
+/* 0A0A90 800A6030 806D8BD4 */  lwz     r3, retraceCount@sda21(r13)
 /* 0A0A94 800A6034 7D8803A6 */  mtlr    r12
 /* 0A0A98 800A6038 4E800021 */  blrl    
 lbl_800A603C:
-/* 0A0A9C 800A603C 800D8BD8 */  lwz     r0, flushFlag-_SDA_BASE_(r13)
+/* 0A0A9C 800A603C 800D8BD8 */  lwz     r0, flushFlag@sda21(r13)
 /* 0A0AA0 800A6040 28000000 */  cmplwi  r0, 0
 /* 0A0AA4 800A6044 418200F4 */  beq     lbl_800A6138
-/* 0A0AA8 800A6048 800D8C08 */  lwz     r0, shdwChangeMode-_SDA_BASE_(r13)
+/* 0A0AA8 800A6048 800D8C08 */  lwz     r0, shdwChangeMode@sda21(r13)
 /* 0A0AAC 800A604C 28000001 */  cmplwi  r0, 1
 /* 0A0AB0 800A6050 40820010 */  bne     lbl_800A6060
 /* 0A0AB4 800A6054 4800180D */  bl      getCurrentFieldEvenOdd
@@ -102,9 +102,9 @@ lbl_800A6060:
 /* 0A0AC4 800A6064 3BA32000 */  addi    r29, r3, VI_REGS_BASE@l
 /* 0A0AC8 800A6068 48000078 */  b       lbl_800A60E0
 lbl_800A606C:
-/* 0A0ACC 800A606C 806D8C10 */  lwz     r3, shdwChanged-_SDA_BASE_(r13)
+/* 0A0ACC 800A606C 806D8C10 */  lwz     r3, shdwChanged@sda21(r13)
 /* 0A0AD0 800A6070 38A00020 */  li      r5, 0x20
-/* 0A0AD4 800A6074 836D8C14 */  lwz     r27, (shdwChanged + 4)-_SDA_BASE_(r13)
+/* 0A0AD4 800A6074 836D8C14 */  lwz     r27, (shdwChanged + 4)@sda21(r13)
 /* 0A0AD8 800A6078 389B0000 */  addi    r4, r27, 0
 /* 0A0ADC 800A607C 48027CED */  bl      __shr2u
 /* 0A0AE0 800A6080 7C840034 */  cntlzw  r4, r4
@@ -125,30 +125,30 @@ lbl_800A60A0:
 /* 0A0B14 800A60B4 7C1D332E */  sthx    r0, r29, r6
 /* 0A0B18 800A60B8 38800001 */  li      r4, 1
 /* 0A0B1C 800A60BC 48027C89 */  bl      __shl2i
-/* 0A0B20 800A60C0 800D8C10 */  lwz     r0, shdwChanged-_SDA_BASE_(r13)
+/* 0A0B20 800A60C0 800D8C10 */  lwz     r0, shdwChanged@sda21(r13)
 /* 0A0B24 800A60C4 7C6518F8 */  nor     r5, r3, r3
 /* 0A0B28 800A60C8 7C8420F8 */  nor     r4, r4, r4
-/* 0A0B2C 800A60CC 806D8C14 */  lwz     r3, (shdwChanged + 4)-_SDA_BASE_(r13)
+/* 0A0B2C 800A60CC 806D8C14 */  lwz     r3, (shdwChanged + 4)@sda21(r13)
 /* 0A0B30 800A60D0 7C002838 */  and     r0, r0, r5
 /* 0A0B34 800A60D4 7C632038 */  and     r3, r3, r4
-/* 0A0B38 800A60D8 906D8C14 */  stw     r3, (shdwChanged + 4)-_SDA_BASE_(r13)
-/* 0A0B3C 800A60DC 900D8C10 */  stw     r0, shdwChanged-_SDA_BASE_(r13)
+/* 0A0B38 800A60D8 906D8C14 */  stw     r3, (shdwChanged + 4)@sda21(r13)
+/* 0A0B3C 800A60DC 900D8C10 */  stw     r0, shdwChanged@sda21(r13)
 lbl_800A60E0:
-/* 0A0B40 800A60E0 800D8C10 */  lwz     r0, shdwChanged-_SDA_BASE_(r13)
+/* 0A0B40 800A60E0 800D8C10 */  lwz     r0, shdwChanged@sda21(r13)
 /* 0A0B44 800A60E4 38800000 */  li      r4, 0
-/* 0A0B48 800A60E8 806D8C14 */  lwz     r3, (shdwChanged + 4)-_SDA_BASE_(r13)
+/* 0A0B48 800A60E8 806D8C14 */  lwz     r3, (shdwChanged + 4)@sda21(r13)
 /* 0A0B4C 800A60EC 7C002278 */  xor     r0, r0, r4
 /* 0A0B50 800A60F0 7C632278 */  xor     r3, r3, r4
 /* 0A0B54 800A60F4 7C600379 */  or.     r0, r3, r0
 /* 0A0B58 800A60F8 4082FF74 */  bne     lbl_800A606C
-/* 0A0B5C 800A60FC 908D8C08 */  stw     r4, shdwChangeMode-_SDA_BASE_(r13)
+/* 0A0B5C 800A60FC 908D8C08 */  stw     r4, shdwChangeMode@sda21(r13)
 /* 0A0B60 800A6100 38800001 */  li      r4, 1
-/* 0A0B64 800A6104 800D8C20 */  lwz     r0, NextBufAddr-_SDA_BASE_(r13)
+/* 0A0B64 800A6104 800D8C20 */  lwz     r0, NextBufAddr@sda21(r13)
 /* 0A0B68 800A6108 807F0144 */  lwz     r3, 0x144(r31)
-/* 0A0B6C 800A610C 906D8C18 */  stw     r3, CurrTiming-_SDA_BASE_(r13)
+/* 0A0B6C 800A610C 906D8C18 */  stw     r3, CurrTiming@sda21(r13)
 /* 0A0B70 800A6110 807F0118 */  lwz     r3, 0x118(r31)
-/* 0A0B74 800A6114 906D8C1C */  stw     r3, CurrTvMode-_SDA_BASE_(r13)
-/* 0A0B78 800A6118 900D8C24 */  stw     r0, CurrBufAddr-_SDA_BASE_(r13)
+/* 0A0B74 800A6114 906D8C1C */  stw     r3, CurrTvMode@sda21(r13)
+/* 0A0B78 800A6118 900D8C24 */  stw     r0, CurrBufAddr@sda21(r13)
 /* 0A0B7C 800A611C 48000008 */  b       lbl_800A6124
 lbl_800A6120:
 /* 0A0B80 800A6120 38800000 */  li      r4, 0
@@ -156,20 +156,20 @@ lbl_800A6124:
 /* 0A0B84 800A6124 2C040000 */  cmpwi   r4, 0
 /* 0A0B88 800A6128 41820010 */  beq     lbl_800A6138
 /* 0A0B8C 800A612C 38000000 */  li      r0, 0
-/* 0A0B90 800A6130 900D8BD8 */  stw     r0, flushFlag-_SDA_BASE_(r13)
+/* 0A0B90 800A6130 900D8BD8 */  stw     r0, flushFlag@sda21(r13)
 /* 0A0B94 800A6134 4BFFFDBD */  bl      SIRefreshSamplingRate
 lbl_800A6138:
-/* 0A0B98 800A6138 800D8BE8 */  lwz     r0, PostCB-_SDA_BASE_(r13)
+/* 0A0B98 800A6138 800D8BE8 */  lwz     r0, PostCB@sda21(r13)
 /* 0A0B9C 800A613C 28000000 */  cmplwi  r0, 0
 /* 0A0BA0 800A6140 4182001C */  beq     lbl_800A615C
 /* 0A0BA4 800A6144 38610018 */  addi    r3, r1, 0x18
 /* 0A0BA8 800A6148 4BFF805D */  bl      OSClearContext
-/* 0A0BAC 800A614C 818D8BE8 */  lwz     r12, PostCB-_SDA_BASE_(r13)
-/* 0A0BB0 800A6150 806D8BD4 */  lwz     r3, retraceCount-_SDA_BASE_(r13)
+/* 0A0BAC 800A614C 818D8BE8 */  lwz     r12, PostCB@sda21(r13)
+/* 0A0BB0 800A6150 806D8BD4 */  lwz     r3, retraceCount@sda21(r13)
 /* 0A0BB4 800A6154 7D8803A6 */  mtlr    r12
 /* 0A0BB8 800A6158 4E800021 */  blrl    
 lbl_800A615C:
-/* 0A0BBC 800A615C 386D8BDC */  addi    r3, r13, retraceQueue-_SDA_BASE_
+/* 0A0BBC 800A615C 386D8BDC */  addi    r3, r13, retraceQueue@sda21
 /* 0A0BC0 800A6160 4BFFBF99 */  bl      OSWakeupThread
 /* 0A0BC4 800A6164 38610018 */  addi    r3, r1, 0x18
 /* 0A0BC8 800A6168 4BFF803D */  bl      OSClearContext
@@ -189,9 +189,9 @@ glabel VISetPostRetraceCallback
 /* 0A0BF4 800A6194 93E10014 */  stw     r31, 0x14(r1)
 /* 0A0BF8 800A6198 93C10010 */  stw     r30, 0x10(r1)
 /* 0A0BFC 800A619C 7C7E1B78 */  mr      r30, r3
-/* 0A0C00 800A61A0 83ED8BE8 */  lwz     r31, PostCB-_SDA_BASE_(r13)
+/* 0A0C00 800A61A0 83ED8BE8 */  lwz     r31, PostCB@sda21(r13)
 /* 0A0C04 800A61A4 4BFF8B59 */  bl      OSDisableInterrupts
-/* 0A0C08 800A61A8 93CD8BE8 */  stw     r30, PostCB-_SDA_BASE_(r13)
+/* 0A0C08 800A61A8 93CD8BE8 */  stw     r30, PostCB@sda21(r13)
 /* 0A0C0C 800A61AC 4BFF8B79 */  bl      OSRestoreInterrupts
 /* 0A0C10 800A61B0 7FE3FB78 */  mr      r3, r31
 /* 0A0C14 800A61B4 8001001C */  lwz     r0, 0x1c(r1)
@@ -405,16 +405,16 @@ glabel VIInit
 /* 0A0EEC 800A648C 93A1000C */  stw     r29, 0xc(r1)
 /* 0A0EF0 800A6490 3BA416D0 */  addi    r29, r4, D_800F16D0@l
 /* 0A0EF4 800A6494 93810008 */  stw     r28, 8(r1)
-/* 0A0EF8 800A6498 800D8BD0 */  lwz     r0, IsInitialized-_SDA_BASE_(r13)
+/* 0A0EF8 800A6498 800D8BD0 */  lwz     r0, IsInitialized@sda21(r13)
 /* 0A0EFC 800A649C 2C000000 */  cmpwi   r0, 0
 /* 0A0F00 800A64A0 4082045C */  bne     lbl_800A68FC
-/* 0A0F04 800A64A4 806D8778 */  lwz     r3, __VIVersion-_SDA_BASE_(r13)
+/* 0A0F04 800A64A4 806D8778 */  lwz     r3, __VIVersion@sda21(r13)
 /* 0A0F08 800A64A8 4BFF61E9 */  bl      OSRegisterVersion
 /* 0A0F0C 800A64AC 38000001 */  li      r0, 1
-/* 0A0F10 800A64B0 900D8BD0 */  stw     r0, IsInitialized-_SDA_BASE_(r13)
+/* 0A0F10 800A64B0 900D8BD0 */  stw     r0, IsInitialized@sda21(r13)
 /* 0A0F14 800A64B4 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
 /* 0A0F18 800A64B8 3B832000 */  addi    r28, r3, VI_REGS_BASE@l
-/* 0A0F1C 800A64BC 900D8BF0 */  stw     r0, encoderType-_SDA_BASE_(r13)
+/* 0A0F1C 800A64BC 900D8BF0 */  stw     r0, encoderType@sda21(r13)
 /* 0A0F20 800A64C0 A41C0002 */  lhzu    r0, VI_DCR(r28)
 /* 0A0F24 800A64C4 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0A0F28 800A64C8 4082000C */  bne     lbl_800A64D4
@@ -422,17 +422,17 @@ glabel VIInit
 /* 0A0F30 800A64D0 4BFFFD9D */  bl      __VIInit
 lbl_800A64D4:
 /* 0A0F34 800A64D4 3BE00000 */  li      r31, 0
-/* 0A0F38 800A64D8 93ED8BD4 */  stw     r31, retraceCount-_SDA_BASE_(r13)
+/* 0A0F38 800A64D8 93ED8BD4 */  stw     r31, retraceCount@sda21(r13)
 /* 0A0F3C 800A64DC 3C60CC00 */  lis     r3, VI_REGS_BASE@ha
 /* 0A0F40 800A64E0 38632000 */  addi    r3, r3, VI_REGS_BASE@l
-/* 0A0F44 800A64E4 93ED8C04 */  stw     r31, (changed + 4)-_SDA_BASE_(r13)
+/* 0A0F44 800A64E4 93ED8C04 */  stw     r31, (changed + 4)@sda21(r13)
 /* 0A0F48 800A64E8 38000280 */  li      r0, 0x280
-/* 0A0F4C 800A64EC 93ED8C00 */  stw     r31, changed-_SDA_BASE_(r13)
-/* 0A0F50 800A64F0 93ED8C14 */  stw     r31, (shdwChanged + 4)-_SDA_BASE_(r13)
-/* 0A0F54 800A64F4 93ED8C10 */  stw     r31, shdwChanged-_SDA_BASE_(r13)
-/* 0A0F58 800A64F8 93ED8BF8 */  stw     r31, changeMode-_SDA_BASE_(r13)
-/* 0A0F5C 800A64FC 93ED8C08 */  stw     r31, shdwChangeMode-_SDA_BASE_(r13)
-/* 0A0F60 800A6500 93ED8BD8 */  stw     r31, flushFlag-_SDA_BASE_(r13)
+/* 0A0F4C 800A64EC 93ED8C00 */  stw     r31, changed@sda21(r13)
+/* 0A0F50 800A64F0 93ED8C14 */  stw     r31, (shdwChanged + 4)@sda21(r13)
+/* 0A0F54 800A64F4 93ED8C10 */  stw     r31, shdwChanged@sda21(r13)
+/* 0A0F58 800A64F8 93ED8BF8 */  stw     r31, changeMode@sda21(r13)
+/* 0A0F5C 800A64FC 93ED8C08 */  stw     r31, shdwChangeMode@sda21(r13)
+/* 0A0F60 800A6500 93ED8BD8 */  stw     r31, flushFlag@sda21(r13)
 /* 0A0F64 800A6504 A0BD01C2 */  lhz     r5, 0x1c2(r29)
 /* 0A0F68 800A6508 A0DD01C0 */  lhz     r6, 0x1c0(r29)
 /* 0A0F6C 800A650C 54A5542A */  rlwinm  r5, r5, 0xa, 0x10, 0x15
@@ -511,8 +511,8 @@ lbl_800A64D4:
 /* 0A1090 800A6630 88030010 */  lbz     r0, 0x10(r3)
 /* 0A1094 800A6634 38600000 */  li      r3, 0
 /* 0A1098 800A6638 7C000774 */  extsb   r0, r0
-/* 0A109C 800A663C B3ED8BF6 */  sth     r31, displayOffsetV-_SDA_BASE_(r13)
-/* 0A10A0 800A6640 B00D8BF4 */  sth     r0, displayOffsetH-_SDA_BASE_(r13)
+/* 0A109C 800A663C B3ED8BF6 */  sth     r31, displayOffsetV@sda21(r13)
+/* 0A10A0 800A6640 B00D8BF4 */  sth     r0, displayOffsetH@sda21(r13)
 /* 0A10A4 800A6644 4BFFA63D */  bl      __OSUnlockSram
 /* 0A10A8 800A6648 A3BC0000 */  lhz     r29, 0(r28)
 /* 0A10AC 800A664C 3C608000 */  lis     r3, 0x8000
@@ -548,11 +548,11 @@ lbl_800A6698:
 /* 0A111C 800A66BC 38DE00F6 */  addi    r6, r30, 0xf6
 /* 0A1120 800A66C0 80840000 */  lwz     r4, 0(r4)
 /* 0A1124 800A66C4 387E00F2 */  addi    r3, r30, 0xf2
-/* 0A1128 800A66C8 908D8C18 */  stw     r4, CurrTiming-_SDA_BASE_(r13)
+/* 0A1128 800A66C8 908D8C18 */  stw     r4, CurrTiming@sda21(r13)
 /* 0A112C 800A66CC 809C0000 */  lwz     r4, 0(r28)
-/* 0A1130 800A66D0 908D8C1C */  stw     r4, CurrTvMode-_SDA_BASE_(r13)
+/* 0A1130 800A66D0 908D8C1C */  stw     r4, CurrTvMode@sda21(r13)
 /* 0A1134 800A66D4 B01E00F4 */  sth     r0, 0xf4(r30)
-/* 0A1138 800A66D8 808D8C18 */  lwz     r4, CurrTiming-_SDA_BASE_(r13)
+/* 0A1138 800A66D8 808D8C18 */  lwz     r4, CurrTiming@sda21(r13)
 /* 0A113C 800A66DC A4040002 */  lhzu    r0, 2(r4)
 /* 0A1140 800A66E0 54000C3C */  rlwinm  r0, r0, 1, 0x10, 0x1e
 /* 0A1144 800A66E4 B01E00F6 */  sth     r0, 0xf6(r30)
@@ -564,7 +564,7 @@ lbl_800A6698:
 /* 0A115C 800A66FC B11E00F2 */  sth     r8, 0xf2(r30)
 /* 0A1160 800A6700 A01E00F4 */  lhz     r0, 0xf4(r30)
 /* 0A1164 800A6704 A8FE00F0 */  lha     r7, 0xf0(r30)
-/* 0A1168 800A6708 A8AD8BF4 */  lha     r5, displayOffsetH-_SDA_BASE_(r13)
+/* 0A1168 800A6708 A8AD8BF4 */  lha     r5, displayOffsetH@sda21(r13)
 /* 0A116C 800A670C 200002D0 */  subfic  r0, r0, 0x2d0
 /* 0A1170 800A6710 A1240000 */  lhz     r9, 0(r4)
 /* 0A1174 800A6714 7CA72A14 */  add     r5, r7, r5
@@ -591,7 +591,7 @@ lbl_800A6754:
 /* 0A11B4 800A6754 39600001 */  li      r11, 1
 lbl_800A6758:
 /* 0A11B8 800A6758 A0030000 */  lhz     r0, 0(r3)
-/* 0A11BC 800A675C A8AD8BF6 */  lha     r5, displayOffsetV-_SDA_BASE_(r13)
+/* 0A11BC 800A675C A8AD8BF6 */  lha     r5, displayOffsetV@sda21(r13)
 /* 0A11C0 800A6760 7C070734 */  extsh   r7, r0
 /* 0A11C4 800A6764 540007FE */  clrlwi  r0, r0, 0x1f
 /* 0A11C8 800A6768 7CE72A14 */  add     r7, r7, r5
@@ -673,7 +673,7 @@ lbl_800A6844:
 /* 0A12C8 800A6868 38A00028 */  li      r5, 0x28
 /* 0A12CC 800A686C 38000001 */  li      r0, 1
 /* 0A12D0 800A6870 A0C40000 */  lhz     r6, 0(r4)
-/* 0A12D4 800A6874 386D8BDC */  addi    r3, r13, retraceQueue-_SDA_BASE_
+/* 0A12D4 800A6874 386D8BDC */  addi    r3, r13, retraceQueue@sda21
 /* 0A12D8 800A6878 54C60C3C */  rlwinm  r6, r6, 1, 0x10, 0x1e
 /* 0A12DC 800A687C B0DE0104 */  sth     r6, 0x104(r30)
 /* 0A12E0 800A6880 B39E0106 */  sth     r28, 0x106(r30)
@@ -702,8 +702,8 @@ lbl_800A6844:
 /* 0A133C 800A68DC 38600018 */  li      r3, 0x18
 /* 0A1340 800A68E0 5400047E */  clrlwi  r0, r0, 0x11
 /* 0A1344 800A68E4 B0050034 */  sth     r0, VI_DI1(r5)
-/* 0A1348 800A68E8 938D8BE4 */  stw     r28, PreCB-_SDA_BASE_(r13)
-/* 0A134C 800A68EC 938D8BE8 */  stw     r28, PostCB-_SDA_BASE_(r13)
+/* 0A1348 800A68E8 938D8BE4 */  stw     r28, PreCB@sda21(r13)
+/* 0A134C 800A68EC 938D8BE8 */  stw     r28, PostCB@sda21(r13)
 /* 0A1350 800A68F0 4BFF8459 */  bl      __OSSetInterruptHandler
 /* 0A1354 800A68F4 38600080 */  li      r3, 0x80
 /* 0A1358 800A68F8 4BFF8855 */  bl      __OSUnmaskInterrupts
@@ -724,12 +724,12 @@ glabel VIWaitForRetrace
 /* 0A1388 800A6928 93E1000C */  stw     r31, 0xc(r1)
 /* 0A138C 800A692C 93C10008 */  stw     r30, 8(r1)
 /* 0A1390 800A6930 4BFF83CD */  bl      OSDisableInterrupts
-/* 0A1394 800A6934 83CD8BD4 */  lwz     r30, retraceCount-_SDA_BASE_(r13)
+/* 0A1394 800A6934 83CD8BD4 */  lwz     r30, retraceCount@sda21(r13)
 /* 0A1398 800A6938 7C7F1B78 */  mr      r31, r3
 lbl_800A693C:
-/* 0A139C 800A693C 386D8BDC */  addi    r3, r13, retraceQueue-_SDA_BASE_
+/* 0A139C 800A693C 386D8BDC */  addi    r3, r13, retraceQueue@sda21
 /* 0A13A0 800A6940 4BFFB6CD */  bl      OSSleepThread
-/* 0A13A4 800A6944 800D8BD4 */  lwz     r0, retraceCount-_SDA_BASE_(r13)
+/* 0A13A4 800A6944 800D8BD4 */  lwz     r0, retraceCount@sda21(r13)
 /* 0A13A8 800A6948 7C1E0040 */  cmplw   r30, r0
 /* 0A13AC 800A694C 4182FFF0 */  beq     lbl_800A693C
 /* 0A13B0 800A6950 7FE3FB78 */  mr      r3, r31
@@ -864,11 +864,11 @@ lbl_800A6B1C:
 /* 0A1584 800A6B24 3D000001 */  lis     r8, 1
 /* 0A1588 800A6B28 B009001E */  sth     r0, 0x1e(r9)
 /* 0A158C 800A6B2C 3C000002 */  lis     r0, 2
-/* 0A1590 800A6B30 814D8C00 */  lwz     r10, changed-_SDA_BASE_(r13)
-/* 0A1594 800A6B34 818D8C04 */  lwz     r12, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1590 800A6B30 814D8C00 */  lwz     r10, changed@sda21(r13)
+/* 0A1594 800A6B34 818D8C04 */  lwz     r12, (changed + 4)@sda21(r13)
 /* 0A1598 800A6B38 7D4A4378 */  or      r10, r10, r8
-/* 0A159C 800A6B3C 918D8C04 */  stw     r12, (changed + 4)-_SDA_BASE_(r13)
-/* 0A15A0 800A6B40 914D8C00 */  stw     r10, changed-_SDA_BASE_(r13)
+/* 0A159C 800A6B3C 918D8C04 */  stw     r12, (changed + 4)@sda21(r13)
+/* 0A15A0 800A6B40 914D8C00 */  stw     r10, changed@sda21(r13)
 /* 0A15A4 800A6B44 81440000 */  lwz     r10, 0(r4)
 /* 0A15A8 800A6B48 8883003C */  lbz     r4, 0x3c(r3)
 /* 0A15AC 800A6B4C 554A843E */  srwi    r10, r10, 0x10
@@ -876,60 +876,60 @@ lbl_800A6B1C:
 /* 0A15B4 800A6B54 7D442378 */  or      r4, r10, r4
 /* 0A15B8 800A6B58 7D642378 */  or      r4, r11, r4
 /* 0A15BC 800A6B5C B089001C */  sth     r4, 0x1c(r9)
-/* 0A15C0 800A6B60 808D8C00 */  lwz     r4, changed-_SDA_BASE_(r13)
-/* 0A15C4 800A6B64 814D8C04 */  lwz     r10, (changed + 4)-_SDA_BASE_(r13)
+/* 0A15C0 800A6B60 808D8C00 */  lwz     r4, changed@sda21(r13)
+/* 0A15C4 800A6B64 814D8C04 */  lwz     r10, (changed + 4)@sda21(r13)
 /* 0A15C8 800A6B68 7C800378 */  or      r0, r4, r0
-/* 0A15CC 800A6B6C 914D8C04 */  stw     r10, (changed + 4)-_SDA_BASE_(r13)
-/* 0A15D0 800A6B70 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A15CC 800A6B6C 914D8C04 */  stw     r10, (changed + 4)@sda21(r13)
+/* 0A15D0 800A6B70 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A15D4 800A6B74 80050000 */  lwz     r0, 0(r5)
 /* 0A15D8 800A6B78 B0090026 */  sth     r0, 0x26(r9)
-/* 0A15DC 800A6B7C 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A15E0 800A6B80 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A15DC 800A6B7C 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A15E0 800A6B80 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A15E4 800A6B84 60001000 */  ori     r0, r0, 0x1000
-/* 0A15E8 800A6B88 908D8C04 */  stw     r4, (changed + 4)-_SDA_BASE_(r13)
-/* 0A15EC 800A6B8C 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A15E8 800A6B88 908D8C04 */  stw     r4, (changed + 4)@sda21(r13)
+/* 0A15EC 800A6B8C 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A15F0 800A6B90 80050000 */  lwz     r0, 0(r5)
 /* 0A15F4 800A6B94 5400843E */  srwi    r0, r0, 0x10
 /* 0A15F8 800A6B98 B0090024 */  sth     r0, 0x24(r9)
-/* 0A15FC 800A6B9C 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1600 800A6BA0 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A15FC 800A6B9C 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1600 800A6BA0 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A1604 800A6BA4 60002000 */  ori     r0, r0, 0x2000
-/* 0A1608 800A6BA8 908D8C04 */  stw     r4, (changed + 4)-_SDA_BASE_(r13)
-/* 0A160C 800A6BAC 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1608 800A6BA8 908D8C04 */  stw     r4, (changed + 4)@sda21(r13)
+/* 0A160C 800A6BAC 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1610 800A6BB0 80030044 */  lwz     r0, 0x44(r3)
 /* 0A1614 800A6BB4 2C000000 */  cmpwi   r0, 0
 /* 0A1618 800A6BB8 41820080 */  beq     lbl_800A6C38
 /* 0A161C 800A6BBC 80660000 */  lwz     r3, 0(r6)
 /* 0A1620 800A6BC0 38088000 */  addi    r0, r8, -32768
 /* 0A1624 800A6BC4 B0690022 */  sth     r3, 0x22(r9)
-/* 0A1628 800A6BC8 806D8C00 */  lwz     r3, changed-_SDA_BASE_(r13)
-/* 0A162C 800A6BCC 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1628 800A6BC8 806D8C00 */  lwz     r3, changed@sda21(r13)
+/* 0A162C 800A6BCC 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A1630 800A6BD0 60634000 */  ori     r3, r3, 0x4000
-/* 0A1634 800A6BD4 908D8C04 */  stw     r4, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1638 800A6BD8 906D8C00 */  stw     r3, changed-_SDA_BASE_(r13)
+/* 0A1634 800A6BD4 908D8C04 */  stw     r4, (changed + 4)@sda21(r13)
+/* 0A1638 800A6BD8 906D8C00 */  stw     r3, changed@sda21(r13)
 /* 0A163C 800A6BDC 80660000 */  lwz     r3, 0(r6)
 /* 0A1640 800A6BE0 5463843E */  srwi    r3, r3, 0x10
 /* 0A1644 800A6BE4 B0690020 */  sth     r3, 0x20(r9)
-/* 0A1648 800A6BE8 806D8C00 */  lwz     r3, changed-_SDA_BASE_(r13)
-/* 0A164C 800A6BEC 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1648 800A6BE8 806D8C00 */  lwz     r3, changed@sda21(r13)
+/* 0A164C 800A6BEC 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A1650 800A6BF0 7C600378 */  or      r0, r3, r0
-/* 0A1654 800A6BF4 908D8C04 */  stw     r4, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1658 800A6BF8 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1654 800A6BF4 908D8C04 */  stw     r4, (changed + 4)@sda21(r13)
+/* 0A1658 800A6BF8 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A165C 800A6BFC 80070000 */  lwz     r0, 0(r7)
 /* 0A1660 800A6C00 B009002A */  sth     r0, 0x2a(r9)
-/* 0A1664 800A6C04 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1668 800A6C08 806D8C04 */  lwz     r3, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1664 800A6C04 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1668 800A6C08 806D8C04 */  lwz     r3, (changed + 4)@sda21(r13)
 /* 0A166C 800A6C0C 60000400 */  ori     r0, r0, 0x400
-/* 0A1670 800A6C10 906D8C04 */  stw     r3, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1674 800A6C14 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1670 800A6C10 906D8C04 */  stw     r3, (changed + 4)@sda21(r13)
+/* 0A1674 800A6C14 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1678 800A6C18 80070000 */  lwz     r0, 0(r7)
 /* 0A167C 800A6C1C 5400843E */  srwi    r0, r0, 0x10
 /* 0A1680 800A6C20 B0090028 */  sth     r0, 0x28(r9)
-/* 0A1684 800A6C24 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1688 800A6C28 806D8C04 */  lwz     r3, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1684 800A6C24 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1688 800A6C28 806D8C04 */  lwz     r3, (changed + 4)@sda21(r13)
 /* 0A168C 800A6C2C 60000800 */  ori     r0, r0, 0x800
-/* 0A1690 800A6C30 906D8C04 */  stw     r3, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1694 800A6C34 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1690 800A6C30 906D8C04 */  stw     r3, (changed + 4)@sda21(r13)
+/* 0A1694 800A6C34 900D8C00 */  stw     r0, changed@sda21(r13)
 lbl_800A6C38:
 /* 0A1698 800A6C38 83E10044 */  lwz     r31, 0x44(r1)
 /* 0A169C 800A6C3C 38210048 */  addi    r1, r1, 0x48
@@ -1008,38 +1008,38 @@ lbl_800A6D38:
 /* 0A17A4 800A6D44 B08B0000 */  sth     r4, 0(r11)
 /* 0A17A8 800A6D48 3C808000 */  lis     r4, 0x8000
 /* 0A17AC 800A6D4C 3D200100 */  lis     r9, 0x100
-/* 0A17B0 800A6D50 80AD8C00 */  lwz     r5, changed-_SDA_BASE_(r13)
+/* 0A17B0 800A6D50 80AD8C00 */  lwz     r5, changed@sda21(r13)
 /* 0A17B4 800A6D54 3D000200 */  lis     r8, 0x200
-/* 0A17B8 800A6D58 814D8C04 */  lwz     r10, (changed + 4)-_SDA_BASE_(r13)
+/* 0A17B8 800A6D58 814D8C04 */  lwz     r10, (changed + 4)@sda21(r13)
 /* 0A17BC 800A6D5C 7CA42378 */  or      r4, r5, r4
 /* 0A17C0 800A6D60 3CA00040 */  lis     r5, 0x40
-/* 0A17C4 800A6D64 914D8C04 */  stw     r10, (changed + 4)-_SDA_BASE_(r13)
-/* 0A17C8 800A6D68 908D8C00 */  stw     r4, changed-_SDA_BASE_(r13)
+/* 0A17C4 800A6D64 914D8C04 */  stw     r10, (changed + 4)@sda21(r13)
+/* 0A17C8 800A6D68 908D8C00 */  stw     r4, changed@sda21(r13)
 /* 0A17CC 800A6D6C 3C800080 */  lis     r4, 0x80
 /* 0A17D0 800A6D70 B00B000E */  sth     r0, 0xe(r11)
-/* 0A17D4 800A6D74 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A17D8 800A6D78 814D8C04 */  lwz     r10, (changed + 4)-_SDA_BASE_(r13)
+/* 0A17D4 800A6D74 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A17D8 800A6D78 814D8C04 */  lwz     r10, (changed + 4)@sda21(r13)
 /* 0A17DC 800A6D7C 7C004B78 */  or      r0, r0, r9
-/* 0A17E0 800A6D80 914D8C04 */  stw     r10, (changed + 4)-_SDA_BASE_(r13)
-/* 0A17E4 800A6D84 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A17E0 800A6D80 914D8C04 */  stw     r10, (changed + 4)@sda21(r13)
+/* 0A17E4 800A6D84 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A17E8 800A6D88 B0CB000C */  sth     r6, 0xc(r11)
-/* 0A17EC 800A6D8C 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A17F0 800A6D90 80CD8C04 */  lwz     r6, (changed + 4)-_SDA_BASE_(r13)
+/* 0A17EC 800A6D8C 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A17F0 800A6D90 80CD8C04 */  lwz     r6, (changed + 4)@sda21(r13)
 /* 0A17F4 800A6D94 7C004378 */  or      r0, r0, r8
-/* 0A17F8 800A6D98 90CD8C04 */  stw     r6, (changed + 4)-_SDA_BASE_(r13)
-/* 0A17FC 800A6D9C 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A17F8 800A6D98 90CD8C04 */  stw     r6, (changed + 4)@sda21(r13)
+/* 0A17FC 800A6D9C 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1800 800A6DA0 B06B0012 */  sth     r3, 0x12(r11)
-/* 0A1804 800A6DA4 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1808 800A6DA8 806D8C04 */  lwz     r3, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1804 800A6DA4 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1808 800A6DA8 806D8C04 */  lwz     r3, (changed + 4)@sda21(r13)
 /* 0A180C 800A6DAC 7C002B78 */  or      r0, r0, r5
-/* 0A1810 800A6DB0 906D8C04 */  stw     r3, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1814 800A6DB4 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1810 800A6DB0 906D8C04 */  stw     r3, (changed + 4)@sda21(r13)
+/* 0A1814 800A6DB4 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1818 800A6DB8 B0EB0010 */  sth     r7, 0x10(r11)
-/* 0A181C 800A6DBC 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1820 800A6DC0 806D8C04 */  lwz     r3, (changed + 4)-_SDA_BASE_(r13)
+/* 0A181C 800A6DBC 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1820 800A6DC0 806D8C04 */  lwz     r3, (changed + 4)@sda21(r13)
 /* 0A1824 800A6DC4 7C002378 */  or      r0, r0, r4
-/* 0A1828 800A6DC8 906D8C04 */  stw     r3, (changed + 4)-_SDA_BASE_(r13)
-/* 0A182C 800A6DCC 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1828 800A6DC8 906D8C04 */  stw     r3, (changed + 4)@sda21(r13)
+/* 0A182C 800A6DCC 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1830 800A6DD0 83E10024 */  lwz     r31, 0x24(r1)
 /* 0A1834 800A6DD4 83C10020 */  lwz     r30, 0x20(r1)
 /* 0A1838 800A6DD8 83A1001C */  lwz     r29, 0x1c(r1)
@@ -1065,7 +1065,7 @@ glabel VIConfigure
 /* 0A1880 800A6E20 7C002040 */  cmplw   r0, r4
 /* 0A1884 800A6E24 41820010 */  beq     lbl_800A6E34
 /* 0A1888 800A6E28 38000001 */  li      r0, 1
-/* 0A188C 800A6E2C 900D8BF8 */  stw     r0, changeMode-_SDA_BASE_(r13)
+/* 0A188C 800A6E2C 900D8BF8 */  stw     r0, changeMode@sda21(r13)
 /* 0A1890 800A6E30 909C0000 */  stw     r4, 0(r28)
 lbl_800A6E34:
 /* 0A1894 800A6E34 801F0000 */  lwz     r0, 0(r31)
@@ -1075,12 +1075,12 @@ lbl_800A6E34:
 /* 0A18A4 800A6E44 28000004 */  cmplwi  r0, 4
 /* 0A18A8 800A6E48 7C110378 */  mr      r17, r0
 /* 0A18AC 800A6E4C 4082006C */  bne     lbl_800A6EB8
-/* 0A18B0 800A6E50 800D8C2C */  lwz     r0, message$343-_SDA_BASE_(r13)
+/* 0A18B0 800A6E50 800D8C2C */  lwz     r0, message$343@sda21(r13)
 /* 0A18B4 800A6E54 28000000 */  cmplwi  r0, 0
 /* 0A18B8 800A6E58 40820060 */  bne     lbl_800A6EB8
 /* 0A18BC 800A6E5C 38000001 */  li      r0, 1
 /* 0A18C0 800A6E60 4CC63182 */  crclr   6
-/* 0A18C4 800A6E64 900D8C2C */  stw     r0, message$343-_SDA_BASE_(r13)
+/* 0A18C4 800A6E64 900D8C2C */  stw     r0, message$343@sda21(r13)
 /* 0A18C8 800A6E68 386F0260 */  addi    r3, r15, 0x260
 /* 0A18CC 800A6E6C 4BFF778D */  bl      OSReport
 /* 0A18D0 800A6E70 386F028C */  addi    r3, r15, 0x28c
@@ -1134,7 +1134,7 @@ lbl_800A6F18:
 /* 0A197C 800A6F1C 4CC63182 */  crclr   6
 /* 0A1980 800A6F20 38F10000 */  addi    r7, r17, 0
 /* 0A1984 800A6F24 38AF0368 */  addi    r5, r15, 0x368
-/* 0A1988 800A6F28 386D877C */  addi    r3, r13, D_8013545C-_SDA_BASE_
+/* 0A1988 800A6F28 386D877C */  addi    r3, r13, D_8013545C@sda21
 /* 0A198C 800A6F2C 38800774 */  li      r4, 0x774
 /* 0A1990 800A6F30 4BFF7749 */  bl      OSPanic
 lbl_800A6F34:
@@ -1225,7 +1225,7 @@ lbl_800A7034:
 /* 0A1AB8 800A7058 93DD0144 */  stw     r30, 0x144(r29)
 /* 0A1ABC 800A705C A0180000 */  lhz     r0, 0(r24)
 /* 0A1AC0 800A7060 A89D00F0 */  lha     r4, 0xf0(r29)
-/* 0A1AC4 800A7064 A86D8BF4 */  lha     r3, displayOffsetH-_SDA_BASE_(r13)
+/* 0A1AC4 800A7064 A86D8BF4 */  lha     r3, displayOffsetH@sda21(r13)
 /* 0A1AC8 800A7068 20A002D0 */  subfic  r5, r0, 0x2d0
 /* 0A1ACC 800A706C A01E0002 */  lhz     r0, 2(r30)
 /* 0A1AD0 800A7070 7C641A14 */  add     r3, r4, r3
@@ -1250,7 +1250,7 @@ lbl_800A70AC:
 /* 0A1B0C 800A70AC 38800001 */  li      r4, 1
 lbl_800A70B0:
 /* 0A1B10 800A70B0 A0B70000 */  lhz     r5, 0(r23)
-/* 0A1B14 800A70B4 A8CD8BF6 */  lha     r6, displayOffsetV-_SDA_BASE_(r13)
+/* 0A1B14 800A70B4 A8CD8BF6 */  lha     r6, displayOffsetV@sda21(r13)
 /* 0A1B18 800A70B8 7CA70734 */  extsh   r7, r5
 /* 0A1B1C 800A70BC 54A507FE */  clrlwi  r5, r5, 0x1f
 /* 0A1B20 800A70C0 7CE73214 */  add     r7, r7, r6
@@ -1327,7 +1327,7 @@ lbl_800A71A0:
 /* 0A1C0C 800A71AC 7C050214 */  add     r0, r5, r0
 /* 0A1C10 800A71B0 7C040050 */  subf    r0, r4, r0
 /* 0A1C14 800A71B4 B01D0100 */  sth     r0, 0x100(r29)
-/* 0A1C18 800A71B8 800D8BF0 */  lwz     r0, encoderType-_SDA_BASE_(r13)
+/* 0A1C18 800A71B8 800D8BF0 */  lwz     r0, encoderType@sda21(r13)
 /* 0A1C1C 800A71BC 28000000 */  cmplwi  r0, 0
 /* 0A1C20 800A71C0 4082000C */  bne     lbl_800A71CC
 /* 0A1C24 800A71C4 38000003 */  li      r0, 3
@@ -1352,18 +1352,18 @@ lbl_800A7200:
 /* 0A1C64 800A7204 B01D0032 */  sth     r0, 0x32(r29)
 /* 0A1C68 800A7208 38040001 */  addi    r0, r4, 1
 /* 0A1C6C 800A720C 60001000 */  ori     r0, r0, 0x1000
-/* 0A1C70 800A7210 80AD8C00 */  lwz     r5, changed-_SDA_BASE_(r13)
+/* 0A1C70 800A7210 80AD8C00 */  lwz     r5, changed@sda21(r13)
 /* 0A1C74 800A7214 389D0002 */  addi    r4, r29, 2
-/* 0A1C78 800A7218 80CD8C04 */  lwz     r6, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1C78 800A7218 80CD8C04 */  lwz     r6, (changed + 4)@sda21(r13)
 /* 0A1C7C 800A721C 60A50040 */  ori     r5, r5, 0x40
-/* 0A1C80 800A7220 90CD8C04 */  stw     r6, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1C84 800A7224 90AD8C00 */  stw     r5, changed-_SDA_BASE_(r13)
+/* 0A1C80 800A7220 90CD8C04 */  stw     r6, (changed + 4)@sda21(r13)
+/* 0A1C84 800A7224 90AD8C00 */  stw     r5, changed@sda21(r13)
 /* 0A1C88 800A7228 B01D0030 */  sth     r0, 0x30(r29)
-/* 0A1C8C 800A722C 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1C90 800A7230 80AD8C04 */  lwz     r5, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1C8C 800A722C 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1C90 800A7230 80AD8C04 */  lwz     r5, (changed + 4)@sda21(r13)
 /* 0A1C94 800A7234 60000080 */  ori     r0, r0, 0x80
-/* 0A1C98 800A7238 90AD8C04 */  stw     r5, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1C9C 800A723C 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1C98 800A7238 90AD8C04 */  stw     r5, (changed + 4)@sda21(r13)
+/* 0A1C9C 800A723C 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1CA0 800A7240 801C0000 */  lwz     r0, 0(r28)
 /* 0A1CA4 800A7244 A0BD0002 */  lhz     r5, 2(r29)
 /* 0A1CA8 800A7248 28000002 */  cmplwi  r0, 2
@@ -1399,11 +1399,11 @@ lbl_800A72A8:
 /* 0A1D08 800A72A8 B0040000 */  sth     r0, 0(r4)
 /* 0A1D0C 800A72AC 3C004000 */  lis     r0, 0x4000
 /* 0A1D10 800A72B0 38DD006C */  addi    r6, r29, 0x6c
-/* 0A1D14 800A72B4 808D8C00 */  lwz     r4, changed-_SDA_BASE_(r13)
-/* 0A1D18 800A72B8 80AD8C04 */  lwz     r5, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1D14 800A72B4 808D8C00 */  lwz     r4, changed@sda21(r13)
+/* 0A1D18 800A72B8 80AD8C04 */  lwz     r5, (changed + 4)@sda21(r13)
 /* 0A1D1C 800A72BC 7C800378 */  or      r0, r4, r0
-/* 0A1D20 800A72C0 90AD8C04 */  stw     r5, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1D24 800A72C4 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1D20 800A72C0 90AD8C04 */  stw     r5, (changed + 4)@sda21(r13)
+/* 0A1D24 800A72C4 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1D28 800A72C8 801F0000 */  lwz     r0, 0(r31)
 /* 0A1D2C 800A72CC A09D006C */  lhz     r4, 0x6c(r29)
 /* 0A1D30 800A72D0 2C000002 */  cmpwi   r0, 2
@@ -1421,11 +1421,11 @@ lbl_800A72F4:
 lbl_800A72F8:
 /* 0A1D58 800A72F8 B0060000 */  sth     r0, 0(r6)
 /* 0A1D5C 800A72FC 2C070000 */  cmpwi   r7, 0
-/* 0A1D60 800A7300 808D8C00 */  lwz     r4, changed-_SDA_BASE_(r13)
-/* 0A1D64 800A7304 800D8C04 */  lwz     r0, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1D60 800A7300 808D8C00 */  lwz     r4, changed@sda21(r13)
+/* 0A1D64 800A7304 800D8C04 */  lwz     r0, (changed + 4)@sda21(r13)
 /* 0A1D68 800A7308 60000200 */  ori     r0, r0, 0x200
-/* 0A1D6C 800A730C 900D8C04 */  stw     r0, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1D70 800A7310 908D8C00 */  stw     r4, changed-_SDA_BASE_(r13)
+/* 0A1D6C 800A730C 900D8C04 */  stw     r0, (changed + 4)@sda21(r13)
+/* 0A1D70 800A7310 908D8C00 */  stw     r4, changed@sda21(r13)
 /* 0A1D74 800A7314 A0980000 */  lhz     r4, 0(r24)
 /* 0A1D78 800A7318 A0B00000 */  lhz     r5, 0(r16)
 /* 0A1D7C 800A731C 4182000C */  beq     lbl_800A7328
@@ -1444,27 +1444,27 @@ lbl_800A732C:
 /* 0A1DA8 800A7348 60001000 */  ori     r0, r0, 0x1000
 /* 0A1DAC 800A734C B01D004A */  sth     r0, 0x4a(r29)
 /* 0A1DB0 800A7350 3C000400 */  lis     r0, 0x400
-/* 0A1DB4 800A7354 80CD8C00 */  lwz     r6, changed-_SDA_BASE_(r13)
-/* 0A1DB8 800A7358 80ED8C04 */  lwz     r7, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1DB4 800A7354 80CD8C00 */  lwz     r6, changed@sda21(r13)
+/* 0A1DB8 800A7358 80ED8C04 */  lwz     r7, (changed + 4)@sda21(r13)
 /* 0A1DBC 800A735C 7CE00378 */  or      r0, r7, r0
-/* 0A1DC0 800A7360 900D8C04 */  stw     r0, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1DC4 800A7364 90CD8C00 */  stw     r6, changed-_SDA_BASE_(r13)
+/* 0A1DC0 800A7360 900D8C04 */  stw     r0, (changed + 4)@sda21(r13)
+/* 0A1DC4 800A7364 90CD8C00 */  stw     r6, changed@sda21(r13)
 /* 0A1DC8 800A7368 B11D0070 */  sth     r8, 0x70(r29)
-/* 0A1DCC 800A736C 80CD8C00 */  lwz     r6, changed-_SDA_BASE_(r13)
-/* 0A1DD0 800A7370 800D8C04 */  lwz     r0, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1DCC 800A736C 80CD8C00 */  lwz     r6, changed@sda21(r13)
+/* 0A1DD0 800A7370 800D8C04 */  lwz     r0, (changed + 4)@sda21(r13)
 /* 0A1DD4 800A7374 60000080 */  ori     r0, r0, 0x80
-/* 0A1DD8 800A7378 900D8C04 */  stw     r0, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1DDC 800A737C 90CD8C00 */  stw     r6, changed-_SDA_BASE_(r13)
+/* 0A1DD8 800A7378 900D8C04 */  stw     r0, (changed + 4)@sda21(r13)
+/* 0A1DDC 800A737C 90CD8C00 */  stw     r6, changed@sda21(r13)
 /* 0A1DE0 800A7380 48000024 */  b       lbl_800A73A4
 lbl_800A7384:
 /* 0A1DE4 800A7384 38000100 */  li      r0, 0x100
 /* 0A1DE8 800A7388 B01D004A */  sth     r0, 0x4a(r29)
 /* 0A1DEC 800A738C 3C000400 */  lis     r0, 0x400
-/* 0A1DF0 800A7390 80CD8C00 */  lwz     r6, changed-_SDA_BASE_(r13)
-/* 0A1DF4 800A7394 80ED8C04 */  lwz     r7, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1DF0 800A7390 80CD8C00 */  lwz     r6, changed@sda21(r13)
+/* 0A1DF4 800A7394 80ED8C04 */  lwz     r7, (changed + 4)@sda21(r13)
 /* 0A1DF8 800A7398 7CE00378 */  or      r0, r7, r0
-/* 0A1DFC 800A739C 900D8C04 */  stw     r0, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1E00 800A73A0 90CD8C00 */  stw     r6, changed-_SDA_BASE_(r13)
+/* 0A1DFC 800A739C 900D8C04 */  stw     r0, (changed + 4)@sda21(r13)
+/* 0A1E00 800A73A0 90CD8C00 */  stw     r6, changed@sda21(r13)
 lbl_800A73A4:
 /* 0A1E04 800A73A4 A0030000 */  lhz     r0, 0(r3)
 /* 0A1E08 800A73A8 218402D0 */  subfic  r12, r4, 0x2d0
@@ -1474,23 +1474,23 @@ lbl_800A73A4:
 /* 0A1E18 800A73B8 B0DD0006 */  sth     r6, 6(r29)
 /* 0A1E1C 800A73BC 3D200400 */  lis     r9, 0x400
 /* 0A1E20 800A73C0 3CE00800 */  lis     r7, 0x800
-/* 0A1E24 800A73C4 814D8C00 */  lwz     r10, changed-_SDA_BASE_(r13)
+/* 0A1E24 800A73C4 814D8C00 */  lwz     r10, changed@sda21(r13)
 /* 0A1E28 800A73C8 3CC00010 */  lis     r6, 0x10
 /* 0A1E2C 800A73CC 3C800020 */  lis     r4, 0x20
-/* 0A1E30 800A73D0 816D8C04 */  lwz     r11, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1E30 800A73D0 816D8C04 */  lwz     r11, (changed + 4)@sda21(r13)
 /* 0A1E34 800A73D4 7D4A1B78 */  or      r10, r10, r3
 /* 0A1E38 800A73D8 3C600004 */  lis     r3, 4
-/* 0A1E3C 800A73DC 916D8C04 */  stw     r11, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1E40 800A73E0 914D8C00 */  stw     r10, changed-_SDA_BASE_(r13)
+/* 0A1E3C 800A73DC 916D8C04 */  stw     r11, (changed + 4)@sda21(r13)
+/* 0A1E40 800A73E0 914D8C00 */  stw     r10, changed@sda21(r13)
 /* 0A1E44 800A73E4 895E001D */  lbz     r10, 0x1d(r30)
 /* 0A1E48 800A73E8 897E001E */  lbz     r11, 0x1e(r30)
 /* 0A1E4C 800A73EC 514B442E */  rlwimi  r11, r10, 8, 0x10, 0x17
 /* 0A1E50 800A73F0 B17D0004 */  sth     r11, 4(r29)
-/* 0A1E54 800A73F4 814D8C00 */  lwz     r10, changed-_SDA_BASE_(r13)
-/* 0A1E58 800A73F8 816D8C04 */  lwz     r11, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1E54 800A73F4 814D8C00 */  lwz     r10, changed@sda21(r13)
+/* 0A1E58 800A73F8 816D8C04 */  lwz     r11, (changed + 4)@sda21(r13)
 /* 0A1E5C 800A73FC 7D484378 */  or      r8, r10, r8
-/* 0A1E60 800A7400 916D8C04 */  stw     r11, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1E64 800A7404 910D8C00 */  stw     r8, changed-_SDA_BASE_(r13)
+/* 0A1E60 800A7400 916D8C04 */  stw     r11, (changed + 4)@sda21(r13)
+/* 0A1E64 800A7404 910D8C00 */  stw     r8, changed@sda21(r13)
 /* 0A1E68 800A7408 891E001F */  lbz     r8, 0x1f(r30)
 /* 0A1E6C 800A740C 895E001C */  lbz     r10, 0x1c(r30)
 /* 0A1E70 800A7410 7E080214 */  add     r16, r8, r0
@@ -1501,63 +1501,63 @@ lbl_800A73A4:
 /* 0A1E84 800A7424 B11D000A */  sth     r8, 0xa(r29)
 /* 0A1E88 800A7428 7D0B0214 */  add     r8, r11, r0
 /* 0A1E8C 800A742C 38080028 */  addi    r0, r8, 0x28
-/* 0A1E90 800A7430 814D8C00 */  lwz     r10, changed-_SDA_BASE_(r13)
+/* 0A1E90 800A7430 814D8C00 */  lwz     r10, changed@sda21(r13)
 /* 0A1E94 800A7434 7C0C0050 */  subf    r0, r12, r0
 /* 0A1E98 800A7438 5608BA7E */  srwi    r8, r16, 9
-/* 0A1E9C 800A743C 816D8C04 */  lwz     r11, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1E9C 800A743C 816D8C04 */  lwz     r11, (changed + 4)@sda21(r13)
 /* 0A1EA0 800A7440 5400083C */  slwi    r0, r0, 1
 /* 0A1EA4 800A7444 7D494B78 */  or      r9, r10, r9
-/* 0A1EA8 800A7448 916D8C04 */  stw     r11, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1EA8 800A7448 916D8C04 */  stw     r11, (changed + 4)@sda21(r13)
 /* 0A1EAC 800A744C 7D000378 */  or      r0, r8, r0
-/* 0A1EB0 800A7450 912D8C00 */  stw     r9, changed-_SDA_BASE_(r13)
+/* 0A1EB0 800A7450 912D8C00 */  stw     r9, changed@sda21(r13)
 /* 0A1EB4 800A7454 B01D0008 */  sth     r0, 8(r29)
-/* 0A1EB8 800A7458 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1EBC 800A745C 810D8C04 */  lwz     r8, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1EB8 800A7458 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1EBC 800A745C 810D8C04 */  lwz     r8, (changed + 4)@sda21(r13)
 /* 0A1EC0 800A7460 7C003B78 */  or      r0, r0, r7
-/* 0A1EC4 800A7464 910D8C04 */  stw     r8, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1EC8 800A7468 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1EC4 800A7464 910D8C04 */  stw     r8, (changed + 4)@sda21(r13)
+/* 0A1EC8 800A7468 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1ECC 800A746C A01E0010 */  lhz     r0, 0x10(r30)
 /* 0A1ED0 800A7470 88FE000C */  lbz     r7, 0xc(r30)
 /* 0A1ED4 800A7474 54002834 */  slwi    r0, r0, 5
 /* 0A1ED8 800A7478 7CE00378 */  or      r0, r7, r0
 /* 0A1EDC 800A747C B01D0016 */  sth     r0, 0x16(r29)
-/* 0A1EE0 800A7480 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1EE4 800A7484 80ED8C04 */  lwz     r7, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1EE0 800A7480 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1EE4 800A7484 80ED8C04 */  lwz     r7, (changed + 4)@sda21(r13)
 /* 0A1EE8 800A7488 7C003378 */  or      r0, r0, r6
-/* 0A1EEC 800A748C 90ED8C04 */  stw     r7, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1EF0 800A7490 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1EEC 800A748C 90ED8C04 */  stw     r7, (changed + 4)@sda21(r13)
+/* 0A1EF0 800A7490 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1EF4 800A7494 A01E0014 */  lhz     r0, 0x14(r30)
 /* 0A1EF8 800A7498 88DE000E */  lbz     r6, 0xe(r30)
 /* 0A1EFC 800A749C 54002834 */  slwi    r0, r0, 5
 /* 0A1F00 800A74A0 7CC00378 */  or      r0, r6, r0
 /* 0A1F04 800A74A4 B01D0014 */  sth     r0, 0x14(r29)
-/* 0A1F08 800A74A8 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1F0C 800A74AC 80CD8C04 */  lwz     r6, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1F08 800A74A8 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1F0C 800A74AC 80CD8C04 */  lwz     r6, (changed + 4)@sda21(r13)
 /* 0A1F10 800A74B0 7C002378 */  or      r0, r0, r4
-/* 0A1F14 800A74B4 90CD8C04 */  stw     r6, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1F18 800A74B8 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1F14 800A74B4 90CD8C04 */  stw     r6, (changed + 4)@sda21(r13)
+/* 0A1F18 800A74B8 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1F1C 800A74BC A01E0012 */  lhz     r0, 0x12(r30)
 /* 0A1F20 800A74C0 889E000D */  lbz     r4, 0xd(r30)
 /* 0A1F24 800A74C4 54002834 */  slwi    r0, r0, 5
 /* 0A1F28 800A74C8 7C800378 */  or      r0, r4, r0
 /* 0A1F2C 800A74CC B01D001A */  sth     r0, 0x1a(r29)
-/* 0A1F30 800A74D0 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A1F34 800A74D4 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1F30 800A74D0 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A1F34 800A74D4 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A1F38 800A74D8 7C001B78 */  or      r0, r0, r3
-/* 0A1F3C 800A74DC 908D8C04 */  stw     r4, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1F40 800A74E0 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1F3C 800A74DC 908D8C04 */  stw     r4, (changed + 4)@sda21(r13)
+/* 0A1F40 800A74E0 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1F44 800A74E4 A01E0016 */  lhz     r0, 0x16(r30)
 /* 0A1F48 800A74E8 887E000F */  lbz     r3, 0xf(r30)
 /* 0A1F4C 800A74EC 54002834 */  slwi    r0, r0, 5
 /* 0A1F50 800A74F0 7C600378 */  or      r0, r3, r0
 /* 0A1F54 800A74F4 B01D0018 */  sth     r0, 0x18(r29)
-/* 0A1F58 800A74F8 806D8C00 */  lwz     r3, changed-_SDA_BASE_(r13)
+/* 0A1F58 800A74F8 806D8C00 */  lwz     r3, changed@sda21(r13)
 /* 0A1F5C 800A74FC 3C000008 */  lis     r0, 8
 /* 0A1F60 800A7500 38DD011C */  addi    r6, r29, 0x11c
-/* 0A1F64 800A7504 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1F64 800A7504 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A1F68 800A7508 7C600378 */  or      r0, r3, r0
-/* 0A1F6C 800A750C 908D8C04 */  stw     r4, (changed + 4)-_SDA_BASE_(r13)
-/* 0A1F70 800A7510 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A1F6C 800A750C 908D8C04 */  stw     r4, (changed + 4)@sda21(r13)
+/* 0A1F70 800A7510 900D8C00 */  stw     r0, changed@sda21(r13)
 /* 0A1F74 800A7514 A07B0000 */  lhz     r3, 0(r27)
 /* 0A1F78 800A7518 80990000 */  lwz     r4, 0(r25)
 /* 0A1F7C 800A751C 3803000F */  addi    r0, r3, 0xf
@@ -1590,13 +1590,13 @@ lbl_800A7548:
 /* 0A1FE0 800A7580 889D011D */  lbz     r4, 0x11d(r29)
 /* 0A1FE4 800A7584 5004442E */  rlwimi  r4, r0, 8, 0x10, 0x17
 /* 0A1FE8 800A7588 B09D0048 */  sth     r4, 0x48(r29)
-/* 0A1FEC 800A758C 808D8C00 */  lwz     r4, changed-_SDA_BASE_(r13)
-/* 0A1FF0 800A7590 800D8C28 */  lwz     r0, FBSet-_SDA_BASE_(r13)
-/* 0A1FF4 800A7594 80AD8C04 */  lwz     r5, (changed + 4)-_SDA_BASE_(r13)
+/* 0A1FEC 800A758C 808D8C00 */  lwz     r4, changed@sda21(r13)
+/* 0A1FF0 800A7590 800D8C28 */  lwz     r0, FBSet@sda21(r13)
+/* 0A1FF4 800A7594 80AD8C04 */  lwz     r5, (changed + 4)@sda21(r13)
 /* 0A1FF8 800A7598 28000000 */  cmplwi  r0, 0
 /* 0A1FFC 800A759C 7CA01B78 */  or      r0, r5, r3
-/* 0A2000 800A75A0 900D8C04 */  stw     r0, (changed + 4)-_SDA_BASE_(r13)
-/* 0A2004 800A75A4 908D8C00 */  stw     r4, changed-_SDA_BASE_(r13)
+/* 0A2000 800A75A0 900D8C04 */  stw     r0, (changed + 4)@sda21(r13)
+/* 0A2004 800A75A4 908D8C00 */  stw     r4, changed@sda21(r13)
 /* 0A2008 800A75A8 4182001C */  beq     lbl_800A75C4
 /* 0A200C 800A75AC 387D00F0 */  addi    r3, r29, 0xf0
 /* 0A2010 800A75B0 389D0124 */  addi    r4, r29, 0x124
@@ -1635,26 +1635,26 @@ glabel VIFlush
 /* 0A2088 800A7628 93A10014 */  stw     r29, 0x14(r1)
 /* 0A208C 800A762C 93810010 */  stw     r28, 0x10(r1)
 /* 0A2090 800A7630 4BFF76CD */  bl      OSDisableInterrupts
-/* 0A2094 800A7634 80AD8C08 */  lwz     r5, shdwChangeMode-_SDA_BASE_(r13)
+/* 0A2094 800A7634 80AD8C08 */  lwz     r5, shdwChangeMode@sda21(r13)
 /* 0A2098 800A7638 3BC30000 */  addi    r30, r3, 0
 /* 0A209C 800A763C 38000000 */  li      r0, 0
-/* 0A20A0 800A7640 808D8BF8 */  lwz     r4, changeMode-_SDA_BASE_(r13)
+/* 0A20A0 800A7640 808D8BF8 */  lwz     r4, changeMode@sda21(r13)
 /* 0A20A4 800A7644 7CA32378 */  or      r3, r5, r4
-/* 0A20A8 800A7648 906D8C08 */  stw     r3, shdwChangeMode-_SDA_BASE_(r13)
-/* 0A20AC 800A764C 900D8BF8 */  stw     r0, changeMode-_SDA_BASE_(r13)
-/* 0A20B0 800A7650 808D8C10 */  lwz     r4, shdwChanged-_SDA_BASE_(r13)
-/* 0A20B4 800A7654 80AD8C14 */  lwz     r5, (shdwChanged + 4)-_SDA_BASE_(r13)
-/* 0A20B8 800A7658 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
-/* 0A20BC 800A765C 806D8C04 */  lwz     r3, (changed + 4)-_SDA_BASE_(r13)
+/* 0A20A8 800A7648 906D8C08 */  stw     r3, shdwChangeMode@sda21(r13)
+/* 0A20AC 800A764C 900D8BF8 */  stw     r0, changeMode@sda21(r13)
+/* 0A20B0 800A7650 808D8C10 */  lwz     r4, shdwChanged@sda21(r13)
+/* 0A20B4 800A7654 80AD8C14 */  lwz     r5, (shdwChanged + 4)@sda21(r13)
+/* 0A20B8 800A7658 800D8C00 */  lwz     r0, changed@sda21(r13)
+/* 0A20BC 800A765C 806D8C04 */  lwz     r3, (changed + 4)@sda21(r13)
 /* 0A20C0 800A7660 7C800378 */  or      r0, r4, r0
 /* 0A20C4 800A7664 7CA31B78 */  or      r3, r5, r3
-/* 0A20C8 800A7668 906D8C14 */  stw     r3, (shdwChanged + 4)-_SDA_BASE_(r13)
-/* 0A20CC 800A766C 900D8C10 */  stw     r0, shdwChanged-_SDA_BASE_(r13)
+/* 0A20C8 800A7668 906D8C14 */  stw     r3, (shdwChanged + 4)@sda21(r13)
+/* 0A20CC 800A766C 900D8C10 */  stw     r0, shdwChanged@sda21(r13)
 /* 0A20D0 800A7670 48000078 */  b       lbl_800A76E8
 lbl_800A7674:
-/* 0A20D4 800A7674 806D8C00 */  lwz     r3, changed-_SDA_BASE_(r13)
+/* 0A20D4 800A7674 806D8C00 */  lwz     r3, changed@sda21(r13)
 /* 0A20D8 800A7678 38A00020 */  li      r5, 0x20
-/* 0A20DC 800A767C 838D8C04 */  lwz     r28, (changed + 4)-_SDA_BASE_(r13)
+/* 0A20DC 800A767C 838D8C04 */  lwz     r28, (changed + 4)@sda21(r13)
 /* 0A20E0 800A7680 389C0000 */  addi    r4, r28, 0
 /* 0A20E4 800A7684 480266E5 */  bl      __shr2u
 /* 0A20E8 800A7688 7C840034 */  cntlzw  r4, r4
@@ -1675,27 +1675,27 @@ lbl_800A76A8:
 /* 0A211C 800A76BC 38600000 */  li      r3, 0
 /* 0A2120 800A76C0 38800001 */  li      r4, 1
 /* 0A2124 800A76C4 48026681 */  bl      __shl2i
-/* 0A2128 800A76C8 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
+/* 0A2128 800A76C8 800D8C00 */  lwz     r0, changed@sda21(r13)
 /* 0A212C 800A76CC 7C6518F8 */  nor     r5, r3, r3
 /* 0A2130 800A76D0 7C8420F8 */  nor     r4, r4, r4
-/* 0A2134 800A76D4 806D8C04 */  lwz     r3, (changed + 4)-_SDA_BASE_(r13)
+/* 0A2134 800A76D4 806D8C04 */  lwz     r3, (changed + 4)@sda21(r13)
 /* 0A2138 800A76D8 7C002838 */  and     r0, r0, r5
 /* 0A213C 800A76DC 7C632038 */  and     r3, r3, r4
-/* 0A2140 800A76E0 906D8C04 */  stw     r3, (changed + 4)-_SDA_BASE_(r13)
-/* 0A2144 800A76E4 900D8C00 */  stw     r0, changed-_SDA_BASE_(r13)
+/* 0A2140 800A76E0 906D8C04 */  stw     r3, (changed + 4)@sda21(r13)
+/* 0A2144 800A76E4 900D8C00 */  stw     r0, changed@sda21(r13)
 lbl_800A76E8:
-/* 0A2148 800A76E8 800D8C00 */  lwz     r0, changed-_SDA_BASE_(r13)
+/* 0A2148 800A76E8 800D8C00 */  lwz     r0, changed@sda21(r13)
 /* 0A214C 800A76EC 38600000 */  li      r3, 0
-/* 0A2150 800A76F0 808D8C04 */  lwz     r4, (changed + 4)-_SDA_BASE_(r13)
+/* 0A2150 800A76F0 808D8C04 */  lwz     r4, (changed + 4)@sda21(r13)
 /* 0A2154 800A76F4 7C001A78 */  xor     r0, r0, r3
 /* 0A2158 800A76F8 7C831A78 */  xor     r3, r4, r3
 /* 0A215C 800A76FC 7C600379 */  or.     r0, r3, r0
 /* 0A2160 800A7700 4082FF74 */  bne     lbl_800A7674
 /* 0A2164 800A7704 38000001 */  li      r0, 1
-/* 0A2168 800A7708 900D8BD8 */  stw     r0, flushFlag-_SDA_BASE_(r13)
+/* 0A2168 800A7708 900D8BD8 */  stw     r0, flushFlag@sda21(r13)
 /* 0A216C 800A770C 7FC3F378 */  mr      r3, r30
 /* 0A2170 800A7710 801F0120 */  lwz     r0, 0x120(r31)
-/* 0A2174 800A7714 900D8C20 */  stw     r0, NextBufAddr-_SDA_BASE_(r13)
+/* 0A2174 800A7714 900D8C20 */  stw     r0, NextBufAddr@sda21(r13)
 /* 0A2178 800A7718 4BFF760D */  bl      OSRestoreInterrupts
 /* 0A217C 800A771C 80010024 */  lwz     r0, 0x24(r1)
 /* 0A2180 800A7720 83E1001C */  lwz     r31, 0x1c(r1)
@@ -1719,7 +1719,7 @@ glabel VISetNextFrameBuffer
 /* 0A21C0 800A7760 93DF0120 */  stw     r30, 0x120(r31)
 /* 0A21C4 800A7764 38000001 */  li      r0, 1
 /* 0A21C8 800A7768 3BC30000 */  addi    r30, r3, 0
-/* 0A21CC 800A776C 900D8C28 */  stw     r0, FBSet-_SDA_BASE_(r13)
+/* 0A21CC 800A776C 900D8C28 */  stw     r0, FBSet@sda21(r13)
 /* 0A21D0 800A7770 387F00F0 */  addi    r3, r31, 0xf0
 /* 0A21D4 800A7774 389F0124 */  addi    r4, r31, 0x124
 /* 0A21D8 800A7778 38BF0128 */  addi    r5, r31, 0x128
@@ -1800,7 +1800,7 @@ lbl_800A7874:
 /* 0A22E4 800A7884 7C062840 */  cmplw   r6, r5
 /* 0A22E8 800A7888 5463057E */  clrlwi  r3, r3, 0x15
 /* 0A22EC 800A788C 4082FFE8 */  bne     lbl_800A7874
-/* 0A22F0 800A7890 80CD8C18 */  lwz     r6, CurrTiming-_SDA_BASE_(r13)
+/* 0A22F0 800A7890 80CD8C18 */  lwz     r6, CurrTiming@sda21(r13)
 /* 0A22F4 800A7894 3805FFFF */  addi    r0, r5, -1
 /* 0A22F8 800A7898 3883FFFF */  addi    r4, r3, -1
 /* 0A22FC 800A789C A066001A */  lhz     r3, 0x1a(r6)
@@ -1827,7 +1827,7 @@ glabel VIGetNextField
 /* 0A2344 800A78E4 38610010 */  addi    r3, r1, 0x10
 /* 0A2348 800A78E8 38810014 */  addi    r4, r1, 0x14
 /* 0A234C 800A78EC 4BFFFF39 */  bl      GetCurrentDisplayPosition
-/* 0A2350 800A78F0 80AD8C18 */  lwz     r5, CurrTiming-_SDA_BASE_(r13)
+/* 0A2350 800A78F0 80AD8C18 */  lwz     r5, CurrTiming@sda21(r13)
 /* 0A2354 800A78F4 80610010 */  lwz     r3, 0x10(r1)
 /* 0A2358 800A78F8 A005001A */  lhz     r0, 0x1a(r5)
 /* 0A235C 800A78FC 3863FFFF */  addi    r3, r3, -1
@@ -1865,7 +1865,7 @@ glabel VIGetCurrentLine
 /* 0A23CC 800A796C 9421FFE0 */  stwu    r1, -0x20(r1)
 /* 0A23D0 800A7970 93E1001C */  stw     r31, 0x1c(r1)
 /* 0A23D4 800A7974 93C10018 */  stw     r30, 0x18(r1)
-/* 0A23D8 800A7978 83ED8C18 */  lwz     r31, CurrTiming-_SDA_BASE_(r13)
+/* 0A23D8 800A7978 83ED8C18 */  lwz     r31, CurrTiming@sda21(r13)
 /* 0A23DC 800A797C 4BFF7381 */  bl      OSDisableInterrupts
 /* 0A23E0 800A7980 3C80CC00 */  lis     r4, VI_REGS_BASE@ha
 /* 0A23E4 800A7984 39042000 */  addi    r8, r4, VI_REGS_BASE@l
@@ -1880,7 +1880,7 @@ lbl_800A7994:
 /* 0A2404 800A79A4 7C073040 */  cmplw   r7, r6
 /* 0A2408 800A79A8 5487057E */  clrlwi  r7, r4, 0x15
 /* 0A240C 800A79AC 4082FFE8 */  bne     lbl_800A7994
-/* 0A2410 800A79B0 808D8C18 */  lwz     r4, CurrTiming-_SDA_BASE_(r13)
+/* 0A2410 800A79B0 808D8C18 */  lwz     r4, CurrTiming@sda21(r13)
 /* 0A2414 800A79B4 38A7FFFF */  addi    r5, r7, -1
 /* 0A2418 800A79B8 38C6FFFF */  addi    r6, r6, -1
 /* 0A241C 800A79BC A004001A */  lhz     r0, 0x1a(r4)
@@ -1907,7 +1907,7 @@ glabel VIGetTvFormat
 /* 0A2464 800A7A04 9421FFF0 */  stwu    r1, -0x10(r1)
 /* 0A2468 800A7A08 93E1000C */  stw     r31, 0xc(r1)
 /* 0A246C 800A7A0C 4BFF72F1 */  bl      OSDisableInterrupts
-/* 0A2470 800A7A10 80AD8C1C */  lwz     r5, CurrTvMode-_SDA_BASE_(r13)
+/* 0A2470 800A7A10 80AD8C1C */  lwz     r5, CurrTvMode@sda21(r13)
 /* 0A2474 800A7A14 28050006 */  cmplwi  r5, 6
 /* 0A2478 800A7A18 41810030 */  bgt     lbl_800A7A48
 /* 0A247C 800A7A1C 3C80800F */  lis     r4, jtbl_800F1A84@ha
@@ -1934,7 +1934,7 @@ lbl_800A7A48:
 /* 0A24C0 800A7A60 4E800020 */  blr     
 
 glabel __VIDisplayPositionToXY
-/* 0A24C4 800A7A64 812D8C18 */  lwz     r9, CurrTiming-_SDA_BASE_(r13)
+/* 0A24C4 800A7A64 812D8C18 */  lwz     r9, CurrTiming@sda21(r13)
 /* 0A24C8 800A7A68 3CE08013 */  lis     r7, HorVer@ha
 /* 0A24CC 800A7A6C 38E71DE0 */  addi    r7, r7, HorVer@l
 /* 0A24D0 800A7A70 A009001A */  lhz     r0, 0x1a(r9)

@@ -125,9 +125,9 @@ lbl_800AC85C:
 lbl_800AC864:
 /* 0A72C4 800AC864 9001003C */  stw     r0, 0x3c(r1)
 /* 0A72C8 800AC868 3C004330 */  lis     r0, 0x4330
-/* 0A72CC 800AC86C C8228440 */  lfd     f1, D_80136140-_SDA2_BASE_(r2)
+/* 0A72CC 800AC86C C8228440 */  lfd     f1, D_80136140@sda21(r2)
 /* 0A72D0 800AC870 90010038 */  stw     r0, 0x38(r1)
-/* 0A72D4 800AC874 C0428438 */  lfs     f2, D_80136138-_SDA2_BASE_(r2)
+/* 0A72D4 800AC874 C0428438 */  lfs     f2, D_80136138@sda21(r2)
 /* 0A72D8 800AC878 C8010038 */  lfd     f0, 0x38(r1)
 /* 0A72DC 800AC87C 807F0004 */  lwz     r3, 4(r31)
 /* 0A72E0 800AC880 EC000828 */  fsubs   f0, f0, f1
@@ -251,19 +251,19 @@ glabel GXInitTexObjCI
 
 glabel GXInitTexObjLOD
 /* 0A748C 800ACA2C 9421FFD0 */  stwu    r1, -0x30(r1)
-/* 0A7490 800ACA30 C0028448 */  lfs     f0, D_80136148-_SDA2_BASE_(r2)
+/* 0A7490 800ACA30 C0028448 */  lfs     f0, D_80136148@sda21(r2)
 /* 0A7494 800ACA34 FC030040 */  fcmpo   cr0, f3, f0
 /* 0A7498 800ACA38 4080000C */  bge     lbl_800ACA44
 /* 0A749C 800ACA3C FC600090 */  fmr     f3, f0
 /* 0A74A0 800ACA40 48000018 */  b       lbl_800ACA58
 lbl_800ACA44:
-/* 0A74A4 800ACA44 C002844C */  lfs     f0, D_8013614C-_SDA2_BASE_(r2)
+/* 0A74A4 800ACA44 C002844C */  lfs     f0, D_8013614C@sda21(r2)
 /* 0A74A8 800ACA48 FC030040 */  fcmpo   cr0, f3, f0
 /* 0A74AC 800ACA4C 4C411382 */  cror    2, 1, 2
 /* 0A74B0 800ACA50 40820008 */  bne     lbl_800ACA58
-/* 0A74B4 800ACA54 C0628450 */  lfs     f3, D_80136150-_SDA2_BASE_(r2)
+/* 0A74B4 800ACA54 C0628450 */  lfs     f3, D_80136150@sda21(r2)
 lbl_800ACA58:
-/* 0A74B8 800ACA58 C0028454 */  lfs     f0, D_80136154-_SDA2_BASE_(r2)
+/* 0A74B8 800ACA58 C0028454 */  lfs     f0, D_80136154@sda21(r2)
 /* 0A74BC 800ACA5C 2C050001 */  cmpwi   r5, 1
 /* 0A74C0 800ACA60 80A30000 */  lwz     r5, 0(r3)
 /* 0A74C4 800ACA64 EC0000F2 */  fmuls   f0, f0, f3
@@ -282,7 +282,7 @@ lbl_800ACA8C:
 /* 0A74F0 800ACA90 500526F6 */  rlwimi  r5, r0, 4, 0x1b, 0x1b
 /* 0A74F4 800ACA94 54E0063F */  clrlwi. r0, r7, 0x18
 /* 0A74F8 800ACA98 90A30000 */  stw     r5, 0(r3)
-/* 0A74FC 800ACA9C 38AD87E0 */  addi    r5, r13, GX2HWFiltConv-_SDA_BASE_
+/* 0A74FC 800ACA9C 38AD87E0 */  addi    r5, r13, GX2HWFiltConv@sda21
 /* 0A7500 800ACAA0 7C0520AE */  lbzx    r0, r5, r4
 /* 0A7504 800ACAA4 80830000 */  lwz     r4, 0(r3)
 /* 0A7508 800ACAA8 50042E34 */  rlwimi  r4, r0, 5, 0x18, 0x1a
@@ -309,19 +309,19 @@ lbl_800ACAC0:
 /* 0A7554 800ACAF4 80830000 */  lwz     r4, 0(r3)
 /* 0A7558 800ACAF8 50C4AA94 */  rlwimi  r4, r6, 0x15, 0xa, 0xa
 /* 0A755C 800ACAFC 90830000 */  stw     r4, 0(r3)
-/* 0A7560 800ACB00 C0028458 */  lfs     f0, D_80136158-_SDA2_BASE_(r2)
+/* 0A7560 800ACB00 C0028458 */  lfs     f0, D_80136158@sda21(r2)
 /* 0A7564 800ACB04 FC010040 */  fcmpo   cr0, f1, f0
 /* 0A7568 800ACB08 4080000C */  bge     lbl_800ACB14
 /* 0A756C 800ACB0C FC200090 */  fmr     f1, f0
 /* 0A7570 800ACB10 48000014 */  b       lbl_800ACB24
 lbl_800ACB14:
-/* 0A7574 800ACB14 C002845C */  lfs     f0, D_8013615C-_SDA2_BASE_(r2)
+/* 0A7574 800ACB14 C002845C */  lfs     f0, D_8013615C@sda21(r2)
 /* 0A7578 800ACB18 FC010040 */  fcmpo   cr0, f1, f0
 /* 0A757C 800ACB1C 40810008 */  ble     lbl_800ACB24
 /* 0A7580 800ACB20 FC200090 */  fmr     f1, f0
 lbl_800ACB24:
-/* 0A7584 800ACB24 C0628438 */  lfs     f3, D_80136138-_SDA2_BASE_(r2)
-/* 0A7588 800ACB28 C0028458 */  lfs     f0, D_80136158-_SDA2_BASE_(r2)
+/* 0A7584 800ACB24 C0628438 */  lfs     f3, D_80136138@sda21(r2)
+/* 0A7588 800ACB28 C0028458 */  lfs     f0, D_80136158@sda21(r2)
 /* 0A758C 800ACB2C EC230072 */  fmuls   f1, f3, f1
 /* 0A7590 800ACB30 FC020040 */  fcmpo   cr0, f2, f0
 /* 0A7594 800ACB34 FC20081E */  fctiwz  f1, f1
@@ -331,12 +331,12 @@ lbl_800ACB24:
 /* 0A75A4 800ACB44 FC400090 */  fmr     f2, f0
 /* 0A75A8 800ACB48 48000014 */  b       lbl_800ACB5C
 lbl_800ACB4C:
-/* 0A75AC 800ACB4C C002845C */  lfs     f0, D_8013615C-_SDA2_BASE_(r2)
+/* 0A75AC 800ACB4C C002845C */  lfs     f0, D_8013615C@sda21(r2)
 /* 0A75B0 800ACB50 FC020040 */  fcmpo   cr0, f2, f0
 /* 0A75B4 800ACB54 40810008 */  ble     lbl_800ACB5C
 /* 0A75B8 800ACB58 FC400090 */  fmr     f2, f0
 lbl_800ACB5C:
-/* 0A75BC 800ACB5C C0028438 */  lfs     f0, D_80136138-_SDA2_BASE_(r2)
+/* 0A75BC 800ACB5C C0028438 */  lfs     f0, D_80136138@sda21(r2)
 /* 0A75C0 800ACB60 80830004 */  lwz     r4, 4(r3)
 /* 0A75C4 800ACB64 5004063E */  rlwimi  r4, r0, 0, 0x18, 0x1f
 /* 0A75C8 800ACB68 EC0000B2 */  fmuls   f0, f0, f2
@@ -369,13 +369,13 @@ glabel GXGetTexObjMipMap
 
 glabel GXLoadTexObjPreLoaded
 /* 0A761C 800ACBBC 7C0802A6 */  mflr    r0
-/* 0A7620 800ACBC0 38ED87B8 */  addi    r7, r13, GXTexImage0Ids-_SDA_BASE_
+/* 0A7620 800ACBC0 38ED87B8 */  addi    r7, r13, GXTexImage0Ids@sda21
 /* 0A7624 800ACBC4 90010004 */  stw     r0, 4(r1)
-/* 0A7628 800ACBC8 38CD87C0 */  addi    r6, r13, GXTexImage1Ids-_SDA_BASE_
+/* 0A7628 800ACBC8 38CD87C0 */  addi    r6, r13, GXTexImage1Ids@sda21
 /* 0A762C 800ACBCC 9421FFC0 */  stwu    r1, -0x40(r1)
 /* 0A7630 800ACBD0 93E1003C */  stw     r31, 0x3c(r1)
 /* 0A7634 800ACBD4 3BE50000 */  addi    r31, r5, 0
-/* 0A7638 800ACBD8 38AD87A8 */  addi    r5, r13, GXTexMode0Ids-_SDA_BASE_
+/* 0A7638 800ACBD8 38AD87A8 */  addi    r5, r13, GXTexMode0Ids@sda21
 /* 0A763C 800ACBDC 93C10038 */  stw     r30, 0x38(r1)
 /* 0A7640 800ACBE0 3BC30000 */  addi    r30, r3, 0
 /* 0A7644 800ACBE4 93A10034 */  stw     r29, 0x34(r1)
@@ -384,12 +384,12 @@ glabel GXLoadTexObjPreLoaded
 /* 0A7650 800ACBF0 3B800061 */  li      r28, 0x61
 /* 0A7654 800ACBF4 7C05F8AE */  lbzx    r0, r5, r31
 /* 0A7658 800ACBF8 80A30000 */  lwz     r5, 0(r3)
-/* 0A765C 800ACBFC 386D87B0 */  addi    r3, r13, GXTexMode1Ids-_SDA_BASE_
+/* 0A765C 800ACBFC 386D87B0 */  addi    r3, r13, GXTexMode1Ids@sda21
 /* 0A7660 800ACC00 5005C00E */  rlwimi  r5, r0, 0x18, 0, 7
 /* 0A7664 800ACC04 90BE0000 */  stw     r5, 0(r30)
-/* 0A7668 800ACC08 38AD87C8 */  addi    r5, r13, GXTexImage2Ids-_SDA_BASE_
+/* 0A7668 800ACC08 38AD87C8 */  addi    r5, r13, GXTexImage2Ids@sda21
 /* 0A766C 800ACC0C 7C03F8AE */  lbzx    r0, r3, r31
-/* 0A7670 800ACC10 386D87D0 */  addi    r3, r13, GXTexImage3Ids-_SDA_BASE_
+/* 0A7670 800ACC10 386D87D0 */  addi    r3, r13, GXTexImage3Ids@sda21
 /* 0A7674 800ACC14 811E0004 */  lwz     r8, 4(r30)
 /* 0A7678 800ACC18 5008C00E */  rlwimi  r8, r0, 0x18, 0, 7
 /* 0A767C 800ACC1C 911E0004 */  stw     r8, 4(r30)
@@ -430,12 +430,12 @@ glabel GXLoadTexObjPreLoaded
 /* 0A7708 800ACCA8 881E001F */  lbz     r0, 0x1f(r30)
 /* 0A770C 800ACCAC 540007BD */  rlwinm. r0, r0, 0, 0x1e, 0x1e
 /* 0A7710 800ACCB0 40820038 */  bne     lbl_800ACCE8
-/* 0A7714 800ACCB4 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A7714 800ACCB4 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A7718 800ACCB8 807E0018 */  lwz     r3, 0x18(r30)
 /* 0A771C 800ACCBC 818404CC */  lwz     r12, 0x4cc(r4)
 /* 0A7720 800ACCC0 7D8803A6 */  mtlr    r12
 /* 0A7724 800ACCC4 4E800021 */  blrl    
-/* 0A7728 800ACCC8 388D87D8 */  addi    r4, r13, GXTexTlutIds-_SDA_BASE_
+/* 0A7728 800ACCC8 388D87D8 */  addi    r4, r13, GXTexTlutIds@sda21
 /* 0A772C 800ACCCC 80A30004 */  lwz     r5, 4(r3)
 /* 0A7730 800ACCD0 7C04F8AE */  lbzx    r0, r4, r31
 /* 0A7734 800ACCD4 5005C00E */  rlwimi  r5, r0, 0x18, 0, 7
@@ -444,7 +444,7 @@ glabel GXLoadTexObjPreLoaded
 /* 0A7740 800ACCE0 80030004 */  lwz     r0, 4(r3)
 /* 0A7744 800ACCE4 901D8000 */  stw     r0, -0x8000(r29)
 lbl_800ACCE8:
-/* 0A7748 800ACCE8 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0A7748 800ACCE8 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0A774C 800ACCEC 57E4103A */  slwi    r4, r31, 2
 /* 0A7750 800ACCF0 807E0008 */  lwz     r3, 8(r30)
 /* 0A7754 800ACCF4 38000000 */  li      r0, 0
@@ -473,7 +473,7 @@ glabel GXLoadTexObj
 /* 0A77A8 800ACD48 3BE40000 */  addi    r31, r4, 0
 /* 0A77AC 800ACD4C 93C10010 */  stw     r30, 0x10(r1)
 /* 0A77B0 800ACD50 3BC30000 */  addi    r30, r3, 0
-/* 0A77B4 800ACD54 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0A77B4 800ACD54 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0A77B8 800ACD58 818504C8 */  lwz     r12, 0x4c8(r5)
 /* 0A77BC 800ACD5C 7D8803A6 */  mtlr    r12
 /* 0A77C0 800ACD60 4E800021 */  blrl    
@@ -512,7 +512,7 @@ glabel GXLoadTlut
 /* 0A7834 800ACDD4 93C10010 */  stw     r30, 0x10(r1)
 /* 0A7838 800ACDD8 7C7E1B78 */  mr      r30, r3
 /* 0A783C 800ACDDC 38640000 */  addi    r3, r4, 0
-/* 0A7840 800ACDE0 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0A7840 800ACDE0 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0A7844 800ACDE4 818504CC */  lwz     r12, 0x4cc(r5)
 /* 0A7848 800ACDE8 7D8803A6 */  mtlr    r12
 /* 0A784C 800ACDEC 4E800021 */  blrl    
@@ -655,21 +655,21 @@ glabel GXInvalidateTexAll
 /* 0A7A2C 800ACFCC 4E800020 */  blr     
 
 glabel GXSetTexRegionCallback
-/* 0A7A30 800ACFD0 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A7A30 800ACFD0 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A7A34 800ACFD4 840404C8 */  lwzu    r0, 0x4c8(r4)
 /* 0A7A38 800ACFD8 90640000 */  stw     r3, 0(r4)
 /* 0A7A3C 800ACFDC 7C030378 */  mr      r3, r0
 /* 0A7A40 800ACFE0 4E800020 */  blr     
 
 glabel GXSetTlutRegionCallback
-/* 0A7A44 800ACFE4 80828400 */  lwz     r4, __GXData-_SDA2_BASE_(r2)
+/* 0A7A44 800ACFE4 80828400 */  lwz     r4, __GXData@sda21(r2)
 /* 0A7A48 800ACFE8 840404CC */  lwzu    r0, 0x4cc(r4)
 /* 0A7A4C 800ACFEC 90640000 */  stw     r3, 0(r4)
 /* 0A7A50 800ACFF0 7C030378 */  mr      r3, r0
 /* 0A7A54 800ACFF4 4E800020 */  blr     
 
 __SetSURegs:
-/* 0A7A58 800ACFF8 81028400 */  lwz     r8, __GXData-_SDA2_BASE_(r2)
+/* 0A7A58 800ACFF8 81028400 */  lwz     r8, __GXData@sda21(r2)
 /* 0A7A5C 800ACFFC 5463103A */  slwi    r3, r3, 2
 /* 0A7A60 800AD000 5480103A */  slwi    r0, r4, 2
 /* 0A7A64 800AD004 7C681A14 */  add     r3, r8, r3
@@ -715,7 +715,7 @@ glabel __GXSetSUTexRegs
 /* 0A7AFC 800AD09C 90010004 */  stw     r0, 4(r1)
 /* 0A7B00 800AD0A0 9421FFD8 */  stwu    r1, -0x28(r1)
 /* 0A7B04 800AD0A4 BF610014 */  stmw    r27, 0x14(r1)
-/* 0A7B08 800AD0A8 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A7B08 800AD0A8 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A7B0C 800AD0AC 80030594 */  lwz     r0, 0x594(r3)
 /* 0A7B10 800AD0B0 280000FF */  cmplwi  r0, 0xff
 /* 0A7B14 800AD0B4 4182014C */  beq     lbl_800AD200
@@ -738,30 +738,30 @@ lbl_800AD0EC:
 /* 0A7B50 800AD0F0 40800054 */  bge     lbl_800AD144
 /* 0A7B54 800AD0F4 48000040 */  b       lbl_800AD134
 lbl_800AD0F8:
-/* 0A7B58 800AD0F8 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A7B58 800AD0F8 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A7B5C 800AD0FC 80030120 */  lwz     r0, 0x120(r3)
 /* 0A7B60 800AD100 541D077E */  clrlwi  r29, r0, 0x1d
 /* 0A7B64 800AD104 541CEF7E */  rlwinm  r28, r0, 0x1d, 0x1d, 0x1f
 /* 0A7B68 800AD108 4800003C */  b       lbl_800AD144
 lbl_800AD10C:
-/* 0A7B6C 800AD10C 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A7B6C 800AD10C 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A7B70 800AD110 80030120 */  lwz     r0, 0x120(r3)
 /* 0A7B74 800AD114 541DD77E */  rlwinm  r29, r0, 0x1a, 0x1d, 0x1f
 /* 0A7B78 800AD118 541CBF7E */  rlwinm  r28, r0, 0x17, 0x1d, 0x1f
 /* 0A7B7C 800AD11C 48000028 */  b       lbl_800AD144
 lbl_800AD120:
-/* 0A7B80 800AD120 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A7B80 800AD120 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A7B84 800AD124 80030120 */  lwz     r0, 0x120(r3)
 /* 0A7B88 800AD128 541DA77E */  rlwinm  r29, r0, 0x14, 0x1d, 0x1f
 /* 0A7B8C 800AD12C 541C8F7E */  rlwinm  r28, r0, 0x11, 0x1d, 0x1f
 /* 0A7B90 800AD130 48000014 */  b       lbl_800AD144
 lbl_800AD134:
-/* 0A7B94 800AD134 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A7B94 800AD134 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A7B98 800AD138 80030120 */  lwz     r0, 0x120(r3)
 /* 0A7B9C 800AD13C 541D777E */  rlwinm  r29, r0, 0xe, 0x1d, 0x1f
 /* 0A7BA0 800AD140 541C5F7E */  rlwinm  r28, r0, 0xb, 0x1d, 0x1f
 lbl_800AD144:
-/* 0A7BA4 800AD144 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A7BA4 800AD144 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A7BA8 800AD148 38000001 */  li      r0, 1
 /* 0A7BAC 800AD14C 7C00E030 */  slw     r0, r0, r28
 /* 0A7BB0 800AD150 80630594 */  lwz     r3, 0x594(r3)
@@ -779,7 +779,7 @@ lbl_800AD16C:
 /* 0A7BD8 800AD178 3B7F0000 */  addi    r27, r31, 0
 /* 0A7BDC 800AD17C 4800007C */  b       lbl_800AD1F8
 lbl_800AD180:
-/* 0A7BE0 800AD180 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0A7BE0 800AD180 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0A7BE4 800AD184 387B0554 */  addi    r3, r27, 0x554
 /* 0A7BE8 800AD188 57E4083A */  rlwinm  r4, r31, 1, 0, 0x1d
 /* 0A7BEC 800AD18C 7C65182E */  lwzx    r3, r5, r3

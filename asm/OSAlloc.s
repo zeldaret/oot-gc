@@ -57,7 +57,7 @@ lbl_8009CEBC:
 
 glabel OSAllocFromHeap
 /* 097924 8009CEC4 1C03000C */  mulli   r0, r3, 0xc
-/* 097928 8009CEC8 806D8B18 */  lwz     r3, HeapArray-_SDA_BASE_(r13)
+/* 097928 8009CEC8 806D8B18 */  lwz     r3, HeapArray@sda21(r13)
 /* 09792C 8009CECC 7CA30214 */  add     r5, r3, r0
 /* 097930 8009CED0 3804003F */  addi    r0, r4, 0x3f
 /* 097934 8009CED4 80C50004 */  lwz     r6, 4(r5)
@@ -139,7 +139,7 @@ glabel OSFreeToHeap
 /* 097A2C 8009CFCC 1C03000C */  mulli   r0, r3, 0xc
 /* 097A30 8009CFD0 9421FFE8 */  stwu    r1, -0x18(r1)
 /* 097A34 8009CFD4 93E10014 */  stw     r31, 0x14(r1)
-/* 097A38 8009CFD8 808D8B18 */  lwz     r4, HeapArray-_SDA_BASE_(r13)
+/* 097A38 8009CFD8 808D8B18 */  lwz     r4, HeapArray@sda21(r13)
 /* 097A3C 8009CFDC 80660004 */  lwz     r3, 4(r6)
 /* 097A40 8009CFE0 7FE40214 */  add     r31, r4, r0
 /* 097A44 8009CFE4 28030000 */  cmplwi  r3, 0
@@ -169,22 +169,22 @@ lbl_8009D018:
 /* 097A98 8009D038 4E800020 */  blr     
 
 glabel OSSetCurrentHeap
-/* 097A9C 8009D03C 800D8740 */  lwz     r0, __OSCurrHeap-_SDA_BASE_(r13)
-/* 097AA0 8009D040 906D8740 */  stw     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 097A9C 8009D03C 800D8740 */  lwz     r0, __OSCurrHeap@sda21(r13)
+/* 097AA0 8009D040 906D8740 */  stw     r3, __OSCurrHeap@sda21(r13)
 /* 097AA4 8009D044 7C030378 */  mr      r3, r0
 /* 097AA8 8009D048 4E800020 */  blr     
 
 glabel OSInitAlloc
 /* 097AAC 8009D04C 1CE5000C */  mulli   r7, r5, 0xc
-/* 097AB0 8009D050 906D8B18 */  stw     r3, HeapArray-_SDA_BASE_(r13)
-/* 097AB4 8009D054 90AD8B1C */  stw     r5, NumHeaps-_SDA_BASE_(r13)
+/* 097AB0 8009D050 906D8B18 */  stw     r3, HeapArray@sda21(r13)
+/* 097AB4 8009D054 90AD8B1C */  stw     r5, NumHeaps@sda21(r13)
 /* 097AB8 8009D058 38C00000 */  li      r6, 0
 /* 097ABC 8009D05C 38660000 */  addi    r3, r6, 0
 /* 097AC0 8009D060 39000000 */  li      r8, 0
 /* 097AC4 8009D064 38A0FFFF */  li      r5, -1
 /* 097AC8 8009D068 48000020 */  b       lbl_8009D088
 lbl_8009D06C:
-/* 097ACC 8009D06C 800D8B18 */  lwz     r0, HeapArray-_SDA_BASE_(r13)
+/* 097ACC 8009D06C 800D8B18 */  lwz     r0, HeapArray@sda21(r13)
 /* 097AD0 8009D070 39080001 */  addi    r8, r8, 1
 /* 097AD4 8009D074 7D203214 */  add     r9, r0, r6
 /* 097AD8 8009D078 90A90000 */  stw     r5, 0(r9)
@@ -192,24 +192,24 @@ lbl_8009D06C:
 /* 097AE0 8009D080 90690008 */  stw     r3, 8(r9)
 /* 097AE4 8009D084 90690004 */  stw     r3, 4(r9)
 lbl_8009D088:
-/* 097AE8 8009D088 800D8B1C */  lwz     r0, NumHeaps-_SDA_BASE_(r13)
+/* 097AE8 8009D088 800D8B1C */  lwz     r0, NumHeaps@sda21(r13)
 /* 097AEC 8009D08C 7C080000 */  cmpw    r8, r0
 /* 097AF0 8009D090 4180FFDC */  blt     lbl_8009D06C
-/* 097AF4 8009D094 806D8B18 */  lwz     r3, HeapArray-_SDA_BASE_(r13)
+/* 097AF4 8009D094 806D8B18 */  lwz     r3, HeapArray@sda21(r13)
 /* 097AF8 8009D098 54800034 */  rlwinm  r0, r4, 0, 0, 0x1a
 /* 097AFC 8009D09C 3880FFFF */  li      r4, -1
-/* 097B00 8009D0A0 900D8B24 */  stw     r0, ArenaEnd-_SDA_BASE_(r13)
+/* 097B00 8009D0A0 900D8B24 */  stw     r0, ArenaEnd@sda21(r13)
 /* 097B04 8009D0A4 7C633A14 */  add     r3, r3, r7
 /* 097B08 8009D0A8 3803001F */  addi    r0, r3, 0x1f
-/* 097B0C 8009D0AC 908D8740 */  stw     r4, __OSCurrHeap-_SDA_BASE_(r13)
+/* 097B0C 8009D0AC 908D8740 */  stw     r4, __OSCurrHeap@sda21(r13)
 /* 097B10 8009D0B0 54030034 */  rlwinm  r3, r0, 0, 0, 0x1a
-/* 097B14 8009D0B4 906D8B20 */  stw     r3, ArenaStart-_SDA_BASE_(r13)
+/* 097B14 8009D0B4 906D8B20 */  stw     r3, ArenaStart@sda21(r13)
 /* 097B18 8009D0B8 4E800020 */  blr     
 
 glabel OSCreateHeap
-/* 097B1C 8009D0BC 80CD8B1C */  lwz     r6, NumHeaps-_SDA_BASE_(r13)
+/* 097B1C 8009D0BC 80CD8B1C */  lwz     r6, NumHeaps@sda21(r13)
 /* 097B20 8009D0C0 3803001F */  addi    r0, r3, 0x1f
-/* 097B24 8009D0C4 80AD8B18 */  lwz     r5, HeapArray-_SDA_BASE_(r13)
+/* 097B24 8009D0C4 80AD8B18 */  lwz     r5, HeapArray@sda21(r13)
 /* 097B28 8009D0C8 54070034 */  rlwinm  r7, r0, 0, 0, 0x1a
 /* 097B2C 8009D0CC 2C060000 */  cmpwi   r6, 0
 /* 097B30 8009D0D0 7CC903A6 */  mtctr   r6
@@ -246,7 +246,7 @@ glabel OSCheckHeap
 /* 097B98 8009D138 38000000 */  li      r0, 0
 /* 097B9C 8009D13C 9421FFF8 */  stwu    r1, -8(r1)
 /* 097BA0 8009D140 38800000 */  li      r4, 0
-/* 097BA4 8009D144 80ED8B18 */  lwz     r7, HeapArray-_SDA_BASE_(r13)
+/* 097BA4 8009D144 80ED8B18 */  lwz     r7, HeapArray@sda21(r13)
 /* 097BA8 8009D148 28070000 */  cmplwi  r7, 0
 /* 097BAC 8009D14C 4082001C */  bne     lbl_8009D168
 /* 097BB0 8009D150 38660000 */  addi    r3, r6, 0
@@ -258,7 +258,7 @@ glabel OSCheckHeap
 lbl_8009D168:
 /* 097BC8 8009D168 2C030000 */  cmpwi   r3, 0
 /* 097BCC 8009D16C 41800010 */  blt     lbl_8009D17C
-/* 097BD0 8009D170 80AD8B1C */  lwz     r5, NumHeaps-_SDA_BASE_(r13)
+/* 097BD0 8009D170 80AD8B1C */  lwz     r5, NumHeaps@sda21(r13)
 /* 097BD4 8009D174 7C032800 */  cmpw    r3, r5
 /* 097BD8 8009D178 4180001C */  blt     lbl_8009D194
 lbl_8009D17C:
@@ -294,9 +294,9 @@ lbl_8009D1C0:
 /* 097C48 8009D1E8 3860FFFF */  li      r3, -1
 /* 097C4C 8009D1EC 4800028C */  b       lbl_8009D478
 lbl_8009D1F0:
-/* 097C50 8009D1F0 812D8B20 */  lwz     r9, ArenaStart-_SDA_BASE_(r13)
+/* 097C50 8009D1F0 812D8B20 */  lwz     r9, ArenaStart@sda21(r13)
 /* 097C54 8009D1F4 7CE83B78 */  mr      r8, r7
-/* 097C58 8009D1F8 814D8B24 */  lwz     r10, ArenaEnd-_SDA_BASE_(r13)
+/* 097C58 8009D1F8 814D8B24 */  lwz     r10, ArenaEnd@sda21(r13)
 /* 097C5C 8009D1FC 480000F0 */  b       lbl_8009D2EC
 lbl_8009D200:
 /* 097C60 8009D200 7C094040 */  cmplw   r9, r8

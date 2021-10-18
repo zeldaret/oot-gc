@@ -7,18 +7,18 @@
 
 glabel __DVDFSInit
 /* 0AD168 800B2708 3C608000 */  lis     r3, 0x8000
-/* 0AD16C 800B270C 906D8D10 */  stw     r3, BootInfo-_SDA_BASE_(r13)
+/* 0AD16C 800B270C 906D8D10 */  stw     r3, BootInfo@sda21(r13)
 /* 0AD170 800B2710 80030038 */  lwz     r0, 0x38(r3)
-/* 0AD174 800B2714 900D8D14 */  stw     r0, FstStart-_SDA_BASE_(r13)
-/* 0AD178 800B2718 806D8D14 */  lwz     r3, FstStart-_SDA_BASE_(r13)
+/* 0AD174 800B2714 900D8D14 */  stw     r0, FstStart@sda21(r13)
+/* 0AD178 800B2718 806D8D14 */  lwz     r3, FstStart@sda21(r13)
 /* 0AD17C 800B271C 28030000 */  cmplwi  r3, 0
 /* 0AD180 800B2720 4D820020 */  beqlr   
 /* 0AD184 800B2724 80030008 */  lwz     r0, 8(r3)
-/* 0AD188 800B2728 900D8D1C */  stw     r0, MaxEntryNum-_SDA_BASE_(r13)
-/* 0AD18C 800B272C 800D8D1C */  lwz     r0, MaxEntryNum-_SDA_BASE_(r13)
+/* 0AD188 800B2728 900D8D1C */  stw     r0, MaxEntryNum@sda21(r13)
+/* 0AD18C 800B272C 800D8D1C */  lwz     r0, MaxEntryNum@sda21(r13)
 /* 0AD190 800B2730 1C00000C */  mulli   r0, r0, 0xc
 /* 0AD194 800B2734 7C030214 */  add     r0, r3, r0
-/* 0AD198 800B2738 900D8D18 */  stw     r0, FstStringStart-_SDA_BASE_(r13)
+/* 0AD198 800B2738 900D8D18 */  stw     r0, FstStringStart@sda21(r13)
 /* 0AD19C 800B273C 4E800020 */  blr     
 
 glabel DVDConvertPathToEntrynum
@@ -30,7 +30,7 @@ glabel DVDConvertPathToEntrynum
 /* 0AD1B4 800B2754 3C60800F */  lis     r3, D_800F22F8@ha
 /* 0AD1B8 800B2758 3B370000 */  addi    r25, r23, 0
 /* 0AD1BC 800B275C 3BE322F8 */  addi    r31, r3, D_800F22F8@l
-/* 0AD1C0 800B2760 834D8D20 */  lwz     r26, currentDirectory-_SDA_BASE_(r13)
+/* 0AD1C0 800B2760 834D8D20 */  lwz     r26, currentDirectory@sda21(r13)
 lbl_800B2764:
 /* 0AD1C4 800B2764 88770000 */  lbz     r3, 0(r23)
 /* 0AD1C8 800B2768 7C600775 */  extsb.  r0, r3
@@ -55,7 +55,7 @@ lbl_800B2790:
 /* 0AD20C 800B27AC 2C03002F */  cmpwi   r3, 0x2f
 /* 0AD210 800B27B0 4082001C */  bne     lbl_800B27CC
 /* 0AD214 800B27B4 1C7A000C */  mulli   r3, r26, 0xc
-/* 0AD218 800B27B8 808D8D14 */  lwz     r4, FstStart-_SDA_BASE_(r13)
+/* 0AD218 800B27B8 808D8D14 */  lwz     r4, FstStart@sda21(r13)
 /* 0AD21C 800B27BC 38030004 */  addi    r0, r3, 4
 /* 0AD220 800B27C0 7F44002E */  lwzx    r26, r4, r0
 /* 0AD224 800B27C4 3AF70003 */  addi    r23, r23, 3
@@ -64,7 +64,7 @@ lbl_800B27CC:
 /* 0AD22C 800B27CC 7C600775 */  extsb.  r0, r3
 /* 0AD230 800B27D0 40820038 */  bne     lbl_800B2808
 /* 0AD234 800B27D4 1C1A000C */  mulli   r0, r26, 0xc
-/* 0AD238 800B27D8 806D8D14 */  lwz     r3, FstStart-_SDA_BASE_(r13)
+/* 0AD238 800B27D8 806D8D14 */  lwz     r3, FstStart@sda21(r13)
 /* 0AD23C 800B27DC 7C630214 */  add     r3, r3, r0
 /* 0AD240 800B27E0 80630004 */  lwz     r3, 4(r3)
 /* 0AD244 800B27E4 4800023C */  b       lbl_800B2A20
@@ -79,7 +79,7 @@ lbl_800B27F8:
 /* 0AD260 800B2800 7F43D378 */  mr      r3, r26
 /* 0AD264 800B2804 4800021C */  b       lbl_800B2A20
 lbl_800B2808:
-/* 0AD268 800B2808 800D8D24 */  lwz     r0, __DVDLongFileNameFlag-_SDA_BASE_(r13)
+/* 0AD268 800B2808 800D8D24 */  lwz     r0, __DVDLongFileNameFlag@sda21(r13)
 /* 0AD26C 800B280C 28000000 */  cmplwi  r0, 0
 /* 0AD270 800B2810 408200AC */  bne     lbl_800B28BC
 /* 0AD274 800B2814 3B970000 */  addi    r28, r23, 0
@@ -128,7 +128,7 @@ lbl_800B2898:
 /* 0AD300 800B28A0 38BF0000 */  addi    r5, r31, 0
 /* 0AD304 800B28A4 4CC63182 */  crclr   6
 /* 0AD308 800B28A8 38D90000 */  addi    r6, r25, 0
-/* 0AD30C 800B28AC 386D8810 */  addi    r3, r13, D_801354F0-_SDA_BASE_
+/* 0AD30C 800B28AC 386D8810 */  addi    r3, r13, D_801354F0@sda21
 /* 0AD310 800B28B0 3880017F */  li      r4, 0x17f
 /* 0AD314 800B28B4 4BFEBDC5 */  bl      OSPanic
 /* 0AD318 800B28B8 48000028 */  b       lbl_800B28E0
@@ -172,7 +172,7 @@ lbl_800B2924:
 /* 0AD38C 800B292C 2C1E0001 */  cmpwi   r30, 1
 /* 0AD390 800B2930 41820080 */  beq     lbl_800B29B0
 lbl_800B2934:
-/* 0AD394 800B2934 806D8D18 */  lwz     r3, FstStringStart-_SDA_BASE_(r13)
+/* 0AD394 800B2934 806D8D18 */  lwz     r3, FstStringStart@sda21(r13)
 /* 0AD398 800B2938 5480023E */  clrlwi  r0, r4, 8
 /* 0AD39C 800B293C 3AB70000 */  addi    r21, r23, 0
 /* 0AD3A0 800B2940 7E830214 */  add     r20, r3, r0
@@ -209,7 +209,7 @@ lbl_800B29A8:
 /* 0AD408 800B29A8 2C000001 */  cmpwi   r0, 1
 /* 0AD40C 800B29AC 41820058 */  beq     lbl_800B2A04
 lbl_800B29B0:
-/* 0AD410 800B29B0 800D8D14 */  lwz     r0, FstStart-_SDA_BASE_(r13)
+/* 0AD410 800B29B0 800D8D14 */  lwz     r0, FstStart@sda21(r13)
 /* 0AD414 800B29B4 7C60E214 */  add     r3, r0, r28
 /* 0AD418 800B29B8 80030000 */  lwz     r0, 0(r3)
 /* 0AD41C 800B29BC 5400000F */  rlwinm. r0, r0, 0, 0, 7
@@ -228,7 +228,7 @@ lbl_800B29E0:
 lbl_800B29E4:
 /* 0AD444 800B29E4 7C1A0378 */  mr      r26, r0
 lbl_800B29E8:
-/* 0AD448 800B29E8 806D8D14 */  lwz     r3, FstStart-_SDA_BASE_(r13)
+/* 0AD448 800B29E8 806D8D14 */  lwz     r3, FstStart@sda21(r13)
 /* 0AD44C 800B29EC 38030008 */  addi    r0, r3, 8
 /* 0AD450 800B29F0 7C1D002E */  lwzx    r0, r29, r0
 /* 0AD454 800B29F4 7C1A0040 */  cmplw   r26, r0
@@ -275,7 +275,7 @@ glabel DVDOpen
 /* 0AD4E4 800B2A84 48000060 */  b       lbl_800B2AE4
 lbl_800B2A88:
 /* 0AD4E8 800B2A88 1CA3000C */  mulli   r5, r3, 0xc
-/* 0AD4EC 800B2A8C 806D8D14 */  lwz     r3, FstStart-_SDA_BASE_(r13)
+/* 0AD4EC 800B2A8C 806D8D14 */  lwz     r3, FstStart@sda21(r13)
 /* 0AD4F0 800B2A90 7C03282E */  lwzx    r0, r3, r5
 /* 0AD4F4 800B2A94 5400000F */  rlwinm. r0, r0, 0, 0, 7
 /* 0AD4F8 800B2A98 4082000C */  bne     lbl_800B2AA4
@@ -294,7 +294,7 @@ lbl_800B2AB8:
 /* 0AD520 800B2AC0 38000000 */  li      r0, 0
 /* 0AD524 800B2AC4 38600001 */  li      r3, 1
 /* 0AD528 800B2AC8 909F0030 */  stw     r4, 0x30(r31)
-/* 0AD52C 800B2ACC 808D8D14 */  lwz     r4, FstStart-_SDA_BASE_(r13)
+/* 0AD52C 800B2ACC 808D8D14 */  lwz     r4, FstStart@sda21(r13)
 /* 0AD530 800B2AD0 7C842A14 */  add     r4, r4, r5
 /* 0AD534 800B2AD4 80840008 */  lwz     r4, 8(r4)
 /* 0AD538 800B2AD8 909F0034 */  stw     r4, 0x34(r31)
@@ -334,9 +334,9 @@ entryToPath:
 /* 0AD5AC 800B2B4C 38600000 */  li      r3, 0
 /* 0AD5B0 800B2B50 48000110 */  b       lbl_800B2C60
 lbl_800B2B54:
-/* 0AD5B4 800B2B54 808D8D14 */  lwz     r4, FstStart-_SDA_BASE_(r13)
+/* 0AD5B4 800B2B54 808D8D14 */  lwz     r4, FstStart@sda21(r13)
 /* 0AD5B8 800B2B58 1C63000C */  mulli   r3, r3, 0xc
-/* 0AD5BC 800B2B5C 80CD8D18 */  lwz     r6, FstStringStart-_SDA_BASE_(r13)
+/* 0AD5BC 800B2B5C 80CD8D18 */  lwz     r6, FstStringStart@sda21(r13)
 /* 0AD5C0 800B2B60 38A40004 */  addi    r5, r4, 4
 /* 0AD5C4 800B2B64 7C04182E */  lwzx    r0, r4, r3
 /* 0AD5C8 800B2B68 7C65182E */  lwzx    r3, r5, r3
@@ -432,7 +432,7 @@ glabel DVDGetCurrentDir
 /* 0AD6FC 800B2C9C 93A10014 */  stw     r29, 0x14(r1)
 /* 0AD700 800B2CA0 3BA30000 */  addi    r29, r3, 0
 /* 0AD704 800B2CA4 389D0000 */  addi    r4, r29, 0
-/* 0AD708 800B2CA8 83ED8D20 */  lwz     r31, currentDirectory-_SDA_BASE_(r13)
+/* 0AD708 800B2CA8 83ED8D20 */  lwz     r31, currentDirectory@sda21(r13)
 /* 0AD70C 800B2CAC 387F0000 */  addi    r3, r31, 0
 /* 0AD710 800B2CB0 4BFFFE71 */  bl      entryToPath
 /* 0AD714 800B2CB4 7C03F040 */  cmplw   r3, r30
@@ -443,7 +443,7 @@ glabel DVDGetCurrentDir
 /* 0AD728 800B2CC8 4800005C */  b       lbl_800B2D24
 lbl_800B2CCC:
 /* 0AD72C 800B2CCC 1C1F000C */  mulli   r0, r31, 0xc
-/* 0AD730 800B2CD0 808D8D14 */  lwz     r4, FstStart-_SDA_BASE_(r13)
+/* 0AD730 800B2CD0 808D8D14 */  lwz     r4, FstStart@sda21(r13)
 /* 0AD734 800B2CD4 7C04002E */  lwzx    r0, r4, r0
 /* 0AD738 800B2CD8 5400000F */  rlwinm. r0, r0, 0, 0, 7
 /* 0AD73C 800B2CDC 4082000C */  bne     lbl_800B2CE8
@@ -497,7 +497,7 @@ lbl_800B2D7C:
 /* 0AD7DC 800B2D7C 3C60800F */  lis     r3, D_800F23F8@ha
 /* 0AD7E0 800B2D80 4CC63182 */  crclr   6
 /* 0AD7E4 800B2D84 38A323F8 */  addi    r5, r3, D_800F23F8@l
-/* 0AD7E8 800B2D88 386D8810 */  addi    r3, r13, D_801354F0-_SDA_BASE_
+/* 0AD7E8 800B2D88 386D8810 */  addi    r3, r13, D_801354F0@sda21
 /* 0AD7EC 800B2D8C 388002EA */  li      r4, 0x2ea
 /* 0AD7F0 800B2D90 4BFEB8E9 */  bl      OSPanic
 lbl_800B2D94:
@@ -511,7 +511,7 @@ lbl_800B2DAC:
 /* 0AD80C 800B2DAC 3C60800F */  lis     r3, D_800F23F8@ha
 /* 0AD810 800B2DB0 4CC63182 */  crclr   6
 /* 0AD814 800B2DB4 38A323F8 */  addi    r5, r3, D_800F23F8@l
-/* 0AD818 800B2DB8 386D8810 */  addi    r3, r13, D_801354F0-_SDA_BASE_
+/* 0AD818 800B2DB8 386D8810 */  addi    r3, r13, D_801354F0@sda21
 /* 0AD81C 800B2DBC 388002F0 */  li      r4, 0x2f0
 /* 0AD820 800B2DC0 4BFEB8B9 */  bl      OSPanic
 lbl_800B2DC4:
@@ -565,7 +565,7 @@ lbl_800B2E68:
 /* 0AD8C8 800B2E68 3C60800F */  lis     r3, D_800F242C@ha
 /* 0AD8CC 800B2E6C 4CC63182 */  crclr   6
 /* 0AD8D0 800B2E70 38A3242C */  addi    r5, r3, D_800F242C@l
-/* 0AD8D4 800B2E74 386D8810 */  addi    r3, r13, D_801354F0-_SDA_BASE_
+/* 0AD8D4 800B2E74 386D8810 */  addi    r3, r13, D_801354F0@sda21
 /* 0AD8D8 800B2E78 38800330 */  li      r4, 0x330
 /* 0AD8DC 800B2E7C 4BFEB7FD */  bl      OSPanic
 lbl_800B2E80:
@@ -579,7 +579,7 @@ lbl_800B2E98:
 /* 0AD8F8 800B2E98 3C60800F */  lis     r3, D_800F242C@ha
 /* 0AD8FC 800B2E9C 4CC63182 */  crclr   6
 /* 0AD900 800B2EA0 38A3242C */  addi    r5, r3, D_800F242C@l
-/* 0AD904 800B2EA4 386D8810 */  addi    r3, r13, D_801354F0-_SDA_BASE_
+/* 0AD904 800B2EA4 386D8810 */  addi    r3, r13, D_801354F0@sda21
 /* 0AD908 800B2EA8 38800336 */  li      r4, 0x336
 /* 0AD90C 800B2EAC 4BFEB7CD */  bl      OSPanic
 lbl_800B2EB0:
@@ -616,7 +616,7 @@ lbl_800B2F10:
 /* 0AD978 800B2F18 3BE0FFFD */  li      r31, -3
 /* 0AD97C 800B2F1C 48000010 */  b       lbl_800B2F2C
 lbl_800B2F20:
-/* 0AD980 800B2F20 386D8D28 */  addi    r3, r13, __DVDThreadQueue-_SDA_BASE_
+/* 0AD980 800B2F20 386D8D28 */  addi    r3, r13, __DVDThreadQueue@sda21
 /* 0AD984 800B2F24 4BFEF0E9 */  bl      OSSleepThread
 /* 0AD988 800B2F28 4BFFFFC4 */  b       lbl_800B2EEC
 lbl_800B2F2C:
@@ -632,7 +632,7 @@ lbl_800B2F38:
 
 cbForReadSync:
 /* 0AD9AC 800B2F4C 7C0802A6 */  mflr    r0
-/* 0AD9B0 800B2F50 386D8D28 */  addi    r3, r13, __DVDThreadQueue-_SDA_BASE_
+/* 0AD9B0 800B2F50 386D8D28 */  addi    r3, r13, __DVDThreadQueue@sda21
 /* 0AD9B4 800B2F54 90010004 */  stw     r0, 4(r1)
 /* 0AD9B8 800B2F58 9421FFF8 */  stwu    r1, -8(r1)
 /* 0AD9BC 800B2F5C 4BFEF19D */  bl      OSWakeupThread

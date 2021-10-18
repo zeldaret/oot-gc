@@ -6,7 +6,7 @@
 .balign 4
 
 glabel GXSetGPMetric
-/* 0A972C 800AECCC 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0A972C 800AECCC 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0A9730 800AECD0 8005059C */  lwz     r0, 0x59c(r5)
 /* 0A9734 800AECD4 2C000022 */  cmpwi   r0, 0x22
 /* 0A9738 800AECD8 4182002C */  beq     lbl_800AED04
@@ -44,7 +44,7 @@ lbl_800AED3C:
 /* 0A97A8 800AED48 3C002400 */  lis     r0, 0x2400
 /* 0A97AC 800AED4C 90058000 */  stw     r0, -0x8000(r5)
 lbl_800AED50:
-/* 0A97B0 800AED50 80C28400 */  lwz     r6, __GXData-_SDA2_BASE_(r2)
+/* 0A97B0 800AED50 80C28400 */  lwz     r6, __GXData@sda21(r2)
 /* 0A97B4 800AED54 800605A0 */  lwz     r0, 0x5a0(r6)
 /* 0A97B8 800AED58 2C000015 */  cmpwi   r0, 0x15
 /* 0A97BC 800AED5C 4182002C */  beq     lbl_800AED88
@@ -80,11 +80,11 @@ lbl_800AEDA0:
 /* 0A9828 800AEDC8 90058000 */  stw     r0, -0x8000(r5)
 /* 0A982C 800AEDCC 48000010 */  b       lbl_800AEDDC
 lbl_800AEDD0:
-/* 0A9830 800AEDD0 80AD8C3C */  lwz     r5, __cpReg-_SDA_BASE_(r13)
+/* 0A9830 800AEDD0 80AD8C3C */  lwz     r5, __cpReg@sda21(r13)
 /* 0A9834 800AEDD4 38000000 */  li      r0, 0
 /* 0A9838 800AEDD8 B0050006 */  sth     r0, 6(r5)
 lbl_800AEDDC:
-/* 0A983C 800AEDDC 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0A983C 800AEDDC 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0A9840 800AEDE0 9065059C */  stw     r3, 0x59c(r5)
 /* 0A9844 800AEDE4 8005059C */  lwz     r0, 0x59c(r5)
 /* 0A9848 800AEDE8 28000023 */  cmplwi  r0, 0x23
@@ -387,7 +387,7 @@ glabel lbl_800AF1F0
 /* 0A9C60 800AF200 3803C1AD */  addi    r0, r3, -15955
 /* 0A9C64 800AF204 90058000 */  stw     r0, -0x8000(r5)
 glabel lbl_800AF208
-/* 0A9C68 800AF208 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A9C68 800AF208 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A9C6C 800AF20C 908305A0 */  stw     r4, 0x5a0(r3)
 /* 0A9C70 800AF210 800305A0 */  lwz     r0, 0x5a0(r3)
 /* 0A9C74 800AF214 28000016 */  cmplwi  r0, 0x16
@@ -582,32 +582,32 @@ glabel lbl_800AF49C
 /* 0A9F20 800AF4C0 90048000 */  stw     r0, -0x8000(r4)
 /* 0A9F24 800AF4C4 48000040 */  b       lbl_800AF504
 glabel lbl_800AF4C8
-/* 0A9F28 800AF4C8 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0A9F28 800AF4C8 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0A9F2C 800AF4CC 38000002 */  li      r0, 2
 /* 0A9F30 800AF4D0 B0030006 */  sth     r0, 6(r3)
 /* 0A9F34 800AF4D4 48000030 */  b       lbl_800AF504
 glabel lbl_800AF4D8
-/* 0A9F38 800AF4D8 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0A9F38 800AF4D8 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0A9F3C 800AF4DC 38000003 */  li      r0, 3
 /* 0A9F40 800AF4E0 B0030006 */  sth     r0, 6(r3)
 /* 0A9F44 800AF4E4 48000020 */  b       lbl_800AF504
 glabel lbl_800AF4E8
-/* 0A9F48 800AF4E8 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0A9F48 800AF4E8 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0A9F4C 800AF4EC 38000004 */  li      r0, 4
 /* 0A9F50 800AF4F0 B0030006 */  sth     r0, 6(r3)
 /* 0A9F54 800AF4F4 48000010 */  b       lbl_800AF504
 glabel lbl_800AF4F8
-/* 0A9F58 800AF4F8 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0A9F58 800AF4F8 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0A9F5C 800AF4FC 38000005 */  li      r0, 5
 /* 0A9F60 800AF500 B0030006 */  sth     r0, 6(r3)
 glabel lbl_800AF504
-/* 0A9F64 800AF504 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0A9F64 800AF504 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0A9F68 800AF508 38000000 */  li      r0, 0
 /* 0A9F6C 800AF50C B0030002 */  sth     r0, 2(r3)
 /* 0A9F70 800AF510 4E800020 */  blr     
 
 glabel GXReadGPMetric
-/* 0A9F74 800AF514 814D8C3C */  lwz     r10, __cpReg-_SDA_BASE_(r13)
+/* 0A9F74 800AF514 814D8C3C */  lwz     r10, __cpReg@sda21(r13)
 /* 0A9F78 800AF518 390A0042 */  addi    r8, r10, 0x42
 /* 0A9F7C 800AF51C A0CA0042 */  lhz     r6, 0x42(r10)
 /* 0A9F80 800AF520 38EA0040 */  addi    r7, r10, 0x40
@@ -652,7 +652,7 @@ lbl_800AF59C:
 /* 0AA00C 800AF5AC 4082FFF0 */  bne     lbl_800AF59C
 /* 0AA010 800AF5B0 5520801E */  slwi    r0, r9, 0x10
 /* 0AA014 800AF5B4 7C092B78 */  or      r9, r0, r5
-/* 0AA018 800AF5B8 80A28400 */  lwz     r5, __GXData-_SDA2_BASE_(r2)
+/* 0AA018 800AF5B8 80A28400 */  lwz     r5, __GXData@sda21(r2)
 /* 0AA01C 800AF5BC 8005059C */  lwz     r0, 0x59c(r5)
 /* 0AA020 800AF5C0 2C00000A */  cmpwi   r0, 0xa
 /* 0AA024 800AF5C4 41820024 */  beq     lbl_800AF5E8
@@ -681,7 +681,7 @@ lbl_800AF60C:
 /* 0AA06C 800AF60C 38000000 */  li      r0, 0
 /* 0AA070 800AF610 90030000 */  stw     r0, 0(r3)
 lbl_800AF614:
-/* 0AA074 800AF614 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0AA074 800AF614 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0AA078 800AF618 800305A0 */  lwz     r0, 0x5a0(r3)
 /* 0AA07C 800AF61C 28000016 */  cmplwi  r0, 0x16
 /* 0AA080 800AF620 41810090 */  bgt     lbl_800AF6B0
@@ -734,7 +734,7 @@ lbl_800AF6B0:
 /* 0AA118 800AF6B8 4E800020 */  blr     
 
 glabel GXClearGPMetric
-/* 0AA11C 800AF6BC 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0AA11C 800AF6BC 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0AA120 800AF6C0 38000004 */  li      r0, 4
 /* 0AA124 800AF6C4 B0030004 */  sth     r0, 4(r3)
 /* 0AA128 800AF6C8 4E800020 */  blr     
@@ -773,7 +773,7 @@ glabel GXReadMemMetric
 /* 0AA194 800AF734 93810050 */  stw     r28, 0x50(r1)
 /* 0AA198 800AF738 81810068 */  lwz     r12, 0x68(r1)
 /* 0AA19C 800AF73C 8161006C */  lwz     r11, 0x6c(r1)
-/* 0AA1A0 800AF740 83AD8C44 */  lwz     r29, __memReg-_SDA_BASE_(r13)
+/* 0AA1A0 800AF740 83AD8C44 */  lwz     r29, __memReg@sda21(r13)
 /* 0AA1A4 800AF744 3B9D0032 */  addi    r28, r29, 0x32
 /* 0AA1A8 800AF748 A3DD0032 */  lhz     r30, 0x32(r29)
 /* 0AA1AC 800AF74C 3BBD0034 */  addi    r29, r29, 0x34
@@ -786,7 +786,7 @@ lbl_800AF750:
 /* 0AA1C4 800AF764 57C0801E */  slwi    r0, r30, 0x10
 /* 0AA1C8 800AF768 7C00FB78 */  or      r0, r0, r31
 /* 0AA1CC 800AF76C 90030000 */  stw     r0, 0(r3)
-/* 0AA1D0 800AF770 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA1D0 800AF770 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA1D4 800AF774 3B830036 */  addi    r28, r3, 0x36
 /* 0AA1D8 800AF778 A3C30036 */  lhz     r30, 0x36(r3)
 /* 0AA1DC 800AF77C 3BA30038 */  addi    r29, r3, 0x38
@@ -799,7 +799,7 @@ lbl_800AF780:
 /* 0AA1F4 800AF794 57C0801E */  slwi    r0, r30, 0x10
 /* 0AA1F8 800AF798 7C001B78 */  or      r0, r0, r3
 /* 0AA1FC 800AF79C 90040000 */  stw     r0, 0(r4)
-/* 0AA200 800AF7A0 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA200 800AF7A0 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA204 800AF7A4 3B83003A */  addi    r28, r3, 0x3a
 /* 0AA208 800AF7A8 A083003A */  lhz     r4, 0x3a(r3)
 /* 0AA20C 800AF7AC 3BA3003C */  addi    r29, r3, 0x3c
@@ -812,7 +812,7 @@ lbl_800AF7B0:
 /* 0AA224 800AF7C4 5480801E */  slwi    r0, r4, 0x10
 /* 0AA228 800AF7C8 7C001B78 */  or      r0, r0, r3
 /* 0AA22C 800AF7CC 90050000 */  stw     r0, 0(r5)
-/* 0AA230 800AF7D0 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA230 800AF7D0 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA234 800AF7D4 3B83003E */  addi    r28, r3, 0x3e
 /* 0AA238 800AF7D8 A083003E */  lhz     r4, 0x3e(r3)
 /* 0AA23C 800AF7DC 38A30040 */  addi    r5, r3, 0x40
@@ -825,7 +825,7 @@ lbl_800AF7E0:
 /* 0AA254 800AF7F4 5480801E */  slwi    r0, r4, 0x10
 /* 0AA258 800AF7F8 7C001B78 */  or      r0, r0, r3
 /* 0AA25C 800AF7FC 90060000 */  stw     r0, 0(r6)
-/* 0AA260 800AF800 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA260 800AF800 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA264 800AF804 38C30042 */  addi    r6, r3, 0x42
 /* 0AA268 800AF808 A0830042 */  lhz     r4, 0x42(r3)
 /* 0AA26C 800AF80C 38A30044 */  addi    r5, r3, 0x44
@@ -838,7 +838,7 @@ lbl_800AF810:
 /* 0AA284 800AF824 5480801E */  slwi    r0, r4, 0x10
 /* 0AA288 800AF828 7C001B78 */  or      r0, r0, r3
 /* 0AA28C 800AF82C 90070000 */  stw     r0, 0(r7)
-/* 0AA290 800AF830 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA290 800AF830 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA294 800AF834 38C30046 */  addi    r6, r3, 0x46
 /* 0AA298 800AF838 A0830046 */  lhz     r4, 0x46(r3)
 /* 0AA29C 800AF83C 38A30048 */  addi    r5, r3, 0x48
@@ -851,7 +851,7 @@ lbl_800AF840:
 /* 0AA2B4 800AF854 5480801E */  slwi    r0, r4, 0x10
 /* 0AA2B8 800AF858 7C001B78 */  or      r0, r0, r3
 /* 0AA2BC 800AF85C 90080000 */  stw     r0, 0(r8)
-/* 0AA2C0 800AF860 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA2C0 800AF860 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA2C4 800AF864 38C3004A */  addi    r6, r3, 0x4a
 /* 0AA2C8 800AF868 A083004A */  lhz     r4, 0x4a(r3)
 /* 0AA2CC 800AF86C 38A3004C */  addi    r5, r3, 0x4c
@@ -864,7 +864,7 @@ lbl_800AF870:
 /* 0AA2E4 800AF884 5480801E */  slwi    r0, r4, 0x10
 /* 0AA2E8 800AF888 7C001B78 */  or      r0, r0, r3
 /* 0AA2EC 800AF88C 90090000 */  stw     r0, 0(r9)
-/* 0AA2F0 800AF890 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA2F0 800AF890 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA2F4 800AF894 38C3004E */  addi    r6, r3, 0x4e
 /* 0AA2F8 800AF898 A083004E */  lhz     r4, 0x4e(r3)
 /* 0AA2FC 800AF89C 38A30050 */  addi    r5, r3, 0x50
@@ -877,7 +877,7 @@ lbl_800AF8A0:
 /* 0AA314 800AF8B4 5480801E */  slwi    r0, r4, 0x10
 /* 0AA318 800AF8B8 7C001B78 */  or      r0, r0, r3
 /* 0AA31C 800AF8BC 900A0000 */  stw     r0, 0(r10)
-/* 0AA320 800AF8C0 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA320 800AF8C0 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA324 800AF8C4 38C30052 */  addi    r6, r3, 0x52
 /* 0AA328 800AF8C8 A0830052 */  lhz     r4, 0x52(r3)
 /* 0AA32C 800AF8CC 38A30054 */  addi    r5, r3, 0x54
@@ -890,7 +890,7 @@ lbl_800AF8D0:
 /* 0AA344 800AF8E4 5480801E */  slwi    r0, r4, 0x10
 /* 0AA348 800AF8E8 7C001B78 */  or      r0, r0, r3
 /* 0AA34C 800AF8EC 900C0000 */  stw     r0, 0(r12)
-/* 0AA350 800AF8F0 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA350 800AF8F0 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA354 800AF8F4 38C30056 */  addi    r6, r3, 0x56
 /* 0AA358 800AF8F8 A0830056 */  lhz     r4, 0x56(r3)
 /* 0AA35C 800AF8FC 38A30058 */  addi    r5, r3, 0x58
@@ -911,51 +911,51 @@ lbl_800AF900:
 /* 0AA394 800AF934 4E800020 */  blr     
 
 glabel GXClearMemMetric
-/* 0AA398 800AF938 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA398 800AF938 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA39C 800AF93C 38000000 */  li      r0, 0
 /* 0AA3A0 800AF940 B0030032 */  sth     r0, 0x32(r3)
-/* 0AA3A4 800AF944 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3A4 800AF944 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3A8 800AF948 B0030034 */  sth     r0, 0x34(r3)
-/* 0AA3AC 800AF94C 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3AC 800AF94C 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3B0 800AF950 B0030036 */  sth     r0, 0x36(r3)
-/* 0AA3B4 800AF954 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3B4 800AF954 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3B8 800AF958 B0030038 */  sth     r0, 0x38(r3)
-/* 0AA3BC 800AF95C 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3BC 800AF95C 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3C0 800AF960 B003003C */  sth     r0, 0x3c(r3)
-/* 0AA3C4 800AF964 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3C4 800AF964 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3C8 800AF968 B003003A */  sth     r0, 0x3a(r3)
-/* 0AA3CC 800AF96C 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3CC 800AF96C 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3D0 800AF970 B0030040 */  sth     r0, 0x40(r3)
-/* 0AA3D4 800AF974 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3D4 800AF974 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3D8 800AF978 B003003E */  sth     r0, 0x3e(r3)
-/* 0AA3DC 800AF97C 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3DC 800AF97C 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3E0 800AF980 B0030044 */  sth     r0, 0x44(r3)
-/* 0AA3E4 800AF984 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3E4 800AF984 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3E8 800AF988 B0030042 */  sth     r0, 0x42(r3)
-/* 0AA3EC 800AF98C 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3EC 800AF98C 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3F0 800AF990 B0030048 */  sth     r0, 0x48(r3)
-/* 0AA3F4 800AF994 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3F4 800AF994 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA3F8 800AF998 B0030046 */  sth     r0, 0x46(r3)
-/* 0AA3FC 800AF99C 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA3FC 800AF99C 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA400 800AF9A0 B003004C */  sth     r0, 0x4c(r3)
-/* 0AA404 800AF9A4 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA404 800AF9A4 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA408 800AF9A8 B003004A */  sth     r0, 0x4a(r3)
-/* 0AA40C 800AF9AC 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA40C 800AF9AC 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA410 800AF9B0 B0030050 */  sth     r0, 0x50(r3)
-/* 0AA414 800AF9B4 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA414 800AF9B4 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA418 800AF9B8 B003004E */  sth     r0, 0x4e(r3)
-/* 0AA41C 800AF9BC 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA41C 800AF9BC 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA420 800AF9C0 B0030054 */  sth     r0, 0x54(r3)
-/* 0AA424 800AF9C4 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA424 800AF9C4 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA428 800AF9C8 B0030052 */  sth     r0, 0x52(r3)
-/* 0AA42C 800AF9CC 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA42C 800AF9CC 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA430 800AF9D0 B0030058 */  sth     r0, 0x58(r3)
-/* 0AA434 800AF9D4 806D8C44 */  lwz     r3, __memReg-_SDA_BASE_(r13)
+/* 0AA434 800AF9D4 806D8C44 */  lwz     r3, __memReg@sda21(r13)
 /* 0AA438 800AF9D8 B0030056 */  sth     r0, 0x56(r3)
 /* 0AA43C 800AF9DC 4E800020 */  blr     
 
 glabel GXReadPixMetric
-/* 0AA440 800AF9E0 812D8C40 */  lwz     r9, __peReg-_SDA_BASE_(r13)
+/* 0AA440 800AF9E0 812D8C40 */  lwz     r9, __peReg@sda21(r13)
 /* 0AA444 800AF9E4 3989001A */  addi    r12, r9, 0x1a
 /* 0AA448 800AF9E8 A149001A */  lhz     r10, 0x1a(r9)
 /* 0AA44C 800AF9EC 39690018 */  addi    r11, r9, 0x18
@@ -969,7 +969,7 @@ lbl_800AF9F0:
 /* 0AA468 800AFA08 7C004B78 */  or      r0, r0, r9
 /* 0AA46C 800AFA0C 5400103A */  slwi    r0, r0, 2
 /* 0AA470 800AFA10 90030000 */  stw     r0, 0(r3)
-/* 0AA474 800AFA14 806D8C40 */  lwz     r3, __peReg-_SDA_BASE_(r13)
+/* 0AA474 800AFA14 806D8C40 */  lwz     r3, __peReg@sda21(r13)
 /* 0AA478 800AFA18 3963001E */  addi    r11, r3, 0x1e
 /* 0AA47C 800AFA1C A123001E */  lhz     r9, 0x1e(r3)
 /* 0AA480 800AFA20 3943001C */  addi    r10, r3, 0x1c
@@ -983,7 +983,7 @@ lbl_800AFA24:
 /* 0AA49C 800AFA3C 7C001B78 */  or      r0, r0, r3
 /* 0AA4A0 800AFA40 5400103A */  slwi    r0, r0, 2
 /* 0AA4A4 800AFA44 90040000 */  stw     r0, 0(r4)
-/* 0AA4A8 800AFA48 806D8C40 */  lwz     r3, __peReg-_SDA_BASE_(r13)
+/* 0AA4A8 800AFA48 806D8C40 */  lwz     r3, __peReg@sda21(r13)
 /* 0AA4AC 800AFA4C 39430022 */  addi    r10, r3, 0x22
 /* 0AA4B0 800AFA50 A0830022 */  lhz     r4, 0x22(r3)
 /* 0AA4B4 800AFA54 39230020 */  addi    r9, r3, 0x20
@@ -997,7 +997,7 @@ lbl_800AFA58:
 /* 0AA4D0 800AFA70 7C001B78 */  or      r0, r0, r3
 /* 0AA4D4 800AFA74 5400103A */  slwi    r0, r0, 2
 /* 0AA4D8 800AFA78 90050000 */  stw     r0, 0(r5)
-/* 0AA4DC 800AFA7C 806D8C40 */  lwz     r3, __peReg-_SDA_BASE_(r13)
+/* 0AA4DC 800AFA7C 806D8C40 */  lwz     r3, __peReg@sda21(r13)
 /* 0AA4E0 800AFA80 39230026 */  addi    r9, r3, 0x26
 /* 0AA4E4 800AFA84 A0830026 */  lhz     r4, 0x26(r3)
 /* 0AA4E8 800AFA88 38A30024 */  addi    r5, r3, 0x24
@@ -1011,7 +1011,7 @@ lbl_800AFA8C:
 /* 0AA504 800AFAA4 7C001B78 */  or      r0, r0, r3
 /* 0AA508 800AFAA8 5400103A */  slwi    r0, r0, 2
 /* 0AA50C 800AFAAC 90060000 */  stw     r0, 0(r6)
-/* 0AA510 800AFAB0 806D8C40 */  lwz     r3, __peReg-_SDA_BASE_(r13)
+/* 0AA510 800AFAB0 806D8C40 */  lwz     r3, __peReg@sda21(r13)
 /* 0AA514 800AFAB4 38C3002A */  addi    r6, r3, 0x2a
 /* 0AA518 800AFAB8 A083002A */  lhz     r4, 0x2a(r3)
 /* 0AA51C 800AFABC 38A30028 */  addi    r5, r3, 0x28
@@ -1025,7 +1025,7 @@ lbl_800AFAC0:
 /* 0AA538 800AFAD8 7C001B78 */  or      r0, r0, r3
 /* 0AA53C 800AFADC 5400103A */  slwi    r0, r0, 2
 /* 0AA540 800AFAE0 90070000 */  stw     r0, 0(r7)
-/* 0AA544 800AFAE4 806D8C40 */  lwz     r3, __peReg-_SDA_BASE_(r13)
+/* 0AA544 800AFAE4 806D8C40 */  lwz     r3, __peReg@sda21(r13)
 /* 0AA548 800AFAE8 38C3002E */  addi    r6, r3, 0x2e
 /* 0AA54C 800AFAEC A083002E */  lhz     r4, 0x2e(r3)
 /* 0AA550 800AFAF0 38A3002C */  addi    r5, r3, 0x2c
@@ -1042,7 +1042,7 @@ lbl_800AFAF4:
 
 glabel GXClearPixMetric
 /* 0AA578 800AFB18 38E00061 */  li      r7, 0x61
-/* 0AA57C 800AFB1C 80628400 */  lwz     r3, __GXData-_SDA2_BASE_(r2)
+/* 0AA57C 800AFB1C 80628400 */  lwz     r3, __GXData@sda21(r2)
 /* 0AA580 800AFB20 3CC0CC01 */  lis     r6, 0xcc01
 /* 0AA584 800AFB24 3CA05700 */  lis     r5, 0x5700
 /* 0AA588 800AFB28 98E68000 */  stb     r7, -0x8000(r6)
@@ -1055,7 +1055,7 @@ glabel GXClearPixMetric
 /* 0AA5A4 800AFB44 4E800020 */  blr     
 
 glabel GXSetVCacheMetric
-/* 0AA5A8 800AFB48 80E28400 */  lwz     r7, __GXData-_SDA2_BASE_(r2)
+/* 0AA5A8 800AFB48 80E28400 */  lwz     r7, __GXData@sda21(r2)
 /* 0AA5AC 800AFB4C 38C00008 */  li      r6, 8
 /* 0AA5B0 800AFB50 3CA0CC01 */  lis     r5, 0xcc01
 /* 0AA5B4 800AFB54 800705A4 */  lwz     r0, 0x5a4(r7)
@@ -1074,7 +1074,7 @@ glabel GXSetVCacheMetric
 /* 0AA5E8 800AFB88 4E800020 */  blr     
 
 glabel GXReadVCacheMetric
-/* 0AA5EC 800AFB8C 80CD8C3C */  lwz     r6, __cpReg-_SDA_BASE_(r13)
+/* 0AA5EC 800AFB8C 80CD8C3C */  lwz     r6, __cpReg@sda21(r13)
 /* 0AA5F0 800AFB90 39260052 */  addi    r9, r6, 0x52
 /* 0AA5F4 800AFB94 A0E60052 */  lhz     r7, 0x52(r6)
 /* 0AA5F8 800AFB98 39060050 */  addi    r8, r6, 0x50
@@ -1087,7 +1087,7 @@ lbl_800AFB9C:
 /* 0AA610 800AFBB0 54E0801E */  slwi    r0, r7, 0x10
 /* 0AA614 800AFBB4 7C003378 */  or      r0, r0, r6
 /* 0AA618 800AFBB8 90030000 */  stw     r0, 0(r3)
-/* 0AA61C 800AFBBC 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0AA61C 800AFBBC 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0AA620 800AFBC0 39030056 */  addi    r8, r3, 0x56
 /* 0AA624 800AFBC4 A0C30056 */  lhz     r6, 0x56(r3)
 /* 0AA628 800AFBC8 38E30054 */  addi    r7, r3, 0x54
@@ -1100,7 +1100,7 @@ lbl_800AFBCC:
 /* 0AA640 800AFBE0 54C0801E */  slwi    r0, r6, 0x10
 /* 0AA644 800AFBE4 7C001B78 */  or      r0, r0, r3
 /* 0AA648 800AFBE8 90040000 */  stw     r0, 0(r4)
-/* 0AA64C 800AFBEC 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0AA64C 800AFBEC 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0AA650 800AFBF0 38E3005A */  addi    r7, r3, 0x5a
 /* 0AA654 800AFBF4 A083005A */  lhz     r4, 0x5a(r3)
 /* 0AA658 800AFBF8 38C30058 */  addi    r6, r3, 0x58
@@ -1125,7 +1125,7 @@ glabel GXClearVCacheMetric
 /* 0AA698 800AFC38 4E800020 */  blr     
 
 glabel GXReadXfRasMetric
-/* 0AA69C 800AFC3C 80ED8C3C */  lwz     r7, __cpReg-_SDA_BASE_(r13)
+/* 0AA69C 800AFC3C 80ED8C3C */  lwz     r7, __cpReg@sda21(r13)
 /* 0AA6A0 800AFC40 39470042 */  addi    r10, r7, 0x42
 /* 0AA6A4 800AFC44 A1070042 */  lhz     r8, 0x42(r7)
 /* 0AA6A8 800AFC48 39270040 */  addi    r9, r7, 0x40
@@ -1138,7 +1138,7 @@ lbl_800AFC4C:
 /* 0AA6C0 800AFC60 5500801E */  slwi    r0, r8, 0x10
 /* 0AA6C4 800AFC64 7C003B78 */  or      r0, r0, r7
 /* 0AA6C8 800AFC68 90050000 */  stw     r0, 0(r5)
-/* 0AA6CC 800AFC6C 80AD8C3C */  lwz     r5, __cpReg-_SDA_BASE_(r13)
+/* 0AA6CC 800AFC6C 80AD8C3C */  lwz     r5, __cpReg@sda21(r13)
 /* 0AA6D0 800AFC70 39250046 */  addi    r9, r5, 0x46
 /* 0AA6D4 800AFC74 A0E50046 */  lhz     r7, 0x46(r5)
 /* 0AA6D8 800AFC78 39050044 */  addi    r8, r5, 0x44
@@ -1151,7 +1151,7 @@ lbl_800AFC7C:
 /* 0AA6F0 800AFC90 54E0801E */  slwi    r0, r7, 0x10
 /* 0AA6F4 800AFC94 7C002B78 */  or      r0, r0, r5
 /* 0AA6F8 800AFC98 90060000 */  stw     r0, 0(r6)
-/* 0AA6FC 800AFC9C 80AD8C3C */  lwz     r5, __cpReg-_SDA_BASE_(r13)
+/* 0AA6FC 800AFC9C 80AD8C3C */  lwz     r5, __cpReg@sda21(r13)
 /* 0AA700 800AFCA0 3905004A */  addi    r8, r5, 0x4a
 /* 0AA704 800AFCA4 A0C5004A */  lhz     r6, 0x4a(r5)
 /* 0AA708 800AFCA8 38E50048 */  addi    r7, r5, 0x48
@@ -1164,7 +1164,7 @@ lbl_800AFCAC:
 /* 0AA720 800AFCC0 54C0801E */  slwi    r0, r6, 0x10
 /* 0AA724 800AFCC4 7C002B78 */  or      r0, r0, r5
 /* 0AA728 800AFCC8 90030000 */  stw     r0, 0(r3)
-/* 0AA72C 800AFCCC 806D8C3C */  lwz     r3, __cpReg-_SDA_BASE_(r13)
+/* 0AA72C 800AFCCC 806D8C3C */  lwz     r3, __cpReg@sda21(r13)
 /* 0AA730 800AFCD0 38E3004E */  addi    r7, r3, 0x4e
 /* 0AA734 800AFCD4 A0A3004E */  lhz     r5, 0x4e(r3)
 /* 0AA738 800AFCD8 38C3004C */  addi    r6, r3, 0x4c

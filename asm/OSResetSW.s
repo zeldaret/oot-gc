@@ -14,11 +14,11 @@ glabel __OSResetSWInterruptHandler
 /* 09ACC0 800A0260 93A1001C */  stw     r29, 0x1c(r1)
 /* 09ACC4 800A0264 48002065 */  bl      __OSGetSystemTime
 /* 09ACC8 800A0268 3CA08000 */  lis     r5, 0x8000
-/* 09ACCC 800A026C 908D8B84 */  stw     r4, (HoldDown + 4)-_SDA_BASE_(r13)
+/* 09ACCC 800A026C 908D8B84 */  stw     r4, (HoldDown + 4)@sda21(r13)
 /* 09ACD0 800A0270 800500F8 */  lwz     r0, 0xf8(r5)
 /* 09ACD4 800A0274 3C80431C */  lis     r4, 0x431c
 /* 09ACD8 800A0278 3884DE83 */  addi    r4, r4, -8573
-/* 09ACDC 800A027C 906D8B80 */  stw     r3, HoldDown-_SDA_BASE_(r13)
+/* 09ACDC 800A027C 906D8B80 */  stw     r3, HoldDown@sda21(r13)
 /* 09ACE0 800A0280 5400F0BE */  srwi    r0, r0, 2
 /* 09ACE4 800A0284 7C040016 */  mulhwu  r0, r4, r0
 /* 09ACE8 800A0288 54008BFE */  srwi    r0, r0, 0xf
@@ -28,9 +28,9 @@ glabel __OSResetSWInterruptHandler
 /* 09ACF8 800A0298 3FE0CC00 */  lis     r31, PI_REGS_BASE@ha
 lbl_800A029C:
 /* 09ACFC 800A029C 4800202D */  bl      __OSGetSystemTime
-/* 09AD00 800A02A0 80CD8B84 */  lwz     r6, (HoldDown + 4)-_SDA_BASE_(r13)
+/* 09AD00 800A02A0 80CD8B84 */  lwz     r6, (HoldDown + 4)@sda21(r13)
 /* 09AD04 800A02A4 6FC58000 */  xoris   r5, r30, 0x8000
-/* 09AD08 800A02A8 800D8B80 */  lwz     r0, HoldDown-_SDA_BASE_(r13)
+/* 09AD08 800A02A8 800D8B80 */  lwz     r0, HoldDown@sda21(r13)
 /* 09AD0C 800A02AC 7C862010 */  subfc   r4, r6, r4
 /* 09AD10 800A02B0 7C001910 */  subfe   r0, r0, r3
 /* 09AD14 800A02B4 6C038000 */  xoris   r3, r0, 0x8000
@@ -48,16 +48,16 @@ lbl_800A02D8:
 /* 09AD40 800A02E0 540003DF */  rlwinm. r0, r0, 0, 0xf, 0xf
 /* 09AD44 800A02E4 40820034 */  bne     lbl_800A0318
 /* 09AD48 800A02E8 38000001 */  li      r0, 1
-/* 09AD4C 800A02EC 900D8B6C */  stw     r0, Down-_SDA_BASE_(r13)
+/* 09AD4C 800A02EC 900D8B6C */  stw     r0, Down@sda21(r13)
 /* 09AD50 800A02F0 38600200 */  li      r3, 0x200
-/* 09AD54 800A02F4 900D8B70 */  stw     r0, LastState-_SDA_BASE_(r13)
+/* 09AD54 800A02F4 900D8B70 */  stw     r0, LastState@sda21(r13)
 /* 09AD58 800A02F8 4BFFEDCD */  bl      __OSMaskInterrupts
-/* 09AD5C 800A02FC 818D8B68 */  lwz     r12, ResetCallback-_SDA_BASE_(r13)
+/* 09AD5C 800A02FC 818D8B68 */  lwz     r12, ResetCallback@sda21(r13)
 /* 09AD60 800A0300 280C0000 */  cmplwi  r12, 0
 /* 09AD64 800A0304 41820014 */  beq     lbl_800A0318
 /* 09AD68 800A0308 38000000 */  li      r0, 0
 /* 09AD6C 800A030C 7D8803A6 */  mtlr    r12
-/* 09AD70 800A0310 900D8B68 */  stw     r0, ResetCallback-_SDA_BASE_(r13)
+/* 09AD70 800A0310 900D8B68 */  stw     r0, ResetCallback@sda21(r13)
 /* 09AD74 800A0314 4E800021 */  blrl    
 lbl_800A0318:
 /* 09AD78 800A0318 38000002 */  li      r0, 2
@@ -85,41 +85,41 @@ glabel OSGetResetButtonState
 /* 09ADC8 800A0368 80053000 */  lwz     r0, (PI_REGS_BASE + PI_INTSR)@l(r5)
 /* 09ADCC 800A036C 540003DF */  rlwinm. r0, r0, 0, 0xf, 0xf
 /* 09ADD0 800A0370 408200DC */  bne     lbl_800A044C
-/* 09ADD4 800A0374 800D8B6C */  lwz     r0, Down-_SDA_BASE_(r13)
+/* 09ADD4 800A0374 800D8B6C */  lwz     r0, Down@sda21(r13)
 /* 09ADD8 800A0378 2C000000 */  cmpwi   r0, 0
 /* 09ADDC 800A037C 40820040 */  bne     lbl_800A03BC
-/* 09ADE0 800A0380 800D8B78 */  lwz     r0, HoldUp-_SDA_BASE_(r13)
+/* 09ADE0 800A0380 800D8B78 */  lwz     r0, HoldUp@sda21(r13)
 /* 09ADE4 800A0384 38C00000 */  li      r6, 0
-/* 09ADE8 800A0388 80AD8B7C */  lwz     r5, (HoldUp + 4)-_SDA_BASE_(r13)
+/* 09ADE8 800A0388 80AD8B7C */  lwz     r5, (HoldUp + 4)@sda21(r13)
 /* 09ADEC 800A038C 38E00001 */  li      r7, 1
 /* 09ADF0 800A0390 7C003278 */  xor     r0, r0, r6
 /* 09ADF4 800A0394 7CA53278 */  xor     r5, r5, r6
-/* 09ADF8 800A0398 90ED8B6C */  stw     r7, Down-_SDA_BASE_(r13)
+/* 09ADF8 800A0398 90ED8B6C */  stw     r7, Down@sda21(r13)
 /* 09ADFC 800A039C 7CA00379 */  or.     r0, r5, r0
 /* 09AE00 800A03A0 41820008 */  beq     lbl_800A03A8
 /* 09AE04 800A03A4 48000008 */  b       lbl_800A03AC
 lbl_800A03A8:
 /* 09AE08 800A03A8 7CC73378 */  mr      r7, r6
 lbl_800A03AC:
-/* 09AE0C 800A03AC 908D8B84 */  stw     r4, (HoldDown + 4)-_SDA_BASE_(r13)
+/* 09AE0C 800A03AC 908D8B84 */  stw     r4, (HoldDown + 4)@sda21(r13)
 /* 09AE10 800A03B0 7CFD3B78 */  mr      r29, r7
-/* 09AE14 800A03B4 906D8B80 */  stw     r3, HoldDown-_SDA_BASE_(r13)
+/* 09AE14 800A03B4 906D8B80 */  stw     r3, HoldDown@sda21(r13)
 /* 09AE18 800A03B8 48000148 */  b       lbl_800A0500
 lbl_800A03BC:
-/* 09AE1C 800A03BC 800D8B78 */  lwz     r0, HoldUp-_SDA_BASE_(r13)
+/* 09AE1C 800A03BC 800D8B78 */  lwz     r0, HoldUp@sda21(r13)
 /* 09AE20 800A03C0 39200000 */  li      r9, 0
-/* 09AE24 800A03C4 80AD8B7C */  lwz     r5, (HoldUp + 4)-_SDA_BASE_(r13)
+/* 09AE24 800A03C4 80AD8B7C */  lwz     r5, (HoldUp + 4)@sda21(r13)
 /* 09AE28 800A03C8 39400001 */  li      r10, 1
 /* 09AE2C 800A03CC 7C004A78 */  xor     r0, r0, r9
 /* 09AE30 800A03D0 7CA54A78 */  xor     r5, r5, r9
 /* 09AE34 800A03D4 7CA00379 */  or.     r0, r5, r0
 /* 09AE38 800A03D8 40820058 */  bne     lbl_800A0430
 /* 09AE3C 800A03DC 3CC08000 */  lis     r6, 0x8000
-/* 09AE40 800A03E0 80AD8B84 */  lwz     r5, (HoldDown + 4)-_SDA_BASE_(r13)
+/* 09AE40 800A03E0 80AD8B84 */  lwz     r5, (HoldDown + 4)@sda21(r13)
 /* 09AE44 800A03E4 80E600F8 */  lwz     r7, 0xf8(r6)
 /* 09AE48 800A03E8 3CC0431C */  lis     r6, 0x431c
 /* 09AE4C 800A03EC 3906DE83 */  addi    r8, r6, -8573
-/* 09AE50 800A03F0 800D8B80 */  lwz     r0, HoldDown-_SDA_BASE_(r13)
+/* 09AE50 800A03F0 800D8B80 */  lwz     r0, HoldDown@sda21(r13)
 /* 09AE54 800A03F4 54E6F0BE */  srwi    r6, r7, 2
 /* 09AE58 800A03F8 7CC83016 */  mulhwu  r6, r8, r6
 /* 09AE5C 800A03FC 54C68BFE */  srwi    r6, r6, 0xf
@@ -146,26 +146,26 @@ lbl_800A0444:
 /* 09AEA4 800A0444 7C1D0378 */  mr      r29, r0
 /* 09AEA8 800A0448 480000B8 */  b       lbl_800A0500
 lbl_800A044C:
-/* 09AEAC 800A044C 800D8B6C */  lwz     r0, Down-_SDA_BASE_(r13)
+/* 09AEAC 800A044C 800D8B6C */  lwz     r0, Down@sda21(r13)
 /* 09AEB0 800A0450 2C000000 */  cmpwi   r0, 0
 /* 09AEB4 800A0454 41820034 */  beq     lbl_800A0488
-/* 09AEB8 800A0458 80AD8B70 */  lwz     r5, LastState-_SDA_BASE_(r13)
+/* 09AEB8 800A0458 80AD8B70 */  lwz     r5, LastState@sda21(r13)
 /* 09AEBC 800A045C 38000000 */  li      r0, 0
-/* 09AEC0 800A0460 900D8B6C */  stw     r0, Down-_SDA_BASE_(r13)
+/* 09AEC0 800A0460 900D8B6C */  stw     r0, Down@sda21(r13)
 /* 09AEC4 800A0464 2C050000 */  cmpwi   r5, 0
 /* 09AEC8 800A0468 3BA50000 */  addi    r29, r5, 0
 /* 09AECC 800A046C 41820010 */  beq     lbl_800A047C
-/* 09AED0 800A0470 908D8B7C */  stw     r4, (HoldUp + 4)-_SDA_BASE_(r13)
-/* 09AED4 800A0474 906D8B78 */  stw     r3, HoldUp-_SDA_BASE_(r13)
+/* 09AED0 800A0470 908D8B7C */  stw     r4, (HoldUp + 4)@sda21(r13)
+/* 09AED4 800A0474 906D8B78 */  stw     r3, HoldUp@sda21(r13)
 /* 09AED8 800A0478 48000088 */  b       lbl_800A0500
 lbl_800A047C:
-/* 09AEDC 800A047C 900D8B7C */  stw     r0, (HoldUp + 4)-_SDA_BASE_(r13)
-/* 09AEE0 800A0480 900D8B78 */  stw     r0, HoldUp-_SDA_BASE_(r13)
+/* 09AEDC 800A047C 900D8B7C */  stw     r0, (HoldUp + 4)@sda21(r13)
+/* 09AEE0 800A0480 900D8B78 */  stw     r0, HoldUp@sda21(r13)
 /* 09AEE4 800A0484 4800007C */  b       lbl_800A0500
 lbl_800A0488:
-/* 09AEE8 800A0488 80CD8B78 */  lwz     r6, HoldUp-_SDA_BASE_(r13)
+/* 09AEE8 800A0488 80CD8B78 */  lwz     r6, HoldUp@sda21(r13)
 /* 09AEEC 800A048C 39000000 */  li      r8, 0
-/* 09AEF0 800A0490 80ED8B7C */  lwz     r7, (HoldUp + 4)-_SDA_BASE_(r13)
+/* 09AEF0 800A0490 80ED8B7C */  lwz     r7, (HoldUp + 4)@sda21(r13)
 /* 09AEF4 800A0494 7CC04278 */  xor     r0, r6, r8
 /* 09AEF8 800A0498 7CE54278 */  xor     r5, r7, r8
 /* 09AEFC 800A049C 7CA00379 */  or.     r0, r5, r0
@@ -191,19 +191,19 @@ lbl_800A0488:
 /* 09AF4C 800A04EC 48000014 */  b       lbl_800A0500
 lbl_800A04F0:
 /* 09AF50 800A04F0 38000000 */  li      r0, 0
-/* 09AF54 800A04F4 900D8B7C */  stw     r0, (HoldUp + 4)-_SDA_BASE_(r13)
+/* 09AF54 800A04F4 900D8B7C */  stw     r0, (HoldUp + 4)@sda21(r13)
 /* 09AF58 800A04F8 3BA00000 */  li      r29, 0
-/* 09AF5C 800A04FC 900D8B78 */  stw     r0, HoldUp-_SDA_BASE_(r13)
+/* 09AF5C 800A04FC 900D8B78 */  stw     r0, HoldUp@sda21(r13)
 lbl_800A0500:
 /* 09AF60 800A0500 3CA08000 */  lis     r5, 0x8000
-/* 09AF64 800A0504 93AD8B70 */  stw     r29, LastState-_SDA_BASE_(r13)
+/* 09AF64 800A0504 93AD8B70 */  stw     r29, LastState@sda21(r13)
 /* 09AF68 800A0508 880530E3 */  lbz     r0, 0x30e3(r5)
 /* 09AF6C 800A050C 540006FF */  clrlwi. r0, r0, 0x1b
 /* 09AF70 800A0510 418200A0 */  beq     lbl_800A05B0
 /* 09AF74 800A0514 1D40003C */  mulli   r10, r0, 0x3c
 /* 09AF78 800A0518 800500F8 */  lwz     r0, 0xf8(r5)
-/* 09AF7C 800A051C 812D8B0C */  lwz     r9, (__OSStartTime + 4)-_SDA_BASE_(r13)
-/* 09AF80 800A0520 810D8B08 */  lwz     r8, __OSStartTime-_SDA_BASE_(r13)
+/* 09AF7C 800A051C 812D8B0C */  lwz     r9, (__OSStartTime + 4)@sda21(r13)
+/* 09AF80 800A0520 810D8B08 */  lwz     r8, __OSStartTime@sda21(r13)
 /* 09AF84 800A0524 5406F0BE */  srwi    r6, r0, 2
 /* 09AF88 800A0528 7D40FE70 */  srawi   r0, r10, 0x1f
 /* 09AF8C 800A052C 7CE031D6 */  mullw   r7, r0, r6

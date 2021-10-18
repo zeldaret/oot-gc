@@ -134,7 +134,7 @@ glabel DEMOPadRead
 /* 0B1B1C 800B70BC 1C1C001E */  mulli   r0, r28, 0x1e
 /* 0B1B20 800B70C0 38800000 */  li      r4, 0
 /* 0B1B24 800B70C4 3C60800F */  lis     r3, PadChanMask@ha
-/* 0B1B28 800B70C8 908D8DC0 */  stw     r4, DemoNumValidPads-_SDA_BASE_(r13)
+/* 0B1B28 800B70C8 908D8DC0 */  stw     r4, DemoNumValidPads@sda21(r13)
 /* 0B1B2C 800B70CC 7FBF0214 */  add     r29, r31, r0
 /* 0B1B30 800B70D0 3BC33420 */  addi    r30, r3, PadChanMask@l
 /* 0B1B34 800B70D4 3BBD0030 */  addi    r29, r29, 0x30
@@ -146,9 +146,9 @@ lbl_800B70D8:
 /* 0B1B48 800B70E8 2C00FFFD */  cmpwi   r0, -3
 /* 0B1B4C 800B70EC 40820014 */  bne     lbl_800B7100
 lbl_800B70F0:
-/* 0B1B50 800B70F0 806D8DC0 */  lwz     r3, DemoNumValidPads-_SDA_BASE_(r13)
+/* 0B1B50 800B70F0 806D8DC0 */  lwz     r3, DemoNumValidPads@sda21(r13)
 /* 0B1B54 800B70F4 38030001 */  addi    r0, r3, 1
-/* 0B1B58 800B70F8 900D8DC0 */  stw     r0, DemoNumValidPads-_SDA_BASE_(r13)
+/* 0B1B58 800B70F8 900D8DC0 */  stw     r0, DemoNumValidPads@sda21(r13)
 /* 0B1B5C 800B70FC 48000014 */  b       lbl_800B7110
 lbl_800B7100:
 /* 0B1B60 800B7100 2C00FFFF */  cmpwi   r0, -1

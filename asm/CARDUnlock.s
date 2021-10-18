@@ -209,14 +209,14 @@ DummyLen:
 /* 0B6D68 800BC308 93A1001C */  stw     r29, 0x1c(r1)
 /* 0B6D6C 800BC30C 3BA00000 */  li      r29, 0
 /* 0B6D70 800BC310 4BFE5FB1 */  bl      OSGetTick
-/* 0B6D74 800BC314 906D8870 */  stw     r3, next-_SDA_BASE_(r13)
+/* 0B6D74 800BC314 906D8870 */  stw     r3, next@sda21(r13)
 /* 0B6D78 800BC318 3C6041C6 */  lis     r3, 0x41c6
 /* 0B6D7C 800BC31C 3BE34E6D */  addi    r31, r3, 0x4e6d
-/* 0B6D80 800BC320 800D8870 */  lwz     r0, next-_SDA_BASE_(r13)
+/* 0B6D80 800BC320 800D8870 */  lwz     r0, next@sda21(r13)
 /* 0B6D84 800BC324 7C60F9D6 */  mullw   r3, r0, r31
 /* 0B6D88 800BC328 38033039 */  addi    r0, r3, 0x3039
-/* 0B6D8C 800BC32C 900D8870 */  stw     r0, next-_SDA_BASE_(r13)
-/* 0B6D90 800BC330 800D8870 */  lwz     r0, next-_SDA_BASE_(r13)
+/* 0B6D8C 800BC32C 900D8870 */  stw     r0, next@sda21(r13)
+/* 0B6D90 800BC330 800D8870 */  lwz     r0, next@sda21(r13)
 /* 0B6D94 800BC334 540386FE */  rlwinm  r3, r0, 0x10, 0x1b, 0x1f
 /* 0B6D98 800BC338 38630001 */  addi    r3, r3, 1
 /* 0B6D9C 800BC33C 48000040 */  b       lbl_800BC37C
@@ -228,13 +228,13 @@ lbl_800BC340:
 /* 0B6DB0 800BC350 40810008 */  ble     lbl_800BC358
 /* 0B6DB4 800BC354 3BC00001 */  li      r30, 1
 lbl_800BC358:
-/* 0B6DB8 800BC358 900D8870 */  stw     r0, next-_SDA_BASE_(r13)
+/* 0B6DB8 800BC358 900D8870 */  stw     r0, next@sda21(r13)
 /* 0B6DBC 800BC35C 3BBD0001 */  addi    r29, r29, 1
-/* 0B6DC0 800BC360 800D8870 */  lwz     r0, next-_SDA_BASE_(r13)
+/* 0B6DC0 800BC360 800D8870 */  lwz     r0, next@sda21(r13)
 /* 0B6DC4 800BC364 7C60F9D6 */  mullw   r3, r0, r31
 /* 0B6DC8 800BC368 38033039 */  addi    r0, r3, 0x3039
-/* 0B6DCC 800BC36C 900D8870 */  stw     r0, next-_SDA_BASE_(r13)
-/* 0B6DD0 800BC370 800D8870 */  lwz     r0, next-_SDA_BASE_(r13)
+/* 0B6DCC 800BC36C 900D8870 */  stw     r0, next@sda21(r13)
+/* 0B6DD0 800BC370 800D8870 */  lwz     r0, next@sda21(r13)
 /* 0B6DD4 800BC374 540386FE */  rlwinm  r3, r0, 0x10, 0x1b, 0x1f
 /* 0B6DD8 800BC378 38630001 */  addi    r3, r3, 1
 lbl_800BC37C:
@@ -273,16 +273,16 @@ glabel __CARDUnlock
 /* 0B6E4C 800BC3EC 3BA30000 */  addi    r29, r3, 0
 /* 0B6E50 800BC3F0 3ADC0020 */  addi    r22, r28, 0x20
 /* 0B6E54 800BC3F4 4BFE5ECD */  bl      OSGetTick
-/* 0B6E58 800BC3F8 906D8870 */  stw     r3, next-_SDA_BASE_(r13)
+/* 0B6E58 800BC3F8 906D8870 */  stw     r3, next@sda21(r13)
 /* 0B6E5C 800BC3FC 3C6041C6 */  lis     r3, 0x41c6
 /* 0B6E60 800BC400 3CA07FED */  lis     r5, 0x7fed
-/* 0B6E64 800BC404 808D8870 */  lwz     r4, next-_SDA_BASE_(r13)
+/* 0B6E64 800BC404 808D8870 */  lwz     r4, next@sda21(r13)
 /* 0B6E68 800BC408 38034E6D */  addi    r0, r3, 0x4e6d
 /* 0B6E6C 800BC40C 3B258000 */  addi    r25, r5, -32768
 /* 0B6E70 800BC410 7C6401D6 */  mullw   r3, r4, r0
 /* 0B6E74 800BC414 38033039 */  addi    r0, r3, 0x3039
-/* 0B6E78 800BC418 900D8870 */  stw     r0, next-_SDA_BASE_(r13)
-/* 0B6E7C 800BC41C 800D8870 */  lwz     r0, next-_SDA_BASE_(r13)
+/* 0B6E78 800BC418 900D8870 */  stw     r0, next@sda21(r13)
+/* 0B6E7C 800BC41C 800D8870 */  lwz     r0, next@sda21(r13)
 /* 0B6E80 800BC420 5400847E */  rlwinm  r0, r0, 0x10, 0x11, 0x1f
 /* 0B6E84 800BC424 7F390378 */  or      r25, r25, r0
 /* 0B6E88 800BC428 57390026 */  rlwinm  r25, r25, 0, 0, 0x13

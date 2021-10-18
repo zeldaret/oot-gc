@@ -3266,7 +3266,7 @@ lbl_80033A8C:
 /* 02E4EC 80033A8C 28140000 */  cmplwi  r20, 0
 /* 02E4F0 80033A90 4082020C */  bne     lbl_80033C9C
 /* 02E4F4 80033A94 80760008 */  lwz     r3, 8(r22)
-/* 02E4F8 80033A98 388D854C */  addi    r4, r13, D_8013522C-_SDA_BASE_
+/* 02E4F8 80033A98 388D854C */  addi    r4, r13, D_8013522C@sda21
 /* 02E4FC 80033A9C 80630030 */  lwz     r3, 0x30(r3)
 /* 02E500 80033AA0 4803A641 */  bl      romTestCode
 /* 02E504 80033AA4 2C030000 */  cmpwi   r3, 0
@@ -3285,7 +3285,7 @@ lbl_80033AC4:
 /* 02E534 80033AD4 480001C8 */  b       lbl_80033C9C
 lbl_80033AD8:
 /* 02E538 80033AD8 80760008 */  lwz     r3, 8(r22)
-/* 02E53C 80033ADC 388D8554 */  addi    r4, r13, D_80135234-_SDA_BASE_
+/* 02E53C 80033ADC 388D8554 */  addi    r4, r13, D_80135234@sda21
 /* 02E540 80033AE0 80630030 */  lwz     r3, 0x30(r3)
 /* 02E544 80033AE4 4803A5FD */  bl      romTestCode
 /* 02E548 80033AE8 2C030000 */  cmpwi   r3, 0
@@ -3299,7 +3299,7 @@ lbl_80033AD8:
 /* 02E568 80033B08 48000194 */  b       lbl_80033C9C
 lbl_80033B0C:
 /* 02E56C 80033B0C 80760008 */  lwz     r3, 8(r22)
-/* 02E570 80033B10 388D855C */  addi    r4, r13, D_8013523C-_SDA_BASE_
+/* 02E570 80033B10 388D855C */  addi    r4, r13, D_8013523C@sda21
 /* 02E574 80033B14 80630030 */  lwz     r3, 0x30(r3)
 /* 02E578 80033B18 4803A5C9 */  bl      romTestCode
 /* 02E57C 80033B1C 2C030000 */  cmpwi   r3, 0
@@ -3321,7 +3321,7 @@ lbl_80033B3C:
 /* 02E5B8 80033B58 48000144 */  b       lbl_80033C9C
 lbl_80033B5C:
 /* 02E5BC 80033B5C 80760008 */  lwz     r3, 8(r22)
-/* 02E5C0 80033B60 388D8564 */  addi    r4, r13, D_80135244-_SDA_BASE_
+/* 02E5C0 80033B60 388D8564 */  addi    r4, r13, D_80135244@sda21
 /* 02E5C4 80033B64 80630030 */  lwz     r3, 0x30(r3)
 /* 02E5C8 80033B68 4803A579 */  bl      romTestCode
 /* 02E5CC 80033B6C 2C030000 */  cmpwi   r3, 0
@@ -3333,7 +3333,7 @@ lbl_80033B5C:
 /* 02E5E4 80033B84 48000118 */  b       lbl_80033C9C
 lbl_80033B88:
 /* 02E5E8 80033B88 80760008 */  lwz     r3, 8(r22)
-/* 02E5EC 80033B8C 388D856C */  addi    r4, r13, D_8013524C-_SDA_BASE_
+/* 02E5EC 80033B8C 388D856C */  addi    r4, r13, D_8013524C@sda21
 /* 02E5F0 80033B90 80630030 */  lwz     r3, 0x30(r3)
 /* 02E5F4 80033B94 4803A54D */  bl      romTestCode
 /* 02E5F8 80033B98 2C030000 */  cmpwi   r3, 0
@@ -3372,7 +3372,7 @@ lbl_80033C04:
 /* 02E670 80033C10 4800008C */  b       lbl_80033C9C
 lbl_80033C14:
 /* 02E674 80033C14 80760008 */  lwz     r3, 8(r22)
-/* 02E678 80033C18 388D8574 */  addi    r4, r13, D_80135254-_SDA_BASE_
+/* 02E678 80033C18 388D8574 */  addi    r4, r13, D_80135254@sda21
 /* 02E67C 80033C1C 80630030 */  lwz     r3, 0x30(r3)
 /* 02E680 80033C20 4803A4C1 */  bl      romTestCode
 /* 02E684 80033C24 2C030000 */  cmpwi   r3, 0
@@ -3595,7 +3595,7 @@ lbl_80033F04:
 /* 02E978 80033F18 4E800020 */  blr     
 lbl_80033F1C:
 /* 02E97C 80033F1C 80040000 */  lwz     r0, 0(r4)
-/* 02E980 80033F20 808D8A00 */  lwz     r4, gHeapTree-_SDA_BASE_(r13)
+/* 02E980 80033F20 808D8A00 */  lwz     r4, gHeapTree@sda21(r13)
 /* 02E984 80033F24 5400043E */  clrlwi  r0, r0, 0x10
 /* 02E988 80033F28 1C000048 */  mulli   r0, r0, 0x48
 /* 02E98C 80033F2C 7C040214 */  add     r0, r4, r0
@@ -4554,7 +4554,7 @@ lbl_80034BF4:
 /* 02F6D4 80034C74 90C700B8 */  stw     r6, 0xb8(r7)
 /* 02F6D8 80034C78 38E70080 */  addi    r7, r7, 0x80
 /* 02F6DC 80034C7C 4200FF78 */  bdnz    lbl_80034BF4
-/* 02F6E0 80034C80 C80282A0 */  lfd     f0, D_80135FA0-_SDA2_BASE_(r2)
+/* 02F6E0 80034C80 C80282A0 */  lfd     f0, D_80135FA0@sda21(r2)
 /* 02F6E4 80034C84 38000002 */  li      r0, 2
 /* 02F6E8 80034C88 38A00001 */  li      r5, 1
 /* 02F6EC 80034C8C 7C0903A6 */  mtctr   r0
@@ -4745,12 +4745,12 @@ lbl_80034F40:
 /* 02F9B8 80034F58 38600000 */  li      r3, 0
 /* 02F9BC 80034F5C 48000058 */  b       lbl_80034FB4
 lbl_80034F60:
-/* 02F9C0 80034F60 800D8A00 */  lwz     r0, gHeapTree-_SDA_BASE_(r13)
+/* 02F9C0 80034F60 800D8A00 */  lwz     r0, gHeapTree@sda21(r13)
 /* 02F9C4 80034F64 28000000 */  cmplwi  r0, 0
 /* 02F9C8 80034F68 40820024 */  bne     lbl_80034F8C
 /* 02F9CC 80034F6C 3C603004 */  lis     r3, 0x3004
 /* 02F9D0 80034F70 38836500 */  addi    r4, r3, 0x6500
-/* 02F9D4 80034F74 386D8A00 */  addi    r3, r13, gHeapTree-_SDA_BASE_
+/* 02F9D4 80034F74 386D8A00 */  addi    r3, r13, gHeapTree@sda21
 /* 02F9D8 80034F78 4BFD223D */  bl      xlHeapTake
 /* 02F9DC 80034F7C 2C030000 */  cmpwi   r3, 0
 /* 02F9E0 80034F80 4082000C */  bne     lbl_80034F8C
@@ -6101,7 +6101,7 @@ lbl_800361B0:
 /* 030C38 800361D8 3C60800F */  lis     r3, D_800ED674@ha
 /* 030C3C 800361DC 4CC63182 */  crclr   6
 /* 030C40 800361E0 3863D674 */  addi    r3, r3, D_800ED674@l
-/* 030C44 800361E4 388D8580 */  addi    r4, r13, D_80135260-_SDA_BASE_
+/* 030C44 800361E4 388D8580 */  addi    r4, r13, D_80135260@sda21
 /* 030C48 800361E8 38A0039B */  li      r5, 0x39b
 /* 030C4C 800361EC 4BFCFC29 */  bl      xlPostText
 lbl_800361F0:
@@ -6647,25 +6647,25 @@ lbl_80036954:
 /* 0313D4 80036974 48000B50 */  b       lbl_800374C4
 lbl_80036978:
 /* 0313D8 80036978 387F0000 */  addi    r3, r31, 0
-/* 0313DC 8003697C 388D8A04 */  addi    r4, r13, cpuCompile_DSLLV_function-_SDA_BASE_
+/* 0313DC 8003697C 388D8A04 */  addi    r4, r13, cpuCompile_DSLLV_function@sda21
 /* 0313E0 80036980 48035301 */  bl      cpuCompile_DSLLV
 /* 0313E4 80036984 387F0000 */  addi    r3, r31, 0
-/* 0313E8 80036988 388D8A08 */  addi    r4, r13, cpuCompile_DSRLV_function-_SDA_BASE_
+/* 0313E8 80036988 388D8A08 */  addi    r4, r13, cpuCompile_DSRLV_function@sda21
 /* 0313EC 8003698C 4803510D */  bl      cpuCompile_DSRLV
 /* 0313F0 80036990 387F0000 */  addi    r3, r31, 0
-/* 0313F4 80036994 388D8A0C */  addi    r4, r13, cpuCompile_DSRAV_function-_SDA_BASE_
+/* 0313F4 80036994 388D8A0C */  addi    r4, r13, cpuCompile_DSRAV_function@sda21
 /* 0313F8 80036998 48034EFD */  bl      cpuCompile_DSRAV
 /* 0313FC 8003699C 387F0000 */  addi    r3, r31, 0
-/* 031400 800369A0 388D8A10 */  addi    r4, r13, cpuCompile_DMULT_function-_SDA_BASE_
+/* 031400 800369A0 388D8A10 */  addi    r4, r13, cpuCompile_DMULT_function@sda21
 /* 031404 800369A4 480349ED */  bl      cpuCompile_DMULT
 /* 031408 800369A8 387F0000 */  addi    r3, r31, 0
-/* 03140C 800369AC 388D8A14 */  addi    r4, r13, cpuCompile_DMULTU_function-_SDA_BASE_
+/* 03140C 800369AC 388D8A14 */  addi    r4, r13, cpuCompile_DMULTU_function@sda21
 /* 031410 800369B0 480346CD */  bl      cpuCompile_DMULTU
 /* 031414 800369B4 387F0000 */  addi    r3, r31, 0
-/* 031418 800369B8 388D8A18 */  addi    r4, r13, cpuCompile_DDIV_function-_SDA_BASE_
+/* 031418 800369B8 388D8A18 */  addi    r4, r13, cpuCompile_DDIV_function@sda21
 /* 03141C 800369BC 48034105 */  bl      cpuCompile_DDIV
 /* 031420 800369C0 387F0000 */  addi    r3, r31, 0
-/* 031424 800369C4 388D8A1C */  addi    r4, r13, cpuCompile_DDIVU_function-_SDA_BASE_
+/* 031424 800369C4 388D8A1C */  addi    r4, r13, cpuCompile_DDIVU_function@sda21
 /* 031428 800369C8 48033CDD */  bl      cpuCompile_DDIVU
 /* 03142C 800369CC 38000003 */  li      r0, 3
 /* 031430 800369D0 541E103A */  slwi    r30, r0, 2
@@ -6677,7 +6677,7 @@ lbl_80036978:
 /* 031448 800369E8 80810044 */  lwz     r4, 0x44(r1)
 /* 03144C 800369EC 3C607CA5 */  lis     r3, 0x7ca5
 /* 031450 800369F0 38000000 */  li      r0, 0
-/* 031454 800369F4 908D8A20 */  stw     r4, cpuCompile_DADD_function-_SDA_BASE_(r13)
+/* 031454 800369F4 908D8A20 */  stw     r4, cpuCompile_DADD_function@sda21(r13)
 /* 031458 800369F8 3CA07CC6 */  lis     r5, 0x7cc6
 /* 03145C 800369FC 38633814 */  addi    r3, r3, 0x3814
 /* 031460 80036A00 5400103A */  slwi    r0, r0, 2
@@ -6710,7 +6710,7 @@ lbl_80036A4C:
 /* 0314C8 80036A68 80810040 */  lwz     r4, 0x40(r1)
 /* 0314CC 80036A6C 3C607CA5 */  lis     r3, 0x7ca5
 /* 0314D0 80036A70 38000000 */  li      r0, 0
-/* 0314D4 80036A74 908D8A24 */  stw     r4, cpuCompile_DADDU_function-_SDA_BASE_(r13)
+/* 0314D4 80036A74 908D8A24 */  stw     r4, cpuCompile_DADDU_function@sda21(r13)
 /* 0314D8 80036A78 3CA07CC6 */  lis     r5, 0x7cc6
 /* 0314DC 80036A7C 38633814 */  addi    r3, r3, 0x3814
 /* 0314E0 80036A80 5400103A */  slwi    r0, r0, 2
@@ -6743,7 +6743,7 @@ lbl_80036ACC:
 /* 031548 80036AE8 8081003C */  lwz     r4, 0x3c(r1)
 /* 03154C 80036AEC 3C607CA7 */  lis     r3, 0x7ca7
 /* 031550 80036AF0 38000000 */  li      r0, 0
-/* 031554 80036AF4 908D8A28 */  stw     r4, cpuCompile_DSUB_function-_SDA_BASE_(r13)
+/* 031554 80036AF4 908D8A28 */  stw     r4, cpuCompile_DSUB_function@sda21(r13)
 /* 031558 80036AF8 3CA07CC8 */  lis     r5, 0x7cc8
 /* 03155C 80036AFC 38632914 */  addi    r3, r3, 0x2914
 /* 031560 80036B00 5400103A */  slwi    r0, r0, 2
@@ -6776,7 +6776,7 @@ lbl_80036B4C:
 /* 0315C8 80036B68 80810038 */  lwz     r4, 0x38(r1)
 /* 0315CC 80036B6C 3C607CA7 */  lis     r3, 0x7ca7
 /* 0315D0 80036B70 38000000 */  li      r0, 0
-/* 0315D4 80036B74 908D8A2C */  stw     r4, cpuCompile_DSUBU_function-_SDA_BASE_(r13)
+/* 0315D4 80036B74 908D8A2C */  stw     r4, cpuCompile_DSUBU_function@sda21(r13)
 /* 0315D8 80036B78 3CA07CC8 */  lis     r5, 0x7cc8
 /* 0315DC 80036B7C 38632914 */  addi    r3, r3, 0x2914
 /* 0315E0 80036B80 5400103A */  slwi    r0, r0, 2
@@ -6800,22 +6800,22 @@ lbl_80036B4C:
 /* 031628 80036BC8 48066C6D */  bl      ICInvalidateRange
 lbl_80036BCC:
 /* 03162C 80036BCC 387F0000 */  addi    r3, r31, 0
-/* 031630 80036BD0 388D8A30 */  addi    r4, r13, cpuCompile_S_SQRT_function-_SDA_BASE_
+/* 031630 80036BD0 388D8A30 */  addi    r4, r13, cpuCompile_S_SQRT_function@sda21
 /* 031634 80036BD4 48033791 */  bl      cpuCompile_S_SQRT
 /* 031638 80036BD8 387F0000 */  addi    r3, r31, 0
-/* 03163C 80036BDC 388D8A34 */  addi    r4, r13, cpuCompile_D_SQRT_function-_SDA_BASE_
+/* 03163C 80036BDC 388D8A34 */  addi    r4, r13, cpuCompile_D_SQRT_function@sda21
 /* 031640 80036BE0 48033351 */  bl      cpuCompile_D_SQRT
 /* 031644 80036BE4 387F0000 */  addi    r3, r31, 0
-/* 031648 80036BE8 388D8A38 */  addi    r4, r13, cpuCompile_W_CVT_SD_function-_SDA_BASE_
+/* 031648 80036BE8 388D8A38 */  addi    r4, r13, cpuCompile_W_CVT_SD_function@sda21
 /* 03164C 80036BEC 48033195 */  bl      cpuCompile_W_CVT_SD
 /* 031650 80036BF0 387F0000 */  addi    r3, r31, 0
-/* 031654 80036BF4 388D8A3C */  addi    r4, r13, cpuCompile_L_CVT_SD_function-_SDA_BASE_
+/* 031654 80036BF4 388D8A3C */  addi    r4, r13, cpuCompile_L_CVT_SD_function@sda21
 /* 031658 80036BF8 48032C09 */  bl      cpuCompile_L_CVT_SD
 /* 03165C 80036BFC 387F0000 */  addi    r3, r31, 0
-/* 031660 80036C00 388D8A40 */  addi    r4, r13, cpuCompile_CEIL_W_function-_SDA_BASE_
+/* 031660 80036C00 388D8A40 */  addi    r4, r13, cpuCompile_CEIL_W_function@sda21
 /* 031664 80036C04 48032A41 */  bl      cpuCompile_CEIL_W
 /* 031668 80036C08 387F0000 */  addi    r3, r31, 0
-/* 03166C 80036C0C 388D8A44 */  addi    r4, r13, cpuCompile_FLOOR_W_function-_SDA_BASE_
+/* 03166C 80036C0C 388D8A44 */  addi    r4, r13, cpuCompile_FLOOR_W_function@sda21
 /* 031670 80036C10 48032879 */  bl      cpuCompile_FLOOR_W
 /* 031674 80036C14 38000003 */  li      r0, 3
 /* 031678 80036C18 541E103A */  slwi    r30, r0, 2
@@ -6827,7 +6827,7 @@ lbl_80036BCC:
 /* 031690 80036C30 80810034 */  lwz     r4, 0x34(r1)
 /* 031694 80036C34 3C60FC00 */  lis     r3, 0xfc00
 /* 031698 80036C38 38000000 */  li      r0, 0
-/* 03169C 80036C3C 908D8A48 */  stw     r4, cpuCompile_ROUND_W_function-_SDA_BASE_(r13)
+/* 03169C 80036C3C 908D8A48 */  stw     r4, cpuCompile_ROUND_W_function@sda21(r13)
 /* 0316A0 80036C40 3CA07C05 */  lis     r5, 0x7c05
 /* 0316A4 80036C44 3863081C */  addi    r3, r3, 0x81c
 /* 0316A8 80036C48 5400103A */  slwi    r0, r0, 2
@@ -6860,7 +6860,7 @@ lbl_80036C94:
 /* 031710 80036CB0 80810030 */  lwz     r4, 0x30(r1)
 /* 031714 80036CB4 3C60FC00 */  lis     r3, 0xfc00
 /* 031718 80036CB8 38000000 */  li      r0, 0
-/* 03171C 80036CBC 908D8A4C */  stw     r4, cpuCompile_TRUNC_W_function-_SDA_BASE_(r13)
+/* 03171C 80036CBC 908D8A4C */  stw     r4, cpuCompile_TRUNC_W_function@sda21(r13)
 /* 031720 80036CC0 3CA07C05 */  lis     r5, 0x7c05
 /* 031724 80036CC4 3863081E */  addi    r3, r3, 0x81e
 /* 031728 80036CC8 5400103A */  slwi    r0, r0, 2
@@ -6884,40 +6884,40 @@ lbl_80036C94:
 /* 031770 80036D10 48066B25 */  bl      ICInvalidateRange
 lbl_80036D14:
 /* 031774 80036D14 387F0000 */  addi    r3, r31, 0
-/* 031778 80036D18 388D8A50 */  addi    r4, r13, cpuCompile_LB_function-_SDA_BASE_
+/* 031778 80036D18 388D8A50 */  addi    r4, r13, cpuCompile_LB_function@sda21
 /* 03177C 80036D1C 48032601 */  bl      cpuCompile_LB
 /* 031780 80036D20 387F0000 */  addi    r3, r31, 0
-/* 031784 80036D24 388D8A54 */  addi    r4, r13, cpuCompile_LH_function-_SDA_BASE_
+/* 031784 80036D24 388D8A54 */  addi    r4, r13, cpuCompile_LH_function@sda21
 /* 031788 80036D28 48032489 */  bl      cpuCompile_LH
 /* 03178C 80036D2C 387F0000 */  addi    r3, r31, 0
-/* 031790 80036D30 388D8A58 */  addi    r4, r13, cpuCompile_LW_function-_SDA_BASE_
+/* 031790 80036D30 388D8A58 */  addi    r4, r13, cpuCompile_LW_function@sda21
 /* 031794 80036D34 48032325 */  bl      cpuCompile_LW
 /* 031798 80036D38 387F0000 */  addi    r3, r31, 0
-/* 03179C 80036D3C 388D8A5C */  addi    r4, r13, cpuCompile_LBU_function-_SDA_BASE_
+/* 03179C 80036D3C 388D8A5C */  addi    r4, r13, cpuCompile_LBU_function@sda21
 /* 0317A0 80036D40 480321C1 */  bl      cpuCompile_LBU
 /* 0317A4 80036D44 387F0000 */  addi    r3, r31, 0
-/* 0317A8 80036D48 388D8A60 */  addi    r4, r13, cpuCompile_LHU_function-_SDA_BASE_
+/* 0317A8 80036D48 388D8A60 */  addi    r4, r13, cpuCompile_LHU_function@sda21
 /* 0317AC 80036D4C 4803205D */  bl      cpuCompile_LHU
 /* 0317B0 80036D50 387F0000 */  addi    r3, r31, 0
-/* 0317B4 80036D54 388D8A64 */  addi    r4, r13, cpuCompile_SB_function-_SDA_BASE_
+/* 0317B4 80036D54 388D8A64 */  addi    r4, r13, cpuCompile_SB_function@sda21
 /* 0317B8 80036D58 48031EF5 */  bl      cpuCompile_SB
 /* 0317BC 80036D5C 387F0000 */  addi    r3, r31, 0
-/* 0317C0 80036D60 388D8A68 */  addi    r4, r13, cpuCompile_SH_function-_SDA_BASE_
+/* 0317C0 80036D60 388D8A68 */  addi    r4, r13, cpuCompile_SH_function@sda21
 /* 0317C4 80036D64 48031D8D */  bl      cpuCompile_SH
 /* 0317C8 80036D68 387F0000 */  addi    r3, r31, 0
-/* 0317CC 80036D6C 388D8A6C */  addi    r4, r13, cpuCompile_SW_function-_SDA_BASE_
+/* 0317CC 80036D6C 388D8A6C */  addi    r4, r13, cpuCompile_SW_function@sda21
 /* 0317D0 80036D70 48031C25 */  bl      cpuCompile_SW
 /* 0317D4 80036D74 387F0000 */  addi    r3, r31, 0
-/* 0317D8 80036D78 388D8A70 */  addi    r4, r13, cpuCompile_LDC_function-_SDA_BASE_
+/* 0317D8 80036D78 388D8A70 */  addi    r4, r13, cpuCompile_LDC_function@sda21
 /* 0317DC 80036D7C 48031A91 */  bl      cpuCompile_LDC
 /* 0317E0 80036D80 387F0000 */  addi    r3, r31, 0
-/* 0317E4 80036D84 388D8A74 */  addi    r4, r13, cpuCompile_SDC_function-_SDA_BASE_
+/* 0317E4 80036D84 388D8A74 */  addi    r4, r13, cpuCompile_SDC_function@sda21
 /* 0317E8 80036D88 480318FD */  bl      cpuCompile_SDC
 /* 0317EC 80036D8C 387F0000 */  addi    r3, r31, 0
-/* 0317F0 80036D90 388D8A78 */  addi    r4, r13, cpuCompile_LWL_function-_SDA_BASE_
+/* 0317F0 80036D90 388D8A78 */  addi    r4, r13, cpuCompile_LWL_function@sda21
 /* 0317F4 80036D94 48031761 */  bl      cpuCompile_LWL
 /* 0317F8 80036D98 387F0000 */  addi    r3, r31, 0
-/* 0317FC 80036D9C 388D8A7C */  addi    r4, r13, cpuCompile_LWR_function-_SDA_BASE_
+/* 0317FC 80036D9C 388D8A7C */  addi    r4, r13, cpuCompile_LWR_function@sda21
 /* 031800 80036DA0 480315C9 */  bl      cpuCompile_LWR
 /* 031804 80036DA4 80BF0028 */  lwz     r5, 0x28(r31)
 /* 031808 80036DA8 387F0000 */  addi    r3, r31, 0
@@ -7215,217 +7215,217 @@ lbl_800371C8:
 /* 031C30 800371D0 38600000 */  li      r3, 0
 /* 031C34 800371D4 480002F0 */  b       lbl_800374C4
 lbl_800371D8:
-/* 031C38 800371D8 386D8A04 */  addi    r3, r13, cpuCompile_DSLLV_function-_SDA_BASE_
+/* 031C38 800371D8 386D8A04 */  addi    r3, r13, cpuCompile_DSLLV_function@sda21
 /* 031C3C 800371DC 4BFCFEBD */  bl      xlHeapFree
 /* 031C40 800371E0 2C030000 */  cmpwi   r3, 0
 /* 031C44 800371E4 4082000C */  bne     lbl_800371F0
 /* 031C48 800371E8 38600000 */  li      r3, 0
 /* 031C4C 800371EC 480002D8 */  b       lbl_800374C4
 lbl_800371F0:
-/* 031C50 800371F0 386D8A08 */  addi    r3, r13, cpuCompile_DSRLV_function-_SDA_BASE_
+/* 031C50 800371F0 386D8A08 */  addi    r3, r13, cpuCompile_DSRLV_function@sda21
 /* 031C54 800371F4 4BFCFEA5 */  bl      xlHeapFree
 /* 031C58 800371F8 2C030000 */  cmpwi   r3, 0
 /* 031C5C 800371FC 4082000C */  bne     lbl_80037208
 /* 031C60 80037200 38600000 */  li      r3, 0
 /* 031C64 80037204 480002C0 */  b       lbl_800374C4
 lbl_80037208:
-/* 031C68 80037208 386D8A0C */  addi    r3, r13, cpuCompile_DSRAV_function-_SDA_BASE_
+/* 031C68 80037208 386D8A0C */  addi    r3, r13, cpuCompile_DSRAV_function@sda21
 /* 031C6C 8003720C 4BFCFE8D */  bl      xlHeapFree
 /* 031C70 80037210 2C030000 */  cmpwi   r3, 0
 /* 031C74 80037214 4082000C */  bne     lbl_80037220
 /* 031C78 80037218 38600000 */  li      r3, 0
 /* 031C7C 8003721C 480002A8 */  b       lbl_800374C4
 lbl_80037220:
-/* 031C80 80037220 386D8A10 */  addi    r3, r13, cpuCompile_DMULT_function-_SDA_BASE_
+/* 031C80 80037220 386D8A10 */  addi    r3, r13, cpuCompile_DMULT_function@sda21
 /* 031C84 80037224 4BFCFE75 */  bl      xlHeapFree
 /* 031C88 80037228 2C030000 */  cmpwi   r3, 0
 /* 031C8C 8003722C 4082000C */  bne     lbl_80037238
 /* 031C90 80037230 38600000 */  li      r3, 0
 /* 031C94 80037234 48000290 */  b       lbl_800374C4
 lbl_80037238:
-/* 031C98 80037238 386D8A14 */  addi    r3, r13, cpuCompile_DMULTU_function-_SDA_BASE_
+/* 031C98 80037238 386D8A14 */  addi    r3, r13, cpuCompile_DMULTU_function@sda21
 /* 031C9C 8003723C 4BFCFE5D */  bl      xlHeapFree
 /* 031CA0 80037240 2C030000 */  cmpwi   r3, 0
 /* 031CA4 80037244 4082000C */  bne     lbl_80037250
 /* 031CA8 80037248 38600000 */  li      r3, 0
 /* 031CAC 8003724C 48000278 */  b       lbl_800374C4
 lbl_80037250:
-/* 031CB0 80037250 386D8A18 */  addi    r3, r13, cpuCompile_DDIV_function-_SDA_BASE_
+/* 031CB0 80037250 386D8A18 */  addi    r3, r13, cpuCompile_DDIV_function@sda21
 /* 031CB4 80037254 4BFCFE45 */  bl      xlHeapFree
 /* 031CB8 80037258 2C030000 */  cmpwi   r3, 0
 /* 031CBC 8003725C 4082000C */  bne     lbl_80037268
 /* 031CC0 80037260 38600000 */  li      r3, 0
 /* 031CC4 80037264 48000260 */  b       lbl_800374C4
 lbl_80037268:
-/* 031CC8 80037268 386D8A1C */  addi    r3, r13, cpuCompile_DDIVU_function-_SDA_BASE_
+/* 031CC8 80037268 386D8A1C */  addi    r3, r13, cpuCompile_DDIVU_function@sda21
 /* 031CCC 8003726C 4BFCFE2D */  bl      xlHeapFree
 /* 031CD0 80037270 2C030000 */  cmpwi   r3, 0
 /* 031CD4 80037274 4082000C */  bne     lbl_80037280
 /* 031CD8 80037278 38600000 */  li      r3, 0
 /* 031CDC 8003727C 48000248 */  b       lbl_800374C4
 lbl_80037280:
-/* 031CE0 80037280 386D8A20 */  addi    r3, r13, cpuCompile_DADD_function-_SDA_BASE_
+/* 031CE0 80037280 386D8A20 */  addi    r3, r13, cpuCompile_DADD_function@sda21
 /* 031CE4 80037284 4BFCFE15 */  bl      xlHeapFree
 /* 031CE8 80037288 2C030000 */  cmpwi   r3, 0
 /* 031CEC 8003728C 4082000C */  bne     lbl_80037298
 /* 031CF0 80037290 38600000 */  li      r3, 0
 /* 031CF4 80037294 48000230 */  b       lbl_800374C4
 lbl_80037298:
-/* 031CF8 80037298 386D8A24 */  addi    r3, r13, cpuCompile_DADDU_function-_SDA_BASE_
+/* 031CF8 80037298 386D8A24 */  addi    r3, r13, cpuCompile_DADDU_function@sda21
 /* 031CFC 8003729C 4BFCFDFD */  bl      xlHeapFree
 /* 031D00 800372A0 2C030000 */  cmpwi   r3, 0
 /* 031D04 800372A4 4082000C */  bne     lbl_800372B0
 /* 031D08 800372A8 38600000 */  li      r3, 0
 /* 031D0C 800372AC 48000218 */  b       lbl_800374C4
 lbl_800372B0:
-/* 031D10 800372B0 386D8A28 */  addi    r3, r13, cpuCompile_DSUB_function-_SDA_BASE_
+/* 031D10 800372B0 386D8A28 */  addi    r3, r13, cpuCompile_DSUB_function@sda21
 /* 031D14 800372B4 4BFCFDE5 */  bl      xlHeapFree
 /* 031D18 800372B8 2C030000 */  cmpwi   r3, 0
 /* 031D1C 800372BC 4082000C */  bne     lbl_800372C8
 /* 031D20 800372C0 38600000 */  li      r3, 0
 /* 031D24 800372C4 48000200 */  b       lbl_800374C4
 lbl_800372C8:
-/* 031D28 800372C8 386D8A2C */  addi    r3, r13, cpuCompile_DSUBU_function-_SDA_BASE_
+/* 031D28 800372C8 386D8A2C */  addi    r3, r13, cpuCompile_DSUBU_function@sda21
 /* 031D2C 800372CC 4BFCFDCD */  bl      xlHeapFree
 /* 031D30 800372D0 2C030000 */  cmpwi   r3, 0
 /* 031D34 800372D4 4082000C */  bne     lbl_800372E0
 /* 031D38 800372D8 38600000 */  li      r3, 0
 /* 031D3C 800372DC 480001E8 */  b       lbl_800374C4
 lbl_800372E0:
-/* 031D40 800372E0 386D8A30 */  addi    r3, r13, cpuCompile_S_SQRT_function-_SDA_BASE_
+/* 031D40 800372E0 386D8A30 */  addi    r3, r13, cpuCompile_S_SQRT_function@sda21
 /* 031D44 800372E4 4BFCFDB5 */  bl      xlHeapFree
 /* 031D48 800372E8 2C030000 */  cmpwi   r3, 0
 /* 031D4C 800372EC 4082000C */  bne     lbl_800372F8
 /* 031D50 800372F0 38600000 */  li      r3, 0
 /* 031D54 800372F4 480001D0 */  b       lbl_800374C4
 lbl_800372F8:
-/* 031D58 800372F8 386D8A34 */  addi    r3, r13, cpuCompile_D_SQRT_function-_SDA_BASE_
+/* 031D58 800372F8 386D8A34 */  addi    r3, r13, cpuCompile_D_SQRT_function@sda21
 /* 031D5C 800372FC 4BFCFD9D */  bl      xlHeapFree
 /* 031D60 80037300 2C030000 */  cmpwi   r3, 0
 /* 031D64 80037304 4082000C */  bne     lbl_80037310
 /* 031D68 80037308 38600000 */  li      r3, 0
 /* 031D6C 8003730C 480001B8 */  b       lbl_800374C4
 lbl_80037310:
-/* 031D70 80037310 386D8A38 */  addi    r3, r13, cpuCompile_W_CVT_SD_function-_SDA_BASE_
+/* 031D70 80037310 386D8A38 */  addi    r3, r13, cpuCompile_W_CVT_SD_function@sda21
 /* 031D74 80037314 4BFCFD85 */  bl      xlHeapFree
 /* 031D78 80037318 2C030000 */  cmpwi   r3, 0
 /* 031D7C 8003731C 4082000C */  bne     lbl_80037328
 /* 031D80 80037320 38600000 */  li      r3, 0
 /* 031D84 80037324 480001A0 */  b       lbl_800374C4
 lbl_80037328:
-/* 031D88 80037328 386D8A3C */  addi    r3, r13, cpuCompile_L_CVT_SD_function-_SDA_BASE_
+/* 031D88 80037328 386D8A3C */  addi    r3, r13, cpuCompile_L_CVT_SD_function@sda21
 /* 031D8C 8003732C 4BFCFD6D */  bl      xlHeapFree
 /* 031D90 80037330 2C030000 */  cmpwi   r3, 0
 /* 031D94 80037334 4082000C */  bne     lbl_80037340
 /* 031D98 80037338 38600000 */  li      r3, 0
 /* 031D9C 8003733C 48000188 */  b       lbl_800374C4
 lbl_80037340:
-/* 031DA0 80037340 386D8A40 */  addi    r3, r13, cpuCompile_CEIL_W_function-_SDA_BASE_
+/* 031DA0 80037340 386D8A40 */  addi    r3, r13, cpuCompile_CEIL_W_function@sda21
 /* 031DA4 80037344 4BFCFD55 */  bl      xlHeapFree
 /* 031DA8 80037348 2C030000 */  cmpwi   r3, 0
 /* 031DAC 8003734C 4082000C */  bne     lbl_80037358
 /* 031DB0 80037350 38600000 */  li      r3, 0
 /* 031DB4 80037354 48000170 */  b       lbl_800374C4
 lbl_80037358:
-/* 031DB8 80037358 386D8A44 */  addi    r3, r13, cpuCompile_FLOOR_W_function-_SDA_BASE_
+/* 031DB8 80037358 386D8A44 */  addi    r3, r13, cpuCompile_FLOOR_W_function@sda21
 /* 031DBC 8003735C 4BFCFD3D */  bl      xlHeapFree
 /* 031DC0 80037360 2C030000 */  cmpwi   r3, 0
 /* 031DC4 80037364 4082000C */  bne     lbl_80037370
 /* 031DC8 80037368 38600000 */  li      r3, 0
 /* 031DCC 8003736C 48000158 */  b       lbl_800374C4
 lbl_80037370:
-/* 031DD0 80037370 386D8A4C */  addi    r3, r13, cpuCompile_TRUNC_W_function-_SDA_BASE_
+/* 031DD0 80037370 386D8A4C */  addi    r3, r13, cpuCompile_TRUNC_W_function@sda21
 /* 031DD4 80037374 4BFCFD25 */  bl      xlHeapFree
 /* 031DD8 80037378 2C030000 */  cmpwi   r3, 0
 /* 031DDC 8003737C 4082000C */  bne     lbl_80037388
 /* 031DE0 80037380 38600000 */  li      r3, 0
 /* 031DE4 80037384 48000140 */  b       lbl_800374C4
 lbl_80037388:
-/* 031DE8 80037388 386D8A48 */  addi    r3, r13, cpuCompile_ROUND_W_function-_SDA_BASE_
+/* 031DE8 80037388 386D8A48 */  addi    r3, r13, cpuCompile_ROUND_W_function@sda21
 /* 031DEC 8003738C 4BFCFD0D */  bl      xlHeapFree
 /* 031DF0 80037390 2C030000 */  cmpwi   r3, 0
 /* 031DF4 80037394 4082000C */  bne     lbl_800373A0
 /* 031DF8 80037398 38600000 */  li      r3, 0
 /* 031DFC 8003739C 48000128 */  b       lbl_800374C4
 lbl_800373A0:
-/* 031E00 800373A0 386D8A50 */  addi    r3, r13, cpuCompile_LB_function-_SDA_BASE_
+/* 031E00 800373A0 386D8A50 */  addi    r3, r13, cpuCompile_LB_function@sda21
 /* 031E04 800373A4 4BFCFCF5 */  bl      xlHeapFree
 /* 031E08 800373A8 2C030000 */  cmpwi   r3, 0
 /* 031E0C 800373AC 4082000C */  bne     lbl_800373B8
 /* 031E10 800373B0 38600000 */  li      r3, 0
 /* 031E14 800373B4 48000110 */  b       lbl_800374C4
 lbl_800373B8:
-/* 031E18 800373B8 386D8A54 */  addi    r3, r13, cpuCompile_LH_function-_SDA_BASE_
+/* 031E18 800373B8 386D8A54 */  addi    r3, r13, cpuCompile_LH_function@sda21
 /* 031E1C 800373BC 4BFCFCDD */  bl      xlHeapFree
 /* 031E20 800373C0 2C030000 */  cmpwi   r3, 0
 /* 031E24 800373C4 4082000C */  bne     lbl_800373D0
 /* 031E28 800373C8 38600000 */  li      r3, 0
 /* 031E2C 800373CC 480000F8 */  b       lbl_800374C4
 lbl_800373D0:
-/* 031E30 800373D0 386D8A58 */  addi    r3, r13, cpuCompile_LW_function-_SDA_BASE_
+/* 031E30 800373D0 386D8A58 */  addi    r3, r13, cpuCompile_LW_function@sda21
 /* 031E34 800373D4 4BFCFCC5 */  bl      xlHeapFree
 /* 031E38 800373D8 2C030000 */  cmpwi   r3, 0
 /* 031E3C 800373DC 4082000C */  bne     lbl_800373E8
 /* 031E40 800373E0 38600000 */  li      r3, 0
 /* 031E44 800373E4 480000E0 */  b       lbl_800374C4
 lbl_800373E8:
-/* 031E48 800373E8 386D8A5C */  addi    r3, r13, cpuCompile_LBU_function-_SDA_BASE_
+/* 031E48 800373E8 386D8A5C */  addi    r3, r13, cpuCompile_LBU_function@sda21
 /* 031E4C 800373EC 4BFCFCAD */  bl      xlHeapFree
 /* 031E50 800373F0 2C030000 */  cmpwi   r3, 0
 /* 031E54 800373F4 4082000C */  bne     lbl_80037400
 /* 031E58 800373F8 38600000 */  li      r3, 0
 /* 031E5C 800373FC 480000C8 */  b       lbl_800374C4
 lbl_80037400:
-/* 031E60 80037400 386D8A60 */  addi    r3, r13, cpuCompile_LHU_function-_SDA_BASE_
+/* 031E60 80037400 386D8A60 */  addi    r3, r13, cpuCompile_LHU_function@sda21
 /* 031E64 80037404 4BFCFC95 */  bl      xlHeapFree
 /* 031E68 80037408 2C030000 */  cmpwi   r3, 0
 /* 031E6C 8003740C 4082000C */  bne     lbl_80037418
 /* 031E70 80037410 38600000 */  li      r3, 0
 /* 031E74 80037414 480000B0 */  b       lbl_800374C4
 lbl_80037418:
-/* 031E78 80037418 386D8A64 */  addi    r3, r13, cpuCompile_SB_function-_SDA_BASE_
+/* 031E78 80037418 386D8A64 */  addi    r3, r13, cpuCompile_SB_function@sda21
 /* 031E7C 8003741C 4BFCFC7D */  bl      xlHeapFree
 /* 031E80 80037420 2C030000 */  cmpwi   r3, 0
 /* 031E84 80037424 4082000C */  bne     lbl_80037430
 /* 031E88 80037428 38600000 */  li      r3, 0
 /* 031E8C 8003742C 48000098 */  b       lbl_800374C4
 lbl_80037430:
-/* 031E90 80037430 386D8A68 */  addi    r3, r13, cpuCompile_SH_function-_SDA_BASE_
+/* 031E90 80037430 386D8A68 */  addi    r3, r13, cpuCompile_SH_function@sda21
 /* 031E94 80037434 4BFCFC65 */  bl      xlHeapFree
 /* 031E98 80037438 2C030000 */  cmpwi   r3, 0
 /* 031E9C 8003743C 4082000C */  bne     lbl_80037448
 /* 031EA0 80037440 38600000 */  li      r3, 0
 /* 031EA4 80037444 48000080 */  b       lbl_800374C4
 lbl_80037448:
-/* 031EA8 80037448 386D8A6C */  addi    r3, r13, cpuCompile_SW_function-_SDA_BASE_
+/* 031EA8 80037448 386D8A6C */  addi    r3, r13, cpuCompile_SW_function@sda21
 /* 031EAC 8003744C 4BFCFC4D */  bl      xlHeapFree
 /* 031EB0 80037450 2C030000 */  cmpwi   r3, 0
 /* 031EB4 80037454 4082000C */  bne     lbl_80037460
 /* 031EB8 80037458 38600000 */  li      r3, 0
 /* 031EBC 8003745C 48000068 */  b       lbl_800374C4
 lbl_80037460:
-/* 031EC0 80037460 386D8A70 */  addi    r3, r13, cpuCompile_LDC_function-_SDA_BASE_
+/* 031EC0 80037460 386D8A70 */  addi    r3, r13, cpuCompile_LDC_function@sda21
 /* 031EC4 80037464 4BFCFC35 */  bl      xlHeapFree
 /* 031EC8 80037468 2C030000 */  cmpwi   r3, 0
 /* 031ECC 8003746C 4082000C */  bne     lbl_80037478
 /* 031ED0 80037470 38600000 */  li      r3, 0
 /* 031ED4 80037474 48000050 */  b       lbl_800374C4
 lbl_80037478:
-/* 031ED8 80037478 386D8A74 */  addi    r3, r13, cpuCompile_SDC_function-_SDA_BASE_
+/* 031ED8 80037478 386D8A74 */  addi    r3, r13, cpuCompile_SDC_function@sda21
 /* 031EDC 8003747C 4BFCFC1D */  bl      xlHeapFree
 /* 031EE0 80037480 2C030000 */  cmpwi   r3, 0
 /* 031EE4 80037484 4082000C */  bne     lbl_80037490
 /* 031EE8 80037488 38600000 */  li      r3, 0
 /* 031EEC 8003748C 48000038 */  b       lbl_800374C4
 lbl_80037490:
-/* 031EF0 80037490 386D8A78 */  addi    r3, r13, cpuCompile_LWL_function-_SDA_BASE_
+/* 031EF0 80037490 386D8A78 */  addi    r3, r13, cpuCompile_LWL_function@sda21
 /* 031EF4 80037494 4BFCFC05 */  bl      xlHeapFree
 /* 031EF8 80037498 2C030000 */  cmpwi   r3, 0
 /* 031EFC 8003749C 4082000C */  bne     lbl_800374A8
 /* 031F00 800374A0 38600000 */  li      r3, 0
 /* 031F04 800374A4 48000020 */  b       lbl_800374C4
 lbl_800374A8:
-/* 031F08 800374A8 386D8A7C */  addi    r3, r13, cpuCompile_LWR_function-_SDA_BASE_
+/* 031F08 800374A8 386D8A7C */  addi    r3, r13, cpuCompile_LWR_function@sda21
 /* 031F0C 800374AC 4BFCFBED */  bl      xlHeapFree
 /* 031F10 800374B0 2C030000 */  cmpwi   r3, 0
 /* 031F14 800374B4 4082000C */  bne     lbl_800374C0
@@ -8201,7 +8201,7 @@ glabel lbl_80038010
 /* 032A70 80038010 387E0B88 */  addi    r3, r30, 0xb88
 /* 032A74 80038014 4CC63182 */  crclr   6
 /* 032A78 80038018 3880143D */  li      r4, 0x143d
-/* 032A7C 8003801C 38AD857C */  addi    r5, r13, D_8013525C-_SDA_BASE_
+/* 032A7C 8003801C 38AD857C */  addi    r5, r13, D_8013525C@sda21
 /* 032A80 80038020 48066659 */  bl      OSPanic
 /* 032A84 80038024 48000058 */  b       lbl_8003807C
 lbl_80038028:
@@ -9183,7 +9183,7 @@ glabel lbl_80038E70
 /* 0338D0 80038E70 38770B88 */  addi    r3, r23, 0xb88
 /* 0338D4 80038E74 4CC63182 */  crclr   6
 /* 0338D8 80038E78 38801275 */  li      r4, 0x1275
-/* 0338DC 80038E7C 38AD857C */  addi    r5, r13, D_8013525C-_SDA_BASE_
+/* 0338DC 80038E7C 38AD857C */  addi    r5, r13, D_8013525C@sda21
 /* 0338E0 80038E80 480657F9 */  bl      OSPanic
 /* 0338E4 80038E84 48000058 */  b       lbl_80038EDC
 lbl_80038E88:
@@ -9580,7 +9580,7 @@ lbl_8003940C:
 /* 033E70 80039410 60000004 */  ori     r0, r0, 4
 /* 033E74 80039414 901D0000 */  stw     r0, 0(r29)
 /* 033E78 80039418 93FD0028 */  stw     r31, 0x28(r29)
-/* 033E7C 8003941C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 033E7C 8003941C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 033E80 80039420 80030020 */  lwz     r0, 0x20(r3)
 /* 033E84 80039424 2C000004 */  cmpwi   r0, 4
 /* 033E88 80039428 40820018 */  bne     lbl_80039440
@@ -11596,14 +11596,14 @@ glabel lbl_8003B0C4
 /* 035B4C 8003B0EC 48002DC0 */  b       lbl_8003DEAC
 glabel lbl_8003B0F0
 /* 035B50 8003B0F0 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 035B54 8003B0F4 C80282A0 */  lfd     f0, D_80135FA0-_SDA2_BASE_(r2)
+/* 035B54 8003B0F4 C80282A0 */  lfd     f0, D_80135FA0@sda21(r2)
 /* 035B58 8003B0F8 7C7F0214 */  add     r3, r31, r0
 /* 035B5C 8003B0FC C0830144 */  lfs     f4, 0x144(r3)
 /* 035B60 8003B100 FC040040 */  fcmpo   cr0, f4, f0
 /* 035B64 8003B104 40810058 */  ble     lbl_8003B15C
 /* 035B68 8003B108 FC202034 */  frsqrte f1, f4
-/* 035B6C 8003B10C C86282A8 */  lfd     f3, D_80135FA8-_SDA2_BASE_(r2)
-/* 035B70 8003B110 C84282B0 */  lfd     f2, D_80135FB0-_SDA2_BASE_(r2)
+/* 035B6C 8003B10C C86282A8 */  lfd     f3, D_80135FA8@sda21(r2)
+/* 035B70 8003B110 C84282B0 */  lfd     f2, D_80135FB0@sda21(r2)
 /* 035B74 8003B114 FC010072 */  fmul    f0, f1, f1
 /* 035B78 8003B118 FC230072 */  fmul    f1, f3, f1
 /* 035B7C 8003B11C FC04103C */  fnmsub  f0, f4, f0, f2
@@ -11670,7 +11670,7 @@ glabel lbl_8003B1D8
 /* 035C54 8003B1F4 48002CB8 */  b       lbl_8003DEAC
 glabel lbl_8003B1F8
 /* 035C58 8003B1F8 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 035C5C 8003B1FC C02282B8 */  lfs     f1, D_80135FB8-_SDA2_BASE_(r2)
+/* 035C5C 8003B1FC C02282B8 */  lfs     f1, D_80135FB8@sda21(r2)
 /* 035C60 8003B200 7C7F0214 */  add     r3, r31, r0
 /* 035C64 8003B204 C0030144 */  lfs     f0, 0x144(r3)
 /* 035C68 8003B208 EC21002A */  fadds   f1, f1, f0
@@ -11714,7 +11714,7 @@ glabel lbl_8003B270
 /* 035CF4 8003B294 48002C18 */  b       lbl_8003DEAC
 glabel lbl_8003B298
 /* 035CF8 8003B298 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 035CFC 8003B29C C02282B8 */  lfs     f1, D_80135FB8-_SDA2_BASE_(r2)
+/* 035CFC 8003B29C C02282B8 */  lfs     f1, D_80135FB8@sda21(r2)
 /* 035D00 8003B2A0 7C7F0214 */  add     r3, r31, r0
 /* 035D04 8003B2A4 C0030144 */  lfs     f0, 0x144(r3)
 /* 035D08 8003B2A8 57C0EE38 */  rlwinm  r0, r30, 0x1d, 0x18, 0x1c
@@ -12111,14 +12111,14 @@ glabel lbl_8003B7F8
 /* 036280 8003B820 4800268C */  b       lbl_8003DEAC
 glabel lbl_8003B824
 /* 036284 8003B824 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036288 8003B828 C80282A0 */  lfd     f0, D_80135FA0-_SDA2_BASE_(r2)
+/* 036288 8003B828 C80282A0 */  lfd     f0, D_80135FA0@sda21(r2)
 /* 03628C 8003B82C 7C7F0214 */  add     r3, r31, r0
 /* 036290 8003B830 C8830140 */  lfd     f4, 0x140(r3)
 /* 036294 8003B834 FC040040 */  fcmpo   cr0, f4, f0
 /* 036298 8003B838 40810058 */  ble     lbl_8003B890
 /* 03629C 8003B83C FC202034 */  frsqrte f1, f4
-/* 0362A0 8003B840 C86282A8 */  lfd     f3, D_80135FA8-_SDA2_BASE_(r2)
-/* 0362A4 8003B844 C84282B0 */  lfd     f2, D_80135FB0-_SDA2_BASE_(r2)
+/* 0362A0 8003B840 C86282A8 */  lfd     f3, D_80135FA8@sda21(r2)
+/* 0362A4 8003B844 C84282B0 */  lfd     f2, D_80135FB0@sda21(r2)
 /* 0362A8 8003B848 FC010072 */  fmul    f0, f1, f1
 /* 0362AC 8003B84C FC230072 */  fmul    f1, f3, f1
 /* 0362B0 8003B850 FC04103C */  fnmsub  f0, f4, f0, f2
@@ -12183,7 +12183,7 @@ glabel lbl_8003B904
 /* 036380 8003B920 4800258C */  b       lbl_8003DEAC
 glabel lbl_8003B924
 /* 036384 8003B924 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036388 8003B928 C82282A8 */  lfd     f1, D_80135FA8-_SDA2_BASE_(r2)
+/* 036388 8003B928 C82282A8 */  lfd     f1, D_80135FA8@sda21(r2)
 /* 03638C 8003B92C 7C7F0214 */  add     r3, r31, r0
 /* 036390 8003B930 C8030140 */  lfd     f0, 0x140(r3)
 /* 036394 8003B934 FC21002A */  fadd    f1, f1, f0
@@ -12227,7 +12227,7 @@ glabel lbl_8003B99C
 /* 036420 8003B9C0 480024EC */  b       lbl_8003DEAC
 glabel lbl_8003B9C4
 /* 036424 8003B9C4 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036428 8003B9C8 C82282A8 */  lfd     f1, D_80135FA8-_SDA2_BASE_(r2)
+/* 036428 8003B9C8 C82282A8 */  lfd     f1, D_80135FA8@sda21(r2)
 /* 03642C 8003B9CC 7C7F0214 */  add     r3, r31, r0
 /* 036430 8003B9D0 C8030140 */  lfd     f0, 0x140(r3)
 /* 036434 8003B9D4 57C0EE38 */  rlwinm  r0, r30, 0x1d, 0x18, 0x1c
@@ -12625,9 +12625,9 @@ glabel lbl_8003BF28
 /* 0369B0 8003BF50 48001F5C */  b       lbl_8003DEAC
 glabel lbl_8003BF54
 /* 0369B4 8003BF54 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 0369B8 8003BF58 C84282C0 */  lfd     f2, D_80135FC0-_SDA2_BASE_(r2)
+/* 0369B8 8003BF58 C84282C0 */  lfd     f2, D_80135FC0@sda21(r2)
 /* 0369BC 8003BF5C 7C7F0214 */  add     r3, r31, r0
-/* 0369C0 8003BF60 C86282A0 */  lfd     f3, D_80135FA0-_SDA2_BASE_(r2)
+/* 0369C0 8003BF60 C86282A0 */  lfd     f3, D_80135FA0@sda21(r2)
 /* 0369C4 8003BF64 80630144 */  lwz     r3, 0x144(r3)
 /* 0369C8 8003BF68 3C004330 */  lis     r0, 0x4330
 /* 0369CC 8003BF6C 6C638000 */  xoris   r3, r3, 0x8000
@@ -12642,8 +12642,8 @@ glabel lbl_8003BF54
 /* 0369F0 8003BF90 FC811028 */  fsub    f4, f1, f2
 /* 0369F4 8003BF94 40810058 */  ble     lbl_8003BFEC
 /* 0369F8 8003BF98 FC202034 */  frsqrte f1, f4
-/* 0369FC 8003BF9C C86282A8 */  lfd     f3, D_80135FA8-_SDA2_BASE_(r2)
-/* 036A00 8003BFA0 C84282B0 */  lfd     f2, D_80135FB0-_SDA2_BASE_(r2)
+/* 0369FC 8003BF9C C86282A8 */  lfd     f3, D_80135FA8@sda21(r2)
+/* 036A00 8003BFA0 C84282B0 */  lfd     f2, D_80135FB0@sda21(r2)
 /* 036A04 8003BFA4 FC010072 */  fmul    f0, f1, f1
 /* 036A08 8003BFA8 FC230072 */  fmul    f1, f3, f1
 /* 036A0C 8003BFAC FC04103C */  fnmsub  f0, f4, f0, f2
@@ -12685,7 +12685,7 @@ lbl_8003C014:
 /* 036A8C 8003C02C 48001E80 */  b       lbl_8003DEAC
 glabel lbl_8003C030
 /* 036A90 8003C030 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036A94 8003C034 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036A94 8003C034 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036A98 8003C038 7C7F0214 */  add     r3, r31, r0
 /* 036A9C 8003C03C 80630144 */  lwz     r3, 0x144(r3)
 /* 036AA0 8003C040 3C804330 */  lis     r4, 0x4330
@@ -12741,7 +12741,7 @@ glabel lbl_8003C0D8
 /* 036B58 8003C0F8 48001DB4 */  b       lbl_8003DEAC
 glabel lbl_8003C0FC
 /* 036B5C 8003C0FC 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036B60 8003C100 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036B60 8003C100 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036B64 8003C104 7C7F0214 */  add     r3, r31, r0
 /* 036B68 8003C108 80630144 */  lwz     r3, 0x144(r3)
 /* 036B6C 8003C10C 3C004330 */  lis     r0, 0x4330
@@ -12759,7 +12759,7 @@ glabel lbl_8003C0FC
 /* 036B9C 8003C13C 48001D70 */  b       lbl_8003DEAC
 glabel lbl_8003C140
 /* 036BA0 8003C140 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036BA4 8003C144 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036BA4 8003C144 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036BA8 8003C148 7C7F0214 */  add     r3, r31, r0
 /* 036BAC 8003C14C 80630144 */  lwz     r3, 0x144(r3)
 /* 036BB0 8003C150 3C004330 */  lis     r0, 0x4330
@@ -12793,7 +12793,7 @@ glabel lbl_8003C1A0
 /* 036C18 8003C1B8 48001CF4 */  b       lbl_8003DEAC
 glabel lbl_8003C1BC
 /* 036C1C 8003C1BC 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036C20 8003C1C0 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036C20 8003C1C0 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036C24 8003C1C4 7C7F0214 */  add     r3, r31, r0
 /* 036C28 8003C1C8 80630144 */  lwz     r3, 0x144(r3)
 /* 036C2C 8003C1CC 3C004330 */  lis     r0, 0x4330
@@ -12812,7 +12812,7 @@ glabel lbl_8003C1BC
 /* 036C60 8003C200 48001CAC */  b       lbl_8003DEAC
 glabel lbl_8003C204
 /* 036C64 8003C204 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036C68 8003C208 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036C68 8003C208 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036C6C 8003C20C 7C7F0214 */  add     r3, r31, r0
 /* 036C70 8003C210 80630144 */  lwz     r3, 0x144(r3)
 /* 036C74 8003C214 3C004330 */  lis     r0, 0x4330
@@ -12831,7 +12831,7 @@ glabel lbl_8003C204
 /* 036CA8 8003C248 48001C64 */  b       lbl_8003DEAC
 glabel lbl_8003C24C
 /* 036CAC 8003C24C 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036CB0 8003C250 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036CB0 8003C250 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036CB4 8003C254 7C7F0214 */  add     r3, r31, r0
 /* 036CB8 8003C258 80630144 */  lwz     r3, 0x144(r3)
 /* 036CBC 8003C25C 3C804330 */  lis     r4, 0x4330
@@ -12846,7 +12846,7 @@ glabel lbl_8003C24C
 /* 036CE0 8003C280 48001C2C */  b       lbl_8003DEAC
 glabel lbl_8003C284
 /* 036CE4 8003C284 57C0C638 */  rlwinm  r0, r30, 0x18, 0x18, 0x1c
-/* 036CE8 8003C288 C82282C0 */  lfd     f1, D_80135FC0-_SDA2_BASE_(r2)
+/* 036CE8 8003C288 C82282C0 */  lfd     f1, D_80135FC0@sda21(r2)
 /* 036CEC 8003C28C 7C7F0214 */  add     r3, r31, r0
 /* 036CF0 8003C290 80630144 */  lwz     r3, 0x144(r3)
 /* 036CF4 8003C294 3C804330 */  lis     r4, 0x4330
@@ -13215,12 +13215,12 @@ glabel lbl_8003C78C
 /* 03720C 8003C7AC 38760000 */  addi    r3, r22, 0
 /* 037210 8003C7B0 38970000 */  addi    r4, r23, 0
 /* 037214 8003C7B4 48091601 */  bl      __cvt_sll_dbl
-/* 037218 8003C7B8 C80282A0 */  lfd     f0, D_80135FA0-_SDA2_BASE_(r2)
+/* 037218 8003C7B8 C80282A0 */  lfd     f0, D_80135FA0@sda21(r2)
 /* 03721C 8003C7BC FC010040 */  fcmpo   cr0, f1, f0
 /* 037220 8003C7C0 40810058 */  ble     lbl_8003C818
 /* 037224 8003C7C4 FC20F834 */  frsqrte f1, f31
-/* 037228 8003C7C8 C86282A8 */  lfd     f3, D_80135FA8-_SDA2_BASE_(r2)
-/* 03722C 8003C7CC C84282B0 */  lfd     f2, D_80135FB0-_SDA2_BASE_(r2)
+/* 037228 8003C7C8 C86282A8 */  lfd     f3, D_80135FA8@sda21(r2)
+/* 03722C 8003C7CC C84282B0 */  lfd     f2, D_80135FB0@sda21(r2)
 /* 037230 8003C7D0 FC010072 */  fmul    f0, f1, f1
 /* 037234 8003C7D4 FC230072 */  fmul    f1, f3, f1
 /* 037238 8003C7D8 FC1F103C */  fnmsub  f0, f31, f0, f2
@@ -14909,13 +14909,13 @@ lbl_8003E020:
 /* 038A80 8003E020 801C0B58 */  lwz     r0, 0xb58(r28)
 /* 038A84 8003E024 7C1E0040 */  cmplw   r30, r0
 /* 038A88 8003E028 4081003C */  ble     lbl_8003E064
-/* 038A8C 8003E02C 806D8180 */  lwz     r3, nTickMultiplier-_SDA_BASE_(r13)
+/* 038A8C 8003E02C 806D8180 */  lwz     r3, nTickMultiplier@sda21(r13)
 /* 038A90 8003E030 7C80F050 */  subf    r4, r0, r30
 /* 038A94 8003E034 3C004330 */  lis     r0, 0x4330
-/* 038A98 8003E038 C82282C8 */  lfd     f1, D_80135FC8-_SDA2_BASE_(r2)
+/* 038A98 8003E038 C82282C8 */  lfd     f1, D_80135FC8@sda21(r2)
 /* 038A9C 8003E03C 7C831830 */  slw     r3, r4, r3
 /* 038AA0 8003E040 9061001C */  stw     r3, 0x1c(r1)
-/* 038AA4 8003E044 C04D8184 */  lfs     f2, fTickScale-_SDA_BASE_(r13)
+/* 038AA4 8003E044 C04D8184 */  lfs     f2, fTickScale@sda21(r13)
 /* 038AA8 8003E048 90010018 */  stw     r0, 0x18(r1)
 /* 038AAC 8003E04C C8010018 */  lfd     f0, 0x18(r1)
 /* 038AB0 8003E050 EC000828 */  fsubs   f0, f0, f1
@@ -14925,11 +14925,11 @@ lbl_8003E020:
 /* 038AC0 8003E060 4800003C */  b       lbl_8003E09C
 lbl_8003E064:
 /* 038AC4 8003E064 2060FFFF */  subfic  r3, r0, -1
-/* 038AC8 8003E068 800D8180 */  lwz     r0, nTickMultiplier-_SDA_BASE_(r13)
+/* 038AC8 8003E068 800D8180 */  lwz     r0, nTickMultiplier@sda21(r13)
 /* 038ACC 8003E06C 7C63F214 */  add     r3, r3, r30
-/* 038AD0 8003E070 C82282C8 */  lfd     f1, D_80135FC8-_SDA2_BASE_(r2)
+/* 038AD0 8003E070 C82282C8 */  lfd     f1, D_80135FC8@sda21(r2)
 /* 038AD4 8003E074 7C600030 */  slw     r0, r3, r0
-/* 038AD8 8003E078 C04D8184 */  lfs     f2, fTickScale-_SDA_BASE_(r13)
+/* 038AD8 8003E078 C04D8184 */  lfs     f2, fTickScale@sda21(r13)
 /* 038ADC 8003E07C 9001001C */  stw     r0, 0x1c(r1)
 /* 038AE0 8003E080 3C004330 */  lis     r0, 0x4330
 /* 038AE4 8003E084 90010018 */  stw     r0, 0x18(r1)
@@ -15006,7 +15006,7 @@ lbl_8003E160:
 /* 038BE4 8003E184 41820030 */  beq     lbl_8003E1B4
 /* 038BE8 8003E188 5460077B */  rlwinm. r0, r3, 0, 0x1d, 0x1d
 /* 038BEC 8003E18C 40820028 */  bne     lbl_8003E1B4
-/* 038BF0 8003E190 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 038BF0 8003E190 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 038BF4 8003E194 80030008 */  lwz     r0, 8(r3)
 /* 038BF8 8003E198 2C000000 */  cmpwi   r0, 0
 /* 038BFC 8003E19C 41820018 */  beq     lbl_8003E1B4
@@ -15040,7 +15040,7 @@ lbl_8003E1F0:
 /* 038C60 8003E200 4E800020 */  blr     
 
 cpuRetraceCallback:
-/* 038C64 8003E204 808D8920 */  lwz     r4, gpSystem-_SDA_BASE_(r13)
+/* 038C64 8003E204 808D8920 */  lwz     r4, gpSystem@sda21(r13)
 /* 038C68 8003E208 80840024 */  lwz     r4, 0x24(r4)
 /* 038C6C 8003E20C 90640B5C */  stw     r3, 0xb5c(r4)
 /* 038C70 8003E210 4E800020 */  blr     
@@ -15231,7 +15231,7 @@ lbl_8003E494:
 /* 038F10 8003E4B0 4CC63182 */  crclr   6
 /* 038F14 8003E4B4 3863C1E0 */  addi    r3, r3, D_800EC1E0@l
 /* 038F18 8003E4B8 38800E25 */  li      r4, 0xe25
-/* 038F1C 8003E4BC 38AD857C */  addi    r5, r13, D_8013525C-_SDA_BASE_
+/* 038F1C 8003E4BC 38AD857C */  addi    r5, r13, D_8013525C@sda21
 /* 038F20 8003E4C0 480601B9 */  bl      OSPanic
 /* 038F24 8003E4C4 38600000 */  li      r3, 0
 lbl_8003E4C8:
@@ -18820,7 +18820,7 @@ lbl_800416F0:
 /* 03C150 800416F0 281F0000 */  cmplwi  r31, 0
 /* 03C154 800416F4 41820034 */  beq     lbl_80041728
 /* 03C158 800416F8 80610084 */  lwz     r3, 0x84(r1)
-/* 03C15C 800416FC 800D8A04 */  lwz     r0, cpuCompile_DSLLV_function-_SDA_BASE_(r13)
+/* 03C15C 800416FC 800D8A04 */  lwz     r0, cpuCompile_DSLLV_function@sda21(r13)
 /* 03C160 80041700 5466103A */  slwi    r6, r3, 2
 /* 03C164 80041704 7C9F3214 */  add     r4, r31, r6
 /* 03C168 80041708 7C040050 */  subf    r0, r4, r0
@@ -19017,7 +19017,7 @@ lbl_800419B8:
 /* 03C418 800419B8 281F0000 */  cmplwi  r31, 0
 /* 03C41C 800419BC 41820034 */  beq     lbl_800419F0
 /* 03C420 800419C0 80610084 */  lwz     r3, 0x84(r1)
-/* 03C424 800419C4 800D8A08 */  lwz     r0, cpuCompile_DSRLV_function-_SDA_BASE_(r13)
+/* 03C424 800419C4 800D8A08 */  lwz     r0, cpuCompile_DSRLV_function@sda21(r13)
 /* 03C428 800419C8 5466103A */  slwi    r6, r3, 2
 /* 03C42C 800419CC 7C9F3214 */  add     r4, r31, r6
 /* 03C430 800419D0 7C040050 */  subf    r0, r4, r0
@@ -19214,7 +19214,7 @@ lbl_80041C80:
 /* 03C6E0 80041C80 281F0000 */  cmplwi  r31, 0
 /* 03C6E4 80041C84 41820034 */  beq     lbl_80041CB8
 /* 03C6E8 80041C88 80610084 */  lwz     r3, 0x84(r1)
-/* 03C6EC 80041C8C 800D8A0C */  lwz     r0, cpuCompile_DSRAV_function-_SDA_BASE_(r13)
+/* 03C6EC 80041C8C 800D8A0C */  lwz     r0, cpuCompile_DSRAV_function@sda21(r13)
 /* 03C6F0 80041C90 5466103A */  slwi    r6, r3, 2
 /* 03C6F4 80041C94 7C9F3214 */  add     r4, r31, r6
 /* 03C6F8 80041C98 7C040050 */  subf    r0, r4, r0
@@ -20114,7 +20114,7 @@ lbl_8004291C:
 /* 03D37C 8004291C 281F0000 */  cmplwi  r31, 0
 /* 03D380 80042920 41820034 */  beq     lbl_80042954
 /* 03D384 80042924 80610084 */  lwz     r3, 0x84(r1)
-/* 03D388 80042928 800D8A10 */  lwz     r0, cpuCompile_DMULT_function-_SDA_BASE_(r13)
+/* 03D388 80042928 800D8A10 */  lwz     r0, cpuCompile_DMULT_function@sda21(r13)
 /* 03D38C 8004292C 5465103A */  slwi    r5, r3, 2
 /* 03D390 80042930 7C9F2A14 */  add     r4, r31, r5
 /* 03D394 80042934 7C040050 */  subf    r0, r4, r0
@@ -20472,7 +20472,7 @@ lbl_80042E0C:
 /* 03D86C 80042E0C 281F0000 */  cmplwi  r31, 0
 /* 03D870 80042E10 41820034 */  beq     lbl_80042E44
 /* 03D874 80042E14 80610084 */  lwz     r3, 0x84(r1)
-/* 03D878 80042E18 800D8A14 */  lwz     r0, cpuCompile_DMULTU_function-_SDA_BASE_(r13)
+/* 03D878 80042E18 800D8A14 */  lwz     r0, cpuCompile_DMULTU_function@sda21(r13)
 /* 03D87C 80042E1C 5465103A */  slwi    r5, r3, 2
 /* 03D880 80042E20 7C9F2A14 */  add     r4, r31, r5
 /* 03D884 80042E24 7C040050 */  subf    r0, r4, r0
@@ -20866,7 +20866,7 @@ lbl_8004337C:
 /* 03DDDC 8004337C 281F0000 */  cmplwi  r31, 0
 /* 03DDE0 80043380 41820034 */  beq     lbl_800433B4
 /* 03DDE4 80043384 80610084 */  lwz     r3, 0x84(r1)
-/* 03DDE8 80043388 800D8A18 */  lwz     r0, cpuCompile_DDIV_function-_SDA_BASE_(r13)
+/* 03DDE8 80043388 800D8A18 */  lwz     r0, cpuCompile_DDIV_function@sda21(r13)
 /* 03DDEC 8004338C 5465103A */  slwi    r5, r3, 2
 /* 03DDF0 80043390 7C9F2A14 */  add     r4, r31, r5
 /* 03DDF4 80043394 7C040050 */  subf    r0, r4, r0
@@ -21224,7 +21224,7 @@ lbl_8004386C:
 /* 03E2CC 8004386C 281F0000 */  cmplwi  r31, 0
 /* 03E2D0 80043870 41820034 */  beq     lbl_800438A4
 /* 03E2D4 80043874 80610084 */  lwz     r3, 0x84(r1)
-/* 03E2D8 80043878 800D8A1C */  lwz     r0, cpuCompile_DDIVU_function-_SDA_BASE_(r13)
+/* 03E2D8 80043878 800D8A1C */  lwz     r0, cpuCompile_DDIVU_function@sda21(r13)
 /* 03E2DC 8004387C 5465103A */  slwi    r5, r3, 2
 /* 03E2E0 80043880 7C9F2A14 */  add     r4, r31, r5
 /* 03E2E4 80043884 7C040050 */  subf    r0, r4, r0
@@ -25840,7 +25840,7 @@ lbl_80047870:
 /* 0422D0 80047870 281F0000 */  cmplwi  r31, 0
 /* 0422D4 80047874 41820034 */  beq     lbl_800478A8
 /* 0422D8 80047878 80610084 */  lwz     r3, 0x84(r1)
-/* 0422DC 8004787C 808D8A20 */  lwz     r4, cpuCompile_DADD_function-_SDA_BASE_(r13)
+/* 0422DC 8004787C 808D8A20 */  lwz     r4, cpuCompile_DADD_function@sda21(r13)
 /* 0422E0 80047880 5466103A */  slwi    r6, r3, 2
 /* 0422E4 80047884 7CBF3214 */  add     r5, r31, r6
 /* 0422E8 80047888 7C852050 */  subf    r4, r5, r4
@@ -26134,7 +26134,7 @@ lbl_80047C88:
 /* 0426E8 80047C88 281F0000 */  cmplwi  r31, 0
 /* 0426EC 80047C8C 41820034 */  beq     lbl_80047CC0
 /* 0426F0 80047C90 80610084 */  lwz     r3, 0x84(r1)
-/* 0426F4 80047C94 808D8A24 */  lwz     r4, cpuCompile_DADDU_function-_SDA_BASE_(r13)
+/* 0426F4 80047C94 808D8A24 */  lwz     r4, cpuCompile_DADDU_function@sda21(r13)
 /* 0426F8 80047C98 5466103A */  slwi    r6, r3, 2
 /* 0426FC 80047C9C 7CBF3214 */  add     r5, r31, r6
 /* 042700 80047CA0 7C852050 */  subf    r4, r5, r4
@@ -26428,7 +26428,7 @@ lbl_800480A0:
 /* 042B00 800480A0 281F0000 */  cmplwi  r31, 0
 /* 042B04 800480A4 41820034 */  beq     lbl_800480D8
 /* 042B08 800480A8 80610084 */  lwz     r3, 0x84(r1)
-/* 042B0C 800480AC 808D8A28 */  lwz     r4, cpuCompile_DSUB_function-_SDA_BASE_(r13)
+/* 042B0C 800480AC 808D8A28 */  lwz     r4, cpuCompile_DSUB_function@sda21(r13)
 /* 042B10 800480B0 5466103A */  slwi    r6, r3, 2
 /* 042B14 800480B4 7CBF3214 */  add     r5, r31, r6
 /* 042B18 800480B8 7C852050 */  subf    r4, r5, r4
@@ -26722,7 +26722,7 @@ lbl_800484B8:
 /* 042F18 800484B8 281F0000 */  cmplwi  r31, 0
 /* 042F1C 800484BC 41820034 */  beq     lbl_800484F0
 /* 042F20 800484C0 80610084 */  lwz     r3, 0x84(r1)
-/* 042F24 800484C4 808D8A2C */  lwz     r4, cpuCompile_DSUBU_function-_SDA_BASE_(r13)
+/* 042F24 800484C4 808D8A2C */  lwz     r4, cpuCompile_DSUBU_function@sda21(r13)
 /* 042F28 800484C8 5466103A */  slwi    r6, r3, 2
 /* 042F2C 800484CC 7CBF3214 */  add     r5, r31, r6
 /* 042F30 800484D0 7C852050 */  subf    r4, r5, r4
@@ -36190,7 +36190,7 @@ lbl_800506E4:
 /* 04B144 800506E4 281F0000 */  cmplwi  r31, 0
 /* 04B148 800506E8 41820034 */  beq     lbl_8005071C
 /* 04B14C 800506EC 80610084 */  lwz     r3, 0x84(r1)
-/* 04B150 800506F0 800D8A30 */  lwz     r0, cpuCompile_S_SQRT_function-_SDA_BASE_(r13)
+/* 04B150 800506F0 800D8A30 */  lwz     r0, cpuCompile_S_SQRT_function@sda21(r13)
 /* 04B154 800506F4 5465103A */  slwi    r5, r3, 2
 /* 04B158 800506F8 7C9F2A14 */  add     r4, r31, r5
 /* 04B15C 800506FC 7C040050 */  subf    r0, r4, r0
@@ -36656,7 +36656,7 @@ lbl_80050D40:
 /* 04B7A0 80050D40 281F0000 */  cmplwi  r31, 0
 /* 04B7A4 80050D44 41820034 */  beq     lbl_80050D78
 /* 04B7A8 80050D48 80610084 */  lwz     r3, 0x84(r1)
-/* 04B7AC 80050D4C 800D8A48 */  lwz     r0, cpuCompile_ROUND_W_function-_SDA_BASE_(r13)
+/* 04B7AC 80050D4C 800D8A48 */  lwz     r0, cpuCompile_ROUND_W_function@sda21(r13)
 /* 04B7B0 80050D50 5465103A */  slwi    r5, r3, 2
 /* 04B7B4 80050D54 7C9F2A14 */  add     r4, r31, r5
 /* 04B7B8 80050D58 7C040050 */  subf    r0, r4, r0
@@ -36786,7 +36786,7 @@ lbl_80050F04:
 /* 04B964 80050F04 281F0000 */  cmplwi  r31, 0
 /* 04B968 80050F08 41820034 */  beq     lbl_80050F3C
 /* 04B96C 80050F0C 80610084 */  lwz     r3, 0x84(r1)
-/* 04B970 80050F10 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function-_SDA_BASE_(r13)
+/* 04B970 80050F10 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function@sda21(r13)
 /* 04B974 80050F14 5465103A */  slwi    r5, r3, 2
 /* 04B978 80050F18 7C9F2A14 */  add     r4, r31, r5
 /* 04B97C 80050F1C 7C040050 */  subf    r0, r4, r0
@@ -36901,7 +36901,7 @@ lbl_80051094:
 /* 04BAF4 80051094 281F0000 */  cmplwi  r31, 0
 /* 04BAF8 80051098 41820034 */  beq     lbl_800510CC
 /* 04BAFC 8005109C 80610084 */  lwz     r3, 0x84(r1)
-/* 04BB00 800510A0 800D8A40 */  lwz     r0, cpuCompile_CEIL_W_function-_SDA_BASE_(r13)
+/* 04BB00 800510A0 800D8A40 */  lwz     r0, cpuCompile_CEIL_W_function@sda21(r13)
 /* 04BB04 800510A4 5465103A */  slwi    r5, r3, 2
 /* 04BB08 800510A8 7C9F2A14 */  add     r4, r31, r5
 /* 04BB0C 800510AC 7C040050 */  subf    r0, r4, r0
@@ -37035,7 +37035,7 @@ lbl_80051268:
 /* 04BCC8 80051268 281F0000 */  cmplwi  r31, 0
 /* 04BCCC 8005126C 41820034 */  beq     lbl_800512A0
 /* 04BCD0 80051270 80610084 */  lwz     r3, 0x84(r1)
-/* 04BCD4 80051274 800D8A44 */  lwz     r0, cpuCompile_FLOOR_W_function-_SDA_BASE_(r13)
+/* 04BCD4 80051274 800D8A44 */  lwz     r0, cpuCompile_FLOOR_W_function@sda21(r13)
 /* 04BCD8 80051278 5465103A */  slwi    r5, r3, 2
 /* 04BCDC 8005127C 7C9F2A14 */  add     r4, r31, r5
 /* 04BCE0 80051280 7C040050 */  subf    r0, r4, r0
@@ -37229,7 +37229,7 @@ lbl_80051510:
 /* 04BF70 80051510 281F0000 */  cmplwi  r31, 0
 /* 04BF74 80051514 41820034 */  beq     lbl_80051548
 /* 04BF78 80051518 80610084 */  lwz     r3, 0x84(r1)
-/* 04BF7C 8005151C 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function-_SDA_BASE_(r13)
+/* 04BF7C 8005151C 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function@sda21(r13)
 /* 04BF80 80051520 5465103A */  slwi    r5, r3, 2
 /* 04BF84 80051524 7C9F2A14 */  add     r4, r31, r5
 /* 04BF88 80051528 7C040050 */  subf    r0, r4, r0
@@ -42292,7 +42292,7 @@ lbl_80055968:
 /* 0503C8 80055968 281F0000 */  cmplwi  r31, 0
 /* 0503CC 8005596C 41820034 */  beq     lbl_800559A0
 /* 0503D0 80055970 80610084 */  lwz     r3, 0x84(r1)
-/* 0503D4 80055974 800D8A34 */  lwz     r0, cpuCompile_D_SQRT_function-_SDA_BASE_(r13)
+/* 0503D4 80055974 800D8A34 */  lwz     r0, cpuCompile_D_SQRT_function@sda21(r13)
 /* 0503D8 80055978 5465103A */  slwi    r5, r3, 2
 /* 0503DC 8005597C 7C9F2A14 */  add     r4, r31, r5
 /* 0503E0 80055980 7C040050 */  subf    r0, r4, r0
@@ -42750,7 +42750,7 @@ lbl_80055FA4:
 /* 050A04 80055FA4 281F0000 */  cmplwi  r31, 0
 /* 050A08 80055FA8 41820034 */  beq     lbl_80055FDC
 /* 050A0C 80055FAC 80610084 */  lwz     r3, 0x84(r1)
-/* 050A10 80055FB0 800D8A48 */  lwz     r0, cpuCompile_ROUND_W_function-_SDA_BASE_(r13)
+/* 050A10 80055FB0 800D8A48 */  lwz     r0, cpuCompile_ROUND_W_function@sda21(r13)
 /* 050A14 80055FB4 5465103A */  slwi    r5, r3, 2
 /* 050A18 80055FB8 7C9F2A14 */  add     r4, r31, r5
 /* 050A1C 80055FBC 7C040050 */  subf    r0, r4, r0
@@ -42879,7 +42879,7 @@ lbl_80056164:
 /* 050BC4 80056164 281F0000 */  cmplwi  r31, 0
 /* 050BC8 80056168 41820034 */  beq     lbl_8005619C
 /* 050BCC 8005616C 80610084 */  lwz     r3, 0x84(r1)
-/* 050BD0 80056170 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function-_SDA_BASE_(r13)
+/* 050BD0 80056170 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function@sda21(r13)
 /* 050BD4 80056174 5465103A */  slwi    r5, r3, 2
 /* 050BD8 80056178 7C9F2A14 */  add     r4, r31, r5
 /* 050BDC 8005617C 7C040050 */  subf    r0, r4, r0
@@ -42993,7 +42993,7 @@ lbl_800562F0:
 /* 050D50 800562F0 281F0000 */  cmplwi  r31, 0
 /* 050D54 800562F4 41820034 */  beq     lbl_80056328
 /* 050D58 800562F8 80610084 */  lwz     r3, 0x84(r1)
-/* 050D5C 800562FC 800D8A40 */  lwz     r0, cpuCompile_CEIL_W_function-_SDA_BASE_(r13)
+/* 050D5C 800562FC 800D8A40 */  lwz     r0, cpuCompile_CEIL_W_function@sda21(r13)
 /* 050D60 80056300 5465103A */  slwi    r5, r3, 2
 /* 050D64 80056304 7C9F2A14 */  add     r4, r31, r5
 /* 050D68 80056308 7C040050 */  subf    r0, r4, r0
@@ -43126,7 +43126,7 @@ lbl_800564C0:
 /* 050F20 800564C0 281F0000 */  cmplwi  r31, 0
 /* 050F24 800564C4 41820034 */  beq     lbl_800564F8
 /* 050F28 800564C8 80610084 */  lwz     r3, 0x84(r1)
-/* 050F2C 800564CC 800D8A44 */  lwz     r0, cpuCompile_FLOOR_W_function-_SDA_BASE_(r13)
+/* 050F2C 800564CC 800D8A44 */  lwz     r0, cpuCompile_FLOOR_W_function@sda21(r13)
 /* 050F30 800564D0 5465103A */  slwi    r5, r3, 2
 /* 050F34 800564D4 7C9F2A14 */  add     r4, r31, r5
 /* 050F38 800564D8 7C040050 */  subf    r0, r4, r0
@@ -43319,7 +43319,7 @@ lbl_80056764:
 /* 0511C4 80056764 281F0000 */  cmplwi  r31, 0
 /* 0511C8 80056768 41820034 */  beq     lbl_8005679C
 /* 0511CC 8005676C 80610084 */  lwz     r3, 0x84(r1)
-/* 0511D0 80056770 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function-_SDA_BASE_(r13)
+/* 0511D0 80056770 800D8A4C */  lwz     r0, cpuCompile_TRUNC_W_function@sda21(r13)
 /* 0511D4 80056774 5465103A */  slwi    r5, r3, 2
 /* 0511D8 80056778 7C9F2A14 */  add     r4, r31, r5
 /* 0511DC 8005677C 7C040050 */  subf    r0, r4, r0
@@ -47461,7 +47461,7 @@ lbl_80059F44:
 /* 0549A4 80059F44 281F0000 */  cmplwi  r31, 0
 /* 0549A8 80059F48 41820034 */  beq     lbl_80059F7C
 /* 0549AC 80059F4C 80610084 */  lwz     r3, 0x84(r1)
-/* 0549B0 80059F50 808D8A38 */  lwz     r4, cpuCompile_W_CVT_SD_function-_SDA_BASE_(r13)
+/* 0549B0 80059F50 808D8A38 */  lwz     r4, cpuCompile_W_CVT_SD_function@sda21(r13)
 /* 0549B4 80059F54 5466103A */  slwi    r6, r3, 2
 /* 0549B8 80059F58 7CBF3214 */  add     r5, r31, r6
 /* 0549BC 80059F5C 7C852050 */  subf    r4, r5, r4
@@ -47521,7 +47521,7 @@ lbl_8005A01C:
 /* 054A7C 8005A01C 281F0000 */  cmplwi  r31, 0
 /* 054A80 8005A020 41820034 */  beq     lbl_8005A054
 /* 054A84 8005A024 80610084 */  lwz     r3, 0x84(r1)
-/* 054A88 8005A028 808D8A38 */  lwz     r4, cpuCompile_W_CVT_SD_function-_SDA_BASE_(r13)
+/* 054A88 8005A028 808D8A38 */  lwz     r4, cpuCompile_W_CVT_SD_function@sda21(r13)
 /* 054A8C 8005A02C 5466103A */  slwi    r6, r3, 2
 /* 054A90 8005A030 7CBF3214 */  add     r5, r31, r6
 /* 054A94 8005A034 7C852050 */  subf    r4, r5, r4
@@ -47786,7 +47786,7 @@ lbl_8005A3A4:
 /* 054E04 8005A3A4 281F0000 */  cmplwi  r31, 0
 /* 054E08 8005A3A8 41820034 */  beq     lbl_8005A3DC
 /* 054E0C 8005A3AC 80610084 */  lwz     r3, 0x84(r1)
-/* 054E10 8005A3B0 808D8A3C */  lwz     r4, cpuCompile_L_CVT_SD_function-_SDA_BASE_(r13)
+/* 054E10 8005A3B0 808D8A3C */  lwz     r4, cpuCompile_L_CVT_SD_function@sda21(r13)
 /* 054E14 8005A3B4 5466103A */  slwi    r6, r3, 2
 /* 054E18 8005A3B8 7CBF3214 */  add     r5, r31, r6
 /* 054E1C 8005A3BC 7C852050 */  subf    r4, r5, r4
@@ -47879,7 +47879,7 @@ lbl_8005A4F0:
 /* 054F50 8005A4F0 281F0000 */  cmplwi  r31, 0
 /* 054F54 8005A4F4 41820034 */  beq     lbl_8005A528
 /* 054F58 8005A4F8 80610084 */  lwz     r3, 0x84(r1)
-/* 054F5C 8005A4FC 808D8A3C */  lwz     r4, cpuCompile_L_CVT_SD_function-_SDA_BASE_(r13)
+/* 054F5C 8005A4FC 808D8A3C */  lwz     r4, cpuCompile_L_CVT_SD_function@sda21(r13)
 /* 054F60 8005A500 5466103A */  slwi    r6, r3, 2
 /* 054F64 8005A504 7CBF3214 */  add     r5, r31, r6
 /* 054F68 8005A508 7C852050 */  subf    r4, r5, r4
@@ -50486,7 +50486,7 @@ lbl_8005C878:
 /* 0572D8 8005C878 281F0000 */  cmplwi  r31, 0
 /* 0572DC 8005C87C 41820034 */  beq     lbl_8005C8B0
 /* 0572E0 8005C880 80610084 */  lwz     r3, 0x84(r1)
-/* 0572E4 8005C884 800D8A50 */  lwz     r0, cpuCompile_LB_function-_SDA_BASE_(r13)
+/* 0572E4 8005C884 800D8A50 */  lwz     r0, cpuCompile_LB_function@sda21(r13)
 /* 0572E8 8005C888 5465103A */  slwi    r5, r3, 2
 /* 0572EC 8005C88C 7C9F2A14 */  add     r4, r31, r5
 /* 0572F0 8005C890 7C040050 */  subf    r0, r4, r0
@@ -51357,7 +51357,7 @@ lbl_8005D470:
 /* 057ED0 8005D470 281F0000 */  cmplwi  r31, 0
 /* 057ED4 8005D474 41820034 */  beq     lbl_8005D4A8
 /* 057ED8 8005D478 80610084 */  lwz     r3, 0x84(r1)
-/* 057EDC 8005D47C 800D8A54 */  lwz     r0, cpuCompile_LH_function-_SDA_BASE_(r13)
+/* 057EDC 8005D47C 800D8A54 */  lwz     r0, cpuCompile_LH_function@sda21(r13)
 /* 057EE0 8005D480 5465103A */  slwi    r5, r3, 2
 /* 057EE4 8005D484 7C9F2A14 */  add     r4, r31, r5
 /* 057EE8 8005D488 7C040050 */  subf    r0, r4, r0
@@ -51788,7 +51788,7 @@ lbl_8005DA68:
 /* 0584C8 8005DA68 281F0000 */  cmplwi  r31, 0
 /* 0584CC 8005DA6C 41820034 */  beq     lbl_8005DAA0
 /* 0584D0 8005DA70 80610084 */  lwz     r3, 0x84(r1)
-/* 0584D4 8005DA74 800D8A78 */  lwz     r0, cpuCompile_LWL_function-_SDA_BASE_(r13)
+/* 0584D4 8005DA74 800D8A78 */  lwz     r0, cpuCompile_LWL_function@sda21(r13)
 /* 0584D8 8005DA78 5466103A */  slwi    r6, r3, 2
 /* 0584DC 8005DA7C 7CBF3214 */  add     r5, r31, r6
 /* 0584E0 8005DA80 7C050050 */  subf    r0, r5, r0
@@ -51920,7 +51920,7 @@ glabel lbl_8005DBF4
 /* 0586A4 8005DC44 5400043E */  clrlwi  r0, r0, 0x10
 /* 0586A8 8005DC48 9003205C */  stw     r0, 0x205c(r3)
 lbl_8005DC4C:
-/* 0586AC 8005DC4C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0586AC 8005DC4C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0586B0 8005DC50 80030020 */  lwz     r0, 0x20(r3)
 /* 0586B4 8005DC54 2C000005 */  cmpwi   r0, 5
 /* 0586B8 8005DC58 40820128 */  bne     lbl_8005DD80
@@ -52628,7 +52628,7 @@ lbl_8005E614:
 /* 059074 8005E614 281F0000 */  cmplwi  r31, 0
 /* 059078 8005E618 41820034 */  beq     lbl_8005E64C
 /* 05907C 8005E61C 80610084 */  lwz     r3, 0x84(r1)
-/* 059080 8005E620 800D8A58 */  lwz     r0, cpuCompile_LW_function-_SDA_BASE_(r13)
+/* 059080 8005E620 800D8A58 */  lwz     r0, cpuCompile_LW_function@sda21(r13)
 /* 059084 8005E624 5465103A */  slwi    r5, r3, 2
 /* 059088 8005E628 7C9F2A14 */  add     r4, r31, r5
 /* 05908C 8005E62C 7C040050 */  subf    r0, r4, r0
@@ -53481,7 +53481,7 @@ lbl_8005F1CC:
 /* 059C2C 8005F1CC 281F0000 */  cmplwi  r31, 0
 /* 059C30 8005F1D0 41820034 */  beq     lbl_8005F204
 /* 059C34 8005F1D4 80610084 */  lwz     r3, 0x84(r1)
-/* 059C38 8005F1D8 800D8A5C */  lwz     r0, cpuCompile_LBU_function-_SDA_BASE_(r13)
+/* 059C38 8005F1D8 800D8A5C */  lwz     r0, cpuCompile_LBU_function@sda21(r13)
 /* 059C3C 8005F1DC 5465103A */  slwi    r5, r3, 2
 /* 059C40 8005F1E0 7C9F2A14 */  add     r4, r31, r5
 /* 059C44 8005F1E4 7C040050 */  subf    r0, r4, r0
@@ -54334,7 +54334,7 @@ lbl_8005FD84:
 /* 05A7E4 8005FD84 281F0000 */  cmplwi  r31, 0
 /* 05A7E8 8005FD88 41820034 */  beq     lbl_8005FDBC
 /* 05A7EC 8005FD8C 80610084 */  lwz     r3, 0x84(r1)
-/* 05A7F0 8005FD90 800D8A60 */  lwz     r0, cpuCompile_LHU_function-_SDA_BASE_(r13)
+/* 05A7F0 8005FD90 800D8A60 */  lwz     r0, cpuCompile_LHU_function@sda21(r13)
 /* 05A7F4 8005FD94 5465103A */  slwi    r5, r3, 2
 /* 05A7F8 8005FD98 7C9F2A14 */  add     r4, r31, r5
 /* 05A7FC 8005FD9C 7C040050 */  subf    r0, r4, r0
@@ -54765,7 +54765,7 @@ lbl_8006037C:
 /* 05ADDC 8006037C 281F0000 */  cmplwi  r31, 0
 /* 05ADE0 80060380 41820034 */  beq     lbl_800603B4
 /* 05ADE4 80060384 80610084 */  lwz     r3, 0x84(r1)
-/* 05ADE8 80060388 800D8A7C */  lwz     r0, cpuCompile_LWR_function-_SDA_BASE_(r13)
+/* 05ADE8 80060388 800D8A7C */  lwz     r0, cpuCompile_LWR_function@sda21(r13)
 /* 05ADEC 8006038C 5466103A */  slwi    r6, r3, 2
 /* 05ADF0 80060390 7CBF3214 */  add     r5, r31, r6
 /* 05ADF4 80060394 7C050050 */  subf    r0, r5, r0
@@ -55611,7 +55611,7 @@ lbl_80060F14:
 /* 05B974 80060F14 281F0000 */  cmplwi  r31, 0
 /* 05B978 80060F18 41820034 */  beq     lbl_80060F4C
 /* 05B97C 80060F1C 80610084 */  lwz     r3, 0x84(r1)
-/* 05B980 80060F20 800D8A64 */  lwz     r0, cpuCompile_SB_function-_SDA_BASE_(r13)
+/* 05B980 80060F20 800D8A64 */  lwz     r0, cpuCompile_SB_function@sda21(r13)
 /* 05B984 80060F24 5465103A */  slwi    r5, r3, 2
 /* 05B988 80060F28 7C9F2A14 */  add     r4, r31, r5
 /* 05B98C 80060F2C 7C040050 */  subf    r0, r4, r0
@@ -56587,7 +56587,7 @@ lbl_80061C70:
 /* 05C6D0 80061C70 281F0000 */  cmplwi  r31, 0
 /* 05C6D4 80061C74 41820034 */  beq     lbl_80061CA8
 /* 05C6D8 80061C78 80610084 */  lwz     r3, 0x84(r1)
-/* 05C6DC 80061C7C 800D8A68 */  lwz     r0, cpuCompile_SH_function-_SDA_BASE_(r13)
+/* 05C6DC 80061C7C 800D8A68 */  lwz     r0, cpuCompile_SH_function@sda21(r13)
 /* 05C6E0 80061C80 5465103A */  slwi    r5, r3, 2
 /* 05C6E4 80061C84 7C9F2A14 */  add     r4, r31, r5
 /* 05C6E8 80061C88 7C040050 */  subf    r0, r4, r0
@@ -57072,7 +57072,7 @@ glabel lbl_800622F4
 /* 05CD84 80062324 7C002378 */  or      r0, r0, r4
 /* 05CD88 80062328 9003205C */  stw     r0, 0x205c(r3)
 lbl_8006232C:
-/* 05CD8C 8006232C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 05CD8C 8006232C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 05CD90 80062330 80030020 */  lwz     r0, 0x20(r3)
 /* 05CD94 80062334 2C000008 */  cmpwi   r0, 8
 /* 05CD98 80062338 408200FC */  bne     lbl_80062434
@@ -58070,7 +58070,7 @@ lbl_800630DC:
 /* 05DB3C 800630DC 281F0000 */  cmplwi  r31, 0
 /* 05DB40 800630E0 41820034 */  beq     lbl_80063114
 /* 05DB44 800630E4 80610084 */  lwz     r3, 0x84(r1)
-/* 05DB48 800630E8 800D8A6C */  lwz     r0, cpuCompile_SW_function-_SDA_BASE_(r13)
+/* 05DB48 800630E8 800D8A6C */  lwz     r0, cpuCompile_SW_function@sda21(r13)
 /* 05DB4C 800630EC 5465103A */  slwi    r5, r3, 2
 /* 05DB50 800630F0 7C9F2A14 */  add     r4, r31, r5
 /* 05DB54 800630F4 7C040050 */  subf    r0, r4, r0
@@ -58923,7 +58923,7 @@ lbl_80063CA0:
 /* 05E700 80063CA0 281F0000 */  cmplwi  r31, 0
 /* 05E704 80063CA4 41820034 */  beq     lbl_80063CD8
 /* 05E708 80063CA8 80610084 */  lwz     r3, 0x84(r1)
-/* 05E70C 80063CAC 800D8A58 */  lwz     r0, cpuCompile_LW_function-_SDA_BASE_(r13)
+/* 05E70C 80063CAC 800D8A58 */  lwz     r0, cpuCompile_LW_function@sda21(r13)
 /* 05E710 80063CB0 5465103A */  slwi    r5, r3, 2
 /* 05E714 80063CB4 7C9F2A14 */  add     r4, r31, r5
 /* 05E718 80063CB8 7C040050 */  subf    r0, r4, r0
@@ -59998,7 +59998,7 @@ lbl_80064B70:
 /* 05F5D0 80064B70 281F0000 */  cmplwi  r31, 0
 /* 05F5D4 80064B74 41820034 */  beq     lbl_80064BA8
 /* 05F5D8 80064B78 80610084 */  lwz     r3, 0x84(r1)
-/* 05F5DC 80064B7C 800D8A70 */  lwz     r0, cpuCompile_LDC_function-_SDA_BASE_(r13)
+/* 05F5DC 80064B7C 800D8A70 */  lwz     r0, cpuCompile_LDC_function@sda21(r13)
 /* 05F5E0 80064B80 5465103A */  slwi    r5, r3, 2
 /* 05F5E4 80064B84 7C9F2A14 */  add     r4, r31, r5
 /* 05F5E8 80064B88 7C040050 */  subf    r0, r4, r0
@@ -61530,7 +61530,7 @@ lbl_80066090:
 /* 060AF0 80066090 281F0000 */  cmplwi  r31, 0
 /* 060AF4 80066094 41820034 */  beq     lbl_800660C8
 /* 060AF8 80066098 80610084 */  lwz     r3, 0x84(r1)
-/* 060AFC 8006609C 800D8A6C */  lwz     r0, cpuCompile_SW_function-_SDA_BASE_(r13)
+/* 060AFC 8006609C 800D8A6C */  lwz     r0, cpuCompile_SW_function@sda21(r13)
 /* 060B00 800660A0 5465103A */  slwi    r5, r3, 2
 /* 060B04 800660A4 7C9F2A14 */  add     r4, r31, r5
 /* 060B08 800660A8 7C040050 */  subf    r0, r4, r0
@@ -62657,7 +62657,7 @@ lbl_80067010:
 /* 061A70 80067010 281F0000 */  cmplwi  r31, 0
 /* 061A74 80067014 41820034 */  beq     lbl_80067048
 /* 061A78 80067018 80610084 */  lwz     r3, 0x84(r1)
-/* 061A7C 8006701C 800D8A74 */  lwz     r0, cpuCompile_SDC_function-_SDA_BASE_(r13)
+/* 061A7C 8006701C 800D8A74 */  lwz     r0, cpuCompile_SDC_function@sda21(r13)
 /* 061A80 80067020 5465103A */  slwi    r5, r3, 2
 /* 061A84 80067024 7C9F2A14 */  add     r4, r31, r5
 /* 061A88 80067028 7C040050 */  subf    r0, r4, r0

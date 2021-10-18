@@ -445,7 +445,7 @@ peripheralDMA_Complete:
 /* 0927C0 80097D60 90010004 */  stw     r0, 4(r1)
 /* 0927C4 80097D64 38A00009 */  li      r5, 9
 /* 0927C8 80097D68 9421FFF8 */  stwu    r1, -8(r1)
-/* 0927CC 80097D6C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0927CC 80097D6C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0927D0 80097D70 8063005C */  lwz     r3, 0x5c(r3)
 /* 0927D4 80097D74 80030004 */  lwz     r0, 4(r3)
 /* 0927D8 80097D78 5400003A */  rlwinm  r0, r0, 0, 0, 0x1d

@@ -18,16 +18,16 @@ glabel DEMOInit
 /* 0B0820 800B5DC0 7FE3FB78 */  mr      r3, r31
 /* 0B0824 800B5DC4 4800004D */  bl      __DEMOInitRenderMode
 /* 0B0828 800B5DC8 4800019D */  bl      __DEMOInitMem
-/* 0B082C 800B5DCC 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B082C 800B5DCC 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B0830 800B5DD0 4BFF1015 */  bl      VIConfigure
-/* 0B0834 800B5DD4 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 0B0834 800B5DD4 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 0B0838 800B5DD8 3C800004 */  lis     r4, 4
 /* 0B083C 800B5DDC 4BFE70E9 */  bl      OSAllocFromHeap
-/* 0B0840 800B5DE0 906D8D90 */  stw     r3, DefaultFifo-_SDA_BASE_(r13)
+/* 0B0840 800B5DE0 906D8D90 */  stw     r3, DefaultFifo@sda21(r13)
 /* 0B0844 800B5DE4 3C800004 */  lis     r4, 4
-/* 0B0848 800B5DE8 806D8D90 */  lwz     r3, DefaultFifo-_SDA_BASE_(r13)
+/* 0B0848 800B5DE8 806D8D90 */  lwz     r3, DefaultFifo@sda21(r13)
 /* 0B084C 800B5DEC 4BFF2749 */  bl      GXInit
-/* 0B0850 800B5DF0 906D8D94 */  stw     r3, DefaultFifoObj-_SDA_BASE_(r13)
+/* 0B0850 800B5DF0 906D8D94 */  stw     r3, DefaultFifoObj@sda21(r13)
 /* 0B0854 800B5DF4 48000245 */  bl      __DEMOInitGX
 /* 0B0858 800B5DF8 4800035D */  bl      __DEMOInitVI
 /* 0B085C 800B5DFC 8001001C */  lwz     r0, 0x1c(r1)
@@ -75,7 +75,7 @@ __DEMOInitRenderMode:
 /* 0B08FC 800B5E9C 901F0034 */  stw     r0, 0x34(r31)
 /* 0B0900 800B5EA0 80030038 */  lwz     r0, 0x38(r3)
 /* 0B0904 800B5EA4 901F0038 */  stw     r0, 0x38(r31)
-/* 0B0908 800B5EA8 93ED8D98 */  stw     r31, rmode-_SDA_BASE_(r13)
+/* 0B0908 800B5EA8 93ED8D98 */  stw     r31, rmode@sda21(r13)
 /* 0B090C 800B5EAC 480000A4 */  b       lbl_800B5F50
 lbl_800B5EB0:
 /* 0B0910 800B5EB0 4BFF1B4D */  bl      VIGetTvFormat
@@ -93,22 +93,22 @@ lbl_800B5ED0:
 lbl_800B5EDC:
 /* 0B093C 800B5EDC 3C60800F */  lis     r3, GXNtsc480IntDf@ha
 /* 0B0940 800B5EE0 38031E60 */  addi    r0, r3, GXNtsc480IntDf@l
-/* 0B0944 800B5EE4 900D8D98 */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 0B0944 800B5EE4 900D8D98 */  stw     r0, rmode@sda21(r13)
 /* 0B0948 800B5EE8 48000050 */  b       lbl_800B5F38
 lbl_800B5EEC:
 /* 0B094C 800B5EEC 3C60800F */  lis     r3, GXPal528IntDf@ha
 /* 0B0950 800B5EF0 38031F14 */  addi    r0, r3, GXPal528IntDf@l
-/* 0B0954 800B5EF4 900D8D98 */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 0B0954 800B5EF4 900D8D98 */  stw     r0, rmode@sda21(r13)
 /* 0B0958 800B5EF8 48000040 */  b       lbl_800B5F38
 lbl_800B5EFC:
 /* 0B095C 800B5EFC 3C60800F */  lis     r3, GXEurgb60Hz480IntDf@ha
 /* 0B0960 800B5F00 38031F50 */  addi    r0, r3, GXEurgb60Hz480IntDf@l
-/* 0B0964 800B5F04 900D8D98 */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 0B0964 800B5F04 900D8D98 */  stw     r0, rmode@sda21(r13)
 /* 0B0968 800B5F08 48000030 */  b       lbl_800B5F38
 lbl_800B5F0C:
 /* 0B096C 800B5F0C 3C60800F */  lis     r3, GXMpal480IntDf@ha
 /* 0B0970 800B5F10 38031ED8 */  addi    r0, r3, GXMpal480IntDf@l
-/* 0B0974 800B5F14 900D8D98 */  stw     r0, rmode-_SDA_BASE_(r13)
+/* 0B0974 800B5F14 900D8D98 */  stw     r0, rmode@sda21(r13)
 /* 0B0978 800B5F18 48000020 */  b       lbl_800B5F38
 lbl_800B5F1C:
 /* 0B097C 800B5F1C 3C60800F */  lis     r3, D_800F2698@ha
@@ -119,12 +119,12 @@ lbl_800B5F1C:
 /* 0B0990 800B5F30 388001D6 */  li      r4, 0x1d6
 /* 0B0994 800B5F34 4BFE8745 */  bl      OSPanic
 lbl_800B5F38:
-/* 0B0998 800B5F38 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B0998 800B5F38 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B099C 800B5F3C 389F0000 */  addi    r4, r31, 0
 /* 0B09A0 800B5F40 38A00000 */  li      r5, 0
 /* 0B09A4 800B5F44 38C00010 */  li      r6, 0x10
 /* 0B09A8 800B5F48 4BFF57D5 */  bl      GXAdjustForOverscan
-/* 0B09AC 800B5F4C 93ED8D98 */  stw     r31, rmode-_SDA_BASE_(r13)
+/* 0B09AC 800B5F4C 93ED8D98 */  stw     r31, rmode@sda21(r13)
 lbl_800B5F50:
 /* 0B09B0 800B5F50 8001001C */  lwz     r0, 0x1c(r1)
 /* 0B09B4 800B5F54 83E10014 */  lwz     r31, 0x14(r1)
@@ -141,25 +141,25 @@ __DEMOInitMem:
 /* 0B09D8 800B5F78 4BFE7519 */  bl      OSGetArenaLo
 /* 0B09DC 800B5F7C 7C7F1B78 */  mr      r31, r3
 /* 0B09E0 800B5F80 4BFE7509 */  bl      OSGetArenaHi
-/* 0B09E4 800B5F84 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B09E4 800B5F84 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B09E8 800B5F88 381F001F */  addi    r0, r31, 0x1f
 /* 0B09EC 800B5F8C 54000034 */  rlwinm  r0, r0, 0, 0, 0x1a
 /* 0B09F0 800B5F90 A0830004 */  lhz     r4, 4(r3)
 /* 0B09F4 800B5F94 A0630008 */  lhz     r3, 8(r3)
 /* 0B09F8 800B5F98 3884000F */  addi    r4, r4, 0xf
-/* 0B09FC 800B5F9C 900D8DB4 */  stw     r0, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0B09FC 800B5F9C 900D8DB4 */  stw     r0, DemoFrameBuffer1@sda21(r13)
 /* 0B0A00 800B5FA0 54800436 */  rlwinm  r0, r4, 0, 0x10, 0x1b
 /* 0B0A04 800B5FA4 7C6019D6 */  mullw   r3, r0, r3
-/* 0B0A08 800B5FA8 800D8DB4 */  lwz     r0, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0B0A08 800B5FA8 800D8DB4 */  lwz     r0, DemoFrameBuffer1@sda21(r13)
 /* 0B0A0C 800B5FAC 5464083C */  slwi    r4, r3, 1
 /* 0B0A10 800B5FB0 3864001F */  addi    r3, r4, 0x1f
-/* 0B0A14 800B5FB4 908D8D9C */  stw     r4, allocatedFrameBufferSize-_SDA_BASE_(r13)
+/* 0B0A14 800B5FB4 908D8D9C */  stw     r4, allocatedFrameBufferSize@sda21(r13)
 /* 0B0A18 800B5FB8 7C001A14 */  add     r0, r0, r3
 /* 0B0A1C 800B5FBC 54000034 */  rlwinm  r0, r0, 0, 0, 0x1a
-/* 0B0A20 800B5FC0 900D8DB0 */  stw     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0B0A24 800B5FC4 808D8DB0 */  lwz     r4, DemoFrameBuffer2-_SDA_BASE_(r13)
+/* 0B0A20 800B5FC0 900D8DB0 */  stw     r0, DemoFrameBuffer2@sda21(r13)
+/* 0B0A24 800B5FC4 808D8DB0 */  lwz     r4, DemoFrameBuffer2@sda21(r13)
 /* 0B0A28 800B5FC8 7C041A14 */  add     r0, r4, r3
-/* 0B0A2C 800B5FCC 908D8DAC */  stw     r4, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0A2C 800B5FCC 908D8DAC */  stw     r4, DemoCurrentBuffer@sda21(r13)
 /* 0B0A30 800B5FD0 54030034 */  rlwinm  r3, r0, 0, 0, 0x1a
 /* 0B0A34 800B5FD4 4BFE74CD */  bl      OSSetArenaLo
 /* 0B0A38 800B5FD8 4BFE74B9 */  bl      OSGetArenaLo
@@ -193,16 +193,16 @@ __DEMOInitGX:
 /* 0B0AA0 800B6040 90010004 */  stw     r0, 4(r1)
 /* 0B0AA4 800B6044 9421FFE0 */  stwu    r1, -0x20(r1)
 /* 0B0AA8 800B6048 93E1001C */  stw     r31, 0x1c(r1)
-/* 0B0AAC 800B604C 80AD8D98 */  lwz     r5, rmode-_SDA_BASE_(r13)
-/* 0B0AB0 800B6050 C02284D0 */  lfs     f1, D_801361D0-_SDA2_BASE_(r2)
+/* 0B0AAC 800B604C 80AD8D98 */  lwz     r5, rmode@sda21(r13)
+/* 0B0AB0 800B6050 C02284D0 */  lfs     f1, D_801361D0@sda21(r2)
 /* 0B0AB4 800B6054 A0850004 */  lhz     r4, 4(r5)
 /* 0B0AB8 800B6058 A0050006 */  lhz     r0, 6(r5)
 /* 0B0ABC 800B605C FC400890 */  fmr     f2, f1
 /* 0B0AC0 800B6060 90810014 */  stw     r4, 0x14(r1)
 /* 0B0AC4 800B6064 FCA00890 */  fmr     f5, f1
-/* 0B0AC8 800B6068 C88284D8 */  lfd     f4, D_801361D8-_SDA2_BASE_(r2)
+/* 0B0AC8 800B6068 C88284D8 */  lfd     f4, D_801361D8@sda21(r2)
 /* 0B0ACC 800B606C 9001000C */  stw     r0, 0xc(r1)
-/* 0B0AD0 800B6070 C0C284D4 */  lfs     f6, D_801361D4-_SDA2_BASE_(r2)
+/* 0B0AD0 800B6070 C0C284D4 */  lfs     f6, D_801361D4@sda21(r2)
 /* 0B0AD4 800B6074 90610010 */  stw     r3, 0x10(r1)
 /* 0B0AD8 800B6078 90610008 */  stw     r3, 8(r1)
 /* 0B0ADC 800B607C C8610010 */  lfd     f3, 0x10(r1)
@@ -210,35 +210,35 @@ __DEMOInitGX:
 /* 0B0AE4 800B6084 EC632028 */  fsubs   f3, f3, f4
 /* 0B0AE8 800B6088 EC802028 */  fsubs   f4, f0, f4
 /* 0B0AEC 800B608C 4BFF8A4D */  bl      GXSetViewport
-/* 0B0AF0 800B6090 80CD8D98 */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0B0AF0 800B6090 80CD8D98 */  lwz     r6, rmode@sda21(r13)
 /* 0B0AF4 800B6094 38600000 */  li      r3, 0
 /* 0B0AF8 800B6098 38800000 */  li      r4, 0
 /* 0B0AFC 800B609C A0A60004 */  lhz     r5, 4(r6)
 /* 0B0B00 800B60A0 A0C60006 */  lhz     r6, 6(r6)
 /* 0B0B04 800B60A4 4BFF8A7D */  bl      GXSetScissor
-/* 0B0B08 800B60A8 808D8D98 */  lwz     r4, rmode-_SDA_BASE_(r13)
+/* 0B0B08 800B60A8 808D8D98 */  lwz     r4, rmode@sda21(r13)
 /* 0B0B0C 800B60AC A0640006 */  lhz     r3, 6(r4)
 /* 0B0B10 800B60B0 A0840008 */  lhz     r4, 8(r4)
 /* 0B0B14 800B60B4 4BFF5A85 */  bl      GXGetYScaleFactor
 /* 0B0B18 800B60B8 4BFF5CB9 */  bl      GXSetDispCopyYScale
-/* 0B0B1C 800B60BC 80CD8D98 */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0B0B1C 800B60BC 80CD8D98 */  lwz     r6, rmode@sda21(r13)
 /* 0B0B20 800B60C0 547F043E */  clrlwi  r31, r3, 0x10
 /* 0B0B24 800B60C4 38600000 */  li      r3, 0
 /* 0B0B28 800B60C8 A0A60004 */  lhz     r5, 4(r6)
 /* 0B0B2C 800B60CC 38800000 */  li      r4, 0
 /* 0B0B30 800B60D0 A0C60006 */  lhz     r6, 6(r6)
 /* 0B0B34 800B60D4 4BFF578D */  bl      GXSetDispCopySrc
-/* 0B0B38 800B60D8 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B0B38 800B60D8 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B0B3C 800B60DC 7FE4FB78 */  mr      r4, r31
 /* 0B0B40 800B60E0 A0630004 */  lhz     r3, 4(r3)
 /* 0B0B44 800B60E4 4BFF5875 */  bl      GXSetDispCopyDst
-/* 0B0B48 800B60E8 80CD8D98 */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0B0B48 800B60E8 80CD8D98 */  lwz     r6, rmode@sda21(r13)
 /* 0B0B4C 800B60EC 38A00001 */  li      r5, 1
 /* 0B0B50 800B60F0 88660019 */  lbz     r3, 0x19(r6)
 /* 0B0B54 800B60F4 3886001A */  addi    r4, r6, 0x1a
 /* 0B0B58 800B60F8 38C60032 */  addi    r6, r6, 0x32
 /* 0B0B5C 800B60FC 4BFF5DB9 */  bl      GXSetCopyFilter
-/* 0B0B60 800B6100 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B0B60 800B6100 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B0B64 800B6104 88030019 */  lbz     r0, 0x19(r3)
 /* 0B0B68 800B6108 28000000 */  cmplwi  r0, 0
 /* 0B0B6C 800B610C 41820014 */  beq     lbl_800B6120
@@ -251,7 +251,7 @@ lbl_800B6120:
 /* 0B0B84 800B6124 38800000 */  li      r4, 0
 /* 0B0B88 800B6128 4BFF8425 */  bl      GXSetPixelFmt
 lbl_800B612C:
-/* 0B0B8C 800B612C 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0B8C 800B612C 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0B0B90 800B6130 38800001 */  li      r4, 1
 /* 0B0B94 800B6134 4BFF5F9D */  bl      GXCopyDisp
 /* 0B0B98 800B6138 38600000 */  li      r3, 0
@@ -266,13 +266,13 @@ __DEMOInitVI:
 /* 0B0BB4 800B6154 7C0802A6 */  mflr    r0
 /* 0B0BB8 800B6158 90010004 */  stw     r0, 4(r1)
 /* 0B0BBC 800B615C 9421FFF8 */  stwu    r1, -8(r1)
-/* 0B0BC0 800B6160 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0B0BC0 800B6160 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 0B0BC4 800B6164 4BFF15D9 */  bl      VISetNextFrameBuffer
-/* 0B0BC8 800B6168 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0B0BCC 800B616C 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0BC8 800B6168 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0B0BCC 800B616C 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0B0BD0 800B6170 4BFF149D */  bl      VIFlush
 /* 0B0BD4 800B6174 4BFF07A9 */  bl      VIWaitForRetrace
-/* 0B0BD8 800B6178 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B0BD8 800B6178 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B0BDC 800B617C 80030000 */  lwz     r0, 0(r3)
 /* 0B0BE0 800B6180 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0B0BE4 800B6184 41820008 */  beq     lbl_800B618C
@@ -288,7 +288,7 @@ glabel DEMOBeforeRender
 /* 0B0C00 800B61A0 90010004 */  stw     r0, 4(r1)
 /* 0B0C04 800B61A4 9421FFE0 */  stwu    r1, -0x20(r1)
 /* 0B0C08 800B61A8 93E1001C */  stw     r31, 0x1c(r1)
-/* 0B0C0C 800B61AC 800D8DA0 */  lwz     r0, GPHangWorkaround-_SDA_BASE_(r13)
+/* 0B0C0C 800B61AC 800D8DA0 */  lwz     r0, GPHangWorkaround@sda21(r13)
 /* 0B0C10 800B61B0 2C000000 */  cmpwi   r0, 0
 /* 0B0C14 800B61B4 41820014 */  beq     lbl_800B61C8
 /* 0B0C18 800B61B8 3C600001 */  lis     r3, 1
@@ -296,7 +296,7 @@ glabel DEMOBeforeRender
 /* 0B0C20 800B61C0 4BFF4CFD */  bl      GXSetDrawSync
 /* 0B0C24 800B61C4 4BFF94F9 */  bl      GXClearGPMetric
 lbl_800B61C8:
-/* 0B0C28 800B61C8 83ED8D98 */  lwz     r31, rmode-_SDA_BASE_(r13)
+/* 0B0C28 800B61C8 83ED8D98 */  lwz     r31, rmode@sda21(r13)
 /* 0B0C2C 800B61CC 881F0018 */  lbz     r0, 0x18(r31)
 /* 0B0C30 800B61D0 28000000 */  cmplwi  r0, 0
 /* 0B0C34 800B61D4 41820050 */  beq     lbl_800B6224
@@ -305,13 +305,13 @@ lbl_800B61C8:
 /* 0B0C40 800B61E0 3C804330 */  lis     r4, 0x4330
 /* 0B0C44 800B61E4 A01F0006 */  lhz     r0, 6(r31)
 /* 0B0C48 800B61E8 90A10014 */  stw     r5, 0x14(r1)
-/* 0B0C4C 800B61EC C02284D0 */  lfs     f1, D_801361D0-_SDA2_BASE_(r2)
+/* 0B0C4C 800B61EC C02284D0 */  lfs     f1, D_801361D0@sda21(r2)
 /* 0B0C50 800B61F0 9001000C */  stw     r0, 0xc(r1)
-/* 0B0C54 800B61F4 C88284D8 */  lfd     f4, D_801361D8-_SDA2_BASE_(r2)
+/* 0B0C54 800B61F4 C88284D8 */  lfd     f4, D_801361D8@sda21(r2)
 /* 0B0C58 800B61F8 FC400890 */  fmr     f2, f1
 /* 0B0C5C 800B61FC 90810010 */  stw     r4, 0x10(r1)
 /* 0B0C60 800B6200 FCA00890 */  fmr     f5, f1
-/* 0B0C64 800B6204 C0C284D4 */  lfs     f6, D_801361D4-_SDA2_BASE_(r2)
+/* 0B0C64 800B6204 C0C284D4 */  lfs     f6, D_801361D4@sda21(r2)
 /* 0B0C68 800B6208 90810008 */  stw     r4, 8(r1)
 /* 0B0C6C 800B620C C8610010 */  lfd     f3, 0x10(r1)
 /* 0B0C70 800B6210 C8010008 */  lfd     f0, 8(r1)
@@ -324,13 +324,13 @@ lbl_800B6224:
 /* 0B0C88 800B6228 3C604330 */  lis     r3, 0x4330
 /* 0B0C8C 800B622C A01F0006 */  lhz     r0, 6(r31)
 /* 0B0C90 800B6230 9081000C */  stw     r4, 0xc(r1)
-/* 0B0C94 800B6234 C02284D0 */  lfs     f1, D_801361D0-_SDA2_BASE_(r2)
+/* 0B0C94 800B6234 C02284D0 */  lfs     f1, D_801361D0@sda21(r2)
 /* 0B0C98 800B6238 90010014 */  stw     r0, 0x14(r1)
-/* 0B0C9C 800B623C C88284D8 */  lfd     f4, D_801361D8-_SDA2_BASE_(r2)
+/* 0B0C9C 800B623C C88284D8 */  lfd     f4, D_801361D8@sda21(r2)
 /* 0B0CA0 800B6240 FC400890 */  fmr     f2, f1
 /* 0B0CA4 800B6244 90610008 */  stw     r3, 8(r1)
 /* 0B0CA8 800B6248 FCA00890 */  fmr     f5, f1
-/* 0B0CAC 800B624C C0C284D4 */  lfs     f6, D_801361D4-_SDA2_BASE_(r2)
+/* 0B0CAC 800B624C C0C284D4 */  lfs     f6, D_801361D4@sda21(r2)
 /* 0B0CB0 800B6250 90610010 */  stw     r3, 0x10(r1)
 /* 0B0CB4 800B6254 C8610008 */  lfd     f3, 8(r1)
 /* 0B0CB8 800B6258 C8010010 */  lfd     f0, 0x10(r1)
@@ -350,13 +350,13 @@ glabel DEMODoneRender
 /* 0B0CE4 800B6284 7C0802A6 */  mflr    r0
 /* 0B0CE8 800B6288 90010004 */  stw     r0, 4(r1)
 /* 0B0CEC 800B628C 9421FFF8 */  stwu    r1, -8(r1)
-/* 0B0CF0 800B6290 800D8DA0 */  lwz     r0, GPHangWorkaround-_SDA_BASE_(r13)
+/* 0B0CF0 800B6290 800D8DA0 */  lwz     r0, GPHangWorkaround@sda21(r13)
 /* 0B0CF4 800B6294 2C000000 */  cmpwi   r0, 0
 /* 0B0CF8 800B6298 4182000C */  beq     lbl_800B62A4
 /* 0B0CFC 800B629C 480000DD */  bl      __NoHangDoneRender
 /* 0B0D00 800B62A0 48000058 */  b       lbl_800B62F8
 lbl_800B62A4:
-/* 0B0D04 800B62A4 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 0B0D04 800B62A4 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 0B0D08 800B62A8 28000000 */  cmplwi  r0, 0
 /* 0B0D0C 800B62AC 41820020 */  beq     lbl_800B62CC
 /* 0B0D10 800B62B0 4BFF4D65 */  bl      GXDrawDone
@@ -373,7 +373,7 @@ lbl_800B62CC:
 /* 0B0D38 800B62D8 4BFF820D */  bl      GXSetZMode
 /* 0B0D3C 800B62DC 38600001 */  li      r3, 1
 /* 0B0D40 800B62E0 4BFF81AD */  bl      GXSetColorUpdate
-/* 0B0D44 800B62E4 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0D44 800B62E4 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0B0D48 800B62E8 38800001 */  li      r4, 1
 /* 0B0D4C 800B62EC 4BFF5DE5 */  bl      GXCopyDisp
 /* 0B0D50 800B62F0 4BFF4D25 */  bl      GXDrawDone
@@ -388,27 +388,27 @@ glabel DEMOSwapBuffers
 /* 0B0D68 800B6308 7C0802A6 */  mflr    r0
 /* 0B0D6C 800B630C 90010004 */  stw     r0, 4(r1)
 /* 0B0D70 800B6310 9421FFF8 */  stwu    r1, -8(r1)
-/* 0B0D74 800B6314 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0D74 800B6314 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0B0D78 800B6318 4BFF1425 */  bl      VISetNextFrameBuffer
-/* 0B0D7C 800B631C 880D8840 */  lbz     r0, DemoFirstFrame-_SDA_BASE_(r13)
+/* 0B0D7C 800B631C 880D8840 */  lbz     r0, DemoFirstFrame@sda21(r13)
 /* 0B0D80 800B6320 28000000 */  cmplwi  r0, 0
 /* 0B0D84 800B6324 41820014 */  beq     lbl_800B6338
 /* 0B0D88 800B6328 38600000 */  li      r3, 0
 /* 0B0D8C 800B632C 4BFF147D */  bl      VISetBlack
 /* 0B0D90 800B6330 38000000 */  li      r0, 0
-/* 0B0D94 800B6334 980D8840 */  stb     r0, DemoFirstFrame-_SDA_BASE_(r13)
+/* 0B0D94 800B6334 980D8840 */  stb     r0, DemoFirstFrame@sda21(r13)
 lbl_800B6338:
 /* 0B0D98 800B6338 4BFF12D5 */  bl      VIFlush
 /* 0B0D9C 800B633C 4BFF05E1 */  bl      VIWaitForRetrace
-/* 0B0DA0 800B6340 800D8DAC */  lwz     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 0B0DA4 800B6344 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0B0DA0 800B6340 800D8DAC */  lwz     r0, DemoCurrentBuffer@sda21(r13)
+/* 0B0DA4 800B6344 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 0B0DA8 800B6348 7C001840 */  cmplw   r0, r3
 /* 0B0DAC 800B634C 40820010 */  bne     lbl_800B635C
-/* 0B0DB0 800B6350 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0B0DB4 800B6354 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0DB0 800B6350 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0B0DB4 800B6354 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0B0DB8 800B6358 48000008 */  b       lbl_800B6360
 lbl_800B635C:
-/* 0B0DBC 800B635C 906D8DAC */  stw     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0DBC 800B635C 906D8DAC */  stw     r3, DemoCurrentBuffer@sda21(r13)
 lbl_800B6360:
 /* 0B0DC0 800B6360 8001000C */  lwz     r0, 0xc(r1)
 /* 0B0DC4 800B6364 38210008 */  addi    r1, r1, 8
@@ -416,7 +416,7 @@ lbl_800B6360:
 /* 0B0DCC 800B636C 4E800020 */  blr     
 
 glabel DEMOGetRenderModeObj
-/* 0B0DD0 800B6370 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B0DD0 800B6370 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B0DD4 800B6374 4E800020 */  blr     
 
 __NoHangDoneRender:
@@ -427,19 +427,19 @@ __NoHangDoneRender:
 /* 0B0DE8 800B6388 93E1000C */  stw     r31, 0xc(r1)
 /* 0B0DEC 800B638C 93C10008 */  stw     r30, 8(r1)
 /* 0B0DF0 800B6390 3BC00000 */  li      r30, 0
-/* 0B0DF4 800B6394 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0DF4 800B6394 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0B0DF8 800B6398 4BFF5D39 */  bl      GXCopyDisp
 /* 0B0DFC 800B639C 3C600001 */  lis     r3, 1
 /* 0B0E00 800B63A0 3863B00B */  addi    r3, r3, -20469
 /* 0B0E04 800B63A4 4BFF4B19 */  bl      GXSetDrawSync
 /* 0B0E08 800B63A8 38000000 */  li      r0, 0
 /* 0B0E0C 800B63AC 3C60800F */  lis     r3, D_800F270C@ha
-/* 0B0E10 800B63B0 900D8DA4 */  stw     r0, FrameCount-_SDA_BASE_(r13)
+/* 0B0E10 800B63B0 900D8DA4 */  stw     r0, FrameCount@sda21(r13)
 /* 0B0E14 800B63B4 3BE3270C */  addi    r31, r3, D_800F270C@l
 /* 0B0E18 800B63B8 48000038 */  b       lbl_800B63F0
 lbl_800B63BC:
-/* 0B0E1C 800B63BC 806D8DA4 */  lwz     r3, FrameCount-_SDA_BASE_(r13)
-/* 0B0E20 800B63C0 800D8DA8 */  lwz     r0, FrameMissThreshold-_SDA_BASE_(r13)
+/* 0B0E1C 800B63BC 806D8DA4 */  lwz     r3, FrameCount@sda21(r13)
+/* 0B0E20 800B63C0 800D8DA8 */  lwz     r0, FrameMissThreshold@sda21(r13)
 /* 0B0E24 800B63C4 7C030040 */  cmplw   r3, r0
 /* 0B0E28 800B63C8 41800028 */  blt     lbl_800B63F0
 /* 0B0E2C 800B63CC 387F0000 */  addi    r3, r31, 0
@@ -447,7 +447,7 @@ lbl_800B63BC:
 /* 0B0E34 800B63D4 4BFE8225 */  bl      OSReport
 /* 0B0E38 800B63D8 3BC00001 */  li      r30, 1
 /* 0B0E3C 800B63DC 4800014D */  bl      __DEMODiagnoseHang
-/* 0B0E40 800B63E0 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B0E40 800B63E0 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B0E44 800B63E4 48000301 */  bl      DEMOReInit
 /* 0B0E48 800B63E8 38600001 */  li      r3, 1
 /* 0B0E4C 800B63EC 48000081 */  bl      DEMOSetGPHangMetric
@@ -459,27 +459,27 @@ lbl_800B63F0:
 /* 0B0E60 800B6400 2C1E0000 */  cmpwi   r30, 0
 /* 0B0E64 800B6404 4182FFB8 */  beq     lbl_800B63BC
 lbl_800B6408:
-/* 0B0E68 800B6408 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0E68 800B6408 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0B0E6C 800B640C 4BFF1331 */  bl      VISetNextFrameBuffer
-/* 0B0E70 800B6410 880D8840 */  lbz     r0, DemoFirstFrame-_SDA_BASE_(r13)
+/* 0B0E70 800B6410 880D8840 */  lbz     r0, DemoFirstFrame@sda21(r13)
 /* 0B0E74 800B6414 28000000 */  cmplwi  r0, 0
 /* 0B0E78 800B6418 41820014 */  beq     lbl_800B642C
 /* 0B0E7C 800B641C 38600000 */  li      r3, 0
 /* 0B0E80 800B6420 4BFF1389 */  bl      VISetBlack
 /* 0B0E84 800B6424 38000000 */  li      r0, 0
-/* 0B0E88 800B6428 980D8840 */  stb     r0, DemoFirstFrame-_SDA_BASE_(r13)
+/* 0B0E88 800B6428 980D8840 */  stb     r0, DemoFirstFrame@sda21(r13)
 lbl_800B642C:
 /* 0B0E8C 800B642C 4BFF11E1 */  bl      VIFlush
 /* 0B0E90 800B6430 4BFF04ED */  bl      VIWaitForRetrace
-/* 0B0E94 800B6434 800D8DAC */  lwz     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 0B0E98 800B6438 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0B0E94 800B6434 800D8DAC */  lwz     r0, DemoCurrentBuffer@sda21(r13)
+/* 0B0E98 800B6438 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 0B0E9C 800B643C 7C001840 */  cmplw   r0, r3
 /* 0B0EA0 800B6440 40820010 */  bne     lbl_800B6450
-/* 0B0EA4 800B6444 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0B0EA8 800B6448 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0EA4 800B6444 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0B0EA8 800B6448 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0B0EAC 800B644C 48000008 */  b       lbl_800B6454
 lbl_800B6450:
-/* 0B0EB0 800B6450 906D8DAC */  stw     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B0EB0 800B6450 906D8DAC */  stw     r3, DemoCurrentBuffer@sda21(r13)
 lbl_800B6454:
 /* 0B0EB4 800B6454 80010014 */  lwz     r0, 0x14(r1)
 /* 0B0EB8 800B6458 83E1000C */  lwz     r31, 0xc(r1)
@@ -667,7 +667,7 @@ glabel DEMOReInit
 /* 0B115C 800B66FC 93A100AC */  stw     r29, 0xac(r1)
 /* 0B1160 800B6700 938100A8 */  stw     r28, 0xa8(r1)
 /* 0B1164 800B6704 7C7C1B78 */  mr      r28, r3
-/* 0B1168 800B6708 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 0B1168 800B6708 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 0B116C 800B670C 4BFE67B9 */  bl      OSAllocFromHeap
 /* 0B1170 800B6710 7C7F1B78 */  mr      r31, r3
 /* 0B1174 800B6714 4BFF3679 */  bl      GXGetCPUFifo
@@ -691,18 +691,18 @@ glabel DEMOReInit
 /* 0B11BC 800B675C 387D0000 */  addi    r3, r29, 0
 /* 0B11C0 800B6760 389E0000 */  addi    r4, r30, 0
 /* 0B11C4 800B6764 4BFF1DD1 */  bl      GXInit
-/* 0B11C8 800B6768 906D8D94 */  stw     r3, DefaultFifoObj-_SDA_BASE_(r13)
+/* 0B11C8 800B6768 906D8D94 */  stw     r3, DefaultFifoObj@sda21(r13)
 /* 0B11CC 800B676C 3C604330 */  lis     r3, 0x4330
-/* 0B11D0 800B6770 80AD8D98 */  lwz     r5, rmode-_SDA_BASE_(r13)
-/* 0B11D4 800B6774 C02284D0 */  lfs     f1, D_801361D0-_SDA2_BASE_(r2)
+/* 0B11D0 800B6770 80AD8D98 */  lwz     r5, rmode@sda21(r13)
+/* 0B11D4 800B6774 C02284D0 */  lfs     f1, D_801361D0@sda21(r2)
 /* 0B11D8 800B6778 A0850004 */  lhz     r4, 4(r5)
 /* 0B11DC 800B677C A0050006 */  lhz     r0, 6(r5)
 /* 0B11E0 800B6780 FC400890 */  fmr     f2, f1
 /* 0B11E4 800B6784 908100A4 */  stw     r4, 0xa4(r1)
 /* 0B11E8 800B6788 FCA00890 */  fmr     f5, f1
-/* 0B11EC 800B678C C88284D8 */  lfd     f4, D_801361D8-_SDA2_BASE_(r2)
+/* 0B11EC 800B678C C88284D8 */  lfd     f4, D_801361D8@sda21(r2)
 /* 0B11F0 800B6790 9001009C */  stw     r0, 0x9c(r1)
-/* 0B11F4 800B6794 C0C284D4 */  lfs     f6, D_801361D4-_SDA2_BASE_(r2)
+/* 0B11F4 800B6794 C0C284D4 */  lfs     f6, D_801361D4@sda21(r2)
 /* 0B11F8 800B6798 906100A0 */  stw     r3, 0xa0(r1)
 /* 0B11FC 800B679C 90610098 */  stw     r3, 0x98(r1)
 /* 0B1200 800B67A0 C86100A0 */  lfd     f3, 0xa0(r1)
@@ -710,35 +710,35 @@ glabel DEMOReInit
 /* 0B1208 800B67A8 EC632028 */  fsubs   f3, f3, f4
 /* 0B120C 800B67AC EC802028 */  fsubs   f4, f0, f4
 /* 0B1210 800B67B0 4BFF8329 */  bl      GXSetViewport
-/* 0B1214 800B67B4 80CD8D98 */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0B1214 800B67B4 80CD8D98 */  lwz     r6, rmode@sda21(r13)
 /* 0B1218 800B67B8 38600000 */  li      r3, 0
 /* 0B121C 800B67BC 38800000 */  li      r4, 0
 /* 0B1220 800B67C0 A0A60004 */  lhz     r5, 4(r6)
 /* 0B1224 800B67C4 A0C60006 */  lhz     r6, 6(r6)
 /* 0B1228 800B67C8 4BFF8359 */  bl      GXSetScissor
-/* 0B122C 800B67CC 808D8D98 */  lwz     r4, rmode-_SDA_BASE_(r13)
+/* 0B122C 800B67CC 808D8D98 */  lwz     r4, rmode@sda21(r13)
 /* 0B1230 800B67D0 A0640006 */  lhz     r3, 6(r4)
 /* 0B1234 800B67D4 A0840008 */  lhz     r4, 8(r4)
 /* 0B1238 800B67D8 4BFF5361 */  bl      GXGetYScaleFactor
 /* 0B123C 800B67DC 4BFF5595 */  bl      GXSetDispCopyYScale
-/* 0B1240 800B67E0 80CD8D98 */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0B1240 800B67E0 80CD8D98 */  lwz     r6, rmode@sda21(r13)
 /* 0B1244 800B67E4 547E043E */  clrlwi  r30, r3, 0x10
 /* 0B1248 800B67E8 38600000 */  li      r3, 0
 /* 0B124C 800B67EC A0A60004 */  lhz     r5, 4(r6)
 /* 0B1250 800B67F0 38800000 */  li      r4, 0
 /* 0B1254 800B67F4 A0C60006 */  lhz     r6, 6(r6)
 /* 0B1258 800B67F8 4BFF5069 */  bl      GXSetDispCopySrc
-/* 0B125C 800B67FC 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B125C 800B67FC 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B1260 800B6800 7FC4F378 */  mr      r4, r30
 /* 0B1264 800B6804 A0630004 */  lhz     r3, 4(r3)
 /* 0B1268 800B6808 4BFF5151 */  bl      GXSetDispCopyDst
-/* 0B126C 800B680C 80CD8D98 */  lwz     r6, rmode-_SDA_BASE_(r13)
+/* 0B126C 800B680C 80CD8D98 */  lwz     r6, rmode@sda21(r13)
 /* 0B1270 800B6810 38A00001 */  li      r5, 1
 /* 0B1274 800B6814 88660019 */  lbz     r3, 0x19(r6)
 /* 0B1278 800B6818 3886001A */  addi    r4, r6, 0x1a
 /* 0B127C 800B681C 38C60032 */  addi    r6, r6, 0x32
 /* 0B1280 800B6820 4BFF5695 */  bl      GXSetCopyFilter
-/* 0B1284 800B6824 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B1284 800B6824 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B1288 800B6828 88030019 */  lbz     r0, 0x19(r3)
 /* 0B128C 800B682C 28000000 */  cmplwi  r0, 0
 /* 0B1290 800B6830 41820014 */  beq     lbl_800B6844
@@ -751,26 +751,26 @@ lbl_800B6844:
 /* 0B12A8 800B6848 38800000 */  li      r4, 0
 /* 0B12AC 800B684C 4BFF7D01 */  bl      GXSetPixelFmt
 lbl_800B6850:
-/* 0B12B0 800B6850 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B12B0 800B6850 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0B12B4 800B6854 38800001 */  li      r4, 1
 /* 0B12B8 800B6858 4BFF5879 */  bl      GXCopyDisp
 /* 0B12BC 800B685C 38600000 */  li      r3, 0
 /* 0B12C0 800B6860 4BFF585D */  bl      GXSetDispCopyGamma
-/* 0B12C4 800B6864 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B12C4 800B6864 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B12C8 800B6868 4BFF057D */  bl      VIConfigure
-/* 0B12CC 800B686C 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0B12CC 800B686C 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 0B12D0 800B6870 4BFF0ECD */  bl      VISetNextFrameBuffer
-/* 0B12D4 800B6874 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0B12D8 800B6878 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0B12D4 800B6874 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0B12D8 800B6878 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0B12DC 800B687C 4BFF0D91 */  bl      VIFlush
 /* 0B12E0 800B6880 4BFF009D */  bl      VIWaitForRetrace
-/* 0B12E4 800B6884 806D8D98 */  lwz     r3, rmode-_SDA_BASE_(r13)
+/* 0B12E4 800B6884 806D8D98 */  lwz     r3, rmode@sda21(r13)
 /* 0B12E8 800B6888 80030000 */  lwz     r0, 0(r3)
 /* 0B12EC 800B688C 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0B12F0 800B6890 41820008 */  beq     lbl_800B6898
 /* 0B12F4 800B6894 4BFF0089 */  bl      VIWaitForRetrace
 lbl_800B6898:
-/* 0B12F8 800B6898 806D8740 */  lwz     r3, __OSCurrHeap-_SDA_BASE_(r13)
+/* 0B12F8 800B6898 806D8740 */  lwz     r3, __OSCurrHeap@sda21(r13)
 /* 0B12FC 800B689C 7FE4FB78 */  mr      r4, r31
 /* 0B1300 800B68A0 4BFE6721 */  bl      OSFreeToHeap
 /* 0B1304 800B68A4 800100BC */  lwz     r0, 0xbc(r1)

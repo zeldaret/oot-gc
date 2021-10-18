@@ -16,10 +16,10 @@ glabel OSInitAlarm
 /* 097138 8009C6D8 7C032040 */  cmplw   r3, r4
 /* 09713C 8009C6DC 41820028 */  beq     lbl_8009C704
 /* 097140 8009C6E0 38000000 */  li      r0, 0
-/* 097144 8009C6E4 386D8B10 */  addi    r3, r13, AlarmQueue-_SDA_BASE_
+/* 097144 8009C6E4 386D8B10 */  addi    r3, r13, AlarmQueue@sda21
 /* 097148 8009C6E8 90030004 */  stw     r0, 4(r3)
 /* 09714C 8009C6EC 38600008 */  li      r3, 8
-/* 097150 8009C6F0 900D8B10 */  stw     r0, AlarmQueue-_SDA_BASE_(r13)
+/* 097150 8009C6F0 900D8B10 */  stw     r0, AlarmQueue@sda21(r13)
 /* 097154 8009C6F4 4BFFFE11 */  bl      __OSSetExceptionHandler
 /* 097158 8009C6F8 3C60800F */  lis     r3, ResetFunctionInfo@ha
 /* 09715C 8009C6FC 38630820 */  addi    r3, r3, ResetFunctionInfo@l
@@ -90,7 +90,7 @@ lbl_8009C7E4:
 /* 097248 8009C7E8 6F248000 */  xoris   r4, r25, 0x8000
 /* 09724C 8009C7EC 93DD000C */  stw     r30, 0xc(r29)
 /* 097250 8009C7F0 933D0008 */  stw     r25, 8(r29)
-/* 097254 8009C7F4 80CD8B10 */  lwz     r6, AlarmQueue-_SDA_BASE_(r13)
+/* 097254 8009C7F4 80CD8B10 */  lwz     r6, AlarmQueue@sda21(r13)
 /* 097258 8009C7F8 480000C4 */  b       lbl_8009C8BC
 lbl_8009C7FC:
 /* 09725C 8009C7FC 80060008 */  lwz     r0, 8(r6)
@@ -111,7 +111,7 @@ lbl_8009C7FC:
 /* 097298 8009C838 93A30014 */  stw     r29, 0x14(r3)
 /* 09729C 8009C83C 48000124 */  b       lbl_8009C960
 lbl_8009C840:
-/* 0972A0 8009C840 93AD8B10 */  stw     r29, AlarmQueue-_SDA_BASE_(r13)
+/* 0972A0 8009C840 93AD8B10 */  stw     r29, AlarmQueue@sda21(r13)
 /* 0972A4 8009C844 48005A85 */  bl      __OSGetSystemTime
 /* 0972A8 8009C848 80DD000C */  lwz     r6, 0xc(r29)
 /* 0972AC 8009C84C 38E00000 */  li      r7, 0
@@ -150,7 +150,7 @@ lbl_8009C8BC:
 /* 097320 8009C8C0 4082FF3C */  bne     lbl_8009C7FC
 /* 097324 8009C8C4 3BC00000 */  li      r30, 0
 /* 097328 8009C8C8 93DD0014 */  stw     r30, 0x14(r29)
-/* 09732C 8009C8CC 386D8B10 */  addi    r3, r13, AlarmQueue-_SDA_BASE_
+/* 09732C 8009C8CC 386D8B10 */  addi    r3, r13, AlarmQueue@sda21
 /* 097330 8009C8D0 80830004 */  lwz     r4, 4(r3)
 /* 097334 8009C8D4 97A30004 */  stwu    r29, 4(r3)
 /* 097338 8009C8D8 28040000 */  cmplwi  r4, 0
@@ -160,7 +160,7 @@ lbl_8009C8BC:
 /* 097348 8009C8E8 48000078 */  b       lbl_8009C960
 lbl_8009C8EC:
 /* 09734C 8009C8EC 93A30000 */  stw     r29, 0(r3)
-/* 097350 8009C8F0 93AD8B10 */  stw     r29, AlarmQueue-_SDA_BASE_(r13)
+/* 097350 8009C8F0 93AD8B10 */  stw     r29, AlarmQueue@sda21(r13)
 /* 097354 8009C8F4 480059D5 */  bl      __OSGetSystemTime
 /* 097358 8009C8F8 80DD000C */  lwz     r6, 0xc(r29)
 /* 09735C 8009C8FC 6FC58000 */  xoris   r5, r30, 0x8000
@@ -246,7 +246,7 @@ lbl_8009CA18:
 /* 09747C 8009CA1C 281D0000 */  cmplwi  r29, 0
 /* 097480 8009CA20 40820014 */  bne     lbl_8009CA34
 /* 097484 8009CA24 801E0010 */  lwz     r0, 0x10(r30)
-/* 097488 8009CA28 386D8B10 */  addi    r3, r13, AlarmQueue-_SDA_BASE_
+/* 097488 8009CA28 386D8B10 */  addi    r3, r13, AlarmQueue@sda21
 /* 09748C 8009CA2C 90030004 */  stw     r0, 4(r3)
 /* 097490 8009CA30 4800000C */  b       lbl_8009CA3C
 lbl_8009CA34:
@@ -260,7 +260,7 @@ lbl_8009CA3C:
 /* 0974AC 8009CA4C 48000080 */  b       lbl_8009CACC
 lbl_8009CA50:
 /* 0974B0 8009CA50 281D0000 */  cmplwi  r29, 0
-/* 0974B4 8009CA54 93AD8B10 */  stw     r29, AlarmQueue-_SDA_BASE_(r13)
+/* 0974B4 8009CA54 93AD8B10 */  stw     r29, AlarmQueue@sda21(r13)
 /* 0974B8 8009CA58 41820074 */  beq     lbl_8009CACC
 /* 0974BC 8009CA5C 4800586D */  bl      __OSGetSystemTime
 /* 0974C0 8009CA60 80DD000C */  lwz     r6, 0xc(r29)
@@ -316,7 +316,7 @@ DecrementerExceptionCallback:
 /* 097570 8009CB10 7C9D2378 */  mr      r29, r4
 /* 097574 8009CB14 938102E0 */  stw     r28, 0x2e0(r1)
 /* 097578 8009CB18 480057B1 */  bl      __OSGetSystemTime
-/* 09757C 8009CB1C 800D8B10 */  lwz     r0, AlarmQueue-_SDA_BASE_(r13)
+/* 09757C 8009CB1C 800D8B10 */  lwz     r0, AlarmQueue@sda21(r13)
 /* 097580 8009CB20 3B840000 */  addi    r28, r4, 0
 /* 097584 8009CB24 3BC30000 */  addi    r30, r3, 0
 /* 097588 8009CB28 28000000 */  cmplwi  r0, 0
@@ -370,10 +370,10 @@ lbl_8009CBD0:
 lbl_8009CBD8:
 /* 097638 8009CBD8 807F0014 */  lwz     r3, 0x14(r31)
 /* 09763C 8009CBDC 28030000 */  cmplwi  r3, 0
-/* 097640 8009CBE0 906D8B10 */  stw     r3, AlarmQueue-_SDA_BASE_(r13)
+/* 097640 8009CBE0 906D8B10 */  stw     r3, AlarmQueue@sda21(r13)
 /* 097644 8009CBE4 40820014 */  bne     lbl_8009CBF8
 /* 097648 8009CBE8 38000000 */  li      r0, 0
-/* 09764C 8009CBEC 386D8B10 */  addi    r3, r13, AlarmQueue-_SDA_BASE_
+/* 09764C 8009CBEC 386D8B10 */  addi    r3, r13, AlarmQueue@sda21
 /* 097650 8009CBF0 90030004 */  stw     r0, 4(r3)
 /* 097654 8009CBF4 4800000C */  b       lbl_8009CC00
 lbl_8009CBF8:
@@ -398,7 +398,7 @@ lbl_8009CC00:
 /* 09769C 8009CC3C 38A00000 */  li      r5, 0
 /* 0976A0 8009CC40 4BFFFAE5 */  bl      InsertAlarm
 lbl_8009CC44:
-/* 0976A4 8009CC44 838D8B10 */  lwz     r28, AlarmQueue-_SDA_BASE_(r13)
+/* 0976A4 8009CC44 838D8B10 */  lwz     r28, AlarmQueue@sda21(r13)
 /* 0976A8 8009CC48 281C0000 */  cmplwi  r28, 0
 /* 0976AC 8009CC4C 41820074 */  beq     lbl_8009CCC0
 /* 0976B0 8009CC50 48005679 */  bl      __OSGetSystemTime
@@ -489,7 +489,7 @@ OnReset:
 /* 0977E8 8009CD88 93C10010 */  stw     r30, 0x10(r1)
 /* 0977EC 8009CD8C 2C030000 */  cmpwi   r3, 0
 /* 0977F0 8009CD90 4182006C */  beq     lbl_8009CDFC
-/* 0977F4 8009CD94 800D8B10 */  lwz     r0, AlarmQueue-_SDA_BASE_(r13)
+/* 0977F4 8009CD94 800D8B10 */  lwz     r0, AlarmQueue@sda21(r13)
 /* 0977F8 8009CD98 28000000 */  cmplwi  r0, 0
 /* 0977FC 8009CD9C 7C1F0378 */  mr      r31, r0
 /* 097800 8009CDA0 4182000C */  beq     lbl_8009CDAC

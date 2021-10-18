@@ -54,10 +54,10 @@ lbl_800D2584:
 /* 0CCFFC 800D259C 80010054 */  lwz     r0, 0x54(r1)
 /* 0CD000 800D25A0 540007BD */  rlwinm. r0, r0, 0, 0x1e, 0x1e
 /* 0CD004 800D25A4 4082FF90 */  bne     lbl_800D2534
-/* 0CD008 800D25A8 886D8898 */  lbz     r3, SendCount-_SDA_BASE_(r13)
+/* 0CD008 800D25A8 886D8898 */  lbz     r3, SendCount@sda21(r13)
 /* 0CD00C 800D25AC 38030001 */  addi    r0, r3, 1
-/* 0CD010 800D25B0 980D8898 */  stb     r0, SendCount-_SDA_BASE_(r13)
-/* 0CD014 800D25B4 880D8898 */  lbz     r0, SendCount-_SDA_BASE_(r13)
+/* 0CD010 800D25B0 980D8898 */  stb     r0, SendCount@sda21(r13)
+/* 0CD014 800D25B4 880D8898 */  lbz     r0, SendCount@sda21(r13)
 /* 0CD018 800D25B8 540007FF */  clrlwi. r0, r0, 0x1f
 /* 0CD01C 800D25BC 4182000C */  beq     lbl_800D25C8
 /* 0CD020 800D25C0 38601000 */  li      r3, 0x1000
@@ -107,7 +107,7 @@ lbl_800D2640:
 /* 0CD0B8 800D2658 80010054 */  lwz     r0, 0x54(r1)
 /* 0CD0BC 800D265C 540007BD */  rlwinm. r0, r0, 0, 0x1e, 0x1e
 /* 0CD0C0 800D2660 4082FF98 */  bne     lbl_800D25F8
-/* 0CD0C4 800D2664 880D8898 */  lbz     r0, SendCount-_SDA_BASE_(r13)
+/* 0CD0C4 800D2664 880D8898 */  lbz     r0, SendCount@sda21(r13)
 /* 0CD0C8 800D2668 5400801E */  slwi    r0, r0, 0x10
 /* 0CD0CC 800D266C 64001F00 */  oris    r0, r0, 0x1f00
 /* 0CD0D0 800D2670 7C00DB78 */  or      r0, r0, r27
@@ -189,7 +189,7 @@ glabel DBRead
 /* 0CD1E4 800D2784 93A10014 */  stw     r29, 0x14(r1)
 /* 0CD1E8 800D2788 3BA30000 */  addi    r29, r3, 0
 /* 0CD1EC 800D278C 4BFCC571 */  bl      OSDisableInterrupts
-/* 0CD1F0 800D2790 800D9010 */  lwz     r0, SendMailData-_SDA_BASE_(r13)
+/* 0CD1F0 800D2790 800D9010 */  lwz     r0, SendMailData@sda21(r13)
 /* 0CD1F4 800D2794 3BE30000 */  addi    r31, r3, 0
 /* 0CD1F8 800D2798 540003DF */  rlwinm. r0, r0, 0, 0xf, 0xf
 /* 0CD1FC 800D279C 4182000C */  beq     lbl_800D27A8
@@ -205,9 +205,9 @@ lbl_800D27AC:
 /* 0CD21C 800D27BC 3863E000 */  addi    r3, r3, -8192
 /* 0CD220 800D27C0 480003A5 */  bl      DBGRead
 /* 0CD224 800D27C4 38000000 */  li      r0, 0
-/* 0CD228 800D27C8 900D9014 */  stw     r0, RecvDataLeng-_SDA_BASE_(r13)
+/* 0CD228 800D27C8 900D9014 */  stw     r0, RecvDataLeng@sda21(r13)
 /* 0CD22C 800D27CC 7FE3FB78 */  mr      r3, r31
-/* 0CD230 800D27D0 980D901C */  stb     r0, EXIInputFlag-_SDA_BASE_(r13)
+/* 0CD230 800D27D0 980D901C */  stb     r0, EXIInputFlag@sda21(r13)
 /* 0CD234 800D27D4 4BFCC551 */  bl      OSRestoreInterrupts
 /* 0CD238 800D27D8 80010024 */  lwz     r0, 0x24(r1)
 /* 0CD23C 800D27DC 38600000 */  li      r3, 0
@@ -224,8 +224,8 @@ glabel DBQueryData
 /* 0CD260 800D2800 90010004 */  stw     r0, 4(r1)
 /* 0CD264 800D2804 9421FFE8 */  stwu    r1, -0x18(r1)
 /* 0CD268 800D2808 93E10014 */  stw     r31, 0x14(r1)
-/* 0CD26C 800D280C 800D9014 */  lwz     r0, RecvDataLeng-_SDA_BASE_(r13)
-/* 0CD270 800D2810 986D901C */  stb     r3, EXIInputFlag-_SDA_BASE_(r13)
+/* 0CD26C 800D280C 800D9014 */  lwz     r0, RecvDataLeng@sda21(r13)
+/* 0CD270 800D2810 986D901C */  stb     r3, EXIInputFlag@sda21(r13)
 /* 0CD274 800D2814 2C000000 */  cmpwi   r0, 0
 /* 0CD278 800D2818 40820064 */  bne     lbl_800D287C
 /* 0CD27C 800D281C 4BFCC4E1 */  bl      OSDisableInterrupts
@@ -246,15 +246,15 @@ glabel DBQueryData
 /* 0CD2B8 800D2858 28000000 */  cmplwi  r0, 0
 /* 0CD2BC 800D285C 40820018 */  bne     lbl_800D2874
 /* 0CD2C0 800D2860 5483047E */  clrlwi  r3, r4, 0x11
-/* 0CD2C4 800D2864 908D9010 */  stw     r4, SendMailData-_SDA_BASE_(r13)
+/* 0CD2C4 800D2864 908D9010 */  stw     r4, SendMailData@sda21(r13)
 /* 0CD2C8 800D2868 38000001 */  li      r0, 1
-/* 0CD2CC 800D286C 906D9014 */  stw     r3, RecvDataLeng-_SDA_BASE_(r13)
-/* 0CD2D0 800D2870 980D901C */  stb     r0, EXIInputFlag-_SDA_BASE_(r13)
+/* 0CD2CC 800D286C 906D9014 */  stw     r3, RecvDataLeng@sda21(r13)
+/* 0CD2D0 800D2870 980D901C */  stb     r0, EXIInputFlag@sda21(r13)
 lbl_800D2874:
 /* 0CD2D4 800D2874 7FE3FB78 */  mr      r3, r31
 /* 0CD2D8 800D2878 4BFCC4AD */  bl      OSRestoreInterrupts
 lbl_800D287C:
-/* 0CD2DC 800D287C 806D9014 */  lwz     r3, RecvDataLeng-_SDA_BASE_(r13)
+/* 0CD2DC 800D287C 806D9014 */  lwz     r3, RecvDataLeng@sda21(r13)
 /* 0CD2E0 800D2880 8001001C */  lwz     r0, 0x1c(r1)
 /* 0CD2E4 800D2884 83E10014 */  lwz     r31, 0x14(r1)
 /* 0CD2E8 800D2888 38210018 */  addi    r1, r1, 0x18
@@ -273,7 +273,7 @@ glabel DBInitInterrupts
 /* 0CD314 800D28B4 3C60800D */  lis     r3, MWCallback@ha
 /* 0CD318 800D28B8 380329A0 */  addi    r0, r3, MWCallback@l
 /* 0CD31C 800D28BC 3C60800D */  lis     r3, DBGHandler@ha
-/* 0CD320 800D28C0 900D900C */  stw     r0, DBGCallback-_SDA_BASE_(r13)
+/* 0CD320 800D28C0 900D900C */  stw     r0, DBGCallback@sda21(r13)
 /* 0CD324 800D28C4 38832960 */  addi    r4, r3, DBGHandler@l
 /* 0CD328 800D28C8 38600019 */  li      r3, 0x19
 /* 0CD32C 800D28CC 4BFCC47D */  bl      __OSSetInterruptHandler
@@ -294,14 +294,14 @@ glabel DBInitComm
 /* 0CD360 800D2900 93A10014 */  stw     r29, 0x14(r1)
 /* 0CD364 800D2904 3BA30000 */  addi    r29, r3, 0
 /* 0CD368 800D2908 4BFCC3F5 */  bl      OSDisableInterrupts
-/* 0CD36C 800D290C 380D901C */  addi    r0, r13, EXIInputFlag-_SDA_BASE_
-/* 0CD370 800D2910 900D9018 */  stw     r0, pEXIInputFlag-_SDA_BASE_(r13)
+/* 0CD36C 800D290C 380D901C */  addi    r0, r13, EXIInputFlag@sda21
+/* 0CD370 800D2910 900D9018 */  stw     r0, pEXIInputFlag@sda21(r13)
 /* 0CD374 800D2914 3C800002 */  lis     r4, 2
 /* 0CD378 800D2918 3BE30000 */  addi    r31, r3, 0
-/* 0CD37C 800D291C 800D9018 */  lwz     r0, pEXIInputFlag-_SDA_BASE_(r13)
+/* 0CD37C 800D291C 800D9018 */  lwz     r0, pEXIInputFlag@sda21(r13)
 /* 0CD380 800D2920 38648000 */  addi    r3, r4, -32768
 /* 0CD384 800D2924 901D0000 */  stw     r0, 0(r29)
-/* 0CD388 800D2928 93CD9008 */  stw     r30, MTRCallback-_SDA_BASE_(r13)
+/* 0CD388 800D2928 93CD9008 */  stw     r30, MTRCallback@sda21(r13)
 /* 0CD38C 800D292C 4BFCC799 */  bl      __OSMaskInterrupts
 /* 0CD390 800D2930 3C60CC00 */  lis     r3, EXI_REGS_BASE@ha
 /* 0CD394 800D2934 38000000 */  li      r0, 0
@@ -322,7 +322,7 @@ DBGHandler:
 /* 0CD3C8 800D2968 90010004 */  stw     r0, 4(r1)
 /* 0CD3CC 800D296C 38001000 */  li      r0, 0x1000
 /* 0CD3D0 800D2970 9421FFF8 */  stwu    r1, -8(r1)
-/* 0CD3D4 800D2974 818D900C */  lwz     r12, DBGCallback-_SDA_BASE_(r13)
+/* 0CD3D4 800D2974 818D900C */  lwz     r12, DBGCallback@sda21(r13)
 /* 0CD3D8 800D2978 90053000 */  stw     r0, (PI_REGS_BASE + PI_INTSR)@l(r5)
 /* 0CD3DC 800D297C 280C0000 */  cmplwi  r12, 0
 /* 0CD3E0 800D2980 41820010 */  beq     lbl_800D2990
@@ -340,8 +340,8 @@ MWCallback:
 /* 0CD404 800D29A4 90010004 */  stw     r0, 4(r1)
 /* 0CD408 800D29A8 38000001 */  li      r0, 1
 /* 0CD40C 800D29AC 9421FFF8 */  stwu    r1, -8(r1)
-/* 0CD410 800D29B0 818D9008 */  lwz     r12, MTRCallback-_SDA_BASE_(r13)
-/* 0CD414 800D29B4 980D901C */  stb     r0, EXIInputFlag-_SDA_BASE_(r13)
+/* 0CD410 800D29B0 818D9008 */  lwz     r12, MTRCallback@sda21(r13)
+/* 0CD414 800D29B4 980D901C */  stb     r0, EXIInputFlag@sda21(r13)
 /* 0CD418 800D29B8 280C0000 */  cmplwi  r12, 0
 /* 0CD41C 800D29BC 41820010 */  beq     lbl_800D29CC
 /* 0CD420 800D29C0 7D8803A6 */  mtlr    r12

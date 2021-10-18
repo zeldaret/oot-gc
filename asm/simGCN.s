@@ -15,7 +15,7 @@ glabel xlMain
 /* 0029F8 80007F98 93C10040 */  stw     r30, 0x40(r1)
 /* 0029FC 80007F9C 480005DD */  bl      simulatorParseArguments
 /* 002A00 80007FA0 3BC00000 */  li      r30, 0
-/* 002A04 80007FA4 93CD88F8 */  stw     r30, gDVDResetToggle-_SDA_BASE_(r13)
+/* 002A04 80007FA4 93CD88F8 */  stw     r30, gDVDResetToggle@sda21(r13)
 /* 002A08 80007FA8 38610034 */  addi    r3, r1, 0x34
 /* 002A0C 80007FAC 4BFFE8C5 */  bl      xlHeapGetFree
 /* 002A10 80007FB0 2C030000 */  cmpwi   r3, 0
@@ -54,9 +54,9 @@ lbl_80007FF4:
 /* 002A88 80008028 3884FFFF */  addi    r4, r4, -1
 /* 002A8C 8000802C 9801003F */  stb     r0, 0x3f(r1)
 /* 002A90 80008030 8001003C */  lwz     r0, 0x3c(r1)
-/* 002A94 80008034 93CD891C */  stw     r30, gbDisplayedError-_SDA_BASE_(r13)
-/* 002A98 80008038 93CD88F4 */  stw     r30, gButtonDownToggle-_SDA_BASE_(r13)
-/* 002A9C 8000803C 90AD80B8 */  stw     r5, gResetBeginFlag-_SDA_BASE_(r13)
+/* 002A94 80008034 93CD891C */  stw     r30, gbDisplayedError@sda21(r13)
+/* 002A98 80008038 93CD88F4 */  stw     r30, gButtonDownToggle@sda21(r13)
+/* 002A9C 8000803C 90AD80B8 */  stw     r5, gResetBeginFlag@sda21(r13)
 /* 002AA0 80008040 90010008 */  stw     r0, 8(r1)
 /* 002AA4 80008044 480A3DF9 */  bl      GXSetCopyClear
 /* 002AA8 80008048 38600001 */  li      r3, 1
@@ -64,7 +64,7 @@ lbl_80007FF4:
 /* 002AB0 80008050 4809F5BD */  bl      VIFlush
 /* 002AB4 80008054 4809E8C9 */  bl      VIWaitForRetrace
 /* 002AB8 80008058 4BFFD549 */  bl      xlCoreBeforeRender
-/* 002ABC 8000805C 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 002ABC 8000805C 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 002AC0 80008060 28000000 */  cmplwi  r0, 0
 /* 002AC4 80008064 41820020 */  beq     lbl_80008084
 /* 002AC8 80008068 480A2FAD */  bl      GXDrawDone
@@ -81,26 +81,26 @@ lbl_80008084:
 /* 002AF0 80008090 480A6455 */  bl      GXSetZMode
 /* 002AF4 80008094 38600001 */  li      r3, 1
 /* 002AF8 80008098 480A63F5 */  bl      GXSetColorUpdate
-/* 002AFC 8000809C 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002AFC 8000809C 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 002B00 800080A0 38800001 */  li      r4, 1
 /* 002B04 800080A4 480A402D */  bl      GXCopyDisp
 /* 002B08 800080A8 480A2F6D */  bl      GXDrawDone
-/* 002B0C 800080AC 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002B0C 800080AC 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 002B10 800080B0 4809F68D */  bl      VISetNextFrameBuffer
 /* 002B14 800080B4 4809F559 */  bl      VIFlush
 /* 002B18 800080B8 4809E865 */  bl      VIWaitForRetrace
-/* 002B1C 800080BC 808D8DAC */  lwz     r4, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 002B20 800080C0 800D8DB4 */  lwz     r0, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 002B1C 800080BC 808D8DAC */  lwz     r4, DemoCurrentBuffer@sda21(r13)
+/* 002B20 800080C0 800D8DB4 */  lwz     r0, DemoFrameBuffer1@sda21(r13)
 /* 002B24 800080C4 7C040040 */  cmplw   r4, r0
 /* 002B28 800080C8 40820010 */  bne     lbl_800080D8
-/* 002B2C 800080CC 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 002B30 800080D0 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002B2C 800080CC 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 002B30 800080D0 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 002B34 800080D4 48000008 */  b       lbl_800080DC
 lbl_800080D8:
-/* 002B38 800080D8 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002B38 800080D8 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 lbl_800080DC:
 /* 002B3C 800080DC 4BFFD4C5 */  bl      xlCoreBeforeRender
-/* 002B40 800080E0 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 002B40 800080E0 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 002B44 800080E4 28000000 */  cmplwi  r0, 0
 /* 002B48 800080E8 41820020 */  beq     lbl_80008108
 /* 002B4C 800080EC 480A2F29 */  bl      GXDrawDone
@@ -117,23 +117,23 @@ lbl_80008108:
 /* 002B74 80008114 480A63D1 */  bl      GXSetZMode
 /* 002B78 80008118 38600001 */  li      r3, 1
 /* 002B7C 8000811C 480A6371 */  bl      GXSetColorUpdate
-/* 002B80 80008120 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002B80 80008120 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 002B84 80008124 38800001 */  li      r4, 1
 /* 002B88 80008128 480A3FA9 */  bl      GXCopyDisp
 /* 002B8C 8000812C 480A2EE9 */  bl      GXDrawDone
-/* 002B90 80008130 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002B90 80008130 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 002B94 80008134 4809F609 */  bl      VISetNextFrameBuffer
 /* 002B98 80008138 4809F4D5 */  bl      VIFlush
 /* 002B9C 8000813C 4809E7E1 */  bl      VIWaitForRetrace
-/* 002BA0 80008140 808D8DAC */  lwz     r4, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 002BA4 80008144 800D8DB4 */  lwz     r0, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 002BA0 80008140 808D8DAC */  lwz     r4, DemoCurrentBuffer@sda21(r13)
+/* 002BA4 80008144 800D8DB4 */  lwz     r0, DemoFrameBuffer1@sda21(r13)
 /* 002BA8 80008148 7C040040 */  cmplw   r4, r0
 /* 002BAC 8000814C 40820010 */  bne     lbl_8000815C
-/* 002BB0 80008150 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 002BB4 80008154 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002BB0 80008150 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 002BB4 80008154 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 002BB8 80008158 48000008 */  b       lbl_80008160
 lbl_8000815C:
-/* 002BBC 8000815C 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 002BBC 8000815C 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 lbl_80008160:
 /* 002BC0 80008160 4809E7BD */  bl      VIWaitForRetrace
 /* 002BC4 80008164 38600000 */  li      r3, 0
@@ -166,9 +166,9 @@ lbl_80008160:
 /* 002C30 800081D0 3863DE00 */  addi    r3, r3, -8704
 /* 002C34 800081D4 48006E4D */  bl      simulatorUnpackTexPalette
 /* 002C38 800081D8 3BC00000 */  li      r30, 0
-/* 002C3C 800081DC 93CD8908 */  stw     r30, gbReset-_SDA_BASE_(r13)
+/* 002C3C 800081DC 93CD8908 */  stw     r30, gbReset@sda21(r13)
 /* 002C40 800081E0 4809A0E1 */  bl      OSGetTick
-/* 002C44 800081E4 906D890C */  stw     r3, gnTickReset-_SDA_BASE_(r13)
+/* 002C44 800081E4 906D890C */  stw     r3, gnTickReset@sda21(r13)
 /* 002C48 800081E8 38610034 */  addi    r3, r1, 0x34
 /* 002C4C 800081EC 4BFFE685 */  bl      xlHeapGetFree
 /* 002C50 800081F0 2C030000 */  cmpwi   r3, 0
@@ -245,9 +245,9 @@ lbl_800082A0:
 lbl_800082EC:
 /* 002D4C 800082EC 38000000 */  li      r0, 0
 /* 002D50 800082F0 3C80800F */  lis     r4, gClassCode@ha
-/* 002D54 800082F4 900D8920 */  stw     r0, gpSystem-_SDA_BASE_(r13)
+/* 002D54 800082F4 900D8920 */  stw     r0, gpSystem@sda21(r13)
 /* 002D58 800082F8 38A4A7C8 */  addi    r5, r4, gClassCode@l
-/* 002D5C 800082FC 386D88F0 */  addi    r3, r13, gpCode-_SDA_BASE_
+/* 002D5C 800082FC 386D88F0 */  addi    r3, r13, gpCode@sda21
 /* 002D60 80008300 38800000 */  li      r4, 0
 /* 002D64 80008304 4BFFFB21 */  bl      xlObjectMake
 /* 002D68 80008308 2C030000 */  cmpwi   r3, 0
@@ -257,7 +257,7 @@ lbl_800082EC:
 lbl_80008318:
 /* 002D78 80008318 3C80800F */  lis     r4, gClassFrame@ha
 /* 002D7C 8000831C 38A4A848 */  addi    r5, r4, gClassFrame@l
-/* 002D80 80008320 386D8928 */  addi    r3, r13, gpFrame-_SDA_BASE_
+/* 002D80 80008320 386D8928 */  addi    r3, r13, gpFrame@sda21
 /* 002D84 80008324 38800000 */  li      r4, 0
 /* 002D88 80008328 4BFFFAFD */  bl      xlObjectMake
 /* 002D8C 8000832C 2C030000 */  cmpwi   r3, 0
@@ -267,7 +267,7 @@ lbl_80008318:
 lbl_8000833C:
 /* 002D9C 8000833C 3C80800F */  lis     r4, gClassSound@ha
 /* 002DA0 80008340 38A4A7D8 */  addi    r5, r4, gClassSound@l
-/* 002DA4 80008344 386D8924 */  addi    r3, r13, gpSound-_SDA_BASE_
+/* 002DA4 80008344 386D8924 */  addi    r3, r13, gpSound@sda21
 /* 002DA8 80008348 38800000 */  li      r4, 0
 /* 002DAC 8000834C 4BFFFAD9 */  bl      xlObjectMake
 /* 002DB0 80008350 2C030000 */  cmpwi   r3, 0
@@ -277,7 +277,7 @@ lbl_8000833C:
 lbl_80008360:
 /* 002DC0 80008360 3C80800F */  lis     r4, gClassSystem@ha
 /* 002DC4 80008364 38A4B310 */  addi    r5, r4, gClassSystem@l
-/* 002DC8 80008368 386D8920 */  addi    r3, r13, gpSystem-_SDA_BASE_
+/* 002DC8 80008368 386D8920 */  addi    r3, r13, gpSystem@sda21
 /* 002DCC 8000836C 38800000 */  li      r4, 0
 /* 002DD0 80008370 4BFFFAB5 */  bl      xlObjectMake
 /* 002DD4 80008374 2C030000 */  cmpwi   r3, 0
@@ -301,23 +301,23 @@ lbl_800083A0:
 /* 002E14 800083B4 38600000 */  li      r3, 0
 /* 002E18 800083B8 48000168 */  b       lbl_80008520
 lbl_800083BC:
-/* 002E1C 800083BC 80CD8920 */  lwz     r6, gpSystem-_SDA_BASE_(r13)
+/* 002E1C 800083BC 80CD8920 */  lwz     r6, gpSystem@sda21(r13)
 /* 002E20 800083C0 38800000 */  li      r4, 0
-/* 002E24 800083C4 38AD80BC */  addi    r5, r13, D_80134D9C-_SDA_BASE_
+/* 002E24 800083C4 38AD80BC */  addi    r5, r13, D_80134D9C@sda21
 /* 002E28 800083C8 80660004 */  lwz     r3, 4(r6)
 /* 002E2C 800083CC 48014341 */  bl      soundLoadBeep
-/* 002E30 800083D0 80CD8920 */  lwz     r6, gpSystem-_SDA_BASE_(r13)
+/* 002E30 800083D0 80CD8920 */  lwz     r6, gpSystem@sda21(r13)
 /* 002E34 800083D4 38800001 */  li      r4, 1
-/* 002E38 800083D8 38AD80C4 */  addi    r5, r13, D_80134DA4-_SDA_BASE_
+/* 002E38 800083D8 38AD80C4 */  addi    r5, r13, D_80134DA4@sda21
 /* 002E3C 800083DC 80660004 */  lwz     r3, 4(r6)
 /* 002E40 800083E0 4801432D */  bl      soundLoadBeep
-/* 002E44 800083E4 808D8920 */  lwz     r4, gpSystem-_SDA_BASE_(r13)
+/* 002E44 800083E4 808D8920 */  lwz     r4, gpSystem@sda21(r13)
 /* 002E48 800083E8 3CBF0001 */  addis   r5, r31, 1
 /* 002E4C 800083EC 38A5E3DC */  addi    r5, r5, -7204
 /* 002E50 800083F0 80640004 */  lwz     r3, 4(r4)
 /* 002E54 800083F4 38800002 */  li      r4, 2
 /* 002E58 800083F8 48014315 */  bl      soundLoadBeep
-/* 002E5C 800083FC 80AD8920 */  lwz     r5, gpSystem-_SDA_BASE_(r13)
+/* 002E5C 800083FC 80AD8920 */  lwz     r5, gpSystem@sda21(r13)
 /* 002E60 80008400 3881000C */  addi    r4, r1, 0xc
 /* 002E64 80008404 80650030 */  lwz     r3, 0x30(r5)
 /* 002E68 80008408 48065219 */  bl      romSetImage
@@ -326,14 +326,14 @@ lbl_800083BC:
 /* 002E74 80008414 38600000 */  li      r3, 0
 /* 002E78 80008418 48000108 */  b       lbl_80008520
 lbl_8000841C:
-/* 002E7C 8000841C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 002E7C 8000841C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 002E80 80008420 48025159 */  bl      systemReset
 /* 002E84 80008424 2C030000 */  cmpwi   r3, 0
 /* 002E88 80008428 4082000C */  bne     lbl_80008434
 /* 002E8C 8000842C 38600000 */  li      r3, 0
 /* 002E90 80008430 480000F0 */  b       lbl_80008520
 lbl_80008434:
-/* 002E94 80008434 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 002E94 80008434 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 002E98 80008438 4801DCE5 */  bl      frameShow
 /* 002E9C 8000843C 2C030000 */  cmpwi   r3, 0
 /* 002EA0 80008440 4082000C */  bne     lbl_8000844C
@@ -347,7 +347,7 @@ lbl_8000844C:
 /* 002EBC 8000845C 38600000 */  li      r3, 0
 /* 002EC0 80008460 480000C0 */  b       lbl_80008520
 lbl_80008464:
-/* 002EC4 80008464 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 002EC4 80008464 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 002EC8 80008468 38800000 */  li      r4, 0
 /* 002ECC 8000846C 48025429 */  bl      systemSetMode
 /* 002ED0 80008470 2C030000 */  cmpwi   r3, 0
@@ -355,7 +355,7 @@ lbl_80008464:
 /* 002ED8 80008478 38600000 */  li      r3, 0
 /* 002EDC 8000847C 480000A4 */  b       lbl_80008520
 lbl_80008480:
-/* 002EE0 80008480 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 002EE0 80008480 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 002EE4 80008484 389F86A0 */  addi    r4, r31, -31072
 /* 002EE8 80008488 48024FF5 */  bl      systemExecute
 /* 002EEC 8000848C 2C030000 */  cmpwi   r3, 0
@@ -364,7 +364,7 @@ lbl_80008480:
 lbl_80008498:
 /* 002EF8 80008498 3FE00002 */  lis     r31, 2
 lbl_8000849C:
-/* 002EFC 8000849C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 002EFC 8000849C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 002F00 800084A0 38810038 */  addi    r4, r1, 0x38
 /* 002F04 800084A4 48025389 */  bl      systemGetMode
 /* 002F08 800084A8 2C030000 */  cmpwi   r3, 0
@@ -373,28 +373,28 @@ lbl_8000849C:
 /* 002F14 800084B4 2C000000 */  cmpwi   r0, 0
 /* 002F18 800084B8 4182FFC8 */  beq     lbl_80008480
 lbl_800084BC:
-/* 002F1C 800084BC 386D8920 */  addi    r3, r13, gpSystem-_SDA_BASE_
+/* 002F1C 800084BC 386D8920 */  addi    r3, r13, gpSystem@sda21
 /* 002F20 800084C0 4BFFF8CD */  bl      xlObjectFree
 /* 002F24 800084C4 2C030000 */  cmpwi   r3, 0
 /* 002F28 800084C8 4082000C */  bne     lbl_800084D4
 /* 002F2C 800084CC 38600000 */  li      r3, 0
 /* 002F30 800084D0 48000050 */  b       lbl_80008520
 lbl_800084D4:
-/* 002F34 800084D4 386D8924 */  addi    r3, r13, gpSound-_SDA_BASE_
+/* 002F34 800084D4 386D8924 */  addi    r3, r13, gpSound@sda21
 /* 002F38 800084D8 4BFFF8B5 */  bl      xlObjectFree
 /* 002F3C 800084DC 2C030000 */  cmpwi   r3, 0
 /* 002F40 800084E0 4082000C */  bne     lbl_800084EC
 /* 002F44 800084E4 38600000 */  li      r3, 0
 /* 002F48 800084E8 48000038 */  b       lbl_80008520
 lbl_800084EC:
-/* 002F4C 800084EC 386D8928 */  addi    r3, r13, gpFrame-_SDA_BASE_
+/* 002F4C 800084EC 386D8928 */  addi    r3, r13, gpFrame@sda21
 /* 002F50 800084F0 4BFFF89D */  bl      xlObjectFree
 /* 002F54 800084F4 2C030000 */  cmpwi   r3, 0
 /* 002F58 800084F8 4082000C */  bne     lbl_80008504
 /* 002F5C 800084FC 38600000 */  li      r3, 0
 /* 002F60 80008500 48000020 */  b       lbl_80008520
 lbl_80008504:
-/* 002F64 80008504 386D88F0 */  addi    r3, r13, gpCode-_SDA_BASE_
+/* 002F64 80008504 386D88F0 */  addi    r3, r13, gpCode@sda21
 /* 002F68 80008508 4BFFF885 */  bl      xlObjectFree
 /* 002F6C 8000850C 2C030000 */  cmpwi   r3, 0
 /* 002F70 80008510 4082000C */  bne     lbl_8000851C
@@ -692,9 +692,9 @@ glabel simulatorMCardPollDrawFormatBar
 /* 003378 80008918 3C804330 */  lis     r4, 0x4330
 /* 00337C 8000891C 801F036C */  lwz     r0, 0x36c(r31)
 /* 003380 80008920 7C651850 */  subf    r3, r5, r3
-/* 003384 80008924 C8428038 */  lfd     f2, D_80135D38-_SDA2_BASE_(r2)
+/* 003384 80008924 C8428038 */  lfd     f2, D_80135D38@sda21(r2)
 /* 003388 80008928 6C638000 */  xoris   r3, r3, 0x8000
-/* 00338C 8000892C C0628028 */  lfs     f3, D_80135D28-_SDA2_BASE_(r2)
+/* 00338C 8000892C C0628028 */  lfs     f3, D_80135D28@sda21(r2)
 /* 003390 80008930 6C008000 */  xoris   r0, r0, 0x8000
 /* 003394 80008934 90610014 */  stw     r3, 0x14(r1)
 /* 003398 80008938 9001000C */  stw     r0, 0xc(r1)
@@ -711,7 +711,7 @@ glabel simulatorMCardPollDrawFormatBar
 lbl_80008964:
 /* 0033C4 80008964 FC600090 */  fmr     f3, f0
 lbl_80008968:
-/* 0033C8 80008968 C3E28024 */  lfs     f31, D_80135D24-_SDA2_BASE_(r2)
+/* 0033C8 80008968 C3E28024 */  lfs     f31, D_80135D24@sda21(r2)
 /* 0033CC 8000896C FC03F840 */  fcmpo   cr0, f3, f31
 /* 0033D0 80008970 40800008 */  bge     lbl_80008978
 /* 0033D4 80008974 48000008 */  b       lbl_8000897C
@@ -733,7 +733,7 @@ lbl_8000897C:
 lbl_800089AC:
 /* 00340C 800089AC 809E01A8 */  lwz     r4, 0x1a8(r30)
 /* 003410 800089B0 387E01A0 */  addi    r3, r30, 0x1a0
-/* 003414 800089B4 C0028030 */  lfs     f0, D_80135D30-_SDA2_BASE_(r2)
+/* 003414 800089B4 C0028030 */  lfs     f0, D_80135D30@sda21(r2)
 /* 003418 800089B8 38C00000 */  li      r6, 0
 /* 00341C 800089BC 80A40000 */  lwz     r5, 0(r4)
 /* 003420 800089C0 EC0007F2 */  fmuls   f0, f0, f31
@@ -775,9 +775,9 @@ glabel simulatorMCardPollDrawBar
 /* 0034A8 80008A48 3C804330 */  lis     r4, 0x4330
 /* 0034AC 80008A4C 801F036C */  lwz     r0, 0x36c(r31)
 /* 0034B0 80008A50 7C651850 */  subf    r3, r5, r3
-/* 0034B4 80008A54 C8428038 */  lfd     f2, D_80135D38-_SDA2_BASE_(r2)
+/* 0034B4 80008A54 C8428038 */  lfd     f2, D_80135D38@sda21(r2)
 /* 0034B8 80008A58 6C638000 */  xoris   r3, r3, 0x8000
-/* 0034BC 80008A5C C0628028 */  lfs     f3, D_80135D28-_SDA2_BASE_(r2)
+/* 0034BC 80008A5C C0628028 */  lfs     f3, D_80135D28@sda21(r2)
 /* 0034C0 80008A60 6C008000 */  xoris   r0, r0, 0x8000
 /* 0034C4 80008A64 90610014 */  stw     r3, 0x14(r1)
 /* 0034C8 80008A68 9001000C */  stw     r0, 0xc(r1)
@@ -794,7 +794,7 @@ glabel simulatorMCardPollDrawBar
 lbl_80008A94:
 /* 0034F4 80008A94 FC600090 */  fmr     f3, f0
 lbl_80008A98:
-/* 0034F8 80008A98 C3E28024 */  lfs     f31, D_80135D24-_SDA2_BASE_(r2)
+/* 0034F8 80008A98 C3E28024 */  lfs     f31, D_80135D24@sda21(r2)
 /* 0034FC 80008A9C FC03F840 */  fcmpo   cr0, f3, f31
 /* 003500 80008AA0 40800008 */  bge     lbl_80008AA8
 /* 003504 80008AA4 48000008 */  b       lbl_80008AAC
@@ -816,7 +816,7 @@ lbl_80008AAC:
 lbl_80008ADC:
 /* 00353C 80008ADC 809E01A8 */  lwz     r4, 0x1a8(r30)
 /* 003540 80008AE0 387E01A0 */  addi    r3, r30, 0x1a0
-/* 003544 80008AE4 C0028030 */  lfs     f0, D_80135D30-_SDA2_BASE_(r2)
+/* 003544 80008AE4 C0028030 */  lfs     f0, D_80135D30@sda21(r2)
 /* 003548 80008AE8 38C00001 */  li      r6, 1
 /* 00354C 80008AEC 80A40000 */  lwz     r5, 0(r4)
 /* 003550 80008AF0 EC0007F2 */  fmuls   f0, f0, f31
@@ -892,11 +892,11 @@ glabel simulatorTestReset
 /* 003654 80008BF4 3B450000 */  addi    r26, r5, 0
 /* 003658 80008BF8 3B660000 */  addi    r27, r6, 0
 /* 00365C 80008BFC 480996C5 */  bl      OSGetTick
-/* 003660 80008C00 800D8910 */  lwz     r0, gPreviousIPLSetting-_SDA_BASE_(r13)
+/* 003660 80008C00 800D8910 */  lwz     r0, gPreviousIPLSetting@sda21(r13)
 /* 003664 80008C04 2C1B0001 */  cmpwi   r27, 1
-/* 003668 80008C08 808D8914 */  lwz     r4, gPreviousForceMenuSetting-_SDA_BASE_(r13)
+/* 003668 80008C08 808D8914 */  lwz     r4, gPreviousForceMenuSetting@sda21(r13)
 /* 00366C 80008C0C 7C7E1B78 */  mr      r30, r3
-/* 003670 80008C10 83AD8918 */  lwz     r29, gPreviousAllowResetSetting-_SDA_BASE_(r13)
+/* 003670 80008C10 83AD8918 */  lwz     r29, gPreviousAllowResetSetting@sda21(r13)
 /* 003674 80008C14 7C1C0378 */  mr      r28, r0
 /* 003678 80008C18 3B640000 */  addi    r27, r4, 0
 /* 00367C 80008C1C 40820014 */  bne     lbl_80008C30
@@ -905,13 +905,13 @@ glabel simulatorTestReset
 /* 003688 80008C28 3B5D0000 */  addi    r26, r29, 0
 /* 00368C 80008C2C 48000010 */  b       lbl_80008C3C
 lbl_80008C30:
-/* 003690 80008C30 930D8910 */  stw     r24, gPreviousIPLSetting-_SDA_BASE_(r13)
-/* 003694 80008C34 932D8914 */  stw     r25, gPreviousForceMenuSetting-_SDA_BASE_(r13)
-/* 003698 80008C38 934D8918 */  stw     r26, gPreviousAllowResetSetting-_SDA_BASE_(r13)
+/* 003690 80008C30 930D8910 */  stw     r24, gPreviousIPLSetting@sda21(r13)
+/* 003694 80008C34 932D8914 */  stw     r25, gPreviousForceMenuSetting@sda21(r13)
+/* 003698 80008C38 934D8918 */  stw     r26, gPreviousAllowResetSetting@sda21(r13)
 lbl_80008C3C:
 /* 00369C 80008C3C 480AE451 */  bl      DEMOPadRead
 /* 0036A0 80008C40 48097701 */  bl      OSGetResetButtonState
-/* 0036A4 80008C44 800D80B8 */  lwz     r0, gResetBeginFlag-_SDA_BASE_(r13)
+/* 0036A4 80008C44 800D80B8 */  lwz     r0, gResetBeginFlag@sda21(r13)
 /* 0036A8 80008C48 3BE30000 */  addi    r31, r3, 0
 /* 0036AC 80008C4C 2C000001 */  cmpwi   r0, 1
 /* 0036B0 80008C50 40820068 */  bne     lbl_80008CB8
@@ -920,13 +920,13 @@ lbl_80008C3C:
 /* 0036BC 80008C5C 70001600 */  andi.   r0, r0, 0x1600
 /* 0036C0 80008C60 2C001600 */  cmpwi   r0, 0x1600
 /* 0036C4 80008C64 40820054 */  bne     lbl_80008CB8
-/* 0036C8 80008C68 800D8908 */  lwz     r0, gbReset-_SDA_BASE_(r13)
+/* 0036C8 80008C68 800D8908 */  lwz     r0, gbReset@sda21(r13)
 /* 0036CC 80008C6C 2C000000 */  cmpwi   r0, 0
 /* 0036D0 80008C70 4182000C */  beq     lbl_80008C7C
 /* 0036D4 80008C74 281F0000 */  cmplwi  r31, 0
 /* 0036D8 80008C78 41820010 */  beq     lbl_80008C88
 lbl_80008C7C:
-/* 0036DC 80008C7C 93ED8908 */  stw     r31, gbReset-_SDA_BASE_(r13)
+/* 0036DC 80008C7C 93ED8908 */  stw     r31, gbReset@sda21(r13)
 /* 0036E0 80008C80 38600001 */  li      r3, 1
 /* 0036E4 80008C84 48000124 */  b       lbl_80008DA8
 lbl_80008C88:
@@ -945,21 +945,21 @@ lbl_80008CA8:
 /* 003714 80008CB4 4800000C */  b       lbl_80008CC0
 lbl_80008CB8:
 /* 003718 80008CB8 38000000 */  li      r0, 0
-/* 00371C 80008CBC 900D80B8 */  stw     r0, gResetBeginFlag-_SDA_BASE_(r13)
+/* 00371C 80008CBC 900D80B8 */  stw     r0, gResetBeginFlag@sda21(r13)
 lbl_80008CC0:
 /* 003720 80008CC0 3C608013 */  lis     r3, DemoPad@ha
 /* 003724 80008CC4 A0032758 */  lhz     r0, DemoPad@l(r3)
 /* 003728 80008CC8 70001600 */  andi.   r0, r0, 0x1600
 /* 00372C 80008CCC 2C001600 */  cmpwi   r0, 0x1600
 /* 003730 80008CD0 41820058 */  beq     lbl_80008D28
-/* 003734 80008CD4 800D8908 */  lwz     r0, gbReset-_SDA_BASE_(r13)
-/* 003738 80008CD8 93CD890C */  stw     r30, gnTickReset-_SDA_BASE_(r13)
+/* 003734 80008CD4 800D8908 */  lwz     r0, gbReset@sda21(r13)
+/* 003738 80008CD8 93CD890C */  stw     r30, gnTickReset@sda21(r13)
 /* 00373C 80008CDC 2C000000 */  cmpwi   r0, 0
 /* 003740 80008CE0 4182000C */  beq     lbl_80008CEC
 /* 003744 80008CE4 281F0000 */  cmplwi  r31, 0
 /* 003748 80008CE8 41820010 */  beq     lbl_80008CF8
 lbl_80008CEC:
-/* 00374C 80008CEC 93ED8908 */  stw     r31, gbReset-_SDA_BASE_(r13)
+/* 00374C 80008CEC 93ED8908 */  stw     r31, gbReset@sda21(r13)
 /* 003750 80008CF0 38600001 */  li      r3, 1
 /* 003754 80008CF4 480000B4 */  b       lbl_80008DA8
 lbl_80008CF8:
@@ -978,14 +978,14 @@ lbl_80008D18:
 /* 003784 80008D24 48000080 */  b       lbl_80008DA4
 lbl_80008D28:
 /* 003788 80008D28 3C608000 */  lis     r3, 0x8000
-/* 00378C 80008D2C 808D890C */  lwz     r4, gnTickReset-_SDA_BASE_(r13)
+/* 00378C 80008D2C 808D890C */  lwz     r4, gnTickReset@sda21(r13)
 /* 003790 80008D30 800300F8 */  lwz     r0, 0xf8(r3)
 /* 003794 80008D34 3C604330 */  lis     r3, 0x4330
 /* 003798 80008D38 7C84F050 */  subf    r4, r4, r30
-/* 00379C 80008D3C C8628048 */  lfd     f3, D_80135D48-_SDA2_BASE_(r2)
+/* 00379C 80008D3C C8628048 */  lfd     f3, D_80135D48@sda21(r2)
 /* 0037A0 80008D40 5400F0BE */  srwi    r0, r0, 2
 /* 0037A4 80008D44 90010024 */  stw     r0, 0x24(r1)
-/* 0037A8 80008D48 C0228040 */  lfs     f1, D_80135D40-_SDA2_BASE_(r2)
+/* 0037A8 80008D48 C0228040 */  lfs     f1, D_80135D40@sda21(r2)
 /* 0037AC 80008D4C 90610020 */  stw     r3, 0x20(r1)
 /* 0037B0 80008D50 9081002C */  stw     r4, 0x2c(r1)
 /* 0037B4 80008D54 C8010020 */  lfd     f0, 0x20(r1)
@@ -1111,7 +1111,7 @@ glabel simulatorWriteEEPROM
 /* 003950 80008EF0 38810010 */  addi    r4, r1, 0x10
 /* 003954 80008EF4 93C10018 */  stw     r30, 0x18(r1)
 /* 003958 80008EF8 3BC30000 */  addi    r30, r3, 0
-/* 00395C 80008EFC 80AD8920 */  lwz     r5, gpSystem-_SDA_BASE_(r13)
+/* 00395C 80008EFC 80AD8920 */  lwz     r5, gpSystem@sda21(r13)
 /* 003960 80008F00 80650028 */  lwz     r3, 0x28(r5)
 /* 003964 80008F04 480639D1 */  bl      pifGetEEPROMSize
 /* 003968 80008F08 2C030000 */  cmpwi   r3, 0
@@ -1143,7 +1143,7 @@ glabel simulatorReadEEPROM
 /* 0039C0 80008F60 38810010 */  addi    r4, r1, 0x10
 /* 0039C4 80008F64 93C10018 */  stw     r30, 0x18(r1)
 /* 0039C8 80008F68 3BC30000 */  addi    r30, r3, 0
-/* 0039CC 80008F6C 80AD8920 */  lwz     r5, gpSystem-_SDA_BASE_(r13)
+/* 0039CC 80008F6C 80AD8920 */  lwz     r5, gpSystem@sda21(r13)
 /* 0039D0 80008F70 80650028 */  lwz     r3, 0x28(r5)
 /* 0039D4 80008F74 48063961 */  bl      pifGetEEPROMSize
 /* 0039D8 80008F78 2C030000 */  cmpwi   r3, 0
@@ -1178,13 +1178,13 @@ glabel simulatorWritePak
 /* 003A3C 80008FDC 93A1001C */  stw     r29, 0x1c(r1)
 /* 003A40 80008FE0 3BA30000 */  addi    r29, r3, 0
 /* 003A44 80008FE4 389D0000 */  addi    r4, r29, 0
-/* 003A48 80008FE8 80CD8920 */  lwz     r6, gpSystem-_SDA_BASE_(r13)
+/* 003A48 80008FE8 80CD8920 */  lwz     r6, gpSystem@sda21(r13)
 /* 003A4C 80008FEC 80660028 */  lwz     r3, 0x28(r6)
 /* 003A50 80008FF0 4806398D */  bl      pifGetEControllerType
 /* 003A54 80008FF4 80010014 */  lwz     r0, 0x14(r1)
 /* 003A58 80008FF8 2C000003 */  cmpwi   r0, 3
 /* 003A5C 80008FFC 4082001C */  bne     lbl_80009018
-/* 003A60 80009000 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 003A60 80009000 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 003A64 80009004 389D0000 */  addi    r4, r29, 0
 /* 003A68 80009008 38BE0000 */  addi    r5, r30, 0
 /* 003A6C 8000900C 80630028 */  lwz     r3, 0x28(r3)
@@ -1212,13 +1212,13 @@ glabel simulatorReadPak
 /* 003AB8 80009058 93A1001C */  stw     r29, 0x1c(r1)
 /* 003ABC 8000905C 3BA30000 */  addi    r29, r3, 0
 /* 003AC0 80009060 389D0000 */  addi    r4, r29, 0
-/* 003AC4 80009064 80CD8920 */  lwz     r6, gpSystem-_SDA_BASE_(r13)
+/* 003AC4 80009064 80CD8920 */  lwz     r6, gpSystem@sda21(r13)
 /* 003AC8 80009068 80660028 */  lwz     r3, 0x28(r6)
 /* 003ACC 8000906C 48063911 */  bl      pifGetEControllerType
 /* 003AD0 80009070 80010014 */  lwz     r0, 0x14(r1)
 /* 003AD4 80009074 2C000003 */  cmpwi   r0, 3
 /* 003AD8 80009078 4082001C */  bne     lbl_80009094
-/* 003ADC 8000907C 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 003ADC 8000907C 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 003AE0 80009080 389D0000 */  addi    r4, r29, 0
 /* 003AE4 80009084 38BE0000 */  addi    r5, r30, 0
 /* 003AE8 80009088 80630028 */  lwz     r3, 0x28(r3)
@@ -1274,8 +1274,8 @@ glabel simulatorReadController
 /* 003B8C 8000912C 3BC40000 */  addi    r30, r4, 0
 /* 003B90 80009130 93A10034 */  stw     r29, 0x34(r1)
 /* 003B94 80009134 3BA30000 */  addi    r29, r3, 0
-/* 003B98 80009138 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
-/* 003B9C 8000913C 900D8900 */  stw     r0, nPrevButton$701-_SDA_BASE_(r13)
+/* 003B98 80009138 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
+/* 003B9C 8000913C 900D8900 */  stw     r0, nPrevButton$701@sda21(r13)
 /* 003BA0 80009140 480ADF4D */  bl      DEMOPadRead
 /* 003BA4 80009144 1C1D001E */  mulli   r0, r29, 0x1e
 /* 003BA8 80009148 38800000 */  li      r4, 0
@@ -1414,7 +1414,7 @@ lbl_80009314:
 /* 003D84 80009324 909E0000 */  stw     r4, 0(r30)
 /* 003D88 80009328 38A32758 */  addi    r5, r3, DemoPad@l
 /* 003D8C 8000932C 7C850214 */  add     r4, r5, r0
-/* 003D90 80009330 806D88F4 */  lwz     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 003D90 80009330 806D88F4 */  lwz     r3, gButtonDownToggle@sda21(r13)
 /* 003D94 80009334 88C40004 */  lbz     r6, 4(r4)
 /* 003D98 80009338 88E40005 */  lbz     r7, 5(r4)
 /* 003D9C 8000933C 2C030001 */  cmpwi   r3, 1
@@ -1429,19 +1429,19 @@ lbl_80009314:
 /* 003DC0 80009360 48000308 */  b       lbl_80009668
 lbl_80009364:
 /* 003DC4 80009364 38800000 */  li      r4, 0
-/* 003DC8 80009368 908D88F4 */  stw     r4, gButtonDownToggle-_SDA_BASE_(r13)
+/* 003DC8 80009368 908D88F4 */  stw     r4, gButtonDownToggle@sda21(r13)
 lbl_8000936C:
 /* 003DCC 8000936C 3C808013 */  lis     r4, DemoPad@ha
 /* 003DD0 80009370 38842758 */  addi    r4, r4, DemoPad@l
 /* 003DD4 80009374 7C840214 */  add     r4, r4, r0
 /* 003DD8 80009378 A0840000 */  lhz     r4, 0(r4)
-/* 003DDC 8000937C 908D8904 */  stw     r4, nCurrButton$702-_SDA_BASE_(r13)
-/* 003DE0 80009380 808D8904 */  lwz     r4, nCurrButton$702-_SDA_BASE_(r13)
+/* 003DDC 8000937C 908D8904 */  stw     r4, nCurrButton$702@sda21(r13)
+/* 003DE0 80009380 808D8904 */  lwz     r4, nCurrButton$702@sda21(r13)
 /* 003DE4 80009384 70841600 */  andi.   r4, r4, 0x1600
 /* 003DE8 80009388 28041600 */  cmplwi  r4, 0x1600
 /* 003DEC 8000938C 40820014 */  bne     lbl_800093A0
 /* 003DF0 80009390 38000001 */  li      r0, 1
-/* 003DF4 80009394 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 003DF4 80009394 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 003DF8 80009398 38600001 */  li      r3, 1
 /* 003DFC 8000939C 480002CC */  b       lbl_80009668
 lbl_800093A0:
@@ -1450,7 +1450,7 @@ lbl_800093A0:
 /* 003E08 800093A8 2C070000 */  cmpwi   r7, 0
 /* 003E0C 800093AC 4182003C */  beq     lbl_800093E8
 /* 003E10 800093B0 6CC58000 */  xoris   r5, r6, 0x8000
-/* 003E14 800093B4 C8428038 */  lfd     f2, D_80135D38-_SDA2_BASE_(r2)
+/* 003E14 800093B4 C8428038 */  lfd     f2, D_80135D38@sda21(r2)
 /* 003E18 800093B8 6CE48000 */  xoris   r4, r7, 0x8000
 /* 003E1C 800093BC 90A1002C */  stw     r5, 0x2c(r1)
 /* 003E20 800093C0 3CA04330 */  lis     r5, 0x4330
@@ -1464,18 +1464,18 @@ lbl_800093A0:
 /* 003E40 800093E0 EC210024 */  fdivs   f1, f1, f0
 /* 003E44 800093E4 48000008 */  b       lbl_800093EC
 lbl_800093E8:
-/* 003E48 800093E8 C0228024 */  lfs     f1, D_80135D24-_SDA2_BASE_(r2)
+/* 003E48 800093E8 C0228024 */  lfs     f1, D_80135D24@sda21(r2)
 lbl_800093EC:
-/* 003E4C 800093EC C0028024 */  lfs     f0, D_80135D24-_SDA2_BASE_(r2)
+/* 003E4C 800093EC C0028024 */  lfs     f0, D_80135D24@sda21(r2)
 /* 003E50 800093F0 FC010040 */  fcmpo   cr0, f1, f0
 /* 003E54 800093F4 4080000C */  bge     lbl_80009400
-/* 003E58 800093F8 C0028050 */  lfs     f0, D_80135D50-_SDA2_BASE_(r2)
+/* 003E58 800093F8 C0028050 */  lfs     f0, D_80135D50@sda21(r2)
 /* 003E5C 800093FC EC210032 */  fmuls   f1, f1, f0
 lbl_80009400:
-/* 003E60 80009400 C0028054 */  lfs     f0, D_80135D54-_SDA2_BASE_(r2)
+/* 003E60 80009400 C0028054 */  lfs     f0, D_80135D54@sda21(r2)
 /* 003E64 80009404 FC010040 */  fcmpo   cr0, f1, f0
 /* 003E68 80009408 41810010 */  bgt     lbl_80009418
-/* 003E6C 8000940C C0028058 */  lfs     f0, D_80135D58-_SDA2_BASE_(r2)
+/* 003E6C 8000940C C0028058 */  lfs     f0, D_80135D58@sda21(r2)
 /* 003E70 80009410 FC010040 */  fcmpo   cr0, f1, f0
 /* 003E74 80009414 40800084 */  bge     lbl_80009498
 lbl_80009418:
@@ -1515,7 +1515,7 @@ lbl_80009478:
 /* 003EF0 80009490 7C831B78 */  or      r3, r4, r3
 /* 003EF4 80009494 907E0000 */  stw     r3, 0(r30)
 lbl_80009498:
-/* 003EF8 80009498 806D8904 */  lwz     r3, nCurrButton$702-_SDA_BASE_(r13)
+/* 003EF8 80009498 806D8904 */  lwz     r3, nCurrButton$702@sda21(r13)
 /* 003EFC 8000949C 546304E7 */  rlwinm. r3, r3, 0, 0x13, 0x13
 /* 003F00 800094A0 4182001C */  beq     lbl_800094BC
 /* 003F04 800094A4 1C7D0050 */  mulli   r3, r29, 0x50
@@ -1525,7 +1525,7 @@ lbl_80009498:
 /* 003F14 800094B4 7C831B78 */  or      r3, r4, r3
 /* 003F18 800094B8 907E0000 */  stw     r3, 0(r30)
 lbl_800094BC:
-/* 003F1C 800094BC 806D8904 */  lwz     r3, nCurrButton$702-_SDA_BASE_(r13)
+/* 003F1C 800094BC 806D8904 */  lwz     r3, nCurrButton$702@sda21(r13)
 /* 003F20 800094C0 546306F7 */  rlwinm. r3, r3, 0, 0x1b, 0x1b
 /* 003F24 800094C4 4182001C */  beq     lbl_800094E0
 /* 003F28 800094C8 1C7D0050 */  mulli   r3, r29, 0x50
@@ -1561,7 +1561,7 @@ lbl_80009510:
 /* 003F98 80009538 7C800378 */  or      r0, r4, r0
 /* 003F9C 8000953C 901E0000 */  stw     r0, 0(r30)
 lbl_80009540:
-/* 003FA0 80009540 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
+/* 003FA0 80009540 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
 /* 003FA4 80009544 540005EF */  rlwinm. r0, r0, 0, 0x17, 0x17
 /* 003FA8 80009548 4182001C */  beq     lbl_80009564
 /* 003FAC 8000954C 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1571,7 +1571,7 @@ lbl_80009540:
 /* 003FBC 8000955C 7C800378 */  or      r0, r4, r0
 /* 003FC0 80009560 901E0000 */  stw     r0, 0(r30)
 lbl_80009564:
-/* 003FC4 80009564 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
+/* 003FC4 80009564 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
 /* 003FC8 80009568 540005AD */  rlwinm. r0, r0, 0, 0x16, 0x16
 /* 003FCC 8000956C 4182001C */  beq     lbl_80009588
 /* 003FD0 80009570 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1581,7 +1581,7 @@ lbl_80009564:
 /* 003FE0 80009580 7C800378 */  or      r0, r4, r0
 /* 003FE4 80009584 901E0000 */  stw     r0, 0(r30)
 lbl_80009588:
-/* 003FE8 80009588 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
+/* 003FE8 80009588 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
 /* 003FEC 8000958C 5400056B */  rlwinm. r0, r0, 0, 0x15, 0x15
 /* 003FF0 80009590 4182001C */  beq     lbl_800095AC
 /* 003FF4 80009594 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1591,7 +1591,7 @@ lbl_80009588:
 /* 004004 800095A4 7C800378 */  or      r0, r4, r0
 /* 004008 800095A8 901E0000 */  stw     r0, 0(r30)
 lbl_800095AC:
-/* 00400C 800095AC 806D8904 */  lwz     r3, nCurrButton$702-_SDA_BASE_(r13)
+/* 00400C 800095AC 806D8904 */  lwz     r3, nCurrButton$702@sda21(r13)
 /* 004010 800095B0 54600529 */  rlwinm. r0, r3, 0, 0x14, 0x14
 /* 004014 800095B4 41820024 */  beq     lbl_800095D8
 /* 004018 800095B8 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1612,7 +1612,7 @@ lbl_800095D8:
 /* 004050 800095F0 7C800378 */  or      r0, r4, r0
 /* 004054 800095F4 901E0000 */  stw     r0, 0(r30)
 lbl_800095F8:
-/* 004058 800095F8 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
+/* 004058 800095F8 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
 /* 00405C 800095FC 5400077B */  rlwinm. r0, r0, 0, 0x1d, 0x1d
 /* 004060 80009600 4182001C */  beq     lbl_8000961C
 /* 004064 80009604 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1622,7 +1622,7 @@ lbl_800095F8:
 /* 004074 80009614 7C800378 */  or      r0, r4, r0
 /* 004078 80009618 901E0000 */  stw     r0, 0(r30)
 lbl_8000961C:
-/* 00407C 8000961C 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
+/* 00407C 8000961C 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
 /* 004080 80009620 540007FF */  clrlwi. r0, r0, 0x1f
 /* 004084 80009624 4182001C */  beq     lbl_80009640
 /* 004088 80009628 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1632,7 +1632,7 @@ lbl_8000961C:
 /* 004098 80009638 7C800378 */  or      r0, r4, r0
 /* 00409C 8000963C 901E0000 */  stw     r0, 0(r30)
 lbl_80009640:
-/* 0040A0 80009640 800D8904 */  lwz     r0, nCurrButton$702-_SDA_BASE_(r13)
+/* 0040A0 80009640 800D8904 */  lwz     r0, nCurrButton$702@sda21(r13)
 /* 0040A4 80009644 540007BD */  rlwinm. r0, r0, 0, 0x1e, 0x1e
 /* 0040A8 80009648 4182001C */  beq     lbl_80009664
 /* 0040AC 8000964C 1C1D0050 */  mulli   r0, r29, 0x50
@@ -1775,7 +1775,7 @@ glabel simulatorResetAndPlayMovie
 /* 004290 80009830 386379B0 */  addi    r3, r3, mCard@l
 /* 004294 80009834 9421FFD8 */  stwu    r1, -0x28(r1)
 /* 004298 80009838 93E10024 */  stw     r31, 0x24(r1)
-/* 00429C 8000983C 83ED88BC */  lwz     r31, rmode-_SDA_BASE_(r13)
+/* 00429C 8000983C 83ED88BC */  lwz     r31, rmode@sda21(r13)
 /* 0042A0 80009840 4800FE31 */  bl      mcardWriteGameDataReset
 /* 0042A4 80009844 38600001 */  li      r3, 1
 /* 0042A8 80009848 4809DF61 */  bl      VISetBlack
@@ -1795,7 +1795,7 @@ glabel simulatorResetAndPlayMovie
 /* 0042E0 80009880 98810016 */  stb     r4, 0x16(r1)
 /* 0042E4 80009884 98010017 */  stb     r0, 0x17(r1)
 /* 0042E8 80009888 480AC515 */  bl      DEMOInit
-/* 0042EC 8000988C 93ED88BC */  stw     r31, rmode-_SDA_BASE_(r13)
+/* 0042EC 8000988C 93ED88BC */  stw     r31, rmode@sda21(r13)
 /* 0042F0 80009890 38600001 */  li      r3, 1
 /* 0042F4 80009894 4809DF15 */  bl      VISetBlack
 /* 0042F8 80009898 38600000 */  li      r3, 0
@@ -1809,12 +1809,12 @@ glabel simulatorResetAndPlayMovie
 /* 004318 800098B8 3BE10008 */  addi    r31, r1, 8
 lbl_800098BC:
 /* 00431C 800098BC 48098A05 */  bl      OSGetTick
-/* 004320 800098C0 800D8964 */  lwz     r0, gMovieErrorToggle-_SDA_BASE_(r13)
+/* 004320 800098C0 800D8964 */  lwz     r0, gMovieErrorToggle@sda21(r13)
 /* 004324 800098C4 2C000001 */  cmpwi   r0, 1
 /* 004328 800098C8 4182FFF4 */  beq     lbl_800098BC
 /* 00432C 800098CC 480AC8D1 */  bl      DEMOBeforeRender
 /* 004330 800098D0 48005EFD */  bl      MovieDraw
-/* 004334 800098D4 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 004334 800098D4 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 004338 800098D8 28000000 */  cmplwi  r0, 0
 /* 00433C 800098DC 41820020 */  beq     lbl_800098FC
 /* 004340 800098E0 480A1735 */  bl      GXDrawDone
@@ -1831,23 +1831,23 @@ lbl_800098FC:
 /* 004368 80009908 480A4BDD */  bl      GXSetZMode
 /* 00436C 8000990C 38600001 */  li      r3, 1
 /* 004370 80009910 480A4B7D */  bl      GXSetColorUpdate
-/* 004374 80009914 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 004374 80009914 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 004378 80009918 38800001 */  li      r4, 1
 /* 00437C 8000991C 480A27B5 */  bl      GXCopyDisp
 /* 004380 80009920 480A16F5 */  bl      GXDrawDone
-/* 004384 80009924 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 004384 80009924 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 004388 80009928 4809DE15 */  bl      VISetNextFrameBuffer
 /* 00438C 8000992C 4809DCE1 */  bl      VIFlush
 /* 004390 80009930 4809CFED */  bl      VIWaitForRetrace
-/* 004394 80009934 800D8DAC */  lwz     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 004398 80009938 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 004394 80009934 800D8DAC */  lwz     r0, DemoCurrentBuffer@sda21(r13)
+/* 004398 80009938 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 00439C 8000993C 7C001840 */  cmplw   r0, r3
 /* 0043A0 80009940 40820010 */  bne     lbl_80009950
-/* 0043A4 80009944 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0043A8 80009948 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0043A4 80009944 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0043A8 80009948 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0043AC 8000994C 48000008 */  b       lbl_80009954
 lbl_80009950:
-/* 0043B0 80009950 906D8DAC */  stw     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0043B0 80009950 906D8DAC */  stw     r3, DemoCurrentBuffer@sda21(r13)
 lbl_80009954:
 /* 0043B4 80009954 38600000 */  li      r3, 0
 /* 0043B8 80009958 4809DE51 */  bl      VISetBlack
@@ -1929,17 +1929,17 @@ glabel simulatorDrawErrorMessageWait
 /* 0044CC 80009A6C 7C0903A6 */  mtctr   r0
 /* 0044D0 80009A70 4E800420 */  bctr    
 glabel lbl_80009A74
-/* 0044D4 80009A74 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0044D4 80009A74 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0044D8 80009A78 7C001800 */  cmpw    r0, r3
 /* 0044DC 80009A7C 41820050 */  beq     lbl_80009ACC
-/* 0044E0 80009A80 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0044E0 80009A80 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0044E4 80009A84 3C7F0001 */  addis   r3, r31, 1
 /* 0044E8 80009A88 3863E514 */  addi    r3, r3, -6892
 /* 0044EC 80009A8C 38810080 */  addi    r4, r1, 0x80
 /* 0044F0 80009A90 480A8FA5 */  bl      DVDOpen
 /* 0044F4 80009A94 2C030001 */  cmpwi   r3, 1
 /* 0044F8 80009A98 40820024 */  bne     lbl_80009ABC
-/* 0044FC 80009A9C 80AD8008 */  lwz     r5, gmsg_ld01Size-_SDA_BASE_(r13)
+/* 0044FC 80009A9C 80AD8008 */  lwz     r5, gmsg_ld01Size@sda21(r13)
 /* 004500 80009AA0 38610080 */  addi    r3, r1, 0x80
 /* 004504 80009AA4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 004508 80009AA8 3805001F */  addi    r0, r5, 0x1f
@@ -1983,7 +1983,7 @@ lbl_80009ACC:
 /* 004598 80009B38 210000B4 */  subfic  r8, r0, 0xb4
 /* 00459C 80009B3C 38C6DE00 */  addi    r6, r6, -8704
 /* 0045A0 80009B40 48003A4D */  bl      simulatorDrawOKImage
-/* 0045A4 80009B44 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0045A4 80009B44 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 0045A8 80009B48 2C000001 */  cmpwi   r0, 1
 /* 0045AC 80009B4C 40820020 */  bne     lbl_80009B6C
 /* 0045B0 80009B50 480AD53D */  bl      DEMOPadRead
@@ -1995,7 +1995,7 @@ lbl_80009ACC:
 /* 0045C8 80009B68 48003000 */  b       lbl_8000CB68
 lbl_80009B6C:
 /* 0045CC 80009B6C 38000000 */  li      r0, 0
-/* 0045D0 80009B70 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0045D0 80009B70 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 0045D4 80009B74 480AD519 */  bl      DEMOPadRead
 /* 0045D8 80009B78 80BB0000 */  lwz     r5, 0(r27)
 /* 0045DC 80009B7C 3CDF0001 */  addis   r6, r31, 1
@@ -2031,28 +2031,28 @@ lbl_80009B6C:
 /* 004654 80009BF4 A0030000 */  lhz     r0, 0(r3)
 /* 004658 80009BF8 70001100 */  andi.   r0, r0, 0x1100
 /* 00465C 80009BFC 41820020 */  beq     lbl_80009C1C
-/* 004660 80009C00 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 004660 80009C00 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 004664 80009C04 38800000 */  li      r4, 0
 /* 004668 80009C08 80630004 */  lwz     r3, 4(r3)
 /* 00466C 80009C0C 48012A85 */  bl      soundPlayBeep
 /* 004670 80009C10 38600001 */  li      r3, 1
-/* 004674 80009C14 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004674 80009C14 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 004678 80009C18 48002F50 */  b       lbl_8000CB68
 lbl_80009C1C:
 /* 00467C 80009C1C 38600000 */  li      r3, 0
 /* 004680 80009C20 48002F48 */  b       lbl_8000CB68
 glabel lbl_80009C24
-/* 004684 80009C24 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004684 80009C24 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004688 80009C28 7C001800 */  cmpw    r0, r3
 /* 00468C 80009C2C 41820050 */  beq     lbl_80009C7C
-/* 004690 80009C30 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004690 80009C30 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 004694 80009C34 3C7F0001 */  addis   r3, r31, 1
 /* 004698 80009C38 3863E528 */  addi    r3, r3, -6872
 /* 00469C 80009C3C 38810080 */  addi    r4, r1, 0x80
 /* 0046A0 80009C40 480A8DF5 */  bl      DVDOpen
 /* 0046A4 80009C44 2C030001 */  cmpwi   r3, 1
 /* 0046A8 80009C48 40820024 */  bne     lbl_80009C6C
-/* 0046AC 80009C4C 80AD800C */  lwz     r5, gmsg_ld02Size-_SDA_BASE_(r13)
+/* 0046AC 80009C4C 80AD800C */  lwz     r5, gmsg_ld02Size@sda21(r13)
 /* 0046B0 80009C50 38610080 */  addi    r3, r1, 0x80
 /* 0046B4 80009C54 389E01A0 */  addi    r4, r30, 0x1a0
 /* 0046B8 80009C58 3805001F */  addi    r0, r5, 0x1f
@@ -2096,7 +2096,7 @@ lbl_80009C7C:
 /* 004748 80009CE8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00474C 80009CEC 38C6DE00 */  addi    r6, r6, -8704
 /* 004750 80009CF0 4800389D */  bl      simulatorDrawOKImage
-/* 004754 80009CF4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004754 80009CF4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 004758 80009CF8 2C000001 */  cmpwi   r0, 1
 /* 00475C 80009CFC 40820020 */  bne     lbl_80009D1C
 /* 004760 80009D00 480AD38D */  bl      DEMOPadRead
@@ -2108,7 +2108,7 @@ lbl_80009C7C:
 /* 004778 80009D18 48002E50 */  b       lbl_8000CB68
 lbl_80009D1C:
 /* 00477C 80009D1C 38000000 */  li      r0, 0
-/* 004780 80009D20 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004780 80009D20 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 004784 80009D24 480AD369 */  bl      DEMOPadRead
 /* 004788 80009D28 80BD0000 */  lwz     r5, 0(r29)
 /* 00478C 80009D2C 3CDF0001 */  addis   r6, r31, 1
@@ -2144,28 +2144,28 @@ lbl_80009D1C:
 /* 004804 80009DA4 A0030000 */  lhz     r0, 0(r3)
 /* 004808 80009DA8 70001100 */  andi.   r0, r0, 0x1100
 /* 00480C 80009DAC 41820020 */  beq     lbl_80009DCC
-/* 004810 80009DB0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 004810 80009DB0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 004814 80009DB4 38800000 */  li      r4, 0
 /* 004818 80009DB8 80630004 */  lwz     r3, 4(r3)
 /* 00481C 80009DBC 480128D5 */  bl      soundPlayBeep
 /* 004820 80009DC0 38600001 */  li      r3, 1
-/* 004824 80009DC4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004824 80009DC4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 004828 80009DC8 48002DA0 */  b       lbl_8000CB68
 lbl_80009DCC:
 /* 00482C 80009DCC 38600000 */  li      r3, 0
 /* 004830 80009DD0 48002D98 */  b       lbl_8000CB68
 glabel lbl_80009DD4
-/* 004834 80009DD4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004834 80009DD4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004838 80009DD8 7C001800 */  cmpw    r0, r3
 /* 00483C 80009DDC 41820050 */  beq     lbl_80009E2C
-/* 004840 80009DE0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004840 80009DE0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 004844 80009DE4 3C7F0001 */  addis   r3, r31, 1
 /* 004848 80009DE8 3863E53C */  addi    r3, r3, -6852
 /* 00484C 80009DEC 38810080 */  addi    r4, r1, 0x80
 /* 004850 80009DF0 480A8C45 */  bl      DVDOpen
 /* 004854 80009DF4 2C030001 */  cmpwi   r3, 1
 /* 004858 80009DF8 40820024 */  bne     lbl_80009E1C
-/* 00485C 80009DFC 80AD8010 */  lwz     r5, gmsg_ld03Size-_SDA_BASE_(r13)
+/* 00485C 80009DFC 80AD8010 */  lwz     r5, gmsg_ld03Size@sda21(r13)
 /* 004860 80009E00 38610080 */  addi    r3, r1, 0x80
 /* 004864 80009E04 389E01A0 */  addi    r4, r30, 0x1a0
 /* 004868 80009E08 3805001F */  addi    r0, r5, 0x1f
@@ -2209,7 +2209,7 @@ lbl_80009E2C:
 /* 0048F8 80009E98 210000B4 */  subfic  r8, r0, 0xb4
 /* 0048FC 80009E9C 38C6DE00 */  addi    r6, r6, -8704
 /* 004900 80009EA0 480036ED */  bl      simulatorDrawOKImage
-/* 004904 80009EA4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004904 80009EA4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 004908 80009EA8 2C000001 */  cmpwi   r0, 1
 /* 00490C 80009EAC 40820020 */  bne     lbl_80009ECC
 /* 004910 80009EB0 480AD1DD */  bl      DEMOPadRead
@@ -2221,7 +2221,7 @@ lbl_80009E2C:
 /* 004928 80009EC8 48002CA0 */  b       lbl_8000CB68
 lbl_80009ECC:
 /* 00492C 80009ECC 38000000 */  li      r0, 0
-/* 004930 80009ED0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004930 80009ED0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 004934 80009ED4 480AD1B9 */  bl      DEMOPadRead
 /* 004938 80009ED8 80BD0000 */  lwz     r5, 0(r29)
 /* 00493C 80009EDC 3CDF0001 */  addis   r6, r31, 1
@@ -2257,28 +2257,28 @@ lbl_80009ECC:
 /* 0049B4 80009F54 A0030000 */  lhz     r0, 0(r3)
 /* 0049B8 80009F58 70001100 */  andi.   r0, r0, 0x1100
 /* 0049BC 80009F5C 41820020 */  beq     lbl_80009F7C
-/* 0049C0 80009F60 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0049C0 80009F60 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0049C4 80009F64 38800000 */  li      r4, 0
 /* 0049C8 80009F68 80630004 */  lwz     r3, 4(r3)
 /* 0049CC 80009F6C 48012725 */  bl      soundPlayBeep
 /* 0049D0 80009F70 38600001 */  li      r3, 1
-/* 0049D4 80009F74 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0049D4 80009F74 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0049D8 80009F78 48002BF0 */  b       lbl_8000CB68
 lbl_80009F7C:
 /* 0049DC 80009F7C 38600000 */  li      r3, 0
 /* 0049E0 80009F80 48002BE8 */  b       lbl_8000CB68
 glabel lbl_80009F84
-/* 0049E4 80009F84 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0049E4 80009F84 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0049E8 80009F88 7C001800 */  cmpw    r0, r3
 /* 0049EC 80009F8C 41820050 */  beq     lbl_80009FDC
-/* 0049F0 80009F90 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0049F0 80009F90 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0049F4 80009F94 3C7F0001 */  addis   r3, r31, 1
 /* 0049F8 80009F98 3863E550 */  addi    r3, r3, -6832
 /* 0049FC 80009F9C 38810080 */  addi    r4, r1, 0x80
 /* 004A00 80009FA0 480A8A95 */  bl      DVDOpen
 /* 004A04 80009FA4 2C030001 */  cmpwi   r3, 1
 /* 004A08 80009FA8 40820024 */  bne     lbl_80009FCC
-/* 004A0C 80009FAC 80AD8014 */  lwz     r5, gmsg_ld04Size-_SDA_BASE_(r13)
+/* 004A0C 80009FAC 80AD8014 */  lwz     r5, gmsg_ld04Size@sda21(r13)
 /* 004A10 80009FB0 38610080 */  addi    r3, r1, 0x80
 /* 004A14 80009FB4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 004A18 80009FB8 3805001F */  addi    r0, r5, 0x1f
@@ -2322,7 +2322,7 @@ lbl_80009FDC:
 /* 004AA8 8000A048 210000B4 */  subfic  r8, r0, 0xb4
 /* 004AAC 8000A04C 38C6DE00 */  addi    r6, r6, -8704
 /* 004AB0 8000A050 4800353D */  bl      simulatorDrawOKImage
-/* 004AB4 8000A054 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004AB4 8000A054 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 004AB8 8000A058 2C000001 */  cmpwi   r0, 1
 /* 004ABC 8000A05C 40820020 */  bne     lbl_8000A07C
 /* 004AC0 8000A060 480AD02D */  bl      DEMOPadRead
@@ -2334,7 +2334,7 @@ lbl_80009FDC:
 /* 004AD8 8000A078 48002AF0 */  b       lbl_8000CB68
 lbl_8000A07C:
 /* 004ADC 8000A07C 38000000 */  li      r0, 0
-/* 004AE0 8000A080 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004AE0 8000A080 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 004AE4 8000A084 480AD009 */  bl      DEMOPadRead
 /* 004AE8 8000A088 80BD0000 */  lwz     r5, 0(r29)
 /* 004AEC 8000A08C 3CDF0001 */  addis   r6, r31, 1
@@ -2370,28 +2370,28 @@ lbl_8000A07C:
 /* 004B64 8000A104 A0030000 */  lhz     r0, 0(r3)
 /* 004B68 8000A108 70001100 */  andi.   r0, r0, 0x1100
 /* 004B6C 8000A10C 41820020 */  beq     lbl_8000A12C
-/* 004B70 8000A110 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 004B70 8000A110 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 004B74 8000A114 38800000 */  li      r4, 0
 /* 004B78 8000A118 80630004 */  lwz     r3, 4(r3)
 /* 004B7C 8000A11C 48012575 */  bl      soundPlayBeep
 /* 004B80 8000A120 38600001 */  li      r3, 1
-/* 004B84 8000A124 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004B84 8000A124 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 004B88 8000A128 48002A40 */  b       lbl_8000CB68
 lbl_8000A12C:
 /* 004B8C 8000A12C 38600000 */  li      r3, 0
 /* 004B90 8000A130 48002A38 */  b       lbl_8000CB68
 glabel lbl_8000A134
-/* 004B94 8000A134 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004B94 8000A134 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004B98 8000A138 7C001800 */  cmpw    r0, r3
 /* 004B9C 8000A13C 41820050 */  beq     lbl_8000A18C
-/* 004BA0 8000A140 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004BA0 8000A140 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 004BA4 8000A144 3C7F0001 */  addis   r3, r31, 1
 /* 004BA8 8000A148 3863E564 */  addi    r3, r3, -6812
 /* 004BAC 8000A14C 38810080 */  addi    r4, r1, 0x80
 /* 004BB0 8000A150 480A88E5 */  bl      DVDOpen
 /* 004BB4 8000A154 2C030001 */  cmpwi   r3, 1
 /* 004BB8 8000A158 40820024 */  bne     lbl_8000A17C
-/* 004BBC 8000A15C 80AD8018 */  lwz     r5, gmsg_ld05_1Size-_SDA_BASE_(r13)
+/* 004BBC 8000A15C 80AD8018 */  lwz     r5, gmsg_ld05_1Size@sda21(r13)
 /* 004BC0 8000A160 38610080 */  addi    r3, r1, 0x80
 /* 004BC4 8000A164 389E01A0 */  addi    r4, r30, 0x1a0
 /* 004BC8 8000A168 3805001F */  addi    r0, r5, 0x1f
@@ -2435,7 +2435,7 @@ lbl_8000A18C:
 /* 004C58 8000A1F8 210000B4 */  subfic  r8, r0, 0xb4
 /* 004C5C 8000A1FC 38C6DE00 */  addi    r6, r6, -8704
 /* 004C60 8000A200 4800338D */  bl      simulatorDrawOKImage
-/* 004C64 8000A204 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004C64 8000A204 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 004C68 8000A208 2C000001 */  cmpwi   r0, 1
 /* 004C6C 8000A20C 40820020 */  bne     lbl_8000A22C
 /* 004C70 8000A210 480ACE7D */  bl      DEMOPadRead
@@ -2447,7 +2447,7 @@ lbl_8000A18C:
 /* 004C88 8000A228 48002940 */  b       lbl_8000CB68
 lbl_8000A22C:
 /* 004C8C 8000A22C 38000000 */  li      r0, 0
-/* 004C90 8000A230 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004C90 8000A230 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 004C94 8000A234 480ACE59 */  bl      DEMOPadRead
 /* 004C98 8000A238 80BD0000 */  lwz     r5, 0(r29)
 /* 004C9C 8000A23C 3CDF0001 */  addis   r6, r31, 1
@@ -2483,28 +2483,28 @@ lbl_8000A22C:
 /* 004D14 8000A2B4 A0030000 */  lhz     r0, 0(r3)
 /* 004D18 8000A2B8 70001100 */  andi.   r0, r0, 0x1100
 /* 004D1C 8000A2BC 41820020 */  beq     lbl_8000A2DC
-/* 004D20 8000A2C0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 004D20 8000A2C0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 004D24 8000A2C4 38800000 */  li      r4, 0
 /* 004D28 8000A2C8 80630004 */  lwz     r3, 4(r3)
 /* 004D2C 8000A2CC 480123C5 */  bl      soundPlayBeep
 /* 004D30 8000A2D0 38600001 */  li      r3, 1
-/* 004D34 8000A2D4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004D34 8000A2D4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 004D38 8000A2D8 48002890 */  b       lbl_8000CB68
 lbl_8000A2DC:
 /* 004D3C 8000A2DC 38600000 */  li      r3, 0
 /* 004D40 8000A2E0 48002888 */  b       lbl_8000CB68
 glabel lbl_8000A2E4
-/* 004D44 8000A2E4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004D44 8000A2E4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004D48 8000A2E8 7C001800 */  cmpw    r0, r3
 /* 004D4C 8000A2EC 41820050 */  beq     lbl_8000A33C
-/* 004D50 8000A2F0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004D50 8000A2F0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 004D54 8000A2F4 3C7F0001 */  addis   r3, r31, 1
 /* 004D58 8000A2F8 3863E578 */  addi    r3, r3, -6792
 /* 004D5C 8000A2FC 38810080 */  addi    r4, r1, 0x80
 /* 004D60 8000A300 480A8735 */  bl      DVDOpen
 /* 004D64 8000A304 2C030001 */  cmpwi   r3, 1
 /* 004D68 8000A308 40820024 */  bne     lbl_8000A32C
-/* 004D6C 8000A30C 80AD8020 */  lwz     r5, gmsg_ld06_1Size-_SDA_BASE_(r13)
+/* 004D6C 8000A30C 80AD8020 */  lwz     r5, gmsg_ld06_1Size@sda21(r13)
 /* 004D70 8000A310 38610080 */  addi    r3, r1, 0x80
 /* 004D74 8000A314 389E01A0 */  addi    r4, r30, 0x1a0
 /* 004D78 8000A318 3805001F */  addi    r0, r5, 0x1f
@@ -2548,7 +2548,7 @@ lbl_8000A33C:
 /* 004E08 8000A3A8 210000B4 */  subfic  r8, r0, 0xb4
 /* 004E0C 8000A3AC 38C6DE00 */  addi    r6, r6, -8704
 /* 004E10 8000A3B0 480031DD */  bl      simulatorDrawOKImage
-/* 004E14 8000A3B4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004E14 8000A3B4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 004E18 8000A3B8 2C000001 */  cmpwi   r0, 1
 /* 004E1C 8000A3BC 40820020 */  bne     lbl_8000A3DC
 /* 004E20 8000A3C0 480ACCCD */  bl      DEMOPadRead
@@ -2560,7 +2560,7 @@ lbl_8000A33C:
 /* 004E38 8000A3D8 48002790 */  b       lbl_8000CB68
 lbl_8000A3DC:
 /* 004E3C 8000A3DC 38000000 */  li      r0, 0
-/* 004E40 8000A3E0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004E40 8000A3E0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 004E44 8000A3E4 480ACCA9 */  bl      DEMOPadRead
 /* 004E48 8000A3E8 80BD0000 */  lwz     r5, 0(r29)
 /* 004E4C 8000A3EC 3CDF0001 */  addis   r6, r31, 1
@@ -2596,28 +2596,28 @@ lbl_8000A3DC:
 /* 004EC4 8000A464 A0030000 */  lhz     r0, 0(r3)
 /* 004EC8 8000A468 70001100 */  andi.   r0, r0, 0x1100
 /* 004ECC 8000A46C 41820020 */  beq     lbl_8000A48C
-/* 004ED0 8000A470 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 004ED0 8000A470 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 004ED4 8000A474 38800000 */  li      r4, 0
 /* 004ED8 8000A478 80630004 */  lwz     r3, 4(r3)
 /* 004EDC 8000A47C 48012215 */  bl      soundPlayBeep
 /* 004EE0 8000A480 38600001 */  li      r3, 1
-/* 004EE4 8000A484 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004EE4 8000A484 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 004EE8 8000A488 480026E0 */  b       lbl_8000CB68
 lbl_8000A48C:
 /* 004EEC 8000A48C 38600000 */  li      r3, 0
 /* 004EF0 8000A490 480026D8 */  b       lbl_8000CB68
 glabel lbl_8000A494
-/* 004EF4 8000A494 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004EF4 8000A494 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004EF8 8000A498 7C001800 */  cmpw    r0, r3
 /* 004EFC 8000A49C 41820050 */  beq     lbl_8000A4EC
-/* 004F00 8000A4A0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 004F00 8000A4A0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 004F04 8000A4A4 3C7F0001 */  addis   r3, r31, 1
 /* 004F08 8000A4A8 3863E58C */  addi    r3, r3, -6772
 /* 004F0C 8000A4AC 38810080 */  addi    r4, r1, 0x80
 /* 004F10 8000A4B0 480A8585 */  bl      DVDOpen
 /* 004F14 8000A4B4 2C030001 */  cmpwi   r3, 1
 /* 004F18 8000A4B8 40820024 */  bne     lbl_8000A4DC
-/* 004F1C 8000A4BC 80AD8024 */  lwz     r5, gmsg_ld06_2Size-_SDA_BASE_(r13)
+/* 004F1C 8000A4BC 80AD8024 */  lwz     r5, gmsg_ld06_2Size@sda21(r13)
 /* 004F20 8000A4C0 38610080 */  addi    r3, r1, 0x80
 /* 004F24 8000A4C4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 004F28 8000A4C8 3805001F */  addi    r0, r5, 0x1f
@@ -2661,7 +2661,7 @@ lbl_8000A4EC:
 /* 004FB8 8000A558 210000B4 */  subfic  r8, r0, 0xb4
 /* 004FBC 8000A55C 38C6DE00 */  addi    r6, r6, -8704
 /* 004FC0 8000A560 4800302D */  bl      simulatorDrawOKImage
-/* 004FC4 8000A564 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004FC4 8000A564 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 004FC8 8000A568 2C000001 */  cmpwi   r0, 1
 /* 004FCC 8000A56C 40820020 */  bne     lbl_8000A58C
 /* 004FD0 8000A570 480ACB1D */  bl      DEMOPadRead
@@ -2673,7 +2673,7 @@ lbl_8000A4EC:
 /* 004FE8 8000A588 480025E0 */  b       lbl_8000CB68
 lbl_8000A58C:
 /* 004FEC 8000A58C 38000000 */  li      r0, 0
-/* 004FF0 8000A590 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 004FF0 8000A590 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 004FF4 8000A594 480ACAF9 */  bl      DEMOPadRead
 /* 004FF8 8000A598 80BD0000 */  lwz     r5, 0(r29)
 /* 004FFC 8000A59C 3CDF0001 */  addis   r6, r31, 1
@@ -2709,28 +2709,28 @@ lbl_8000A58C:
 /* 005074 8000A614 A0030000 */  lhz     r0, 0(r3)
 /* 005078 8000A618 70001100 */  andi.   r0, r0, 0x1100
 /* 00507C 8000A61C 41820020 */  beq     lbl_8000A63C
-/* 005080 8000A620 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005080 8000A620 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005084 8000A624 38800000 */  li      r4, 0
 /* 005088 8000A628 80630004 */  lwz     r3, 4(r3)
 /* 00508C 8000A62C 48012065 */  bl      soundPlayBeep
 /* 005090 8000A630 38600001 */  li      r3, 1
-/* 005094 8000A634 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005094 8000A634 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005098 8000A638 48002530 */  b       lbl_8000CB68
 lbl_8000A63C:
 /* 00509C 8000A63C 38600000 */  li      r3, 0
 /* 0050A0 8000A640 48002528 */  b       lbl_8000CB68
 glabel lbl_8000A644
-/* 0050A4 8000A644 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0050A4 8000A644 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0050A8 8000A648 7C001800 */  cmpw    r0, r3
 /* 0050AC 8000A64C 41820050 */  beq     lbl_8000A69C
-/* 0050B0 8000A650 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0050B0 8000A650 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0050B4 8000A654 3C7F0001 */  addis   r3, r31, 1
 /* 0050B8 8000A658 3863E5A0 */  addi    r3, r3, -6752
 /* 0050BC 8000A65C 38810080 */  addi    r4, r1, 0x80
 /* 0050C0 8000A660 480A83D5 */  bl      DVDOpen
 /* 0050C4 8000A664 2C030001 */  cmpwi   r3, 1
 /* 0050C8 8000A668 40820024 */  bne     lbl_8000A68C
-/* 0050CC 8000A66C 80AD8028 */  lwz     r5, gmsg_ld06_3Size-_SDA_BASE_(r13)
+/* 0050CC 8000A66C 80AD8028 */  lwz     r5, gmsg_ld06_3Size@sda21(r13)
 /* 0050D0 8000A670 38610080 */  addi    r3, r1, 0x80
 /* 0050D4 8000A674 389E01A0 */  addi    r4, r30, 0x1a0
 /* 0050D8 8000A678 3805001F */  addi    r0, r5, 0x1f
@@ -2774,7 +2774,7 @@ lbl_8000A69C:
 /* 005168 8000A708 210000B4 */  subfic  r8, r0, 0xb4
 /* 00516C 8000A70C 38C6DE00 */  addi    r6, r6, -8704
 /* 005170 8000A710 48002E7D */  bl      simulatorDrawOKImage
-/* 005174 8000A714 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005174 8000A714 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005178 8000A718 2C000001 */  cmpwi   r0, 1
 /* 00517C 8000A71C 40820020 */  bne     lbl_8000A73C
 /* 005180 8000A720 480AC96D */  bl      DEMOPadRead
@@ -2786,7 +2786,7 @@ lbl_8000A69C:
 /* 005198 8000A738 48002430 */  b       lbl_8000CB68
 lbl_8000A73C:
 /* 00519C 8000A73C 38000000 */  li      r0, 0
-/* 0051A0 8000A740 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0051A0 8000A740 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 0051A4 8000A744 480AC949 */  bl      DEMOPadRead
 /* 0051A8 8000A748 80BD0000 */  lwz     r5, 0(r29)
 /* 0051AC 8000A74C 3CDF0001 */  addis   r6, r31, 1
@@ -2822,28 +2822,28 @@ lbl_8000A73C:
 /* 005224 8000A7C4 A0030000 */  lhz     r0, 0(r3)
 /* 005228 8000A7C8 70001100 */  andi.   r0, r0, 0x1100
 /* 00522C 8000A7CC 41820020 */  beq     lbl_8000A7EC
-/* 005230 8000A7D0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005230 8000A7D0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005234 8000A7D4 38800000 */  li      r4, 0
 /* 005238 8000A7D8 80630004 */  lwz     r3, 4(r3)
 /* 00523C 8000A7DC 48011EB5 */  bl      soundPlayBeep
 /* 005240 8000A7E0 38600001 */  li      r3, 1
-/* 005244 8000A7E4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005244 8000A7E4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005248 8000A7E8 48002380 */  b       lbl_8000CB68
 lbl_8000A7EC:
 /* 00524C 8000A7EC 38600000 */  li      r3, 0
 /* 005250 8000A7F0 48002378 */  b       lbl_8000CB68
 glabel lbl_8000A7F4
-/* 005254 8000A7F4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005254 8000A7F4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005258 8000A7F8 7C001800 */  cmpw    r0, r3
 /* 00525C 8000A7FC 41820050 */  beq     lbl_8000A84C
-/* 005260 8000A800 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005260 8000A800 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005264 8000A804 3C7F0001 */  addis   r3, r31, 1
 /* 005268 8000A808 3863E5B4 */  addi    r3, r3, -6732
 /* 00526C 8000A80C 38810080 */  addi    r4, r1, 0x80
 /* 005270 8000A810 480A8225 */  bl      DVDOpen
 /* 005274 8000A814 2C030001 */  cmpwi   r3, 1
 /* 005278 8000A818 40820024 */  bne     lbl_8000A83C
-/* 00527C 8000A81C 80AD803C */  lwz     r5, gmsg_gf03Size-_SDA_BASE_(r13)
+/* 00527C 8000A81C 80AD803C */  lwz     r5, gmsg_gf03Size@sda21(r13)
 /* 005280 8000A820 38610080 */  addi    r3, r1, 0x80
 /* 005284 8000A824 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005288 8000A828 3805001F */  addi    r0, r5, 0x1f
@@ -2887,7 +2887,7 @@ lbl_8000A84C:
 /* 005318 8000A8B8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00531C 8000A8BC 38C6DE00 */  addi    r6, r6, -8704
 /* 005320 8000A8C0 48002CCD */  bl      simulatorDrawOKImage
-/* 005324 8000A8C4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005324 8000A8C4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005328 8000A8C8 2C000001 */  cmpwi   r0, 1
 /* 00532C 8000A8CC 40820020 */  bne     lbl_8000A8EC
 /* 005330 8000A8D0 480AC7BD */  bl      DEMOPadRead
@@ -2899,7 +2899,7 @@ lbl_8000A84C:
 /* 005348 8000A8E8 48002280 */  b       lbl_8000CB68
 lbl_8000A8EC:
 /* 00534C 8000A8EC 38000000 */  li      r0, 0
-/* 005350 8000A8F0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005350 8000A8F0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005354 8000A8F4 480AC799 */  bl      DEMOPadRead
 /* 005358 8000A8F8 80BD0000 */  lwz     r5, 0(r29)
 /* 00535C 8000A8FC 3CDF0001 */  addis   r6, r31, 1
@@ -2935,28 +2935,28 @@ lbl_8000A8EC:
 /* 0053D4 8000A974 A0030000 */  lhz     r0, 0(r3)
 /* 0053D8 8000A978 70001100 */  andi.   r0, r0, 0x1100
 /* 0053DC 8000A97C 41820020 */  beq     lbl_8000A99C
-/* 0053E0 8000A980 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0053E0 8000A980 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0053E4 8000A984 38800000 */  li      r4, 0
 /* 0053E8 8000A988 80630004 */  lwz     r3, 4(r3)
 /* 0053EC 8000A98C 48011D05 */  bl      soundPlayBeep
 /* 0053F0 8000A990 38600001 */  li      r3, 1
-/* 0053F4 8000A994 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0053F4 8000A994 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0053F8 8000A998 480021D0 */  b       lbl_8000CB68
 lbl_8000A99C:
 /* 0053FC 8000A99C 38600000 */  li      r3, 0
 /* 005400 8000A9A0 480021C8 */  b       lbl_8000CB68
 glabel lbl_8000A9A4
-/* 005404 8000A9A4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005404 8000A9A4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005408 8000A9A8 7C001800 */  cmpw    r0, r3
 /* 00540C 8000A9AC 41820050 */  beq     lbl_8000A9FC
-/* 005410 8000A9B0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005410 8000A9B0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005414 8000A9B4 3C7F0001 */  addis   r3, r31, 1
 /* 005418 8000A9B8 3863E5C8 */  addi    r3, r3, -6712
 /* 00541C 8000A9BC 38810080 */  addi    r4, r1, 0x80
 /* 005420 8000A9C0 480A8075 */  bl      DVDOpen
 /* 005424 8000A9C4 2C030001 */  cmpwi   r3, 1
 /* 005428 8000A9C8 40820024 */  bne     lbl_8000A9EC
-/* 00542C 8000A9CC 80AD8040 */  lwz     r5, gmsg_gf04Size-_SDA_BASE_(r13)
+/* 00542C 8000A9CC 80AD8040 */  lwz     r5, gmsg_gf04Size@sda21(r13)
 /* 005430 8000A9D0 38610080 */  addi    r3, r1, 0x80
 /* 005434 8000A9D4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005438 8000A9D8 3805001F */  addi    r0, r5, 0x1f
@@ -3000,7 +3000,7 @@ lbl_8000A9FC:
 /* 0054C8 8000AA68 210000B4 */  subfic  r8, r0, 0xb4
 /* 0054CC 8000AA6C 38C6DE00 */  addi    r6, r6, -8704
 /* 0054D0 8000AA70 48002B1D */  bl      simulatorDrawOKImage
-/* 0054D4 8000AA74 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0054D4 8000AA74 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 0054D8 8000AA78 2C000001 */  cmpwi   r0, 1
 /* 0054DC 8000AA7C 40820020 */  bne     lbl_8000AA9C
 /* 0054E0 8000AA80 480AC60D */  bl      DEMOPadRead
@@ -3012,7 +3012,7 @@ lbl_8000A9FC:
 /* 0054F8 8000AA98 480020D0 */  b       lbl_8000CB68
 lbl_8000AA9C:
 /* 0054FC 8000AA9C 38000000 */  li      r0, 0
-/* 005500 8000AAA0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005500 8000AAA0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005504 8000AAA4 480AC5E9 */  bl      DEMOPadRead
 /* 005508 8000AAA8 80BD0000 */  lwz     r5, 0(r29)
 /* 00550C 8000AAAC 3CDF0001 */  addis   r6, r31, 1
@@ -3048,28 +3048,28 @@ lbl_8000AA9C:
 /* 005584 8000AB24 A0030000 */  lhz     r0, 0(r3)
 /* 005588 8000AB28 70001100 */  andi.   r0, r0, 0x1100
 /* 00558C 8000AB2C 41820020 */  beq     lbl_8000AB4C
-/* 005590 8000AB30 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005590 8000AB30 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005594 8000AB34 38800000 */  li      r4, 0
 /* 005598 8000AB38 80630004 */  lwz     r3, 4(r3)
 /* 00559C 8000AB3C 48011B55 */  bl      soundPlayBeep
 /* 0055A0 8000AB40 38600001 */  li      r3, 1
-/* 0055A4 8000AB44 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0055A4 8000AB44 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0055A8 8000AB48 48002020 */  b       lbl_8000CB68
 lbl_8000AB4C:
 /* 0055AC 8000AB4C 38600000 */  li      r3, 0
 /* 0055B0 8000AB50 48002018 */  b       lbl_8000CB68
 glabel lbl_8000AB54
-/* 0055B4 8000AB54 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0055B4 8000AB54 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0055B8 8000AB58 7C001800 */  cmpw    r0, r3
 /* 0055BC 8000AB5C 41820050 */  beq     lbl_8000ABAC
-/* 0055C0 8000AB60 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0055C0 8000AB60 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0055C4 8000AB64 3C7F0001 */  addis   r3, r31, 1
 /* 0055C8 8000AB68 3863E5DC */  addi    r3, r3, -6692
 /* 0055CC 8000AB6C 38810080 */  addi    r4, r1, 0x80
 /* 0055D0 8000AB70 480A7EC5 */  bl      DVDOpen
 /* 0055D4 8000AB74 2C030001 */  cmpwi   r3, 1
 /* 0055D8 8000AB78 40820024 */  bne     lbl_8000AB9C
-/* 0055DC 8000AB7C 80AD8044 */  lwz     r5, gmsg_gf05Size-_SDA_BASE_(r13)
+/* 0055DC 8000AB7C 80AD8044 */  lwz     r5, gmsg_gf05Size@sda21(r13)
 /* 0055E0 8000AB80 38610080 */  addi    r3, r1, 0x80
 /* 0055E4 8000AB84 389E01A0 */  addi    r4, r30, 0x1a0
 /* 0055E8 8000AB88 3805001F */  addi    r0, r5, 0x1f
@@ -3113,7 +3113,7 @@ lbl_8000ABAC:
 /* 005678 8000AC18 210000B4 */  subfic  r8, r0, 0xb4
 /* 00567C 8000AC1C 38C6DE00 */  addi    r6, r6, -8704
 /* 005680 8000AC20 4800296D */  bl      simulatorDrawOKImage
-/* 005684 8000AC24 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005684 8000AC24 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005688 8000AC28 2C000001 */  cmpwi   r0, 1
 /* 00568C 8000AC2C 40820020 */  bne     lbl_8000AC4C
 /* 005690 8000AC30 480AC45D */  bl      DEMOPadRead
@@ -3125,7 +3125,7 @@ lbl_8000ABAC:
 /* 0056A8 8000AC48 48001F20 */  b       lbl_8000CB68
 lbl_8000AC4C:
 /* 0056AC 8000AC4C 38000000 */  li      r0, 0
-/* 0056B0 8000AC50 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0056B0 8000AC50 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 0056B4 8000AC54 480AC439 */  bl      DEMOPadRead
 /* 0056B8 8000AC58 80BD0000 */  lwz     r5, 0(r29)
 /* 0056BC 8000AC5C 3CDF0001 */  addis   r6, r31, 1
@@ -3161,28 +3161,28 @@ lbl_8000AC4C:
 /* 005734 8000ACD4 A0030000 */  lhz     r0, 0(r3)
 /* 005738 8000ACD8 70001100 */  andi.   r0, r0, 0x1100
 /* 00573C 8000ACDC 41820020 */  beq     lbl_8000ACFC
-/* 005740 8000ACE0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005740 8000ACE0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005744 8000ACE4 38800000 */  li      r4, 0
 /* 005748 8000ACE8 80630004 */  lwz     r3, 4(r3)
 /* 00574C 8000ACEC 480119A5 */  bl      soundPlayBeep
 /* 005750 8000ACF0 38600001 */  li      r3, 1
-/* 005754 8000ACF4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005754 8000ACF4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005758 8000ACF8 48001E70 */  b       lbl_8000CB68
 lbl_8000ACFC:
 /* 00575C 8000ACFC 38600000 */  li      r3, 0
 /* 005760 8000AD00 48001E68 */  b       lbl_8000CB68
 glabel lbl_8000AD04
-/* 005764 8000AD04 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005764 8000AD04 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005768 8000AD08 7C001800 */  cmpw    r0, r3
 /* 00576C 8000AD0C 41820050 */  beq     lbl_8000AD5C
-/* 005770 8000AD10 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005770 8000AD10 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005774 8000AD14 3C7F0001 */  addis   r3, r31, 1
 /* 005778 8000AD18 3863E5F0 */  addi    r3, r3, -6672
 /* 00577C 8000AD1C 38810080 */  addi    r4, r1, 0x80
 /* 005780 8000AD20 480A7D15 */  bl      DVDOpen
 /* 005784 8000AD24 2C030001 */  cmpwi   r3, 1
 /* 005788 8000AD28 40820024 */  bne     lbl_8000AD4C
-/* 00578C 8000AD2C 80AD8048 */  lwz     r5, gmsg_gf06Size-_SDA_BASE_(r13)
+/* 00578C 8000AD2C 80AD8048 */  lwz     r5, gmsg_gf06Size@sda21(r13)
 /* 005790 8000AD30 38610080 */  addi    r3, r1, 0x80
 /* 005794 8000AD34 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005798 8000AD38 3805001F */  addi    r0, r5, 0x1f
@@ -3226,7 +3226,7 @@ lbl_8000AD5C:
 /* 005828 8000ADC8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00582C 8000ADCC 38C6DE00 */  addi    r6, r6, -8704
 /* 005830 8000ADD0 480027BD */  bl      simulatorDrawOKImage
-/* 005834 8000ADD4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005834 8000ADD4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005838 8000ADD8 2C000001 */  cmpwi   r0, 1
 /* 00583C 8000ADDC 40820020 */  bne     lbl_8000ADFC
 /* 005840 8000ADE0 480AC2AD */  bl      DEMOPadRead
@@ -3238,7 +3238,7 @@ lbl_8000AD5C:
 /* 005858 8000ADF8 48001D70 */  b       lbl_8000CB68
 lbl_8000ADFC:
 /* 00585C 8000ADFC 38000000 */  li      r0, 0
-/* 005860 8000AE00 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005860 8000AE00 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005864 8000AE04 480AC289 */  bl      DEMOPadRead
 /* 005868 8000AE08 80BD0000 */  lwz     r5, 0(r29)
 /* 00586C 8000AE0C 3CDF0001 */  addis   r6, r31, 1
@@ -3274,28 +3274,28 @@ lbl_8000ADFC:
 /* 0058E4 8000AE84 A0030000 */  lhz     r0, 0(r3)
 /* 0058E8 8000AE88 70001100 */  andi.   r0, r0, 0x1100
 /* 0058EC 8000AE8C 41820020 */  beq     lbl_8000AEAC
-/* 0058F0 8000AE90 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0058F0 8000AE90 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0058F4 8000AE94 38800000 */  li      r4, 0
 /* 0058F8 8000AE98 80630004 */  lwz     r3, 4(r3)
 /* 0058FC 8000AE9C 480117F5 */  bl      soundPlayBeep
 /* 005900 8000AEA0 38600001 */  li      r3, 1
-/* 005904 8000AEA4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005904 8000AEA4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005908 8000AEA8 48001CC0 */  b       lbl_8000CB68
 lbl_8000AEAC:
 /* 00590C 8000AEAC 38600000 */  li      r3, 0
 /* 005910 8000AEB0 48001CB8 */  b       lbl_8000CB68
 glabel lbl_8000AEB4
-/* 005914 8000AEB4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005914 8000AEB4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005918 8000AEB8 7C001800 */  cmpw    r0, r3
 /* 00591C 8000AEBC 41820050 */  beq     lbl_8000AF0C
-/* 005920 8000AEC0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005920 8000AEC0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005924 8000AEC4 3C7F0001 */  addis   r3, r31, 1
 /* 005928 8000AEC8 3863E604 */  addi    r3, r3, -6652
 /* 00592C 8000AECC 38810080 */  addi    r4, r1, 0x80
 /* 005930 8000AED0 480A7B65 */  bl      DVDOpen
 /* 005934 8000AED4 2C030001 */  cmpwi   r3, 1
 /* 005938 8000AED8 40820024 */  bne     lbl_8000AEFC
-/* 00593C 8000AEDC 80AD8054 */  lwz     r5, gmsg_in03Size-_SDA_BASE_(r13)
+/* 00593C 8000AEDC 80AD8054 */  lwz     r5, gmsg_in03Size@sda21(r13)
 /* 005940 8000AEE0 38610080 */  addi    r3, r1, 0x80
 /* 005944 8000AEE4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005948 8000AEE8 3805001F */  addi    r0, r5, 0x1f
@@ -3339,7 +3339,7 @@ lbl_8000AF0C:
 /* 0059D8 8000AF78 210000B4 */  subfic  r8, r0, 0xb4
 /* 0059DC 8000AF7C 38C6DE00 */  addi    r6, r6, -8704
 /* 0059E0 8000AF80 4800260D */  bl      simulatorDrawOKImage
-/* 0059E4 8000AF84 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0059E4 8000AF84 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 0059E8 8000AF88 2C000001 */  cmpwi   r0, 1
 /* 0059EC 8000AF8C 40820020 */  bne     lbl_8000AFAC
 /* 0059F0 8000AF90 480AC0FD */  bl      DEMOPadRead
@@ -3351,7 +3351,7 @@ lbl_8000AF0C:
 /* 005A08 8000AFA8 48001BC0 */  b       lbl_8000CB68
 lbl_8000AFAC:
 /* 005A0C 8000AFAC 38000000 */  li      r0, 0
-/* 005A10 8000AFB0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005A10 8000AFB0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005A14 8000AFB4 480AC0D9 */  bl      DEMOPadRead
 /* 005A18 8000AFB8 80BD0000 */  lwz     r5, 0(r29)
 /* 005A1C 8000AFBC 3CDF0001 */  addis   r6, r31, 1
@@ -3387,28 +3387,28 @@ lbl_8000AFAC:
 /* 005A94 8000B034 A0030000 */  lhz     r0, 0(r3)
 /* 005A98 8000B038 70001100 */  andi.   r0, r0, 0x1100
 /* 005A9C 8000B03C 41820020 */  beq     lbl_8000B05C
-/* 005AA0 8000B040 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005AA0 8000B040 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005AA4 8000B044 38800000 */  li      r4, 0
 /* 005AA8 8000B048 80630004 */  lwz     r3, 4(r3)
 /* 005AAC 8000B04C 48011645 */  bl      soundPlayBeep
 /* 005AB0 8000B050 38600001 */  li      r3, 1
-/* 005AB4 8000B054 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005AB4 8000B054 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005AB8 8000B058 48001B10 */  b       lbl_8000CB68
 lbl_8000B05C:
 /* 005ABC 8000B05C 38600000 */  li      r3, 0
 /* 005AC0 8000B060 48001B08 */  b       lbl_8000CB68
 glabel lbl_8000B064
-/* 005AC4 8000B064 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005AC4 8000B064 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005AC8 8000B068 7C001800 */  cmpw    r0, r3
 /* 005ACC 8000B06C 41820050 */  beq     lbl_8000B0BC
-/* 005AD0 8000B070 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005AD0 8000B070 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005AD4 8000B074 3C7F0001 */  addis   r3, r31, 1
 /* 005AD8 8000B078 3863E618 */  addi    r3, r3, -6632
 /* 005ADC 8000B07C 38810080 */  addi    r4, r1, 0x80
 /* 005AE0 8000B080 480A79B5 */  bl      DVDOpen
 /* 005AE4 8000B084 2C030001 */  cmpwi   r3, 1
 /* 005AE8 8000B088 40820024 */  bne     lbl_8000B0AC
-/* 005AEC 8000B08C 80AD8058 */  lwz     r5, gmsg_in04Size-_SDA_BASE_(r13)
+/* 005AEC 8000B08C 80AD8058 */  lwz     r5, gmsg_in04Size@sda21(r13)
 /* 005AF0 8000B090 38610080 */  addi    r3, r1, 0x80
 /* 005AF4 8000B094 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005AF8 8000B098 3805001F */  addi    r0, r5, 0x1f
@@ -3452,7 +3452,7 @@ lbl_8000B0BC:
 /* 005B88 8000B128 210000B4 */  subfic  r8, r0, 0xb4
 /* 005B8C 8000B12C 38C6DE00 */  addi    r6, r6, -8704
 /* 005B90 8000B130 4800245D */  bl      simulatorDrawOKImage
-/* 005B94 8000B134 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005B94 8000B134 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005B98 8000B138 2C000001 */  cmpwi   r0, 1
 /* 005B9C 8000B13C 40820020 */  bne     lbl_8000B15C
 /* 005BA0 8000B140 480ABF4D */  bl      DEMOPadRead
@@ -3464,7 +3464,7 @@ lbl_8000B0BC:
 /* 005BB8 8000B158 48001A10 */  b       lbl_8000CB68
 lbl_8000B15C:
 /* 005BBC 8000B15C 38000000 */  li      r0, 0
-/* 005BC0 8000B160 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005BC0 8000B160 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005BC4 8000B164 480ABF29 */  bl      DEMOPadRead
 /* 005BC8 8000B168 80BD0000 */  lwz     r5, 0(r29)
 /* 005BCC 8000B16C 3CDF0001 */  addis   r6, r31, 1
@@ -3500,28 +3500,28 @@ lbl_8000B15C:
 /* 005C44 8000B1E4 A0030000 */  lhz     r0, 0(r3)
 /* 005C48 8000B1E8 70001100 */  andi.   r0, r0, 0x1100
 /* 005C4C 8000B1EC 41820020 */  beq     lbl_8000B20C
-/* 005C50 8000B1F0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005C50 8000B1F0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005C54 8000B1F4 38800000 */  li      r4, 0
 /* 005C58 8000B1F8 80630004 */  lwz     r3, 4(r3)
 /* 005C5C 8000B1FC 48011495 */  bl      soundPlayBeep
 /* 005C60 8000B200 38600001 */  li      r3, 1
-/* 005C64 8000B204 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005C64 8000B204 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005C68 8000B208 48001960 */  b       lbl_8000CB68
 lbl_8000B20C:
 /* 005C6C 8000B20C 38600000 */  li      r3, 0
 /* 005C70 8000B210 48001958 */  b       lbl_8000CB68
 glabel lbl_8000B214
-/* 005C74 8000B214 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005C74 8000B214 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005C78 8000B218 7C001800 */  cmpw    r0, r3
 /* 005C7C 8000B21C 41820050 */  beq     lbl_8000B26C
-/* 005C80 8000B220 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005C80 8000B220 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005C84 8000B224 3C7F0001 */  addis   r3, r31, 1
 /* 005C88 8000B228 3863E62C */  addi    r3, r3, -6612
 /* 005C8C 8000B22C 38810080 */  addi    r4, r1, 0x80
 /* 005C90 8000B230 480A7805 */  bl      DVDOpen
 /* 005C94 8000B234 2C030001 */  cmpwi   r3, 1
 /* 005C98 8000B238 40820024 */  bne     lbl_8000B25C
-/* 005C9C 8000B23C 80AD805C */  lwz     r5, gmsg_in05Size-_SDA_BASE_(r13)
+/* 005C9C 8000B23C 80AD805C */  lwz     r5, gmsg_in05Size@sda21(r13)
 /* 005CA0 8000B240 38610080 */  addi    r3, r1, 0x80
 /* 005CA4 8000B244 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005CA8 8000B248 3805001F */  addi    r0, r5, 0x1f
@@ -3565,7 +3565,7 @@ lbl_8000B26C:
 /* 005D38 8000B2D8 210000B4 */  subfic  r8, r0, 0xb4
 /* 005D3C 8000B2DC 38C6DE00 */  addi    r6, r6, -8704
 /* 005D40 8000B2E0 480022AD */  bl      simulatorDrawOKImage
-/* 005D44 8000B2E4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005D44 8000B2E4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005D48 8000B2E8 2C000001 */  cmpwi   r0, 1
 /* 005D4C 8000B2EC 40820020 */  bne     lbl_8000B30C
 /* 005D50 8000B2F0 480ABD9D */  bl      DEMOPadRead
@@ -3577,7 +3577,7 @@ lbl_8000B26C:
 /* 005D68 8000B308 48001860 */  b       lbl_8000CB68
 lbl_8000B30C:
 /* 005D6C 8000B30C 38000000 */  li      r0, 0
-/* 005D70 8000B310 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005D70 8000B310 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005D74 8000B314 480ABD79 */  bl      DEMOPadRead
 /* 005D78 8000B318 80BD0000 */  lwz     r5, 0(r29)
 /* 005D7C 8000B31C 3CDF0001 */  addis   r6, r31, 1
@@ -3613,28 +3613,28 @@ lbl_8000B30C:
 /* 005DF4 8000B394 A0030000 */  lhz     r0, 0(r3)
 /* 005DF8 8000B398 70001100 */  andi.   r0, r0, 0x1100
 /* 005DFC 8000B39C 41820020 */  beq     lbl_8000B3BC
-/* 005E00 8000B3A0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005E00 8000B3A0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005E04 8000B3A4 38800000 */  li      r4, 0
 /* 005E08 8000B3A8 80630004 */  lwz     r3, 4(r3)
 /* 005E0C 8000B3AC 480112E5 */  bl      soundPlayBeep
 /* 005E10 8000B3B0 38600001 */  li      r3, 1
-/* 005E14 8000B3B4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005E14 8000B3B4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005E18 8000B3B8 480017B0 */  b       lbl_8000CB68
 lbl_8000B3BC:
 /* 005E1C 8000B3BC 38600000 */  li      r3, 0
 /* 005E20 8000B3C0 480017A8 */  b       lbl_8000CB68
 glabel lbl_8000B3C4
-/* 005E24 8000B3C4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005E24 8000B3C4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005E28 8000B3C8 7C001800 */  cmpw    r0, r3
 /* 005E2C 8000B3CC 41820050 */  beq     lbl_8000B41C
-/* 005E30 8000B3D0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005E30 8000B3D0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005E34 8000B3D4 3C7F0001 */  addis   r3, r31, 1
 /* 005E38 8000B3D8 3863E640 */  addi    r3, r3, -6592
 /* 005E3C 8000B3DC 38810080 */  addi    r4, r1, 0x80
 /* 005E40 8000B3E0 480A7655 */  bl      DVDOpen
 /* 005E44 8000B3E4 2C030001 */  cmpwi   r3, 1
 /* 005E48 8000B3E8 40820024 */  bne     lbl_8000B40C
-/* 005E4C 8000B3EC 80AD8060 */  lwz     r5, gmsg_sv01Size-_SDA_BASE_(r13)
+/* 005E4C 8000B3EC 80AD8060 */  lwz     r5, gmsg_sv01Size@sda21(r13)
 /* 005E50 8000B3F0 38610080 */  addi    r3, r1, 0x80
 /* 005E54 8000B3F4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 005E58 8000B3F8 3805001F */  addi    r0, r5, 0x1f
@@ -3678,7 +3678,7 @@ lbl_8000B41C:
 /* 005EE8 8000B488 210000B4 */  subfic  r8, r0, 0xb4
 /* 005EEC 8000B48C 38C6DE00 */  addi    r6, r6, -8704
 /* 005EF0 8000B490 480020FD */  bl      simulatorDrawOKImage
-/* 005EF4 8000B494 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005EF4 8000B494 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 005EF8 8000B498 2C000001 */  cmpwi   r0, 1
 /* 005EFC 8000B49C 40820020 */  bne     lbl_8000B4BC
 /* 005F00 8000B4A0 480ABBED */  bl      DEMOPadRead
@@ -3690,7 +3690,7 @@ lbl_8000B41C:
 /* 005F18 8000B4B8 480016B0 */  b       lbl_8000CB68
 lbl_8000B4BC:
 /* 005F1C 8000B4BC 38000000 */  li      r0, 0
-/* 005F20 8000B4C0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005F20 8000B4C0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 005F24 8000B4C4 480ABBC9 */  bl      DEMOPadRead
 /* 005F28 8000B4C8 80BD0000 */  lwz     r5, 0(r29)
 /* 005F2C 8000B4CC 3CDF0001 */  addis   r6, r31, 1
@@ -3726,28 +3726,28 @@ lbl_8000B4BC:
 /* 005FA4 8000B544 A0030000 */  lhz     r0, 0(r3)
 /* 005FA8 8000B548 70001100 */  andi.   r0, r0, 0x1100
 /* 005FAC 8000B54C 41820020 */  beq     lbl_8000B56C
-/* 005FB0 8000B550 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 005FB0 8000B550 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 005FB4 8000B554 38800000 */  li      r4, 0
 /* 005FB8 8000B558 80630004 */  lwz     r3, 4(r3)
 /* 005FBC 8000B55C 48011135 */  bl      soundPlayBeep
 /* 005FC0 8000B560 38600001 */  li      r3, 1
-/* 005FC4 8000B564 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 005FC4 8000B564 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 005FC8 8000B568 48001600 */  b       lbl_8000CB68
 lbl_8000B56C:
 /* 005FCC 8000B56C 38600000 */  li      r3, 0
 /* 005FD0 8000B570 480015F8 */  b       lbl_8000CB68
 glabel lbl_8000B574
-/* 005FD4 8000B574 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005FD4 8000B574 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005FD8 8000B578 7C001800 */  cmpw    r0, r3
 /* 005FDC 8000B57C 41820050 */  beq     lbl_8000B5CC
-/* 005FE0 8000B580 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 005FE0 8000B580 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 005FE4 8000B584 3C7F0001 */  addis   r3, r31, 1
 /* 005FE8 8000B588 3863E654 */  addi    r3, r3, -6572
 /* 005FEC 8000B58C 38810080 */  addi    r4, r1, 0x80
 /* 005FF0 8000B590 480A74A5 */  bl      DVDOpen
 /* 005FF4 8000B594 2C030001 */  cmpwi   r3, 1
 /* 005FF8 8000B598 40820024 */  bne     lbl_8000B5BC
-/* 005FFC 8000B59C 80AD8064 */  lwz     r5, gmsg_sv01_2Size-_SDA_BASE_(r13)
+/* 005FFC 8000B59C 80AD8064 */  lwz     r5, gmsg_sv01_2Size@sda21(r13)
 /* 006000 8000B5A0 38610080 */  addi    r3, r1, 0x80
 /* 006004 8000B5A4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006008 8000B5A8 3805001F */  addi    r0, r5, 0x1f
@@ -3791,7 +3791,7 @@ lbl_8000B5CC:
 /* 006098 8000B638 210000B4 */  subfic  r8, r0, 0xb4
 /* 00609C 8000B63C 38C6DE00 */  addi    r6, r6, -8704
 /* 0060A0 8000B640 48001F4D */  bl      simulatorDrawOKImage
-/* 0060A4 8000B644 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0060A4 8000B644 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 0060A8 8000B648 2C000001 */  cmpwi   r0, 1
 /* 0060AC 8000B64C 40820020 */  bne     lbl_8000B66C
 /* 0060B0 8000B650 480ABA3D */  bl      DEMOPadRead
@@ -3803,7 +3803,7 @@ lbl_8000B5CC:
 /* 0060C8 8000B668 48001500 */  b       lbl_8000CB68
 lbl_8000B66C:
 /* 0060CC 8000B66C 38000000 */  li      r0, 0
-/* 0060D0 8000B670 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0060D0 8000B670 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 0060D4 8000B674 480ABA19 */  bl      DEMOPadRead
 /* 0060D8 8000B678 80BD0000 */  lwz     r5, 0(r29)
 /* 0060DC 8000B67C 3CDF0001 */  addis   r6, r31, 1
@@ -3839,28 +3839,28 @@ lbl_8000B66C:
 /* 006154 8000B6F4 A0030000 */  lhz     r0, 0(r3)
 /* 006158 8000B6F8 70001100 */  andi.   r0, r0, 0x1100
 /* 00615C 8000B6FC 41820020 */  beq     lbl_8000B71C
-/* 006160 8000B700 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006160 8000B700 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006164 8000B704 38800000 */  li      r4, 0
 /* 006168 8000B708 80630004 */  lwz     r3, 4(r3)
 /* 00616C 8000B70C 48010F85 */  bl      soundPlayBeep
 /* 006170 8000B710 38600001 */  li      r3, 1
-/* 006174 8000B714 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006174 8000B714 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006178 8000B718 48001450 */  b       lbl_8000CB68
 lbl_8000B71C:
 /* 00617C 8000B71C 38600000 */  li      r3, 0
 /* 006180 8000B720 48001448 */  b       lbl_8000CB68
 glabel lbl_8000B724
-/* 006184 8000B724 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006184 8000B724 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006188 8000B728 7C001800 */  cmpw    r0, r3
 /* 00618C 8000B72C 41820050 */  beq     lbl_8000B77C
-/* 006190 8000B730 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006190 8000B730 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006194 8000B734 3C7F0001 */  addis   r3, r31, 1
 /* 006198 8000B738 3863E668 */  addi    r3, r3, -6552
 /* 00619C 8000B73C 38810080 */  addi    r4, r1, 0x80
 /* 0061A0 8000B740 480A72F5 */  bl      DVDOpen
 /* 0061A4 8000B744 2C030001 */  cmpwi   r3, 1
 /* 0061A8 8000B748 40820024 */  bne     lbl_8000B76C
-/* 0061AC 8000B74C 80AD8068 */  lwz     r5, gmsg_sv02Size-_SDA_BASE_(r13)
+/* 0061AC 8000B74C 80AD8068 */  lwz     r5, gmsg_sv02Size@sda21(r13)
 /* 0061B0 8000B750 38610080 */  addi    r3, r1, 0x80
 /* 0061B4 8000B754 389E01A0 */  addi    r4, r30, 0x1a0
 /* 0061B8 8000B758 3805001F */  addi    r0, r5, 0x1f
@@ -3904,7 +3904,7 @@ lbl_8000B77C:
 /* 006248 8000B7E8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00624C 8000B7EC 38C6DE00 */  addi    r6, r6, -8704
 /* 006250 8000B7F0 48001D9D */  bl      simulatorDrawOKImage
-/* 006254 8000B7F4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006254 8000B7F4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006258 8000B7F8 2C000001 */  cmpwi   r0, 1
 /* 00625C 8000B7FC 40820020 */  bne     lbl_8000B81C
 /* 006260 8000B800 480AB88D */  bl      DEMOPadRead
@@ -3916,7 +3916,7 @@ lbl_8000B77C:
 /* 006278 8000B818 48001350 */  b       lbl_8000CB68
 lbl_8000B81C:
 /* 00627C 8000B81C 38000000 */  li      r0, 0
-/* 006280 8000B820 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006280 8000B820 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006284 8000B824 480AB869 */  bl      DEMOPadRead
 /* 006288 8000B828 80BD0000 */  lwz     r5, 0(r29)
 /* 00628C 8000B82C 3CDF0001 */  addis   r6, r31, 1
@@ -3952,28 +3952,28 @@ lbl_8000B81C:
 /* 006304 8000B8A4 A0030000 */  lhz     r0, 0(r3)
 /* 006308 8000B8A8 70001100 */  andi.   r0, r0, 0x1100
 /* 00630C 8000B8AC 41820020 */  beq     lbl_8000B8CC
-/* 006310 8000B8B0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006310 8000B8B0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006314 8000B8B4 38800000 */  li      r4, 0
 /* 006318 8000B8B8 80630004 */  lwz     r3, 4(r3)
 /* 00631C 8000B8BC 48010DD5 */  bl      soundPlayBeep
 /* 006320 8000B8C0 38600001 */  li      r3, 1
-/* 006324 8000B8C4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006324 8000B8C4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006328 8000B8C8 480012A0 */  b       lbl_8000CB68
 lbl_8000B8CC:
 /* 00632C 8000B8CC 38600000 */  li      r3, 0
 /* 006330 8000B8D0 48001298 */  b       lbl_8000CB68
 glabel lbl_8000B8D4
-/* 006334 8000B8D4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006334 8000B8D4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006338 8000B8D8 7C001800 */  cmpw    r0, r3
 /* 00633C 8000B8DC 41820050 */  beq     lbl_8000B92C
-/* 006340 8000B8E0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006340 8000B8E0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006344 8000B8E4 3C7F0001 */  addis   r3, r31, 1
 /* 006348 8000B8E8 3863E67C */  addi    r3, r3, -6532
 /* 00634C 8000B8EC 38810080 */  addi    r4, r1, 0x80
 /* 006350 8000B8F0 480A7145 */  bl      DVDOpen
 /* 006354 8000B8F4 2C030001 */  cmpwi   r3, 1
 /* 006358 8000B8F8 40820024 */  bne     lbl_8000B91C
-/* 00635C 8000B8FC 80AD806C */  lwz     r5, gmsg_sv03Size-_SDA_BASE_(r13)
+/* 00635C 8000B8FC 80AD806C */  lwz     r5, gmsg_sv03Size@sda21(r13)
 /* 006360 8000B900 38610080 */  addi    r3, r1, 0x80
 /* 006364 8000B904 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006368 8000B908 3805001F */  addi    r0, r5, 0x1f
@@ -4017,7 +4017,7 @@ lbl_8000B92C:
 /* 0063F8 8000B998 210000B4 */  subfic  r8, r0, 0xb4
 /* 0063FC 8000B99C 38C6DE00 */  addi    r6, r6, -8704
 /* 006400 8000B9A0 48001BED */  bl      simulatorDrawOKImage
-/* 006404 8000B9A4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006404 8000B9A4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006408 8000B9A8 2C000001 */  cmpwi   r0, 1
 /* 00640C 8000B9AC 40820020 */  bne     lbl_8000B9CC
 /* 006410 8000B9B0 480AB6DD */  bl      DEMOPadRead
@@ -4029,7 +4029,7 @@ lbl_8000B92C:
 /* 006428 8000B9C8 480011A0 */  b       lbl_8000CB68
 lbl_8000B9CC:
 /* 00642C 8000B9CC 38000000 */  li      r0, 0
-/* 006430 8000B9D0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006430 8000B9D0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006434 8000B9D4 480AB6B9 */  bl      DEMOPadRead
 /* 006438 8000B9D8 80BD0000 */  lwz     r5, 0(r29)
 /* 00643C 8000B9DC 3CDF0001 */  addis   r6, r31, 1
@@ -4065,28 +4065,28 @@ lbl_8000B9CC:
 /* 0064B4 8000BA54 A0030000 */  lhz     r0, 0(r3)
 /* 0064B8 8000BA58 70001100 */  andi.   r0, r0, 0x1100
 /* 0064BC 8000BA5C 41820020 */  beq     lbl_8000BA7C
-/* 0064C0 8000BA60 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0064C0 8000BA60 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0064C4 8000BA64 38800000 */  li      r4, 0
 /* 0064C8 8000BA68 80630004 */  lwz     r3, 4(r3)
 /* 0064CC 8000BA6C 48010C25 */  bl      soundPlayBeep
 /* 0064D0 8000BA70 38600001 */  li      r3, 1
-/* 0064D4 8000BA74 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0064D4 8000BA74 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0064D8 8000BA78 480010F0 */  b       lbl_8000CB68
 lbl_8000BA7C:
 /* 0064DC 8000BA7C 38600000 */  li      r3, 0
 /* 0064E0 8000BA80 480010E8 */  b       lbl_8000CB68
 glabel lbl_8000BA84
-/* 0064E4 8000BA84 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0064E4 8000BA84 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0064E8 8000BA88 7C001800 */  cmpw    r0, r3
 /* 0064EC 8000BA8C 41820050 */  beq     lbl_8000BADC
-/* 0064F0 8000BA90 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0064F0 8000BA90 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0064F4 8000BA94 3C7F0001 */  addis   r3, r31, 1
 /* 0064F8 8000BA98 3863E690 */  addi    r3, r3, -6512
 /* 0064FC 8000BA9C 38810080 */  addi    r4, r1, 0x80
 /* 006500 8000BAA0 480A6F95 */  bl      DVDOpen
 /* 006504 8000BAA4 2C030001 */  cmpwi   r3, 1
 /* 006508 8000BAA8 40820024 */  bne     lbl_8000BACC
-/* 00650C 8000BAAC 80AD8070 */  lwz     r5, gmsg_sv04Size-_SDA_BASE_(r13)
+/* 00650C 8000BAAC 80AD8070 */  lwz     r5, gmsg_sv04Size@sda21(r13)
 /* 006510 8000BAB0 38610080 */  addi    r3, r1, 0x80
 /* 006514 8000BAB4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006518 8000BAB8 3805001F */  addi    r0, r5, 0x1f
@@ -4130,7 +4130,7 @@ lbl_8000BADC:
 /* 0065A8 8000BB48 210000B4 */  subfic  r8, r0, 0xb4
 /* 0065AC 8000BB4C 38C6DE00 */  addi    r6, r6, -8704
 /* 0065B0 8000BB50 48001A3D */  bl      simulatorDrawOKImage
-/* 0065B4 8000BB54 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0065B4 8000BB54 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 0065B8 8000BB58 2C000001 */  cmpwi   r0, 1
 /* 0065BC 8000BB5C 40820020 */  bne     lbl_8000BB7C
 /* 0065C0 8000BB60 480AB52D */  bl      DEMOPadRead
@@ -4142,7 +4142,7 @@ lbl_8000BADC:
 /* 0065D8 8000BB78 48000FF0 */  b       lbl_8000CB68
 lbl_8000BB7C:
 /* 0065DC 8000BB7C 38000000 */  li      r0, 0
-/* 0065E0 8000BB80 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0065E0 8000BB80 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 0065E4 8000BB84 480AB509 */  bl      DEMOPadRead
 /* 0065E8 8000BB88 80BD0000 */  lwz     r5, 0(r29)
 /* 0065EC 8000BB8C 3CDF0001 */  addis   r6, r31, 1
@@ -4178,28 +4178,28 @@ lbl_8000BB7C:
 /* 006664 8000BC04 A0030000 */  lhz     r0, 0(r3)
 /* 006668 8000BC08 70001100 */  andi.   r0, r0, 0x1100
 /* 00666C 8000BC0C 41820020 */  beq     lbl_8000BC2C
-/* 006670 8000BC10 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006670 8000BC10 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006674 8000BC14 38800000 */  li      r4, 0
 /* 006678 8000BC18 80630004 */  lwz     r3, 4(r3)
 /* 00667C 8000BC1C 48010A75 */  bl      soundPlayBeep
 /* 006680 8000BC20 38600001 */  li      r3, 1
-/* 006684 8000BC24 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006684 8000BC24 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006688 8000BC28 48000F40 */  b       lbl_8000CB68
 lbl_8000BC2C:
 /* 00668C 8000BC2C 38600000 */  li      r3, 0
 /* 006690 8000BC30 48000F38 */  b       lbl_8000CB68
 glabel lbl_8000BC34
-/* 006694 8000BC34 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006694 8000BC34 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006698 8000BC38 7C001800 */  cmpw    r0, r3
 /* 00669C 8000BC3C 41820050 */  beq     lbl_8000BC8C
-/* 0066A0 8000BC40 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0066A0 8000BC40 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0066A4 8000BC44 3C7F0001 */  addis   r3, r31, 1
 /* 0066A8 8000BC48 3863E6A4 */  addi    r3, r3, -6492
 /* 0066AC 8000BC4C 38810080 */  addi    r4, r1, 0x80
 /* 0066B0 8000BC50 480A6DE5 */  bl      DVDOpen
 /* 0066B4 8000BC54 2C030001 */  cmpwi   r3, 1
 /* 0066B8 8000BC58 40820024 */  bne     lbl_8000BC7C
-/* 0066BC 8000BC5C 80AD8074 */  lwz     r5, gmsg_sv05_1Size-_SDA_BASE_(r13)
+/* 0066BC 8000BC5C 80AD8074 */  lwz     r5, gmsg_sv05_1Size@sda21(r13)
 /* 0066C0 8000BC60 38610080 */  addi    r3, r1, 0x80
 /* 0066C4 8000BC64 389E01A0 */  addi    r4, r30, 0x1a0
 /* 0066C8 8000BC68 3805001F */  addi    r0, r5, 0x1f
@@ -4243,7 +4243,7 @@ lbl_8000BC8C:
 /* 006758 8000BCF8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00675C 8000BCFC 38C6DE00 */  addi    r6, r6, -8704
 /* 006760 8000BD00 4800188D */  bl      simulatorDrawOKImage
-/* 006764 8000BD04 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006764 8000BD04 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006768 8000BD08 2C000001 */  cmpwi   r0, 1
 /* 00676C 8000BD0C 40820020 */  bne     lbl_8000BD2C
 /* 006770 8000BD10 480AB37D */  bl      DEMOPadRead
@@ -4255,7 +4255,7 @@ lbl_8000BC8C:
 /* 006788 8000BD28 48000E40 */  b       lbl_8000CB68
 lbl_8000BD2C:
 /* 00678C 8000BD2C 38000000 */  li      r0, 0
-/* 006790 8000BD30 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006790 8000BD30 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006794 8000BD34 480AB359 */  bl      DEMOPadRead
 /* 006798 8000BD38 80BD0000 */  lwz     r5, 0(r29)
 /* 00679C 8000BD3C 3CDF0001 */  addis   r6, r31, 1
@@ -4291,28 +4291,28 @@ lbl_8000BD2C:
 /* 006814 8000BDB4 A0030000 */  lhz     r0, 0(r3)
 /* 006818 8000BDB8 70001100 */  andi.   r0, r0, 0x1100
 /* 00681C 8000BDBC 41820020 */  beq     lbl_8000BDDC
-/* 006820 8000BDC0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006820 8000BDC0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006824 8000BDC4 38800000 */  li      r4, 0
 /* 006828 8000BDC8 80630004 */  lwz     r3, 4(r3)
 /* 00682C 8000BDCC 480108C5 */  bl      soundPlayBeep
 /* 006830 8000BDD0 38600001 */  li      r3, 1
-/* 006834 8000BDD4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006834 8000BDD4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006838 8000BDD8 48000D90 */  b       lbl_8000CB68
 lbl_8000BDDC:
 /* 00683C 8000BDDC 38600000 */  li      r3, 0
 /* 006840 8000BDE0 48000D88 */  b       lbl_8000CB68
 glabel lbl_8000BDE4
-/* 006844 8000BDE4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006844 8000BDE4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006848 8000BDE8 7C001800 */  cmpw    r0, r3
 /* 00684C 8000BDEC 41820050 */  beq     lbl_8000BE3C
-/* 006850 8000BDF0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006850 8000BDF0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006854 8000BDF4 3C7F0001 */  addis   r3, r31, 1
 /* 006858 8000BDF8 3863E6B8 */  addi    r3, r3, -6472
 /* 00685C 8000BDFC 38810080 */  addi    r4, r1, 0x80
 /* 006860 8000BE00 480A6C35 */  bl      DVDOpen
 /* 006864 8000BE04 2C030001 */  cmpwi   r3, 1
 /* 006868 8000BE08 40820024 */  bne     lbl_8000BE2C
-/* 00686C 8000BE0C 80AD8078 */  lwz     r5, gmsg_sv06_1Size-_SDA_BASE_(r13)
+/* 00686C 8000BE0C 80AD8078 */  lwz     r5, gmsg_sv06_1Size@sda21(r13)
 /* 006870 8000BE10 38610080 */  addi    r3, r1, 0x80
 /* 006874 8000BE14 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006878 8000BE18 3805001F */  addi    r0, r5, 0x1f
@@ -4356,7 +4356,7 @@ lbl_8000BE3C:
 /* 006908 8000BEA8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00690C 8000BEAC 38C6DE00 */  addi    r6, r6, -8704
 /* 006910 8000BEB0 480016DD */  bl      simulatorDrawOKImage
-/* 006914 8000BEB4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006914 8000BEB4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006918 8000BEB8 2C000001 */  cmpwi   r0, 1
 /* 00691C 8000BEBC 40820020 */  bne     lbl_8000BEDC
 /* 006920 8000BEC0 480AB1CD */  bl      DEMOPadRead
@@ -4368,7 +4368,7 @@ lbl_8000BE3C:
 /* 006938 8000BED8 48000C90 */  b       lbl_8000CB68
 lbl_8000BEDC:
 /* 00693C 8000BEDC 38000000 */  li      r0, 0
-/* 006940 8000BEE0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006940 8000BEE0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006944 8000BEE4 480AB1A9 */  bl      DEMOPadRead
 /* 006948 8000BEE8 80BD0000 */  lwz     r5, 0(r29)
 /* 00694C 8000BEEC 3CDF0001 */  addis   r6, r31, 1
@@ -4404,28 +4404,28 @@ lbl_8000BEDC:
 /* 0069C4 8000BF64 A0030000 */  lhz     r0, 0(r3)
 /* 0069C8 8000BF68 70001100 */  andi.   r0, r0, 0x1100
 /* 0069CC 8000BF6C 41820020 */  beq     lbl_8000BF8C
-/* 0069D0 8000BF70 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0069D0 8000BF70 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0069D4 8000BF74 38800000 */  li      r4, 0
 /* 0069D8 8000BF78 80630004 */  lwz     r3, 4(r3)
 /* 0069DC 8000BF7C 48010715 */  bl      soundPlayBeep
 /* 0069E0 8000BF80 38600001 */  li      r3, 1
-/* 0069E4 8000BF84 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0069E4 8000BF84 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0069E8 8000BF88 48000BE0 */  b       lbl_8000CB68
 lbl_8000BF8C:
 /* 0069EC 8000BF8C 38600000 */  li      r3, 0
 /* 0069F0 8000BF90 48000BD8 */  b       lbl_8000CB68
 glabel lbl_8000BF94
-/* 0069F4 8000BF94 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0069F4 8000BF94 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0069F8 8000BF98 7C001800 */  cmpw    r0, r3
 /* 0069FC 8000BF9C 41820050 */  beq     lbl_8000BFEC
-/* 006A00 8000BFA0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006A00 8000BFA0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006A04 8000BFA4 3C7F0001 */  addis   r3, r31, 1
 /* 006A08 8000BFA8 3863E6CC */  addi    r3, r3, -6452
 /* 006A0C 8000BFAC 38810080 */  addi    r4, r1, 0x80
 /* 006A10 8000BFB0 480A6A85 */  bl      DVDOpen
 /* 006A14 8000BFB4 2C030001 */  cmpwi   r3, 1
 /* 006A18 8000BFB8 40820024 */  bne     lbl_8000BFDC
-/* 006A1C 8000BFBC 80AD807C */  lwz     r5, gmsg_sv06_2Size-_SDA_BASE_(r13)
+/* 006A1C 8000BFBC 80AD807C */  lwz     r5, gmsg_sv06_2Size@sda21(r13)
 /* 006A20 8000BFC0 38610080 */  addi    r3, r1, 0x80
 /* 006A24 8000BFC4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006A28 8000BFC8 3805001F */  addi    r0, r5, 0x1f
@@ -4469,7 +4469,7 @@ lbl_8000BFEC:
 /* 006AB8 8000C058 210000B4 */  subfic  r8, r0, 0xb4
 /* 006ABC 8000C05C 38C6DE00 */  addi    r6, r6, -8704
 /* 006AC0 8000C060 4800152D */  bl      simulatorDrawOKImage
-/* 006AC4 8000C064 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006AC4 8000C064 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006AC8 8000C068 2C000001 */  cmpwi   r0, 1
 /* 006ACC 8000C06C 40820020 */  bne     lbl_8000C08C
 /* 006AD0 8000C070 480AB01D */  bl      DEMOPadRead
@@ -4481,7 +4481,7 @@ lbl_8000BFEC:
 /* 006AE8 8000C088 48000AE0 */  b       lbl_8000CB68
 lbl_8000C08C:
 /* 006AEC 8000C08C 38000000 */  li      r0, 0
-/* 006AF0 8000C090 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006AF0 8000C090 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006AF4 8000C094 480AAFF9 */  bl      DEMOPadRead
 /* 006AF8 8000C098 80BD0000 */  lwz     r5, 0(r29)
 /* 006AFC 8000C09C 3CDF0001 */  addis   r6, r31, 1
@@ -4517,28 +4517,28 @@ lbl_8000C08C:
 /* 006B74 8000C114 A0030000 */  lhz     r0, 0(r3)
 /* 006B78 8000C118 70001100 */  andi.   r0, r0, 0x1100
 /* 006B7C 8000C11C 41820020 */  beq     lbl_8000C13C
-/* 006B80 8000C120 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006B80 8000C120 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006B84 8000C124 38800000 */  li      r4, 0
 /* 006B88 8000C128 80630004 */  lwz     r3, 4(r3)
 /* 006B8C 8000C12C 48010565 */  bl      soundPlayBeep
 /* 006B90 8000C130 38600001 */  li      r3, 1
-/* 006B94 8000C134 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006B94 8000C134 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006B98 8000C138 48000A30 */  b       lbl_8000CB68
 lbl_8000C13C:
 /* 006B9C 8000C13C 38600000 */  li      r3, 0
 /* 006BA0 8000C140 48000A28 */  b       lbl_8000CB68
 glabel lbl_8000C144
-/* 006BA4 8000C144 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006BA4 8000C144 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006BA8 8000C148 7C001800 */  cmpw    r0, r3
 /* 006BAC 8000C14C 41820050 */  beq     lbl_8000C19C
-/* 006BB0 8000C150 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006BB0 8000C150 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006BB4 8000C154 3C7F0001 */  addis   r3, r31, 1
 /* 006BB8 8000C158 3863E6E0 */  addi    r3, r3, -6432
 /* 006BBC 8000C15C 38810080 */  addi    r4, r1, 0x80
 /* 006BC0 8000C160 480A68D5 */  bl      DVDOpen
 /* 006BC4 8000C164 2C030001 */  cmpwi   r3, 1
 /* 006BC8 8000C168 40820024 */  bne     lbl_8000C18C
-/* 006BCC 8000C16C 80AD8080 */  lwz     r5, gmsg_sv06_3Size-_SDA_BASE_(r13)
+/* 006BCC 8000C16C 80AD8080 */  lwz     r5, gmsg_sv06_3Size@sda21(r13)
 /* 006BD0 8000C170 38610080 */  addi    r3, r1, 0x80
 /* 006BD4 8000C174 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006BD8 8000C178 3805001F */  addi    r0, r5, 0x1f
@@ -4582,7 +4582,7 @@ lbl_8000C19C:
 /* 006C68 8000C208 210000B4 */  subfic  r8, r0, 0xb4
 /* 006C6C 8000C20C 38C6DE00 */  addi    r6, r6, -8704
 /* 006C70 8000C210 4800137D */  bl      simulatorDrawOKImage
-/* 006C74 8000C214 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006C74 8000C214 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006C78 8000C218 2C000001 */  cmpwi   r0, 1
 /* 006C7C 8000C21C 40820020 */  bne     lbl_8000C23C
 /* 006C80 8000C220 480AAE6D */  bl      DEMOPadRead
@@ -4594,7 +4594,7 @@ lbl_8000C19C:
 /* 006C98 8000C238 48000930 */  b       lbl_8000CB68
 lbl_8000C23C:
 /* 006C9C 8000C23C 38000000 */  li      r0, 0
-/* 006CA0 8000C240 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006CA0 8000C240 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006CA4 8000C244 480AAE49 */  bl      DEMOPadRead
 /* 006CA8 8000C248 80BD0000 */  lwz     r5, 0(r29)
 /* 006CAC 8000C24C 3CDF0001 */  addis   r6, r31, 1
@@ -4630,28 +4630,28 @@ lbl_8000C23C:
 /* 006D24 8000C2C4 A0030000 */  lhz     r0, 0(r3)
 /* 006D28 8000C2C8 70001100 */  andi.   r0, r0, 0x1100
 /* 006D2C 8000C2CC 41820020 */  beq     lbl_8000C2EC
-/* 006D30 8000C2D0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006D30 8000C2D0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006D34 8000C2D4 38800000 */  li      r4, 0
 /* 006D38 8000C2D8 80630004 */  lwz     r3, 4(r3)
 /* 006D3C 8000C2DC 480103B5 */  bl      soundPlayBeep
 /* 006D40 8000C2E0 38600001 */  li      r3, 1
-/* 006D44 8000C2E4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006D44 8000C2E4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006D48 8000C2E8 48000880 */  b       lbl_8000CB68
 lbl_8000C2EC:
 /* 006D4C 8000C2EC 38600000 */  li      r3, 0
 /* 006D50 8000C2F0 48000878 */  b       lbl_8000CB68
 glabel lbl_8000C2F4
-/* 006D54 8000C2F4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006D54 8000C2F4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006D58 8000C2F8 7C001800 */  cmpw    r0, r3
 /* 006D5C 8000C2FC 41820050 */  beq     lbl_8000C34C
-/* 006D60 8000C300 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006D60 8000C300 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006D64 8000C304 3C7F0001 */  addis   r3, r31, 1
 /* 006D68 8000C308 3863E6F4 */  addi    r3, r3, -6412
 /* 006D6C 8000C30C 38810080 */  addi    r4, r1, 0x80
 /* 006D70 8000C310 480A6725 */  bl      DVDOpen
 /* 006D74 8000C314 2C030001 */  cmpwi   r3, 1
 /* 006D78 8000C318 40820024 */  bne     lbl_8000C33C
-/* 006D7C 8000C31C 80AD808C */  lwz     r5, gmsg_sv07Size-_SDA_BASE_(r13)
+/* 006D7C 8000C31C 80AD808C */  lwz     r5, gmsg_sv07Size@sda21(r13)
 /* 006D80 8000C320 38610080 */  addi    r3, r1, 0x80
 /* 006D84 8000C324 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006D88 8000C328 3805001F */  addi    r0, r5, 0x1f
@@ -4695,7 +4695,7 @@ lbl_8000C34C:
 /* 006E18 8000C3B8 210000B4 */  subfic  r8, r0, 0xb4
 /* 006E1C 8000C3BC 38C6DE00 */  addi    r6, r6, -8704
 /* 006E20 8000C3C0 480011CD */  bl      simulatorDrawOKImage
-/* 006E24 8000C3C4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006E24 8000C3C4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006E28 8000C3C8 2C000001 */  cmpwi   r0, 1
 /* 006E2C 8000C3CC 40820020 */  bne     lbl_8000C3EC
 /* 006E30 8000C3D0 480AACBD */  bl      DEMOPadRead
@@ -4707,7 +4707,7 @@ lbl_8000C34C:
 /* 006E48 8000C3E8 48000780 */  b       lbl_8000CB68
 lbl_8000C3EC:
 /* 006E4C 8000C3EC 38000000 */  li      r0, 0
-/* 006E50 8000C3F0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006E50 8000C3F0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 006E54 8000C3F4 480AAC99 */  bl      DEMOPadRead
 /* 006E58 8000C3F8 80BD0000 */  lwz     r5, 0(r29)
 /* 006E5C 8000C3FC 3CDF0001 */  addis   r6, r31, 1
@@ -4743,28 +4743,28 @@ lbl_8000C3EC:
 /* 006ED4 8000C474 A0030000 */  lhz     r0, 0(r3)
 /* 006ED8 8000C478 70001100 */  andi.   r0, r0, 0x1100
 /* 006EDC 8000C47C 41820020 */  beq     lbl_8000C49C
-/* 006EE0 8000C480 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 006EE0 8000C480 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 006EE4 8000C484 38800000 */  li      r4, 0
 /* 006EE8 8000C488 80630004 */  lwz     r3, 4(r3)
 /* 006EEC 8000C48C 48010205 */  bl      soundPlayBeep
 /* 006EF0 8000C490 38600001 */  li      r3, 1
-/* 006EF4 8000C494 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006EF4 8000C494 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 006EF8 8000C498 480006D0 */  b       lbl_8000CB68
 lbl_8000C49C:
 /* 006EFC 8000C49C 38600000 */  li      r3, 0
 /* 006F00 8000C4A0 480006C8 */  b       lbl_8000CB68
 glabel lbl_8000C4A4
-/* 006F04 8000C4A4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006F04 8000C4A4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006F08 8000C4A8 7C001800 */  cmpw    r0, r3
 /* 006F0C 8000C4AC 41820050 */  beq     lbl_8000C4FC
-/* 006F10 8000C4B0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 006F10 8000C4B0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 006F14 8000C4B4 3C7F0001 */  addis   r3, r31, 1
 /* 006F18 8000C4B8 3863E708 */  addi    r3, r3, -6392
 /* 006F1C 8000C4BC 38810080 */  addi    r4, r1, 0x80
 /* 006F20 8000C4C0 480A6575 */  bl      DVDOpen
 /* 006F24 8000C4C4 2C030001 */  cmpwi   r3, 1
 /* 006F28 8000C4C8 40820024 */  bne     lbl_8000C4EC
-/* 006F2C 8000C4CC 80AD8098 */  lwz     r5, gmsg_sv10Size-_SDA_BASE_(r13)
+/* 006F2C 8000C4CC 80AD8098 */  lwz     r5, gmsg_sv10Size@sda21(r13)
 /* 006F30 8000C4D0 38610080 */  addi    r3, r1, 0x80
 /* 006F34 8000C4D4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 006F38 8000C4D8 3805001F */  addi    r0, r5, 0x1f
@@ -4808,7 +4808,7 @@ lbl_8000C4FC:
 /* 006FC8 8000C568 210000B4 */  subfic  r8, r0, 0xb4
 /* 006FCC 8000C56C 38C6DE00 */  addi    r6, r6, -8704
 /* 006FD0 8000C570 4800101D */  bl      simulatorDrawOKImage
-/* 006FD4 8000C574 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 006FD4 8000C574 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 006FD8 8000C578 2C000001 */  cmpwi   r0, 1
 /* 006FDC 8000C57C 40820020 */  bne     lbl_8000C59C
 /* 006FE0 8000C580 480AAB0D */  bl      DEMOPadRead
@@ -4820,7 +4820,7 @@ lbl_8000C4FC:
 /* 006FF8 8000C598 480005D0 */  b       lbl_8000CB68
 lbl_8000C59C:
 /* 006FFC 8000C59C 38000000 */  li      r0, 0
-/* 007000 8000C5A0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007000 8000C5A0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 007004 8000C5A4 480AAAE9 */  bl      DEMOPadRead
 /* 007008 8000C5A8 80BD0000 */  lwz     r5, 0(r29)
 /* 00700C 8000C5AC 3CDF0001 */  addis   r6, r31, 1
@@ -4856,28 +4856,28 @@ lbl_8000C59C:
 /* 007084 8000C624 A0030000 */  lhz     r0, 0(r3)
 /* 007088 8000C628 70001100 */  andi.   r0, r0, 0x1100
 /* 00708C 8000C62C 41820020 */  beq     lbl_8000C64C
-/* 007090 8000C630 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007090 8000C630 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007094 8000C634 38800000 */  li      r4, 0
 /* 007098 8000C638 80630004 */  lwz     r3, 4(r3)
 /* 00709C 8000C63C 48010055 */  bl      soundPlayBeep
 /* 0070A0 8000C640 38600001 */  li      r3, 1
-/* 0070A4 8000C644 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0070A4 8000C644 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0070A8 8000C648 48000520 */  b       lbl_8000CB68
 lbl_8000C64C:
 /* 0070AC 8000C64C 38600000 */  li      r3, 0
 /* 0070B0 8000C650 48000518 */  b       lbl_8000CB68
 glabel lbl_8000C654
-/* 0070B4 8000C654 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0070B4 8000C654 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0070B8 8000C658 7C001800 */  cmpw    r0, r3
 /* 0070BC 8000C65C 41820050 */  beq     lbl_8000C6AC
-/* 0070C0 8000C660 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0070C0 8000C660 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0070C4 8000C664 3C7F0001 */  addis   r3, r31, 1
 /* 0070C8 8000C668 3863E71C */  addi    r3, r3, -6372
 /* 0070CC 8000C66C 38810080 */  addi    r4, r1, 0x80
 /* 0070D0 8000C670 480A63C5 */  bl      DVDOpen
 /* 0070D4 8000C674 2C030001 */  cmpwi   r3, 1
 /* 0070D8 8000C678 40820024 */  bne     lbl_8000C69C
-/* 0070DC 8000C67C 80AD809C */  lwz     r5, gmsg_sv11Size-_SDA_BASE_(r13)
+/* 0070DC 8000C67C 80AD809C */  lwz     r5, gmsg_sv11Size@sda21(r13)
 /* 0070E0 8000C680 38610080 */  addi    r3, r1, 0x80
 /* 0070E4 8000C684 389E01A0 */  addi    r4, r30, 0x1a0
 /* 0070E8 8000C688 3805001F */  addi    r0, r5, 0x1f
@@ -4921,7 +4921,7 @@ lbl_8000C6AC:
 /* 007178 8000C718 210000B4 */  subfic  r8, r0, 0xb4
 /* 00717C 8000C71C 38C6DE00 */  addi    r6, r6, -8704
 /* 007180 8000C720 48000E6D */  bl      simulatorDrawOKImage
-/* 007184 8000C724 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007184 8000C724 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 007188 8000C728 2C000001 */  cmpwi   r0, 1
 /* 00718C 8000C72C 40820020 */  bne     lbl_8000C74C
 /* 007190 8000C730 480AA95D */  bl      DEMOPadRead
@@ -4933,7 +4933,7 @@ lbl_8000C6AC:
 /* 0071A8 8000C748 48000420 */  b       lbl_8000CB68
 lbl_8000C74C:
 /* 0071AC 8000C74C 38000000 */  li      r0, 0
-/* 0071B0 8000C750 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0071B0 8000C750 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 0071B4 8000C754 480AA939 */  bl      DEMOPadRead
 /* 0071B8 8000C758 80BD0000 */  lwz     r5, 0(r29)
 /* 0071BC 8000C75C 3CDF0001 */  addis   r6, r31, 1
@@ -4969,28 +4969,28 @@ lbl_8000C74C:
 /* 007234 8000C7D4 A0030000 */  lhz     r0, 0(r3)
 /* 007238 8000C7D8 70001100 */  andi.   r0, r0, 0x1100
 /* 00723C 8000C7DC 41820020 */  beq     lbl_8000C7FC
-/* 007240 8000C7E0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007240 8000C7E0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007244 8000C7E4 38800000 */  li      r4, 0
 /* 007248 8000C7E8 80630004 */  lwz     r3, 4(r3)
 /* 00724C 8000C7EC 4800FEA5 */  bl      soundPlayBeep
 /* 007250 8000C7F0 38600001 */  li      r3, 1
-/* 007254 8000C7F4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007254 8000C7F4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 007258 8000C7F8 48000370 */  b       lbl_8000CB68
 lbl_8000C7FC:
 /* 00725C 8000C7FC 38600000 */  li      r3, 0
 /* 007260 8000C800 48000368 */  b       lbl_8000CB68
 glabel lbl_8000C804
-/* 007264 8000C804 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007264 8000C804 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007268 8000C808 7C001800 */  cmpw    r0, r3
 /* 00726C 8000C80C 41820050 */  beq     lbl_8000C85C
-/* 007270 8000C810 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007270 8000C810 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007274 8000C814 3C7F0001 */  addis   r3, r31, 1
 /* 007278 8000C818 3863E730 */  addi    r3, r3, -6352
 /* 00727C 8000C81C 38810080 */  addi    r4, r1, 0x80
 /* 007280 8000C820 480A6215 */  bl      DVDOpen
 /* 007284 8000C824 2C030001 */  cmpwi   r3, 1
 /* 007288 8000C828 40820024 */  bne     lbl_8000C84C
-/* 00728C 8000C82C 80AD80A0 */  lwz     r5, gmsg_sv12Size-_SDA_BASE_(r13)
+/* 00728C 8000C82C 80AD80A0 */  lwz     r5, gmsg_sv12Size@sda21(r13)
 /* 007290 8000C830 38610080 */  addi    r3, r1, 0x80
 /* 007294 8000C834 389E01A0 */  addi    r4, r30, 0x1a0
 /* 007298 8000C838 3805001F */  addi    r0, r5, 0x1f
@@ -5034,7 +5034,7 @@ lbl_8000C85C:
 /* 007328 8000C8C8 210000B4 */  subfic  r8, r0, 0xb4
 /* 00732C 8000C8CC 38C6DE00 */  addi    r6, r6, -8704
 /* 007330 8000C8D0 48000CBD */  bl      simulatorDrawOKImage
-/* 007334 8000C8D4 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007334 8000C8D4 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 007338 8000C8D8 2C000001 */  cmpwi   r0, 1
 /* 00733C 8000C8DC 40820020 */  bne     lbl_8000C8FC
 /* 007340 8000C8E0 480AA7AD */  bl      DEMOPadRead
@@ -5046,7 +5046,7 @@ lbl_8000C85C:
 /* 007358 8000C8F8 48000270 */  b       lbl_8000CB68
 lbl_8000C8FC:
 /* 00735C 8000C8FC 38000000 */  li      r0, 0
-/* 007360 8000C900 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007360 8000C900 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 007364 8000C904 480AA789 */  bl      DEMOPadRead
 /* 007368 8000C908 80BD0000 */  lwz     r5, 0(r29)
 /* 00736C 8000C90C 3CDF0001 */  addis   r6, r31, 1
@@ -5082,28 +5082,28 @@ lbl_8000C8FC:
 /* 0073E4 8000C984 A0030000 */  lhz     r0, 0(r3)
 /* 0073E8 8000C988 70001100 */  andi.   r0, r0, 0x1100
 /* 0073EC 8000C98C 41820020 */  beq     lbl_8000C9AC
-/* 0073F0 8000C990 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0073F0 8000C990 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0073F4 8000C994 38800000 */  li      r4, 0
 /* 0073F8 8000C998 80630004 */  lwz     r3, 4(r3)
 /* 0073FC 8000C99C 4800FCF5 */  bl      soundPlayBeep
 /* 007400 8000C9A0 38600001 */  li      r3, 1
-/* 007404 8000C9A4 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007404 8000C9A4 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 007408 8000C9A8 480001C0 */  b       lbl_8000CB68
 lbl_8000C9AC:
 /* 00740C 8000C9AC 38600000 */  li      r3, 0
 /* 007410 8000C9B0 480001B8 */  b       lbl_8000CB68
 glabel lbl_8000C9B4
-/* 007414 8000C9B4 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007414 8000C9B4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007418 8000C9B8 7C001800 */  cmpw    r0, r3
 /* 00741C 8000C9BC 41820050 */  beq     lbl_8000CA0C
-/* 007420 8000C9C0 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007420 8000C9C0 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007424 8000C9C4 3C7F0001 */  addis   r3, r31, 1
 /* 007428 8000C9C8 3863E744 */  addi    r3, r3, -6332
 /* 00742C 8000C9CC 38810080 */  addi    r4, r1, 0x80
 /* 007430 8000C9D0 480A6065 */  bl      DVDOpen
 /* 007434 8000C9D4 2C030001 */  cmpwi   r3, 1
 /* 007438 8000C9D8 40820024 */  bne     lbl_8000C9FC
-/* 00743C 8000C9DC 80AD80A4 */  lwz     r5, gmsg_sv_shareSize-_SDA_BASE_(r13)
+/* 00743C 8000C9DC 80AD80A4 */  lwz     r5, gmsg_sv_shareSize@sda21(r13)
 /* 007440 8000C9E0 38610080 */  addi    r3, r1, 0x80
 /* 007444 8000C9E4 389E01A0 */  addi    r4, r30, 0x1a0
 /* 007448 8000C9E8 3805001F */  addi    r0, r5, 0x1f
@@ -5147,7 +5147,7 @@ lbl_8000CA0C:
 /* 0074D8 8000CA78 210000B4 */  subfic  r8, r0, 0xb4
 /* 0074DC 8000CA7C 38C6DE00 */  addi    r6, r6, -8704
 /* 0074E0 8000CA80 48000B0D */  bl      simulatorDrawOKImage
-/* 0074E4 8000CA84 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0074E4 8000CA84 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 0074E8 8000CA88 2C000001 */  cmpwi   r0, 1
 /* 0074EC 8000CA8C 40820020 */  bne     lbl_8000CAAC
 /* 0074F0 8000CA90 480AA5FD */  bl      DEMOPadRead
@@ -5159,7 +5159,7 @@ lbl_8000CA0C:
 /* 007508 8000CAA8 480000C0 */  b       lbl_8000CB68
 lbl_8000CAAC:
 /* 00750C 8000CAAC 38000000 */  li      r0, 0
-/* 007510 8000CAB0 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007510 8000CAB0 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 007514 8000CAB4 480AA5D9 */  bl      DEMOPadRead
 /* 007518 8000CAB8 80BD0000 */  lwz     r5, 0(r29)
 /* 00751C 8000CABC 3CDF0001 */  addis   r6, r31, 1
@@ -5195,12 +5195,12 @@ lbl_8000CAAC:
 /* 007594 8000CB34 A0030000 */  lhz     r0, 0(r3)
 /* 007598 8000CB38 70001100 */  andi.   r0, r0, 0x1100
 /* 00759C 8000CB3C 41820020 */  beq     lbl_8000CB5C
-/* 0075A0 8000CB40 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 0075A0 8000CB40 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 0075A4 8000CB44 38800000 */  li      r4, 0
 /* 0075A8 8000CB48 80630004 */  lwz     r3, 4(r3)
 /* 0075AC 8000CB4C 4800FB45 */  bl      soundPlayBeep
 /* 0075B0 8000CB50 38600001 */  li      r3, 1
-/* 0075B4 8000CB54 906D88F4 */  stw     r3, gButtonDownToggle-_SDA_BASE_(r13)
+/* 0075B4 8000CB54 906D88F4 */  stw     r3, gButtonDownToggle@sda21(r13)
 /* 0075B8 8000CB58 48000010 */  b       lbl_8000CB68
 lbl_8000CB5C:
 /* 0075BC 8000CB5C 38600000 */  li      r3, 0
@@ -5235,17 +5235,17 @@ glabel simulatorDrawYesNoMessage
 /* 007620 8000CBC0 7C0903A6 */  mtctr   r0
 /* 007624 8000CBC4 4E800420 */  bctr    
 glabel lbl_8000CBC8
-/* 007628 8000CBC8 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007628 8000CBC8 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 00762C 8000CBCC 7C001800 */  cmpw    r0, r3
 /* 007630 8000CBD0 41820050 */  beq     lbl_8000CC20
-/* 007634 8000CBD4 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007634 8000CBD4 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007638 8000CBD8 3C650001 */  addis   r3, r5, 1
 /* 00763C 8000CBDC 3863E7FC */  addi    r3, r3, -6148
 /* 007640 8000CBE0 38810010 */  addi    r4, r1, 0x10
 /* 007644 8000CBE4 480A5E51 */  bl      DVDOpen
 /* 007648 8000CBE8 2C030001 */  cmpwi   r3, 1
 /* 00764C 8000CBEC 40820024 */  bne     lbl_8000CC10
-/* 007650 8000CBF0 80AD801C */  lwz     r5, gmsg_ld05_2Size-_SDA_BASE_(r13)
+/* 007650 8000CBF0 80AD801C */  lwz     r5, gmsg_ld05_2Size@sda21(r13)
 /* 007654 8000CBF4 38610010 */  addi    r3, r1, 0x10
 /* 007658 8000CBF8 389F01A0 */  addi    r4, r31, 0x1a0
 /* 00765C 8000CBFC 3805001F */  addi    r0, r5, 0x1f
@@ -5264,17 +5264,17 @@ lbl_8000CC20:
 /* 007688 8000CC28 480002FD */  bl      simulatorDrawYesNoMessageLoop
 /* 00768C 8000CC2C 480002E0 */  b       lbl_8000CF0C
 glabel lbl_8000CC30
-/* 007690 8000CC30 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007690 8000CC30 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007694 8000CC34 7C001800 */  cmpw    r0, r3
 /* 007698 8000CC38 41820050 */  beq     lbl_8000CC88
-/* 00769C 8000CC3C 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 00769C 8000CC3C 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0076A0 8000CC40 3C650001 */  addis   r3, r5, 1
 /* 0076A4 8000CC44 3863E810 */  addi    r3, r3, -6128
 /* 0076A8 8000CC48 38810010 */  addi    r4, r1, 0x10
 /* 0076AC 8000CC4C 480A5DE9 */  bl      DVDOpen
 /* 0076B0 8000CC50 2C030001 */  cmpwi   r3, 1
 /* 0076B4 8000CC54 40820024 */  bne     lbl_8000CC78
-/* 0076B8 8000CC58 80AD802C */  lwz     r5, gmsg_ld06_4Size-_SDA_BASE_(r13)
+/* 0076B8 8000CC58 80AD802C */  lwz     r5, gmsg_ld06_4Size@sda21(r13)
 /* 0076BC 8000CC5C 38610010 */  addi    r3, r1, 0x10
 /* 0076C0 8000CC60 389F01A0 */  addi    r4, r31, 0x1a0
 /* 0076C4 8000CC64 3805001F */  addi    r0, r5, 0x1f
@@ -5293,17 +5293,17 @@ lbl_8000CC88:
 /* 0076F0 8000CC90 48000295 */  bl      simulatorDrawYesNoMessageLoop
 /* 0076F4 8000CC94 48000278 */  b       lbl_8000CF0C
 glabel lbl_8000CC98
-/* 0076F8 8000CC98 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0076F8 8000CC98 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0076FC 8000CC9C 7C001800 */  cmpw    r0, r3
 /* 007700 8000CCA0 41820050 */  beq     lbl_8000CCF0
-/* 007704 8000CCA4 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007704 8000CCA4 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007708 8000CCA8 3C650001 */  addis   r3, r5, 1
 /* 00770C 8000CCAC 3863E824 */  addi    r3, r3, -6108
 /* 007710 8000CCB0 38810010 */  addi    r4, r1, 0x10
 /* 007714 8000CCB4 480A5D81 */  bl      DVDOpen
 /* 007718 8000CCB8 2C030001 */  cmpwi   r3, 1
 /* 00771C 8000CCBC 40820024 */  bne     lbl_8000CCE0
-/* 007720 8000CCC0 80AD8030 */  lwz     r5, gmsg_ld07Size-_SDA_BASE_(r13)
+/* 007720 8000CCC0 80AD8030 */  lwz     r5, gmsg_ld07Size@sda21(r13)
 /* 007724 8000CCC4 38610010 */  addi    r3, r1, 0x10
 /* 007728 8000CCC8 389F01A0 */  addi    r4, r31, 0x1a0
 /* 00772C 8000CCCC 3805001F */  addi    r0, r5, 0x1f
@@ -5322,17 +5322,17 @@ lbl_8000CCF0:
 /* 007758 8000CCF8 4800022D */  bl      simulatorDrawYesNoMessageLoop
 /* 00775C 8000CCFC 48000210 */  b       lbl_8000CF0C
 glabel lbl_8000CD00
-/* 007760 8000CD00 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007760 8000CD00 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007764 8000CD04 7C001800 */  cmpw    r0, r3
 /* 007768 8000CD08 41820050 */  beq     lbl_8000CD58
-/* 00776C 8000CD0C 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 00776C 8000CD0C 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007770 8000CD10 3C650001 */  addis   r3, r5, 1
 /* 007774 8000CD14 3863E838 */  addi    r3, r3, -6088
 /* 007778 8000CD18 38810010 */  addi    r4, r1, 0x10
 /* 00777C 8000CD1C 480A5D19 */  bl      DVDOpen
 /* 007780 8000CD20 2C030001 */  cmpwi   r3, 1
 /* 007784 8000CD24 40820024 */  bne     lbl_8000CD48
-/* 007788 8000CD28 80AD8034 */  lwz     r5, gmsg_gf01Size-_SDA_BASE_(r13)
+/* 007788 8000CD28 80AD8034 */  lwz     r5, gmsg_gf01Size@sda21(r13)
 /* 00778C 8000CD2C 38610010 */  addi    r3, r1, 0x10
 /* 007790 8000CD30 389F01A0 */  addi    r4, r31, 0x1a0
 /* 007794 8000CD34 3805001F */  addi    r0, r5, 0x1f
@@ -5351,17 +5351,17 @@ lbl_8000CD58:
 /* 0077C0 8000CD60 480001C5 */  bl      simulatorDrawYesNoMessageLoop
 /* 0077C4 8000CD64 480001A8 */  b       lbl_8000CF0C
 glabel lbl_8000CD68
-/* 0077C8 8000CD68 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0077C8 8000CD68 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0077CC 8000CD6C 7C001800 */  cmpw    r0, r3
 /* 0077D0 8000CD70 41820050 */  beq     lbl_8000CDC0
-/* 0077D4 8000CD74 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0077D4 8000CD74 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0077D8 8000CD78 3C650001 */  addis   r3, r5, 1
 /* 0077DC 8000CD7C 3863E84C */  addi    r3, r3, -6068
 /* 0077E0 8000CD80 38810010 */  addi    r4, r1, 0x10
 /* 0077E4 8000CD84 480A5CB1 */  bl      DVDOpen
 /* 0077E8 8000CD88 2C030001 */  cmpwi   r3, 1
 /* 0077EC 8000CD8C 40820024 */  bne     lbl_8000CDB0
-/* 0077F0 8000CD90 80AD804C */  lwz     r5, gmsg_in01Size-_SDA_BASE_(r13)
+/* 0077F0 8000CD90 80AD804C */  lwz     r5, gmsg_in01Size@sda21(r13)
 /* 0077F4 8000CD94 38610010 */  addi    r3, r1, 0x10
 /* 0077F8 8000CD98 389F01A0 */  addi    r4, r31, 0x1a0
 /* 0077FC 8000CD9C 3805001F */  addi    r0, r5, 0x1f
@@ -5380,17 +5380,17 @@ lbl_8000CDC0:
 /* 007828 8000CDC8 4800015D */  bl      simulatorDrawYesNoMessageLoop
 /* 00782C 8000CDCC 48000140 */  b       lbl_8000CF0C
 glabel lbl_8000CDD0
-/* 007830 8000CDD0 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007830 8000CDD0 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007834 8000CDD4 7C001800 */  cmpw    r0, r3
 /* 007838 8000CDD8 41820050 */  beq     lbl_8000CE28
-/* 00783C 8000CDDC 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 00783C 8000CDDC 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007840 8000CDE0 3C650001 */  addis   r3, r5, 1
 /* 007844 8000CDE4 3863E860 */  addi    r3, r3, -6048
 /* 007848 8000CDE8 38810010 */  addi    r4, r1, 0x10
 /* 00784C 8000CDEC 480A5C49 */  bl      DVDOpen
 /* 007850 8000CDF0 2C030001 */  cmpwi   r3, 1
 /* 007854 8000CDF4 40820024 */  bne     lbl_8000CE18
-/* 007858 8000CDF8 80AD8084 */  lwz     r5, gmsg_sv06_4Size-_SDA_BASE_(r13)
+/* 007858 8000CDF8 80AD8084 */  lwz     r5, gmsg_sv06_4Size@sda21(r13)
 /* 00785C 8000CDFC 38610010 */  addi    r3, r1, 0x10
 /* 007860 8000CE00 389F01A0 */  addi    r4, r31, 0x1a0
 /* 007864 8000CE04 3805001F */  addi    r0, r5, 0x1f
@@ -5409,17 +5409,17 @@ lbl_8000CE28:
 /* 007890 8000CE30 480000F5 */  bl      simulatorDrawYesNoMessageLoop
 /* 007894 8000CE34 480000D8 */  b       lbl_8000CF0C
 glabel lbl_8000CE38
-/* 007898 8000CE38 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007898 8000CE38 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 00789C 8000CE3C 7C001800 */  cmpw    r0, r3
 /* 0078A0 8000CE40 41820050 */  beq     lbl_8000CE90
-/* 0078A4 8000CE44 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 0078A4 8000CE44 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 0078A8 8000CE48 3C650001 */  addis   r3, r5, 1
 /* 0078AC 8000CE4C 3863E874 */  addi    r3, r3, -6028
 /* 0078B0 8000CE50 38810010 */  addi    r4, r1, 0x10
 /* 0078B4 8000CE54 480A5BE1 */  bl      DVDOpen
 /* 0078B8 8000CE58 2C030001 */  cmpwi   r3, 1
 /* 0078BC 8000CE5C 40820024 */  bne     lbl_8000CE80
-/* 0078C0 8000CE60 80AD8088 */  lwz     r5, gmsg_sv06_5Size-_SDA_BASE_(r13)
+/* 0078C0 8000CE60 80AD8088 */  lwz     r5, gmsg_sv06_5Size@sda21(r13)
 /* 0078C4 8000CE64 38610010 */  addi    r3, r1, 0x10
 /* 0078C8 8000CE68 389F01A0 */  addi    r4, r31, 0x1a0
 /* 0078CC 8000CE6C 3805001F */  addi    r0, r5, 0x1f
@@ -5438,17 +5438,17 @@ lbl_8000CE90:
 /* 0078F8 8000CE98 4800008D */  bl      simulatorDrawYesNoMessageLoop
 /* 0078FC 8000CE9C 48000070 */  b       lbl_8000CF0C
 glabel lbl_8000CEA0
-/* 007900 8000CEA0 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007900 8000CEA0 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007904 8000CEA4 7C001800 */  cmpw    r0, r3
 /* 007908 8000CEA8 41820050 */  beq     lbl_8000CEF8
-/* 00790C 8000CEAC 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 00790C 8000CEAC 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007910 8000CEB0 3C650001 */  addis   r3, r5, 1
 /* 007914 8000CEB4 3863E888 */  addi    r3, r3, -6008
 /* 007918 8000CEB8 38810010 */  addi    r4, r1, 0x10
 /* 00791C 8000CEBC 480A5B79 */  bl      DVDOpen
 /* 007920 8000CEC0 2C030001 */  cmpwi   r3, 1
 /* 007924 8000CEC4 40820024 */  bne     lbl_8000CEE8
-/* 007928 8000CEC8 80AD8090 */  lwz     r5, gmsg_sv08Size-_SDA_BASE_(r13)
+/* 007928 8000CEC8 80AD8090 */  lwz     r5, gmsg_sv08Size@sda21(r13)
 /* 00792C 8000CECC 38610010 */  addi    r3, r1, 0x10
 /* 007930 8000CED0 389F01A0 */  addi    r4, r31, 0x1a0
 /* 007934 8000CED4 3805001F */  addi    r0, r5, 0x1f
@@ -5489,11 +5489,11 @@ glabel simulatorDrawYesNoMessageLoop
 /* 0079A8 8000CF48 2C000001 */  cmpwi   r0, 1
 /* 0079AC 8000CF4C 40820010 */  bne     lbl_8000CF5C
 /* 0079B0 8000CF50 38000001 */  li      r0, 1
-/* 0079B4 8000CF54 900D80B0 */  stw     r0, gHighlightChoice-_SDA_BASE_(r13)
+/* 0079B4 8000CF54 900D80B0 */  stw     r0, gHighlightChoice@sda21(r13)
 /* 0079B8 8000CF58 4800000C */  b       lbl_8000CF64
 lbl_8000CF5C:
 /* 0079BC 8000CF5C 38000000 */  li      r0, 0
-/* 0079C0 8000CF60 900D80B0 */  stw     r0, gHighlightChoice-_SDA_BASE_(r13)
+/* 0079C0 8000CF60 900D80B0 */  stw     r0, gHighlightChoice@sda21(r13)
 lbl_8000CF64:
 /* 0079C4 8000CF64 3CDF0001 */  addis   r6, r31, 1
 /* 0079C8 8000CF68 8066D828 */  lwz     r3, -0x27d8(r6)
@@ -5535,7 +5535,7 @@ lbl_8000CF64:
 /* 007A58 8000CFF8 7C000194 */  addze   r0, r0
 /* 007A5C 8000CFFC 214000C8 */  subfic  r10, r0, 0xc8
 /* 007A60 8000D000 48000BB5 */  bl      simulatorDrawYesNoImage
-/* 007A64 8000D004 800D88F4 */  lwz     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007A64 8000D004 800D88F4 */  lwz     r0, gButtonDownToggle@sda21(r13)
 /* 007A68 8000D008 2C000001 */  cmpwi   r0, 1
 /* 007A6C 8000D00C 40820020 */  bne     lbl_8000D02C
 /* 007A70 8000D010 480AA07D */  bl      DEMOPadRead
@@ -5547,16 +5547,16 @@ lbl_8000CF64:
 /* 007A88 8000D028 480001B4 */  b       lbl_8000D1DC
 lbl_8000D02C:
 /* 007A8C 8000D02C 3B200000 */  li      r25, 0
-/* 007A90 8000D030 932D88F4 */  stw     r25, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007A90 8000D030 932D88F4 */  stw     r25, gButtonDownToggle@sda21(r13)
 /* 007A94 8000D034 480AA059 */  bl      DEMOPadRead
 /* 007A98 8000D038 801B0000 */  lwz     r0, 0(r27)
 /* 007A9C 8000D03C 2C000001 */  cmpwi   r0, 1
 /* 007AA0 8000D040 40820010 */  bne     lbl_8000D050
 /* 007AA4 8000D044 38000001 */  li      r0, 1
-/* 007AA8 8000D048 900D80B0 */  stw     r0, gHighlightChoice-_SDA_BASE_(r13)
+/* 007AA8 8000D048 900D80B0 */  stw     r0, gHighlightChoice@sda21(r13)
 /* 007AAC 8000D04C 48000008 */  b       lbl_8000D054
 lbl_8000D050:
-/* 007AB0 8000D050 932D80B0 */  stw     r25, gHighlightChoice-_SDA_BASE_(r13)
+/* 007AB0 8000D050 932D80B0 */  stw     r25, gHighlightChoice@sda21(r13)
 lbl_8000D054:
 /* 007AB4 8000D054 807E0000 */  lwz     r3, 0(r30)
 /* 007AB8 8000D058 3CDF0001 */  addis   r6, r31, 1
@@ -5606,30 +5606,30 @@ lbl_8000D054:
 /* 007B68 8000D108 801B0000 */  lwz     r0, 0(r27)
 /* 007B6C 8000D10C 2C000001 */  cmpwi   r0, 1
 /* 007B70 8000D110 40820018 */  bne     lbl_8000D128
-/* 007B74 8000D114 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007B74 8000D114 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007B78 8000D118 38800000 */  li      r4, 0
 /* 007B7C 8000D11C 80630004 */  lwz     r3, 4(r3)
 /* 007B80 8000D120 4800F571 */  bl      soundPlayBeep
 /* 007B84 8000D124 48000014 */  b       lbl_8000D138
 lbl_8000D128:
-/* 007B88 8000D128 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007B88 8000D128 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007B8C 8000D12C 38800001 */  li      r4, 1
 /* 007B90 8000D130 80630004 */  lwz     r3, 4(r3)
 /* 007B94 8000D134 4800F55D */  bl      soundPlayBeep
 lbl_8000D138:
 /* 007B98 8000D138 38000001 */  li      r0, 1
-/* 007B9C 8000D13C 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007B9C 8000D13C 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 007BA0 8000D140 38600001 */  li      r3, 1
 /* 007BA4 8000D144 48000098 */  b       lbl_8000D1DC
 lbl_8000D148:
 /* 007BA8 8000D148 548005AD */  rlwinm. r0, r4, 0, 0x16, 0x16
 /* 007BAC 8000D14C 4182002C */  beq     lbl_8000D178
-/* 007BB0 8000D150 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007BB0 8000D150 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007BB4 8000D154 38800001 */  li      r4, 1
 /* 007BB8 8000D158 80630004 */  lwz     r3, 4(r3)
 /* 007BBC 8000D15C 4800F535 */  bl      soundPlayBeep
 /* 007BC0 8000D160 38000001 */  li      r0, 1
-/* 007BC4 8000D164 900D88F4 */  stw     r0, gButtonDownToggle-_SDA_BASE_(r13)
+/* 007BC4 8000D164 900D88F4 */  stw     r0, gButtonDownToggle@sda21(r13)
 /* 007BC8 8000D168 38000000 */  li      r0, 0
 /* 007BCC 8000D16C 38600001 */  li      r3, 1
 /* 007BD0 8000D170 901B0000 */  stw     r0, 0(r27)
@@ -5641,7 +5641,7 @@ lbl_8000D178:
 /* 007BE4 8000D184 801B0000 */  lwz     r0, 0(r27)
 /* 007BE8 8000D188 2C000000 */  cmpwi   r0, 0
 /* 007BEC 8000D18C 40820020 */  bne     lbl_8000D1AC
-/* 007BF0 8000D190 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007BF0 8000D190 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007BF4 8000D194 38800002 */  li      r4, 2
 /* 007BF8 8000D198 80630004 */  lwz     r3, 4(r3)
 /* 007BFC 8000D19C 4800F4F5 */  bl      soundPlayBeep
@@ -5654,7 +5654,7 @@ lbl_8000D1AC:
 /* 007C14 8000D1B4 801B0000 */  lwz     r0, 0(r27)
 /* 007C18 8000D1B8 2C000001 */  cmpwi   r0, 1
 /* 007C1C 8000D1BC 4082001C */  bne     lbl_8000D1D8
-/* 007C20 8000D1C0 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 007C20 8000D1C0 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 007C24 8000D1C4 38800002 */  li      r4, 2
 /* 007C28 8000D1C8 80630004 */  lwz     r3, 4(r3)
 /* 007C2C 8000D1CC 4800F4C5 */  bl      soundPlayBeep
@@ -5689,17 +5689,17 @@ lbl_8000D228:
 /* 007C8C 8000D22C 41820064 */  beq     lbl_8000D290
 /* 007C90 8000D230 48000114 */  b       lbl_8000D344
 lbl_8000D234:
-/* 007C94 8000D234 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007C94 8000D234 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007C98 8000D238 7C001800 */  cmpw    r0, r3
 /* 007C9C 8000D23C 41820108 */  beq     lbl_8000D344
-/* 007CA0 8000D240 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007CA0 8000D240 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007CA4 8000D244 3C640001 */  addis   r3, r4, 1
 /* 007CA8 8000D248 3863E914 */  addi    r3, r3, -5868
 /* 007CAC 8000D24C 3881000C */  addi    r4, r1, 0xc
 /* 007CB0 8000D250 480A57E5 */  bl      DVDOpen
 /* 007CB4 8000D254 2C030001 */  cmpwi   r3, 1
 /* 007CB8 8000D258 40820024 */  bne     lbl_8000D27C
-/* 007CBC 8000D25C 80AD8050 */  lwz     r5, gmsg_in02Size-_SDA_BASE_(r13)
+/* 007CBC 8000D25C 80AD8050 */  lwz     r5, gmsg_in02Size@sda21(r13)
 /* 007CC0 8000D260 3861000C */  addi    r3, r1, 0xc
 /* 007CC4 8000D264 389F01A0 */  addi    r4, r31, 0x1a0
 /* 007CC8 8000D268 3805001F */  addi    r0, r5, 0x1f
@@ -5714,17 +5714,17 @@ lbl_8000D27C:
 /* 007CE8 8000D288 48001D99 */  bl      simulatorUnpackTexPalette
 /* 007CEC 8000D28C 480000B8 */  b       lbl_8000D344
 lbl_8000D290:
-/* 007CF0 8000D290 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007CF0 8000D290 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007CF4 8000D294 7C001800 */  cmpw    r0, r3
 /* 007CF8 8000D298 418200AC */  beq     lbl_8000D344
-/* 007CFC 8000D29C 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007CFC 8000D29C 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007D00 8000D2A0 3C640001 */  addis   r3, r4, 1
 /* 007D04 8000D2A4 3863E928 */  addi    r3, r3, -5848
 /* 007D08 8000D2A8 3881000C */  addi    r4, r1, 0xc
 /* 007D0C 8000D2AC 480A5789 */  bl      DVDOpen
 /* 007D10 8000D2B0 2C030001 */  cmpwi   r3, 1
 /* 007D14 8000D2B4 40820024 */  bne     lbl_8000D2D8
-/* 007D18 8000D2B8 80AD8094 */  lwz     r5, gmsg_sv09Size-_SDA_BASE_(r13)
+/* 007D18 8000D2B8 80AD8094 */  lwz     r5, gmsg_sv09Size@sda21(r13)
 /* 007D1C 8000D2BC 3861000C */  addi    r3, r1, 0xc
 /* 007D20 8000D2C0 389F01A0 */  addi    r4, r31, 0x1a0
 /* 007D24 8000D2C4 3805001F */  addi    r0, r5, 0x1f
@@ -5739,17 +5739,17 @@ lbl_8000D2D8:
 /* 007D44 8000D2E4 48001D3D */  bl      simulatorUnpackTexPalette
 /* 007D48 8000D2E8 4800005C */  b       lbl_8000D344
 lbl_8000D2EC:
-/* 007D4C 8000D2EC 800D80B4 */  lwz     r0, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007D4C 8000D2EC 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007D50 8000D2F0 7C001800 */  cmpw    r0, r3
 /* 007D54 8000D2F4 41820050 */  beq     lbl_8000D344
-/* 007D58 8000D2F8 906D80B4 */  stw     r3, simulatorMessageCurrent-_SDA_BASE_(r13)
+/* 007D58 8000D2F8 906D80B4 */  stw     r3, simulatorMessageCurrent@sda21(r13)
 /* 007D5C 8000D2FC 3C640001 */  addis   r3, r4, 1
 /* 007D60 8000D300 3863E93C */  addi    r3, r3, -5828
 /* 007D64 8000D304 3881000C */  addi    r4, r1, 0xc
 /* 007D68 8000D308 480A572D */  bl      DVDOpen
 /* 007D6C 8000D30C 2C030001 */  cmpwi   r3, 1
 /* 007D70 8000D310 40820024 */  bne     lbl_8000D334
-/* 007D74 8000D314 80AD8038 */  lwz     r5, gmsg_gf02Size-_SDA_BASE_(r13)
+/* 007D74 8000D314 80AD8038 */  lwz     r5, gmsg_gf02Size@sda21(r13)
 /* 007D78 8000D318 3861000C */  addi    r3, r1, 0xc
 /* 007D7C 8000D31C 389F01A0 */  addi    r4, r31, 0x1a0
 /* 007D80 8000D320 3805001F */  addi    r0, r5, 0x1f
@@ -5909,7 +5909,7 @@ glabel lbl_8000D528
 /* 007FBC 8000D55C 48000F29 */  bl      simulatorDrawImage
 lbl_8000D560:
 /* 007FC0 8000D560 38000001 */  li      r0, 1
-/* 007FC4 8000D564 900D891C */  stw     r0, gbDisplayedError-_SDA_BASE_(r13)
+/* 007FC4 8000D564 900D891C */  stw     r0, gbDisplayedError@sda21(r13)
 /* 007FC8 8000D568 38600001 */  li      r3, 1
 /* 007FCC 8000D56C 8001002C */  lwz     r0, 0x2c(r1)
 /* 007FD0 8000D570 83E10024 */  lwz     r31, 0x24(r1)
@@ -5985,7 +5985,7 @@ glabel simulatorDrawOKImage
 /* 0080E0 8000D680 90610054 */  stw     r3, 0x54(r1)
 /* 0080E4 8000D684 90010058 */  stw     r0, 0x58(r1)
 lbl_8000D688:
-/* 0080E8 8000D688 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 0080E8 8000D688 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 0080EC 8000D68C 48018841 */  bl      frameBeginOK
 /* 0080F0 8000D690 2C030001 */  cmpwi   r3, 1
 /* 0080F4 8000D694 4082FFF4 */  bne     lbl_8000D688
@@ -6021,15 +6021,15 @@ lbl_8000D688:
 /* 00816C 8000D70C B01AE174 */  sth     r0, -0x1e8c(r26)
 /* 008170 8000D710 4809009D */  bl      DCStoreRange
 /* 008174 8000D714 480019E9 */  bl      simulatorGXInit
-/* 008178 8000D718 C0228024 */  lfs     f1, D_80135D24-_SDA2_BASE_(r2)
+/* 008178 8000D718 C0228024 */  lfs     f1, D_80135D24@sda21(r2)
 /* 00817C 8000D71C 3C60800F */  lis     r3, gOrthoMtx@ha
 /* 008180 8000D720 3B634540 */  addi    r27, r3, gOrthoMtx@l
-/* 008184 8000D724 C042805C */  lfs     f2, D_80135D5C-_SDA2_BASE_(r2)
+/* 008184 8000D724 C042805C */  lfs     f2, D_80135D5C@sda21(r2)
 /* 008188 8000D728 FC600890 */  fmr     f3, f1
-/* 00818C 8000D72C C0828060 */  lfs     f4, D_80135D60-_SDA2_BASE_(r2)
+/* 00818C 8000D72C C0828060 */  lfs     f4, D_80135D60@sda21(r2)
 /* 008190 8000D730 7F63DB78 */  mr      r3, r27
-/* 008194 8000D734 C0A2802C */  lfs     f5, D_80135D2C-_SDA2_BASE_(r2)
-/* 008198 8000D738 C0C28064 */  lfs     f6, D_80135D64-_SDA2_BASE_(r2)
+/* 008194 8000D734 C0A2802C */  lfs     f5, D_80135D2C@sda21(r2)
+/* 008198 8000D738 C0C28064 */  lfs     f6, D_80135D64@sda21(r2)
 /* 00819C 8000D73C 4809A9AD */  bl      C_MTXOrtho
 /* 0081A0 8000D740 387B0000 */  addi    r3, r27, 0
 /* 0081A4 8000D744 38800001 */  li      r4, 1
@@ -6037,14 +6037,14 @@ lbl_8000D688:
 /* 0081AC 8000D74C 38600001 */  li      r3, 1
 /* 0081B0 8000D750 4809EE8D */  bl      GXSetNumChans
 /* 0081B4 8000D754 3861002C */  addi    r3, r1, 0x2c
-/* 0081B8 8000D758 C0228068 */  lfs     f1, D_80135D68-_SDA2_BASE_(r2)
-/* 0081BC 8000D75C C042806C */  lfs     f2, D_80135D6C-_SDA2_BASE_(r2)
+/* 0081B8 8000D758 C0228068 */  lfs     f1, D_80135D68@sda21(r2)
+/* 0081BC 8000D75C C042806C */  lfs     f2, D_80135D6C@sda21(r2)
 /* 0081C0 8000D760 7C641B78 */  mr      r4, r3
-/* 0081C4 8000D764 C0628024 */  lfs     f3, D_80135D24-_SDA2_BASE_(r2)
+/* 0081C4 8000D764 C0628024 */  lfs     f3, D_80135D24@sda21(r2)
 /* 0081C8 8000D768 4809A791 */  bl      PSMTXTransApply
-/* 0081CC 8000D76C C0228040 */  lfs     f1, D_80135D40-_SDA2_BASE_(r2)
+/* 0081CC 8000D76C C0228040 */  lfs     f1, D_80135D40@sda21(r2)
 /* 0081D0 8000D770 3861002C */  addi    r3, r1, 0x2c
-/* 0081D4 8000D774 C0628028 */  lfs     f3, D_80135D28-_SDA2_BASE_(r2)
+/* 0081D4 8000D774 C0628028 */  lfs     f3, D_80135D28@sda21(r2)
 /* 0081D8 8000D778 7C641B78 */  mr      r4, r3
 /* 0081DC 8000D77C FC400890 */  fmr     f2, f1
 /* 0081E0 8000D780 4809A7ED */  bl      PSMTXScaleApply
@@ -6263,7 +6263,7 @@ lbl_8000D688:
 /* 008534 8000DAD4 38A00004 */  li      r5, 4
 /* 008538 8000DAD8 4809D989 */  bl      GXBegin
 /* 00853C 8000DADC 9B7C8000 */  stb     r27, -0x8000(r28)
-/* 008540 8000DAE0 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 008540 8000DAE0 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 008544 8000DAE4 9B7C8000 */  stb     r27, -0x8000(r28)
 /* 008548 8000DAE8 28000000 */  cmplwi  r0, 0
 /* 00854C 8000DAEC 9B7C8000 */  stb     r27, -0x8000(r28)
@@ -6291,26 +6291,26 @@ lbl_8000DB34:
 /* 0085A0 8000DB40 480A09A5 */  bl      GXSetZMode
 /* 0085A4 8000DB44 38600001 */  li      r3, 1
 /* 0085A8 8000DB48 480A0945 */  bl      GXSetColorUpdate
-/* 0085AC 8000DB4C 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0085AC 8000DB4C 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0085B0 8000DB50 38800001 */  li      r4, 1
 /* 0085B4 8000DB54 4809E57D */  bl      GXCopyDisp
 /* 0085B8 8000DB58 4809D4BD */  bl      GXDrawDone
-/* 0085BC 8000DB5C 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0085BC 8000DB5C 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0085C0 8000DB60 48099BDD */  bl      VISetNextFrameBuffer
 /* 0085C4 8000DB64 48099AA9 */  bl      VIFlush
 /* 0085C8 8000DB68 48098DB5 */  bl      VIWaitForRetrace
-/* 0085CC 8000DB6C 800D8DAC */  lwz     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 0085D0 8000DB70 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0085CC 8000DB6C 800D8DAC */  lwz     r0, DemoCurrentBuffer@sda21(r13)
+/* 0085D0 8000DB70 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 0085D4 8000DB74 7C001840 */  cmplw   r0, r3
 /* 0085D8 8000DB78 40820010 */  bne     lbl_8000DB88
-/* 0085DC 8000DB7C 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0085E0 8000DB80 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0085DC 8000DB7C 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0085E0 8000DB80 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0085E4 8000DB84 48000008 */  b       lbl_8000DB8C
 lbl_8000DB88:
-/* 0085E8 8000DB88 906D8DAC */  stw     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0085E8 8000DB88 906D8DAC */  stw     r3, DemoCurrentBuffer@sda21(r13)
 lbl_8000DB8C:
 /* 0085EC 8000DB8C 3C800006 */  lis     r4, 6
-/* 0085F0 8000DB90 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 0085F0 8000DB90 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 0085F4 8000DB94 3884FFED */  addi    r4, r4, -19
 /* 0085F8 8000DB98 48012765 */  bl      frameDrawReset
 /* 0085FC 8000DB9C BAE100BC */  lmw     r23, 0xbc(r1)
@@ -6388,7 +6388,7 @@ glabel simulatorDrawYesNoImage
 /* 008714 8000DCB4 90610068 */  stw     r3, 0x68(r1)
 /* 008718 8000DCB8 9001006C */  stw     r0, 0x6c(r1)
 lbl_8000DCBC:
-/* 00871C 8000DCBC 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 00871C 8000DCBC 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 008720 8000DCC0 4801820D */  bl      frameBeginOK
 /* 008724 8000DCC4 2C030001 */  cmpwi   r3, 1
 /* 008728 8000DCC8 4082FFF4 */  bne     lbl_8000DCBC
@@ -6424,15 +6424,15 @@ lbl_8000DCBC:
 /* 0087A0 8000DD40 B01FE174 */  sth     r0, -0x1e8c(r31)
 /* 0087A4 8000DD44 4808FA69 */  bl      DCStoreRange
 /* 0087A8 8000DD48 480013B5 */  bl      simulatorGXInit
-/* 0087AC 8000DD4C C0228024 */  lfs     f1, D_80135D24-_SDA2_BASE_(r2)
+/* 0087AC 8000DD4C C0228024 */  lfs     f1, D_80135D24@sda21(r2)
 /* 0087B0 8000DD50 3C60800F */  lis     r3, gOrthoMtx@ha
 /* 0087B4 8000DD54 3AC34540 */  addi    r22, r3, gOrthoMtx@l
-/* 0087B8 8000DD58 C042805C */  lfs     f2, D_80135D5C-_SDA2_BASE_(r2)
+/* 0087B8 8000DD58 C042805C */  lfs     f2, D_80135D5C@sda21(r2)
 /* 0087BC 8000DD5C FC600890 */  fmr     f3, f1
-/* 0087C0 8000DD60 C0828060 */  lfs     f4, D_80135D60-_SDA2_BASE_(r2)
+/* 0087C0 8000DD60 C0828060 */  lfs     f4, D_80135D60@sda21(r2)
 /* 0087C4 8000DD64 7EC3B378 */  mr      r3, r22
-/* 0087C8 8000DD68 C0A2802C */  lfs     f5, D_80135D2C-_SDA2_BASE_(r2)
-/* 0087CC 8000DD6C C0C28064 */  lfs     f6, D_80135D64-_SDA2_BASE_(r2)
+/* 0087C8 8000DD68 C0A2802C */  lfs     f5, D_80135D2C@sda21(r2)
+/* 0087CC 8000DD6C C0C28064 */  lfs     f6, D_80135D64@sda21(r2)
 /* 0087D0 8000DD70 4809A379 */  bl      C_MTXOrtho
 /* 0087D4 8000DD74 38760000 */  addi    r3, r22, 0
 /* 0087D8 8000DD78 38800001 */  li      r4, 1
@@ -6440,14 +6440,14 @@ lbl_8000DCBC:
 /* 0087E0 8000DD80 38600001 */  li      r3, 1
 /* 0087E4 8000DD84 4809E859 */  bl      GXSetNumChans
 /* 0087E8 8000DD88 38610040 */  addi    r3, r1, 0x40
-/* 0087EC 8000DD8C C0228068 */  lfs     f1, D_80135D68-_SDA2_BASE_(r2)
-/* 0087F0 8000DD90 C042806C */  lfs     f2, D_80135D6C-_SDA2_BASE_(r2)
+/* 0087EC 8000DD8C C0228068 */  lfs     f1, D_80135D68@sda21(r2)
+/* 0087F0 8000DD90 C042806C */  lfs     f2, D_80135D6C@sda21(r2)
 /* 0087F4 8000DD94 7C641B78 */  mr      r4, r3
-/* 0087F8 8000DD98 C0628024 */  lfs     f3, D_80135D24-_SDA2_BASE_(r2)
+/* 0087F8 8000DD98 C0628024 */  lfs     f3, D_80135D24@sda21(r2)
 /* 0087FC 8000DD9C 4809A15D */  bl      PSMTXTransApply
-/* 008800 8000DDA0 C0228040 */  lfs     f1, D_80135D40-_SDA2_BASE_(r2)
+/* 008800 8000DDA0 C0228040 */  lfs     f1, D_80135D40@sda21(r2)
 /* 008804 8000DDA4 38610040 */  addi    r3, r1, 0x40
-/* 008808 8000DDA8 C0628028 */  lfs     f3, D_80135D28-_SDA2_BASE_(r2)
+/* 008808 8000DDA8 C0628028 */  lfs     f3, D_80135D28@sda21(r2)
 /* 00880C 8000DDAC 7C641B78 */  mr      r4, r3
 /* 008810 8000DDB0 FC400890 */  fmr     f2, f1
 /* 008814 8000DDB4 4809A1B9 */  bl      PSMTXScaleApply
@@ -6615,7 +6615,7 @@ lbl_8000DCBC:
 /* 008A9C 8000E03C 386100AC */  addi    r3, r1, 0xac
 /* 008AA0 8000E040 38800000 */  li      r4, 0
 /* 008AA4 8000E044 4809ECF5 */  bl      GXLoadTexObj
-/* 008AA8 8000E048 800D80B0 */  lwz     r0, gHighlightChoice-_SDA_BASE_(r13)
+/* 008AA8 8000E048 800D80B0 */  lwz     r0, gHighlightChoice@sda21(r13)
 /* 008AAC 8000E04C 2C000001 */  cmpwi   r0, 1
 /* 008AB0 8000E050 408200BC */  bne     lbl_8000E10C
 /* 008AB4 8000E054 9BC100A4 */  stb     r30, 0xa4(r1)
@@ -6772,7 +6772,7 @@ lbl_8000E118:
 /* 008D08 8000E2A8 386100AC */  addi    r3, r1, 0xac
 /* 008D0C 8000E2AC 38800000 */  li      r4, 0
 /* 008D10 8000E2B0 4809EA89 */  bl      GXLoadTexObj
-/* 008D14 8000E2B4 800D80B0 */  lwz     r0, gHighlightChoice-_SDA_BASE_(r13)
+/* 008D14 8000E2B4 800D80B0 */  lwz     r0, gHighlightChoice@sda21(r13)
 /* 008D18 8000E2B8 2C000001 */  cmpwi   r0, 1
 /* 008D1C 8000E2BC 40820014 */  bne     lbl_8000E2D0
 /* 008D20 8000E2C0 38600000 */  li      r3, 0
@@ -6832,7 +6832,7 @@ lbl_8000E384:
 /* 008DF0 8000E390 38A00004 */  li      r5, 4
 /* 008DF4 8000E394 4809D0CD */  bl      GXBegin
 /* 008DF8 8000E398 38E00000 */  li      r7, 0
-/* 008DFC 8000E39C 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 008DFC 8000E39C 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 008E00 8000E3A0 3CC0CC01 */  lis     r6, 0xcc01
 /* 008E04 8000E3A4 98E68000 */  stb     r7, -0x8000(r6)
 /* 008E08 8000E3A8 38A00001 */  li      r5, 1
@@ -6865,26 +6865,26 @@ lbl_8000E404:
 /* 008E70 8000E410 480A00D5 */  bl      GXSetZMode
 /* 008E74 8000E414 38600001 */  li      r3, 1
 /* 008E78 8000E418 480A0075 */  bl      GXSetColorUpdate
-/* 008E7C 8000E41C 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 008E7C 8000E41C 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 008E80 8000E420 38800001 */  li      r4, 1
 /* 008E84 8000E424 4809DCAD */  bl      GXCopyDisp
 /* 008E88 8000E428 4809CBED */  bl      GXDrawDone
-/* 008E8C 8000E42C 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 008E8C 8000E42C 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 008E90 8000E430 4809930D */  bl      VISetNextFrameBuffer
 /* 008E94 8000E434 480991D9 */  bl      VIFlush
 /* 008E98 8000E438 480984E5 */  bl      VIWaitForRetrace
-/* 008E9C 8000E43C 800D8DAC */  lwz     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 008EA0 8000E440 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 008E9C 8000E43C 800D8DAC */  lwz     r0, DemoCurrentBuffer@sda21(r13)
+/* 008EA0 8000E440 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 008EA4 8000E444 7C001840 */  cmplw   r0, r3
 /* 008EA8 8000E448 40820010 */  bne     lbl_8000E458
-/* 008EAC 8000E44C 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 008EB0 8000E450 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 008EAC 8000E44C 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 008EB0 8000E450 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 008EB4 8000E454 48000008 */  b       lbl_8000E45C
 lbl_8000E458:
-/* 008EB8 8000E458 906D8DAC */  stw     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 008EB8 8000E458 906D8DAC */  stw     r3, DemoCurrentBuffer@sda21(r13)
 lbl_8000E45C:
 /* 008EBC 8000E45C 3C800006 */  lis     r4, 6
-/* 008EC0 8000E460 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 008EC0 8000E460 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 008EC4 8000E464 3884FFED */  addi    r4, r4, -19
 /* 008EC8 8000E468 48011E95 */  bl      frameDrawReset
 /* 008ECC 8000E46C BAA100D4 */  lmw     r21, 0xd4(r1)
@@ -6960,7 +6960,7 @@ glabel simulatorDrawImage
 /* 008FDC 8000E57C 9061007C */  stw     r3, 0x7c(r1)
 /* 008FE0 8000E580 90010080 */  stw     r0, 0x80(r1)
 lbl_8000E584:
-/* 008FE4 8000E584 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 008FE4 8000E584 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 008FE8 8000E588 48017945 */  bl      frameBeginOK
 /* 008FEC 8000E58C 2C030001 */  cmpwi   r3, 1
 /* 008FF0 8000E590 4082FFF4 */  bne     lbl_8000E584
@@ -6978,28 +6978,28 @@ lbl_8000E584:
 /* 009020 8000E5C0 4809E01D */  bl      GXSetNumChans
 /* 009024 8000E5C4 38600000 */  li      r3, 0
 /* 009028 8000E5C8 4809C4ED */  bl      GXSetNumTexGens
-/* 00902C 8000E5CC C0228024 */  lfs     f1, D_80135D24-_SDA2_BASE_(r2)
+/* 00902C 8000E5CC C0228024 */  lfs     f1, D_80135D24@sda21(r2)
 /* 009030 8000E5D0 7FA3EB78 */  mr      r3, r29
-/* 009034 8000E5D4 C042805C */  lfs     f2, D_80135D5C-_SDA2_BASE_(r2)
+/* 009034 8000E5D4 C042805C */  lfs     f2, D_80135D5C@sda21(r2)
 /* 009038 8000E5D8 FC600890 */  fmr     f3, f1
-/* 00903C 8000E5DC C0828060 */  lfs     f4, D_80135D60-_SDA2_BASE_(r2)
-/* 009040 8000E5E0 C0A2802C */  lfs     f5, D_80135D2C-_SDA2_BASE_(r2)
-/* 009044 8000E5E4 C0C28064 */  lfs     f6, D_80135D64-_SDA2_BASE_(r2)
+/* 00903C 8000E5DC C0828060 */  lfs     f4, D_80135D60@sda21(r2)
+/* 009040 8000E5E0 C0A2802C */  lfs     f5, D_80135D2C@sda21(r2)
+/* 009044 8000E5E4 C0C28064 */  lfs     f6, D_80135D64@sda21(r2)
 /* 009048 8000E5E8 48099B01 */  bl      C_MTXOrtho
 /* 00904C 8000E5EC 387D0000 */  addi    r3, r29, 0
 /* 009050 8000E5F0 38800001 */  li      r4, 1
 /* 009054 8000E5F4 480A0145 */  bl      GXSetProjection
 /* 009058 8000E5F8 38600001 */  li      r3, 1
 /* 00905C 8000E5FC 4809DFE1 */  bl      GXSetNumChans
-/* 009060 8000E600 C0228068 */  lfs     f1, D_80135D68-_SDA2_BASE_(r2)
+/* 009060 8000E600 C0228068 */  lfs     f1, D_80135D68@sda21(r2)
 /* 009064 8000E604 38610054 */  addi    r3, r1, 0x54
-/* 009068 8000E608 C042806C */  lfs     f2, D_80135D6C-_SDA2_BASE_(r2)
+/* 009068 8000E608 C042806C */  lfs     f2, D_80135D6C@sda21(r2)
 /* 00906C 8000E60C 38810024 */  addi    r4, r1, 0x24
-/* 009070 8000E610 C0628024 */  lfs     f3, D_80135D24-_SDA2_BASE_(r2)
+/* 009070 8000E610 C0628024 */  lfs     f3, D_80135D24@sda21(r2)
 /* 009074 8000E614 480998E5 */  bl      PSMTXTransApply
-/* 009078 8000E618 C0228040 */  lfs     f1, D_80135D40-_SDA2_BASE_(r2)
+/* 009078 8000E618 C0228040 */  lfs     f1, D_80135D40@sda21(r2)
 /* 00907C 8000E61C 38610024 */  addi    r3, r1, 0x24
-/* 009080 8000E620 C0628028 */  lfs     f3, D_80135D28-_SDA2_BASE_(r2)
+/* 009080 8000E620 C0628028 */  lfs     f3, D_80135D28@sda21(r2)
 /* 009084 8000E624 7C641B78 */  mr      r4, r3
 /* 009088 8000E628 FC400890 */  fmr     f2, f1
 /* 00908C 8000E62C 48099941 */  bl      PSMTXScaleApply
@@ -7071,13 +7071,13 @@ lbl_8000E584:
 /* 009194 8000E734 38800000 */  li      r4, 0
 /* 009198 8000E738 38A00004 */  li      r5, 4
 /* 00919C 8000E73C 4809CD25 */  bl      GXBegin
-/* 0091A0 8000E740 C0428024 */  lfs     f2, D_80135D24-_SDA2_BASE_(r2)
+/* 0091A0 8000E740 C0428024 */  lfs     f2, D_80135D24@sda21(r2)
 /* 0091A4 8000E744 3F60CC01 */  lis     r27, 0xcc01
 /* 0091A8 8000E748 3F9C0001 */  addis   r28, r28, 1
-/* 0091AC 8000E74C C0228060 */  lfs     f1, D_80135D60-_SDA2_BASE_(r2)
+/* 0091AC 8000E74C C0228060 */  lfs     f1, D_80135D60@sda21(r2)
 /* 0091B0 8000E750 D05B8000 */  stfs    f2, -0x8000(r27)
 /* 0091B4 8000E754 7F83E378 */  mr      r3, r28
-/* 0091B8 8000E758 C002805C */  lfs     f0, D_80135D5C-_SDA2_BASE_(r2)
+/* 0091B8 8000E758 C002805C */  lfs     f0, D_80135D5C@sda21(r2)
 /* 0091BC 8000E75C D05B8000 */  stfs    f2, -0x8000(r27)
 /* 0091C0 8000E760 7FC70734 */  extsh   r7, r30
 /* 0091C4 8000E764 7EE60734 */  extsh   r6, r23
@@ -7119,28 +7119,28 @@ lbl_8000E584:
 /* 009254 8000E7F4 B01CE174 */  sth     r0, -0x1e8c(r28)
 /* 009258 8000E7F8 4808EFB5 */  bl      DCStoreRange
 /* 00925C 8000E7FC 48000901 */  bl      simulatorGXInit
-/* 009260 8000E800 C0228024 */  lfs     f1, D_80135D24-_SDA2_BASE_(r2)
+/* 009260 8000E800 C0228024 */  lfs     f1, D_80135D24@sda21(r2)
 /* 009264 8000E804 7FA3EB78 */  mr      r3, r29
-/* 009268 8000E808 C042805C */  lfs     f2, D_80135D5C-_SDA2_BASE_(r2)
+/* 009268 8000E808 C042805C */  lfs     f2, D_80135D5C@sda21(r2)
 /* 00926C 8000E80C FC600890 */  fmr     f3, f1
-/* 009270 8000E810 C0828060 */  lfs     f4, D_80135D60-_SDA2_BASE_(r2)
-/* 009274 8000E814 C0A2802C */  lfs     f5, D_80135D2C-_SDA2_BASE_(r2)
-/* 009278 8000E818 C0C28064 */  lfs     f6, D_80135D64-_SDA2_BASE_(r2)
+/* 009270 8000E810 C0828060 */  lfs     f4, D_80135D60@sda21(r2)
+/* 009274 8000E814 C0A2802C */  lfs     f5, D_80135D2C@sda21(r2)
+/* 009278 8000E818 C0C28064 */  lfs     f6, D_80135D64@sda21(r2)
 /* 00927C 8000E81C 480998CD */  bl      C_MTXOrtho
 /* 009280 8000E820 387D0000 */  addi    r3, r29, 0
 /* 009284 8000E824 38800001 */  li      r4, 1
 /* 009288 8000E828 4809FF11 */  bl      GXSetProjection
 /* 00928C 8000E82C 38600001 */  li      r3, 1
 /* 009290 8000E830 4809DDAD */  bl      GXSetNumChans
-/* 009294 8000E834 C0228068 */  lfs     f1, D_80135D68-_SDA2_BASE_(r2)
+/* 009294 8000E834 C0228068 */  lfs     f1, D_80135D68@sda21(r2)
 /* 009298 8000E838 38610054 */  addi    r3, r1, 0x54
-/* 00929C 8000E83C C042806C */  lfs     f2, D_80135D6C-_SDA2_BASE_(r2)
+/* 00929C 8000E83C C042806C */  lfs     f2, D_80135D6C@sda21(r2)
 /* 0092A0 8000E840 38810024 */  addi    r4, r1, 0x24
-/* 0092A4 8000E844 C0628024 */  lfs     f3, D_80135D24-_SDA2_BASE_(r2)
+/* 0092A4 8000E844 C0628024 */  lfs     f3, D_80135D24@sda21(r2)
 /* 0092A8 8000E848 480996B1 */  bl      PSMTXTransApply
-/* 0092AC 8000E84C C0228040 */  lfs     f1, D_80135D40-_SDA2_BASE_(r2)
+/* 0092AC 8000E84C C0228040 */  lfs     f1, D_80135D40@sda21(r2)
 /* 0092B0 8000E850 38610024 */  addi    r3, r1, 0x24
-/* 0092B4 8000E854 C0628028 */  lfs     f3, D_80135D28-_SDA2_BASE_(r2)
+/* 0092B4 8000E854 C0628028 */  lfs     f3, D_80135D28@sda21(r2)
 /* 0092B8 8000E858 7C641B78 */  mr      r4, r3
 /* 0092BC 8000E85C FC400890 */  fmr     f2, f1
 /* 0092C0 8000E860 4809970D */  bl      PSMTXScaleApply
@@ -7374,7 +7374,7 @@ lbl_8000E584:
 /* 009650 8000EBF0 9BFB8000 */  stb     r31, -0x8000(r27)
 /* 009654 8000EBF4 9BFB8000 */  stb     r31, -0x8000(r27)
 lbl_8000EBF8:
-/* 009658 8000EBF8 880D8DC8 */  lbz     r0, DemoStatEnable-_SDA_BASE_(r13)
+/* 009658 8000EBF8 880D8DC8 */  lbz     r0, DemoStatEnable@sda21(r13)
 /* 00965C 8000EBFC 28000000 */  cmplwi  r0, 0
 /* 009660 8000EC00 41820020 */  beq     lbl_8000EC20
 /* 009664 8000EC04 4809C411 */  bl      GXDrawDone
@@ -7391,26 +7391,26 @@ lbl_8000EC20:
 /* 00968C 8000EC2C 4809F8B9 */  bl      GXSetZMode
 /* 009690 8000EC30 38600001 */  li      r3, 1
 /* 009694 8000EC34 4809F859 */  bl      GXSetColorUpdate
-/* 009698 8000EC38 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 009698 8000EC38 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 00969C 8000EC3C 38800001 */  li      r4, 1
 /* 0096A0 8000EC40 4809D491 */  bl      GXCopyDisp
 /* 0096A4 8000EC44 4809C3D1 */  bl      GXDrawDone
-/* 0096A8 8000EC48 806D8DAC */  lwz     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0096A8 8000EC48 806D8DAC */  lwz     r3, DemoCurrentBuffer@sda21(r13)
 /* 0096AC 8000EC4C 48098AF1 */  bl      VISetNextFrameBuffer
 /* 0096B0 8000EC50 480989BD */  bl      VIFlush
 /* 0096B4 8000EC54 48097CC9 */  bl      VIWaitForRetrace
-/* 0096B8 8000EC58 800D8DAC */  lwz     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
-/* 0096BC 8000EC5C 806D8DB4 */  lwz     r3, DemoFrameBuffer1-_SDA_BASE_(r13)
+/* 0096B8 8000EC58 800D8DAC */  lwz     r0, DemoCurrentBuffer@sda21(r13)
+/* 0096BC 8000EC5C 806D8DB4 */  lwz     r3, DemoFrameBuffer1@sda21(r13)
 /* 0096C0 8000EC60 7C001840 */  cmplw   r0, r3
 /* 0096C4 8000EC64 40820010 */  bne     lbl_8000EC74
-/* 0096C8 8000EC68 800D8DB0 */  lwz     r0, DemoFrameBuffer2-_SDA_BASE_(r13)
-/* 0096CC 8000EC6C 900D8DAC */  stw     r0, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0096C8 8000EC68 800D8DB0 */  lwz     r0, DemoFrameBuffer2@sda21(r13)
+/* 0096CC 8000EC6C 900D8DAC */  stw     r0, DemoCurrentBuffer@sda21(r13)
 /* 0096D0 8000EC70 48000008 */  b       lbl_8000EC78
 lbl_8000EC74:
-/* 0096D4 8000EC74 906D8DAC */  stw     r3, DemoCurrentBuffer-_SDA_BASE_(r13)
+/* 0096D4 8000EC74 906D8DAC */  stw     r3, DemoCurrentBuffer@sda21(r13)
 lbl_8000EC78:
 /* 0096D8 8000EC78 3C800006 */  lis     r4, 6
-/* 0096DC 8000EC7C 806D8928 */  lwz     r3, gpFrame-_SDA_BASE_(r13)
+/* 0096DC 8000EC7C 806D8928 */  lwz     r3, gpFrame@sda21(r13)
 /* 0096E0 8000EC80 3884FFED */  addi    r4, r4, -19
 /* 0096E4 8000EC84 48011679 */  bl      frameDrawReset
 /* 0096E8 8000EC88 BAC10100 */  lmw     r22, 0x100(r1)
@@ -7611,17 +7611,17 @@ glabel lbl_8000EEEC
 /* 00997C 8000EF1C 2C1A000A */  cmpwi   r26, 0xa
 /* 009980 8000EF20 41820010 */  beq     lbl_8000EF30
 /* 009984 8000EF24 38000001 */  li      r0, 1
-/* 009988 8000EF28 900D88FC */  stw     r0, toggle$192-_SDA_BASE_(r13)
+/* 009988 8000EF28 900D88FC */  stw     r0, toggle$192@sda21(r13)
 /* 00998C 8000EF2C 4800001C */  b       lbl_8000EF48
 lbl_8000EF30:
-/* 009990 8000EF30 800D88FC */  lwz     r0, toggle$192-_SDA_BASE_(r13)
+/* 009990 8000EF30 800D88FC */  lwz     r0, toggle$192@sda21(r13)
 /* 009994 8000EF34 2C000001 */  cmpwi   r0, 1
 /* 009998 8000EF38 40820010 */  bne     lbl_8000EF48
 /* 00999C 8000EF3C 38000000 */  li      r0, 0
-/* 0099A0 8000EF40 900D88FC */  stw     r0, toggle$192-_SDA_BASE_(r13)
+/* 0099A0 8000EF40 900D88FC */  stw     r0, toggle$192@sda21(r13)
 /* 0099A4 8000EF44 3B600002 */  li      r27, 2
 lbl_8000EF48:
-/* 0099A8 8000EF48 800D88F8 */  lwz     r0, gDVDResetToggle-_SDA_BASE_(r13)
+/* 0099A8 8000EF48 800D88F8 */  lwz     r0, gDVDResetToggle@sda21(r13)
 /* 0099AC 8000EF4C 2C000001 */  cmpwi   r0, 1
 /* 0099B0 8000EF50 40820044 */  bne     lbl_8000EF94
 /* 0099B4 8000EF54 281A0003 */  cmplwi  r26, 3
@@ -7657,7 +7657,7 @@ lbl_8000EFC0:
 /* 009A20 8000EFC0 2C1BFFFF */  cmpwi   r27, -1
 /* 009A24 8000EFC4 41820034 */  beq     lbl_8000EFF8
 lbl_8000EFC8:
-/* 009A28 8000EFC8 806D8920 */  lwz     r3, gpSystem-_SDA_BASE_(r13)
+/* 009A28 8000EFC8 806D8920 */  lwz     r3, gpSystem@sda21(r13)
 /* 009A2C 8000EFCC 80630000 */  lwz     r3, 0(r3)
 /* 009A30 8000EFD0 48016EFD */  bl      frameBeginOK
 /* 009A34 8000EFD4 2C030000 */  cmpwi   r3, 0
@@ -7754,9 +7754,9 @@ glabel simulatorGXInit
 /* 009B78 8000F118 38E00000 */  li      r7, 0
 /* 009B7C 8000F11C 93E10064 */  stw     r31, 0x64(r1)
 /* 009B80 8000F120 3900007D */  li      r8, 0x7d
-/* 009B84 8000F124 80828018 */  lwz     r4, D_80135D18-_SDA2_BASE_(r2)
-/* 009B88 8000F128 80A2801C */  lwz     r5, D_80135D1C-_SDA2_BASE_(r2)
-/* 009B8C 8000F12C 80028020 */  lwz     r0, D_80135D20-_SDA2_BASE_(r2)
+/* 009B84 8000F124 80828018 */  lwz     r4, D_80135D18@sda21(r2)
+/* 009B88 8000F128 80A2801C */  lwz     r5, D_80135D1C@sda21(r2)
+/* 009B8C 8000F12C 80028020 */  lwz     r0, D_80135D20@sda21(r2)
 /* 009B90 8000F130 90810058 */  stw     r4, 0x58(r1)
 /* 009B94 8000F134 38800001 */  li      r4, 1
 /* 009B98 8000F138 90A10054 */  stw     r5, 0x54(r1)
@@ -8097,14 +8097,14 @@ lbl_8000F61C:
 /* 00A0CC 8000F66C 38800000 */  li      r4, 0
 /* 00A0D0 8000F670 38A00000 */  li      r5, 0
 /* 00A0D4 8000F674 4809DF61 */  bl      GXSetIndTexCoordScale
-/* 00A0D8 8000F678 C0428028 */  lfs     f2, D_80135D28-_SDA2_BASE_(r2)
+/* 00A0D8 8000F678 C0428028 */  lfs     f2, D_80135D28@sda21(r2)
 /* 00A0DC 8000F67C 3881000C */  addi    r4, r1, 0xc
 /* 00A0E0 8000F680 80010054 */  lwz     r0, 0x54(r1)
 /* 00A0E4 8000F684 38600000 */  li      r3, 0
 /* 00A0E8 8000F688 FC801090 */  fmr     f4, f2
 /* 00A0EC 8000F68C 9001000C */  stw     r0, 0xc(r1)
-/* 00A0F0 8000F690 C0228024 */  lfs     f1, D_80135D24-_SDA2_BASE_(r2)
-/* 00A0F4 8000F694 C062802C */  lfs     f3, D_80135D2C-_SDA2_BASE_(r2)
+/* 00A0F0 8000F690 C0228024 */  lfs     f1, D_80135D24@sda21(r2)
+/* 00A0F4 8000F694 C062802C */  lfs     f3, D_80135D2C@sda21(r2)
 /* 00A0F8 8000F698 4809E8A9 */  bl      GXSetFog
 /* 00A0FC 8000F69C 38600000 */  li      r3, 0
 /* 00A100 8000F6A0 38800000 */  li      r4, 0

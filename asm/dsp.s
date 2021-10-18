@@ -44,10 +44,10 @@ glabel DSPInit
 /* 0B4DD4 800BA374 93E1000C */  stw     r31, 0xc(r1)
 /* 0B4DD8 800BA378 38A50074 */  addi    r5, r5, 0x74
 /* 0B4DDC 800BA37C 4800010D */  bl      __DSP_debug_printf
-/* 0B4DE0 800BA380 800D8E90 */  lwz     r0, __DSP_init_flag-_SDA_BASE_(r13)
+/* 0B4DE0 800BA380 800D8E90 */  lwz     r0, __DSP_init_flag@sda21(r13)
 /* 0B4DE4 800BA384 2C000001 */  cmpwi   r0, 1
 /* 0B4DE8 800BA388 4182007C */  beq     lbl_800BA404
-/* 0B4DEC 800BA38C 806D8860 */  lwz     r3, __DSPVersion-_SDA_BASE_(r13)
+/* 0B4DEC 800BA38C 806D8860 */  lwz     r3, __DSPVersion@sda21(r13)
 /* 0B4DF0 800BA390 4BFE2301 */  bl      OSRegisterVersion
 /* 0B4DF4 800BA394 4BFE4969 */  bl      OSDisableInterrupts
 /* 0B4DF8 800BA398 3C80800C */  lis     r4, __DSPHandler@ha
@@ -71,11 +71,11 @@ glabel DSPInit
 /* 0B4E40 800BA3E0 387F0000 */  addi    r3, r31, 0
 /* 0B4E44 800BA3E4 7CE52838 */  and     r5, r7, r5
 /* 0B4E48 800BA3E8 B0A6000A */  sth     r5, DSP_0A(r6)
-/* 0B4E4C 800BA3EC 908D8EA0 */  stw     r4, __DSP_tmp_task-_SDA_BASE_(r13)
-/* 0B4E50 800BA3F0 908D8EAC */  stw     r4, __DSP_curr_task-_SDA_BASE_(r13)
-/* 0B4E54 800BA3F4 908D8EA4 */  stw     r4, __DSP_last_task-_SDA_BASE_(r13)
-/* 0B4E58 800BA3F8 908D8EA8 */  stw     r4, __DSP_first_task-_SDA_BASE_(r13)
-/* 0B4E5C 800BA3FC 900D8E90 */  stw     r0, __DSP_init_flag-_SDA_BASE_(r13)
+/* 0B4E4C 800BA3EC 908D8EA0 */  stw     r4, __DSP_tmp_task@sda21(r13)
+/* 0B4E50 800BA3F0 908D8EAC */  stw     r4, __DSP_curr_task@sda21(r13)
+/* 0B4E54 800BA3F4 908D8EA4 */  stw     r4, __DSP_last_task@sda21(r13)
+/* 0B4E58 800BA3F8 908D8EA8 */  stw     r4, __DSP_first_task@sda21(r13)
+/* 0B4E5C 800BA3FC 900D8E90 */  stw     r0, __DSP_init_flag@sda21(r13)
 /* 0B4E60 800BA400 4BFE4925 */  bl      OSRestoreInterrupts
 lbl_800BA404:
 /* 0B4E64 800BA404 80010014 */  lwz     r0, 0x14(r1)
@@ -101,7 +101,7 @@ glabel DSPAddTask
 /* 0B4EAC 800BA44C 387F0000 */  addi    r3, r31, 0
 /* 0B4EB0 800BA450 901E0008 */  stw     r0, 8(r30)
 /* 0B4EB4 800BA454 4BFE48D1 */  bl      OSRestoreInterrupts
-/* 0B4EB8 800BA458 800D8EA8 */  lwz     r0, __DSP_first_task-_SDA_BASE_(r13)
+/* 0B4EB8 800BA458 800D8EA8 */  lwz     r0, __DSP_first_task@sda21(r13)
 /* 0B4EBC 800BA45C 7C1E0040 */  cmplw   r30, r0
 /* 0B4EC0 800BA460 4082000C */  bne     lbl_800BA46C
 /* 0B4EC4 800BA464 7FC3F378 */  mr      r3, r30

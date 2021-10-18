@@ -85,8 +85,8 @@ lbl_800D08BC:
 /* 0CB320 800D08C0 38840001 */  addi    r4, r4, 1
 lbl_800D08C4:
 /* 0CB324 800D08C4 80E30000 */  lwz     r7, 0(r3)
-/* 0CB328 800D08C8 80CD8894 */  lwz     r6, K2-_SDA_BASE_(r13)
-/* 0CB32C 800D08CC 80AD8890 */  lwz     r5, K1-_SDA_BASE_(r13)
+/* 0CB328 800D08C8 80CD8894 */  lwz     r6, K2@sda21(r13)
+/* 0CB32C 800D08CC 80AD8890 */  lwz     r5, K1@sda21(r13)
 /* 0CB330 800D08D0 7C073214 */  add     r0, r7, r6
 /* 0CB334 800D08D4 81040000 */  lwz     r8, 0(r4)
 /* 0CB338 800D08D8 7C002839 */  and.    r0, r0, r5
@@ -182,8 +182,8 @@ lbl_800D09F8:
 /* 0CB45C 800D09FC 38840001 */  addi    r4, r4, 1
 lbl_800D0A00:
 /* 0CB460 800D0A00 80A40000 */  lwz     r5, 0(r4)
-/* 0CB464 800D0A04 800D8894 */  lwz     r0, K2-_SDA_BASE_(r13)
-/* 0CB468 800D0A08 80CD8890 */  lwz     r6, K1-_SDA_BASE_(r13)
+/* 0CB464 800D0A04 800D8894 */  lwz     r0, K2@sda21(r13)
+/* 0CB468 800D0A08 80CD8890 */  lwz     r6, K1@sda21(r13)
 /* 0CB46C 800D0A0C 39050000 */  addi    r8, r5, 0
 /* 0CB470 800D0A10 7CA50214 */  add     r5, r5, r0
 /* 0CB474 800D0A14 7CA53039 */  and.    r5, r5, r6
