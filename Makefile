@@ -40,7 +40,7 @@ endif
 AS := $(DEVKITPPC)/bin/powerpc-eabi-as
 OBJCOPY := $(DEVKITPPC)/bin/powerpc-eabi-objcopy
 OBJDUMP := $(DEVKITPPC)/bin/powerpc-eabi-objdump
-CPP := cpp -P
+CPP := cpp
 CC := $(WINE) tools/mwcc_compiler/$(MWCC_VERSION)/mwcceppc.exe
 LD := $(WINE) tools/mwcc_compiler/$(MWCC_VERSION)/mwldeppc.exe
 SHA1SUM := sha1sum
@@ -84,7 +84,7 @@ DUMMY != mkdir -p $(ALL_DIRS)
 .PHONY: tools
 
 $(LDSCRIPT): ldscript.lcf
-	$(CPP) -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
+	$(CPP) -P -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
 
 $(ELF): $(O_FILES) $(LDSCRIPT)
 	$(LD) $(LDFLAGS) -o $@ -lcf $(LDSCRIPT) $(O_FILES)
