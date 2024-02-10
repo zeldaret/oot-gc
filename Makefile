@@ -105,7 +105,7 @@ clean:
 #	$(MAKE) -C tools
 
 $(BUILD_DIR)/%.o: %.s
-	iconv --from UTF-8 --to SHIFT-JIS $< | $(AS) $(ASFLAGS) -o $@
+	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
