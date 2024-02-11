@@ -1263,8 +1263,8 @@ def search_map_file(
             return cands[0]
     elif project.map_format == "mw":
         find = re.findall(
-            #            ram   elf rom  alignment
-            r"  \S+ \S+ (\S+) (\S+) +\S+ "
+            #  rom size ram alignment
+            r"  (\S+) \S+ \S+ +(?:\S+ )?"
             + re.escape(fn_name)
             + r"(?: \(entry of "
             + re.escape(config.diff_section)
@@ -1276,8 +1276,8 @@ def search_map_file(
         if len(find) > 1:
             fail(f"Found multiple occurrences of function {fn_name} in map file.")
         if len(find) == 1:
-            rom = int(find[0][1], 16)
-            objname = find[0][2]
+            rom = int(find[0][0], 16)
+            objname = find[0][1]
             objfile = search_build_objects(objname, project)
 
             # TODO Currently the ram-rom conversion only works for diffing ELF
