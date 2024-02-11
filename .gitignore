@@ -8,5 +8,9 @@ build/
 *.elf
 *.map
 
+# Python artifacts
+__pycache__/
+.venv/
+
 # IDE artifacts
 .vscode/

@@ -53,7 +53,7 @@
 /* 8000764C local  */ // extern UNK_TYPE xlHeapBlockCacheClear(UNK_TYPE...);
 /* 80007758 local  */ // extern UNK_TYPE xlHeapBlockCacheAdd(UNK_TYPE...);
 /* 800079C0 local  */ // extern UNK_TYPE xlHeapBlockCacheGet(UNK_TYPE...);
-// ======================= xlObject.c =================================================
+                      // ======================= xlObject.c =================================================
 /* 80007BC0 global */ extern UNK_TYPE xlObjectReset(UNK_TYPE...);
 /* 80007C30 global */ extern UNK_TYPE xlObjectSetup(UNK_TYPE...);
 /* 80007C6C global */ extern UNK_TYPE xlObjectEvent(UNK_TYPE...);
@@ -849,7 +849,8 @@
 /* 8009C25C local  */ // extern UNK_TYPE OSExceptionInit(UNK_TYPE...);
 /* 8009C4DC local  */ // extern UNK_TYPE __OSDBIntegrator(UNK_TYPE...);
 /* 8009C500 local  */ // extern UNK_TYPE __OSDBJump(UNK_TYPE...);
-/* 8009C504 global */ extern __OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExceptionHandler handler);
+/* 8009C504 global */ extern __OSExceptionHandler __OSSetExceptionHandler(__OSException exception,
+                                                                          __OSExceptionHandler handler);
 /* 8009C520 global */ extern __OSExceptionHandler __OSGetExceptionHandler(__OSException exception);
 /* 8009C534 local  */ // extern UNK_TYPE OSExceptionVector(UNK_TYPE...);
 /* 8009C5D0 global */ extern UNK_TYPE OSDefaultExceptionHandler(UNK_TYPE...);
@@ -925,7 +926,8 @@
 /* 8009ECFC global */ extern BOOL OSDisableInterrupts(void);
 /* 8009ED10 global */ extern BOOL OSEnableInterrupts(void);
 /* 8009ED24 global */ extern BOOL OSRestoreInterrupts(BOOL level);
-/* 8009ED48 global */ extern __OSInterruptHandler __OSSetInterruptHandler(__OSInterrupt interrupt, __OSInterruptHandler handler);
+/* 8009ED48 global */ extern __OSInterruptHandler __OSSetInterruptHandler(__OSInterrupt interrupt,
+                                                                          __OSInterruptHandler handler);
 /* 8009ED64 global */ extern __OSInterruptHandler __OSGetInterruptHandler(__OSInterrupt interrupt);
 /* 8009ED78 global */ extern UNK_TYPE __OSInterruptInit(UNK_TYPE...);
 /* 8009EDEC local  */ // extern OSInterruptMask OSSetInterruptMask(OSInterruptMask mask);
@@ -992,7 +994,8 @@
 /* 800A1374 local  */ // extern UNK_TYPE SetEffectivePriority(UNK_TYPE...);
 /* 800A1534 local  */ // extern UNK_TYPE SelectThread(UNK_TYPE...);
 /* 800A175C global */ extern UNK_TYPE __OSReschedule(UNK_TYPE...);
-/* 800A178C global */ extern BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize, OSPriority priority, u16 attr);
+/* 800A178C global */ extern BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack,
+                                                 u32 stackSize, OSPriority priority, u16 attr);
 /* 800A1974 global */ extern void OSExitThread(void* val);
 /* 800A1A58 global */ extern void OSCancelThread(OSThread* thread);
 /* 800A1C14 global */ extern s32 OSResumeThread(OSThread* thread);
@@ -1128,7 +1131,8 @@
 /* 800A9814 global */ extern void GXInitFifoLimits(GXFifoObj* fifo, u32 hiWaterMark, u32 loWaterMark);
 /* 800A9820 global */ extern void GXSetCPUFifo(const GXFifoObj* fifo);
 /* 800A9948 global */ extern void GXSetGPFifo(const GXFifoObj* fifo);
-/* 800A9AC0 global */ extern void GXGetGPStatus(GXBool* overhi, GXBool* underlow, GXBool* readIdle, GXBool* cmdIdle, GXBool* brkpt);
+/* 800A9AC0 global */ extern void GXGetGPStatus(GXBool* overhi, GXBool* underlow, GXBool* readIdle, GXBool* cmdIdle,
+                                                GXBool* brkpt);
 /* 800A9B10 global */ extern void* GXGetFifoBase(const GXFifoObj* fifo);
 /* 800A9B18 global */ extern u32 GXGetFifoSize(const GXFifoObj* fifo);
 /* 800A9B20 global */ extern GXBreakPtCallback GXSetBreakPtCallback(GXBreakPtCallback cb);
@@ -1146,12 +1150,14 @@
 /* 800AA008 global */ extern UNK_TYPE __GXSetVCD(UNK_TYPE...);
 /* 800AA0C4 global */ extern UNK_TYPE __GXCalculateVLim(UNK_TYPE...);
 /* 800AA1E8 global */ extern void GXClearVtxDesc(void);
-/* 800AA220 global */ extern void GXSetVtxAttrFmt(GXVtxFmt vtxfmt, GXAttr attr, GXCompCnt cnt, GXCompType type, u8 frac);
-/* 800AA47C global */ extern void GXSetVtxAttrFmtv(GXVtxFmt vtxfmt, const GXVtxAttrFmtList *list);
+/* 800AA220 global */ extern void GXSetVtxAttrFmt(GXVtxFmt vtxfmt, GXAttr attr, GXCompCnt cnt, GXCompType type,
+                                                  u8 frac);
+/* 800AA47C global */ extern void GXSetVtxAttrFmtv(GXVtxFmt vtxfmt, const GXVtxAttrFmtList* list);
 /* 800AA6FC global */ extern UNK_TYPE __GXSetVAT(UNK_TYPE...);
 /* 800AA798 global */ extern void GXSetArray(GXAttr attr, const void* base_ptr, u8 stride);
 /* 800AA824 global */ extern void GXInvalidateVtxCache(void);
-/* 800AA834 global */ extern void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc src_param, u32 mtx, GXBool normalize, u32 postmtx);
+/* 800AA834 global */ extern void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc src_param,
+                                                    u32 mtx, GXBool normalize, u32 postmtx);
 /* 800AAAB4 global */ extern void GXSetNumTexGens(u8 nTexGens);
 // ======================= GXMisc.c ===================================================
 /* 800AAAF0 global */ extern void GXSetMisc(GXMiscToken token, u32 val);
@@ -1166,7 +1172,8 @@
 /* 800AB0B8 global */ extern void GXPokeAlphaMode(GXCompare func, u8 threshold);
 /* 800AB0CC global */ extern void GXPokeAlphaRead(GXAlphaReadMode mode);
 /* 800AB0EC global */ extern void GXPokeAlphaUpdate(GXBool update_enable);
-/* 800AB104 global */ extern void GXPokeBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor, GXLogicOp op);
+/* 800AB104 global */ extern void GXPokeBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor,
+                                                  GXLogicOp op);
 /* 800AB168 global */ extern void GXPokeColorUpdate(GXBool update_enable);
 /* 800AB180 global */ extern void GXPokeDstAlpha(GXBool enable, u8 alpha);
 /* 800AB1A4 global */ extern void GXPokeDither(GXBool dither);
@@ -1187,17 +1194,19 @@
 /* 800AB6C4 global */ extern void GXSetCoPlanar(GXBool enable);
 /* 800AB6F8 global */ extern UNK_TYPE __GXSetGenMode(UNK_TYPE...);
 // ======================= GXFrameBuf.c ===============================================
-/* 800AB71C global */ extern void GXAdjustForOverscan(const GXRenderModeObj *rmin, GXRenderModeObj *rmout, u16 hor, u16 ver);
+/* 800AB71C global */ extern void GXAdjustForOverscan(const GXRenderModeObj* rmin, GXRenderModeObj* rmout, u16 hor,
+                                                      u16 ver);
 /* 800AB860 global */ extern void GXSetDispCopySrc(u16 left, u16 top, u16 wd, u16 ht);
 /* 800AB8DC global */ extern void GXSetTexCopySrc(u16 left, u16 top, u16 wd, u16 ht);
-/* 800AB958 global */ extern void GXSetDispCopyDst( u16 wd, u16 ht);
+/* 800AB958 global */ extern void GXSetDispCopyDst(u16 wd, u16 ht);
 /* 800AB98C global */ extern void GXSetTexCopyDst(u16 wd, u16 ht, GXTexFmt fmt, GXBool mipmap);
 /* 800ABABC global */ extern void GXSetDispCopyFrame2Field(GXCopyMode mode);
 /* 800ABAE0 global */ extern void GXSetCopyClamp(GXFBClamp clamp);
 /* 800ABB38 global */ extern f32 GXGetYScaleFactor(u16 efbHeight, u16 xfbHeight);
 /* 800ABD70 global */ extern u32 GXSetDispCopyYScale(f32 vscale);
 /* 800ABE3C global */ extern void GXSetCopyClear(GXColor clear_clr, u32 clear_z);
-/* 800ABEB4 global */ extern void GXSetCopyFilter(GXBool aa, const u8 sample_pattern[12][2], GXBool vf, const u8 vfilter[7]);
+/* 800ABEB4 global */ extern void GXSetCopyFilter(GXBool aa, const u8 sample_pattern[12][2], GXBool vf,
+                                                  const u8 vfilter[7]);
 /* 800AC0BC global */ extern void GXSetDispCopyGamma(GXGamma gamma);
 /* 800AC0D0 global */ extern void GXCopyDisp(void* dest, GXBool clear);
 /* 800AC238 global */ extern void GXCopyTex(void* dest, GXBool clear);
@@ -1206,21 +1215,28 @@
 /* 800AC3FC global */ extern void GXSetChanAmbColor(GXChannelID chan, GXColor amb_color);
 /* 800AC4EC global */ extern void GXSetChanMatColor(GXChannelID chan, GXColor mat_color);
 /* 800AC5DC global */ extern void GXSetNumChans(u8 nChans);
-/* 800AC618 global */ extern void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc amb_src, GXColorSrc mat_src, u32 light_mask, GXDiffuseFn diff_fn, GXAttnFn attn_fn);
+/* 800AC618 global */ extern void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc amb_src, GXColorSrc mat_src,
+                                                u32 light_mask, GXDiffuseFn diff_fn, GXAttnFn attn_fn);
 // ======================= GXTexture.c ================================================
 /* 800AC6D0 global */ extern UNK_TYPE __GetImageTileCount(UNK_TYPE...);
-/* 800AC798 global */ extern void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFmt format, GXTexWrapMode wrap_s, GXTexWrapMode wrap_t, GXBool mipmap);
-/* 800AC9E4 global */ extern void GXInitTexObjCI(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXCITexFmt format, GXTexWrapMode wrap_s, GXTexWrapMode wrap_t, GXBool mipmap, u32 tlut_name);
-/* 800ACA2C global */ extern void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, GXBool bias_clamp, GXBool do_edge_lod, GXAnisotropy max_aniso);
+/* 800AC798 global */ extern void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFmt format,
+                                               GXTexWrapMode wrap_s, GXTexWrapMode wrap_t, GXBool mipmap);
+/* 800AC9E4 global */ extern void GXInitTexObjCI(GXTexObj* obj, void* image_ptr, u16 width, u16 height,
+                                                 GXCITexFmt format, GXTexWrapMode wrap_s, GXTexWrapMode wrap_t,
+                                                 GXBool mipmap, u32 tlut_name);
+/* 800ACA2C global */ extern void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt,
+                                                  f32 min_lod, f32 max_lod, f32 lod_bias, GXBool bias_clamp,
+                                                  GXBool do_edge_lod, GXAnisotropy max_aniso);
 /* 800ACB90 global */ extern void* GXGetTexObjData(const GXTexObj* tex_obj);
 /* 800ACB9C global */ extern GXTexFmt GXGetTexObjFmt(const GXTexObj* tex_obj);
-/* 800ACBA4 global */ extern GXBool GXGetTexObjMipMap(const GXTexObj* tex_obj);     
+/* 800ACBA4 global */ extern GXBool GXGetTexObjMipMap(const GXTexObj* tex_obj);
 /* 800ACBBC global */ extern void GXLoadTexObjPreLoaded(const GXTexObj* obj, const GXTexRegion* region, GXTexMapID id);
 /* 800ACD38 global */ extern void GXLoadTexObj(const GXTexObj* obj, GXTexMapID id);
 /* 800ACD8C global */ extern void GXInitTlutObj(GXTlutObj* tlut_obj, void* lut, GXTlutFmt fmt, u16 n_entries);
 /* 800ACDC4 global */ extern void GXLoadTlut(const GXTlutObj* tlut_obj, u32 tlut_name);
-/* 800ACE5C global */ extern void GXInitTexCacheRegion(GXTexRegion* region, GXBool is_32b_mipmap, u32 tmem_even, GXTexCacheSize size_even, u32 tmem_odd, GXTexCacheSize size_odd);
-/* 800ACF50 global */ extern void GXInitTlutRegion(GXTlutRegion* region, u32 tmem_addr, GXTlutSize tlut_size );
+/* 800ACE5C global */ extern void GXInitTexCacheRegion(GXTexRegion* region, GXBool is_32b_mipmap, u32 tmem_even,
+                                                       GXTexCacheSize size_even, u32 tmem_odd, GXTexCacheSize size_odd);
+/* 800ACF50 global */ extern void GXInitTlutRegion(GXTlutRegion* region, u32 tmem_addr, GXTlutSize tlut_size);
 /* 800ACF88 global */ extern void GXInvalidateTexAll(void);
 /* 800ACFD0 global */ extern GXTexRegionCallback GXSetTexRegionCallback(GXTexRegionCallback f);
 /* 800ACFE4 global */ extern GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback f);
@@ -1228,8 +1244,12 @@
 /* 800AD098 global */ extern UNK_TYPE __GXSetSUTexRegs(UNK_TYPE...);
 /* 800AD214 global */ extern UNK_TYPE __GXSetTmemConfig(UNK_TYPE...);
 // ======================= GXBump.c ===================================================
-/* 800AD568 global */ extern void GXSetTevIndirect(GXTevStageID tev_stage, GXIndTexStageID ind_stage, GXIndTexFormat format, GXIndTexBiasSel bias_sel, GXIndTexMtxID matrix_sel, GXIndTexWrap wrap_s, GXIndTexWrap wrap_t, GXBool add_prev, GXBool ind_lod, GXIndTexAlphaSel alpha_sel);
-/* 800AD5D4 global */ extern void GXSetIndTexCoordScale(GXIndTexStageID ind_state, GXIndTexScale scale_s, GXIndTexScale scale_t);
+/* 800AD568 global */ extern void GXSetTevIndirect(GXTevStageID tev_stage, GXIndTexStageID ind_stage,
+                                                   GXIndTexFormat format, GXIndTexBiasSel bias_sel,
+                                                   GXIndTexMtxID matrix_sel, GXIndTexWrap wrap_s, GXIndTexWrap wrap_t,
+                                                   GXBool add_prev, GXBool ind_lod, GXIndTexAlphaSel alpha_sel);
+/* 800AD5D4 global */ extern void GXSetIndTexCoordScale(GXIndTexStageID ind_state, GXIndTexScale scale_s,
+                                                        GXIndTexScale scale_t);
 /* 800AD718 global */ extern void GXSetNumIndStages(u8 nIndStages);
 /* 800AD73C global */ extern void GXSetTevDirect(GXTevStageID tev_stage);
 /* 800AD784 global */ extern UNK_TYPE __GXUpdateBPMask(UNK_TYPE...);
@@ -1237,26 +1257,33 @@
 /* 800AD7B8 global */ extern UNK_TYPE __GXFlushTextureState(UNK_TYPE...);
 // ======================= GXTev.c ====================================================
 /* 800AD7DC global */ extern void GXSetTevOp(GXTevStageID id, GXTevMode mode);
-/* 800AD868 global */ extern void GXSetTevColorIn(GXTevStageID stage, GXTevColorArg a, GXTevColorArg b, GXTevColorArg c, GXTevColorArg d);
-/* 800AD8AC global */ extern void GXSetTevAlphaIn(GXTevStageID stage, GXTevAlphaArg a, GXTevAlphaArg b, GXTevAlphaArg c, GXTevAlphaArg d);
-/* 800AD8F0 global */ extern void GXSetTevColorOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale scale, GXBool clamp, GXTevRegID out_reg);
-/* 800AD958 global */ extern void GXSetTevAlphaOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale scale, GXBool clamp, GXTevRegID out_reg);
+/* 800AD868 global */ extern void GXSetTevColorIn(GXTevStageID stage, GXTevColorArg a, GXTevColorArg b, GXTevColorArg c,
+                                                  GXTevColorArg d);
+/* 800AD8AC global */ extern void GXSetTevAlphaIn(GXTevStageID stage, GXTevAlphaArg a, GXTevAlphaArg b, GXTevAlphaArg c,
+                                                  GXTevAlphaArg d);
+/* 800AD8F0 global */ extern void GXSetTevColorOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale scale,
+                                                  GXBool clamp, GXTevRegID out_reg);
+/* 800AD958 global */ extern void GXSetTevAlphaOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale scale,
+                                                  GXBool clamp, GXTevRegID out_reg);
 /* 800AD9C0 global */ extern void GXSetTevColor(GXTevRegID id, GXColor color);
 /* 800ADA3C global */ extern void GXSetTevColorS10(GXTevRegID id, GXColorS10 color);
 /* 800ADAB8 global */ extern void GXSetTevKColor(GXTevKColorID id, GXColor color);
 /* 800ADB2C global */ extern void GXSetTevKColorSel(GXTevStageID stage, GXTevKColorSel sel);
 /* 800ADB88 global */ extern void GXSetTevKAlphaSel(GXTevStageID stage, GXTevKAlphaSel sel);
 /* 800ADBE4 global */ extern void GXSetTevSwapMode(GXTevStageID stage, GXTevSwapSel ras_sel, GXTevSwapSel tex_sel);
-/* 800ADC2C global */ extern void GXSetTevSwapModeTable(GXTevSwapSel table, GXTevColorChan red, GXTevColorChan green, GXTevColorChan blue, GXTevColorChan alpha);
+/* 800ADC2C global */ extern void GXSetTevSwapModeTable(GXTevSwapSel table, GXTevColorChan red, GXTevColorChan green,
+                                                        GXTevColorChan blue, GXTevColorChan alpha);
 /* 800ADCAC global */ extern void GXSetAlphaCompare(GXCompare comp0, u8 ref0, GXAlphaOp op, GXCompare comp1, u8 ref1);
 /* 800ADCF0 global */ extern void GXSetZTexture(GXZTexOp op, GXTexFmt fmt, u32 bias);
-/* 800ADD7C global */ extern void GXSetTevOrder(GXTevStageID stage, GXTexCoordID coord, GXTexMapID map, GXChannelID color);
+/* 800ADD7C global */ extern void GXSetTevOrder(GXTevStageID stage, GXTexCoordID coord, GXTexMapID map,
+                                                GXChannelID color);
 /* 800ADF18 global */ extern void GXSetNumTevStages(u8 nStages);
 // ======================= GXPixel.c ==================================================
 /* 800ADF40 global */ extern void GXSetFog(GXFogType type, f32 startz, f32 endz, f32 nearz, f32 farz, GXColor color);
 /* 800AE164 global */ extern void GXInitFogAdjTable(GXFogAdjTable* table, u16 width, const f32 projmtx[4][4]);
 /* 800AE314 global */ extern void GXSetFogRangeAdj(GXBool enable, u16 center, const GXFogAdjTable* table);
-/* 800AE438 global */ extern void GXSetBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor, GXLogicOp op);
+/* 800AE438 global */ extern void GXSetBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor,
+                                                 GXLogicOp op);
 /* 800AE48C global */ extern void GXSetColorUpdate(GXBool update_enable);
 /* 800AE4B8 global */ extern void GXSetAlphaUpdate(GXBool update_enable);
 /* 800AE4E4 global */ extern void GXSetZMode(GXBool compare_enable, GXCompare func, GXBool update_enable);
@@ -1268,13 +1295,14 @@
 /* 800AE6C0 global */ extern void GXSetFieldMode(GXBool field_mode, GXBool half_aspect_ratio);
 // ======================= GXTransform.c ==============================================
 /* 800AE738 global */ extern void GXSetProjection(const f32 mtx[4][4], GXProjectionType type);
-/* 800AE7DC global */ extern void GXSetProjectionv(const f32 *ptr);
+/* 800AE7DC global */ extern void GXSetProjectionv(const f32* ptr);
 /* 800AE868 global */ extern void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id);
 /* 800AE8B8 global */ extern void GXLoadNrmMtxImm(const f32 mtx[3][4], u32 id);
 /* 800AE908 global */ extern void GXSetCurrentMtx(u32 id);
 /* 800AE93C global */ extern void GXLoadTexMtxImm(const f32 mtx[][4], u32 id, GXTexMtxType type);
 /* 800AE9F0 global */ extern UNK_TYPE __GXSetViewport(UNK_TYPE...);
-/* 800AEA80 global */ extern void GXSetViewportJitter(f32 left, f32 top, f32 wd, f32 ht, f32 nearz, f32 farz, u32 field);
+/* 800AEA80 global */ extern void GXSetViewportJitter(f32 left, f32 top, f32 wd, f32 ht, f32 nearz, f32 farz,
+                                                      u32 field);
 /* 800AEAD8 global */ extern void GXSetViewport(f32 left, f32 top, f32 wd, f32 ht, f32 nearz, f32 farz);
 /* 800AEB20 global */ extern void GXSetScissor(u32 left, u32 top, u32 wd, u32 ht);
 /* 800AEB98 global */ extern void GXGetScissor(u32* left, u32* top, u32* width, u32* height);
@@ -1287,14 +1315,17 @@
 /* 800AF6BC global */ extern void GXClearGPMetric(void);
 /* 800AF6CC global */ extern u32 GXReadGP0Metric(void);
 /* 800AF6F8 global */ extern u32 GXReadGP1Metric(void);
-/* 800AF724 global */ extern void GXReadMemMetric(u32* cp_req, u32* tc_req, u32* cpu_rd_req, u32* cpu_wr_req, u32* dsp_req, u32* io_req, u32* vi_req, u32* pe_req, u32* rf_req, u32* fi_req);
+/* 800AF724 global */ extern void GXReadMemMetric(u32* cp_req, u32* tc_req, u32* cpu_rd_req, u32* cpu_wr_req,
+                                                  u32* dsp_req, u32* io_req, u32* vi_req, u32* pe_req, u32* rf_req,
+                                                  u32* fi_req);
 /* 800AF938 global */ extern void GXClearMemMetric(void);
-/* 800AF9E0 global */ extern void GXReadPixMetric(u32* top_pixels_in, u32* top_pixels_out, u32* bot_pixels_in, u32* bot_pixels_out, u32* clr_pixels_in, u32* copy_clks);
+/* 800AF9E0 global */ extern void GXReadPixMetric(u32* top_pixels_in, u32* top_pixels_out, u32* bot_pixels_in,
+                                                  u32* bot_pixels_out, u32* clr_pixels_in, u32* copy_clks);
 /* 800AFB18 global */ extern void GXClearPixMetric(void);
 /* 800AFB48 global */ extern void GXSetVCacheMetric(GXVCachePerf attr);
 /* 800AFB8C global */ extern void GXReadVCacheMetric(u32* check, u32* miss, u32* stall);
 /* 800AFC20 global */ extern void GXClearVCacheMetric(void);
-/* 800AFC3C global */ extern void GXReadXfRasMetric(u32* xf_wait_in, u32* xf_wait_out, u32* ras_busy, u32* clocks );
+/* 800AFC3C global */ extern void GXReadXfRasMetric(u32* xf_wait_in, u32* xf_wait_out, u32* ras_busy, u32* clocks);
 // ======================= Padclamp.c =================================================
 /* 800AFD00 local  */ // extern UNK_TYPE ClampStick(UNK_TYPE...);
 /* 800AFE30 global */ extern void PADClamp(PADStatus* status);
@@ -1347,9 +1378,10 @@
 /* 800B2AFC global */ extern BOOL DVDClose(DVDFileInfo* fileInfo);
 /* 800B2B20 local  */ // extern UNK_TYPE entryToPath(UNK_TYPE...);
 /* 800B2C80 global */ extern BOOL DVDGetCurrentDir(char* path, u32 maxlen);
-/* 800B2D44 global */ extern BOOL DVDReadAsyncPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, DVDCallback callback, s32 prio);
+/* 800B2D44 global */ extern BOOL DVDReadAsyncPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset,
+                                                   DVDCallback callback, s32 prio);
 /* 800B2E04 local  */ // extern UNK_TYPE cbForReadAsync(UNK_TYPE...);
-/* 800B2E34 global */ extern s32  DVDReadPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, s32 prio);
+/* 800B2E34 global */ extern s32 DVDReadPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, s32 prio);
 /* 800B2F4C local  */ // extern UNK_TYPE cbForReadSync(UNK_TYPE...);
 // ======================= dvd.c ======================================================
 /* 800B2F70 local  */ // extern UNK_TYPE defaultOptionalCommandChecker(UNK_TYPE...);
@@ -1589,7 +1621,7 @@
 /* 800C1350 global */ extern UNK_TYPE CARDSetStatusAsync(UNK_TYPE...);
 // ======================= CARDNet.c ==================================================
 // ======================= THPDec.c ===================================================
-/* 800C14C4 global */ extern s32 THPVideoDecode(void *file, void *tileY, void *tileU, void *tileV, void *work);
+/* 800C14C4 global */ extern s32 THPVideoDecode(void* file, void* tileY, void* tileU, void* tileV, void* work);
 /* 800C1708 local  */ // extern UNK_TYPE __THPSetupBuffers(UNK_TYPE...);
 /* 800C174C local  */ // extern UNK_TYPE __THPReadFrameHeader(UNK_TYPE...);
 /* 800C1888 local  */ // extern UNK_TYPE __THPReadScaneHeader(UNK_TYPE...);
@@ -1773,7 +1805,7 @@
 /* 80005400 global */ extern void __fill_mem(void* dst, int val, unsigned long n);
 /* 800054C4 global */ extern void* memcpy(void* dst, const void* src, size_t n);
 // ======================= __va_arg.c =================================================
-/* 800CD798 global */ //extern void* __va_arg(va_list ap, _va_arg_type type);
+/* 800CD798 global */ // extern void* __va_arg(va_list ap, _va_arg_type type);
 // ======================= global_destructor_chain.c ==================================
 /* 800CD88C global */ extern void __destroy_global_chain(void);
 // ======================= runtime.c ================================================== // file is handwritten asm
@@ -1823,7 +1855,8 @@
 /* 800CEE88 global */ extern int vprintf(const char* format, va_list arg);
 /* 800CEF04 global */ extern void* __StringWrite(void* osc, const char* Buffer, size_t NumChars);
 /* 800CEF70 global */ extern void* __FileWrite(void* File, const char* Buffer, size_t NumChars);
-/* 800CEFC8 local  */ // extern int __pformatter(void *(*WriteProc)(void*, const char*, size_t), void* WriteProcArg, const char* format_str, va_list arg);
+/* 800CEFC8 local  */ // extern int __pformatter(void *(*WriteProc)(void*, const char*, size_t), void* WriteProcArg,
+                      // const char* format_str, va_list arg);
 /* 800CF5F8 local  */ // extern char* float2str(long double num, char* buff, print_format format);
 /* 800CFC30 local  */ // extern void round_decimal(decimal* dec, int new_length);
 /* 800CFD64 local  */ // extern char* longlong2str(long long num, char* buff, print_format format);
@@ -1839,12 +1872,15 @@
 /* 800D09A8 global */ extern char* strcpy(char* dst, const char* src);
 /* 800D0A5C global */ extern size_t strlen(const char* str);
 // ======================= strtoul.c ==================================================
-/* 800D0A7C global */ extern int atoi(const char * str);
-/* 800D0B40 global */ extern u32 __strtoul(int base, int max_width, int (*ReadProc)(void*, int, int), void* ReadProcArg, int* chars_scanned, int* negative, int* overflow);
+/* 800D0A7C global */ extern int atoi(const char* str);
+/* 800D0B40 global */ extern u32 __strtoul(int base, int max_width, int (*ReadProc)(void*, int, int), void* ReadProcArg,
+                                           int* chars_scanned, int* negative, int* overflow);
 // ======================= uart_console_io.c ==========================================
 /* 800D0E88 global */ extern int __close_console(__file_handle handle);
-/* 800D0E90 global */ extern int __write_console(__file_handle handle, unsigned char* buffer, size_t* count, __ref_con ref_con);
-/* 800D0F28 global */ extern int __read_console(__file_handle handle, unsigned char* buffer, size_t* count, __ref_con ref_con);
+/* 800D0E90 global */ extern int __write_console(__file_handle handle, unsigned char* buffer, size_t* count,
+                                                 __ref_con ref_con);
+/* 800D0F28 global */ extern int __read_console(__file_handle handle, unsigned char* buffer, size_t* count,
+                                                __ref_con ref_con);
 // ======================= float.c ====================================================
 // ======================= wchar_io.c =================================================
 /* 800D1008 global */ extern int fwide(FILE* stream, int mode);

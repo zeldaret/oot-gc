@@ -4,7 +4,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/xlCoreGCN.o            \
     $(BUILD_DIR)/asm/xlPostGCN.o            \
     $(BUILD_DIR)/asm/xlFileGCN.o            \
-    $(BUILD_DIR)/asm/xlList.o               \
+    $(BUILD_DIR)/src/xlList.o               \
     $(BUILD_DIR)/asm/xlHeap.o               \
     $(BUILD_DIR)/asm/xlObject.o             \
     $(BUILD_DIR)/asm/simGCN.o               \
