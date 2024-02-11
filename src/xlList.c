@@ -1,21 +1,6 @@
+#include "xlList.h"
+#include "xlHeap.h"
 #include "types.h"
-
-int xlHeapTake(void** ppHeap, int nByteCount);
-int xlHeapFree(void** ppHeap);
-
-typedef struct XL_NODE tXL_NODE;
-
-struct XL_NODE {
-    tXL_NODE* next;
-    u8 data[];
-};
-
-typedef struct {
-    int nItemSize;
-    int nItemCount;
-    tXL_NODE* pNodeHead;
-    tXL_NODE* pNodeNext;
-} tXL_LIST;
 
 static tXL_LIST gListList;
 
