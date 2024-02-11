@@ -144,7 +144,7 @@ int xlListFree(tXL_LIST** ppList) {
         return 0;
     }
 
-    if (!xlListFreeItem(&gListList, (void**)ppList)){
+    if (!xlListFreeItem(&gListList, (void**)ppList)) {
         return 0;
     }
 
