@@ -10,8 +10,10 @@ TARGET := SIM
 
 BUILD_DIR := build/$(TARGET)
 
-SRC_DIRS := $(shell find src/ -type f -name '*.c')
-ASM_DIRS := $(shell find asm/ -type f -name '*.s')
+SRC_DIRS := $(shell find src -type d)
+ASM_DIRS := $(shell find asm -type d -not -path "asm/non_matchings*")
+
+C_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 
 # Inputs
 LDSCRIPT := $(BUILD_DIR)/ldscript.lcf
@@ -23,6 +25,9 @@ COMPARE_TO := $(BUILD_DIR)/$(TARGET)_S.elf
 
 # Object files in link order
 include obj_files.mk
+
+GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(C_FILES)
+GLOBAL_ASM_O_FILES = $(addprefix $(BUILD_DIR)/,$(GLOBAL_ASM_C_FILES:.c=.o))
 
 #-------------------------------------------------------------------------------
 # Tools
@@ -46,10 +51,13 @@ LD := $(WINE) tools/mwcc_compiler/$(MWCC_VERSION)/mwldeppc.exe
 SHA1SUM := sha1sum
 PYTHON := python3
 
+ASM_PROCESSOR_DIR := tools/asm_processor
+ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
+
 POSTPROC := tools/postprocess.py
 
 # Options
-INCLUDES := -i include -i include/dolphin/ -i src
+INCLUDES := -i include
 
 # Assembler Flags
 ASFLAGS := -mgekko -I include
@@ -87,6 +95,7 @@ $(LDSCRIPT): ldscript.lcf
 	$(CPP) -P -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
 
 $(ELF): $(O_FILES) $(LDSCRIPT)
+	$(RM) -rf $(ASM_PROCESSOR_DIR)/tmp
 	$(LD) $(LDFLAGS) -o $@ -lcf $(LDSCRIPT) $(O_FILES)
 	$(OBJCOPY) $(ELF) $(COMPARE_TO) -S
 
@@ -104,11 +113,15 @@ clean:
 #tools:
 #	$(MAKE) -C tools
 
+$(GLOBAL_ASM_O_FILES) : BUILD_C := $(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)"
+
+BUILD_C ?= $(CC) $(CFLAGS) -c -o
+
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(BUILD_C) $@ $<
 
 $(BUILD_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
