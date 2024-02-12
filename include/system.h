@@ -4,6 +4,7 @@
 #include "types.h"
 
 
+// TODO: should be __anon_0x37240
 // probably wrong but size matches (0x88)
 typedef struct System {
     /* 0x0000 */ s32 unk_0x00;
@@ -20,6 +21,7 @@ typedef struct System {
     /* 0x0054 */ void* help_menu;
     /* 0x0058 */ void *unk_0x0058;
     /* 0x005C */ u32 *frame;
+    u8 pad[0x28];
 } System;
 
 typedef struct SystemRomConfig {
@@ -124,10 +126,10 @@ char D_800EB64C[] = "YoshiStory";
 
 SystemRomConfig gSystemRomConfigurationList;
 
-u64 nTickMultiplier = 2;
+u32 nTickMultiplier = 2;
 f32 fTickScale = 1.0;
-static u8 D_80134E68 = 0;
 
+static char D_80134E68[] = "";
 static char D_80134E6C[] = "SW0";
 static char D_80134E70[] = "SW1";
 static char D_80134E74[] = "CART";
@@ -209,8 +211,8 @@ static char D_80135098[] = "NBNJ";
 static char D_801350A0[] = "XXX";
 
 u32 gnFlagZelda;
-f32 D_80135F90 = 0.01666666753590107;
-f32 D_80135F94 = 1.100000023841858;
-f64 D_80135F98 = 4503599627370496.0;
+const f32 D_80135F90 = 0.01666666753590107;
+const f32 D_80135F94 = 1.100000023841858;
+const f64 D_80135F98 = 4503599627370496.0;
 
 #endif
