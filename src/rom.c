@@ -182,11 +182,70 @@ static int romPut32(Rom* pROM, u32 nAddress, s32* pData) { return 1; }
 static int romPut16(Rom* pROM, u32 nAddress, s16* pData) { return 1; }
 static int romPut8(Rom* pROM, u32 nAddress, s8* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romTestCode.s")
+int romTestCode(Rom* pROM, char* acCode) {
+    int iCode;
+    char acCodeCurrent[5];
+    int iOffset = 0x3B;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romGetCode.s")
+    for (iCode = 0; iCode < 4; iCode++) {
+        acCodeCurrent[iCode] = pROM->acHeader[iOffset + iCode];
+    }
+    acCodeCurrent[4] = '\0';
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romGetPC.s")
+    for (iCode = 0; iCode < 4; iCode++) {
+        if (acCode[iCode] != acCodeCurrent[iCode]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int romGetCode(Rom* pROM, char* acCode) {
+    acCode[0] = pROM->acHeader[0x3B];
+    acCode[1] = pROM->acHeader[0x3C];
+    acCode[2] = pROM->acHeader[0x3D];
+    acCode[3] = pROM->acHeader[0x3E];
+    acCode[4] = '\0';
+    return 1;
+}
+
+int romGetPC(Rom* pROM, u64* pnPC) {
+    int nOffset;
+    u32 nData;
+    u32 iData;
+    u32 anData[0x400];
+
+    if (romCopy(pROM, &anData, 0, sizeof(anData), 0)) {
+        nData = 0;
+        for (iData = 0; iData < 0x400 - 0x10; iData++) {
+            nData += anData[iData + 0x10];
+        }
+
+        switch (nData) {
+            case 0x49F60E96:
+            case 0xFB631223:
+            case 0x2ADFE50A:
+            case 0x57C85244:
+                nOffset = 0;
+                break;
+            case 0x497E414B:
+            case 0xE6DECB4B:
+            case 0x27C4ED44:
+                nOffset = 0x100000;
+                break;
+            case 0xD5BE5580:
+                nOffset = 0x200000;
+                break;
+            default:
+                return 0;
+        }
+
+        *pnPC = anData[2] - nOffset;
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadFullOrPart.s")
 
