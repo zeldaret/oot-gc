@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 
 
 def splitAsm(inputFile: str):
@@ -52,19 +53,33 @@ def splitAsm(inputFile: str):
                     foundFunction = False
                 else:
                     functionData.append(line)
+        assert len(parsedFunctions) > 0
 
         # read the linker file
         with open("obj_files.mk", "r") as linkerFile:
             data = linkerFile.read()
 
+        # create the folders if necessary
+        os.makedirs(os.path.dirname(f"asm/non_matchings/{inputFile}/"), exist_ok=True)
+
         # write the files
-        assert len(parsedFunctions) > 0
-        for functionName, functionData in parsedFunctions:
-            with open(f"asm/non_matchings/system/{functionName}.s", "w") as asmFile:
+        for i, (functionName, functionData) in enumerate(parsedFunctions):
+            cPath = f"src/{inputFile}.c"
+            cData = ""
+            newline = "\n" * 2
+
+            with open(f"asm/non_matchings/{inputFile}/{functionName}.s", "w") as asmFile:
                 asmFile.write("".join(functionData))
 
-            with open(f"src/{inputFile}.c", "w") as cFile:
-                cFile.write(f'#pragma GLOBAL_ASM("asm/non_matchings/system/{functionName}.s")\n\n')
+            if os.path.isfile(cPath):
+                with open(cPath, "r") as cFile:
+                    cData = cFile.read()
+                
+                if i == len(parsedFunctions) - 1:
+                    newline = "\n"
+
+            with open(cPath, "w") as cFile:
+                cFile.write(cData + f'#pragma GLOBAL_ASM("asm/non_matchings/{inputFile}/{functionName}.s")' + newline)
 
             with open("obj_files.mk", "w") as linkerFile:
                 linkerFile.write(data.replace(f"/asm/{inputFile}.o", f"/src/{inputFile}.o"))
