@@ -4,7 +4,7 @@
 #
 #   tools/decompme.py src/rom.c asm/non_matchings/rom/romGetPC.s
 #
-# Current you must manually delete the function from the context and copy into
+# Currently you must manually delete the function from the context and copy into
 # the source if the function is already defined.
 
 from __future__ import annotations
