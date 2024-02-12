@@ -3,12 +3,14 @@
 
 typedef struct _XL_OBJECTTYPE _XL_OBJECTTYPE;
 
+typedef int (*EventFunc)(void* pObject, int nEvent, void* pArgument);
+
 // size: 0x10
 struct _XL_OBJECTTYPE {
     char* szName; // 0x0
     int nSizeObject; // 0x4
     _XL_OBJECTTYPE* pClassBase; // 0x8
-    int (*pfEvent)(void* /* unknown0 */, int /* unknown1 */, void* /* unknown2 */); // 0xC
+    EventFunc pfEvent; // 0xC
 };
 
 int xlObjectReset(void);
