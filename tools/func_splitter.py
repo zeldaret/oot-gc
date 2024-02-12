@@ -52,6 +52,8 @@ def splitAsm(inputFile: str):
                     functionName = ""
                     foundFunction = False
                 else:
+                    if line.startswith(f"{functionName}:"):
+                        line = f"glabel {functionName}\n"
                     functionData.append(line)
         assert len(parsedFunctions) > 0
 
