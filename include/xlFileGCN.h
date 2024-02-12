@@ -2,7 +2,7 @@
 #define _XL_FILE_GCN_H
 
 // size: 0x20
-typedef struct {
+typedef struct DVDDiskID {
     char gameName[4]; // 0x0
     char company[2]; // 0x4
     unsigned char diskNumber; // 0x6
@@ -40,14 +40,14 @@ struct DVDFileInfo {
     void (*callback)(long /* unknown0 */, DVDFileInfo* /* unknown1 */); // 0x38
 };
 
-typedef enum {
+typedef enum __anon_0x2757 {
     XLFT_NONE = -1,
     XLFT_TEXT = 0,
     XLFT_BINARY = 1
 } __anon_0x2757;
 
 // size: 0x58
-typedef struct {
+typedef struct tXL_FILE {
     int iBuffer; // 0x0
     void* pData; // 0x4
     void* pBuffer; // 0x8
