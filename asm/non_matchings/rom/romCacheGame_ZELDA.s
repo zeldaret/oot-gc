@@ -1,0 +1,168 @@
+glabel romCacheGame_ZELDA
+/* 069C68 8006F208 7C0802A6 */  mflr    r0
+/* 069C6C 8006F20C 90010004 */  stw     r0, 4(r1)
+/* 069C70 8006F210 9421FF78 */  stwu    r1, -0x88(r1)
+/* 069C74 8006F214 DBE10080 */  stfd    f31, 0x80(r1)
+/* 069C78 8006F218 FFE00890 */  fmr     f31, f1
+/* 069C7C 8006F21C 93E1007C */  stw     r31, 0x7c(r1)
+/* 069C80 8006F220 800D891C */  lwz     r0, gbDisplayedError@sda21(r13)
+/* 069C84 8006F224 2C000000 */  cmpwi   r0, 0
+/* 069C88 8006F228 41820178 */  beq     lbl_8006F3A0
+/* 069C8C 8006F22C 3BE00000 */  li      r31, 0
+/* 069C90 8006F230 806D8A84 */  lwz     r3, gpImageBack@sda21(r13)
+/* 069C94 8006F234 93ED891C */  stw     r31, gbDisplayedError@sda21(r13)
+/* 069C98 8006F238 3881000C */  addi    r4, r1, 0xc
+/* 069C9C 8006F23C 38A00000 */  li      r5, 0
+/* 069CA0 8006F240 48059D2D */  bl      TEXGetGXTexObjFromPalette
+/* 069CA4 8006F244 4BF9635D */  bl      xlCoreBeforeRender
+/* 069CA8 8006F248 C02282E8 */  lfs     f1, D_80135FE8@sda21(r2)
+/* 069CAC 8006F24C C06282EC */  lfs     f3, D_80135FEC@sda21(r2)
+/* 069CB0 8006F250 FC400890 */  fmr     f2, f1
+/* 069CB4 8006F254 C08282F0 */  lfs     f4, D_80135FF0@sda21(r2)
+/* 069CB8 8006F258 FCA00890 */  fmr     f5, f1
+/* 069CBC 8006F25C C0C282D0 */  lfs     f6, D_80135FD0@sda21(r2)
+/* 069CC0 8006F260 4803F879 */  bl      GXSetViewport
+/* 069CC4 8006F264 C02282E8 */  lfs     f1, D_80135FE8@sda21(r2)
+/* 069CC8 8006F268 3861002C */  addi    r3, r1, 0x2c
+/* 069CCC 8006F26C C04282F4 */  lfs     f2, D_80135FF4@sda21(r2)
+/* 069CD0 8006F270 FC600890 */  fmr     f3, f1
+/* 069CD4 8006F274 C08282F8 */  lfs     f4, D_80135FF8@sda21(r2)
+/* 069CD8 8006F278 FCA00890 */  fmr     f5, f1
+/* 069CDC 8006F27C C0C282D0 */  lfs     f6, D_80135FD0@sda21(r2)
+/* 069CE0 8006F280 48038E69 */  bl      C_MTXOrtho
+/* 069CE4 8006F284 3861002C */  addi    r3, r1, 0x2c
+/* 069CE8 8006F288 38800001 */  li      r4, 1
+/* 069CEC 8006F28C 4803F4AD */  bl      GXSetProjection
+/* 069CF0 8006F290 38600000 */  li      r3, 0
+/* 069CF4 8006F294 4803C3ED */  bl      GXSetCullMode
+/* 069CF8 8006F298 38600000 */  li      r3, 0
+/* 069CFC 8006F29C 38800003 */  li      r4, 3
+/* 069D00 8006F2A0 38A00001 */  li      r5, 1
+/* 069D04 8006F2A4 4803F241 */  bl      GXSetZMode
+/* 069D08 8006F2A8 38600000 */  li      r3, 0
+/* 069D0C 8006F2AC 4803D331 */  bl      GXSetNumChans
+/* 069D10 8006F2B0 38600001 */  li      r3, 1
+/* 069D14 8006F2B4 4803B801 */  bl      GXSetNumTexGens
+/* 069D18 8006F2B8 38600001 */  li      r3, 1
+/* 069D1C 8006F2BC 4803EC5D */  bl      GXSetNumTevStages
+/* 069D20 8006F2C0 38600000 */  li      r3, 0
+/* 069D24 8006F2C4 38800003 */  li      r4, 3
+/* 069D28 8006F2C8 4803E515 */  bl      GXSetTevOp
+/* 069D2C 8006F2CC 38600000 */  li      r3, 0
+/* 069D30 8006F2D0 38800000 */  li      r4, 0
+/* 069D34 8006F2D4 38A00000 */  li      r5, 0
+/* 069D38 8006F2D8 38C000FF */  li      r6, 0xff
+/* 069D3C 8006F2DC 4803EAA1 */  bl      GXSetTevOrder
+/* 069D40 8006F2E0 4803AF09 */  bl      GXClearVtxDesc
+/* 069D44 8006F2E4 38600009 */  li      r3, 9
+/* 069D48 8006F2E8 38800001 */  li      r4, 1
+/* 069D4C 8006F2EC 4803AAB1 */  bl      GXSetVtxDesc
+/* 069D50 8006F2F0 3860000D */  li      r3, 0xd
+/* 069D54 8006F2F4 38800001 */  li      r4, 1
+/* 069D58 8006F2F8 4803AAA5 */  bl      GXSetVtxDesc
+/* 069D5C 8006F2FC 38600000 */  li      r3, 0
+/* 069D60 8006F300 38800009 */  li      r4, 9
+/* 069D64 8006F304 38A00000 */  li      r5, 0
+/* 069D68 8006F308 38C00004 */  li      r6, 4
+/* 069D6C 8006F30C 38E00000 */  li      r7, 0
+/* 069D70 8006F310 4803AF11 */  bl      GXSetVtxAttrFmt
+/* 069D74 8006F314 38600000 */  li      r3, 0
+/* 069D78 8006F318 3880000D */  li      r4, 0xd
+/* 069D7C 8006F31C 38A00001 */  li      r5, 1
+/* 069D80 8006F320 38C00000 */  li      r6, 0
+/* 069D84 8006F324 38E00000 */  li      r7, 0
+/* 069D88 8006F328 4803AEF9 */  bl      GXSetVtxAttrFmt
+/* 069D8C 8006F32C 3861000C */  addi    r3, r1, 0xc
+/* 069D90 8006F330 38800000 */  li      r4, 0
+/* 069D94 8006F334 4803DA05 */  bl      GXLoadTexObj
+/* 069D98 8006F338 38600080 */  li      r3, 0x80
+/* 069D9C 8006F33C 38800000 */  li      r4, 0
+/* 069DA0 8006F340 38A00004 */  li      r5, 4
+/* 069DA4 8006F344 4803C11D */  bl      GXBegin
+/* 069DA8 8006F348 C04282E8 */  lfs     f2, D_80135FE8@sda21(r2)
+/* 069DAC 8006F34C 3C60CC01 */  lis     r3, 0xcc01
+/* 069DB0 8006F350 C02282EC */  lfs     f1, D_80135FEC@sda21(r2)
+/* 069DB4 8006F354 38000001 */  li      r0, 1
+/* 069DB8 8006F358 D0438000 */  stfs    f2, -0x8000(r3)
+/* 069DBC 8006F35C C00282F0 */  lfs     f0, D_80135FF0@sda21(r2)
+/* 069DC0 8006F360 D0438000 */  stfs    f2, -0x8000(r3)
+/* 069DC4 8006F364 9BE38000 */  stb     r31, -0x8000(r3)
+/* 069DC8 8006F368 9BE38000 */  stb     r31, -0x8000(r3)
+/* 069DCC 8006F36C D0238000 */  stfs    f1, -0x8000(r3)
+/* 069DD0 8006F370 D0438000 */  stfs    f2, -0x8000(r3)
+/* 069DD4 8006F374 98038000 */  stb     r0, -0x8000(r3)
+/* 069DD8 8006F378 9BE38000 */  stb     r31, -0x8000(r3)
+/* 069DDC 8006F37C D0238000 */  stfs    f1, -0x8000(r3)
+/* 069DE0 8006F380 D0038000 */  stfs    f0, -0x8000(r3)
+/* 069DE4 8006F384 98038000 */  stb     r0, -0x8000(r3)
+/* 069DE8 8006F388 98038000 */  stb     r0, -0x8000(r3)
+/* 069DEC 8006F38C D0438000 */  stfs    f2, -0x8000(r3)
+/* 069DF0 8006F390 D0038000 */  stfs    f0, -0x8000(r3)
+/* 069DF4 8006F394 9BE38000 */  stb     r31, -0x8000(r3)
+/* 069DF8 8006F398 98038000 */  stb     r0, -0x8000(r3)
+/* 069DFC 8006F39C 48046EE9 */  bl      DEMODoneRender
+lbl_8006F3A0:
+/* 069E00 8006F3A0 800D8A88 */  lwz     r0, iImage@sda21(r13)
+/* 069E04 8006F3A4 5400077F */  clrlwi. r0, r0, 0x1d
+/* 069E08 8006F3A8 408200A4 */  bne     lbl_8006F44C
+/* 069E0C 8006F3AC 48037571 */  bl      VIWaitForRetrace
+/* 069E10 8006F3B0 800D8A80 */  lwz     r0, gbProgress@sda21(r13)
+/* 069E14 8006F3B4 2C000000 */  cmpwi   r0, 0
+/* 069E18 8006F3B8 41820010 */  beq     lbl_8006F3C8
+/* 069E1C 8006F3BC C00282FC */  lfs     f0, D_80135FFC@sda21(r2)
+/* 069E20 8006F3C0 EC3F003A */  fmadds  f1, f31, f0, f0
+/* 069E24 8006F3C4 4800000C */  b       lbl_8006F3D0
+lbl_8006F3C8:
+/* 069E28 8006F3C8 C00282FC */  lfs     f0, D_80135FFC@sda21(r2)
+/* 069E2C 8006F3CC EC3F0032 */  fmuls   f1, f31, f0
+lbl_8006F3D0:
+/* 069E30 8006F3D0 C0028300 */  lfs     f0, D_80136000@sda21(r2)
+/* 069E34 8006F3D4 3C604083 */  lis     r3, 0x4083
+/* 069E38 8006F3D8 80AD8920 */  lwz     r5, gpSystem@sda21(r13)
+/* 069E3C 8006F3DC 3883407D */  addi    r4, r3, 0x407d
+/* 069E40 8006F3E0 EC000072 */  fmuls   f0, f0, f1
+/* 069E44 8006F3E4 80650000 */  lwz     r3, 0(r5)
+/* 069E48 8006F3E8 38A00078 */  li      r5, 0x78
+/* 069E4C 8006F3EC 38C001AE */  li      r6, 0x1ae
+/* 069E50 8006F3F0 FC00001E */  fctiwz  f0, f0
+/* 069E54 8006F3F4 38E00190 */  li      r7, 0x190
+/* 069E58 8006F3F8 39000008 */  li      r8, 8
+/* 069E5C 8006F3FC D8010070 */  stfd    f0, 0x70(r1)
+/* 069E60 8006F400 83E10074 */  lwz     r31, 0x74(r1)
+/* 069E64 8006F404 4BFB648D */  bl      _frameDrawRectangle
+/* 069E68 8006F408 2C030000 */  cmpwi   r3, 0
+/* 069E6C 8006F40C 4082000C */  bne     lbl_8006F418
+/* 069E70 8006F410 38600000 */  li      r3, 0
+/* 069E74 8006F414 4800005C */  b       lbl_8006F470
+lbl_8006F418:
+/* 069E78 8006F418 806D8920 */  lwz     r3, gpSystem@sda21(r13)
+/* 069E7C 8006F41C 3C808F9C */  lis     r4, 0x8f9c
+/* 069E80 8006F420 38FF0000 */  addi    r7, r31, 0
+/* 069E84 8006F424 80630000 */  lwz     r3, 0(r3)
+/* 069E88 8006F428 38848F7C */  addi    r4, r4, -28804
+/* 069E8C 8006F42C 38A00078 */  li      r5, 0x78
+/* 069E90 8006F430 38C001AE */  li      r6, 0x1ae
+/* 069E94 8006F434 39000008 */  li      r8, 8
+/* 069E98 8006F438 4BFB6459 */  bl      _frameDrawRectangle
+/* 069E9C 8006F43C 2C030000 */  cmpwi   r3, 0
+/* 069EA0 8006F440 4082000C */  bne     lbl_8006F44C
+/* 069EA4 8006F444 38600000 */  li      r3, 0
+/* 069EA8 8006F448 48000028 */  b       lbl_8006F470
+lbl_8006F44C:
+/* 069EAC 8006F44C C00282D0 */  lfs     f0, D_80135FD0@sda21(r2)
+/* 069EB0 8006F450 806D8A88 */  lwz     r3, iImage@sda21(r13)
+/* 069EB4 8006F454 FC00F800 */  fcmpu   cr0, f0, f31
+/* 069EB8 8006F458 38030001 */  addi    r0, r3, 1
+/* 069EBC 8006F45C 900D8A88 */  stw     r0, iImage@sda21(r13)
+/* 069EC0 8006F460 4082000C */  bne     lbl_8006F46C
+/* 069EC4 8006F464 38000001 */  li      r0, 1
+/* 069EC8 8006F468 900D8A80 */  stw     r0, gbProgress@sda21(r13)
+lbl_8006F46C:
+/* 069ECC 8006F46C 38600001 */  li      r3, 1
+lbl_8006F470:
+/* 069ED0 8006F470 8001008C */  lwz     r0, 0x8c(r1)
+/* 069ED4 8006F474 CBE10080 */  lfd     f31, 0x80(r1)
+/* 069ED8 8006F478 83E1007C */  lwz     r31, 0x7c(r1)
+/* 069EDC 8006F47C 7C0803A6 */  mtlr    r0
+/* 069EE0 8006F480 38210088 */  addi    r1, r1, 0x88
+/* 069EE4 8006F484 4E800020 */  blr     

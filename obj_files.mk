@@ -22,7 +22,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/cpu.o                  \
     $(BUILD_DIR)/asm/pif.o                  \
     $(BUILD_DIR)/asm/ram.o                  \
-    $(BUILD_DIR)/asm/rom.o                  \
+    $(BUILD_DIR)/src/rom.o                  \
     $(BUILD_DIR)/asm/rdp.o                  \
     $(BUILD_DIR)/asm/rdb.o                  \
     $(BUILD_DIR)/asm/rsp.o                  \
