@@ -3,6 +3,7 @@ mwcc_compiler/
 
 # Build artifacts
 build/
+tools/asm_processor/tmp/
 *.o
 *.obj
 *.elf
