@@ -621,3 +621,22 @@ lbl_8002D2D8:
 /* 027D40 8002D2E0 382100C0 */  addi    r1, r1, 0xc0
 /* 027D44 8002D2E4 7C0803A6 */  mtlr    r0
 /* 027D48 8002D2E8 4E800020 */  blr     
+
+/* 000E84E0 800EB460 0040 */
+jtbl_800EB460:
+    .long lbl_8002CC70
+    .long lbl_8002CCBC
+    .long lbl_8002CD04
+    .long lbl_8002CD9C
+    .long lbl_8002CE0C
+    .long lbl_8002CE54
+    .long lbl_8002CEC4
+    .long lbl_8002CF0C
+    .long lbl_8002CF7C
+    .long lbl_8002CF88
+    .long lbl_8002CF94
+    .long lbl_8002CFDC
+    .long lbl_8002D024
+    .long lbl_8002D070
+    .long lbl_8002D090
+    .long lbl_8002D0DC

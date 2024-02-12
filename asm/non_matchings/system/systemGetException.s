@@ -136,3 +136,22 @@ lbl_8002DD60:
 lbl_8002DD68:
 /* 0287C8 8002DD68 38600001 */  li      r3, 1
 /* 0287CC 8002DD6C 4E800020 */  blr     
+
+/* 000E8548 800EB4C8 0040 */
+jtbl_800EB4C8:
+    .long lbl_8002DBDC
+    .long lbl_8002DBF4
+    .long lbl_8002DC0C
+    .long lbl_8002DC24
+    .long lbl_8002DC3C
+    .long lbl_8002DC54
+    .long lbl_8002DC70
+    .long lbl_8002DC90
+    .long lbl_8002DCB0
+    .long lbl_8002DCD0
+    .long lbl_8002DCEC
+    .long lbl_8002DD0C
+    .long lbl_8002DD20
+    .long lbl_8002DD38
+    .long lbl_8002DD44
+    .long lbl_8002DD50
