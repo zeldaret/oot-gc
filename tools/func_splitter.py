@@ -24,8 +24,8 @@ def splitAsm(inputFile: str):
 
             # if end of a section containing functions
             if (
-                line.startswith(".section .") 
-                and not line.startswith(".section .text") 
+                line.startswith(".section .")
+                and not line.startswith(".section .text")
                 and not line.startswith(".section .init")
                 and previousIsNewLine
             ):
@@ -33,9 +33,9 @@ def splitAsm(inputFile: str):
 
             # if we found a new function
             if (
-                not line.startswith("lbl_") 
-                and (line.startswith("glabel") or ":\n" in line) 
-                and not foundFunction 
+                not line.startswith("lbl_")
+                and (line.startswith("glabel") or ":\n" in line)
+                and not foundFunction
                 and previousIsNewLine
             ):
                 foundFunction = True
@@ -76,7 +76,7 @@ def splitAsm(inputFile: str):
             if os.path.isfile(cPath):
                 with open(cPath, "r") as cFile:
                     cData = cFile.read()
-                
+
                 if i == len(parsedFunctions) - 1:
                     newline = "\n"
 
@@ -89,16 +89,17 @@ def splitAsm(inputFile: str):
 
 def main():
     parser = argparse.ArgumentParser(description="asm function splitter (creates C files and updates obj_files.mk)")
-    parser.add_argument(
-        "--file",
-        help="asm file name",
-        dest="file",
-        required=True,
-    )
+    parser.add_argument("file", help="asm file name")
 
     # get the original asm file's name
     args = parser.parse_args()
     inputFile: str = args.file
+
+    # if it's a path, keep the filename part
+    if "/" in inputFile:
+        inputFile = inputFile.split("/")[-1]
+
+    # remove the extension if present
     if inputFile.endswith(".s"):
         inputFile = inputFile[:-2]
 
