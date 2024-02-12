@@ -34,8 +34,10 @@ typedef struct SystemRomConfig {
 
 int systemEvent(System* pSystem, int nEvent, void *pArgument);
 
+char D_800EB300[13] = "SYSTEM (N64)";
+
 _XL_OBJECTTYPE gClassSystem = {
-    "SYSTEM (N64)",
+    D_800EB300,
     sizeof(System),
     NULL,
     (EventFunc)systemEvent,
@@ -90,8 +92,8 @@ char D_800EB64C[11] = "YoshiStory";
 
 SystemRomConfig gSystemRomConfigurationList;
 
-static u64 nTickMultiplier = 2;
-static f32 fTickScale = 1.0;
+u64 nTickMultiplier = 2;
+f32 fTickScale = 1.0;
 static u8 D_80134E68 = 0;
 
 static char D_80134E6C[3] = "SW0";
