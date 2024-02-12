@@ -6,7 +6,7 @@ PointerAlignment: Left
 BreakBeforeBraces: Attach
 SpaceAfterCStyleCast: false
 Cpp11BracedListStyle: true
-IndentCaseLabels: false
+IndentCaseLabels: true
 IndentPPDirectives: None
 BinPackArguments: true
 BinPackParameters: true
@@ -18,7 +18,7 @@ AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
 AlignEscapedNewlines: Left
 AlignTrailingComments: false

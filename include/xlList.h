@@ -11,7 +11,7 @@ struct tXL_NODE {
 };
 
 // size: 0x10
-typedef struct {
+typedef struct tXL_LIST {
     int nItemSize; // 0x0
     int nItemCount; // 0x4
     void* pNodeHead; // 0x8

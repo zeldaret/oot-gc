@@ -4,9 +4,7 @@
 
 static tXL_LIST gListList;
 
-int xlListReset(void) {
-    return 1;
-}
+int xlListReset(void) { return 1; }
 
 int xlListSetup(void) {
     gListList.nItemCount = 0;
