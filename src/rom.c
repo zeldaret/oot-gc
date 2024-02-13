@@ -86,15 +86,140 @@ const f32 D_80135FF8 = 639.0f;
 const f32 D_80135FFC = 0.5f;
 const f32 D_80136000 = 400.0f;
 
+void __romLoadBlock_CompleteGCN(long nResult);
+
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romEvent.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romGetImage.s")
+s32 romGetImage(Rom* pROM, char* acNameFile) {
+    if (pROM->acNameFile[0] == '\x0') {
+        return 0;
+    }
 
+    if (acNameFile != NULL) {
+        s32 i;
+
+        for (i = 0; pROM->acNameFile[i] != '\x0'; i++) {
+            acNameFile[i] = pROM->acNameFile[i];
+        }
+    }
+
+    return 1;
+}
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romSetImage.s")
+#else
+// regalloc: https://decomp.me/scratch/7hhCB
+s32 romSetImage(Rom* pROM, char *szNameFile) {
+    tXL_FILE* file;
+    int bFlip;
+    int size;
+    s32 var_r30;
+    s32 i;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romSetCacheSize.s")
+    for (i = 0; (szNameFile[i] != '\x0') && (i < 0x200); i++) {
+        pROM->acNameFile[i] = szNameFile[i];
+    }
+    pROM->acNameFile[i] = '\x0';
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romUpdate.s")
+    if (xlFileGetSize(&size, pROM->acNameFile)) {
+        pROM->nSize = (u32)(size - pROM->offsetToRom);
+    } else {
+        return 0;
+    }
+
+    if (!xlFileOpen(&file, XLFT_BINARY, szNameFile)) {
+        return 0;
+    }
+
+    if (!xlFileSetPosition(file, pROM->offsetToRom)) {
+        return 0;
+    }
+
+    if (!xlFileGet(file, pROM->acHeader, sizeof(pROM->acHeader))) {
+        return 0;
+    }
+
+    if (!xlFileClose(&file)) {
+        return 0;
+    }
+
+    if ((pROM->acHeader[0] == '\x37') && (pROM->acHeader[1] == 0x80)) {
+        var_r30 = 1;
+    }
+
+    if (var_r30 != 0) {
+        bFlip = 1;
+    } else {
+        bFlip = 0;
+    }
+
+    pROM->bFlip = bFlip;
+    simulatorDVDOpen(szNameFile, &pROM->fileInfo);
+
+    return 1;
+}
+#endif
+
+s32 romSetCacheSize(Rom* pROM, s32 nSize) {
+    s32 nSizeCacheRAM;
+
+    if (nSize < 0x100000) {
+        nSizeCacheRAM = 0x100000;
+    } else if (nSize > 0x800000) {
+        nSizeCacheRAM = 0x800000;
+    } else {
+        nSizeCacheRAM = (nSize + 0x1FFF) & 0xFFFFE000;
+    }
+
+    pROM->nSizeCacheRAM = nSizeCacheRAM;
+    pROM->nCountBlockRAM = nSizeCacheRAM / 0x2000;
+
+    if (!xlHeapTake(&pROM->pBuffer, nSizeCacheRAM | 0x30000000)) {
+        return 0;
+    }
+
+    pROM->pCacheRAM = (u8* ) pROM->pBuffer;
+
+    return 1;
+}
+
+s32 romUpdate(Rom* pROM) {
+    s32 cmdBlockStatus;
+
+    if ((pROM->copy.bWait != 0) || (pROM->load.bWait != 0)) {
+        if ((pROM->load.bDone != 0) && (pROM->load.nResult == pROM->load.nSizeRead)) {
+            pROM->load.bDone = 0;
+            if (!__romLoadBlock_Complete(pROM)) {
+                return 0;
+            }
+        }
+
+        cmdBlockStatus = DVDGetCommandBlockStatus(&pROM->fileInfo);
+        if (cmdBlockStatus != 1) {
+            if (!simulatorDVDShowError(cmdBlockStatus, pROM->load.anData, pROM->load.nSizeRead, pROM->offsetToRom + pROM->load.nOffset)) {
+                return 0;
+            }
+
+            if ((cmdBlockStatus == 0xB) || (cmdBlockStatus == -1)) {
+                DVDCancel(&pROM->fileInfo);
+                if (!simulatorDVDRead(&pROM->fileInfo, pROM->load.anData, pROM->load.nSizeRead, pROM->offsetToRom + pROM->load.nOffset, &__romLoadBlock_CompleteGCN)) {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    if (!romLoadUpdate(pROM)) {
+        return 0;
+    }
+
+    if (!romCopyUpdate(pROM)) {
+        return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCopyImmediate.s")
 
