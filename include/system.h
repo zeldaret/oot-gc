@@ -48,16 +48,16 @@ typedef enum __anon_0x394CD {
 } __anon_0x394CD;
 
 typedef struct RomCopy {
-    /* 0x00 */ u16 nSize;
-    /* 0x04 */ u16 nOffsetRAM;
-    /* 0x08 */ u16 nOffsetROM;
-    /* 0x0C */ u16 (*pCallback)();
+    /* 0x00 */ int nSize;
+    /* 0x04 */ int nOffsetRAM;
+    /* 0x08 */ int nOffsetROM;
+    /* 0x0C */ int (*pCallback)();
 } RomCopy; // size = 0x10
 
 typedef struct System {
     /* 0x00 */ void *pFrame;
     /* 0x04 */ void *pSound;
-    /* 0x08 */ u8 bException;
+    /* 0x08 */ int bException;
     /* 0x0C */ SystemMode eMode;
     /* 0x10 */ RomCopy romCopy;
     /* 0x20 */ SystemRomType eTypeROM;
@@ -65,7 +65,7 @@ typedef struct System {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ __anon_0x394CD storageDevice;
     /* 0x74 */ u8 anException[16];
-    /* 0x84 */ u8 bJapaneseVersion;
+    /* 0x84 */ int bJapaneseVersion;
 } System; // size = 0x88
 
 typedef struct SystemRomConfig {
