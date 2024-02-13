@@ -88,7 +88,65 @@ const f32 D_80136000 = 400.0f;
 
 void __romLoadBlock_CompleteGCN(long nResult);
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romEvent.s")
+s32 romEvent(Rom* pROM, s32 nEvent, unknownDeviceStruct* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pROM->nSize = 0;
+            pROM->nTick = 0;
+            pROM->bLoad = 1;
+            pROM->bFlip = 0;
+            pROM->pHost = pArgument;
+            pROM->acNameFile[0] = '\0';
+            pROM->eModeLoad = RLM_NONE;
+            pROM->pBuffer = NULL;
+            pROM->offsetToRom = 0;
+            pROM->anOffsetBlock = NULL;
+            pROM->nCountOffsetBlocks = 0;
+            pROM->copy.nSize = 0;
+            pROM->copy.bWait = 0;
+            pROM->load.bWait = 0;
+            pROM->load.nOffset1 = 0;
+            pROM->load.nOffset0 = 0;
+            pROM->load.bDone = 0;
+            pROM->nSizeCacheRAM = 0;
+            pROM->nCountBlockRAM = 0;
+            pROM->pCacheRAM = NULL;
+            break;
+        case 3:
+            if ((pROM->pBuffer != NULL) && (pROM->pBuffer != pROM->pCacheRAM) && (!xlHeapFree(&pROM->pBuffer))) {
+                return 0;
+            }
+            break;
+        case 0x1002:
+            switch (pArgument->unk) {
+                case 0:
+                    if (!cpuSetDevicePut(pROM->pHost->pDevice, pArgument, romPut8, romPut16, romPut32, romPut64)) {
+                        return 0;
+                    }
+                    if (!cpuSetDeviceGet(pROM->pHost->pDevice, pArgument, romGet8, romGet16, romGet32, romGet64)) {
+                        return 0;
+                    }
+                    break;
+                case 1:
+                    if (!cpuSetDevicePut(pROM->pHost->pDevice, pArgument, romPutDebug8, romPutDebug16, romPutDebug32, romPutDebug64)) {
+                        return 0;
+                    }
+                    if (!cpuSetDeviceGet(pROM->pHost->pDevice, pArgument, romGetDebug8, romGetDebug16, romGetDebug32, romGetDebug64)) {
+                        return 0;
+                    }
+                    break;
+            }
+            break;
+        case 0:
+        case 1:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
 
 s32 romGetImage(Rom* pROM, char* acNameFile) {
     if (pROM->acNameFile[0] == '\x0') {
