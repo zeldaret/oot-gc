@@ -18,7 +18,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/codeGCN.o              \
     $(BUILD_DIR)/asm/soundGCN.o             \
     $(BUILD_DIR)/asm/frame.o                \
-    $(BUILD_DIR)/asm/system.o               \
+    $(BUILD_DIR)/src/system.o               \
     $(BUILD_DIR)/asm/cpu.o                  \
     $(BUILD_DIR)/asm/pif.o                  \
     $(BUILD_DIR)/asm/ram.o                  \
