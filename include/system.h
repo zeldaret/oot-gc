@@ -6,7 +6,7 @@
 typedef enum SystemMode {
     /* -1 */ SM_NONE = -1,
     /*  0 */ SM_RUNNING,
-    /*  1 */ SM_STOPPED,
+    /*  1 */ SM_STOPPED
 } SystemMode;
 
 typedef enum SystemRomType {
@@ -26,7 +26,7 @@ typedef enum SystemRomType {
     /* 12 */ SRT_UNKNOWN
 } SystemRomType;
 
-typedef enum __anon_0x394CD {
+typedef enum SystemObjectType {
     /* -1 */ SOT_NONE = -1,
     /*  0 */ SOT_CPU,
     /*  1 */ SOT_PIF,
@@ -44,8 +44,8 @@ typedef enum __anon_0x394CD {
     /* 13 */ SOT_LIBRARY,
     /* 14 */ SOT_PERIPHERAL,
     /* 15 */ SOT_RDB,
-    /* 16 */ SOT_COUNT,
-} __anon_0x394CD;
+    /* 16 */ SOT_COUNT
+} SystemObjectType;
 
 typedef struct RomCopy {
     /* 0x00 */ int nSize;
@@ -61,9 +61,9 @@ typedef struct System {
     /* 0x0C */ SystemMode eMode;
     /* 0x10 */ RomCopy romCopy;
     /* 0x20 */ SystemRomType eTypeROM;
-    /* 0x24 */ void *apObject[16];
+    /* 0x24 */ void *apObject[SOT_COUNT];
     /* 0x68 */ u64 nAddressBreak;
-    /* 0x70 */ __anon_0x394CD storageDevice;
+    /* 0x70 */ SystemObjectType storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ int bJapaneseVersion;
 } System; // size = 0x88
@@ -72,7 +72,7 @@ typedef struct SystemRomConfig {
     /* 0x0000 */ char rom[36];
     /* 0x0024 */ int controllerConfiguration[4][20];
     /* 0x0164 */ int rumbleConfiguration;
-    /* 0x0168 */ __anon_0x394CD storageDevice;
+    /* 0x0168 */ SystemObjectType storageDevice;
     /* 0x016C */ int normalControllerConfig;
     /* 0x0170 */ int currentControllerConfig;
 } SystemRomConfig; // size = 0x174
