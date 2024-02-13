@@ -106,16 +106,28 @@ s32 romGetImage(Rom* pROM, char* acNameFile) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romSetImage.s")
-#else
-// regalloc: https://decomp.me/scratch/7hhCB
+inline void romOpen(Rom* pROM, char *szNameFile) {
+    s32 var_r30 = 0;
+    int bFlip;
+
+    if ((pROM->acHeader[0] == '\x37') && (pROM->acHeader[1] == 0x80)) {
+        var_r30 = 1;
+    }
+
+    if (var_r30 != 0) {
+        bFlip = 1;
+    } else {
+        bFlip = 0;
+    }
+
+    pROM->bFlip = bFlip;
+    simulatorDVDOpen(szNameFile, &pROM->fileInfo);
+}
+
 s32 romSetImage(Rom* pROM, char *szNameFile) {
     tXL_FILE* file;
-    int bFlip;
-    int size;
-    s32 var_r30;
     s32 i;
+    int size;
 
     for (i = 0; (szNameFile[i] != '\x0') && (i < 0x200); i++) {
         pROM->acNameFile[i] = szNameFile[i];
@@ -144,22 +156,9 @@ s32 romSetImage(Rom* pROM, char *szNameFile) {
         return 0;
     }
 
-    if ((pROM->acHeader[0] == '\x37') && (pROM->acHeader[1] == 0x80)) {
-        var_r30 = 1;
-    }
-
-    if (var_r30 != 0) {
-        bFlip = 1;
-    } else {
-        bFlip = 0;
-    }
-
-    pROM->bFlip = bFlip;
-    simulatorDVDOpen(szNameFile, &pROM->fileInfo);
-
+    romOpen(pROM, szNameFile);
     return 1;
 }
-#endif
 
 s32 romSetCacheSize(Rom* pROM, s32 nSize) {
     s32 nSizeCacheRAM;
