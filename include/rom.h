@@ -3,8 +3,8 @@
 
 #include "xlFileGCN.h"
 
-// most likely the callback for the loading screen's progress bar
 typedef s32 pCallback_func(void);
+typedef s32 pProgressCallback_func(f32);
 
 // __anon_0x4CF87
 typedef enum RomModeLoad {
@@ -14,9 +14,16 @@ typedef enum RomModeLoad {
     /*  2 */ RLM_COUNT
 } RomModeLoad;
 
+// __anon_0x5219D
+typedef enum RomCacheType {
+    /* -1 */ RCT_NONE = -1,
+    /*  0 */ RCT_RAM,
+    /*  1 */ RCT_ARAM
+} RomCacheType;
+
 // __anon_0x4CFE6 
 typedef struct RomBlock {
-    /* 0x00 */ int iCache;
+    /* 0x00 */ u32 iCache;
     /* 0x04 */ u32 nSize;
     /* 0x08 */ u32 nTickUsed;
     /* 0x0C */ char keep;
@@ -54,7 +61,7 @@ typedef struct Rom {
     /* 0x00010 */ char acNameFile[513];
     /* 0x00214 */ u32 nSize;
     /* 0x00218 */ int eModeLoad; // RomModeLoad enum value
-    /* 0x0021C */ RomBlock aBlock[4096];
+    /* 0x0021C */ RomBlock aBlock[0x1000];
     /* 0x1021C */ u32 nTick;
     /* 0x10220 */ u8* pCacheRAM;
     /* 0x10224 */ u8 anBlockCachedRAM[1024];
