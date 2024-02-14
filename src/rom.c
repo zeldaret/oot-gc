@@ -295,72 +295,45 @@ inline s32 romCopyLoad(Rom* pROM) {
 //! TODO: remove this when the SDK files are present
 u32 ARGetDMAStatus(void);
 void ARStartDMA(u32 type, u32 mainmem_addr, u32 aram_addr, u32 length);
+u32 ARGetBaseAddress(void);
 void DCInvalidateRange(void *addr, u32 nBytes);
 #define ARAM_DIR_ARAM_TO_MRAM 0x01
 
-inline s32 romCopyImmediateLoop(Rom* pROM, void* pTarget, s32 nOffsetROM, u32 nSize, s32 temp_r30) {
-    s32 temp_r4;
-    s32 blockSize;
-    s32 cacheIdx;
+inline s32 romCopyImmediateUnkInline(s32 blockSize1, void* pTarget, s32 temp_r30, s32 temp_r4, s32 cacheIdx) {
+    s32 blockSize = blockSize1;
+    s32 i;
+    s32 ramOffset = 0;
+    s32 romAddr = temp_r4 + ((cacheIdx + 1) * (s16)0xE000);
+    romAddr += ARGetBaseAddress();
 
-    s32 ramOffset;
-    s32 romAddr;
-    s32 blockCopySize;
-    
-    for (nSize; nSize != 0; nSize -= blockSize) {
-        s32 var_r0 = nOffsetROM / 0x2000;
-        RomBlock* currentBlock = &pROM->aBlock[var_r0];
+    for (i = 0; blockSize > 0; blockSize -= blockSize1) {
+        s32 temp_r20 = 0;
+        s32 temp_r24 = 0;
 
-        if (currentBlock == NULL) {
+        if (i > 0x200) {
+            i = 0x200;
+        }
+
+        while (ARGetDMAStatus()) {}
+
+        temp_r20 = romAddr & 0x1F;
+        temp_r24 = blockSize + temp_r20;
+
+        ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, temp_r30, romAddr & 0xFFFFFFE0, (temp_r24 + 0x1F) & 0xFFFFFFE0);
+        DCInvalidateRange((void*)temp_r30, temp_r24);
+
+        while (ARGetDMAStatus()) {}
+
+        if (!xlHeapCopy((void*)((u32)pTarget + ramOffset), temp_r30 + temp_r20, blockSize)) {
             return 0;
         }
 
-        temp_r4 = var_r0 / 0x2000;
-        if ((blockSize = currentBlock->nSize - temp_r4) > (s32)nSize) {
-            blockSize = (s32)nSize;
-        }
-
-        cacheIdx = currentBlock->iCache;
-        if (cacheIdx >= 0 && !xlHeapCopy(pTarget, &pROM->pCacheRAM[(cacheIdx / 0x2000) + temp_r4], blockSize)) {
-            return 0;
-        }
-
-        blockCopySize = blockSize;
-        ramOffset = 0;
-        romAddr = temp_r4 + ((cacheIdx + 1) * (s16)0xE000);
-        romAddr += ARGetBaseAddress();
-
-        for (blockCopySize; blockCopySize > 0; blockCopySize -= blockSize) {
-            s32 temp_r20;
-            s32 temp_r24;
-
-            if (blockCopySize > 0x200) {
-                blockCopySize = 0x200;
-            }
-
-            while (ARGetDMAStatus()) {}
-
-            temp_r20 = romAddr & 0x1F;
-            temp_r24 = blockSize + temp_r20;
-
-            ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, temp_r30, romAddr & 0xFFFFFFE0, (temp_r24 + 0x1F) & 0xFFFFFFE0);
-            DCInvalidateRange((void*)temp_r30, temp_r24);
-
-            while (ARGetDMAStatus()) {}
-
-            if (!xlHeapCopy((void*)((u32)pTarget + ramOffset), temp_r30 + temp_r20, blockSize)) {
-                return 0;
-            }
-
-            romAddr += blockSize;
-            ramOffset += blockSize;
-        }
-
-        pTarget = (void*)((u32)pTarget + blockSize);
-        nOffsetROM += blockSize;
+        romAddr += i;
+        ramOffset += i;
+        i += blockSize;
     }
 
-    return 1;
+    return i;
 }
 
 s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize) {
@@ -381,9 +354,35 @@ s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize) {
     if (((nOffsetROM + nSize) > pROM->nSize) && ((nSize = pROM->nSize - nOffsetROM) < 0)) {
         return 1;
     } else if (pROM->eModeLoad == RLM_PART) {
-        if (romCopyImmediateLoop(pROM, pTarget, nOffsetROM, nSize, temp_r30)) {
-            return 1;
+        s32 blockSize;
+        
+        for (nSize; (u32)nSize != 0; nSize -= blockSize) {
+            RomBlock* currentBlock = &pROM->aBlock[nOffsetROM / 0x2000];
+            s32 temp_r4;
+            s32 cacheIdx;
+            s32 cacheIdx2;
+
+            if (currentBlock == NULL) {
+                return 0;
+            }
+
+            temp_r4 = (nOffsetROM / 0x2000);
+            blockSize = currentBlock->nSize - (temp_r4 /= 0x2000);
+            if (blockSize > nSize) {
+                blockSize = nSize;
+            }
+
+            cacheIdx = currentBlock->iCache;
+            cacheIdx2 = (currentBlock->iCache / 0x2000) + temp_r4;
+            if (cacheIdx >= 0 && !xlHeapCopy(pTarget, &pROM->pCacheRAM[(cacheIdx / 0x2000) + temp_r4], blockSize)) {
+                return 0;
+            }
+
+            blockSize = romCopyImmediateUnkInline(blockSize, pTarget, temp_r30, temp_r4, cacheIdx);
+            pTarget = (void*)((u32)pTarget + blockSize);
+            nOffsetROM += blockSize;
         }
+        return 1;
     } else if (pROM->eModeLoad == RLM_FULL) {
         if (!xlHeapCopy(pTarget, (void*)((u32)pROM->pBuffer + nOffsetROM), nSize)) {
             return 0;
