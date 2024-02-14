@@ -619,30 +619,31 @@ int romGetPC(Rom* pROM, u64* pnPC) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCacheGame_ZELDA.s")
 
-#ifndef NON_MATCHING
+// the function match but the build doesn't for some reasons
+#if 1
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadRange.s")
 #else
-s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s8 whichBlock, pProgressCallback_func* pProgressCallback) {
-    s32 i;
+s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock, pProgressCallback_func* pProgressCallback) {
     s32 iCache;
-    u32 blockEnd = end / 0x2000;
-    u32 blockStart = begin / 0x2000;
-
-    for (i = blockStart; i <= blockEnd; i++) {
+    u32 iBlock;
+    u32 iBlockLast;
+    
+    iBlockLast = end / 0x2000;
+    for (iBlock = begin / 0x2000; iBlock <= iBlockLast; iBlock++) {
         if (pProgressCallback != NULL) {
-            pProgressCallback((f32)(i - blockStart) / (f32)((end - begin) / 0x2000));
+            pProgressCallback((f32)(iBlock - (begin / 0x2000)) / (f32)((end - begin) / 0x2000));
         }
 
-        if (pROM->aBlock[i].iCache == 0) {
+        if (pROM->aBlock[iBlock].nSize == 0) {
             if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
                 return 0;
-            } else if (!romLoadBlock(pROM, i, iCache, NULL)) {
+            } else if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
                 return 0;
             }
         }
 
-        pROM->aBlock[i].keep = whichBlock;
-        pROM->aBlock[i].nTickUsed = ++pROM->nTick;
+        pROM->aBlock[iBlock].keep = whichBlock;
+        pROM->aBlock[iBlock].nTickUsed = ++pROM->nTick;
 
         if (blockCount != NULL) {
             *blockCount += 1;

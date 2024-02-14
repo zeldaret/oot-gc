@@ -60,7 +60,7 @@ typedef struct Rom {
     /* 0x0000C */ int bLoad;
     /* 0x00010 */ char acNameFile[513];
     /* 0x00214 */ u32 nSize;
-    /* 0x00218 */ int eModeLoad; // RomModeLoad enum value
+    /* 0x00218 */ RomModeLoad eModeLoad;
     /* 0x0021C */ RomBlock aBlock[0x1000];
     /* 0x1021C */ u32 nTick;
     /* 0x10220 */ u8* pCacheRAM;
