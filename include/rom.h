@@ -3,6 +3,9 @@
 
 #include "xlFileGCN.h"
 
+// most likely the callback for the loading screen's progress bar
+typedef s32 pCallback_func(void);
+
 // __anon_0x4CF87
 typedef enum RomModeLoad {
     /* -1 */ RLM_NONE = -1,
@@ -20,8 +23,8 @@ typedef struct RomBlock {
 } RomBlock; // size = 0x10
 
 typedef struct __anon_0x4D0FA {
-    /* 0x00 */ int bWait;
-    /* 0x04 */ int (*pCallback)();
+    /* 0x00 */ u32 bWait;
+    /* 0x04 */ pCallback_func* pCallback;
     /* 0x08 */ u8* pTarget;
     /* 0x0C */ u32 nSize;
     /* 0x10 */ u32 nOffset;
@@ -32,7 +35,7 @@ typedef struct __anon_0x4D1DA {
     /* 0x04 */ int bDone;
     /* 0x08 */ int nResult;
     /* 0x0C */ u8* anData;
-    /* 0x10 */ int (*pCallback)();
+    /* 0x10 */ pCallback_func* pCallback;
     /* 0x14 */ int iCache;
     /* 0x18 */ int iBlock;
     /* 0x1C */ int nOffset;
@@ -72,8 +75,8 @@ int romGetImage(Rom* pROM, char* acNameFile);
 int romSetImage(Rom* pROM, char* szNameFile);
 int romSetCacheSize(Rom* pROM, int nSize);
 int romUpdate(Rom* pROM);
-int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, u32 nSize);
-int romCopy(Rom* pROM, void* pTarget, int nOffset, u32 nSize, int (*pCallback)());
+s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
+s32 romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, pCallback_func* pCallback);
 int romTestCode(Rom* pROM, char* acCode);
 int romGetCode(Rom* pROM, char* acCode);
 int romGetPC(Rom* pROM, u64* pnPC);
