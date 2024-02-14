@@ -23,7 +23,7 @@ typedef struct RomBlock {
 } RomBlock; // size = 0x10
 
 typedef struct __anon_0x4D0FA {
-    /* 0x00 */ u32 bWait;
+    /* 0x00 */ int bWait;
     /* 0x04 */ pCallback_func* pCallback;
     /* 0x08 */ u8* pTarget;
     /* 0x0C */ u32 nSize;
