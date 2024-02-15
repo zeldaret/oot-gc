@@ -84,21 +84,6 @@ all: $(ELF)
 	@md5sum $(COMPARE_TO)
 	@md5sum -c checksum.md5
 
-ALL_DIRS := build $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS))
-
-# Make sure build directory exists before compiling anything
-DUMMY != mkdir -p $(ALL_DIRS)
-
-.PHONY: tools
-
-$(LDSCRIPT): ldscript.lcf
-	$(CPP) -P -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
-
-$(ELF): $(O_FILES) $(LDSCRIPT)
-	$(RM) -rf $(ASM_PROCESSOR_DIR)/tmp
-	$(LD) $(LDFLAGS) -o $@ -lcf $(LDSCRIPT) $(O_FILES)
-	$(OBJCOPY) $(ELF) $(COMPARE_TO) -S
-
 # Strip debugging sections and .mwcats.text section so only the important sections remain
 # Tested to ensure it doesn't crash at least on Dolphin
 # Also copy again to strip symbols since we don't want to diff those
@@ -107,11 +92,25 @@ setup:
 	$(OBJCOPY) SIM.elf SIM_S.elf -S
 
 clean:
-	rm -f -d -r build
-#$(MAKE) -C tools clean
+	rm -f -d -r
 
-#tools:
-#	$(MAKE) -C tools
+format:
+	clang-format -i include/*.h src/*.c
+
+.PHONY: all setup clean format
+
+ALL_DIRS := build $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS))
+
+# Make sure build directory exists before compiling anything
+DUMMY != mkdir -p $(ALL_DIRS)
+
+$(LDSCRIPT): ldscript.lcf
+	$(CPP) -P -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
+
+$(ELF): $(O_FILES) $(LDSCRIPT)
+	$(RM) -rf $(ASM_PROCESSOR_DIR)/tmp
+	$(LD) $(LDFLAGS) -o $@ -lcf $(LDSCRIPT) $(O_FILES)
+	$(OBJCOPY) $(ELF) $(COMPARE_TO) -S
 
 $(GLOBAL_ASM_O_FILES) : BUILD_C := $(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)"
 

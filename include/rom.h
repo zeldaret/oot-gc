@@ -3,8 +3,8 @@
 
 #include "xlFileGCN.h"
 
-typedef s32 pCallback_func(void);
-typedef s32 pProgressCallback_func(f32);
+typedef s32 UnknownCallbackFunc(void);
+typedef s32 ProgressCallbackFunc(f32 progressPercent);
 
 // __anon_0x4CF87
 typedef enum RomModeLoad {
@@ -21,9 +21,9 @@ typedef enum RomCacheType {
     /*  1 */ RCT_ARAM
 } RomCacheType;
 
-// __anon_0x4CFE6 
+// __anon_0x4CFE6
 typedef struct RomBlock {
-    /* 0x00 */ s32 iCache;
+    /* 0x00 */ int iCache;
     /* 0x04 */ u32 nSize;
     /* 0x08 */ u32 nTickUsed;
     /* 0x0C */ s8 keep;
@@ -31,7 +31,7 @@ typedef struct RomBlock {
 
 typedef struct RomCopyState {
     /* 0x00 */ int bWait;
-    /* 0x04 */ pCallback_func* pCallback;
+    /* 0x04 */ UnknownCallbackFunc* pCallback;
     /* 0x08 */ u8* pTarget;
     /* 0x0C */ u32 nSize;
     /* 0x10 */ u32 nOffset;
@@ -42,8 +42,8 @@ typedef struct RomLoadState {
     /* 0x04 */ int bDone;
     /* 0x08 */ int nResult;
     /* 0x0C */ u8* anData;
-    /* 0x10 */ pCallback_func* pCallback;
-    /* 0x14 */ s32 iCache;
+    /* 0x10 */ UnknownCallbackFunc* pCallback;
+    /* 0x14 */ int iCache;
     /* 0x18 */ int iBlock;
     /* 0x1C */ int nOffset;
     /* 0x20 */ u32 nOffset0;
@@ -52,9 +52,15 @@ typedef struct RomLoadState {
     /* 0x2C */ u32 nSizeRead;
 } RomLoadState; // size = 0x30
 
+typedef struct UnknownDeviceStruct {
+    /* 0x00 */ int unk;
+    /* 0x00 */ char unk2[0x20];
+    /* 0x24 */ __anon_0x3EB4F* pDevice;
+} UnknownDeviceStruct;
+
 // __anon_0x4D873
 typedef struct Rom {
-    /* 0x00000 */ struct unknownDeviceStruct* pHost;
+    /* 0x00000 */ void* pHost;
     /* 0x00004 */ void* pBuffer;
     /* 0x00008 */ int bFlip;
     /* 0x0000C */ int bLoad;
@@ -77,35 +83,18 @@ typedef struct Rom {
     /* 0x10EF4 */ int offsetToRom;
 } Rom; // size = 0x10EF8
 
-int romEvent(Rom* pROM, s32 nEvent, unknownDeviceStruct* pArgument);
+int romEvent(Rom* pROM, s32 nEvent, void* pArgument);
 int romGetImage(Rom* pROM, char* acNameFile);
 int romSetImage(Rom* pROM, char* szNameFile);
 int romSetCacheSize(Rom* pROM, int nSize);
 int romUpdate(Rom* pROM);
+
+//! NOTE: The debug informations indicates that ``nSize`` is an unsigned int
 int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, int nSize);
-s32 romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, pCallback_func* pCallback);
+int romCopy(Rom* pROM, void* pTarget, int nOffset, int nSize, UnknownCallbackFunc* pCallback);
+
 int romTestCode(Rom* pROM, char* acCode);
 int romGetCode(Rom* pROM, char* acCode);
 int romGetPC(Rom* pROM, u64* pnPC);
-
-static int romPut8(Rom* pROM, u32 nAddress, s8* pData);
-static int romPut16(Rom* pROM, u32 nAddress, s16* pData);
-static int romPut32(Rom* pROM, u32 nAddress, s32* pData);
-static int romPut64(Rom* pROM, u32 nAddress, s64* pData);
-
-static int romGet8(Rom* pROM, u32 nAddress, s8* pData);
-static int romGet16(Rom* pROM, u32 nAddress, s16* pData);
-static int romGet32(Rom* pROM, u32 nAddress, s32* pData);
-static int romGet64(Rom* pROM, u32 nAddress, s64* pData);
-
-static int romPutDebug8(Rom* pROM, u32 nAddress, s8* pData);
-static int romPutDebug16(Rom* pROM, u32 nAddress, s16* pData);
-static int romPutDebug32(Rom* pROM, u32 nAddress, s32* pData);
-static int romPutDebug64(Rom* pROM, u32 nAddress, s64* pData);
-
-static int romGetDebug8(Rom* pROM, u32 nAddress, s8* pData);
-static int romGetDebug16(Rom* pROM, u32 nAddress, s16* pData);
-static int romGetDebug32(Rom* pROM, u32 nAddress, s32* pData);
-static int romGetDebug64(Rom* pROM, u32 nAddress, s64* pData);
 
 #endif
