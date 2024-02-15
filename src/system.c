@@ -176,7 +176,10 @@ s32 systemExceptionPending(System* pSystem, s32 nException) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemReset.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetStorageDevice.s")
+s32 systemGetStorageDevice(System* pSystem, s32* pStorageDevice) {
+    *pStorageDevice = pSystem->storageDevice;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetStorageDevice.s")
 
