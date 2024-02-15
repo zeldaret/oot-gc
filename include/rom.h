@@ -3,7 +3,7 @@
 
 #include "xlFileGCN.h"
 
-typedef s32 UnknownCallbackFunc(void);
+typedef s32 UnknownCallbackFunc();
 typedef s32 ProgressCallbackFunc(f32 progressPercent);
 
 // __anon_0x4CF87

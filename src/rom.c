@@ -318,7 +318,9 @@ s32 romUpdate(Rom* pROM) {
 inline s32 romCopyLoad(Rom* pROM) {
     if (!romLoadFullOrPart(pROM)) {
         return 0;
-    } else if (!romCacheGame(pROM)) {
+    } 
+    
+    if (!romCacheGame(pROM)) {
         return 0;
     }
 
@@ -437,43 +439,64 @@ inline s32 romCopyLoop(Rom* pROM, u8* pTarget, u32 nOffset, u32 nSize, UnknownCa
 }
 
 int romCopy(Rom* pROM, void* pTarget, int nOffset, int nSize, UnknownCallbackFunc* pCallback) {
-    tXL_FILE* file;
+    tXL_FILE* pFile;
 
     nOffset &= 0x07FFFFFF;
 
     if (!pROM->nSizeCacheRAM) {
-        if (!xlFileOpen(&file, XLFT_BINARY, pROM->acNameFile)) {
+        if (!xlFileOpen(&pFile, XLFT_BINARY, pROM->acNameFile)) {
             return 0;
-        } else if (!xlFileSetPosition(file, nOffset + pROM->offsetToRom)) {
+        } 
+        
+        if (!xlFileSetPosition(pFile, nOffset + pROM->offsetToRom)) {
             return 0;
-        } else if (!xlFileGet(file, pTarget, (s32)nSize)) {
+        } 
+        
+        if (!xlFileGet(pFile, pTarget, (s32)nSize)) {
             return 0;
-        } else if (!xlFileClose(&file)) {
+        } 
+        
+        if (!xlFileClose(&pFile)) {
             return 0;
-        } else if ((pCallback != NULL) && !pCallback()) {
+        } 
+        
+        if ((pCallback != NULL) && !pCallback()) {
             return 0;
         }
+
         return 1;
-    } else if (pROM->bLoad && !romCopyLoad(pROM)) {
+    } 
+    
+    if (pROM->bLoad && !romCopyLoad(pROM)) {
         return 0;
-    } else if (((nOffset + nSize) > pROM->nSize) && ((nSize = pROM->nSize - nOffset) < 0)) {
+    } 
+    
+    if (((nOffset + nSize) > pROM->nSize) && ((nSize = pROM->nSize - nOffset) < 0)) {
         return 1;
-    } else if (pROM->eModeLoad == RLM_PART) {
+    } 
+    
+    if (pROM->eModeLoad == RLM_PART) {
         if (romCopyLoop(pROM, pTarget, nOffset, nSize, pCallback) && !romLoadUpdate(pROM)) {
             return 0;
-        } else if (!romCopyUpdate(pROM)) {
+        } 
+        
+        if (!romCopyUpdate(pROM)) {
             return 0;
-        } else {
-            return 1;
         }
-    } else if (pROM->eModeLoad == RLM_FULL) {
+        
+        return 1;
+    } 
+    
+    if (pROM->eModeLoad == RLM_FULL) {
         if (!xlHeapCopy(pTarget, (void*)((u32)pROM->pBuffer + nOffset), nSize)) {
             return 0;
-        } else if ((pCallback != NULL) && !pCallback()) {
+        } 
+        
+        if ((pCallback != NULL) && !pCallback()) {
             return 0;
-        } else {
-            return 1;
         }
+
+        return 1;
     }
 
     return 0;
@@ -644,7 +667,9 @@ inline int romLoadFullOrPartLoop(Rom* pROM) {
 
         if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
             return 0;
-        } else if (!romLoadBlock(pROM, i, iCache, NULL)) {
+        } 
+
+        if (!romLoadBlock(pROM, i, iCache, NULL)) {
             return 0;
         }
     }
@@ -715,14 +740,11 @@ s32 romLoadFullOrPart(Rom* pROM) {
         pROM->eModeLoad = RLM_FULL;
 
         if (pROM->bFlip) {
-            u32* var_r6 = (u32*)pROM->pBuffer;
-            u32 temp_r0;
+            u32* pBuffer = (u32*)pROM->pBuffer;
             s32 j;
 
             for (j = 0; j < (((s32)pROM->nSize + 3) >> 2); j++) {
-                temp_r0 = *var_r6;
-                *var_r6 = ((temp_r0 >> 8) & 0x00FF00FF) | ((temp_r0 << 8) & 0xFF00FF00);
-                var_r6 += 1;
+                *pBuffer++ = ((*pBuffer >> 8) & 0x00FF00FF) | ((*pBuffer << 8) & 0xFF00FF00);
             }
         }
     }
@@ -772,7 +794,9 @@ s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
         if (pROM->aBlock[iBlock].nSize == 0) {
             if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
                 return 0;
-            } else if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
+            } 
+            
+            if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
                 return 0;
             }
         }
@@ -803,13 +827,10 @@ s32 __romLoadBlock_Complete(Rom* pROM) {
 
     if (pROM->bFlip) {
         u32* anData = (u32*)pROM->load.anData;
-        u32 temp_r0;
         u32 i;
 
         for (i = 0; i < ((pROM->load.nSize + 3) >> 2); i++) {
-            temp_r0 = *anData;
-            *anData = ((temp_r0 >> 8) & 0x00FF00FF) | ((temp_r0 << 8) & 0xFF00FF00);
-            anData += 1;
+            *anData++ = ((*anData >> 8) & 0x00FF00FF) | ((*anData << 8) & 0xFF00FF00);
         }
     }
 
