@@ -1,5 +1,6 @@
 #include "xlObject.h"
 #include "system.h"
+#include "macros.h"
 
 int systemEvent(System* pSystem, int nEvent, void* pArgument);
 
@@ -157,7 +158,17 @@ const f64 D_80135F98 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemExceptionPending.s")
+s32 systemExceptionPending(System* pSystem, s32 nException) {
+    if ((nException > -1) && (nException < ARRAY_COUNT(pSystem->anException))) {
+        if (pSystem->anException[nException] != 0) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemCheckInterrupts.s")
 
