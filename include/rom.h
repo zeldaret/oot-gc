@@ -82,7 +82,7 @@ int romGetImage(Rom* pROM, char* acNameFile);
 int romSetImage(Rom* pROM, char* szNameFile);
 int romSetCacheSize(Rom* pROM, int nSize);
 int romUpdate(Rom* pROM);
-s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
+int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, int nSize);
 s32 romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, pCallback_func* pCallback);
 int romTestCode(Rom* pROM, char* acCode);
 int romGetCode(Rom* pROM, char* acCode);
