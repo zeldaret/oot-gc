@@ -196,6 +196,21 @@ if __name__ == "__main__":
         help="Hide source line numbers in output.",
     )
     parser.add_argument(
+        "--target-line-numbers",
+        dest="show_target_line_numbers",
+        action="store_const",
+        const=True,
+        help="""Show target line numbers in output, when available. May be enabled by
+        default depending on diff_settings.py.""",
+    )
+    parser.add_argument(
+        "--no-target-line-numbers",
+        dest="show_target_line_numbers",
+        action="store_const",
+        const=False,
+        help="Hide target line numbers in output.",
+    )
+    parser.add_argument(
         "--inlines",
         dest="inlines",
         action="store_true",
@@ -443,6 +458,7 @@ class ProjectSettings:
     source_directories: Optional[List[str]]
     source_extensions: List[str]
     show_line_numbers_default: bool
+    show_target_line_numbers_default: bool
     disassemble_all: bool
     reg_categories: Dict[str, int]
     expected_dir: str
@@ -477,6 +493,7 @@ class Config:
     show_rodata_refs: bool
     show_branches: bool
     show_line_numbers: bool
+    show_target_line_numbers: bool
     show_source: bool
     stop_at_ret: Optional[int]
     ignore_large_imms: bool
@@ -515,6 +532,9 @@ def create_project_settings(settings: Dict[str, Any]) -> ProjectSettings:
         ),
         build_dir=settings.get("build_dir", settings.get("mw_build_dir", "build/")),
         show_line_numbers_default=settings.get("show_line_numbers_default", True),
+        show_target_line_numbers_default=settings.get(
+            "show_target_line_numbers_default", False
+        ),
         disassemble_all=settings.get("disassemble_all", False),
         reg_categories=settings.get("reg_categories", {}),
     )
@@ -549,6 +569,10 @@ def create_config(args: argparse.Namespace, project: ProjectSettings) -> Config:
     if show_line_numbers is None:
         show_line_numbers = project.show_line_numbers_default
 
+    show_target_line_numbers = args.show_target_line_numbers
+    if show_target_line_numbers is None:
+        show_target_line_numbers = project.show_target_line_numbers_default
+
     return Config(
         arch=arch,
         # Build/objdump options
@@ -571,6 +595,7 @@ def create_config(args: argparse.Namespace, project: ProjectSettings) -> Config:
         show_rodata_refs=args.show_rodata_refs,
         show_branches=args.show_branches,
         show_line_numbers=show_line_numbers,
+        show_target_line_numbers=show_target_line_numbers,
         show_source=args.show_source or args.source_old_binutils,
         stop_at_ret=args.stop_at_ret,
         ignore_large_imms=args.ignore_large_imms,
@@ -1113,6 +1138,15 @@ def serialize_rodata_references(references: List[Tuple[int, int, str]]) -> str:
     )
 
 
+def maybe_get_objdump_target_flags(config: Config) -> List[str]:
+    flags = []
+
+    if config.show_target_line_numbers:
+        flags.append("--line-numbers")
+
+    return flags
+
+
 def maybe_get_objdump_source_flags(config: Config) -> List[str]:
     flags = []
 
@@ -1484,7 +1518,11 @@ def dump_elf(
     objdump_flags = [disassemble_flag, "-rz", "-j", config.diff_section]
     return (
         project.myimg,
-        (objdump_flags + flags1, project.baseimg, None),
+        (
+            objdump_flags + flags1 + maybe_get_objdump_target_flags(config),
+            project.baseimg,
+            None,
+        ),
         (
             objdump_flags + flags2 + maybe_get_objdump_source_flags(config),
             project.myimg,
@@ -1528,7 +1566,7 @@ def dump_objfile(
     objdump_flags = [disassemble_flag, "-rz", "-j", config.diff_section]
     return (
         objfile,
-        (objdump_flags, refobjfile, start),
+        (objdump_flags + maybe_get_objdump_target_flags(config), refobjfile, start),
         (objdump_flags + maybe_get_objdump_source_flags(config), objfile, start),
     )
 
@@ -3273,6 +3311,15 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
         elif config.compress and config.compress.same_instr and line_prefix in "irs":
             boring = True
 
+        base = part1
+        if part1 is not None and config.show_target_line_numbers:
+            if line1 and line1.source_line_num is not None:
+                num_color = BasicFormat.SOURCE_LINE_NUM
+                num1 = Text(f"{line1.source_line_num:5}", num_color)
+            else:
+                num1 = Text(" " * 5)
+            base = num1 + " " + part1
+
         if config.show_line_numbers:
             if line2 and line2.source_line_num is not None:
                 num_color = (
@@ -3290,7 +3337,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
 
         output.append(
             OutputLine(
-                base=part1,
+                base=base,
                 fmt2=fmt2,
                 key2=key2,
                 boring=boring,
@@ -3368,7 +3415,8 @@ def compress_matching(
 def align_diffs(old_diff: Diff, new_diff: Diff, config: Config) -> TableData:
     headers: Tuple[Text, ...]
     diff_lines: List[Tuple[OutputLine, ...]]
-    padding = " " * 7 if config.show_line_numbers else " " * 2
+    padding1 = " " * 6 if config.show_target_line_numbers else ""
+    padding2 = " " * 7 if config.show_line_numbers else " " * 2
 
     if config.diff_mode in (DiffMode.THREEWAY_PREV, DiffMode.THREEWAY_BASE):
         old_chunks = chunk_diff_lines(old_diff.lines)
@@ -3406,9 +3454,9 @@ def align_diffs(old_diff: Diff, new_diff: Diff, config: Config) -> TableData:
             (base, new, old if old != new else empty) for base, new, old in diff_lines
         ]
         headers = (
-            Text("TARGET"),
-            Text(f"{padding}CURRENT ({new_diff.score})"),
-            Text(f"{padding}PREVIOUS ({old_diff.score})"),
+            Text(f"{padding1}TARGET"),
+            Text(f"{padding2}CURRENT ({new_diff.score})"),
+            Text(f"{padding2}PREVIOUS ({old_diff.score})"),
         )
         current_score = new_diff.score
         max_score = new_diff.max_score
@@ -3424,8 +3472,8 @@ def align_diffs(old_diff: Diff, new_diff: Diff, config: Config) -> TableData:
     else:
         diff_lines = [(line, line) for line in new_diff.lines]
         headers = (
-            Text("TARGET"),
-            Text(f"{padding}CURRENT ({new_diff.score})"),
+            Text(f"{padding1}TARGET"),
+            Text(f"{padding2}CURRENT ({new_diff.score})"),
         )
         current_score = new_diff.score
         max_score = new_diff.max_score
