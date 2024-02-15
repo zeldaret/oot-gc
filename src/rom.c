@@ -121,7 +121,14 @@ u32 ARGetDMAStatus(void);
 void ARStartDMA(u32 type, u32 mainmem_addr, u32 aram_addr, u32 length);
 u32 ARGetBaseAddress(void);
 void DCInvalidateRange(void* addr, u32 nBytes);
+
+#define ARAM_DIR_MRAM_TO_ARAM 0x00
 #define ARAM_DIR_ARAM_TO_MRAM 0x01
+
+#define ARStartDMARead(mmem, aram, len) \
+    ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, mmem, aram, len)
+#define ARStartDMAWrite(mmem, aram, len) \
+    ARStartDMA(ARAM_DIR_MRAM_TO_ARAM, mmem, aram, len)
 
 s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
     switch (nEvent) {
@@ -392,7 +399,7 @@ int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, int nSize) {
                     while (ARGetDMAStatus()) {}
 
                     nOffset = nOffsetARAM & 0x1F;
-                    ARStartDMA(1, (u32)pBuffer, nOffsetARAM & 0xFFFFFFE0, (nSizeDMA + nOffset + 0x1F) & 0xFFFFFFE0);
+                    ARStartDMARead((u32)pBuffer, nOffsetARAM & 0xFFFFFFE0, (nSizeDMA + nOffset + 0x1F) & 0xFFFFFFE0);
                     DCInvalidateRange(pBuffer, nSizeDMA + nOffset);
 
                     while (ARGetDMAStatus()) {}
@@ -915,7 +922,7 @@ static int romSetBlockCache(Rom* pROM, int iBlock, RomCacheType eType) {
 
         while (ARGetDMAStatus()) {}
 
-        ARStartDMA(1, (u32)&pROM->pCacheRAM[nOffsetRAM], nOffsetARAM, 0x2000);
+        ARStartDMARead((u32)&pROM->pCacheRAM[nOffsetRAM], nOffsetARAM, 0x2000);
         DCInvalidateRange(&pROM->pCacheRAM[nOffsetRAM], 0x2000);
 
         pROM->anBlockCachedARAM[iCacheARAM >> 3] &= ~(1 << (iCacheARAM & 7));
@@ -936,7 +943,7 @@ static int romSetBlockCache(Rom* pROM, int iBlock, RomCacheType eType) {
 
         while (ARGetDMAStatus()) {}
 
-        ARStartDMA(0, (u32)&pROM->pCacheRAM[nOffsetRAM], nOffsetARAM, 0x2000);
+        ARStartDMAWrite((u32)&pROM->pCacheRAM[nOffsetRAM], nOffsetARAM, 0x2000);
 
         pROM->anBlockCachedRAM[iCacheRAM >> 3] &= ~(1 << (iCacheRAM & 7));
         pROM->anBlockCachedARAM[iCacheARAM >> 3] |= (1 << (iCacheARAM & 7));
