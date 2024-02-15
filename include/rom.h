@@ -23,34 +23,34 @@ typedef enum RomCacheType {
 
 // __anon_0x4CFE6 
 typedef struct RomBlock {
-    /* 0x00 */ u32 iCache;
+    /* 0x00 */ s32 iCache;
     /* 0x04 */ u32 nSize;
     /* 0x08 */ u32 nTickUsed;
-    /* 0x0C */ char keep;
+    /* 0x0C */ s8 keep;
 } RomBlock; // size = 0x10
 
-typedef struct __anon_0x4D0FA {
+typedef struct RomCopyState {
     /* 0x00 */ int bWait;
     /* 0x04 */ pCallback_func* pCallback;
     /* 0x08 */ u8* pTarget;
     /* 0x0C */ u32 nSize;
     /* 0x10 */ u32 nOffset;
-} __anon_0x4D0FA; // size = 0x14
+} RomCopyState; // size = 0x14
 
-typedef struct __anon_0x4D1DA {
+typedef struct RomLoadState {
     /* 0x00 */ int bWait;
     /* 0x04 */ int bDone;
     /* 0x08 */ int nResult;
     /* 0x0C */ u8* anData;
     /* 0x10 */ pCallback_func* pCallback;
-    /* 0x14 */ int iCache;
+    /* 0x14 */ s32 iCache;
     /* 0x18 */ int iBlock;
     /* 0x1C */ int nOffset;
     /* 0x20 */ u32 nOffset0;
     /* 0x24 */ u32 nOffset1;
     /* 0x28 */ u32 nSize;
     /* 0x2C */ u32 nSizeRead;
-} __anon_0x4D1DA; // size = 0x30
+} RomLoadState; // size = 0x30
 
 // __anon_0x4D873
 typedef struct Rom {
@@ -66,8 +66,8 @@ typedef struct Rom {
     /* 0x10220 */ u8* pCacheRAM;
     /* 0x10224 */ u8 anBlockCachedRAM[1024];
     /* 0x10624 */ u8 anBlockCachedARAM[2046];
-    /* 0x10E24 */ __anon_0x4D0FA copy;
-    /* 0x10E38 */ __anon_0x4D1DA load;
+    /* 0x10E24 */ RomCopyState copy;
+    /* 0x10E38 */ RomLoadState load;
     /* 0x10E68 */ int nCountBlockRAM;
     /* 0x10E6C */ int nSizeCacheRAM;
     /* 0x10E70 */ u8 acHeader[64];
