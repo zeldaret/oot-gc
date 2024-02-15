@@ -318,8 +318,8 @@ s32 romUpdate(Rom* pROM) {
 inline s32 romCopyLoad(Rom* pROM) {
     if (!romLoadFullOrPart(pROM)) {
         return 0;
-    } 
-    
+    }
+
     if (!romCacheGame(pROM)) {
         return 0;
     }
@@ -446,52 +446,52 @@ int romCopy(Rom* pROM, void* pTarget, int nOffset, int nSize, UnknownCallbackFun
     if (!pROM->nSizeCacheRAM) {
         if (!xlFileOpen(&pFile, XLFT_BINARY, pROM->acNameFile)) {
             return 0;
-        } 
-        
+        }
+
         if (!xlFileSetPosition(pFile, nOffset + pROM->offsetToRom)) {
             return 0;
-        } 
-        
+        }
+
         if (!xlFileGet(pFile, pTarget, (s32)nSize)) {
             return 0;
-        } 
-        
+        }
+
         if (!xlFileClose(&pFile)) {
             return 0;
-        } 
-        
+        }
+
         if ((pCallback != NULL) && !pCallback()) {
             return 0;
         }
 
         return 1;
-    } 
-    
+    }
+
     if (pROM->bLoad && !romCopyLoad(pROM)) {
         return 0;
-    } 
-    
+    }
+
     if (((nOffset + nSize) > pROM->nSize) && ((nSize = pROM->nSize - nOffset) < 0)) {
         return 1;
-    } 
-    
+    }
+
     if (pROM->eModeLoad == RLM_PART) {
         if (romCopyLoop(pROM, pTarget, nOffset, nSize, pCallback) && !romLoadUpdate(pROM)) {
             return 0;
-        } 
-        
+        }
+
         if (!romCopyUpdate(pROM)) {
             return 0;
         }
-        
+
         return 1;
-    } 
-    
+    }
+
     if (pROM->eModeLoad == RLM_FULL) {
         if (!xlHeapCopy(pTarget, (void*)((u32)pROM->pBuffer + nOffset), nSize)) {
             return 0;
-        } 
-        
+        }
+
         if ((pCallback != NULL) && !pCallback()) {
             return 0;
         }
@@ -667,7 +667,7 @@ inline int romLoadFullOrPartLoop(Rom* pROM) {
 
         if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
             return 0;
-        } 
+        }
 
         if (!romLoadBlock(pROM, i, iCache, NULL)) {
             return 0;
@@ -794,8 +794,8 @@ s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
         if (pROM->aBlock[iBlock].nSize == 0) {
             if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
                 return 0;
-            } 
-            
+            }
+
             if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
                 return 0;
             }
