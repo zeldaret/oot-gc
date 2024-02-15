@@ -2,6 +2,8 @@
 #include "rom.h"
 #include "types.h"
 #include "xlObject.h"
+#include "system.h"
+#include "macros.h"
 
 _XL_OBJECTTYPE gClassROM = {
     "ROM",
@@ -85,6 +87,8 @@ const f32 D_80135FF4 = 479.0f;
 const f32 D_80135FF8 = 639.0f;
 const f32 D_80135FFC = 0.5f;
 const f32 D_80136000 = 400.0f;
+
+extern System* gpSystem;
 
 void __romLoadBlock_CompleteGCN(long nResult);
 
@@ -386,7 +390,6 @@ int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, int nSize) {
     return 0;
 }
 
-
 inline s32 romCopyLoop(Rom* pROM, u8* pTarget, u32 nOffset, u32 nSize, pCallback_func* pCallback) {
     s32 i;
 
@@ -597,21 +600,135 @@ int romGetPC(Rom* pROM, u64* pnPC) {
     }
 }
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadFullOrPart.s")
+#else
+// weird float issue at ``simulatorShowLoad(1, pROM->acNameFile, D_80135FD0);``
+inline int romLoadFullOrPart_Loop(Rom* pROM) {
+    s32 i;
+    s32 iCache;
+    u32 temp_r27;
+    u32 temp_r30;
+
+    temp_r27 = (u32)(pROM->nSize - 1) >> 0xD;
+    temp_r30 = pROM->nTick = temp_r27 + 1;
+
+    for (i = 0; i < temp_r30; i++) {
+        pROM->aBlock[i].nTickUsed = temp_r27 - i;
+
+        if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
+            return 0;
+        } else if (!romLoadBlock(pROM, i, iCache, NULL)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+s32 romLoadFullOrPart(Rom* pROM) {
+    tXL_FILE* file;
+    s32 pad;
+
+    if ((s32)pROM->nSize > pROM->nSizeCacheRAM) {
+        s32 i;
+
+        pROM->nTick = 0;
+        pROM->eModeLoad = RLM_PART;
+
+        for (i = 0; i < ARRAY_COUNT(pROM->aBlock); i++) {
+            pROM->aBlock[i].nSize = 0;
+            pROM->aBlock[i].iCache = 0;
+            pROM->aBlock[i].nTickUsed = 0;
+        }
+
+        for (i = 0; i < ARRAY_COUNTU(pROM->anBlockCachedRAM); i++) {
+            pROM->anBlockCachedRAM[i] = 0;
+        }
+
+        for (i = 0; i < ARRAY_COUNTU(pROM->anBlockCachedARAM); i++) {
+            pROM->anBlockCachedARAM[i] = 0;
+        }
+
+        if ((s32)pROM->nSize < (pROM->nSizeCacheRAM + 0xFFA000) && !romLoadFullOrPart_Loop(pROM)) {
+            return 0;
+        }
+    } else {
+        s32 i;
+        u32 temp_r28;
+
+        if (!xlFileOpen(&file, XLFT_BINARY, pROM->acNameFile)) {
+            return 0;
+        }
+
+        pROM->pBuffer = (void*)pROM->pCacheRAM;
+
+        if ((temp_r28 = (u32)pROM->nSize >> 5) == 0) {
+            if (!xlFileSetPosition(file, pROM->offsetToRom)) {
+                return 0;
+            }
+
+            xlFileGet(file, pROM->pBuffer, pROM->nSize);
+            simulatorShowLoad(1, pROM->acNameFile, D_80135FD0);
+        } else {
+            for (i = 0; i < (s32)pROM->nSize; ) {
+                if (!simulatorTestReset(0, 0, 1, 0)) {
+                    return 0;
+                }
+
+                xlFileGet(file, (void*)((u32)pROM->pBuffer + i), (s32)temp_r28);
+                i += temp_r28;
+                simulatorShowLoad(0, pROM->acNameFile, (f32)i / (f32)pROM->nSize);
+            }
+        }
+
+        if (!xlFileClose(&file)) {
+            return 0;
+        }
+
+        pROM->eModeLoad = RLM_FULL;
+
+        if (pROM->bFlip) {
+            u32* var_r6 = (u32*)pROM->pBuffer;
+            u32 temp_r0;
+            s32 j;
+
+            for (j = 0; j < (((s32)pROM->nSize + 3) >> 2); j++) {
+                // fake?
+                temp_r0 = *var_r6;
+                *var_r6 = ((temp_r0 >> 8) & 0xFF00FF) | ((temp_r0 << 8) & 0xFF00FF00);
+                var_r6 += 1;
+            }
+        }
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCopyUpdate.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/__romCopyUpdate_Complete.s")
+s32 __romCopyUpdate_Complete() {
+    Rom* pROM = gpSystem->apObject[SOT_ROM];
+
+    pROM->copy.bWait = 0;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadUpdate.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/__romLoadUpdate_Complete.s")
+s32 __romLoadUpdate_Complete() {
+    Rom* pROM = gpSystem->apObject[SOT_ROM];
+
+    pROM->load.bWait = 0;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCacheGame.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCacheGame_ZELDA.s")
 
-// the function match but the build doesn't for some reasons
+//! TODO: remove this when ``romLoadFullOrPart`` is matched
 #if 1
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadRange.s")
 #else
@@ -648,9 +765,42 @@ s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadBlock.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/__romLoadBlock_CompleteGCN.s")
+void __romLoadBlock_CompleteGCN(long nResult) {
+    Rom* pROM = gpSystem->apObject[SOT_ROM];
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/__romLoadBlock_Complete.s")
+    pROM->load.nResult = nResult;
+    pROM->load.bDone = 1;
+}
+
+s32 __romLoadBlock_Complete(Rom* pROM) {
+    s32 iBlock;
+
+    if (pROM->bFlip) {
+        u32* panData = (u32*)pROM->load.anData;
+        u32 temp_r0;
+        u32 i;
+
+        for (i = 0; i < ((pROM->load.nSize + 3) >> 2); i++) {
+            // fake?
+            temp_r0 = *panData;
+            *panData = ((temp_r0 >> 8) & 0xFF00FF) | ((temp_r0 << 8) & 0xFF00FF00);
+            panData += 1;
+        }
+    }
+
+    iBlock = pROM->load.iBlock;
+    pROM->aBlock[iBlock].nSize = pROM->load.nSize;
+    pROM->aBlock[iBlock].iCache = pROM->load.iCache;
+    pROM->aBlock[iBlock].keep = 0;
+
+    pROM->anBlockCachedRAM[pROM->load.iCache >> 3] |= (1 << (pROM->load.iCache & 7));
+
+    if ((pROM->load.pCallback != NULL) && !pROM->load.pCallback()) {
+        return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romSetBlockCache.s")
 
