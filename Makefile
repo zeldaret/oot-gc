@@ -75,6 +75,9 @@ LDFLAGS := -map $(MAP) -fp hard -nodefaults -w off
 
 # Compiler Flags
 CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES)
+ifneq ($(NON_MATCHING),0)
+	CFLAGS += -DNON_MATCHING
+endif
 
 # postprocess
 PROCFLAGS := -fprologue-fixup=old_stack
