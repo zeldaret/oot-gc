@@ -3,7 +3,7 @@
 
 #include "xlFileGCN.h"
 
-typedef s32 UnknownCallbackFunc();
+typedef s32 UnknownCallbackFunc(void);
 typedef s32 ProgressCallbackFunc(f32 progressPercent);
 
 // __anon_0x4CF87
@@ -54,7 +54,7 @@ typedef struct RomLoadState {
 
 typedef struct UnknownDeviceStruct {
     /* 0x00 */ int unk;
-    /* 0x00 */ char unk2[0x20];
+    /* 0x04 */ char unk2[0x20];
     /* 0x24 */ __anon_0x3EB4F* pDevice;
 } UnknownDeviceStruct;
 

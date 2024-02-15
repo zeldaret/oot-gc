@@ -110,6 +110,8 @@ static int romGetDebug16(Rom* pROM, u32 nAddress, s16* pData);
 static int romGetDebug32(Rom* pROM, u32 nAddress, s32* pData);
 static int romGetDebug64(Rom* pROM, u32 nAddress, s64* pData);
 
+s32 __romCopyUpdate_Complete(void);
+s32 __romLoadUpdate_Complete(void);
 void __romLoadBlock_CompleteGCN(long nResult);
 
 //! TODO: remove this when the SDK files are present
@@ -277,7 +279,7 @@ s32 romSetCacheSize(Rom* pROM, s32 nSize) {
 }
 
 s32 romUpdate(Rom* pROM) {
-    s32 cmdBlockStatus;
+    s32 nStatus;
 
     if ((pROM->copy.bWait != 0) || (pROM->load.bWait != 0)) {
         if ((pROM->load.bDone != 0) && (pROM->load.nResult == pROM->load.nSizeRead)) {
@@ -287,14 +289,14 @@ s32 romUpdate(Rom* pROM) {
             }
         }
 
-        cmdBlockStatus = DVDGetCommandBlockStatus(&pROM->fileInfo);
-        if (cmdBlockStatus != 1) {
-            if (!simulatorDVDShowError(cmdBlockStatus, pROM->load.anData, pROM->load.nSizeRead,
+        nStatus = DVDGetCommandBlockStatus(&pROM->fileInfo);
+        if (nStatus != 1) {
+            if (!simulatorDVDShowError(nStatus, pROM->load.anData, pROM->load.nSizeRead,
                                        pROM->offsetToRom + pROM->load.nOffset)) {
                 return 0;
             }
 
-            if ((cmdBlockStatus == 0xB) || (cmdBlockStatus == -1)) {
+            if ((nStatus == 0xB) || (nStatus == -1)) {
                 DVDCancel(&pROM->fileInfo);
                 if (!simulatorDVDRead(&pROM->fileInfo, pROM->load.anData, pROM->load.nSizeRead,
                                       pROM->offsetToRom + pROM->load.nOffset, &__romLoadBlock_CompleteGCN)) {
@@ -740,6 +742,7 @@ s32 romLoadFullOrPart(Rom* pROM) {
         pROM->eModeLoad = RLM_FULL;
 
         if (pROM->bFlip) {
+            //! TODO: this might be an inline function, see ``__romLoadBlock_Complete``
             u32* pBuffer = (u32*)pROM->pBuffer;
             s32 j;
 
@@ -755,7 +758,7 @@ s32 romLoadFullOrPart(Rom* pROM) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCopyUpdate.s")
 
-s32 __romCopyUpdate_Complete() {
+s32 __romCopyUpdate_Complete(void) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
 
     pROM->copy.bWait = 0;
@@ -764,7 +767,7 @@ s32 __romCopyUpdate_Complete() {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadUpdate.s")
 
-s32 __romLoadUpdate_Complete() {
+s32 __romLoadUpdate_Complete(void) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
 
     pROM->load.bWait = 0;
@@ -826,6 +829,7 @@ s32 __romLoadBlock_Complete(Rom* pROM) {
     s32 iBlock;
 
     if (pROM->bFlip) {
+        //! TODO: this might be an inline function, see ``romLoadFullOrPart``
         u32* anData = (u32*)pROM->load.anData;
         u32 i;
 
