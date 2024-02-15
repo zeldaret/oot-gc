@@ -55,13 +55,13 @@ typedef struct RomCopy {
 } RomCopy; // size = 0x10
 
 typedef struct System {
-    /* 0x00 */ void *pFrame;
-    /* 0x04 */ void *pSound;
+    /* 0x00 */ void* pFrame;
+    /* 0x04 */ void* pSound;
     /* 0x08 */ int bException;
     /* 0x0C */ SystemMode eMode;
     /* 0x10 */ RomCopy romCopy;
     /* 0x20 */ SystemRomType eTypeROM;
-    /* 0x24 */ void *apObject[SOT_COUNT];
+    /* 0x24 */ void* apObject[SOT_COUNT];
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ SystemObjectType storageDevice;
     /* 0x74 */ u8 anException[16];

@@ -3,32 +3,36 @@
 
 #include "types.h"
 
-// size: 0x34
-typedef struct __anon_0x3EB4F {
-    int nType; // 0x0
-    void* pObject; // 0x4
-    int nOffsetAddress; // 0x8
-    int (*pfGet8)(void* /* unknown0 */, u32 /* unknown1 */, s8* /* unknown2 */); // 0xC
-    int (*pfGet16)(void* /* unknown0 */, u32 /* unknown1 */, s16* /* unknown2 */); // 0x10
-    int (*pfGet32)(void* /* unknown0 */, u32 /* unknown1 */, s32* /* unknown2 */); // 0x14
-    int (*pfGet64)(void* /* unknown0 */, u32 /* unknown1 */, s64* /* unknown2 */); // 0x18
-    int (*pfPut8)(void* /* unknown0 */, u32 /* unknown1 */, s8* /* unknown2 */); // 0x1C
-    int (*pfPut16)(void* /* unknown0 */, u32 /* unknown1 */, s16* /* unknown2 */); // 0x20
-    int (*pfPut32)(void* /* unknown0 */, u32 /* unknown1 */, s32* /* unknown2 */); // 0x24
-    int (*pfPut64)(void* /* unknown0 */, u32 /* unknown1 */, s64* /* unknown2 */); // 0x28
-    u32 nAddressPhysical0; // 0x2C
-    u32 nAddressPhysical1; // 0x30
-} __anon_0x3EB4F;
+typedef int (*Put8Func)(struct Rom* pROM, u32 nAddress, s8* pData);
+typedef int (*Put16Func)(struct Rom* pROM, u32 nAddress, s16* pData);
+typedef int (*Put32Func)(struct Rom* pROM, u32 nAddress, s32* pData);
+typedef int (*Put64Func)(struct Rom* pROM, u32 nAddress, s64* pData);
 
-int cpuSetDevicePut(__anon_0x3EB4F* pDevice,
-                    int (*pfPut8)(void* /* unknown0 */, u32 /* unknown1 */, s8* /* unknown2 */),
-                    int (*pfPut16)(void* /* unknown0 */, u32 /* unknown1 */, s16* /* unknown2 */),
-                    int (*pfPut32)(void* /* unknown0 */, u32 /* unknown1 */, s32* /* unknown2 */),
-                    int (*pfPut64)(void* /* unknown0 */, u32 /* unknown1 */, s64* /* unknown2 */));
-int cpuSetDeviceGet(__anon_0x3EB4F* pDevice,
-                    int (*pfGet8)(void* /* unknown0 */, u32 /* unknown1 */, s8* /* unknown2 */),
-                    int (*pfGet16)(void* /* unknown0 */, u32 /* unknown1 */, s16* /* unknown2 */),
-                    int (*pfGet32)(void* /* unknown0 */, u32 /* unknown1 */, s32* /* unknown2 */),
-                    int (*pfGet64)(void* /* unknown0 */, u32 /* unknown1 */, s64* /* unknown2 */));
+typedef int (*Get8Func)(struct Rom* pROM, u32 nAddress, s8* pData);
+typedef int (*Get16Func)(struct Rom* pROM, u32 nAddress, s16* pData);
+typedef int (*Get32Func)(struct Rom* pROM, u32 nAddress, s32* pData);
+typedef int (*Get64Func)(struct Rom* pROM, u32 nAddress, s64* pData);
+
+typedef struct __anon_0x3EB4F {
+    /* 0x00 */ int nType;
+    /* 0x04 */ void* pObject;
+    /* 0x08 */ int nOffsetAddress;
+    /* 0x0C */ Get8Func pfGet8;
+    /* 0x10 */ Get16Func pfGet16;
+    /* 0x14 */ Get32Func pfGet32;
+    /* 0x18 */ Get64Func pfGet64;
+    /* 0x1C */ Put8Func pfPut8;
+    /* 0x20 */ Put16Func pfPut16;
+    /* 0x24 */ Put32Func pfPut32;
+    /* 0x28 */ Put64Func pfPut64;
+    /* 0x2C */ u32 nAddressPhysical0;
+    /* 0x30 */ u32 nAddressPhysical1;
+} __anon_0x3EB4F; // size = 0x34
+
+int cpuSetDevicePut(__anon_0x3EB4F* pDevice, void* pArgument, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
+                    Put64Func pfPut64);
+
+int cpuSetDeviceGet(__anon_0x3EB4F* pDevice, void* pArgument, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
+                    Get64Func pfGet64);
 
 #endif
