@@ -112,14 +112,23 @@ static int romGetDebug64(Rom* pROM, u32 nAddress, s64* pData);
 
 s32 __romCopyUpdate_Complete(void);
 s32 __romLoadUpdate_Complete(void);
-void __romLoadBlock_CompleteGCN(long nResult);
+void __romLoadBlock_CompleteGCN(long nResult, DVDFileInfo* fileInfo);
+int romMakeFreeCache(Rom* pROM, int* piCache, RomCacheType eType);
+int romFindOldestBlock(Rom* pROM, int* piBlock, RomCacheType eTypeCache, int whichBlock);
 
 //! TODO: remove this when the SDK files are present
 u32 ARGetDMAStatus(void);
 void ARStartDMA(u32 type, u32 mainmem_addr, u32 aram_addr, u32 length);
 u32 ARGetBaseAddress(void);
 void DCInvalidateRange(void* addr, u32 nBytes);
+
+#define ARAM_DIR_MRAM_TO_ARAM 0x00
 #define ARAM_DIR_ARAM_TO_MRAM 0x01
+
+#define ARStartDMARead(mmem, aram, len) \
+    ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, mmem, aram, len)
+#define ARStartDMAWrite(mmem, aram, len) \
+    ARStartDMA(ARAM_DIR_MRAM_TO_ARAM, mmem, aram, len)
 
 s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
     switch (nEvent) {
@@ -372,14 +381,14 @@ int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, int nSize) {
             }
 
             if (pBlock->iCache >= 0) {
-                pSource = &pROM->pCacheRAM[(pBlock->iCache << 0xD)] + nOffsetBlock;
+                pSource = &pROM->pCacheRAM[(pBlock->iCache * 0x2000)] + nOffsetBlock;
                 if (!xlHeapCopy(pTarget, pSource, nSizeCopy)) {
                     return 0;
                 }
             } else {
                 nSizeCopyARAM = nSizeCopy;
                 nOffsetTarget = 0;
-                nOffsetARAM = nOffsetBlock + (-(pBlock->iCache + 1) << 0xD);
+                nOffsetARAM = nOffsetBlock + (-(pBlock->iCache + 1) * 0x2000);
                 nOffsetARAM += ARGetBaseAddress();
 
                 while (nSizeCopyARAM > 0) {
@@ -390,7 +399,7 @@ int romCopyImmediate(Rom* pROM, void* pTarget, int nOffsetROM, int nSize) {
                     while (ARGetDMAStatus()) {}
 
                     nOffset = nOffsetARAM & 0x1F;
-                    ARStartDMA(1, (u32)pBuffer, nOffsetARAM & 0xFFFFFFE0, (nSizeDMA + nOffset + 0x1F) & 0xFFFFFFE0);
+                    ARStartDMARead((u32)pBuffer, nOffsetARAM & 0xFFFFFFE0, (nSizeDMA + nOffset + 0x1F) & 0xFFFFFFE0);
                     DCInvalidateRange(pBuffer, nSizeDMA + nOffset);
 
                     while (ARGetDMAStatus()) {}
@@ -661,7 +670,7 @@ inline int romLoadFullOrPartLoop(Rom* pROM) {
     u32 temp_r27;
     u32 temp_r30;
 
-    temp_r27 = (u32)(pROM->nSize - 1) >> 0xD;
+    temp_r27 = (u32)(pROM->nSize - 1) / 0x2000;
     temp_r30 = pROM->nTick = temp_r27 + 1;
 
     for (i = 0; i < temp_r30; i++) {
@@ -816,9 +825,46 @@ s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadBlock.s")
+static int romLoadBlock(Rom* pROM, int iBlock, int iCache, UnknownCallbackFunc pCallback) {
+    u8* anData;
+    int nSizeRead;
+    u32 nSize;
+    u32 nOffset;
 
-void __romLoadBlock_CompleteGCN(long nResult) {
+    nOffset = iBlock * 0x2000;
+    if ((nSize = pROM->nSize - nOffset) > 0x2000) {
+        nSize = 0x2000;
+    }
+    anData = &pROM->pCacheRAM[iCache * 0x2000];
+    nSizeRead = (nSize + 0x1F) & 0xFFFFFFE0;
+
+    pROM->load.nSize = nSize;
+    pROM->load.iBlock = iBlock;
+    pROM->load.iCache = iCache;
+    pROM->load.anData = anData;
+    pROM->load.pCallback = pCallback;
+
+    if (pCallback == NULL) {
+        if (!simulatorDVDRead(&pROM->fileInfo, anData, nSizeRead, nOffset + pROM->offsetToRom, NULL)) {
+            return 0;
+        }
+    } else {
+        pROM->load.nOffset = nOffset;
+        pROM->load.nSizeRead = nSizeRead;
+        if (!simulatorDVDRead(&pROM->fileInfo, anData, nSizeRead, nOffset + pROM->offsetToRom,
+                              &__romLoadBlock_CompleteGCN)) {
+            return 0;
+        }
+        return 1;
+    }
+
+    if (!__romLoadBlock_Complete(pROM)) {
+        return 0;
+    }
+    return 1;
+}
+
+void __romLoadBlock_CompleteGCN(long nResult, DVDFileInfo* fileInfo) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
 
     pROM->load.nResult = nResult;
@@ -852,10 +898,177 @@ s32 __romLoadBlock_Complete(Rom* pROM) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romSetBlockCache.s")
+static int romSetBlockCache(Rom* pROM, int iBlock, RomCacheType eType) {
+    RomBlock* pBlock;
+    int iCacheRAM;
+    int iCacheARAM;
+    int nOffsetRAM;
+    int nOffsetARAM;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romMakeFreeCache.s")
+    pBlock = &pROM->aBlock[iBlock];
+    if ((eType == RCT_RAM && pBlock->iCache >= 0) || (eType == RCT_ARAM && pBlock->iCache < 0)) {
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romFindOldestBlock.s")
+    if (eType == RCT_RAM) {
+        iCacheARAM = -(pBlock->iCache + 1);
+        if (!romMakeFreeCache(pROM, &iCacheRAM, RCT_RAM)) {
+            return 0;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romFindFreeCache.s")
+        nOffsetRAM = iCacheRAM * 0x2000;
+        nOffsetARAM = iCacheARAM * 0x2000;
+        nOffsetARAM += ARGetBaseAddress();
+
+        while (ARGetDMAStatus()) {}
+
+        ARStartDMARead((u32)&pROM->pCacheRAM[nOffsetRAM], nOffsetARAM, 0x2000);
+        DCInvalidateRange(&pROM->pCacheRAM[nOffsetRAM], 0x2000);
+
+        pROM->anBlockCachedARAM[iCacheARAM >> 3] &= ~(1 << (iCacheARAM & 7));
+        pROM->anBlockCachedRAM[iCacheRAM >> 3] |= (1 << (iCacheRAM & 7));
+        pBlock->iCache = iCacheRAM;
+    } else if (eType == RCT_ARAM) {
+        iCacheRAM = pBlock->iCache;
+        if (!romMakeFreeCache(pROM, &iCacheARAM, RCT_ARAM)) {
+            return 0;
+        }
+        iCacheARAM = -(iCacheARAM + 1);
+
+        nOffsetRAM = iCacheRAM * 0x2000;
+        nOffsetARAM = iCacheARAM * 0x2000;
+        nOffsetARAM += ARGetBaseAddress();
+
+        DCStoreRange(&pROM->pCacheRAM[nOffsetRAM], 0x2000);
+
+        while (ARGetDMAStatus()) {}
+
+        ARStartDMAWrite((u32)&pROM->pCacheRAM[nOffsetRAM], nOffsetARAM, 0x2000);
+
+        pROM->anBlockCachedRAM[iCacheRAM >> 3] &= ~(1 << (iCacheRAM & 7));
+        pROM->anBlockCachedARAM[iCacheARAM >> 3] |= (1 << (iCacheARAM & 7));
+        pBlock->iCache = -(iCacheARAM + 1);
+    } else {
+        return 0;
+    }
+
+    while (ARGetDMAStatus()) {}
+
+    return 1;
+}
+
+inline void romMarkBlockAsFree(Rom* pROM, int iBlock) {
+    RomBlock* pBlock;
+    int iCache;
+
+    pBlock = &pROM->aBlock[iBlock];
+    iCache = pBlock->iCache;
+    if (iCache < 0) {
+        iCache = -(iCache + 1);
+        pROM->anBlockCachedARAM[iCache >> 3] &= ~(1 << (iCache & 7));
+    } else {
+        pROM->anBlockCachedRAM[iCache >> 3] &= ~(1 << (iCache & 7));
+    }
+    pBlock->nSize = 0;
+}
+
+static int romMakeFreeCache(Rom* pROM, int* piCache, RomCacheType eType) {
+    int iCache;
+    int iBlockOldest;
+
+    if (eType == RCT_RAM) {
+        if (!romFindFreeCache(pROM, &iCache, RCT_RAM)) {
+            if (romFindOldestBlock(pROM, &iBlockOldest, RCT_RAM, 2)) {
+                iCache = pROM->aBlock[iBlockOldest].iCache;
+                if (!romSetBlockCache(pROM, iBlockOldest, RCT_ARAM) &&
+                    romFindOldestBlock(pROM, &iBlockOldest, RCT_RAM, 0)) {
+                    iCache = pROM->aBlock[iBlockOldest].iCache;
+                    romMarkBlockAsFree(pROM, iBlockOldest);
+                }
+            } else {
+                return 0;
+            }
+        }
+    } else {
+        if (!romFindFreeCache(pROM, &iCache, RCT_ARAM)) {
+            if (romFindOldestBlock(pROM, &iBlockOldest, RCT_ARAM, 0)) {
+                iCache = pROM->aBlock[iBlockOldest].iCache;
+                romMarkBlockAsFree(pROM, iBlockOldest);
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    *piCache = iCache;
+    return 1;
+}
+
+static int romFindOldestBlock(Rom* pROM, int* piBlock, RomCacheType eTypeCache, int whichBlock) {
+    RomBlock* pBlock;
+    int iBlock;
+    int iBlockOldest;
+    unsigned int nTick;
+    unsigned int nTickDelta;
+    unsigned int nTickDeltaOldest;
+
+    nTick = pROM->nTick;
+    nTickDeltaOldest = 0;
+
+    for (iBlock = 0; iBlock < ARRAY_COUNT(pROM->aBlock); iBlock++) {
+        pBlock = &pROM->aBlock[iBlock];
+        if (pBlock->nSize != 0 &&
+            ((eTypeCache == RCT_RAM && pBlock->iCache >= 0) || (eTypeCache == RCT_ARAM && pBlock->iCache < 0))) {
+            if (pBlock->nTickUsed > nTick) {
+                nTickDelta = -1 - (pBlock->nTickUsed - nTick);
+            } else {
+                nTickDelta = nTick - pBlock->nTickUsed;
+            }
+            if (whichBlock == 0) {
+                if (nTickDelta > nTickDeltaOldest && pBlock->keep == 0) {
+                    iBlockOldest = iBlock;
+                    nTickDeltaOldest = nTickDelta;
+                }
+            } else if (whichBlock == 1) {
+                if (nTickDelta > nTickDeltaOldest && pBlock->keep == 1) {
+                    iBlockOldest = iBlock;
+                    nTickDeltaOldest = nTickDelta;
+                }
+            } else if (nTickDelta > nTickDeltaOldest) {
+                iBlockOldest = iBlock;
+                nTickDeltaOldest = nTickDelta;
+            }
+        }
+    }
+
+    if (nTickDeltaOldest != 0) {
+        *piBlock = iBlockOldest;
+        return 1;
+    }
+
+    return 0;
+}
+
+static int romFindFreeCache(Rom* pROM, int* piCache, RomCacheType eType) {
+    int iBlock;
+
+    if (eType == RCT_RAM) {
+        for (iBlock = 0; iBlock < pROM->nCountBlockRAM; iBlock++) {
+            if (!(pROM->anBlockCachedRAM[iBlock >> 3] & (1 << (iBlock & 7)))) {
+                *piCache = iBlock;
+                return 1;
+            }
+        }
+    } else if (eType == RCT_ARAM) {
+        for (iBlock = 0; iBlock < ARRAY_COUNT(pROM->anBlockCachedARAM); iBlock++) {
+            if (!(pROM->anBlockCachedARAM[iBlock >> 3] & (1 << (iBlock & 7)))) {
+                *piCache = -(iBlock + 1);
+                return 1;
+            }
+        }
+    } else {
+        return 0;
+    }
+
+    return 0;
+}

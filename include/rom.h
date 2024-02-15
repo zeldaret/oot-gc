@@ -23,7 +23,7 @@ typedef enum RomCacheType {
 
 // __anon_0x4CFE6
 typedef struct RomBlock {
-    /* 0x00 */ int iCache;
+    /* 0x00 */ int iCache; // Stores cache index `i` if the block is in RAM, or `-(i + 1)` if the block is in ARAM
     /* 0x04 */ u32 nSize;
     /* 0x08 */ u32 nTickUsed;
     /* 0x0C */ s8 keep;
@@ -67,11 +67,11 @@ typedef struct Rom {
     /* 0x00010 */ char acNameFile[513];
     /* 0x00214 */ u32 nSize;
     /* 0x00218 */ RomModeLoad eModeLoad;
-    /* 0x0021C */ RomBlock aBlock[0x1000];
+    /* 0x0021C */ RomBlock aBlock[4096];
     /* 0x1021C */ u32 nTick;
     /* 0x10220 */ u8* pCacheRAM;
-    /* 0x10224 */ u8 anBlockCachedRAM[1024];
-    /* 0x10624 */ u8 anBlockCachedARAM[2046];
+    /* 0x10224 */ u8 anBlockCachedRAM[1024]; // Bitfield, one bit per block
+    /* 0x10624 */ u8 anBlockCachedARAM[2046]; // Bitfield, one bit per block
     /* 0x10E24 */ RomCopyState copy;
     /* 0x10E38 */ RomLoadState load;
     /* 0x10E68 */ int nCountBlockRAM;
