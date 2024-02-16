@@ -1,323 +1,320 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Core\xlCoreGCN.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x800055A0 -> 0x80005E04
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include "types.h"
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
+// size = 0x8081, address = 0x800D3720
+u8 gTgPcTPL[32897];
 
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
+// size = 0x4, address = 0x80135580
+static s32 gnCountArgument;
 
-// Location: 0x20370D80
-unsigned char gTgPcTPL[32897];
+// size = 0x4, address = 0x80135584
+static char** gaszArgument;
 
-// Local to compilation unit
-// Location: 0x80135580
-static int gnCountArgument;
+// size = 0x4, address = 0x80135588
+static void* DefaultFifo;
 
-// Local to compilation unit
-// Location: 0x80135584
-static char **gaszArgument;
+struct __anon_0x238 {
+    /* 0x0 */ u8 pad[128];
+}; // size = 0x80
 
-// Local to compilation unit
-// Location: 0x80135588
-static void *DefaultFifo;
+// size = 0x4, address = 0x8013558C
+static struct __anon_0x238* DefaultFifoObj;
 
-// size: 0x80
-struct __anon_0x238
-{
-	unsigned char pad[128]; // 0x0
+enum __anon_0x29F {
+    VI_TVMODE_NTSC_INT = 0,
+    VI_TVMODE_NTSC_DS = 1,
+    VI_TVMODE_NTSC_PROG = 2,
+    VI_TVMODE_PAL_INT = 4,
+    VI_TVMODE_PAL_DS = 5,
+    VI_TVMODE_EURGB60_INT = 20,
+    VI_TVMODE_EURGB60_DS = 21,
+    VI_TVMODE_MPAL_INT = 8,
+    VI_TVMODE_MPAL_DS = 9,
+    VI_TVMODE_DEBUG_INT = 12,
+    VI_TVMODE_DEBUG_PAL_INT = 16,
+    VI_TVMODE_DEBUG_PAL_DS = 17,
 };
 
-// Local to compilation unit
-// Location: 0x8013558C
-static __anon_0x238 *DefaultFifoObj;
-
-// size: 0x4
-enum __anon_0x29F
-{
-	VI_TVMODE_NTSC_INT = 0,
-	VI_TVMODE_NTSC_DS = 1,
-	VI_TVMODE_NTSC_PROG = 2,
-	VI_TVMODE_PAL_INT = 4,
-	VI_TVMODE_PAL_DS = 5,
-	VI_TVMODE_EURGB60_INT = 20,
-	VI_TVMODE_EURGB60_DS = 21,
-	VI_TVMODE_MPAL_INT = 8,
-	VI_TVMODE_MPAL_DS = 9,
-	VI_TVMODE_DEBUG_INT = 12,
-	VI_TVMODE_DEBUG_PAL_INT = 16,
-	VI_TVMODE_DEBUG_PAL_DS = 17
+enum __anon_0x3EC {
+    VI_XFBMODE_SF = 0,
+    VI_XFBMODE_DF = 1,
 };
 
-// size: 0x4
-enum __anon_0x3EC
-{
-	VI_XFBMODE_SF = 0,
-	VI_XFBMODE_DF = 1
-};
+struct _GXRenderModeObj {
+    /* 0x00 */ enum __anon_0x29F viTVmode;
+    /* 0x04 */ u16 fbWidth;
+    /* 0x06 */ u16 efbHeight;
+    /* 0x08 */ u16 xfbHeight;
+    /* 0x0A */ u16 viXOrigin;
+    /* 0x0C */ u16 viYOrigin;
+    /* 0x0E */ u16 viWidth;
+    /* 0x10 */ u16 viHeight;
+    /* 0x14 */ enum __anon_0x3EC xFBmode;
+    /* 0x18 */ u8 field_rendering;
+    /* 0x19 */ u8 aa;
+    /* 0x1A */ u8 sample_pattern[12][2];
+    /* 0x32 */ u8 vfilter[7];
+}; // size = 0x3C
 
-// size: 0x3C
-struct _GXRenderModeObj
-{
-	__anon_0x29F viTVmode; // 0x0
-	unsigned short fbWidth; // 0x4
-	unsigned short efbHeight; // 0x6
-	unsigned short xfbHeight; // 0x8
-	unsigned short viXOrigin; // 0xA
-	unsigned short viYOrigin; // 0xC
-	unsigned short viWidth; // 0xE
-	unsigned short viHeight; // 0x10
-	__anon_0x3EC xFBmode; // 0x14
-	unsigned char field_rendering; // 0x18
-	unsigned char aa; // 0x19
-	unsigned char sample_pattern[12][2]; // 0x1A
-	unsigned char vfilter[7]; // 0x32
-};
+// size = 0x3C, address = 0x800F3EE0
+static struct _GXRenderModeObj rmodeobj;
 
-// Local to compilation unit
-// Location: 0x800F3EE0
-static _GXRenderModeObj rmodeobj;
+// size = 0x4, address = 0x80135590
+static void* gpHeap;
 
-// Local to compilation unit
-// Location: 0x80135590
-static void *gpHeap;
+// size = 0x4, address = 0x80135594
+static void* gArenaHi;
 
-// Local to compilation unit
-// Location: 0x80135594
-static void *gArenaHi;
+// size = 0x4, address = 0x80135598
+static void* gArenaLo;
 
-// Local to compilation unit
-// Location: 0x80135598
-static void *gArenaLo;
+struct _GXTexObj {
+    /* 0x0 */ u32 dummy[8];
+}; // size = 0x20
 
-// size: 0x20
-struct _GXTexObj
-{
-	unsigned long dummy[8]; // 0x0
-};
+// size = 0x80, address = 0x800F3F1C
+struct _GXTexObj g_texMap[4];
 
-// Location: 0x1C3F0F80
-_GXTexObj g_texMap[4];
+// size = 0x4, address = 0x8013559C
+struct _GXRenderModeObj* rmode;
 
-// Location: 0x8013559C
-_GXRenderModeObj *rmode;
-
-void xlCoreBeforeRender()
-{
-	// References: rmode (0x8013559C)
+// Range: 0x800055A0 -> 0x80005674
+void xlCoreBeforeRender() {
+    // References
+    // -> struct _GXRenderModeObj* rmode;
 }
 
-// Location: 0x20541380
-int __OSCurrHeap;
+// size = 0x4, address = 0x80135420
+s32 __OSCurrHeap;
 
-// Location: 0x80135A94
-void *DemoFrameBuffer1;
+// size = 0x4, address = 0x80135A94
+void* DemoFrameBuffer1;
 
-// Location: 0x80135A8C
-void *DemoCurrentBuffer;
+// size = 0x4, address = 0x80135A8C
+void* DemoCurrentBuffer;
 
-// Location: 0x80135A90
-void *DemoFrameBuffer2;
+// size = 0x4, address = 0x80135A90
+void* DemoFrameBuffer2;
 
-// size: 0x4
-enum _GXTexWrapMode
-{
-	GX_CLAMP = 0,
-	GX_REPEAT = 1,
-	GX_MIRROR = 2,
-	GX_MAX_TEXWRAPMODE = 3
+enum _GXTexWrapMode {
+    GX_CLAMP = 0,
+    GX_REPEAT = 1,
+    GX_MIRROR = 2,
+    GX_MAX_TEXWRAPMODE = 3,
 };
 
-// size: 0x4
-enum _GXTexFilter
-{
-	GX_NEAR = 0,
-	GX_LINEAR = 1,
-	GX_NEAR_MIP_NEAR = 2,
-	GX_LIN_MIP_NEAR = 3,
-	GX_NEAR_MIP_LIN = 4,
-	GX_LIN_MIP_LIN = 5
+enum _GXTexFilter {
+    GX_NEAR = 0,
+    GX_LINEAR = 1,
+    GX_NEAR_MIP_NEAR = 2,
+    GX_LIN_MIP_NEAR = 3,
+    GX_NEAR_MIP_LIN = 4,
+    GX_LIN_MIP_LIN = 5,
 };
 
-// size: 0x24
-struct __anon_0x9F7
-{
-	unsigned short height; // 0x0
-	unsigned short width; // 0x2
-	unsigned long format; // 0x4
-	char *data; // 0x8
-	_GXTexWrapMode wrapS; // 0xC
-	_GXTexWrapMode wrapT; // 0x10
-	_GXTexFilter minFilter; // 0x14
-	_GXTexFilter magFilter; // 0x18
-	float LODBias; // 0x1C
-	unsigned char edgeLODEnable; // 0x20
-	unsigned char minLOD; // 0x21
-	unsigned char maxLOD; // 0x22
-	unsigned char unpacked; // 0x23
+struct __anon_0x9F7 {
+    /* 0x00 */ u16 height;
+    /* 0x02 */ u16 width;
+    /* 0x04 */ u32 format;
+    /* 0x08 */ char* data;
+    /* 0x0C */ enum _GXTexWrapMode wrapS;
+    /* 0x10 */ enum _GXTexWrapMode wrapT;
+    /* 0x14 */ enum _GXTexFilter minFilter;
+    /* 0x18 */ enum _GXTexFilter magFilter;
+    /* 0x1C */ float LODBias;
+    /* 0x20 */ u8 edgeLODEnable;
+    /* 0x21 */ u8 minLOD;
+    /* 0x22 */ u8 maxLOD;
+    /* 0x23 */ u8 unpacked;
+}; // size = 0x24
+
+enum _GXTlutFmt {
+    GX_TL_IA8 = 0,
+    GX_TL_RGB565 = 1,
+    GX_TL_RGB5A3 = 2,
+    GX_MAX_TLUTFMT = 3,
 };
 
-// size: 0x4
-enum _GXTlutFmt
-{
-	GX_TL_IA8 = 0,
-	GX_TL_RGB565 = 1,
-	GX_TL_RGB5A3 = 2,
-	GX_MAX_TLUTFMT = 3
+struct __anon_0xC52 {
+    /* 0x0 */ u16 numEntries;
+    /* 0x2 */ u8 unpacked;
+    /* 0x3 */ u8 pad8;
+    /* 0x4 */ enum _GXTlutFmt format;
+    /* 0x8 */ char* data;
+}; // size = 0xC
+
+struct __anon_0xD1E {
+    /* 0x0 */ struct __anon_0x9F7* textureHeader;
+    /* 0x4 */ struct __anon_0xC52* CLUTHeader;
+}; // size = 0x8
+
+struct _GXColor {
+    /* 0x0 */ u8 r;
+    /* 0x1 */ u8 g;
+    /* 0x2 */ u8 b;
+    /* 0x3 */ u8 a;
+}; // size = 0x4
+
+// Range: 0x80005674 -> 0x800058DC
+s32 main(s32 nCount, char** aszArgument) {
+    // Parameters
+    // s32 nCount; // r1+0x8
+    // char** aszArgument; // r1+0xC
+
+    // Local variables
+    s32 nSize; // r31
+    void* pHeap; // r27
+    s32 nSizeHeap; // r3
+    struct __anon_0xD1E* tdp; // r1+0x8
+    struct _GXColor black; // r1+0x10
+    u32 i; // r26
+
+    // References
+    // -> s32 __OSCurrHeap;
+    // -> static void* gpHeap;
+    // -> struct _GXTexObj g_texMap[4];
+    // -> u8 gTgPcTPL[32897];
+    // -> struct _GXRenderModeObj* rmode;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer1;
+    // -> static void* DefaultFifo;
+    // -> static struct __anon_0x238* DefaultFifoObj;
+    // -> static char** gaszArgument;
+    // -> static s32 gnCountArgument;
+}
+
+// Erased
+static s32 xlCoreGetUpper24MB(void* ppBuffer) {
+    // Parameters
+    // void* ppBuffer; // r1+0x0
+}
+
+union DoubleLongLong {
+    /* 0x0 */ double f;
+    /* 0x0 */ s64 i;
 };
 
-// size: 0xC
-struct __anon_0xC52
-{
-	unsigned short numEntries; // 0x0
-	unsigned char unpacked; // 0x2
-	unsigned char pad8; // 0x3
-	_GXTlutFmt format; // 0x4
-	char *data; // 0x8
-};
-
-// size: 0x8
-struct __anon_0xD1E
-{
-	__anon_0x9F7 *textureHeader; // 0x0
-	__anon_0xC52 *CLUTHeader; // 0x4
-};
-
-// size: 0x4
-struct _GXColor
-{
-	unsigned char r; // 0x0
-	unsigned char g; // 0x1
-	unsigned char b; // 0x2
-	unsigned char a; // 0x3
-};
-
-int main(int nCount, char **aszArgument)
-{
-	int nSize;
-	void *pHeap;
-	long nSizeHeap;
-	__anon_0xD1E *tdp;
-	_GXColor black;
-	unsigned long i;
-	// References: __OSCurrHeap (0x20541380)
-	// References: gpHeap (0x80135590)
-	// References: g_texMap (0x1C3F0F80)
-	// References: gTgPcTPL (0x20370D80)
-	// References: rmode (0x8013559C)
-	// References: DemoFrameBuffer2 (0x80135A90)
-	// References: DemoCurrentBuffer (0x80135A8C)
-	// References: DemoFrameBuffer1 (0x80135A94)
-	// References: DefaultFifo (0x80135588)
-	// References: DefaultFifoObj (0x8013558C)
-	// References: gaszArgument (0x80135584)
-	// References: gnCountArgument (0x80135580)
+// Erased
+static s32 xlCoreEnableFPExceptions() {
+    // Local variables
+    double control; // r1+0x8
+    union DoubleLongLong d; // r1+0x8
 }
 
-int xlCoreGetUpper24MB(void *ppBuffer);
+// Range: 0x800058DC -> 0x800058E4
+s32 xlCoreHiResolution() {}
 
-// size: 0x8
-union DoubleLongLong
-{
-	long float f; // 0x0
-	signed long long i; // 0x0
-};
+// Range: 0x800058E4 -> 0x80005918
+s32 xlCoreGetArgument(s32 iArgument, char** pszArgument) {
+    // Parameters
+    // s32 iArgument; // r1+0x0
+    // char** pszArgument; // r1+0x4
 
-int xlCoreEnableFPExceptions()
-{
-	long float control;
-	DoubleLongLong d;
+    // References
+    // -> static char** gaszArgument;
+    // -> static s32 gnCountArgument;
 }
 
-int xlCoreHiResolution();
-
-int xlCoreGetArgument(int iArgument, char **pszArgument)
-{
-	// References: gaszArgument (0x80135584)
-	// References: gnCountArgument (0x80135580)
+// Range: 0x80005918 -> 0x80005920
+s32 xlCoreGetArgumentCount() {
+    // References
+    // -> static s32 gnCountArgument;
 }
 
-int xlCoreGetArgumentCount()
-{
-	// References: gnCountArgument (0x80135580)
+// Erased
+static void xlCoreInitVI() {
+    // References
+    // -> struct _GXRenderModeObj* rmode;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer1;
 }
 
-void xlCoreInitVI()
-{
-	// References: rmode (0x8013559C)
-	// References: DemoFrameBuffer2 (0x80135A90)
-	// References: DemoCurrentBuffer (0x80135A8C)
-	// References: DemoFrameBuffer1 (0x80135A94)
+// Range: 0x80005920 -> 0x80005B7C
+static void xlCoreInitGX() {
+    // Local variables
+    u8 newFilter[7]; // r1+0x18
+
+    // References
+    // -> void* DemoCurrentBuffer;
+    // -> struct _GXRenderModeObj* rmode;
 }
 
-// Local to compilation unit
-static void xlCoreInitGX()
-{
-	unsigned char newFilter[7];
-	// References: DemoCurrentBuffer (0x80135A8C)
-	// References: rmode (0x8013559C)
+// Range: 0x80005B7C -> 0x80005C54
+static void xlCoreInitMem() {
+    // Local variables
+    void* arenaLo; // r1+0x8
+    void* arenaHi; // r1+0x8
+    u32 fbSize; // r3
+
+    // References
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer1;
+    // -> struct _GXRenderModeObj* rmode;
+    // -> static void* gArenaHi;
+    // -> static void* gArenaLo;
 }
 
-// Local to compilation unit
-static void xlCoreInitMem()
-{
-	void *arenaLo;
-	void *arenaHi;
-	unsigned long fbSize;
-	// References: DemoFrameBuffer2 (0x80135A90)
-	// References: DemoCurrentBuffer (0x80135A8C)
-	// References: DemoFrameBuffer1 (0x80135A94)
-	// References: rmode (0x8013559C)
-	// References: gArenaHi (0x80135594)
-	// References: gArenaLo (0x80135598)
+// size = 0x3C, address = 0x800F1E60
+struct _GXRenderModeObj GXNtsc480IntDf;
+
+// size = 0x3C, address = 0x800F1E9C
+struct _GXRenderModeObj GXNtsc480Prog;
+
+// size = 0x3C, address = 0x800F1F14
+struct _GXRenderModeObj GXPal528IntDf;
+
+// size = 0x3C, address = 0x800F1ED8
+struct _GXRenderModeObj GXMpal480IntDf;
+
+// Range: 0x80005C54 -> 0x80005DC8
+static void xlCoreInitRenderMode(struct _GXRenderModeObj* mode) {
+    // Parameters
+    // struct _GXRenderModeObj* mode; // r1+0x8
+
+    // Local variables
+    char* szText; // r31
+    s32 iArgument; // r5
+
+    // References
+    // -> static struct _GXRenderModeObj rmodeobj;
+    // -> struct _GXRenderModeObj* rmode;
+    // -> struct _GXRenderModeObj GXMpal480IntDf;
+    // -> struct _GXRenderModeObj GXPal528IntDf;
+    // -> struct _GXRenderModeObj GXNtsc480Prog;
+    // -> static s32 gnCountArgument;
+    // -> static char** gaszArgument;
+    // -> struct _GXRenderModeObj GXNtsc480IntDf;
 }
 
-// Location: 0x601E0F80
-_GXRenderModeObj GXNtsc480IntDf;
-
-// Location: 0x800F1E9C
-_GXRenderModeObj GXNtsc480Prog;
-
-// Location: 0x141F0F80
-_GXRenderModeObj GXPal528IntDf;
-
-// Location: 0x800F1ED8
-_GXRenderModeObj GXMpal480IntDf;
-
-// Local to compilation unit
-static void xlCoreInitRenderMode(_GXRenderModeObj *mode)
-{
-	char *szText;
-	int iArgument;
-	// References: rmodeobj (0x800F3EE0)
-	// References: rmode (0x8013559C)
-	// References: GXMpal480IntDf (0x800F1ED8)
-	// References: GXPal528IntDf (0x141F0F80)
-	// References: GXNtsc480Prog (0x800F1E9C)
-	// References: gnCountArgument (0x80135580)
-	// References: gaszArgument (0x80135584)
-	// References: GXNtsc480IntDf (0x601E0F80)
+// Range: 0x80005DC8 -> 0x80005E04
+s32 xlCoreReset() {
+    // References
+    // -> static void* gArenaHi;
+    // -> static void* gArenaLo;
+    // -> static void* gpHeap;
+    // -> s32 __OSCurrHeap;
 }
 
-int xlCoreReset()
-{
-	// References: gArenaHi (0x80135594)
-	// References: gArenaLo (0x80135598)
-	// References: gpHeap (0x80135590)
-	// References: __OSCurrHeap (0x20541380)
-}
+// Erased
+static void xlCoreInit(struct _GXRenderModeObj* mode) {
+    // Parameters
+    // struct _GXRenderModeObj* mode; // r31
 
-void xlCoreInit(_GXRenderModeObj *mode)
-{
-	// References: rmode (0x8013559C)
-	// References: DemoFrameBuffer2 (0x80135A90)
-	// References: DemoCurrentBuffer (0x80135A8C)
-	// References: DemoFrameBuffer1 (0x80135A94)
-	// References: DefaultFifo (0x80135588)
-	// References: DefaultFifoObj (0x8013558C)
-	// References: __OSCurrHeap (0x20541380)
+    // References
+    // -> struct _GXRenderModeObj* rmode;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer1;
+    // -> static void* DefaultFifo;
+    // -> static struct __anon_0x238* DefaultFifoObj;
+    // -> s32 __OSCurrHeap;
 }
-

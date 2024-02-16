@@ -1,735 +1,682 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Fire\_frameGCNcc.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x80097D9C -> 0x800986A4
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include "types.h"
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
-
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
-
-// size: 0x4
-enum _GXTevColorArg
-{
-	GX_CC_CPREV = 0,
-	GX_CC_APREV = 1,
-	GX_CC_C0 = 2,
-	GX_CC_A0 = 3,
-	GX_CC_C1 = 4,
-	GX_CC_A1 = 5,
-	GX_CC_C2 = 6,
-	GX_CC_A2 = 7,
-	GX_CC_TEXC = 8,
-	GX_CC_TEXA = 9,
-	GX_CC_RASC = 10,
-	GX_CC_RASA = 11,
-	GX_CC_ONE = 12,
-	GX_CC_HALF = 13,
-	GX_CC_KONST = 14,
-	GX_CC_ZERO = 15,
-	GX_CC_TEXRRR = 16,
-	GX_CC_TEXGGG = 17,
-	GX_CC_TEXBBB = 18,
-	GX_CC_QUARTER = 14
+enum _GXTevColorArg {
+    GX_CC_CPREV = 0,
+    GX_CC_APREV = 1,
+    GX_CC_C0 = 2,
+    GX_CC_A0 = 3,
+    GX_CC_C1 = 4,
+    GX_CC_A1 = 5,
+    GX_CC_C2 = 6,
+    GX_CC_A2 = 7,
+    GX_CC_TEXC = 8,
+    GX_CC_TEXA = 9,
+    GX_CC_RASC = 10,
+    GX_CC_RASA = 11,
+    GX_CC_ONE = 12,
+    GX_CC_HALF = 13,
+    GX_CC_KONST = 14,
+    GX_CC_ZERO = 15,
+    GX_CC_TEXRRR = 16,
+    GX_CC_TEXGGG = 17,
+    GX_CC_TEXBBB = 18,
+    GX_CC_QUARTER = 14,
 };
 
-// Location: 0x58010F80
-_GXTevColorArg gCombinedColor[16];
+// size = 0x40, address = 0x800F0158
+enum _GXTevColorArg gCombinedColor[16];
 
-// size: 0x4
-enum _GXTevAlphaArg
-{
-	GX_CA_APREV = 0,
-	GX_CA_A0 = 1,
-	GX_CA_A1 = 2,
-	GX_CA_A2 = 3,
-	GX_CA_TEXA = 4,
-	GX_CA_RASA = 5,
-	GX_CA_KONST = 6,
-	GX_CA_ZERO = 7,
-	GX_CA_ONE = 6
+enum _GXTevAlphaArg {
+    GX_CA_APREV = 0,
+    GX_CA_A0 = 1,
+    GX_CA_A1 = 2,
+    GX_CA_A2 = 3,
+    GX_CA_TEXA = 4,
+    GX_CA_RASA = 5,
+    GX_CA_KONST = 6,
+    GX_CA_ZERO = 7,
+    GX_CA_ONE = 6,
 };
 
-// Location: 0x800F0198
-_GXTevAlphaArg gCombinedAlpha[8];
+// size = 0x20, address = 0x800F0198
+enum _GXTevAlphaArg gCombinedAlpha[8];
 
-// size: 0x4
-enum _GXTevStageID
-{
-	GX_TEVSTAGE0 = 0,
-	GX_TEVSTAGE1 = 1,
-	GX_TEVSTAGE2 = 2,
-	GX_TEVSTAGE3 = 3,
-	GX_TEVSTAGE4 = 4,
-	GX_TEVSTAGE5 = 5,
-	GX_TEVSTAGE6 = 6,
-	GX_TEVSTAGE7 = 7,
-	GX_TEVSTAGE8 = 8,
-	GX_TEVSTAGE9 = 9,
-	GX_TEVSTAGE10 = 10,
-	GX_TEVSTAGE11 = 11,
-	GX_TEVSTAGE12 = 12,
-	GX_TEVSTAGE13 = 13,
-	GX_TEVSTAGE14 = 14,
-	GX_TEVSTAGE15 = 15,
-	GX_MAX_TEVSTAGE = 16
+enum _GXTevStageID {
+    GX_TEVSTAGE0 = 0,
+    GX_TEVSTAGE1 = 1,
+    GX_TEVSTAGE2 = 2,
+    GX_TEVSTAGE3 = 3,
+    GX_TEVSTAGE4 = 4,
+    GX_TEVSTAGE5 = 5,
+    GX_TEVSTAGE6 = 6,
+    GX_TEVSTAGE7 = 7,
+    GX_TEVSTAGE8 = 8,
+    GX_TEVSTAGE9 = 9,
+    GX_TEVSTAGE10 = 10,
+    GX_TEVSTAGE11 = 11,
+    GX_TEVSTAGE12 = 12,
+    GX_TEVSTAGE13 = 13,
+    GX_TEVSTAGE14 = 14,
+    GX_TEVSTAGE15 = 15,
+    GX_MAX_TEVSTAGE = 16,
 };
 
-// Local to compilation unit
-// Location: 0x800F01B8
-static _GXTevStageID ganNameTevStage[16];
+// size = 0x40, address = 0x800F01B8
+static enum _GXTevStageID ganNameTevStage[16];
 
-// Local to compilation unit
-// Location: 0x70531380
-static unsigned char sOrder[5];
+// size = 0x5, address = 0x80135370
+static u8 sOrder[5];
 
-// size: 0x4
-enum _GXTevOp
-{
-	GX_TEV_ADD = 0,
-	GX_TEV_SUB = 1,
-	GX_TEV_COMP_R8_GT = 8,
-	GX_TEV_COMP_R8_EQ = 9,
-	GX_TEV_COMP_GR16_GT = 10,
-	GX_TEV_COMP_GR16_EQ = 11,
-	GX_TEV_COMP_BGR24_GT = 12,
-	GX_TEV_COMP_BGR24_EQ = 13,
-	GX_TEV_COMP_RGB8_GT = 14,
-	GX_TEV_COMP_RGB8_EQ = 15,
-	GX_TEV_COMP_A8_GT = 14,
-	GX_TEV_COMP_A8_EQ = 15
+enum _GXTevOp {
+    GX_TEV_ADD = 0,
+    GX_TEV_SUB = 1,
+    GX_TEV_COMP_R8_GT = 8,
+    GX_TEV_COMP_R8_EQ = 9,
+    GX_TEV_COMP_GR16_GT = 10,
+    GX_TEV_COMP_GR16_EQ = 11,
+    GX_TEV_COMP_BGR24_GT = 12,
+    GX_TEV_COMP_BGR24_EQ = 13,
+    GX_TEV_COMP_RGB8_GT = 14,
+    GX_TEV_COMP_RGB8_EQ = 15,
+    GX_TEV_COMP_A8_GT = 14,
+    GX_TEV_COMP_A8_EQ = 15,
 };
 
-// size: 0x4
-enum _GXTevBias
-{
-	GX_TB_ZERO = 0,
-	GX_TB_ADDHALF = 1,
-	GX_TB_SUBHALF = 2,
-	GX_MAX_TEVBIAS = 3
+enum _GXTevBias {
+    GX_TB_ZERO = 0,
+    GX_TB_ADDHALF = 1,
+    GX_TB_SUBHALF = 2,
+    GX_MAX_TEVBIAS = 3,
 };
 
-// size: 0x4
-enum _GXTevScale
-{
-	GX_CS_SCALE_1 = 0,
-	GX_CS_SCALE_2 = 1,
-	GX_CS_SCALE_4 = 2,
-	GX_CS_DIVIDE_2 = 3,
-	GX_MAX_TEVSCALE = 4
+enum _GXTevScale {
+    GX_CS_SCALE_1 = 0,
+    GX_CS_SCALE_2 = 1,
+    GX_CS_SCALE_4 = 2,
+    GX_CS_DIVIDE_2 = 3,
+    GX_MAX_TEVSCALE = 4,
 };
 
-// size: 0x4
-enum _GXTevRegID
-{
-	GX_TEVPREV = 0,
-	GX_TEVREG0 = 1,
-	GX_TEVREG1 = 2,
-	GX_TEVREG2 = 3,
-	GX_MAX_TEVREG = 4
+enum _GXTevRegID {
+    GX_TEVPREV = 0,
+    GX_TEVREG0 = 1,
+    GX_TEVREG1 = 2,
+    GX_TEVREG2 = 3,
+    GX_MAX_TEVREG = 4,
 };
 
-// size: 0x14
-struct TevColorOp
-{
-	_GXTevOp op; // 0x0
-	_GXTevBias bias; // 0x4
-	_GXTevScale scale; // 0x8
-	unsigned char clamp; // 0xC
-	_GXTevRegID out_reg; // 0x10
-};
+struct TevColorOp {
+    /* 0x00 */ enum _GXTevOp op;
+    /* 0x04 */ enum _GXTevBias bias;
+    /* 0x08 */ enum _GXTevScale scale;
+    /* 0x0C */ u8 clamp;
+    /* 0x10 */ enum _GXTevRegID out_reg;
+}; // size = 0x14
 
-// Local to compilation unit
-// Location: 0x800F01F8
-static TevColorOp sTevColorOp[5];
+// size = 0x64, address = 0x800F01F8
+static struct TevColorOp sTevColorOp[5];
 
-// Local to compilation unit
-// Location: 0x78531380
-static unsigned char sReplace[5];
+// size = 0x5, address = 0x80135378
+static u8 sReplace[5];
 
-// Local to compilation unit
-// Location: 0x5C020F80
-static _GXTevColorArg sTevColorArg[5][4];
+// size = 0x50, address = 0x800F025C
+static enum _GXTevColorArg sTevColorArg[5][4];
 
-// Local to compilation unit
-// Location: 0x800F02AC
-static _GXTevAlphaArg sTevAlphaArg[5][4];
+// size = 0x50, address = 0x800F02AC
+static enum _GXTevAlphaArg sTevAlphaArg[5][4];
 
-// Location: 0x0
-unsigned long sCurCCMode;
+// size = 0x40, address = 0x800F0390
+static char* sColorNames[16];
 
-// Location: 0x0
-unsigned long sPrevCCModes[100][2][2];
+// size = 0x40, address = 0x800F03D0
+static char* sAlphaNames[2][8];
 
-// Local to compilation unit
-// Location: 0x800F0390
-static char  *sColorNames[16];
+// size = 0x40, address = 0x800F0410
+static char* strings$288[4][4];
 
-// Local to compilation unit
-// Location: 0x800F03D0
-static char  *sAlphaNames[2][8];
+// Erased
+static void UpdateRenderModeList(u32 renderMode, u32 cycle) {
+    // Parameters
+    // u32 renderMode; // r1+0x8
+    // u32 cycle; // r23
 
-// Location: 0x0
-unsigned long sFoundRenderModes$277[100];
+    // Local variables
+    s32 i; // r5
+    u32 p[2][4]; // r1+0x10
 
-// Location: 0x0
-long sCurRenderMode$278;
-
-// Local to compilation unit
-// Location: 0x10040F80
-static char  *strings$288[4][4];
-
-// Location: 0x0
-unsigned char sMemShift$301[2][4];
-
-void UpdateRenderModeList(unsigned long renderMode, unsigned long cycle)
-{
-	long i;
-	unsigned long p[2][4];
-	// References: sCurRenderMode$278 (0x0)
-	// References: sFoundRenderModes$277 (0x0)
-	// References: strings$288 (0x10040F80)
-	// References: sMemShift$301 (0x0)
+    // References
+    // -> static s32 sCurRenderMode$278;
+    // -> static u32 sFoundRenderModes$277[100];
+    // -> static char* strings$288[4][4];
+    // -> static u8 sMemShift$301[2][4];
 }
 
-// size: 0x4
-enum __anon_0x8573D
-{
-	SM_NONE = 4294967295,
-	SM_RUNNING = 0,
-	SM_STOPPED = 1
+enum __anon_0x8573D {
+    SM_NONE = -1,
+    SM_RUNNING = 0,
+    SM_STOPPED = 1,
 };
 
-// size: 0x10
-struct __anon_0x857A7
-{
-	int nSize; // 0x0
-	int nOffsetRAM; // 0x4
-	int nOffsetROM; // 0x8
-	int (*pCallback)(); // 0xC
+struct __anon_0x857A7 {
+    /* 0x0 */ s32 nSize;
+    /* 0x4 */ s32 nOffsetRAM;
+    /* 0x8 */ s32 nOffsetROM;
+    /* 0xC */ s32 (*pCallback)();
+}; // size = 0x10
+
+enum __anon_0x85858 {
+    SRT_NONE = -1,
+    SRT_MARIO = 0,
+    SRT_WAVERACE = 1,
+    SRT_MARIOKART = 2,
+    SRT_STARFOX = 3,
+    SRT_ZELDA1 = 4,
+    SRT_ZELDA2 = 5,
+    SRT_1080 = 6,
+    SRT_PANEL = 7,
+    SRT_MARIOPARTY1 = 8,
+    SRT_MARIOPARTY2 = 9,
+    SRT_MARIOPARTY3 = 10,
+    SRT_DRMARIO = 11,
+    SRT_UNKNOWN = 12,
 };
 
-// size: 0x4
-enum __anon_0x85858
-{
-	SRT_NONE = 4294967295,
-	SRT_MARIO = 0,
-	SRT_WAVERACE = 1,
-	SRT_MARIOKART = 2,
-	SRT_STARFOX = 3,
-	SRT_ZELDA1 = 4,
-	SRT_ZELDA2 = 5,
-	SRT_1080 = 6,
-	SRT_PANEL = 7,
-	SRT_MARIOPARTY1 = 8,
-	SRT_MARIOPARTY2 = 9,
-	SRT_MARIOPARTY3 = 10,
-	SRT_DRMARIO = 11,
-	SRT_UNKNOWN = 12
+enum __anon_0x8598C {
+    SOT_NONE = -1,
+    SOT_CPU = 0,
+    SOT_PIF = 1,
+    SOT_RAM = 2,
+    SOT_ROM = 3,
+    SOT_RSP = 4,
+    SOT_RDP = 5,
+    SOT_MIPS = 6,
+    SOT_DISK = 7,
+    SOT_FLASH = 8,
+    SOT_SRAM = 9,
+    SOT_AUDIO = 10,
+    SOT_VIDEO = 11,
+    SOT_SERIAL = 12,
+    SOT_LIBRARY = 13,
+    SOT_PERIPHERAL = 14,
+    SOT_RDB = 15,
+    SOT_COUNT = 16,
 };
 
-// size: 0x4
-enum __anon_0x8598C
-{
-	SOT_NONE = 4294967295,
-	SOT_CPU = 0,
-	SOT_PIF = 1,
-	SOT_RAM = 2,
-	SOT_ROM = 3,
-	SOT_RSP = 4,
-	SOT_RDP = 5,
-	SOT_MIPS = 6,
-	SOT_DISK = 7,
-	SOT_FLASH = 8,
-	SOT_SRAM = 9,
-	SOT_AUDIO = 10,
-	SOT_VIDEO = 11,
-	SOT_SERIAL = 12,
-	SOT_LIBRARY = 13,
-	SOT_PERIPHERAL = 14,
-	SOT_RDB = 15,
-	SOT_COUNT = 16
+struct __anon_0x85ACF {
+    /* 0x00 */ void* pFrame;
+    /* 0x04 */ void* pSound;
+    /* 0x08 */ s32 bException;
+    /* 0x0C */ enum __anon_0x8573D eMode;
+    /* 0x10 */ struct __anon_0x857A7 romCopy;
+    /* 0x20 */ enum __anon_0x85858 eTypeROM;
+    /* 0x24 */ void* apObject[16];
+    /* 0x68 */ u64 nAddressBreak;
+    /* 0x70 */ enum __anon_0x8598C storageDevice;
+    /* 0x74 */ u8 anException[16];
+    /* 0x84 */ s32 bJapaneseVersion;
+}; // size = 0x88
+
+// size = 0x4, address = 0x80135600
+struct __anon_0x85ACF* gpSystem;
+
+struct __anon_0x85D00 {
+    /* 0x0 */ float rX;
+    /* 0x4 */ float rY;
+    /* 0x8 */ float rSizeX;
+    /* 0xC */ float rSizeY;
+}; // size = 0x10
+
+struct __anon_0x85D9A {
+    /* 0x00 */ s32 nSize;
+    /* 0x04 */ s32 nWidth;
+    /* 0x08 */ s32 nFormat;
+    /* 0x0C */ void* pData;
+    /* 0x10 */ s32 nAddress;
+}; // size = 0x14
+
+struct __anon_0x85EDB {
+    /* 0x0 */ float x;
+    /* 0x4 */ float y;
+    /* 0x8 */ float z;
+}; // size = 0xC
+
+struct __anon_0x85F4B {
+    /* 0x00 */ s32 bTransformed;
+    /* 0x04 */ struct __anon_0x85EDB rVecOrigTowards;
+    /* 0x10 */ float rColorR;
+    /* 0x14 */ float rColorG;
+    /* 0x18 */ float rColorB;
+    /* 0x1C */ float rVectorX;
+    /* 0x20 */ float rVectorY;
+    /* 0x24 */ float rVectorZ;
+    /* 0x28 */ float kc;
+    /* 0x2C */ float kl;
+    /* 0x30 */ float kq;
+    /* 0x34 */ s16 coordX;
+    /* 0x36 */ s16 coordY;
+    /* 0x38 */ s16 coordZ;
+}; // size = 0x3C
+
+struct __anon_0x8617B {
+    /* 0x00 */ s32 bTransformed;
+    /* 0x04 */ struct __anon_0x85EDB rS;
+    /* 0x10 */ struct __anon_0x85EDB rT;
+    /* 0x1C */ struct __anon_0x85EDB rSRaw;
+    /* 0x28 */ struct __anon_0x85EDB rTRaw;
+}; // size = 0x34
+
+struct __anon_0x86264 {
+    /* 0x00 */ float rSum;
+    /* 0x04 */ float rS;
+    /* 0x08 */ float rT;
+    /* 0x0C */ struct __anon_0x85EDB vec;
+    /* 0x18 */ u8 anColor[4];
+}; // size = 0x1C
+
+union __anon_0x863C3 {
+    /* 0x0 */ u8 u8[4096];
+    /* 0x0 */ u16 u16[2048];
+    /* 0x0 */ u32 u32[1024];
+    /* 0x0 */ u64 u64[512];
 };
 
-// size: 0x88
-struct __anon_0x85ACF
-{
-	void *pFrame; // 0x0
-	void *pSound; // 0x4
-	int bException; // 0x8
-	__anon_0x8573D eMode; // 0xC
-	__anon_0x857A7 romCopy; // 0x10
-	__anon_0x85858 eTypeROM; // 0x20
-	void *apObject[16]; // 0x24
-	unsigned long long nAddressBreak; // 0x68
-	__anon_0x8598C storageDevice; // 0x70
-	unsigned char anException[16]; // 0x74
-	int bJapaneseVersion; // 0x84
+struct __anon_0x86460 {
+    /* 0x0 */ union __anon_0x863C3 data;
+}; // size = 0x1000
+
+enum _GXTexFmt {
+    GX_TF_I4 = 0,
+    GX_TF_I8 = 1,
+    GX_TF_IA4 = 2,
+    GX_TF_IA8 = 3,
+    GX_TF_RGB565 = 4,
+    GX_TF_RGB5A3 = 5,
+    GX_TF_RGBA8 = 6,
+    GX_TF_CMPR = 14,
+    GX_CTF_R4 = 32,
+    GX_CTF_RA4 = 34,
+    GX_CTF_RA8 = 35,
+    GX_CTF_YUVA8 = 38,
+    GX_CTF_A8 = 39,
+    GX_CTF_R8 = 40,
+    GX_CTF_G8 = 41,
+    GX_CTF_B8 = 42,
+    GX_CTF_RG8 = 43,
+    GX_CTF_GB8 = 44,
+    GX_TF_Z8 = 17,
+    GX_TF_Z16 = 19,
+    GX_TF_Z24X8 = 22,
+    GX_CTF_Z4 = 48,
+    GX_CTF_Z8M = 57,
+    GX_CTF_Z8L = 58,
+    GX_CTF_Z16L = 60,
+    GX_TF_A8 = 39,
 };
 
-// Location: 0x561380
-__anon_0x85ACF *gpSystem;
+struct _GXTlutObj {
+    /* 0x0 */ u32 dummy[3];
+}; // size = 0xC
 
-// size: 0x10
-struct __anon_0x85D00
-{
-	float rX; // 0x0
-	float rY; // 0x4
-	float rSizeX; // 0x8
-	float rSizeY; // 0xC
+struct _GXTexObj {
+    /* 0x0 */ u32 dummy[8];
+}; // size = 0x20
+
+enum _GXTexWrapMode {
+    GX_CLAMP = 0,
+    GX_REPEAT = 1,
+    GX_MIRROR = 2,
+    GX_MAX_TEXWRAPMODE = 3,
 };
 
-// size: 0x14
-struct __anon_0x85D9A
-{
-	int nSize; // 0x0
-	int nWidth; // 0x4
-	int nFormat; // 0x8
-	void *pData; // 0xC
-	int nAddress; // 0x10
+struct _FRAME_TEXTURE {
+    /* 0x00 */ s32 nMode;
+    /* 0x04 */ s32 iPackPixel;
+    /* 0x08 */ s32 iPackColor;
+    /* 0x0C */ s32 nFrameLast;
+    /* 0x10 */ s16 nSizeX;
+    /* 0x12 */ s16 nSizeY;
+    /* 0x14 */ u32 nAddress;
+    /* 0x18 */ u32 nCodePixel;
+    /* 0x1C */ u32 nCodeColor;
+    /* 0x20 */ struct _FRAME_TEXTURE* pTextureNext;
+    /* 0x24 */ u32 nData0;
+    /* 0x28 */ u32 nData1;
+    /* 0x2C */ u32 nData2;
+    /* 0x30 */ u32 nData3;
+    /* 0x34 */ enum _GXTexFmt eFormat;
+    /* 0x38 */ struct _GXTlutObj objectTLUT;
+    /* 0x44 */ struct _GXTexObj objectTexture;
+    /* 0x64 */ enum _GXTexWrapMode eWrapS;
+    /* 0x68 */ enum _GXTexWrapMode eWrapT;
+}; // size = 0x6C
+
+struct __anon_0x86B2E {
+    /* 0x00 */ s32 nSize;
+    /* 0x04 */ s32 nTMEM;
+    /* 0x08 */ s32 iTLUT;
+    /* 0x0C */ s32 nSizeX;
+    /* 0x10 */ s32 nFormat;
+    /* 0x14 */ s16 nMaskS;
+    /* 0x16 */ s16 nMaskT;
+    /* 0x18 */ s16 nModeS;
+    /* 0x1A */ s16 nModeT;
+    /* 0x1C */ s16 nShiftS;
+    /* 0x1E */ s16 nShiftT;
+    /* 0x20 */ s16 nX0;
+    /* 0x22 */ s16 nY0;
+    /* 0x24 */ s16 nX1;
+    /* 0x26 */ s16 nY1;
+    /* 0x28 */ u32 nCodePixel;
+}; // size = 0x2C
+
+enum __anon_0x86E10 {
+    FMP_NONE = -1,
+    FMP_PERSPECTIVE = 0,
+    FMP_ORTHOGRAPHIC = 1,
 };
 
-// size: 0xC
-struct __anon_0x85EDB
-{
-	float x; // 0x0
-	float y; // 0x4
-	float z; // 0x8
+struct __anon_0x86E99 {
+    /* 0x00 */ s32 nCount;
+    /* 0x04 */ float rScale;
+    /* 0x08 */ float rAspect;
+    /* 0x0C */ float rFieldOfViewY;
+    /* 0x10 */ float rClipNear;
+    /* 0x14 */ float rClipFar;
+    /* 0x18 */ u32 nAddressFloat;
+    /* 0x1C */ u32 nAddressFixed;
+    /* 0x20 */ enum __anon_0x86E10 eProjection;
+}; // size = 0x24
+
+struct __anon_0x87050 {
+    /* 0x00000 */ u32 anCIMGAddresses[8];
+    /* 0x00020 */ u16 nNumCIMGAddresses;
+    /* 0x00024 */ s32 bBlurOn;
+    /* 0x00028 */ s32 bHackPause;
+    /* 0x0002C */ s32 nHackCount;
+    /* 0x00030 */ s32 nFrameCounter;
+    /* 0x00034 */ s32 bPauseThisFrame;
+    /* 0x00038 */ s32 bCameFromBomberNotes;
+    /* 0x0003C */ s32 bInBomberNotes;
+    /* 0x00040 */ s32 bShrinking;
+    /* 0x00044 */ s32 bSnapShot;
+    /* 0x00048 */ s32 bUsingLens;
+    /* 0x0004C */ u8 cBlurAlpha;
+    /* 0x00050 */ s32 bBlurredThisFrame;
+    /* 0x00054 */ s32 nFrameCIMGCalls;
+    /* 0x00058 */ s32 bModifyZBuffer;
+    /* 0x0005C */ s32 bOverrideDepth;
+    /* 0x00060 */ s32 nZBufferSets;
+    /* 0x00064 */ s32 nLastFrameZSets;
+    /* 0x00068 */ s32 bPauseBGDrawn;
+    /* 0x0006C */ s32 bFrameOn;
+    /* 0x00070 */ s32 bBackBufferDrawn;
+    /* 0x00074 */ s32 bGrabbedFrame;
+    /* 0x00078 */ u64* pnGBI;
+    /* 0x0007C */ u32 nFlag;
+    /* 0x00080 */ float rScaleX;
+    /* 0x00084 */ float rScaleY;
+    /* 0x00088 */ u32 nCountFrames;
+    /* 0x0008C */ u32 nMode;
+    /* 0x00090 */ u32 aMode[10];
+    /* 0x000B8 */ struct __anon_0x85D00 viewport;
+    /* 0x000C8 */ struct __anon_0x85D9A aBuffer[4];
+    /* 0x00118 */ u32 nOffsetDepth0;
+    /* 0x0011C */ u32 nOffsetDepth1;
+    /* 0x00120 */ s32 nWidthLine;
+    /* 0x00124 */ float rDepth;
+    /* 0x00128 */ float rDelta;
+    /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
+    /* 0x0013C */ s32 nCountLight;
+    /* 0x00140 */ struct __anon_0x85F4B aLight[8];
+    /* 0x00320 */ struct __anon_0x8617B lookAt;
+    /* 0x00354 */ s32 nCountVertex;
+    /* 0x00358 */ struct __anon_0x86264 aVertex[80];
+    /* 0x00C18 */ struct __anon_0x86460 TMEM;
+    /* 0x01C18 */ void* aPixelData;
+    /* 0x01C1C */ void* aColorData;
+    /* 0x01C20 */ s32 nBlocksPixel;
+    /* 0x01C24 */ s32 nBlocksMaxPixel;
+    /* 0x01C28 */ s32 nBlocksColor;
+    /* 0x01C2C */ s32 nBlocksMaxColor;
+    /* 0x01C30 */ s32 nBlocksTexture;
+    /* 0x01C34 */ s32 nBlocksMaxTexture;
+    /* 0x01C38 */ u32 anPackPixel[48];
+    /* 0x01CF8 */ u32 anPackColor[320];
+    /* 0x021F8 */ u32 nAddressLoad;
+    /* 0x021FC */ u32 nCodePixel;
+    /* 0x02200 */ u32 nTlutCode[16];
+    /* 0x02240 */ struct _FRAME_TEXTURE aTexture[2048];
+    /* 0x38240 */ u32 anTextureUsed[64];
+    /* 0x38340 */ struct _FRAME_TEXTURE* apTextureCached[4096];
+    /* 0x3C340 */ s32 iTileLoad;
+    /* 0x3C344 */ u32 n2dLoadTexType;
+    /* 0x3C348 */ s32 nLastX0;
+    /* 0x3C34C */ s32 nLastY0;
+    /* 0x3C350 */ s32 nLastX1;
+    /* 0x3C354 */ s32 nLastY1;
+    /* 0x3C358 */ struct __anon_0x86B2E aTile[8];
+    /* 0x3C4B8 */ s32 anSizeX[2];
+    /* 0x3C4C0 */ s32 anSizeY[2];
+    /* 0x3C4C8 */ s32 iHintMatrix;
+    /* 0x3C4CC */ s32 iMatrixModel;
+    /* 0x3C4D0 */ s32 iHintProjection;
+    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C514 */ s32 iHintLast;
+    /* 0x3C518 */ s32 iHintHack;
+    /* 0x3C51C */ enum __anon_0x86E10 eTypeProjection;
+    /* 0x3C520 */ float aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ float matrixProjection[4][4];
+    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C820 */ struct __anon_0x86E99 aMatrixHint[64];
+    /* 0x3D120 */ u8 primLODmin;
+    /* 0x3D121 */ u8 primLODfrac;
+    /* 0x3D122 */ u8 lastTile;
+    /* 0x3D123 */ u8 iTileDrawn;
+    /* 0x3D124 */ struct _GXColor aColor[5];
+    /* 0x3D138 */ u32 nModeVtx;
+    /* 0x3D13C */ u16* nTempBuffer;
+    /* 0x3D140 */ u16* nCopyBuffer;
+    /* 0x3D144 */ u32* nLensBuffer;
+    /* 0x3D148 */ u16* nCameraBuffer;
+}; // size = 0x3D150
+
+enum _GXTexCoordID {
+    GX_TEXCOORD0 = 0,
+    GX_TEXCOORD1 = 1,
+    GX_TEXCOORD2 = 2,
+    GX_TEXCOORD3 = 3,
+    GX_TEXCOORD4 = 4,
+    GX_TEXCOORD5 = 5,
+    GX_TEXCOORD6 = 6,
+    GX_TEXCOORD7 = 7,
+    GX_MAX_TEXCOORD = 8,
+    GX_TEXCOORD_NULL = 255,
 };
 
-// size: 0x3C
-struct __anon_0x85F4B
-{
-	int bTransformed; // 0x0
-	__anon_0x85EDB rVecOrigTowards; // 0x4
-	float rColorR; // 0x10
-	float rColorG; // 0x14
-	float rColorB; // 0x18
-	float rVectorX; // 0x1C
-	float rVectorY; // 0x20
-	float rVectorZ; // 0x24
-	float kc; // 0x28
-	float kl; // 0x2C
-	float kq; // 0x30
-	signed short coordX; // 0x34
-	signed short coordY; // 0x36
-	signed short coordZ; // 0x38
+enum _GXTexMapID {
+    GX_TEXMAP0 = 0,
+    GX_TEXMAP1 = 1,
+    GX_TEXMAP2 = 2,
+    GX_TEXMAP3 = 3,
+    GX_TEXMAP4 = 4,
+    GX_TEXMAP5 = 5,
+    GX_TEXMAP6 = 6,
+    GX_TEXMAP7 = 7,
+    GX_MAX_TEXMAP = 8,
+    GX_TEXMAP_NULL = 255,
+    GX_TEX_DISABLE = 256,
 };
 
-// size: 0x34
-struct __anon_0x8617B
-{
-	int bTransformed; // 0x0
-	__anon_0x85EDB rS; // 0x4
-	__anon_0x85EDB rT; // 0x10
-	__anon_0x85EDB rSRaw; // 0x1C
-	__anon_0x85EDB rTRaw; // 0x28
+enum _GXChannelID {
+    GX_COLOR0 = 0,
+    GX_COLOR1 = 1,
+    GX_ALPHA0 = 2,
+    GX_ALPHA1 = 3,
+    GX_COLOR0A0 = 4,
+    GX_COLOR1A1 = 5,
+    GX_COLOR_ZERO = 6,
+    GX_ALPHA_BUMP = 7,
+    GX_ALPHA_BUMPN = 8,
+    GX_COLOR_NULL = 255,
 };
 
-// size: 0x1C
-struct __anon_0x86264
-{
-	float rSum; // 0x0
-	float rS; // 0x4
-	float rT; // 0x8
-	__anon_0x85EDB vec; // 0xC
-	unsigned char anColor[4]; // 0x18
-};
+struct TevOrder {
+    /* 0x0 */ enum _GXTexCoordID coordID;
+    /* 0x4 */ enum _GXTexMapID mapID;
+    /* 0x8 */ enum _GXChannelID chanID;
+}; // size = 0xC
 
-// size: 0x1000
-union __anon_0x863C3
-{
-	unsigned char u8[4096]; // 0x0
-	unsigned short u16[2048]; // 0x0
-	unsigned int u32[1024]; // 0x0
-	unsigned long long u64[512]; // 0x0
-};
+struct CombineModeTev {
+    /* 0x000 */ u32 ccCodes[2][2];
+    /* 0x010 */ u8 numCycles;
+    /* 0x011 */ u8 numStages;
+    /* 0x012 */ u8 numTexGen;
+    /* 0x013 */ u8 numChan;
+    /* 0x014 */ u32 flags;
+    /* 0x018 */ struct TevOrder tevOrder[8];
+    /* 0x078 */ struct TevColorOp tevColorOpP[8][2];
+    /* 0x1B8 */ enum _GXTevColorArg tevColorArg[8][4];
+    /* 0x238 */ enum _GXTevAlphaArg tevAlphaArg[8][4];
+}; // size = 0x2B8
 
-// size: 0x1000
-struct __anon_0x86460
-{
-	__anon_0x863C3 data; // 0x0
-};
+// Range: 0x80097D9C -> 0x80097E5C
+s32 SetTevStageTable(struct __anon_0x87050* pFrame, s32 numCycles) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r31
+    // s32 numCycles; // r7
 
-// size: 0x4
-enum _GXTexFmt
-{
-	GX_TF_I4 = 0,
-	GX_TF_I8 = 1,
-	GX_TF_IA4 = 2,
-	GX_TF_IA8 = 3,
-	GX_TF_RGB565 = 4,
-	GX_TF_RGB5A3 = 5,
-	GX_TF_RGBA8 = 6,
-	GX_TF_CMPR = 14,
-	GX_CTF_R4 = 32,
-	GX_CTF_RA4 = 34,
-	GX_CTF_RA8 = 35,
-	GX_CTF_YUVA8 = 38,
-	GX_CTF_A8 = 39,
-	GX_CTF_R8 = 40,
-	GX_CTF_G8 = 41,
-	GX_CTF_B8 = 42,
-	GX_CTF_RG8 = 43,
-	GX_CTF_GB8 = 44,
-	GX_TF_Z8 = 17,
-	GX_TF_Z16 = 19,
-	GX_TF_Z24X8 = 22,
-	GX_CTF_Z4 = 48,
-	GX_CTF_Z8M = 57,
-	GX_CTF_Z8L = 58,
-	GX_CTF_Z16L = 60,
-	GX_TF_A8 = 39
-};
+    // Local variables
+    u32 tempColor1; // r3
+    u32 tempAlpha1; // r4
+    u32 tempColor2; // r5
+    u32 tempAlpha2; // r6
+    struct CombineModeTev* ctP; // r4
 
-// size: 0xC
-struct _GXTlutObj
-{
-	unsigned long dummy[3]; // 0x0
-};
-
-// size: 0x20
-struct _GXTexObj
-{
-	unsigned long dummy[8]; // 0x0
-};
-
-// size: 0x4
-enum _GXTexWrapMode
-{
-	GX_CLAMP = 0,
-	GX_REPEAT = 1,
-	GX_MIRROR = 2,
-	GX_MAX_TEXWRAPMODE = 3
-};
-
-// size: 0x6C
-struct _FRAME_TEXTURE
-{
-	int nMode; // 0x0
-	int iPackPixel; // 0x4
-	int iPackColor; // 0x8
-	int nFrameLast; // 0xC
-	signed short nSizeX; // 0x10
-	signed short nSizeY; // 0x12
-	unsigned int nAddress; // 0x14
-	unsigned int nCodePixel; // 0x18
-	unsigned int nCodeColor; // 0x1C
-	_FRAME_TEXTURE *pTextureNext; // 0x20
-	unsigned int nData0; // 0x24
-	unsigned int nData1; // 0x28
-	unsigned int nData2; // 0x2C
-	unsigned int nData3; // 0x30
-	_GXTexFmt eFormat; // 0x34
-	_GXTlutObj objectTLUT; // 0x38
-	_GXTexObj objectTexture; // 0x44
-	_GXTexWrapMode eWrapS; // 0x64
-	_GXTexWrapMode eWrapT; // 0x68
-};
-
-// size: 0x2C
-struct __anon_0x86B2E
-{
-	int nSize; // 0x0
-	int nTMEM; // 0x4
-	int iTLUT; // 0x8
-	int nSizeX; // 0xC
-	int nFormat; // 0x10
-	signed short nMaskS; // 0x14
-	signed short nMaskT; // 0x16
-	signed short nModeS; // 0x18
-	signed short nModeT; // 0x1A
-	signed short nShiftS; // 0x1C
-	signed short nShiftT; // 0x1E
-	signed short nX0; // 0x20
-	signed short nY0; // 0x22
-	signed short nX1; // 0x24
-	signed short nY1; // 0x26
-	unsigned int nCodePixel; // 0x28
-};
-
-// size: 0x4
-enum __anon_0x86E10
-{
-	FMP_NONE = 4294967295,
-	FMP_PERSPECTIVE = 0,
-	FMP_ORTHOGRAPHIC = 1
-};
-
-// size: 0x24
-struct __anon_0x86E99
-{
-	int nCount; // 0x0
-	float rScale; // 0x4
-	float rAspect; // 0x8
-	float rFieldOfViewY; // 0xC
-	float rClipNear; // 0x10
-	float rClipFar; // 0x14
-	unsigned int nAddressFloat; // 0x18
-	unsigned int nAddressFixed; // 0x1C
-	__anon_0x86E10 eProjection; // 0x20
-};
-
-// size: 0x3D150
-struct __anon_0x87050
-{
-	unsigned int anCIMGAddresses[8]; // 0x0
-	unsigned short nNumCIMGAddresses; // 0x20
-	int bBlurOn; // 0x24
-	int bHackPause; // 0x28
-	int nHackCount; // 0x2C
-	int nFrameCounter; // 0x30
-	int bPauseThisFrame; // 0x34
-	int bCameFromBomberNotes; // 0x38
-	int bInBomberNotes; // 0x3C
-	int bShrinking; // 0x40
-	int bSnapShot; // 0x44
-	int bUsingLens; // 0x48
-	unsigned char cBlurAlpha; // 0x4C
-	int bBlurredThisFrame; // 0x50
-	int nFrameCIMGCalls; // 0x54
-	int bModifyZBuffer; // 0x58
-	int bOverrideDepth; // 0x5C
-	int nZBufferSets; // 0x60
-	int nLastFrameZSets; // 0x64
-	int bPauseBGDrawn; // 0x68
-	int bFrameOn; // 0x6C
-	int bBackBufferDrawn; // 0x70
-	int bGrabbedFrame; // 0x74
-	unsigned long long *pnGBI; // 0x78
-	unsigned int nFlag; // 0x7C
-	float rScaleX; // 0x80
-	float rScaleY; // 0x84
-	unsigned int nCountFrames; // 0x88
-	unsigned int nMode; // 0x8C
-	unsigned int aMode[10]; // 0x90
-	__anon_0x85D00 viewport; // 0xB8
-	__anon_0x85D9A aBuffer[4]; // 0xC8
-	unsigned int nOffsetDepth0; // 0x118
-	unsigned int nOffsetDepth1; // 0x11C
-	int nWidthLine; // 0x120
-	float rDepth; // 0x124
-	float rDelta; // 0x128
-	int (*aDraw[4])(void */* unknown0 */, void */* unknown1 */); // 0x12C
-	int nCountLight; // 0x13C
-	__anon_0x85F4B aLight[8]; // 0x140
-	__anon_0x8617B lookAt; // 0x320
-	int nCountVertex; // 0x354
-	__anon_0x86264 aVertex[80]; // 0x358
-	__anon_0x86460 TMEM; // 0xC18
-	void *aPixelData; // 0x1C18
-	void *aColorData; // 0x1C1C
-	int nBlocksPixel; // 0x1C20
-	int nBlocksMaxPixel; // 0x1C24
-	int nBlocksColor; // 0x1C28
-	int nBlocksMaxColor; // 0x1C2C
-	int nBlocksTexture; // 0x1C30
-	int nBlocksMaxTexture; // 0x1C34
-	unsigned int anPackPixel[48]; // 0x1C38
-	unsigned int anPackColor[320]; // 0x1CF8
-	unsigned int nAddressLoad; // 0x21F8
-	unsigned int nCodePixel; // 0x21FC
-	unsigned int nTlutCode[16]; // 0x2200
-	_FRAME_TEXTURE aTexture[2048]; // 0x2240
-	unsigned int anTextureUsed[64]; // 0x38240
-	_FRAME_TEXTURE *apTextureCached[4096]; // 0x38340
-	int iTileLoad; // 0x3C340
-	unsigned int n2dLoadTexType; // 0x3C344
-	int nLastX0; // 0x3C348
-	int nLastY0; // 0x3C34C
-	int nLastX1; // 0x3C350
-	int nLastY1; // 0x3C354
-	__anon_0x86B2E aTile[8]; // 0x3C358
-	int anSizeX[2]; // 0x3C4B8
-	int anSizeY[2]; // 0x3C4C0
-	int iHintMatrix; // 0x3C4C8
-	int iMatrixModel; // 0x3C4CC
-	int iHintProjection; // 0x3C4D0
-	float matrixView[4][4]; // 0x3C4D4
-	int iHintLast; // 0x3C514
-	int iHintHack; // 0x3C518
-	__anon_0x86E10 eTypeProjection; // 0x3C51C
-	float aMatrixModel[10][4][4]; // 0x3C520
-	float matrixProjection[4][4]; // 0x3C7A0
-	float matrixProjectionExtra[4][4]; // 0x3C7E0
-	__anon_0x86E99 aMatrixHint[64]; // 0x3C820
-	unsigned char primLODmin; // 0x3D120
-	unsigned char primLODfrac; // 0x3D121
-	unsigned char lastTile; // 0x3D122
-	unsigned char iTileDrawn; // 0x3D123
-	_GXColor aColor[5]; // 0x3D124
-	unsigned int nModeVtx; // 0x3D138
-	unsigned short *nTempBuffer; // 0x3D13C
-	unsigned short *nCopyBuffer; // 0x3D140
-	unsigned int *nLensBuffer; // 0x3D144
-	unsigned short *nCameraBuffer; // 0x3D148
-};
-
-// size: 0x4
-enum _GXTexCoordID
-{
-	GX_TEXCOORD0 = 0,
-	GX_TEXCOORD1 = 1,
-	GX_TEXCOORD2 = 2,
-	GX_TEXCOORD3 = 3,
-	GX_TEXCOORD4 = 4,
-	GX_TEXCOORD5 = 5,
-	GX_TEXCOORD6 = 6,
-	GX_TEXCOORD7 = 7,
-	GX_MAX_TEXCOORD = 8,
-	GX_TEXCOORD_NULL = 255
-};
-
-// size: 0x4
-enum _GXTexMapID
-{
-	GX_TEXMAP0 = 0,
-	GX_TEXMAP1 = 1,
-	GX_TEXMAP2 = 2,
-	GX_TEXMAP3 = 3,
-	GX_TEXMAP4 = 4,
-	GX_TEXMAP5 = 5,
-	GX_TEXMAP6 = 6,
-	GX_TEXMAP7 = 7,
-	GX_MAX_TEXMAP = 8,
-	GX_TEXMAP_NULL = 255,
-	GX_TEX_DISABLE = 256
-};
-
-// size: 0x4
-enum _GXChannelID
-{
-	GX_COLOR0 = 0,
-	GX_COLOR1 = 1,
-	GX_ALPHA0 = 2,
-	GX_ALPHA1 = 3,
-	GX_COLOR0A0 = 4,
-	GX_COLOR1A1 = 5,
-	GX_COLOR_ZERO = 6,
-	GX_ALPHA_BUMP = 7,
-	GX_ALPHA_BUMPN = 8,
-	GX_COLOR_NULL = 255
-};
-
-// size: 0xC
-struct TevOrder
-{
-	_GXTexCoordID coordID; // 0x0
-	_GXTexMapID mapID; // 0x4
-	_GXChannelID chanID; // 0x8
-};
-
-// size: 0x2B8
-struct CombineModeTev
-{
-	unsigned long ccCodes[2][2]; // 0x0
-	unsigned char numCycles; // 0x10
-	unsigned char numStages; // 0x11
-	unsigned char numTexGen; // 0x12
-	unsigned char numChan; // 0x13
-	unsigned long flags; // 0x14
-	TevOrder tevOrder[8]; // 0x18
-	TevColorOp tevColorOpP[8][2]; // 0x78
-	_GXTevColorArg tevColorArg[8][4]; // 0x1B8
-	_GXTevAlphaArg tevAlphaArg[8][4]; // 0x238
-};
-
-long SetTevStageTable(__anon_0x87050 *pFrame, long numCycles)
-{
-	unsigned long tempColor1;
-	unsigned long tempAlpha1;
-	unsigned long tempColor2;
-	unsigned long tempAlpha2;
-	CombineModeTev *ctP;
-	// References: gpSystem (0x561380)
+    // References
+    // -> struct __anon_0x85ACF* gpSystem;
 }
 
-// Location: 0x800EA8B8
-_GXTexCoordID ganNameTexCoord[];
+// size = 0x0, address = 0x800EA8B8
+enum _GXTexCoordID ganNameTexCoord[];
 
-// Location: 0x78A80E80
-_GXTexMapID ganNamePixel[];
+// size = 0x0, address = 0x800EA878
+enum _GXTexMapID ganNamePixel[];
 
-void SetTevStages(__anon_0x87050 *pFrame, int cycle)
-{
-	unsigned char nColor[4];
-	unsigned char nAlpha[4];
-	unsigned int tempColor;
-	unsigned int tempAlpha;
-	_GXTevColorArg colorArg[4];
-	_GXTevAlphaArg alphaArg[4];
-	_GXTevStageID tevStages[5];
-	TevColorOp *tP;
-	long j;
-	_GXTevColorArg *cArgP;
-	_GXTevAlphaArg *aArgP;
-	long i;
-	long order;
-	// References: sTevAlphaArg (0x800F02AC)
-	// References: sTevColorArg (0x5C020F80)
-	// References: sTevColorOp (0x800F01F8)
-	// References: sOrder (0x70531380)
-	// References: sReplace (0x78531380)
-	// References: gCombinedAlpha (0x800F0198)
-	// References: gCombinedColor (0x58010F80)
-	// References: ganNamePixel (0x78A80E80)
-	// References: ganNameTexCoord (0x800EA8B8)
-	// References: ganNameTevStage (0x800F01B8)
+// Range: 0x80097E5C -> 0x800981E0
+void SetTevStages(struct __anon_0x87050* pFrame, s32 cycle) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r1+0x8
+    // s32 cycle; // r17
+
+    // Local variables
+    u8 nColor[4]; // r1+0x5C
+    u8 nAlpha[4]; // r1+0x58
+    u32 tempColor; // r6
+    u32 tempAlpha; // r9
+    enum _GXTevColorArg colorArg[4]; // r1+0x48
+    enum _GXTevAlphaArg alphaArg[4]; // r1+0x38
+    enum _GXTevStageID tevStages[5]; // r1+0x24
+    struct TevColorOp* tP; // r1+0x8
+    s32 j; // r1+0x8
+    enum _GXTevColorArg* cArgP; // r21
+    enum _GXTevAlphaArg* aArgP; // r20
+    s32 i; // r19
+    s32 order; // r18
+
+    // References
+    // -> static enum _GXTevAlphaArg sTevAlphaArg[5][4];
+    // -> static enum _GXTevColorArg sTevColorArg[5][4];
+    // -> static struct TevColorOp sTevColorOp[5];
+    // -> static u8 sOrder[5];
+    // -> static u8 sReplace[5];
+    // -> enum _GXTevAlphaArg gCombinedAlpha[8];
+    // -> enum _GXTevColorArg gCombinedColor[16];
+    // -> enum _GXTexMapID ganNamePixel[];
+    // -> enum _GXTexCoordID ganNameTexCoord[];
+    // -> static enum _GXTevStageID ganNameTevStage[16];
 }
 
-void SetNumTexGensChans(__anon_0x87050 *pFrame, int numCycles)
-{
-	unsigned char nColor[4];
-	unsigned char nAlpha[4];
-	unsigned long tempColor;
-	unsigned long tempAlpha;
-	long i;
-	long j;
-	long numGens;
-	long numChans;
+// Range: 0x800981E0 -> 0x800983A0
+void SetNumTexGensChans(struct __anon_0x87050* pFrame, s32 numCycles) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r1+0x8
+    // s32 numCycles; // r1+0xC
+
+    // Local variables
+    u8 nColor[4]; // r1+0x14
+    u8 nAlpha[4]; // r1+0x10
+    u32 tempColor; // r5
+    u32 tempAlpha; // r7
+    s32 i; // r8
+    s32 j; // r1+0x8
+    s32 numGens; // r9
+    s32 numChans; // r1+0x8
 }
 
-void CheckNewCCMode(__anon_0x87050 *pFrame, long numCycles)
-{
-	long i;
-	unsigned long tempColor1;
-	unsigned long tempAlpha1;
-	unsigned long tempColor2;
-	unsigned long tempAlpha2;
-	// References: sCurCCMode (0x0)
-	// References: sPrevCCModes (0x0)
+// Erased
+static void CheckNewCCMode(struct __anon_0x87050* pFrame, s32 numCycles) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r1+0x8
+    // s32 numCycles; // r29
+
+    // Local variables
+    s32 i; // r3
+    u32 tempColor1; // r8
+    u32 tempAlpha1; // r5
+    u32 tempColor2; // r31
+    u32 tempAlpha2; // r30
+
+    // References
+    // -> static u32 sCurCCMode;
+    // -> static u32 sPrevCCModes[100][2][2];
 }
 
-void OutputCCMode(int cycle, unsigned long tempColor, unsigned long tempAlpha)
-{
-	long i;
-	unsigned char nColor[4];
-	unsigned char nAlpha[4];
-	// References: sAlphaNames (0x800F03D0)
-	// References: sColorNames (0x800F0390)
+// Erased
+static void OutputCCMode(s32 cycle, u32 tempColor, u32 tempAlpha) {
+    // Parameters
+    // s32 cycle; // r1+0x8
+    // u32 tempColor; // r1+0xC
+    // u32 tempAlpha; // r1+0x10
+
+    // Local variables
+    s32 i; // r1+0x8
+    u8 nColor[4]; // r1+0x18
+    u8 nAlpha[4]; // r1+0x14
+
+    // References
+    // -> static char* sAlphaNames[2][8];
+    // -> static char* sColorNames[16];
 }
 
-// size: 0x4
-struct _GXColor
-{
-	unsigned char r; // 0x0
-	unsigned char g; // 0x1
-	unsigned char b; // 0x2
-	unsigned char a; // 0x3
-};
+struct _GXColor {
+    /* 0x0 */ u8 r;
+    /* 0x1 */ u8 g;
+    /* 0x2 */ u8 b;
+    /* 0x3 */ u8 a;
+}; // size = 0x4
 
-// Local to compilation unit
-static void SetTableTevStages(__anon_0x87050 *pFrame, CombineModeTev *ctP)
-{
-	long i;
-	int iStart;
-	_GXColor color;
-	TevOrder *toP;
-	TevColorOp *tcP;
-	_GXTevColorArg *cArgP;
-	_GXTevAlphaArg *aArgP;
-	// References: ganNameTevStage (0x800F01B8)
+// Range: 0x800983A0 -> 0x800986A4
+static void SetTableTevStages(struct __anon_0x87050* pFrame, struct CombineModeTev* ctP) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r30
+    // struct CombineModeTev* ctP; // r31
+
+    // Local variables
+    s32 i; // r23
+    s32 iStart; // r1+0x8
+    struct _GXColor color; // r1+0x30
+    struct TevOrder* toP; // r6
+    struct TevColorOp* tcP; // r22
+    enum _GXTevColorArg* cArgP; // r21
+    enum _GXTevAlphaArg* aArgP; // r20
+
+    // References
+    // -> static enum _GXTevStageID ganNameTevStage[16];
 }
-

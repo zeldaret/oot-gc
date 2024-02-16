@@ -1,27 +1,17 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Core\xlPostGCN.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x80005E04 -> 0x80005E68
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include "types.h"
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
+// Range: 0x80005E04 -> 0x80005E0C
+s32 xlPostReset() {}
 
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
+// Range: 0x80005E0C -> 0x80005E14
+s32 xlPostSetup() {}
 
-// Location: 0x0
-char *gszPostFail;
-
-// Location: 0x0
-char *gszPostFailSafe;
-
-// Location: 0x0
-char *gszPostFailTest;
-
-int xlPostReset();
-
-int xlPostSetup();
-
-int xlPostText();
-
+// Range: 0x80005E14 -> 0x80005E68
+s32 xlPostText() {}

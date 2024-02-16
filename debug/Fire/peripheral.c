@@ -1,150 +1,158 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Fire\peripheral.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x8009779C -> 0x80097D9C
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include "types.h"
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
+struct _XL_OBJECTTYPE {
+    /* 0x0 */ char* szName;
+    /* 0x4 */ s32 nSizeObject;
+    /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
+    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+}; // size = 0x10
 
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
+// size = 0x10, address = 0x800EFFBC
+struct _XL_OBJECTTYPE gClassPeripheral;
 
-// size: 0x10
-struct _XL_OBJECTTYPE
-{
-	char *szName; // 0x0
-	int nSizeObject; // 0x4
-	_XL_OBJECTTYPE *pClassBase; // 0x8
-	int (*pfEvent)(void */* unknown0 */, int /* unknown1 */, void */* unknown2 */); // 0xC
-};
+struct __anon_0x83D15 {
+    /* 0x00 */ void* pHost;
+    /* 0x04 */ s32 nStatus;
+    /* 0x08 */ s32 nSizeGet;
+    /* 0x0C */ s32 nSizePut;
+    /* 0x10 */ s32 nLatency1;
+    /* 0x14 */ s32 nLatency2;
+    /* 0x18 */ s32 nRelease1;
+    /* 0x1C */ s32 nRelease2;
+    /* 0x20 */ s32 nSizePage1;
+    /* 0x24 */ s32 nSizePage2;
+    /* 0x28 */ s32 nAddressRAM;
+    /* 0x2C */ s32 nAddressROM;
+    /* 0x30 */ s32 nWidthPulse1;
+    /* 0x34 */ s32 nWidthPulse2;
+}; // size = 0x38
 
-// Location: 0x800EFFBC
-_XL_OBJECTTYPE gClassPeripheral;
-
-// size: 0x38
-struct __anon_0x83D15
-{
-	void *pHost; // 0x0
-	int nStatus; // 0x4
-	int nSizeGet; // 0x8
-	int nSizePut; // 0xC
-	int nLatency1; // 0x10
-	int nLatency2; // 0x14
-	int nRelease1; // 0x18
-	int nRelease2; // 0x1C
-	int nSizePage1; // 0x20
-	int nSizePage2; // 0x24
-	int nAddressRAM; // 0x28
-	int nAddressROM; // 0x2C
-	int nWidthPulse1; // 0x30
-	int nWidthPulse2; // 0x34
-};
-
-int peripheralEvent(__anon_0x83D15 *pPeripheral, int nEvent, void *pArgument);
-
-int peripheralGet64();
-
-int peripheralGet32(__anon_0x83D15 *pPeripheral, unsigned int nAddress, int *pData);
-
-int peripheralGet16();
-
-int peripheralGet8();
-
-int peripheralPut64();
-
-// size: 0x4
-enum __anon_0x8415D
-{
-	SOT_NONE = 4294967295,
-	SOT_CPU = 0,
-	SOT_PIF = 1,
-	SOT_RAM = 2,
-	SOT_ROM = 3,
-	SOT_RSP = 4,
-	SOT_RDP = 5,
-	SOT_MIPS = 6,
-	SOT_DISK = 7,
-	SOT_FLASH = 8,
-	SOT_SRAM = 9,
-	SOT_AUDIO = 10,
-	SOT_VIDEO = 11,
-	SOT_SERIAL = 12,
-	SOT_LIBRARY = 13,
-	SOT_PERIPHERAL = 14,
-	SOT_RDB = 15,
-	SOT_COUNT = 16
-};
-
-int peripheralPut32(__anon_0x83D15 *pPeripheral, unsigned int nAddress, int *pData)
-{
-	int bFlag;
-	__anon_0x8415D storageDevice;
+// Range: 0x8009779C -> 0x800978A4
+s32 peripheralEvent(struct __anon_0x83D15* pPeripheral, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x83D15* pPeripheral; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
 }
 
-int peripheralPut16();
+// Range: 0x800978A4 -> 0x800978AC
+s32 peripheralGet64() {}
 
-int peripheralPut8();
-
-// size: 0x4
-enum __anon_0x843DE
-{
-	SM_NONE = 4294967295,
-	SM_RUNNING = 0,
-	SM_STOPPED = 1
-};
-
-// size: 0x10
-struct __anon_0x84447
-{
-	int nSize; // 0x0
-	int nOffsetRAM; // 0x4
-	int nOffsetROM; // 0x8
-	int (*pCallback)(); // 0xC
-};
-
-// size: 0x4
-enum __anon_0x844F8
-{
-	SRT_NONE = 4294967295,
-	SRT_MARIO = 0,
-	SRT_WAVERACE = 1,
-	SRT_MARIOKART = 2,
-	SRT_STARFOX = 3,
-	SRT_ZELDA1 = 4,
-	SRT_ZELDA2 = 5,
-	SRT_1080 = 6,
-	SRT_PANEL = 7,
-	SRT_MARIOPARTY1 = 8,
-	SRT_MARIOPARTY2 = 9,
-	SRT_MARIOPARTY3 = 10,
-	SRT_DRMARIO = 11,
-	SRT_UNKNOWN = 12
-};
-
-// size: 0x88
-struct __anon_0x8464B
-{
-	void *pFrame; // 0x0
-	void *pSound; // 0x4
-	int bException; // 0x8
-	__anon_0x843DE eMode; // 0xC
-	__anon_0x84447 romCopy; // 0x10
-	__anon_0x844F8 eTypeROM; // 0x20
-	void *apObject[16]; // 0x24
-	unsigned long long nAddressBreak; // 0x68
-	__anon_0x8415D storageDevice; // 0x70
-	unsigned char anException[16]; // 0x74
-	int bJapaneseVersion; // 0x84
-};
-
-// Location: 0x561380
-__anon_0x8464B *gpSystem;
-
-// Local to compilation unit
-static int peripheralDMA_Complete()
-{
-	__anon_0x83D15 *pPeripheral;
-	// References: gpSystem (0x561380)
+// Range: 0x800978AC -> 0x800979AC
+s32 peripheralGet32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x83D15* pPeripheral; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
 }
 
+// Range: 0x800979AC -> 0x800979B4
+s32 peripheralGet16() {}
+
+// Range: 0x800979B4 -> 0x800979BC
+s32 peripheralGet8() {}
+
+// Range: 0x800979BC -> 0x800979C4
+s32 peripheralPut64() {}
+
+enum __anon_0x8415D {
+    SOT_NONE = -1,
+    SOT_CPU = 0,
+    SOT_PIF = 1,
+    SOT_RAM = 2,
+    SOT_ROM = 3,
+    SOT_RSP = 4,
+    SOT_RDP = 5,
+    SOT_MIPS = 6,
+    SOT_DISK = 7,
+    SOT_FLASH = 8,
+    SOT_SRAM = 9,
+    SOT_AUDIO = 10,
+    SOT_VIDEO = 11,
+    SOT_SERIAL = 12,
+    SOT_LIBRARY = 13,
+    SOT_PERIPHERAL = 14,
+    SOT_RDB = 15,
+    SOT_COUNT = 16,
+};
+
+// Range: 0x800979C4 -> 0x80097D48
+s32 peripheralPut32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x83D15* pPeripheral; // r30
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r1+0x10
+
+    // Local variables
+    s32 bFlag; // r31
+    enum __anon_0x8415D storageDevice; // r1+0x14
+}
+
+// Range: 0x80097D48 -> 0x80097D50
+s32 peripheralPut16() {}
+
+// Range: 0x80097D50 -> 0x80097D58
+s32 peripheralPut8() {}
+
+enum __anon_0x843DE {
+    SM_NONE = -1,
+    SM_RUNNING = 0,
+    SM_STOPPED = 1,
+};
+
+struct __anon_0x84447 {
+    /* 0x0 */ s32 nSize;
+    /* 0x4 */ s32 nOffsetRAM;
+    /* 0x8 */ s32 nOffsetROM;
+    /* 0xC */ s32 (*pCallback)();
+}; // size = 0x10
+
+enum __anon_0x844F8 {
+    SRT_NONE = -1,
+    SRT_MARIO = 0,
+    SRT_WAVERACE = 1,
+    SRT_MARIOKART = 2,
+    SRT_STARFOX = 3,
+    SRT_ZELDA1 = 4,
+    SRT_ZELDA2 = 5,
+    SRT_1080 = 6,
+    SRT_PANEL = 7,
+    SRT_MARIOPARTY1 = 8,
+    SRT_MARIOPARTY2 = 9,
+    SRT_MARIOPARTY3 = 10,
+    SRT_DRMARIO = 11,
+    SRT_UNKNOWN = 12,
+};
+
+struct __anon_0x8464B {
+    /* 0x00 */ void* pFrame;
+    /* 0x04 */ void* pSound;
+    /* 0x08 */ s32 bException;
+    /* 0x0C */ enum __anon_0x843DE eMode;
+    /* 0x10 */ struct __anon_0x84447 romCopy;
+    /* 0x20 */ enum __anon_0x844F8 eTypeROM;
+    /* 0x24 */ void* apObject[16];
+    /* 0x68 */ u64 nAddressBreak;
+    /* 0x70 */ enum __anon_0x8415D storageDevice;
+    /* 0x74 */ u8 anException[16];
+    /* 0x84 */ s32 bJapaneseVersion;
+}; // size = 0x88
+
+// size = 0x4, address = 0x80135600
+struct __anon_0x8464B* gpSystem;
+
+// Range: 0x80097D58 -> 0x80097D9C
+static s32 peripheralDMA_Complete() {
+    // Local variables
+    struct __anon_0x83D15* pPeripheral; // r3
+
+    // References
+    // -> struct __anon_0x8464B* gpSystem;
+}

@@ -1,115 +1,183 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Core\xlList.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x80006280 -> 0x80006648
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include "types.h"
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
+struct tXL_LIST {
+    /* 0x0 */ s32 nItemSize;
+    /* 0x4 */ s32 nItemCount;
+    /* 0x8 */ void* pNodeHead;
+    /* 0xC */ void* pNodeNext;
+}; // size = 0x10
 
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
+// size = 0x10, address = 0x800F3FA0
+static struct tXL_LIST gListList;
 
-// size: 0x10
-struct tXL_LIST
-{
-	int nItemSize; // 0x0
-	int nItemCount; // 0x4
-	void *pNodeHead; // 0x8
-	void *pNodeNext; // 0xC
-};
+// Range: 0x80006280 -> 0x80006288
+s32 xlListReset() {}
 
-// Local to compilation unit
-// Location: 0x800F3FA0
-static tXL_LIST gListList;
-
-int xlListReset();
-
-int xlListSetup()
-{
-	// References: gListList (0x800F3FA0)
+// Range: 0x80006288 -> 0x800062B0
+s32 xlListSetup() {
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListMoveItemToTail(tXL_LIST *pList, void *pItem)
-{
-	void *pNode;
-	void *pNodeLast;
-	void *pNodeItem;
-	void *pNodeItemLast;
+// Erased
+static s32 xlListMoveItemToTail(struct tXL_LIST* pList, void* pItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // void* pItem; // r1+0x4
+
+    // Local variables
+    void* pNode; // r5
+    void* pNodeLast; // r6
+    void* pNodeItem; // r7
+    void* pNodeItemLast; // r8
 }
 
-int xlListMoveItemToHead(tXL_LIST *pList, void *pItem)
-{
-	void *pNode;
-	void *pNodeLast;
+// Erased
+static s32 xlListMoveItemToHead(struct tXL_LIST* pList, void* pItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // void* pItem; // r1+0x4
+
+    // Local variables
+    void* pNode; // r5
+    void* pNodeLast; // r6
 }
 
-int xlListNodeGetNext(tXL_LIST *pList, void *ppListNode)
-{
-	// References: gListList (0x800F3FA0)
+// Erased
+static s32 xlListNodeGetNext(struct tXL_LIST* pList, void* ppListNode) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // void* ppListNode; // r1+0x4
+
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListNodeGetHead(tXL_LIST *pList, void *ppListNode)
-{
-	// References: gListList (0x800F3FA0)
+// Erased
+static s32 xlListNodeGetHead(struct tXL_LIST* pList, void* ppListNode) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // void* ppListNode; // r1+0x4
+
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListEnumerate(tXL_LIST *pList, int (*pfCallback)(void */* unknown0 */))
-{
-	void *pNode;
+// Erased
+static s32 xlListEnumerate(struct tXL_LIST* pList, s32 (*pfCallback)(void*)) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x8
+    // s32 (* pfCallback)(void*); // r30
+
+    // Local variables
+    void* pNode; // r31
 }
 
-int xlListFindItemIndex(tXL_LIST *pList, int *piItem, void *pItem)
-{
-	int iItem;
-	void *pListNode;
+// Erased
+static s32 xlListFindItemIndex(struct tXL_LIST* pList, s32* piItem, void* pItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // s32* piItem; // r1+0x4
+    // void* pItem; // r1+0x8
+
+    // Local variables
+    s32 iItem; // r3
+    void* pListNode; // r6
 }
 
-int xlListFindItem(tXL_LIST *pList, int iItem, void *ppItem)
-{
-	int nItemCount;
-	void *pListNode;
+// Erased
+static s32 xlListFindItem(struct tXL_LIST* pList, s32 iItem, void* ppItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // s32 iItem; // r1+0x4
+    // void* ppItem; // r1+0x8
+
+    // Local variables
+    s32 nItemCount; // r3
+    void* pListNode; // r6
 }
 
-int xlListTestItem(tXL_LIST *pList, void *pItem)
-{
-	void *pListNode;
-	// References: gListList (0x800F3FA0)
+// Range: 0x800062B0 -> 0x8000633C
+s32 xlListTestItem(struct tXL_LIST* pList, void* pItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+    // void* pItem; // r1+0x4
+
+    // Local variables
+    void* pListNode; // r3
+
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListFreeItem(tXL_LIST *pList, void *ppItem)
-{
-	void *pNode;
-	void *pNodeNext;
+// Range: 0x8000633C -> 0x800063E8
+s32 xlListFreeItem(struct tXL_LIST* pList, void* ppItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r31
+    // void* ppItem; // r1+0xC
+
+    // Local variables
+    void* pNode; // r6
+    void* pNodeNext; // r1+0x10
 }
 
-int xlListMakeItem(tXL_LIST *pList, void *ppItem)
-{
-	int nSize;
-	void *pListNode;
-	void *pNode;
-	void *pNodeNext;
+// Range: 0x800063E8 -> 0x80006494
+s32 xlListMakeItem(struct tXL_LIST* pList, void* ppItem) {
+    // Parameters
+    // struct tXL_LIST* pList; // r30
+    // void* ppItem; // r31
+
+    // Local variables
+    s32 nSize; // r4
+    void* pListNode; // r1+0x10
+    void* pNode; // r4
+    void* pNodeNext; // r1+0x8
 }
 
-int xlListTest(tXL_LIST *pList)
-{
-	void *pNode;
-	// References: gListList (0x800F3FA0)
+// Erased
+static s32 xlListTest(struct tXL_LIST* pList) {
+    // Parameters
+    // struct tXL_LIST* pList; // r1+0x0
+
+    // Local variables
+    void* pNode; // r4
+
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListFree(tXL_LIST **ppList)
-{
-	// References: gListList (0x800F3FA0)
+// Range: 0x80006494 -> 0x80006550
+s32 xlListFree(struct tXL_LIST** ppList) {
+    // Parameters
+    // struct tXL_LIST** ppList; // r29
+
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListMake(tXL_LIST **ppList, int nItemSize)
-{
-	// References: gListList (0x800F3FA0)
+// Range: 0x80006550 -> 0x80006648
+s32 xlListMake(struct tXL_LIST** ppList, s32 nItemSize) {
+    // Parameters
+    // struct tXL_LIST** ppList; // r31
+    // s32 nItemSize; // r29
+
+    // References
+    // -> static struct tXL_LIST gListList;
 }
 
-int xlListWipe(tXL_LIST *pList)
-{
-	void *pNode;
-	void *pNodeNext;
-}
+// Erased
+static s32 xlListWipe(struct tXL_LIST* pList) {
+    // Parameters
+    // struct tXL_LIST* pList; // r30
 
+    // Local variables
+    void* pNode; // r1+0xC
+    void* pNodeNext; // r31
+}
