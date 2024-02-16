@@ -1,0 +1,72 @@
+glabel sramEvent
+/* 088B98 8008E138 7C0802A6 */  mflr    r0
+/* 088B9C 8008E13C 2C040003 */  cmpwi   r4, 3
+/* 088BA0 8008E140 90010004 */  stw     r0, 4(r1)
+/* 088BA4 8008E144 9421FFE0 */  stwu    r1, -0x20(r1)
+/* 088BA8 8008E148 93E1001C */  stw     r31, 0x1c(r1)
+/* 088BAC 8008E14C 3BE50000 */  addi    r31, r5, 0
+/* 088BB0 8008E150 93C10018 */  stw     r30, 0x18(r1)
+/* 088BB4 8008E154 3BC30000 */  addi    r30, r3, 0
+/* 088BB8 8008E158 418200C4 */  beq     lbl_8008E21C
+/* 088BBC 8008E15C 40800018 */  bge     lbl_8008E174
+/* 088BC0 8008E160 2C040002 */  cmpwi   r4, 2
+/* 088BC4 8008E164 40800028 */  bge     lbl_8008E18C
+/* 088BC8 8008E168 2C040000 */  cmpwi   r4, 0
+/* 088BCC 8008E16C 408000B0 */  bge     lbl_8008E21C
+/* 088BD0 8008E170 480000A4 */  b       lbl_8008E214
+lbl_8008E174:
+/* 088BD4 8008E174 2C041003 */  cmpwi   r4, 0x1003
+/* 088BD8 8008E178 418200A4 */  beq     lbl_8008E21C
+/* 088BDC 8008E17C 40800098 */  bge     lbl_8008E214
+/* 088BE0 8008E180 2C041002 */  cmpwi   r4, 0x1002
+/* 088BE4 8008E184 40800010 */  bge     lbl_8008E194
+/* 088BE8 8008E188 4800008C */  b       lbl_8008E214
+lbl_8008E18C:
+/* 088BEC 8008E18C 93FE0000 */  stw     r31, 0(r30)
+/* 088BF0 8008E190 4800008C */  b       lbl_8008E21C
+lbl_8008E194:
+/* 088BF4 8008E194 807E0000 */  lwz     r3, 0(r30)
+/* 088BF8 8008E198 3CA08009 */  lis     r5, sramPut8@ha
+/* 088BFC 8008E19C 3CC08009 */  lis     r6, sramPut16@ha
+/* 088C00 8008E1A0 3CE08009 */  lis     r7, sramPut32@ha
+/* 088C04 8008E1A4 80630024 */  lwz     r3, 0x24(r3)
+/* 088C08 8008E1A8 3C808009 */  lis     r4, sramPut64@ha
+/* 088C0C 8008E1AC 3904E2F8 */  addi    r8, r4, sramPut64@l
+/* 088C10 8008E1B0 38A5E388 */  addi    r5, r5, sramPut8@l
+/* 088C14 8008E1B4 38C6E358 */  addi    r6, r6, sramPut16@l
+/* 088C18 8008E1B8 38E7E328 */  addi    r7, r7, sramPut32@l
+/* 088C1C 8008E1BC 389F0000 */  addi    r4, r31, 0
+/* 088C20 8008E1C0 4BFA6E79 */  bl      cpuSetDevicePut
+/* 088C24 8008E1C4 2C030000 */  cmpwi   r3, 0
+/* 088C28 8008E1C8 4082000C */  bne     lbl_8008E1D4
+/* 088C2C 8008E1CC 38600000 */  li      r3, 0
+/* 088C30 8008E1D0 48000050 */  b       lbl_8008E220
+lbl_8008E1D4:
+/* 088C34 8008E1D4 807E0000 */  lwz     r3, 0(r30)
+/* 088C38 8008E1D8 3CA08009 */  lis     r5, sramGet8@ha
+/* 088C3C 8008E1DC 3CC08009 */  lis     r6, sramGet16@ha
+/* 088C40 8008E1E0 3CE08009 */  lis     r7, sramGet32@ha
+/* 088C44 8008E1E4 80630024 */  lwz     r3, 0x24(r3)
+/* 088C48 8008E1E8 3C808009 */  lis     r4, sramGet64@ha
+/* 088C4C 8008E1EC 3904E238 */  addi    r8, r4, sramGet64@l
+/* 088C50 8008E1F0 38A5E2C8 */  addi    r5, r5, sramGet8@l
+/* 088C54 8008E1F4 38C6E298 */  addi    r6, r6, sramGet16@l
+/* 088C58 8008E1F8 38E7E268 */  addi    r7, r7, sramGet32@l
+/* 088C5C 8008E1FC 389F0000 */  addi    r4, r31, 0
+/* 088C60 8008E200 4BFA6E51 */  bl      cpuSetDeviceGet
+/* 088C64 8008E204 2C030000 */  cmpwi   r3, 0
+/* 088C68 8008E208 40820014 */  bne     lbl_8008E21C
+/* 088C6C 8008E20C 38600000 */  li      r3, 0
+/* 088C70 8008E210 48000010 */  b       lbl_8008E220
+lbl_8008E214:
+/* 088C74 8008E214 38600000 */  li      r3, 0
+/* 088C78 8008E218 48000008 */  b       lbl_8008E220
+lbl_8008E21C:
+/* 088C7C 8008E21C 38600001 */  li      r3, 1
+lbl_8008E220:
+/* 088C80 8008E220 80010024 */  lwz     r0, 0x24(r1)
+/* 088C84 8008E224 83E1001C */  lwz     r31, 0x1c(r1)
+/* 088C88 8008E228 83C10018 */  lwz     r30, 0x18(r1)
+/* 088C8C 8008E22C 7C0803A6 */  mtlr    r0
+/* 088C90 8008E230 38210020 */  addi    r1, r1, 0x20
+/* 088C94 8008E234 4E800020 */  blr     
