@@ -26,9 +26,6 @@ COMPARE_TO := $(BUILD_DIR)/$(TARGET)_S.elf
 # Object files in link order
 include obj_files.mk
 
-GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(C_FILES)
-GLOBAL_ASM_O_FILES = $(addprefix $(BUILD_DIR)/,$(GLOBAL_ASM_C_FILES:.c=.o))
-
 #-------------------------------------------------------------------------------
 # Tools
 #-------------------------------------------------------------------------------
@@ -112,15 +109,11 @@ $(ELF): $(O_FILES) $(LDSCRIPT)
 	$(LD) $(LDFLAGS) -o $@ -lcf $(LDSCRIPT) $(O_FILES)
 	$(OBJCOPY) $(ELF) $(COMPARE_TO) -S
 
-$(GLOBAL_ASM_O_FILES) : BUILD_C := $(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)"
-
-BUILD_C ?= $(CC) $(CFLAGS) -c -o
-
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
-	$(BUILD_C) $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
