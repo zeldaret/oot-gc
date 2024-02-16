@@ -47,7 +47,7 @@ groupToFiles = {
         "_frameGCNcc",
         "_buildtev",
     ],
-    "SDK": [
+    "Dolphin": [
         "PPCArch",
         "OS",
         "OSAlarm",
