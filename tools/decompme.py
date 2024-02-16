@@ -17,11 +17,9 @@ import urllib.parse
 import urllib.request
 
 COMPILER_NAME = "mwcc_233_159"
-COMPILER_FLAGS = (
-    "-Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -nodefaults -msgstyle gcc"
-)
+COMPILER_FLAGS = "-Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -nodefaults -msgstyle gcc"
 INCLUDE_PATTERN = re.compile(r'^#include\s*[<"](.+?)[>"]$')
-GUARD_PATTERN = re.compile(r'^#ifndef\s+(.*)$')
+GUARD_PATTERN = re.compile(r"^#ifndef\s+(.*)$")
 INCLUDE_DIR = Path("include")
 
 defines = set()

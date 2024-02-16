@@ -97,9 +97,7 @@ def main(objdump_args: list[str]):
     else:
         line_numbers = read_line_numbers(object_file, 0)
 
-    p = subprocess.Popen(
-        [OBJDUMP_EXECUTABLE] + objdump_args, stdout=subprocess.PIPE, encoding="utf-8"
-    )
+    p = subprocess.Popen([OBJDUMP_EXECUTABLE] + objdump_args, stdout=subprocess.PIPE, encoding="utf-8")
     assert p.stdout is not None
 
     next_entry = 0

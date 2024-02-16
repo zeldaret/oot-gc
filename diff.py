@@ -63,9 +63,7 @@ if __name__ == "__main__":
     except ModuleNotFoundError:
         argcomplete = None
 
-    parser = argparse.ArgumentParser(
-        description="Diff MIPS, PPC, AArch64, ARM32, SH2, SH4, or m68k assembly."
-    )
+    parser = argparse.ArgumentParser(description="Diff MIPS, PPC, AArch64, ARM32, SH2, SH4, or m68k assembly.")
 
     start_argument = parser.add_argument(
         "start",
@@ -74,9 +72,7 @@ if __name__ == "__main__":
 
     if argcomplete:
 
-        def complete_symbol(
-            prefix: str, parsed_args: argparse.Namespace, **kwargs: object
-        ) -> List[str]:
+        def complete_symbol(prefix: str, parsed_args: argparse.Namespace, **kwargs: object) -> List[str]:
             if not prefix or prefix.startswith("-"):
                 # skip reading the map file, which would
                 # result in a lot of useless completions
@@ -516,25 +512,17 @@ def create_project_settings(settings: Dict[str, Any]) -> ProjectSettings:
         baseimg=settings.get("baseimg"),
         myimg=settings.get("myimg"),
         mapfile=settings.get("mapfile"),
-        build_command=settings.get(
-            "make_command", ["make", *settings.get("makeflags", [])]
-        ),
+        build_command=settings.get("make_command", ["make", *settings.get("makeflags", [])]),
         source_directories=settings.get("source_directories"),
-        source_extensions=settings.get(
-            "source_extensions", [".c", ".h", ".cpp", ".hpp", ".s"]
-        ),
+        source_extensions=settings.get("source_extensions", [".c", ".h", ".cpp", ".hpp", ".s"]),
         objdump_executable=get_objdump_executable(settings.get("objdump_executable")),
         objdump_flags=settings.get("objdump_flags", []),
         expected_dir=settings.get("expected_dir", "expected/"),
         map_format=settings.get("map_format", "gnu"),
-        map_address_offset=settings.get(
-            "map_address_offset", settings.get("ms_map_address_offset", 0)
-        ),
+        map_address_offset=settings.get("map_address_offset", settings.get("ms_map_address_offset", 0)),
         build_dir=settings.get("build_dir", settings.get("mw_build_dir", "build/")),
         show_line_numbers_default=settings.get("show_line_numbers_default", True),
-        show_target_line_numbers_default=settings.get(
-            "show_target_line_numbers_default", False
-        ),
+        show_target_line_numbers_default=settings.get("show_target_line_numbers_default", False),
         disassemble_all=settings.get("disassemble_all", False),
         reg_categories=settings.get("reg_categories", {}),
     )
@@ -560,9 +548,7 @@ def create_config(args: argparse.Namespace, project: ProjectSettings) -> Config:
         compress = Compress(args.compress_matching, False)
     if args.compress_sameinstr is not None:
         if compress is not None:
-            raise ValueError(
-                "Cannot pass both --compress-matching and --compress-sameinstr"
-            )
+            raise ValueError("Cannot pass both --compress-matching and --compress-sameinstr")
         compress = Compress(args.compress_sameinstr, True)
 
     show_line_numbers = args.show_line_numbers
@@ -587,9 +573,7 @@ def create_config(args: argparse.Namespace, project: ProjectSettings) -> Config:
         # Display options
         formatter=formatter,
         diff_mode=args.diff_mode or DiffMode.NORMAL,
-        base_shift=eval_int(
-            args.base_shift, "Failed to parse --base-shift (-S) argument as an integer."
-        ),
+        base_shift=eval_int(args.base_shift, "Failed to parse --base-shift (-S) argument as an integer."),
         skip_lines=args.skip_lines,
         compress=compress,
         show_rodata_refs=args.show_rodata_refs,
@@ -714,11 +698,7 @@ class Text:
             other = Text(other)
         result = Text()
         # If two adjacent segments have the same format, merge their lines
-        if (
-            self.segments
-            and other.segments
-            and self.segments[-1][1] == other.segments[0][1]
-        ):
+        if self.segments and other.segments and self.segments[-1][1] == other.segments[0][1]:
             result.segments = (
                 self.segments[:-1]
                 + [(self.segments[-1][0] + other.segments[0][0], self.segments[-1][1])]
@@ -805,9 +785,7 @@ class PlainFormatter(Formatter):
 
     def table(self, data: TableData) -> str:
         rows = [data.headers] + [self.outputline_texts(line) for line in data.lines]
-        return "\n".join(
-            "".join(self.apply(x.ljust(self.column_width)) for x in row) for row in rows
-        )
+        return "\n".join("".join(self.apply(x.ljust(self.column_width)) for x in row) for row in rows)
 
 
 @dataclass
@@ -863,9 +841,7 @@ class AnsiFormatter(Formatter):
             ansi_code = self.BASIC_ANSI_CODES[f]
             undo_ansi_code = self.BASIC_ANSI_CODES_UNDO.get(f, undo_ansi_code)
         elif isinstance(f, RotationFormat):
-            ansi_code = self.ROTATION_ANSI_COLORS[
-                f.index % len(self.ROTATION_ANSI_COLORS)
-            ]
+            ansi_code = self.ROTATION_ANSI_COLORS[f.index % len(self.ROTATION_ANSI_COLORS)]
         else:
             static_assert_unreachable(f)
         return f"{ansi_code}{chunk}{undo_ansi_code}"
@@ -923,10 +899,7 @@ class HtmlFormatter(Formatter):
         output += table_row(data.headers, False, "th")
         output += "  </thead>\n"
         output += "  <tbody>\n"
-        output += "".join(
-            table_row(self.outputline_texts(line), line.is_data_ref, "td")
-            for line in data.lines
-        )
+        output += "".join(table_row(self.outputline_texts(line), line.is_data_ref, "td") for line in data.lines)
         output += "  </tbody>\n"
         output += "</table>\n"
         return output
@@ -960,10 +933,7 @@ class JsonFormatter(Formatter):
 
         output: Dict[str, Any] = {}
         output["arch_str"] = self.arch_str
-        output["header"] = {
-            name: serialize(h)
-            for h, name in zip(data.headers, ("base", "current", "previous"))
-        }
+        output["header"] = {name: serialize(h) for h, name in zip(data.headers, ("base", "current", "previous"))}
         output["current_score"] = data.current_score
         output["max_score"] = data.max_score
         if data.previous_score is not None:
@@ -974,8 +944,7 @@ class JsonFormatter(Formatter):
             output_row["key"] = row.key
             output_row["is_data_ref"] = row.is_data_ref
             iters: List[Tuple[str, Text, Optional[Line]]] = [
-                (label, *cell)
-                for label, cell in zip(("base", "current", "previous"), row.cells)
+                (label, *cell) for label, cell in zip(("base", "current", "previous"), row.cells)
             ]
             if all(line is None for _, _, line in iters):
                 # Skip rows that were only for displaying source code
@@ -1008,10 +977,7 @@ def format_fields(
     color1: FormatFunction,
     color2: Optional[FormatFunction] = None,
 ) -> Tuple[Text, Text]:
-    diffs = [
-        of.group() != nf.group()
-        for (of, nf) in zip(out1.finditer(pat), out2.finditer(pat))
-    ]
+    diffs = [of.group() != nf.group() for (of, nf) in zip(out1.finditer(pat), out2.finditer(pat))]
 
     it = iter(diffs)
 
@@ -1069,11 +1035,7 @@ def eval_expr(expr: str) -> Any:
 
 
 def eval_(node: ast.AST) -> Any:
-    if (
-        hasattr(ast, "Constant")
-        and isinstance(node, ast.Constant)
-        and isinstance(node.value, int)
-    ):  # Python 3.8+
+    if hasattr(ast, "Constant") and isinstance(node, ast.Constant) and isinstance(node.value, int):  # Python 3.8+
         return node.value
     elif isinstance(node, ast.BinOp):
         return operators[type(node.op)](eval_(node.left), eval_(node.right))
@@ -1113,9 +1075,7 @@ def run_make(target: str, project: ProjectSettings) -> None:
     subprocess.check_call(project.build_command + [target])
 
 
-def run_make_capture_output(
-    target: str, project: ProjectSettings
-) -> "subprocess.CompletedProcess[bytes]":
+def run_make_capture_output(target: str, project: ProjectSettings) -> "subprocess.CompletedProcess[bytes]":
     return subprocess.run(
         project.build_command + [target],
         stderr=subprocess.PIPE,
@@ -1169,11 +1129,7 @@ def run_objdump(cmd: ObjdumpCommand, config: Config, project: ProjectSettings) -
     flags, target, restrict = cmd
     try:
         out = subprocess.run(
-            [project.objdump_executable]
-            + config.arch.arch_flags
-            + project.objdump_flags
-            + flags
-            + [target],
+            [project.objdump_executable] + config.arch.arch_flags + project.objdump_flags + flags + [target],
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -1194,9 +1150,7 @@ def run_objdump(cmd: ObjdumpCommand, config: Config, project: ProjectSettings) -
     return preprocess_objdump_out(restrict, obj_data, out, config)
 
 
-def preprocess_objdump_out(
-    restrict: Optional[str], obj_data: Optional[bytes], objdump_out: str, config: Config
-) -> str:
+def preprocess_objdump_out(restrict: Optional[str], obj_data: Optional[bytes], objdump_out: str, config: Config) -> str:
     """
     Preprocess the output of objdump into a format that `process()` expects.
     This format is suitable for saving to disk with `--write-asm`.
@@ -1215,10 +1169,7 @@ def preprocess_objdump_out(
         out = out.rstrip("\n")
 
     if obj_data and config.show_rodata_refs:
-        out = (
-            serialize_rodata_references(parse_elf_rodata_references(obj_data, config))
-            + out
-        )
+        out = serialize_rodata_references(parse_elf_rodata_references(obj_data, config)) + out
 
     return out
 
@@ -1282,9 +1233,7 @@ def search_map_file(
                     ram_to_rom = rom - ram
                 if line.endswith(" " + fn_name) or f" {fn_name} = 0x" in line:
                     ram = int(line.split()[0], 0)
-                    if (for_binary and ram_to_rom is not None) or (
-                        not for_binary and cur_objfile is not None
-                    ):
+                    if (for_binary and ram_to_rom is not None) or (not for_binary and cur_objfile is not None):
                         cands.append((cur_objfile, ram + (ram_to_rom or 0)))
                 last_line = line
         except Exception as e:
@@ -1338,11 +1287,7 @@ def search_map_file(
         diff_segment = diff_segment_find.group(1)
 
         find = re.findall(
-            r" (?:"
-            + re.escape(diff_segment)
-            + r")\S+\s+(?:"
-            + re.escape(fn_name)
-            + r")\s+\S+ ... \S+",
+            r" (?:" + re.escape(diff_segment) + r")\S+\s+(?:" + re.escape(fn_name) + r")\s+\S+ ... \S+",
             contents,
         )
         if len(find) > 1:
@@ -1363,9 +1308,7 @@ def search_map_file(
     return None, None
 
 
-def parse_elf_rodata_references(
-    data: bytes, config: Config
-) -> List[Tuple[int, int, str]]:
+def parse_elf_rodata_references(data: bytes, config: Config) -> List[Tuple[int, int, str]]:
     e_ident = data[:16]
     if e_ident[:4] != b"\x7FELF":
         return []
@@ -1420,9 +1363,7 @@ def parse_elf_rodata_references(
         sh_addralign: int
         sh_entsize: int
 
-    sections = [
-        Section(*read("IIPPPPIIPP", e_shoff + i * e_shentsize)) for i in range(e_shnum)
-    ]
+    sections = [Section(*read("IIPPPPIIPP", e_shoff + i * e_shentsize)) for i in range(e_shnum)]
     shstr = sections[e_shstrndx]
     sec_name_offs = [shstr.sh_offset + s.sh_name for s in sections]
     sec_names = [data[offset : data.index(b"\0", offset)] for offset in sec_name_offs]
@@ -1432,11 +1373,7 @@ def parse_elf_rodata_references(
     symtab = sections[symtab_sections[0]]
 
     section_name = config.diff_section.encode("utf-8")
-    text_sections = [
-        i
-        for i in range(e_shnum)
-        if sec_names[i] == section_name and sections[i].sh_size != 0
-    ]
+    text_sections = [i for i in range(e_shnum) if sec_names[i] == section_name and sections[i].sh_size != 0]
     if len(text_sections) != 1:
         return []
     text_section = text_sections[0]
@@ -1461,16 +1398,12 @@ def parse_elf_rodata_references(
                     r_sym = r_info >> 8
                     r_type = r_info & 0xFF
                     sym_offset = symtab.sh_offset + symtab.sh_entsize * r_sym
-                    st_name, st_value, st_size, st_info, st_other, st_shndx = read(
-                        "IIIBBH", sym_offset
-                    )
+                    st_name, st_value, st_size, st_info, st_other, st_shndx = read("IIIBBH", sym_offset)
                 else:
                     r_sym = r_info >> 32
                     r_type = r_info & 0xFFFFFFFF
                     sym_offset = symtab.sh_offset + symtab.sh_entsize * r_sym
-                    st_name, st_info, st_other, st_shndx, st_value, st_size = read(
-                        "IBBHQQ", sym_offset
-                    )
+                    st_name, st_info, st_other, st_shndx, st_value, st_size = read("IBBHQQ", sym_offset)
                 if st_shndx == text_section:
                     if s.sh_type == SHT_REL:
                         if e_machine == 8 and r_type in (R_MIPS_32, R_MIPS_GPREL32):
@@ -1615,9 +1548,7 @@ class AsmProcessor:
     def __init__(self, config: Config) -> None:
         self.config = config
 
-    def pre_process(
-        self, mnemonic: str, args: str, next_row: Optional[str]
-    ) -> Tuple[str, str]:
+    def pre_process(self, mnemonic: str, args: str, next_row: Optional[str]) -> Tuple[str, str]:
         return mnemonic, args
 
     def process_reloc(self, row: str, prev: str) -> Tuple[str, Optional[str]]:
@@ -1691,9 +1622,7 @@ class AsmProcessorMIPS(AsmProcessor):
 
 
 class AsmProcessorPPC(AsmProcessor):
-    def pre_process(
-        self, mnemonic: str, args: str, next_row: Optional[str]
-    ) -> Tuple[str, str]:
+    def pre_process(self, mnemonic: str, args: str, next_row: Optional[str]) -> Tuple[str, str]:
         if next_row and "R_PPC_EMB_SDA21" in next_row:
             # With sda21 relocs, the linker transforms `r0` into `r2`/`r13`, and
             # we may encounter this in either pre-transformed or post-transformed
@@ -1737,8 +1666,7 @@ class AsmProcessorPPC(AsmProcessor):
 
         arch = self.config.arch
         assert any(
-            r in row
-            for r in ["R_PPC_REL24", "R_PPC_ADDR16", "R_PPC_EMB_SDA21", "R_PPC_REL14"]
+            r in row for r in ["R_PPC_REL24", "R_PPC_ADDR16", "R_PPC_EMB_SDA21", "R_PPC_REL14"]
         ), f"unknown relocation type '{row}' for line '{prev}'"
         before, imm, after = parse_relocated_line(prev)
         repl = row.split()[-1]
@@ -1978,9 +1906,7 @@ class AsmProcessorSH2(AsmProcessor):
 
 
 class AsmProcessorM68k(AsmProcessor):
-    def pre_process(
-        self, mnemonic: str, args: str, next_row: Optional[str]
-    ) -> Tuple[str, str]:
+    def pre_process(self, mnemonic: str, args: str, next_row: Optional[str]) -> Tuple[str, str]:
         # replace objdump's syntax of pointer accesses with the equivilant in AT&T syntax for readability
         return mnemonic, re.sub(
             r"%(sp|a[0-7]|fp|pc)@(?:(?:\((-?(?:0x[0-9a-f]+|[0-9]+)) *(,%d[0-7]:[wl])?\))|(\+)|(-))?",
@@ -2095,10 +2021,7 @@ ARM32_CONDS = {
 }
 ARM32_SUFFIXES = {"", ".n", ".w"}
 ARM32_BRANCH_INSTRUCTIONS = {
-    f"{prefix}{cond}{suffix}"
-    for prefix in ARM32_PREFIXES
-    for cond in ARM32_CONDS
-    for suffix in ARM32_SUFFIXES
+    f"{prefix}{cond}{suffix}" for prefix in ARM32_PREFIXES for cond in ARM32_CONDS for suffix in ARM32_SUFFIXES
 }
 
 AARCH64_BRANCH_INSTRUCTIONS = {
@@ -2254,10 +2177,7 @@ M68K_CONDS = {
 }
 
 M68K_BRANCH_INSTRUCTIONS = {
-    f"{prefix}{cond}{suffix}"
-    for prefix in {"b", "db"}
-    for cond in M68K_CONDS
-    for suffix in {"s", "w"}
+    f"{prefix}{cond}{suffix}" for prefix in {"b", "db"} for cond in M68K_CONDS for suffix in {"s", "w"}
 }.union(
     {
         "dbt",
@@ -2280,9 +2200,7 @@ MIPS_SETTINGS = ArchSettings(
     re_reg=re.compile(r"\$?\b([astv][0-9]|at|f[astv]?[0-9]+f?|kt?[01]|fp|ra|zero)\b"),
     re_sprel=re.compile(r"(?<=,)([0-9]+|0x[0-9a-f]+)\(sp\)"),
     re_large_imm=re.compile(r"-?[1-9][0-9]{2,}|-?0x[0-9a-f]{3,}"),
-    re_imm=re.compile(
-        r"(\b|-)([0-9]+|0x[0-9a-fA-F]+)\b(?!\(sp)|%(lo|hi|got|gp_rel|call16)\([^)]*\)"
-    ),
+    re_imm=re.compile(r"(\b|-)([0-9]+|0x[0-9a-fA-F]+)\b(?!\(sp)|%(lo|hi|got|gp_rel|call16)\([^)]*\)"),
     re_reloc=re.compile(r"R_MIPS_"),
     arch_flags=["-m", "mips:4300"],
     branch_likely_instructions=MIPS_BRANCH_LIKELY_INSTRUCTIONS,
@@ -2292,13 +2210,9 @@ MIPS_SETTINGS = ArchSettings(
     proc=AsmProcessorMIPS,
 )
 
-MIPSEL_SETTINGS = replace(
-    MIPS_SETTINGS, name="mipsel", big_endian=False, arch_flags=["-m", "mips:3000"]
-)
+MIPSEL_SETTINGS = replace(MIPS_SETTINGS, name="mipsel", big_endian=False, arch_flags=["-m", "mips:3000"])
 
-MIPSEE_SETTINGS = replace(
-    MIPSEL_SETTINGS, name="mipsee", arch_flags=["-m", "mips:5900"]
-)
+MIPSEE_SETTINGS = replace(MIPSEL_SETTINGS, name="mipsee", arch_flags=["-m", "mips:5900"])
 
 MIPS_ARCH_NAMES = {"mips", "mipsel", "mipsee"}
 
@@ -2311,9 +2225,7 @@ ARM32_SETTINGS = ArchSettings(
     #   - Frame pointer registers: lr (r14), pc (r15)
     #   - VFP/NEON registers: s0..31, d0..31, q0..15, fpscr, fpexc, fpsid
     # SP should not be in this list.
-    re_reg=re.compile(
-        r"\$?\b([rq][0-9]|[rq]1[0-5]|pc|lr|[ds][12]?[0-9]|[ds]3[01]|fp(scr|exc|sid))\b"
-    ),
+    re_reg=re.compile(r"\$?\b([rq][0-9]|[rq]1[0-5]|pc|lr|[ds][12]?[0-9]|[ds]3[01]|fp(scr|exc|sid))\b"),
     re_sprel=re.compile(r"sp, #-?(0x[0-9a-fA-F]+|[0-9]+)\b"),
     re_large_imm=re.compile(r"-?[1-9][0-9]{2,}|-?0x[0-9a-f]{3,}"),
     re_imm=re.compile(r"(?<!sp, )#-?(0x[0-9a-fA-F]+|[0-9]+)\b"),
@@ -2332,17 +2244,13 @@ AARCH64_SETTINGS = ArchSettings(
     # GPRs and FP registers: X0-X30, W0-W30, [BHSDVQ]0..31
     # (FP registers may be followed by data width and number of elements, e.g. V0.4S)
     # The zero registers and SP should not be in this list.
-    re_reg=re.compile(
-        r"\$?\b([bhsdvq]([12]?[0-9]|3[01])(\.\d\d?[bhsdvq])?|[xw][12]?[0-9]|[xw]30)\b"
-    ),
+    re_reg=re.compile(r"\$?\b([bhsdvq]([12]?[0-9]|3[01])(\.\d\d?[bhsdvq])?|[xw][12]?[0-9]|[xw]30)\b"),
     re_sprel=re.compile(r"sp, #-?(0x[0-9a-fA-F]+|[0-9]+)\b"),
     re_large_imm=re.compile(r"-?[1-9][0-9]{2,}|-?0x[0-9a-f]{3,}"),
     re_imm=re.compile(r"(?<!sp, )#-?(0x[0-9a-fA-F]+|[0-9]+)\b"),
     re_reloc=re.compile(r"R_AARCH64_"),
     branch_instructions=AARCH64_BRANCH_INSTRUCTIONS,
-    instructions_with_address_immediates=AARCH64_BRANCH_INSTRUCTIONS.union(
-        {"bl", "adrp"}
-    ),
+    instructions_with_address_immediates=AARCH64_BRANCH_INSTRUCTIONS.union({"bl", "adrp"}),
     proc=AsmProcessorAArch64,
 )
 
@@ -2354,9 +2262,7 @@ PPC_SETTINGS = ArchSettings(
     re_reg=re.compile(r"\$?\b([rf](?:[02-9]|[1-9][0-9]+)|f1)\b"),
     re_sprel=re.compile(r"(?<=,)(-?[0-9]+|-?0x[0-9a-f]+)\(r1\)"),
     re_large_imm=re.compile(r"-?[1-9][0-9]{2,}|-?0x[0-9a-f]{3,}"),
-    re_imm=re.compile(
-        r"(\b|-)([0-9]+|0x[0-9a-fA-F]+)\b(?!\(r1\))|[^ \t,]+@(l|ha|h|sda21)"
-    ),
+    re_imm=re.compile(r"(\b|-)([0-9]+|0x[0-9a-fA-F]+)\b(?!\(r1\))|[^ \t,]+@(l|ha|h|sda21)"),
     re_reloc=re.compile(r"R_PPC_"),
     arch_flags=["-m", "powerpc", "-M", "broadway"],
     branch_instructions=PPC_BRANCH_INSTRUCTIONS,
@@ -2375,9 +2281,7 @@ I686_SETTINGS = ArchSettings(
     #   - x87 st
     #   - MMX, SSE vector registers
     #   - cursed registers: eal ebl ebh edl edh...
-    re_reg=re.compile(
-        r"\%?\b(e?(([sd]i|[sb]p)l?|[abcd][xhl])|[cdesfg]s|cr[0-7]|x?mm[0-7]|st)\b"
-    ),
+    re_reg=re.compile(r"\%?\b(e?(([sd]i|[sb]p)l?|[abcd][xhl])|[cdesfg]s|cr[0-7]|x?mm[0-7]|st)\b"),
     re_large_imm=re.compile(r"-?[1-9][0-9]{2,}|-?0x[0-9a-f]{3,}"),
     re_sprel=re.compile(r"-?(0x[0-9a-f]+|[0-9]+)(?=\((%ebp|%esi)\))"),
     re_imm=re.compile(r"-?(0x[0-9a-f]+|[0-9]+)"),
@@ -2410,9 +2314,7 @@ SH2_SETTINGS = ArchSettings(
     re_reloc=re.compile(r"R_SH_"),
     arch_flags=["-m", "sh2"],
     branch_instructions=SH2_BRANCH_INSTRUCTIONS,
-    instructions_with_address_immediates=SH2_BRANCH_INSTRUCTIONS.union(
-        {"bf", "bf.s", "bt", "bt.s", "bra", "bsr"}
-    ),
+    instructions_with_address_immediates=SH2_BRANCH_INSTRUCTIONS.union({"bf", "bf.s", "bt", "bt.s", "bra", "bsr"}),
     delay_slot_instructions=SH2_BRANCH_INSTRUCTIONS.union(
         {"bf.s", "bt.s", "bra", "braf", "bsr", "bsrf", "jmp", "jsr", "rts"}
     ),
@@ -2424,9 +2326,7 @@ SH4_SETTINGS = replace(
     name="sh4",
     #   - fr0-fr15, dr0-dr14, xd0-xd14, fv0-fv12 FP registers
     #     dr/xd registers can only be even-numbered, and fv registers can only be a multiple of 4
-    re_reg=re.compile(
-        r"r1[0-5]|r[0-9]|fr1[0-5]|fr[0-9]|dr[02468]|dr1[024]|xd[02468]|xd1[024]|fv[048]|fv12"
-    ),
+    re_reg=re.compile(r"r1[0-5]|r[0-9]|fr1[0-5]|fr[0-9]|dr[02468]|dr1[024]|xd[02468]|xd1[024]|fv[048]|fv12"),
     arch_flags=["-m", "sh4"],
 )
 
@@ -2634,8 +2534,7 @@ def process(dump: str, config: Config) -> List[Line]:
         if line_num in data_refs:
             refs = data_refs[line_num]
             ref_str = "; ".join(
-                section_name + "+" + ",".join(hex(off) for off in offs)
-                for section_name, offs in refs.items()
+                section_name + "+" + ",".join(hex(off) for off in offs) for section_name, offs in refs.items()
             )
             output.append(
                 Line(
@@ -2687,12 +2586,7 @@ def process(dump: str, config: Config) -> List[Line]:
             i += 1
 
         is_text_relative_j = False
-        if (
-            arch.name in MIPS_ARCH_NAMES
-            and mnemonic == "j"
-            and symbol is not None
-            and symbol.startswith(".text")
-        ):
+        if arch.name in MIPS_ARCH_NAMES and mnemonic == "j" and symbol is not None and symbol.startswith(".text"):
             symbol = None
             original = row
             is_text_relative_j = True
@@ -2713,9 +2607,7 @@ def process(dump: str, config: Config) -> List[Line]:
             row = normalize_imms(row, arch)
 
         branch_target = None
-        if (
-            mnemonic in arch.branch_instructions or is_text_relative_j
-        ) and symbol is None:
+        if (mnemonic in arch.branch_instructions or is_text_relative_j) and symbol is None:
             # Here, we try to match a wide variety of addressing mode:
             # - Global deref with offset: *0x1234(%eax)
             # - Global deref: *0x1234
@@ -2775,9 +2667,7 @@ def normalize_stack(row: str, arch: ArchSettings) -> str:
     return re.sub(arch.re_sprel, "addr(sp)", row)
 
 
-def check_for_symbol_mismatch(
-    old_line: Line, new_line: Line, symbol_map: Dict[str, str]
-) -> bool:
+def check_for_symbol_mismatch(old_line: Line, new_line: Line, symbol_map: Dict[str, str]) -> bool:
     assert old_line.symbol is not None
     assert new_line.symbol is not None
 
@@ -2825,16 +2715,12 @@ def split_off_address(line: str) -> Tuple[str, str]:
     return line[:off], line[off:]
 
 
-def diff_sequences_difflib(
-    seq1: List[str], seq2: List[str]
-) -> List[Tuple[str, int, int, int, int]]:
+def diff_sequences_difflib(seq1: List[str], seq2: List[str]) -> List[Tuple[str, int, int, int, int]]:
     differ = difflib.SequenceMatcher(a=seq1, b=seq2, autojunk=False)
     return differ.get_opcodes()
 
 
-def diff_sequences(
-    seq1: List[str], seq2: List[str], algorithm: str
-) -> List[Tuple[str, int, int, int, int]]:
+def diff_sequences(seq1: List[str], seq2: List[str], algorithm: str) -> List[Tuple[str, int, int, int, int]]:
     if algorithm != "levenshtein":
         return diff_sequences_difflib(seq1, seq2)
 
@@ -2893,9 +2779,7 @@ def diff_lines(
     return ret
 
 
-def diff_sameline(
-    old_line: Line, new_line: Line, config: Config, symbol_map: Dict[str, str]
-) -> Tuple[int, int, bool]:
+def diff_sameline(old_line: Line, new_line: Line, config: Config, symbol_map: Dict[str, str]) -> Tuple[int, int, bool]:
     old = old_line.scorable_line
     new = new_line.scorable_line
     if old == new:
@@ -2929,22 +2813,14 @@ def diff_sameline(
         # we split that part out to make it a separate field
         # however, we don't split if it has a proceeding % macro, e.g. "%lo(.data)"
         re_paren = re.compile(r"(?<!%hi)(?<!%lo)(?<!%got)(?<!%call16)(?<!%gp_rel)\(")
-        oldfields = oldfields[:-1] + (
-            re_paren.split(oldfields[-1]) if len(oldfields) > 0 else []
-        )
-        newfields = newfields[:-1] + (
-            re_paren.split(newfields[-1]) if len(newfields) > 0 else []
-        )
+        oldfields = oldfields[:-1] + (re_paren.split(oldfields[-1]) if len(oldfields) > 0 else [])
+        newfields = newfields[:-1] + (re_paren.split(newfields[-1]) if len(newfields) > 0 else [])
 
     for nf, of in zip(newfields, oldfields):
         if nf != of:
             # If the new field is a match to any symbol case
             # and the old field had a relocation, then ignore this mismatch
-            if (
-                new_line.symbol
-                and old_line.symbol
-                and field_matches_any_symbol(nf, config.arch)
-            ):
+            if new_line.symbol and old_line.symbol and field_matches_any_symbol(nf, config.arch):
                 if check_for_symbol_mismatch(old_line, new_line, symbol_map):
                     has_symbol_mismatch = True
                 continue
@@ -3116,10 +2992,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
                     out1 = out1.reformat(sym_color)
                     out2 = out2.reformat(sym_color)
                 is_data_ref = True
-            elif (
-                line1.normalized_original == line2.normalized_original
-                and line2.branch_target is None
-            ):
+            elif line1.normalized_original == line2.normalized_original and line2.branch_target is None:
                 # Fast path: no coloring needed. We don't include branch instructions
                 # in this case because we need to check that their targets line up in
                 # the diff, and don't just happen to have the are the same address
@@ -3135,9 +3008,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
 
                 out1 = Text(branchless1)
                 out2 = Text(branchless2)
-                out1, out2 = format_fields(
-                    arch.re_imm, out1, out2, lambda _: BasicFormat.IMMEDIATE
-                )
+                out1, out2 = format_fields(arch.re_imm, out1, out2, lambda _: BasicFormat.IMMEDIATE)
 
                 if line2.branch_target is not None:
                     target = line2.branch_target
@@ -3163,20 +3034,14 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
                     # Do a naive comparison for non-branches (e.g. function calls).
                     same_target = address1 == address2
 
-                if normalize_imms(branchless1, arch) == normalize_imms(
-                    branchless2, arch
-                ):
+                if normalize_imms(branchless1, arch) == normalize_imms(branchless2, arch):
                     (
                         stack_penalties,
                         regalloc_penalties,
                         has_symbol_mismatch,
                     ) = diff_sameline(line1, line2, config, symbol_map)
 
-                    if (
-                        regalloc_penalties == 0
-                        and stack_penalties == 0
-                        and not has_symbol_mismatch
-                    ):
+                    if regalloc_penalties == 0 and stack_penalties == 0 and not has_symbol_mismatch:
                         # ignore differences due to %lo(.rodata + ...) vs symbol
                         out1 = out1.reformat(BasicFormat.NONE)
                         out2 = out2.reformat(BasicFormat.NONE)
@@ -3190,9 +3055,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
                         line_prefix = "i"
                 else:
                     out1, out2 = format_fields(arch.re_sprel, out1, out2, sc3, sc4)
-                    if normalize_stack(branchless1, arch) == normalize_stack(
-                        branchless2, arch
-                    ):
+                    if normalize_stack(branchless1, arch) == normalize_stack(branchless2, arch):
                         # only stack differences (luckily stack and imm
                         # differences can't be combined in MIPS, so we
                         # don't have to think about that case)
@@ -3204,9 +3067,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
                         cats = config.reg_categories
                         if cats and any(
                             cats.get(of.group()) != cats.get(nf.group())
-                            for (of, nf) in zip(
-                                out1.finditer(arch.re_reg), out2.finditer(arch.re_reg)
-                            )
+                            for (of, nf) in zip(out1.finditer(arch.re_reg), out2.finditer(arch.re_reg))
                         ):
                             sym_color = BasicFormat.REGISTER_CATEGORY
                             line_prefix = "R"
@@ -3273,9 +3134,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
                     elif source_line and source_line.endswith("():"):
                         line_format = BasicFormat.SOURCE_FUNCTION
                         try:
-                            source_line = cxxfilt.demangle(
-                                source_line[:-3], external_only=False
-                            )
+                            source_line = cxxfilt.demangle(source_line[:-3], external_only=False)
                         except:
                             pass
                 else:
@@ -3286,9 +3145,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
                         if source_line.endswith("():"):
                             line_format = BasicFormat.SOURCE_FUNCTION
                             try:
-                                source_line = cxxfilt.demangle(
-                                    source_line[:-3], external_only=False
-                                )
+                                source_line = cxxfilt.demangle(source_line[:-3], external_only=False)
                             except:
                                 pass
                 padding = " " * 7 if config.show_line_numbers else " " * 2
@@ -3322,11 +3179,7 @@ def do_diff(lines1: List[Line], lines2: List[Line], config: Config) -> Diff:
 
         if config.show_line_numbers:
             if line2 and line2.source_line_num is not None:
-                num_color = (
-                    BasicFormat.SOURCE_LINE_NUM
-                    if sym_color == BasicFormat.NONE
-                    else sym_color
-                )
+                num_color = BasicFormat.SOURCE_LINE_NUM if sym_color == BasicFormat.NONE else sym_color
                 num2 = Text(f"{line2.source_line_num:5}", num_color)
             else:
                 num2 = Text(" " * 5)
@@ -3373,9 +3226,7 @@ def chunk_diff_lines(
     return chunks
 
 
-def compress_matching(
-    li: List[Tuple[OutputLine, ...]], context: int
-) -> List[Tuple[OutputLine, ...]]:
+def compress_matching(li: List[Tuple[OutputLine, ...]], context: int) -> List[Tuple[OutputLine, ...]]:
     ret: List[Tuple[OutputLine, ...]] = []
     matching_streak: List[Tuple[OutputLine, ...]] = []
     context = max(context, 0)
@@ -3431,9 +3282,7 @@ def align_diffs(old_diff: Diff, new_diff: Diff, config: Config) -> TableData:
                     # Most of the time lines sync up without insertions/deletions,
                     # and there's no interdiffing to be done.
                     continue
-                differ = difflib.SequenceMatcher(
-                    a=old_chunk, b=new_chunk, autojunk=False
-                )
+                differ = difflib.SequenceMatcher(a=old_chunk, b=new_chunk, autojunk=False)
                 for tag, i1, i2, j1, j2 in differ.get_opcodes():
                     if tag in ["equal", "replace"]:
                         for i, j in zip(range(i1, i2), range(j1, j2)):
@@ -3450,9 +3299,7 @@ def align_diffs(old_diff: Diff, new_diff: Diff, config: Config) -> TableData:
                 # both diffs are based on the same target, but they might
                 # differ in color. Use the new version.
                 diff_lines.append((new_chunk, new_chunk, old_chunk))
-        diff_lines = [
-            (base, new, old if old != new else empty) for base, new, old in diff_lines
-        ]
+        diff_lines = [(base, new, old if old != new else empty) for base, new, old in diff_lines]
         headers = (
             Text(f"{padding1}TARGET"),
             Text(f"{padding2}CURRENT ({new_diff.score})"),
@@ -3513,9 +3360,7 @@ def debounced_fs_watch(
     import watchdog.observers
 
     class WatchEventHandler(watchdog.events.FileSystemEventHandler):
-        def __init__(
-            self, queue: "queue.Queue[float]", file_targets: List[str]
-        ) -> None:
+        def __init__(self, queue: "queue.Queue[float]", file_targets: List[str]) -> None:
             self.queue = queue
             self.file_targets = file_targets
 
@@ -3531,9 +3376,7 @@ def debounced_fs_watch(
             for target in self.file_targets:
                 if os.path.normpath(path) == target:
                     return True
-            if config.make and any(
-                path.endswith(suffix) for suffix in project.source_extensions
-            ):
+            if config.make and any(path.endswith(suffix) for suffix in project.source_extensions):
                 return True
             return False
 
@@ -3625,16 +3468,12 @@ class Display:
 
         return (output, refresh_key)
 
-    def run_less(
-        self, output: str
-    ) -> "Tuple[subprocess.Popen[bytes], subprocess.Popen[bytes]]":
+    def run_less(self, output: str) -> "Tuple[subprocess.Popen[bytes], subprocess.Popen[bytes]]":
         # Pipe the output through 'tail' and only then to less, to ensure the
         # write call doesn't block. ('tail' has to buffer all its input before
         # it starts writing.) This also means we don't have to deal with pipe
         # closure errors.
-        buffer_proc = subprocess.Popen(
-            BUFFER_CMD, stdin=subprocess.PIPE, stdout=subprocess.PIPE
-        )
+        buffer_proc = subprocess.Popen(BUFFER_CMD, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         less_proc = subprocess.Popen(LESS_CMD, stdin=buffer_proc.stdout)
         assert buffer_proc.stdin
         assert buffer_proc.stdout
@@ -3740,20 +3579,13 @@ def main() -> None:
         except ModuleNotFoundError as e:
             fail(MISSING_PREREQUISITES.format(e.name))
 
-    if (
-        config.diff_mode in (DiffMode.THREEWAY_BASE, DiffMode.THREEWAY_PREV)
-        and not args.watch
-    ):
+    if config.diff_mode in (DiffMode.THREEWAY_BASE, DiffMode.THREEWAY_PREV) and not args.watch:
         fail("Threeway diffing requires -w.")
 
     if args.diff_elf_symbol:
-        make_target, basecmd, mycmd = dump_elf(
-            args.start, args.end, args.diff_elf_symbol, config, project
-        )
+        make_target, basecmd, mycmd = dump_elf(args.start, args.end, args.diff_elf_symbol, config, project)
     elif config.diff_obj:
-        make_target, basecmd, mycmd = dump_objfile(
-            args.start, args.end, config, project
-        )
+        make_target, basecmd, mycmd = dump_objfile(args.start, args.end, config, project)
     else:
         make_target, basecmd, mycmd = dump_binary(args.start, args.end, config, project)
 
@@ -3794,9 +3626,7 @@ def main() -> None:
                 return
         if args.make:
             watch_sources = None
-            watch_sources_for_target_fn = getattr(
-                diff_settings, "watch_sources_for_target", None
-            )
+            watch_sources_for_target_fn = getattr(diff_settings, "watch_sources_for_target", None)
             if watch_sources_for_target_fn:
                 watch_sources = watch_sources_for_target_fn(make_target)
             watch_sources = watch_sources or project.source_directories
@@ -3821,8 +3651,7 @@ def main() -> None:
                     ret = run_make_capture_output(make_target, project)
                     if ret.returncode != 0:
                         display.update(
-                            ret.stderr.decode("utf-8-sig", "replace")
-                            or ret.stdout.decode("utf-8-sig", "replace"),
+                            ret.stderr.decode("utf-8-sig", "replace") or ret.stdout.decode("utf-8-sig", "replace"),
                             error=True,
                         )
                         continue
