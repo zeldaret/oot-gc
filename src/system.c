@@ -1,6 +1,7 @@
+#include "macros.h"
 #include "xlObject.h"
 #include "system.h"
-#include "macros.h"
+#include "rom.h"
 
 int systemEvent(System* pSystem, int nEvent, void* pArgument);
 
@@ -159,6 +160,11 @@ const f64 D_80135F98 = 4503599627370496.0;
 extern _XL_OBJECTTYPE gClassFlash;
 extern _XL_OBJECTTYPE gClassSram;
 
+//! TODO: import sdk headers
+extern int atoi(const char* str);
+
+s32 simulatorGetArgument(SystemArgumentType eType, char* pszArgument);
+
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
 
 s32 systemExceptionPending(System* pSystem, s32 nException) {
@@ -259,4 +265,93 @@ s32 systemSetMode(System* pSystem, s32 pMode) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameRAM.s")
+#else
+s32 systemSetupGameRAM(System* pSystem) {
+    char* szExtra;
+    int nSizeCacheROM;
+    int nSizeExtra;
+    int nSizeRAM;
+    unsigned int nCode;
+    unsigned int iCode;
+    unsigned int anCode[0x100];
+    int bExpansion;
+    Rom* pROM;
+
+    bExpansion = 0;
+    pROM = pSystem->apObject[SOT_ROM];
+
+    // array oob bug? 0x400 vs 0x100
+    if (!romCopy(pROM, anCode, 0x1000, 0x400, NULL)) {
+        return 0;
+    }
+
+    nCode = 0;
+    for (iCode = 0; iCode < ARRAY_COUNT(anCode); iCode++) {
+        nCode += anCode[iCode];
+    }
+
+    // Majora's Mask ("NZSJ", "NZSE")
+    if (romTestCode(pROM, D_80134EF8) || romTestCode(pROM, D_80134F00)) {
+        bExpansion = 1;
+    }
+
+    // Ocarina of Time or Majora's Mask ("CZLJ", "CZLE", "NZSJ", "NZSE")
+    if (romTestCode(pROM, D_80134ED0) || romTestCode(pROM, D_80134EC8) || romTestCode(pROM, D_80134EF8) || romTestCode(pROM, D_80134F00)) {
+        switch (nCode) {
+            case 0x5CAC1C8F: // OoT?
+                gnFlagZelda = 2;
+                break;
+            case 0x184CED80: // MM?
+                gnFlagZelda = 3;
+                break;
+            case 0x54A59B56: // OoT?
+            case 0x421EB8E9: // OoT?
+                gnFlagZelda = 4;
+                break;
+            case 0x7E8BEE60: // MM?
+                gnFlagZelda = 5;
+                break;
+        }
+
+        if (gnFlagZelda & 1) {
+            bExpansion = 1;
+        }
+    }
+
+    // Conker's Bad Fur Day ("NFUE")
+    if (romTestCode(pROM, D_80134F44)) {
+        bExpansion = 1;
+    }
+
+    if (bExpansion) {
+        nSizeRAM = 0x800000;
+        nSizeCacheROM = 0x400000;
+    } else {
+        nSizeRAM = 0x400000;
+        nSizeCacheROM = 0x800000;
+    }
+
+    if (simulatorGetArgument(SAT_XTRA, szExtra)) {
+        nSizeExtra = atoi(szExtra) << 0x14;
+
+        if (nSizeExtra > (s32)(nSizeRAM + 0xFFF00000)) {
+            nSizeExtra = nSizeRAM;
+        }
+
+        nSizeRAM += nSizeExtra;
+        nSizeCacheROM -= nSizeExtra;
+    }
+
+    if (!ramSetSize(pSystem->apObject[SOT_RAM], nSizeRAM)) {
+        return 0;
+    }
+
+    if (!romSetCacheSize(pSystem->apObject[SOT_ROM], nSizeCacheROM)) {
+        return 0;
+    }
+
+    return 1;
+}
+#endif

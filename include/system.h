@@ -47,6 +47,19 @@ typedef enum SystemObjectType {
     /* 16 */ SOT_COUNT
 } SystemObjectType;
 
+typedef enum SystemArgumentType {
+	/* -1 */ SAT_NONE = -1,
+	/*  0 */ SAT_NAME,
+	/*  1 */ SAT_PROGRESSIVE,
+	/*  2 */ SAT_VIBRATION,
+	/*  3 */ SAT_CONTROLLER,
+	/*  4 */ SAT_XTRA,
+	/*  5 */ SAT_MEMORYCARD,
+	/*  6 */ SAT_MOVIE,
+	/*  7 */ SAT_RESET,
+	/*  8 */ SAT_COUNT
+} SystemArgumentType;
+
 typedef struct RomCopy {
     /* 0x00 */ int nSize;
     /* 0x04 */ int nOffsetRAM;
