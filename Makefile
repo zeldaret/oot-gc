@@ -92,7 +92,7 @@ setup:
 	$(OBJCOPY) SIM.elf SIM_S.elf -S
 
 clean:
-	rm -f -d -r
+	rm -f -d -r build
 
 format:
 	clang-format -i include/*.h src/*.c
