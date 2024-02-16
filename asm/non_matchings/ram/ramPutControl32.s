@@ -1,0 +1,16 @@
+glabel ramPutControl32
+/* 067DC8 8006D368 548006BE */  clrlwi  r0, r4, 0x1a
+/* 067DCC 8006D36C 28000024 */  cmplwi  r0, 0x24
+/* 067DD0 8006D370 4181001C */  bgt     lbl_8006D38C
+/* 067DD4 8006D374 3C60800F */  lis     r3, jtbl_800ED854@ha
+/* 067DD8 8006D378 3863D854 */  addi    r3, r3, jtbl_800ED854@l
+/* 067DDC 8006D37C 5400103A */  slwi    r0, r0, 2
+/* 067DE0 8006D380 7C03002E */  lwzx    r0, r3, r0
+/* 067DE4 8006D384 7C0903A6 */  mtctr   r0
+/* 067DE8 8006D388 4E800420 */  bctr    
+glabel lbl_8006D38C
+/* 067DEC 8006D38C 38600000 */  li      r3, 0
+/* 067DF0 8006D390 4E800020 */  blr     
+glabel lbl_8006D394
+/* 067DF4 8006D394 38600001 */  li      r3, 1
+/* 067DF8 8006D398 4E800020 */  blr     
