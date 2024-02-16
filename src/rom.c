@@ -765,7 +765,96 @@ s32 romLoadFullOrPart(Rom* pROM) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romCopyUpdate.s")
+static int romCopyUpdate(Rom* pROM) {
+    RomBlock* pBlock;
+    s32 pad;
+    int iCache;
+    int nTickLast;
+    unsigned char* anData;
+    unsigned int iBlock;
+    unsigned int nSize;
+    unsigned int nOffsetBlock;
+    __anon_0x3EB4F* pCPU;
+
+    s32 var_r0;
+    s32 var_r5;
+
+    pCPU = ((UnknownDeviceStruct*)(pROM->pHost))->pDevice;
+
+    //! TODO: inline function?
+    var_r5 = 0;
+    if (pROM->load.nOffset0 == 0 && pROM->load.nOffset1 == 0) {
+        var_r5 = 1;
+    }
+    if (var_r5 != 0) {
+        var_r0 = 0;
+    } else {
+        var_r0 = 1;
+    }
+    if (var_r0 || pROM->copy.nSize == 0 || pROM->copy.bWait) {
+        return 1;
+    }
+
+    while (pROM->copy.nSize != 0) {
+        if (pROM->copy.pCallback != NULL && pCPU->unkB5C != pCPU->unkB60) {
+            return 1;
+        }
+
+        if (!simulatorTestReset(0, 0, 1, 0)) {
+            return 0;
+        }
+
+        iBlock = pROM->copy.nOffset / 0x2000;
+        pBlock = &pROM->aBlock[iBlock];
+        nTickLast = pBlock->nTickUsed;
+        pBlock->nTickUsed = ++pROM->nTick;
+
+        if (pBlock->nSize != 0) {
+            if (pBlock->iCache < 0 && !romSetBlockCache(pROM, iBlock, 0)) {
+                return 0;
+            }
+        } else {
+            if (!romMakeFreeCache(pROM, &iCache, 0)) {
+                return 0;
+            }
+
+            if (pROM->copy.pCallback == NULL) {
+                if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
+                    return 0;
+                }
+            } else {
+                pBlock->nTickUsed = nTickLast;
+                pROM->nTick--;
+                pROM->copy.bWait = 1;
+                if (!romLoadBlock(pROM, iBlock, iCache, &__romCopyUpdate_Complete)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        }
+
+        nOffsetBlock = pROM->copy.nOffset & 0x1FFF;
+        if ((nSize = pBlock->nSize - nOffsetBlock) > pROM->copy.nSize) {
+            nSize = pROM->copy.nSize;
+        }
+
+        anData = &pROM->pCacheRAM[pBlock->iCache * 0x2000];
+        if (!xlHeapCopy(pROM->copy.pTarget, anData + nOffsetBlock, nSize)) {
+            return 0;
+        }
+
+        pROM->copy.pTarget = (u8*)pROM->copy.pTarget + nSize;
+        pROM->copy.nSize -= nSize;
+        pROM->copy.nOffset += nSize;
+    }
+
+    if (pROM->copy.pCallback != NULL && !pROM->copy.pCallback()) {
+        return 0;
+    }
+
+    return 1;
+}
 
 s32 __romCopyUpdate_Complete(void) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
