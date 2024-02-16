@@ -77,9 +77,9 @@ static int gbProgress;
 static void* gpImageBack;
 static int iImage;
 
+//! TODO: remove this once ``romCacheGame_ZELDA`` is matched
 const f32 D_80135FD0 = 1.0;
-const f64 D_80135FD8 = 4503601774854144.0;
-const f64 D_80135FE0 = 4503599627370496.0;
+
 const f32 D_80135FE8 = 0.0f;
 const f32 D_80135FEC = 640.0f;
 const f32 D_80135FF0 = 480.0f;
@@ -660,10 +660,6 @@ int romGetPC(Rom* pROM, u64* pnPC) {
     }
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadFullOrPart.s")
-#else
-// weird float issue at ``simulatorShowLoad(1, pROM->acNameFile, D_80135FD0);``
 inline int romLoadFullOrPartLoop(Rom* pROM) {
     s32 i;
     s32 iCache;
@@ -726,12 +722,14 @@ s32 romLoadFullOrPart(Rom* pROM) {
         pROM->pBuffer = (void*)pROM->pCacheRAM;
 
         if ((temp_r28 = (u32)pROM->nSize >> 5) == 0) {
+            f32 nFloat;
+
             if (!xlFileSetPosition(pFile, pROM->offsetToRom)) {
                 return 0;
             }
 
             xlFileGet(pFile, pROM->pBuffer, pROM->nSize);
-            simulatorShowLoad(1, pROM->acNameFile, D_80135FD0);
+            simulatorShowLoad(1, pROM->acNameFile, nFloat = 1.0f);
         } else {
             for (i = 0; i < (s32)pROM->nSize;) {
                 if (!simulatorTestReset(0, 0, 1, 0)) {
@@ -763,7 +761,6 @@ s32 romLoadFullOrPart(Rom* pROM) {
 
     return 1;
 }
-#endif
 
 static int romCopyUpdate(Rom* pROM) {
     RomBlock* pBlock;
@@ -920,10 +917,6 @@ s32 __romLoadUpdate_Complete(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rom/romCacheGame_ZELDA.s")
 
-//! TODO: remove this when ``romLoadFullOrPart`` is matched
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadRange.s")
-#else
 s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
                  ProgressCallbackFunc* pProgressCallback) {
     s32 iCache;
@@ -956,7 +949,6 @@ s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
 
     return 1;
 }
-#endif
 
 static int romLoadBlock(Rom* pROM, int iBlock, int iCache, UnknownCallbackFunc pCallback) {
     u8* anData;
