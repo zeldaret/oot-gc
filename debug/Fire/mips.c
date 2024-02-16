@@ -7,22 +7,22 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x7322B; // size = 0x10
 
 // size = 0x10, address = 0x800EE6D0
 struct _XL_OBJECTTYPE gClassMips;
 
-struct __anon_0x7331D {
+typedef struct __anon_0x7331D {
     /* 0x0 */ s32 nMask;
     /* 0x4 */ s32 nMode;
     /* 0x8 */ void* pHost;
     /* 0xC */ s32 nInterrupt;
-}; // size = 0x10
+} __anon_0x7331D; // size = 0x10
 
 // Range: 0x8008D248 -> 0x8008D358
 s32 mipsEvent(struct __anon_0x7331D* pMips, s32 nEvent, void* pArgument) {
@@ -69,7 +69,7 @@ s32 mipsPut16() {}
 // Range: 0x8008D5F0 -> 0x8008D5F8
 s32 mipsPut8() {}
 
-enum __anon_0x736C0 {
+typedef enum __anon_0x736C0 {
     MIT_NONE = -1,
     MIT_SP = 0,
     MIT_SI = 1,
@@ -77,7 +77,7 @@ enum __anon_0x736C0 {
     MIT_VI = 3,
     MIT_PI = 4,
     MIT_DP = 5,
-};
+} __anon_0x736C0;
 
 // Range: 0x8008D5F8 -> 0x8008D69C
 s32 mipsResetInterrupt(struct __anon_0x7331D* pMips, enum __anon_0x736C0 eType) {

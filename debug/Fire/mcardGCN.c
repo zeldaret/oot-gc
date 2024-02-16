@@ -16,7 +16,7 @@ s32 currentIdx;
 // size = 0x4, address = 0x80135664
 static s32 yes$771;
 
-enum __anon_0x1A5F0 {
+typedef enum __anon_0x1A5F0 {
     MC_M_NONE = 0,
     MC_M_LD01 = 1,
     MC_M_LD02 = 2,
@@ -67,7 +67,7 @@ enum __anon_0x1A5F0 {
     MC_M_GF04_S = 47,
     MC_M_GF05 = 48,
     MC_M_GF06 = 49,
-};
+} __anon_0x1A5F0;
 
 // size = 0x4, address = 0x80135668
 static enum __anon_0x1A5F0 prevMenuEntry$772;
@@ -84,7 +84,7 @@ static s32 toggle$1034;
 // size = 0x4, address = 0x80135674
 static s32 checkFailCount$1490;
 
-struct OSCalendarTime {
+typedef struct OSCalendarTime {
     /* 0x00 */ s32 sec;
     /* 0x04 */ s32 min;
     /* 0x08 */ s32 hour;
@@ -95,7 +95,7 @@ struct OSCalendarTime {
     /* 0x1C */ s32 yday;
     /* 0x20 */ s32 msec;
     /* 0x24 */ s32 usec;
-}; // size = 0x28
+} __anon_0x1A9EE; // size = 0x28
 
 // size = 0x28, address = 0x80107960
 struct OSCalendarTime gDate;
@@ -106,25 +106,25 @@ s32 bWrite2Card;
 // size = 0x28, address = 0x80107988
 s32 bNoWriteInCurrentFrame[10];
 
-struct __anon_0x1AC1A {
+typedef struct __anon_0x1AC1A {
     /* 0x00 */ s32 configuration;
     /* 0x04 */ s32 size;
     /* 0x08 */ s32 offset;
     /* 0x0C */ char* buffer;
     /* 0x10 */ s32* writtenBlocks;
     /* 0x14 */ s32 writtenConfig;
-}; // size = 0x18
+} __anon_0x1AC1A; // size = 0x18
 
-struct CARDFileInfo {
+typedef struct CARDFileInfo {
     /* 0x00 */ s32 chan;
     /* 0x04 */ s32 fileNo;
     /* 0x08 */ s32 offset;
     /* 0x0C */ s32 length;
     /* 0x10 */ u16 iBlock;
     /* 0x12 */ u16 __padding;
-}; // size = 0x14
+} __anon_0x1ADBD; // size = 0x14
 
-struct __anon_0x1AEB5 {
+typedef struct __anon_0x1AEB5 {
     /* 0x000 */ s32 currentGame;
     /* 0x004 */ s32 fileSize;
     /* 0x008 */ char name[33];
@@ -138,9 +138,9 @@ struct __anon_0x1AEB5 {
     /* 0x110 */ char gameName[16][33];
     /* 0x320 */ struct OSCalendarTime time;
     /* 0x348 */ struct CARDFileInfo fileInfo;
-}; // size = 0x35C
+} __anon_0x1AEB5; // size = 0x35C
 
-enum __anon_0x1B0CB {
+typedef enum __anon_0x1B0CB {
     MC_E_NONE = 0,
     MC_E_BUSY = 1,
     MC_E_WRONGDEVICE = 2,
@@ -167,9 +167,9 @@ enum __anon_0x1B0CB {
     MC_E_TIME_WRONG = 23,
     MC_E_WRITE_CORRUPTED = 24,
     MC_E_UNKNOWN = 25,
-};
+} __anon_0x1B0CB;
 
-struct _MCARD {
+typedef struct _MCARD {
     /* 0x000 */ struct __anon_0x1AEB5 file;
     /* 0x35C */ enum __anon_0x1B0CB error;
     /* 0x360 */ s32 slot;
@@ -198,25 +198,25 @@ struct _MCARD {
     /* 0x7AC */ s32 wait;
     /* 0x7B0 */ s32 isBroken;
     /* 0x7B4 */ s32 saveConfiguration;
-}; // size = 0x7B8
+} __anon_0x1B36F; // size = 0x7B8
 
 // size = 0x7B8, address = 0x801079B0
 struct _MCARD mCard;
 
-enum __anon_0x1B813 {
+typedef enum __anon_0x1B813 {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0x1B813;
 
-struct __anon_0x1B87B {
+typedef struct __anon_0x1B87B {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x1B87B; // size = 0x10
 
-enum __anon_0x1B92C {
+typedef enum __anon_0x1B92C {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -231,9 +231,9 @@ enum __anon_0x1B92C {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x1B92C;
 
-enum __anon_0x1BA5D {
+typedef enum __anon_0x1BA5D {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -252,9 +252,9 @@ enum __anon_0x1BA5D {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x1BA5D;
 
-struct __anon_0x1BB9D {
+typedef struct __anon_0x1BB9D {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -266,12 +266,12 @@ struct __anon_0x1BB9D {
     /* 0x70 */ enum __anon_0x1BA5D storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x1BB9D; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x1BB9D* gpSystem;
 
-enum __anon_0x1BD8E {
+typedef enum __anon_0x1BD8E {
     MC_C_NONE = 0,
     MC_C_CONTINUE = 1,
     MC_C_IPL = 2,
@@ -279,7 +279,7 @@ enum __anon_0x1BD8E {
     MC_C_CREATE_GAME = 4,
     MC_C_DELETE_GAME = 5,
     MC_C_FORMAT_CARD = 6,
-};
+} __anon_0x1BD8E;
 
 // Range: 0x80013440 -> 0x800136F4
 s32 mcardUpdate() {
@@ -509,11 +509,11 @@ s32 mcardGameCreate(struct _MCARD* pMCard, char* name, s32 defaultConfiguration,
     // -> struct _MCARD mCard;
 }
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x1CD33; // size = 0x20
 
-struct CARDStat {
+typedef struct CARDStat {
     /* 0x00 */ char fileName[32];
     /* 0x20 */ u32 length;
     /* 0x24 */ u32 time;
@@ -530,7 +530,7 @@ struct CARDStat {
     /* 0x44 */ u32 offsetIcon[8];
     /* 0x64 */ u32 offsetIconTlut;
     /* 0x68 */ u32 offsetData;
-}; // size = 0x6C
+} __anon_0x1CDF9; // size = 0x6C
 
 // Range: 0x800185F8 -> 0x80018C50
 s32 mcardFileCreate(struct _MCARD* pMCard, char* name, char* comment, char* icon, char* banner, s32 size) {
@@ -1062,23 +1062,23 @@ static s32 mcardGCErrorHandler(struct _MCARD* pMCard, s32 gcError) {
     // s32 gcError; // r1+0x4
 }
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x1F142;
 
-enum _GXTexFilter {
+typedef enum _GXTexFilter {
     GX_NEAR = 0,
     GX_LINEAR = 1,
     GX_NEAR_MIP_NEAR = 2,
     GX_LIN_MIP_NEAR = 3,
     GX_NEAR_MIP_LIN = 4,
     GX_LIN_MIP_LIN = 5,
-};
+} __anon_0x1F1AB;
 
-struct __anon_0x1F23C {
+typedef struct __anon_0x1F23C {
     /* 0x00 */ u16 height;
     /* 0x02 */ u16 width;
     /* 0x04 */ u32 format;
@@ -1092,33 +1092,33 @@ struct __anon_0x1F23C {
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
     /* 0x23 */ u8 unpacked;
-}; // size = 0x24
+} __anon_0x1F23C; // size = 0x24
 
-enum _GXTlutFmt {
+typedef enum _GXTlutFmt {
     GX_TL_IA8 = 0,
     GX_TL_RGB565 = 1,
     GX_TL_RGB5A3 = 2,
     GX_MAX_TLUTFMT = 3,
-};
+} __anon_0x1F42F;
 
-struct __anon_0x1F497 {
+typedef struct __anon_0x1F497 {
     /* 0x0 */ u16 numEntries;
     /* 0x2 */ u8 unpacked;
     /* 0x3 */ u8 pad8;
     /* 0x4 */ enum _GXTlutFmt format;
     /* 0x8 */ char* data;
-}; // size = 0xC
+} __anon_0x1F497; // size = 0xC
 
-struct __anon_0x1F563 {
+typedef struct __anon_0x1F563 {
     /* 0x0 */ struct __anon_0x1F23C* textureHeader;
     /* 0x4 */ struct __anon_0x1F497* CLUTHeader;
-}; // size = 0x8
+} __anon_0x1F563; // size = 0x8
 
-struct __anon_0x1F5D4 {
+typedef struct __anon_0x1F5D4 {
     /* 0x0 */ u32 versionNumber;
     /* 0x4 */ u32 numDescriptors;
     /* 0x8 */ struct __anon_0x1F563* descriptorArray;
-}; // size = 0xC
+} __anon_0x1F5D4; // size = 0xC
 
 // Erased
 static void mcardUnpackTexPalette(struct __anon_0x1F5D4* pal) {

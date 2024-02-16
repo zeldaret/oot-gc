@@ -19,14 +19,14 @@ static char** gaszArgument;
 // size = 0x4, address = 0x80135588
 static void* DefaultFifo;
 
-struct __anon_0x238 {
+typedef struct __anon_0x238 {
     /* 0x0 */ u8 pad[128];
-}; // size = 0x80
+} __anon_0x238; // size = 0x80
 
 // size = 0x4, address = 0x8013558C
 static struct __anon_0x238* DefaultFifoObj;
 
-enum __anon_0x29F {
+typedef enum __anon_0x29F {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
     VI_TVMODE_NTSC_PROG = 2,
@@ -39,14 +39,14 @@ enum __anon_0x29F {
     VI_TVMODE_DEBUG_INT = 12,
     VI_TVMODE_DEBUG_PAL_INT = 16,
     VI_TVMODE_DEBUG_PAL_DS = 17,
-};
+} __anon_0x29F;
 
-enum __anon_0x3EC {
+typedef enum __anon_0x3EC {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF = 1,
-};
+} __anon_0x3EC;
 
-struct _GXRenderModeObj {
+typedef struct _GXRenderModeObj {
     /* 0x00 */ enum __anon_0x29F viTVmode;
     /* 0x04 */ u16 fbWidth;
     /* 0x06 */ u16 efbHeight;
@@ -60,7 +60,7 @@ struct _GXRenderModeObj {
     /* 0x19 */ u8 aa;
     /* 0x1A */ u8 sample_pattern[12][2];
     /* 0x32 */ u8 vfilter[7];
-}; // size = 0x3C
+} __anon_0x4A0; // size = 0x3C
 
 // size = 0x3C, address = 0x800F3EE0
 static struct _GXRenderModeObj rmodeobj;
@@ -74,9 +74,9 @@ static void* gArenaHi;
 // size = 0x4, address = 0x80135598
 static void* gArenaLo;
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x769; // size = 0x20
 
 // size = 0x80, address = 0x800F3F1C
 struct _GXTexObj g_texMap[4];
@@ -102,23 +102,23 @@ void* DemoCurrentBuffer;
 // size = 0x4, address = 0x80135A90
 void* DemoFrameBuffer2;
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x8FD;
 
-enum _GXTexFilter {
+typedef enum _GXTexFilter {
     GX_NEAR = 0,
     GX_LINEAR = 1,
     GX_NEAR_MIP_NEAR = 2,
     GX_LIN_MIP_NEAR = 3,
     GX_NEAR_MIP_LIN = 4,
     GX_LIN_MIP_LIN = 5,
-};
+} __anon_0x966;
 
-struct __anon_0x9F7 {
+typedef struct __anon_0x9F7 {
     /* 0x00 */ u16 height;
     /* 0x02 */ u16 width;
     /* 0x04 */ u32 format;
@@ -132,34 +132,34 @@ struct __anon_0x9F7 {
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
     /* 0x23 */ u8 unpacked;
-}; // size = 0x24
+} __anon_0x9F7; // size = 0x24
 
-enum _GXTlutFmt {
+typedef enum _GXTlutFmt {
     GX_TL_IA8 = 0,
     GX_TL_RGB565 = 1,
     GX_TL_RGB5A3 = 2,
     GX_MAX_TLUTFMT = 3,
-};
+} __anon_0xBEA;
 
-struct __anon_0xC52 {
+typedef struct __anon_0xC52 {
     /* 0x0 */ u16 numEntries;
     /* 0x2 */ u8 unpacked;
     /* 0x3 */ u8 pad8;
     /* 0x4 */ enum _GXTlutFmt format;
     /* 0x8 */ char* data;
-}; // size = 0xC
+} __anon_0xC52; // size = 0xC
 
-struct __anon_0xD1E {
+typedef struct __anon_0xD1E {
     /* 0x0 */ struct __anon_0x9F7* textureHeader;
     /* 0x4 */ struct __anon_0xC52* CLUTHeader;
-}; // size = 0x8
+} __anon_0xD1E; // size = 0x8
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0xD8F; // size = 0x4
 
 // Range: 0x80005674 -> 0x800058DC
 s32 main(s32 nCount, char** aszArgument) {
@@ -196,10 +196,10 @@ static s32 xlCoreGetUpper24MB(void* ppBuffer) {
     // void* ppBuffer; // r1+0x0
 }
 
-union DoubleLongLong {
+typedef union DoubleLongLong {
     /* 0x0 */ double f;
     /* 0x0 */ s64 i;
-};
+} __anon_0x1026;
 
 // Erased
 static s32 xlCoreEnableFPExceptions() {

@@ -16,7 +16,7 @@ static s32 Initialized;
 // size = 0x40, address = 0x800F96E0
 static s32 WorkBuffer[16];
 
-struct OSContext {
+typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
     /* 0x080 */ u32 cr;
     /* 0x084 */ u32 lr;
@@ -32,31 +32,31 @@ struct OSContext {
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
     /* 0x1C8 */ double psf[32];
-}; // size = 0x2C8
+} __anon_0xF5C0; // size = 0x2C8
 
-struct OSThreadLink {
+typedef struct OSThreadLink {
     /* 0x0 */ struct OSThread* next;
     /* 0x4 */ struct OSThread* prev;
-}; // size = 0x8
+} __anon_0xF7D9; // size = 0x8
 
-struct OSMutexLink {
+typedef struct OSMutexLink {
     /* 0x0 */ struct OSMutex* next;
     /* 0x4 */ struct OSMutex* prev;
-}; // size = 0x8
+} __anon_0xF84A; // size = 0x8
 
-struct OSMutex {
+typedef struct OSMutex {
     /* 0x00 */ struct OSThreadQueue queue;
     /* 0x08 */ struct OSThread* thread;
     /* 0x0C */ s32 count;
     /* 0x10 */ struct OSMutexLink link;
-}; // size = 0x18
+} __anon_0xF8BA; // size = 0x18
 
-struct OSMutexQueue {
+typedef struct OSMutexQueue {
     /* 0x0 */ struct OSMutex* head;
     /* 0x4 */ struct OSMutex* tail;
-}; // size = 0x8
+} __anon_0xF96B; // size = 0x8
 
-struct OSThread {
+typedef struct OSThread {
     /* 0x000 */ struct OSContext context;
     /* 0x2C8 */ u16 state;
     /* 0x2CA */ u16 attr;
@@ -74,21 +74,21 @@ struct OSThread {
     /* 0x308 */ u32* stackEnd;
     /* 0x30C */ s32 error;
     /* 0x310 */ void* specific[2];
-}; // size = 0x318
+} __anon_0xF9FC; // size = 0x318
 
-struct OSThreadQueue {
+typedef struct OSThreadQueue {
     /* 0x0 */ struct OSThread* head;
     /* 0x4 */ struct OSThread* tail;
-}; // size = 0x8
+} __anon_0xFC95; // size = 0x8
 
-struct OSMessageQueue {
+typedef struct OSMessageQueue {
     /* 0x00 */ struct OSThreadQueue queueSend;
     /* 0x08 */ struct OSThreadQueue queueReceive;
     /* 0x10 */ void* msgArray;
     /* 0x14 */ s32 msgCount;
     /* 0x18 */ s32 firstIndex;
     /* 0x1C */ s32 usedCount;
-}; // size = 0x20
+} __anon_0xFD07; // size = 0x20
 
 // size = 0x20, address = 0x800F9720
 static struct OSMessageQueue PrepareReadyQueue;
@@ -123,7 +123,7 @@ static s16* CurAudioBuffer;
 // size = 0x4, address = 0x80135634
 static s32 AudioSystem;
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -131,9 +131,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x10108; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -146,16 +146,16 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x10278; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x1049E; // size = 0x3C
 
-struct __anon_0x10576 {
+typedef struct __anon_0x10576 {
     /* 0x00 */ char magic[4];
     /* 0x04 */ u32 version;
     /* 0x08 */ u32 bufSize;
@@ -168,46 +168,46 @@ struct __anon_0x10576 {
     /* 0x24 */ u32 offsetDataOffsets;
     /* 0x28 */ u32 movieDataOffsets;
     /* 0x2C */ u32 finalFrameDataOffsets;
-}; // size = 0x30
+} __anon_0x10576; // size = 0x30
 
-struct __anon_0x107A2 {
+typedef struct __anon_0x107A2 {
     /* 0x0 */ u32 numComponents;
     /* 0x4 */ u8 frameComp[16];
-}; // size = 0x14
+} __anon_0x107A2; // size = 0x14
 
-struct __anon_0x1080A {
+typedef struct __anon_0x1080A {
     /* 0x0 */ u32 xSize;
     /* 0x4 */ u32 ySize;
     /* 0x8 */ u32 videoType;
-}; // size = 0xC
+} __anon_0x1080A; // size = 0xC
 
-struct __anon_0x1088A {
+typedef struct __anon_0x1088A {
     /* 0x0 */ u32 sndChannels;
     /* 0x4 */ u32 sndFrequency;
     /* 0x8 */ u32 sndNumSamples;
     /* 0xC */ u32 sndNumTracks;
-}; // size = 0x10
+} __anon_0x1088A; // size = 0x10
 
-struct __anon_0x10944 {
+typedef struct __anon_0x10944 {
     /* 0x0 */ u8* ytexture;
     /* 0x4 */ u8* utexture;
     /* 0x8 */ u8* vtexture;
     /* 0xC */ s32 frameNumber;
-}; // size = 0x10
+} __anon_0x10944; // size = 0x10
 
-struct __anon_0x109FA {
+typedef struct __anon_0x109FA {
     /* 0x0 */ s16* buffer;
     /* 0x4 */ s16* curPtr;
     /* 0x8 */ u32 validSample;
-}; // size = 0xC
+} __anon_0x109FA; // size = 0xC
 
-struct __anon_0x10A84 {
+typedef struct __anon_0x10A84 {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
     /* 0x8 */ s32 isValid;
-}; // size = 0xC
+} __anon_0x10A84; // size = 0xC
 
-struct __anon_0x10B6F {
+typedef struct __anon_0x10B6F {
     /* 0x000 */ struct DVDFileInfo fileInfo;
     /* 0x03C */ struct __anon_0x10576 header;
     /* 0x06C */ struct __anon_0x107A2 compInfo;
@@ -242,7 +242,7 @@ struct __anon_0x10B6F {
     /* 0x100 */ struct __anon_0x10A84 readBuffer[10];
     /* 0x178 */ struct __anon_0x10944 textureSet[3];
     /* 0x1A8 */ struct __anon_0x109FA audioBuffer[3];
-}; // size = 0x1D0
+} __anon_0x10B6F; // size = 0x1D0
 
 // size = 0x1D0, address = 0x800F9C80
 struct __anon_0x10B6F ActivePlayer;
@@ -438,7 +438,7 @@ static s32 ProperTimingForGettingNextFrame() {
     // -> struct __anon_0x10B6F ActivePlayer;
 }
 
-enum __anon_0x119E9 {
+typedef enum __anon_0x119E9 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
     VI_TVMODE_NTSC_PROG = 2,
@@ -451,14 +451,14 @@ enum __anon_0x119E9 {
     VI_TVMODE_DEBUG_INT = 12,
     VI_TVMODE_DEBUG_PAL_INT = 16,
     VI_TVMODE_DEBUG_PAL_DS = 17,
-};
+} __anon_0x119E9;
 
-enum __anon_0x11B35 {
+typedef enum __anon_0x11B35 {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF = 1,
-};
+} __anon_0x11B35;
 
-struct _GXRenderModeObj {
+typedef struct _GXRenderModeObj {
     /* 0x00 */ enum __anon_0x119E9 viTVmode;
     /* 0x04 */ u16 fbWidth;
     /* 0x06 */ u16 efbHeight;
@@ -472,7 +472,7 @@ struct _GXRenderModeObj {
     /* 0x19 */ u8 aa;
     /* 0x1A */ u8 sample_pattern[12][2];
     /* 0x32 */ u8 vfilter[7];
-}; // size = 0x3C
+} __anon_0x11BE8; // size = 0x3C
 
 // Range: 0x8001071C -> 0x800107E8
 s32 THPPlayerDrawCurrentFrame(struct _GXRenderModeObj* rmode, u32 x, u32 y, u32 polygonW, u32 polygonH) {

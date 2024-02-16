@@ -20,7 +20,7 @@ static void MovieDestroy() {
     // -> s32 __OSCurrHeap;
 }
 
-enum __anon_0xEF02 {
+typedef enum __anon_0xEF02 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
     VI_TVMODE_NTSC_PROG = 2,
@@ -33,14 +33,14 @@ enum __anon_0xEF02 {
     VI_TVMODE_DEBUG_INT = 12,
     VI_TVMODE_DEBUG_PAL_INT = 16,
     VI_TVMODE_DEBUG_PAL_DS = 17,
-};
+} __anon_0xEF02;
 
-enum __anon_0xF04A {
+typedef enum __anon_0xF04A {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF = 1,
-};
+} __anon_0xF04A;
 
-struct _GXRenderModeObj {
+typedef struct _GXRenderModeObj {
     /* 0x00 */ enum __anon_0xEF02 viTVmode;
     /* 0x04 */ u16 fbWidth;
     /* 0x06 */ u16 efbHeight;
@@ -54,7 +54,7 @@ struct _GXRenderModeObj {
     /* 0x19 */ u8 aa;
     /* 0x1A */ u8 sample_pattern[12][2];
     /* 0x32 */ u8 vfilter[7];
-}; // size = 0x3C
+} __anon_0xF0F9; // size = 0x3C
 
 // size = 0x4, address = 0x8013559C
 struct _GXRenderModeObj* rmode;

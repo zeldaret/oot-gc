@@ -7,27 +7,27 @@
 
 #include "types.h"
 
-struct tXL_LIST {
+typedef struct tXL_LIST {
     /* 0x0 */ s32 nItemSize;
     /* 0x4 */ s32 nItemCount;
     /* 0x8 */ void* pNodeHead;
     /* 0xC */ void* pNodeNext;
-}; // size = 0x10
+} __anon_0x4E6F; // size = 0x10
 
 // size = 0x4, address = 0x801355C8
 static struct tXL_LIST* gpListData;
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x4F98; // size = 0x10
 
-struct __anon_0x5062 {
+typedef struct __anon_0x5062 {
     /* 0x0 */ struct tXL_LIST* pList;
     /* 0x4 */ struct _XL_OBJECTTYPE* pType;
-}; // size = 0x8
+} __anon_0x5062; // size = 0x8
 
 // Range: 0x80007BC0 -> 0x80007C30
 s32 xlObjectReset() {

@@ -7,12 +7,12 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x78CD6; // size = 0x10
 
 // size = 0x10, address = 0x800EEB0C
 struct _XL_OBJECTTYPE gClassLibrary;
@@ -29,17 +29,17 @@ static float dtor$480;
 // size = 0x4, address = 0x80135330
 static u32 nAddress$605;
 
-struct __anon_0x78E87 {
+typedef struct __anon_0x78E87 {
     /* 0x0 */ s32 nOffsetHost;
     /* 0x4 */ s32 nAddressN64;
-}; // size = 0x8
+} __anon_0x78E87; // size = 0x8
 
-struct cpu_callerID {
+typedef struct cpu_callerID {
     /* 0x0 */ s32 N64address;
     /* 0x4 */ s32 GCNaddress;
-}; // size = 0x8
+} __anon_0x78EED; // size = 0x8
 
-struct cpu_function {
+typedef struct cpu_function {
     /* 0x00 */ void* pnBase;
     /* 0x04 */ void* pfCode;
     /* 0x08 */ s32 nCountJump;
@@ -58,9 +58,9 @@ struct cpu_function {
     /* 0x3C */ struct cpu_function* prev;
     /* 0x40 */ struct cpu_function* left;
     /* 0x44 */ struct cpu_function* right;
-}; // size = 0x48
+} __anon_0x78F60; // size = 0x48
 
-union __anon_0x7923C {
+typedef union __anon_0x7923C {
     /* 0x0 */ char _0s8;
     /* 0x1 */ char _1s8;
     /* 0x2 */ char _2s8;
@@ -91,9 +91,9 @@ union __anon_0x7923C {
     /* 0x0 */ u32 _0u32;
     /* 0x4 */ u32 u32;
     /* 0x0 */ u64 u64;
-};
+} __anon_0x7923C;
 
-struct __anon_0x79A22 {
+typedef struct __anon_0x79A22 {
     /* 0x00 */ s32 nType;
     /* 0x04 */ void* pObject;
     /* 0x08 */ s32 nOffsetAddress;
@@ -107,9 +107,9 @@ struct __anon_0x79A22 {
     /* 0x28 */ s32 (*pfPut64)(void*, u32, s64*);
     /* 0x2C */ u32 nAddressPhysical0;
     /* 0x30 */ u32 nAddressPhysical1;
-}; // size = 0x34
+} __anon_0x79A22; // size = 0x34
 
-struct cpu_treeRoot {
+typedef struct cpu_treeRoot {
     /* 0x00 */ u16 total;
     /* 0x04 */ s32 total_memory;
     /* 0x08 */ s32 root_address;
@@ -124,21 +124,21 @@ struct cpu_treeRoot {
     /* 0x78 */ s32 side;
     /* 0x7C */ struct cpu_function* restore;
     /* 0x80 */ s32 restore_side;
-}; // size = 0x84
+} __anon_0x79CF0; // size = 0x84
 
-struct _CPU_ADDRESS {
+typedef struct _CPU_ADDRESS {
     /* 0x0 */ s32 nN64;
     /* 0x4 */ s32 nHost;
     /* 0x8 */ struct cpu_function* pFunction;
-}; // size = 0xC
+} __anon_0x79F31; // size = 0xC
 
-struct __anon_0x79FE6 {
+typedef struct __anon_0x79FE6 {
     /* 0x0 */ u32 nAddress;
     /* 0x4 */ u32 nOpcodeOld;
     /* 0x8 */ u32 nOpcodeNew;
-}; // size = 0xC
+} __anon_0x79FE6; // size = 0xC
 
-struct OSContext {
+typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
     /* 0x080 */ u32 cr;
     /* 0x084 */ u32 lr;
@@ -154,9 +154,9 @@ struct OSContext {
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
     /* 0x1C8 */ double psf[32];
-}; // size = 0x2C8
+} __anon_0x7A111; // size = 0x2C8
 
-struct OSAlarm {
+typedef struct OSAlarm {
     /* 0x00 */ void (*handler)(struct OSAlarm*, struct OSContext*);
     /* 0x04 */ u32 tag;
     /* 0x08 */ s64 fire;
@@ -164,9 +164,9 @@ struct OSAlarm {
     /* 0x14 */ struct OSAlarm* next;
     /* 0x18 */ s64 period;
     /* 0x20 */ s64 start;
-}; // size = 0x28
+} __anon_0x7A368; // size = 0x28
 
-struct cpu_optimize {
+typedef struct cpu_optimize {
     /* 0x00 */ u32 validCheck;
     /* 0x04 */ u32 destGPR_check;
     /* 0x08 */ s32 destGPR;
@@ -177,9 +177,9 @@ struct cpu_optimize {
     /* 0x1C */ s32 addr_last;
     /* 0x20 */ u32 checkType;
     /* 0x24 */ u32 checkNext;
-}; // size = 0x28
+} __anon_0x7A483; // size = 0x28
 
-struct _CPU {
+typedef struct _CPU {
     /* 0x00000 */ s32 nMode;
     /* 0x00004 */ s32 nTick;
     /* 0x00008 */ void* pHost;
@@ -223,18 +223,18 @@ struct _CPU {
     /* 0x1205C */ u32 nFlagCODE;
     /* 0x12060 */ u32 nCompileFlag;
     /* 0x12064 */ struct cpu_optimize nOptimize;
-}; // size = 0x12090
+} __anon_0x7A630; // size = 0x12090
 
-struct __anon_0x7AD10 {
+typedef struct __anon_0x7AD10 {
     /* 0x0 */ char* szName;
     /* 0x4 */ void (*pfLibrary)(struct _CPU*);
     /* 0x8 */ u32 anData[17];
-}; // size = 0x4C
+} __anon_0x7AD10; // size = 0x4C
 
 // size = 0x1008, address = 0x800EEF2C
 struct __anon_0x7AD10 gaFunction[54];
 
-struct __anon_0x7AE26 {
+typedef struct __anon_0x7AE26 {
     /* 0x00 */ s32 nFlag;
     /* 0x04 */ void* pHost;
     /* 0x08 */ s32 nAddStackSwap;
@@ -243,7 +243,7 @@ struct __anon_0x7AE26 {
     /* 0x14 */ struct __anon_0x7AD10* aFunction;
     /* 0x18 */ void* apData[10];
     /* 0x40 */ s32 anAddress[10];
-}; // size = 0x68
+} __anon_0x7AE26; // size = 0x68
 
 // Range: 0x8008F0F4 -> 0x8008F234
 s32 libraryEvent(struct __anon_0x7AE26* pLibrary, s32 nEvent, void* pArgument) {
@@ -395,18 +395,18 @@ s32 osViSwapBuffer_Entry(struct _CPU* pCPU) {
     // -> static u32 nAddress$605;
 }
 
-struct __anon_0x7BB81 {
+typedef struct __anon_0x7BB81 {
     /* 0x0 */ float f_odd;
     /* 0x4 */ float f_even;
-}; // size = 0x8
+} __anon_0x7BB81; // size = 0x8
 
-union __anon_0x7BBDC {
+typedef union __anon_0x7BBDC {
     /* 0x0 */ struct __anon_0x7BB81 f;
     /* 0x0 */ double d;
     /* 0x0 */ s64 u64;
-};
+} __anon_0x7BBDC;
 
-struct __anon_0x7BC50 {
+typedef struct __anon_0x7BC50 {
     /* 0x000 */ u64 at;
     /* 0x008 */ u64 v0;
     /* 0x010 */ u64 v1;
@@ -460,9 +460,9 @@ struct __anon_0x7BC50 {
     /* 0x178 */ union __anon_0x7BBDC fp26;
     /* 0x180 */ union __anon_0x7BBDC fp28;
     /* 0x188 */ union __anon_0x7BBDC fp30;
-}; // size = 0x190
+} __anon_0x7BC50; // size = 0x190
 
-struct __OSThread_s {
+typedef struct __OSThread_s {
     /* 0x00 */ struct __OSThread_s* next;
     /* 0x04 */ s32 priority;
     /* 0x08 */ struct __OSThread_s** queue;
@@ -472,31 +472,31 @@ struct __OSThread_s {
     /* 0x14 */ s32 id;
     /* 0x18 */ s32 fp;
     /* 0x20 */ struct __anon_0x7BC50 context;
-}; // size = 0x1B0
+} __anon_0x7C319; // size = 0x1B0
 
-struct OSMesgQueue_s {
+typedef struct OSMesgQueue_s {
     /* 0x00 */ struct __OSThread_s* mtqueue;
     /* 0x04 */ struct __OSThread_s* fullqueue;
     /* 0x08 */ s32 validCount;
     /* 0x0C */ s32 first;
     /* 0x10 */ s32 msgCount;
     /* 0x14 */ void* msg;
-}; // size = 0x18
+} __anon_0x7C481; // size = 0x18
 
-struct __anon_0x7C589 {
+typedef struct __anon_0x7C589 {
     /* 0x0 */ u16 type;
     /* 0x2 */ u8 pri;
     /* 0x3 */ u8 status;
     /* 0x4 */ struct OSMesgQueue_s* retQueue;
-}; // size = 0x8
+} __anon_0x7C589; // size = 0x8
 
-struct __anon_0x7C62D {
+typedef struct __anon_0x7C62D {
     /* 0x00 */ struct __anon_0x7C589 hdr;
     /* 0x08 */ void* dramAddr;
     /* 0x0C */ u32 devAddr;
     /* 0x10 */ u32 size;
     /* 0x14 */ void* piHandle;
-}; // size = 0x18
+} __anon_0x7C62D; // size = 0x18
 
 // Range: 0x80090B40 -> 0x80090C68
 s32 dmaSoundRomHandler_ZELDA1(struct _CPU* pCPU) {
@@ -620,25 +620,25 @@ s32 osAiSetFrequency(struct _CPU* pCPU) {
     u32 nData32; // r1+0x10
 }
 
-struct __anon_0x7D115 {
+typedef struct __anon_0x7D115 {
     /* 0x0 */ u8 col[3];
     /* 0x3 */ char pad1;
     /* 0x4 */ u8 colc[3];
     /* 0x7 */ char pad2;
     /* 0x8 */ s8 dir[3];
     /* 0xB */ char pad3;
-}; // size = 0xC
+} __anon_0x7D115; // size = 0xC
 
-union __anon_0x7D215 {
+typedef union __anon_0x7D215 {
     /* 0x0 */ struct __anon_0x7D115 l;
     /* 0x0 */ s64 force_structure_alignment[2];
-};
+} __anon_0x7D215;
 
-struct __anon_0x7D2A5 {
+typedef struct __anon_0x7D2A5 {
     /* 0x0 */ union __anon_0x7D215 l[2];
-}; // size = 0x20
+} __anon_0x7D2A5; // size = 0x20
 
-union __anon_0x7D2DB {
+typedef union __anon_0x7D2DB {
     /* 0x0 */ float _0f32;
     /* 0x4 */ float f32;
     /* 0x0 */ double f64;
@@ -648,7 +648,7 @@ union __anon_0x7D2DB {
     /* 0x0 */ u32 _0u32;
     /* 0x4 */ u32 u32;
     /* 0x0 */ u64 u64;
-};
+} __anon_0x7D2DB;
 
 // Range: 0x80091338 -> 0x8009190C
 void guLookAtReflect(struct _CPU* pCPU) {
@@ -713,17 +713,17 @@ void guLookAtReflectF(struct _CPU* pCPU) {
     float zRight; // f11
 }
 
-struct __anon_0x7DB47 {
+typedef struct __anon_0x7DB47 {
     /* 0x0 */ s32 x1;
     /* 0x4 */ s32 y1;
     /* 0x8 */ s32 x2;
     /* 0xC */ s32 y2;
-}; // size = 0x10
+} __anon_0x7DB47; // size = 0x10
 
-union __anon_0x7DBF9 {
+typedef union __anon_0x7DBF9 {
     /* 0x0 */ struct __anon_0x7DB47 h;
     /* 0x0 */ s32 force_structure_alignment[4];
-};
+} __anon_0x7DBF9;
 
 // Range: 0x80091E60 -> 0x80092834
 void guLookAtHilite(struct _CPU* pCPU) {
@@ -1002,28 +1002,28 @@ void guScaleF(struct _CPU* pCPU) {
     union __anon_0x7D2DB data1; // r1+0x10
 }
 
-struct __anon_0x7F9D8 {
+typedef struct __anon_0x7F9D8 {
     /* 0x0 */ float rX;
     /* 0x4 */ float rY;
     /* 0x8 */ float rSizeX;
     /* 0xC */ float rSizeY;
-}; // size = 0x10
+} __anon_0x7F9D8; // size = 0x10
 
-struct __anon_0x7FA72 {
+typedef struct __anon_0x7FA72 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nWidth;
     /* 0x08 */ s32 nFormat;
     /* 0x0C */ void* pData;
     /* 0x10 */ s32 nAddress;
-}; // size = 0x14
+} __anon_0x7FA72; // size = 0x14
 
-struct __anon_0x7FBB3 {
+typedef struct __anon_0x7FBB3 {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x7FBB3; // size = 0xC
 
-struct __anon_0x7FC23 {
+typedef struct __anon_0x7FC23 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x7FBB3 rVecOrigTowards;
     /* 0x10 */ float rColorR;
@@ -1038,36 +1038,36 @@ struct __anon_0x7FC23 {
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
-}; // size = 0x3C
+} __anon_0x7FC23; // size = 0x3C
 
-struct __anon_0x7FE53 {
+typedef struct __anon_0x7FE53 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x7FBB3 rS;
     /* 0x10 */ struct __anon_0x7FBB3 rT;
     /* 0x1C */ struct __anon_0x7FBB3 rSRaw;
     /* 0x28 */ struct __anon_0x7FBB3 rTRaw;
-}; // size = 0x34
+} __anon_0x7FE53; // size = 0x34
 
-struct __anon_0x7FF3C {
+typedef struct __anon_0x7FF3C {
     /* 0x00 */ float rSum;
     /* 0x04 */ float rS;
     /* 0x08 */ float rT;
     /* 0x0C */ struct __anon_0x7FBB3 vec;
     /* 0x18 */ u8 anColor[4];
-}; // size = 0x1C
+} __anon_0x7FF3C; // size = 0x1C
 
-union __anon_0x8009B {
+typedef union __anon_0x8009B {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
     /* 0x0 */ u32 u32[1024];
     /* 0x0 */ u64 u64[512];
-};
+} __anon_0x8009B;
 
-struct __anon_0x80138 {
+typedef struct __anon_0x80138 {
     /* 0x0 */ union __anon_0x8009B data;
-}; // size = 0x1000
+} __anon_0x80138; // size = 0x1000
 
-enum _GXTexFmt {
+typedef enum _GXTexFmt {
     GX_TF_I4 = 0,
     GX_TF_I8 = 1,
     GX_TF_IA4 = 2,
@@ -1094,24 +1094,24 @@ enum _GXTexFmt {
     GX_CTF_Z8L = 58,
     GX_CTF_Z16L = 60,
     GX_TF_A8 = 39,
-};
+} __anon_0x801D1;
 
-struct _GXTlutObj {
+typedef struct _GXTlutObj {
     /* 0x0 */ u32 dummy[3];
-}; // size = 0xC
+} __anon_0x80393; // size = 0xC
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x803FA; // size = 0x20
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x80440;
 
-struct _FRAME_TEXTURE {
+typedef struct _FRAME_TEXTURE {
     /* 0x00 */ s32 nMode;
     /* 0x04 */ s32 iPackPixel;
     /* 0x08 */ s32 iPackColor;
@@ -1131,9 +1131,9 @@ struct _FRAME_TEXTURE {
     /* 0x44 */ struct _GXTexObj objectTexture;
     /* 0x64 */ enum _GXTexWrapMode eWrapS;
     /* 0x68 */ enum _GXTexWrapMode eWrapT;
-}; // size = 0x6C
+} __anon_0x804A9; // size = 0x6C
 
-struct __anon_0x80806 {
+typedef struct __anon_0x80806 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nTMEM;
     /* 0x08 */ s32 iTLUT;
@@ -1150,15 +1150,15 @@ struct __anon_0x80806 {
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
     /* 0x28 */ u32 nCodePixel;
-}; // size = 0x2C
+} __anon_0x80806; // size = 0x2C
 
-enum __anon_0x80AE8 {
+typedef enum __anon_0x80AE8 {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-};
+} __anon_0x80AE8;
 
-struct __anon_0x80B6D {
+typedef struct __anon_0x80B6D {
     /* 0x00 */ s32 nCount;
     /* 0x04 */ float rScale;
     /* 0x08 */ float rAspect;
@@ -1168,16 +1168,16 @@ struct __anon_0x80B6D {
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x80AE8 eProjection;
-}; // size = 0x24
+} __anon_0x80B6D; // size = 0x24
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0x80D02; // size = 0x4
 
-struct __anon_0x80DBD {
+typedef struct __anon_0x80DBD {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
     /* 0x00024 */ s32 bBlurOn;
@@ -1268,7 +1268,7 @@ struct __anon_0x80DBD {
     /* 0x3D140 */ u16* nCopyBuffer;
     /* 0x3D144 */ u32* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
-}; // size = 0x3D150
+} __anon_0x80DBD; // size = 0x3D150
 
 // Range: 0x800945A8 -> 0x80094658
 void GenPerspective_1080(struct _CPU* pCPU) {

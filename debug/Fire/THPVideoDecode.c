@@ -10,7 +10,7 @@
 // size = 0x4, address = 0x80135658
 static s32 VideoDecodeThreadCreated;
 
-struct OSContext {
+typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
     /* 0x080 */ u32 cr;
     /* 0x084 */ u32 lr;
@@ -26,36 +26,36 @@ struct OSContext {
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
     /* 0x1C8 */ double psf[32];
-}; // size = 0x2C8
+} __anon_0x18425; // size = 0x2C8
 
-struct OSThreadQueue {
+typedef struct OSThreadQueue {
     /* 0x0 */ struct OSThread* head;
     /* 0x4 */ struct OSThread* tail;
-}; // size = 0x8
+} __anon_0x1863E; // size = 0x8
 
-struct OSThreadLink {
+typedef struct OSThreadLink {
     /* 0x0 */ struct OSThread* next;
     /* 0x4 */ struct OSThread* prev;
-}; // size = 0x8
+} __anon_0x186B0; // size = 0x8
 
-struct OSMutexLink {
+typedef struct OSMutexLink {
     /* 0x0 */ struct OSMutex* next;
     /* 0x4 */ struct OSMutex* prev;
-}; // size = 0x8
+} __anon_0x18721; // size = 0x8
 
-struct OSMutex {
+typedef struct OSMutex {
     /* 0x00 */ struct OSThreadQueue queue;
     /* 0x08 */ struct OSThread* thread;
     /* 0x0C */ s32 count;
     /* 0x10 */ struct OSMutexLink link;
-}; // size = 0x18
+} __anon_0x18791; // size = 0x18
 
-struct OSMutexQueue {
+typedef struct OSMutexQueue {
     /* 0x0 */ struct OSMutex* head;
     /* 0x4 */ struct OSMutex* tail;
-}; // size = 0x8
+} __anon_0x18842; // size = 0x8
 
-struct OSThread {
+typedef struct OSThread {
     /* 0x000 */ struct OSContext context;
     /* 0x2C8 */ u16 state;
     /* 0x2CA */ u16 attr;
@@ -73,7 +73,7 @@ struct OSThread {
     /* 0x308 */ u32* stackEnd;
     /* 0x30C */ s32 error;
     /* 0x310 */ void* specific[2];
-}; // size = 0x318
+} __anon_0x188D3; // size = 0x318
 
 // size = 0x318, address = 0x800FC5F0
 static struct OSThread VideoDecodeThread;
@@ -81,14 +81,14 @@ static struct OSThread VideoDecodeThread;
 // size = 0x1000, address = 0x800FC908
 static u8 VideoDecodeThreadStack[4096];
 
-struct OSMessageQueue {
+typedef struct OSMessageQueue {
     /* 0x00 */ struct OSThreadQueue queueSend;
     /* 0x08 */ struct OSThreadQueue queueReceive;
     /* 0x10 */ void* msgArray;
     /* 0x14 */ s32 msgCount;
     /* 0x18 */ s32 firstIndex;
     /* 0x1C */ s32 usedCount;
-}; // size = 0x20
+} __anon_0x18BEF; // size = 0x20
 
 // size = 0x20, address = 0x800FD908
 static struct OSMessageQueue FreeTextureSetQueue;
@@ -136,7 +136,7 @@ static void VideoDecodeThreadCancel() {
     // -> static struct OSThread VideoDecodeThread;
 }
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -144,9 +144,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x18FBA; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -159,16 +159,16 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x1912A; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x19350; // size = 0x3C
 
-struct __anon_0x19428 {
+typedef struct __anon_0x19428 {
     /* 0x00 */ char magic[4];
     /* 0x04 */ u32 version;
     /* 0x08 */ u32 bufSize;
@@ -181,40 +181,40 @@ struct __anon_0x19428 {
     /* 0x24 */ u32 offsetDataOffsets;
     /* 0x28 */ u32 movieDataOffsets;
     /* 0x2C */ u32 finalFrameDataOffsets;
-}; // size = 0x30
+} __anon_0x19428; // size = 0x30
 
-struct __anon_0x19654 {
+typedef struct __anon_0x19654 {
     /* 0x0 */ u32 numComponents;
     /* 0x4 */ u8 frameComp[16];
-}; // size = 0x14
+} __anon_0x19654; // size = 0x14
 
-struct __anon_0x196BC {
+typedef struct __anon_0x196BC {
     /* 0x0 */ u32 xSize;
     /* 0x4 */ u32 ySize;
     /* 0x8 */ u32 videoType;
-}; // size = 0xC
+} __anon_0x196BC; // size = 0xC
 
-struct __anon_0x1973C {
+typedef struct __anon_0x1973C {
     /* 0x0 */ u32 sndChannels;
     /* 0x4 */ u32 sndFrequency;
     /* 0x8 */ u32 sndNumSamples;
     /* 0xC */ u32 sndNumTracks;
-}; // size = 0x10
+} __anon_0x1973C; // size = 0x10
 
-struct __anon_0x197F6 {
+typedef struct __anon_0x197F6 {
     /* 0x0 */ u8* ytexture;
     /* 0x4 */ u8* utexture;
     /* 0x8 */ u8* vtexture;
     /* 0xC */ s32 frameNumber;
-}; // size = 0x10
+} __anon_0x197F6; // size = 0x10
 
-struct __anon_0x198AC {
+typedef struct __anon_0x198AC {
     /* 0x0 */ s16* buffer;
     /* 0x4 */ s16* curPtr;
     /* 0x8 */ u32 validSample;
-}; // size = 0xC
+} __anon_0x198AC; // size = 0xC
 
-struct __anon_0x1999C {
+typedef struct __anon_0x1999C {
     /* 0x000 */ struct DVDFileInfo fileInfo;
     /* 0x03C */ struct __anon_0x19428 header;
     /* 0x06C */ struct __anon_0x19654 compInfo;
@@ -249,7 +249,7 @@ struct __anon_0x1999C {
     /* 0x100 */ struct __anon_0x19FA4 readBuffer[10];
     /* 0x178 */ struct __anon_0x197F6 textureSet[3];
     /* 0x1A8 */ struct __anon_0x198AC audioBuffer[3];
-}; // size = 0x1D0
+} __anon_0x1999C; // size = 0x1D0
 
 // size = 0x1D0, address = 0x800F9C80
 struct __anon_0x1999C ActivePlayer;
@@ -264,11 +264,11 @@ static void* VideoDecoder() {
     // -> struct __anon_0x1999C ActivePlayer;
 }
 
-struct __anon_0x19FA4 {
+typedef struct __anon_0x19FA4 {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
     /* 0x8 */ s32 isValid;
-}; // size = 0xC
+} __anon_0x19FA4; // size = 0xC
 
 // Range: 0x80013114 -> 0x80013248
 static void* VideoDecoderForOnMemory(void* ptr) {

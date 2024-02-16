@@ -7,17 +7,17 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x752F4; // size = 0x10
 
 // size = 0x10, address = 0x800EE778
 struct _XL_OBJECTTYPE gClassAudio;
 
-struct __anon_0x753E7 {
+typedef struct __anon_0x753E7 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 bEnable;
     /* 0x08 */ void* pHost;
@@ -26,7 +26,7 @@ struct __anon_0x753E7 {
     /* 0x14 */ s32 nRateBit;
     /* 0x18 */ s32 nRateDAC;
     /* 0x1C */ s32 nStatus;
-}; // size = 0x20
+} __anon_0x753E7; // size = 0x20
 
 // Range: 0x8008E4A8 -> 0x8008E5C8
 s32 audioEvent(struct __anon_0x753E7* pAudio, s32 nEvent, void* pArgument) {

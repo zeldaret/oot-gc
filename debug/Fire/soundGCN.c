@@ -7,12 +7,12 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x20667; // size = 0x10
 
 // size = 0x10, address = 0x800EA7D8
 struct _XL_OBJECTTYPE gClassSound;
@@ -20,14 +20,14 @@ struct _XL_OBJECTTYPE gClassSound;
 // size = 0x404, address = 0x80108180
 s32 gVolumeCurve[257];
 
-enum __anon_0x2084C {
+typedef enum __anon_0x2084C {
     SPM_NONE = -1,
     SPM_PLAY = 0,
     SPM_RAMPQUEUED = 1,
     SPM_RAMPPLAYED = 2,
-};
+} __anon_0x2084C;
 
-struct __anon_0x208BA {
+typedef struct __anon_0x208BA {
     /* 0x00 */ void* pSrcData;
     /* 0x04 */ s32 nFrequency;
     /* 0x08 */ s32 nDacrate;
@@ -48,7 +48,7 @@ struct __anon_0x208BA {
     /* 0xCC */ s32 nSizeZero;
     /* 0xD0 */ s32 nSizeHold;
     /* 0xD4 */ s32 nSizeRamp;
-}; // size = 0xD8
+} __anon_0x208BA; // size = 0xD8
 
 // Range: 0x8001C498 -> 0x8001C690
 s32 soundEvent(struct __anon_0x208BA* pSound, s32 nEvent) {
@@ -63,12 +63,12 @@ s32 soundEvent(struct __anon_0x208BA* pSound, s32 nEvent) {
     // -> s32 gVolumeCurve[257];
 }
 
-enum __anon_0x20C8D {
+typedef enum __anon_0x20C8D {
     SOUND_BEEP_ACCEPT = 0,
     SOUND_BEEP_DECLINE = 1,
     SOUND_BEEP_SELECT = 2,
     SOUND_BEEP_COUNT = 3,
-};
+} __anon_0x20C8D;
 
 // Erased
 static s32 soundFreeBeep(struct __anon_0x208BA* pSound, enum __anon_0x20C8D iBeep) {
@@ -84,13 +84,13 @@ s32 soundPlayBeep(struct __anon_0x208BA* pSound, enum __anon_0x20C8D iBeep) {
     // enum __anon_0x20C8D iBeep; // r1+0xC
 }
 
-enum __anon_0x20E13 {
+typedef enum __anon_0x20E13 {
     XLFT_NONE = -1,
     XLFT_TEXT = 0,
     XLFT_BINARY = 1,
-};
+} __anon_0x20E13;
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -98,9 +98,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x20ECC; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -113,16 +113,16 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x2103C; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x21262; // size = 0x3C
 
-struct tXL_FILE {
+typedef struct tXL_FILE {
     /* 0x00 */ s32 iBuffer;
     /* 0x04 */ void* pData;
     /* 0x08 */ void* pBuffer;
@@ -131,7 +131,7 @@ struct tXL_FILE {
     /* 0x14 */ s32 nOffset;
     /* 0x18 */ enum __anon_0x20E13 eType;
     /* 0x1C */ struct DVDFileInfo info;
-}; // size = 0x58
+} __anon_0x2131A; // size = 0x58
 
 // Range: 0x8001C70C -> 0x8001C824
 s32 soundLoadBeep(struct __anon_0x208BA* pSound, enum __anon_0x20C8D iBeep, char* szNameFile) {
@@ -144,20 +144,20 @@ s32 soundLoadBeep(struct __anon_0x208BA* pSound, enum __anon_0x20C8D iBeep, char
     struct tXL_FILE* pFile; // r1+0x14
 }
 
-enum __anon_0x2152F {
+typedef enum __anon_0x2152F {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0x2152F;
 
-struct __anon_0x21596 {
+typedef struct __anon_0x21596 {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x21596; // size = 0x10
 
-enum __anon_0x21647 {
+typedef enum __anon_0x21647 {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -172,9 +172,9 @@ enum __anon_0x21647 {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x21647;
 
-enum __anon_0x21778 {
+typedef enum __anon_0x21778 {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -193,9 +193,9 @@ enum __anon_0x21778 {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x21778;
 
-struct __anon_0x218B8 {
+typedef struct __anon_0x218B8 {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -207,7 +207,7 @@ struct __anon_0x218B8 {
     /* 0x70 */ enum __anon_0x21778 storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x218B8; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x218B8* gpSystem;
@@ -322,11 +322,11 @@ static s32 soundMakeZero(struct __anon_0x208BA* pSound) {
     s32 iData; // r7
 }
 
-enum __anon_0x221A3 {
+typedef enum __anon_0x221A3 {
     SR_NONE = -1,
     SR_DECREASE = 0,
     SR_INCREASE = 1,
-};
+} __anon_0x221A3;
 
 // Range: 0x8001CD8C -> 0x8001D250
 static s32 soundMakeRamp(struct __anon_0x208BA* pSound, s32 iBuffer, enum __anon_0x221A3 eRamp) {

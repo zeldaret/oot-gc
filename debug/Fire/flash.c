@@ -7,22 +7,22 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x7419C; // size = 0x10
 
 // size = 0x10, address = 0x800EE758
 struct _XL_OBJECTTYPE gClassFlash;
 
-struct __anon_0x7428F {
+typedef struct __anon_0x7428F {
     /* 0x0 */ void* pHost;
     /* 0x4 */ s32 flashCommand;
     /* 0x8 */ char* flashBuffer;
     /* 0xC */ s32 flashStatus;
-}; // size = 0x10
+} __anon_0x7428F; // size = 0x10
 
 // Range: 0x8008DA1C -> 0x8008DB3C
 s32 flashEvent(struct __anon_0x7428F* pFLASH, s32 nEvent, void* pArgument) {

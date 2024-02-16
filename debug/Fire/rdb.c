@@ -7,23 +7,23 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x568FE; // size = 0x10
 
 // size = 0x10, address = 0x800EE1B0
 struct _XL_OBJECTTYPE gClassRdb;
 
-struct __anon_0x56A0F {
+typedef struct __anon_0x56A0F {
     /* 0x000 */ s32 nHackCount;
     /* 0x004 */ char szString[256];
     /* 0x104 */ s32 nIndexString;
     /* 0x108 */ s32 nAddress;
     /* 0x10C */ void* pHost;
-}; // size = 0x110
+} __anon_0x56A0F; // size = 0x110
 
 // Range: 0x800715D0 -> 0x800716D8
 s32 rdbEvent(struct __anon_0x56A0F* pRDB, s32 nEvent, void* pArgument) {

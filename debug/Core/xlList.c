@@ -7,12 +7,12 @@
 
 #include "types.h"
 
-struct tXL_LIST {
+typedef struct tXL_LIST {
     /* 0x0 */ s32 nItemSize;
     /* 0x4 */ s32 nItemCount;
     /* 0x8 */ void* pNodeHead;
     /* 0xC */ void* pNodeNext;
-}; // size = 0x10
+} __anon_0x2C35; // size = 0x10
 
 // size = 0x10, address = 0x800F3FA0
 static struct tXL_LIST gListList;

@@ -7,17 +7,17 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x75A44; // size = 0x10
 
 // size = 0x10, address = 0x800EE870
 struct _XL_OBJECTTYPE gClassVideo;
 
-struct __anon_0x75B37 {
+typedef struct __anon_0x75B37 {
     /* 0x00 */ s32 nScan;
     /* 0x04 */ s32 bBlack;
     /* 0x08 */ s32 nBurst;
@@ -34,7 +34,7 @@ struct __anon_0x75B37 {
     /* 0x34 */ s32 nSyncH;
     /* 0x38 */ s32 nSyncV;
     /* 0x3C */ s32 nSyncLeap;
-}; // size = 0x40
+} __anon_0x75B37; // size = 0x40
 
 // Range: 0x8008E8A0 -> 0x8008E9F4
 s32 videoEvent(struct __anon_0x75B37* pVideo, s32 nEvent, void* pArgument) {
@@ -86,28 +86,28 @@ s32 videoGet8() {}
 // Range: 0x8008EB94 -> 0x8008EB9C
 s32 videoPut64() {}
 
-struct __anon_0x76165 {
+typedef struct __anon_0x76165 {
     /* 0x0 */ float rX;
     /* 0x4 */ float rY;
     /* 0x8 */ float rSizeX;
     /* 0xC */ float rSizeY;
-}; // size = 0x10
+} __anon_0x76165; // size = 0x10
 
-struct __anon_0x761FF {
+typedef struct __anon_0x761FF {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nWidth;
     /* 0x08 */ s32 nFormat;
     /* 0x0C */ void* pData;
     /* 0x10 */ s32 nAddress;
-}; // size = 0x14
+} __anon_0x761FF; // size = 0x14
 
-struct __anon_0x76340 {
+typedef struct __anon_0x76340 {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x76340; // size = 0xC
 
-struct __anon_0x763B0 {
+typedef struct __anon_0x763B0 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x76340 rVecOrigTowards;
     /* 0x10 */ float rColorR;
@@ -122,36 +122,36 @@ struct __anon_0x763B0 {
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
-}; // size = 0x3C
+} __anon_0x763B0; // size = 0x3C
 
-struct __anon_0x765E0 {
+typedef struct __anon_0x765E0 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x76340 rS;
     /* 0x10 */ struct __anon_0x76340 rT;
     /* 0x1C */ struct __anon_0x76340 rSRaw;
     /* 0x28 */ struct __anon_0x76340 rTRaw;
-}; // size = 0x34
+} __anon_0x765E0; // size = 0x34
 
-struct __anon_0x766C9 {
+typedef struct __anon_0x766C9 {
     /* 0x00 */ float rSum;
     /* 0x04 */ float rS;
     /* 0x08 */ float rT;
     /* 0x0C */ struct __anon_0x76340 vec;
     /* 0x18 */ u8 anColor[4];
-}; // size = 0x1C
+} __anon_0x766C9; // size = 0x1C
 
-union __anon_0x76828 {
+typedef union __anon_0x76828 {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
     /* 0x0 */ u32 u32[1024];
     /* 0x0 */ u64 u64[512];
-};
+} __anon_0x76828;
 
-struct __anon_0x768C5 {
+typedef struct __anon_0x768C5 {
     /* 0x0 */ union __anon_0x76828 data;
-}; // size = 0x1000
+} __anon_0x768C5; // size = 0x1000
 
-enum _GXTexFmt {
+typedef enum _GXTexFmt {
     GX_TF_I4 = 0,
     GX_TF_I8 = 1,
     GX_TF_IA4 = 2,
@@ -178,24 +178,24 @@ enum _GXTexFmt {
     GX_CTF_Z8L = 58,
     GX_CTF_Z16L = 60,
     GX_TF_A8 = 39,
-};
+} __anon_0x7695E;
 
-struct _GXTlutObj {
+typedef struct _GXTlutObj {
     /* 0x0 */ u32 dummy[3];
-}; // size = 0xC
+} __anon_0x76B20; // size = 0xC
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x76B87; // size = 0x20
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x76BCD;
 
-struct _FRAME_TEXTURE {
+typedef struct _FRAME_TEXTURE {
     /* 0x00 */ s32 nMode;
     /* 0x04 */ s32 iPackPixel;
     /* 0x08 */ s32 iPackColor;
@@ -215,9 +215,9 @@ struct _FRAME_TEXTURE {
     /* 0x44 */ struct _GXTexObj objectTexture;
     /* 0x64 */ enum _GXTexWrapMode eWrapS;
     /* 0x68 */ enum _GXTexWrapMode eWrapT;
-}; // size = 0x6C
+} __anon_0x76C36; // size = 0x6C
 
-struct __anon_0x76F93 {
+typedef struct __anon_0x76F93 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nTMEM;
     /* 0x08 */ s32 iTLUT;
@@ -234,15 +234,15 @@ struct __anon_0x76F93 {
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
     /* 0x28 */ u32 nCodePixel;
-}; // size = 0x2C
+} __anon_0x76F93; // size = 0x2C
 
-enum __anon_0x77275 {
+typedef enum __anon_0x77275 {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-};
+} __anon_0x77275;
 
-struct __anon_0x772F8 {
+typedef struct __anon_0x772F8 {
     /* 0x00 */ s32 nCount;
     /* 0x04 */ float rScale;
     /* 0x08 */ float rAspect;
@@ -252,16 +252,16 @@ struct __anon_0x772F8 {
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x77275 eProjection;
-}; // size = 0x24
+} __anon_0x772F8; // size = 0x24
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0x7748D; // size = 0x4
 
-struct __anon_0x77548 {
+typedef struct __anon_0x77548 {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
     /* 0x00024 */ s32 bBlurOn;
@@ -352,7 +352,7 @@ struct __anon_0x77548 {
     /* 0x3D140 */ u16* nCopyBuffer;
     /* 0x3D144 */ u32* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
-}; // size = 0x3D150
+} __anon_0x77548; // size = 0x3D150
 
 // Range: 0x8008EB9C -> 0x8008EE10
 s32 videoPut32(struct __anon_0x75B37* pVideo, u32 nAddress, s32* pData) {

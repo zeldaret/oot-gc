@@ -7,17 +7,17 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x19EC; // size = 0x10
 
 // size = 0x10, address = 0x800DB7E0
 struct _XL_OBJECTTYPE gTypeFile;
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -25,9 +25,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x1B3D; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -40,14 +40,14 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x1CAD; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x1ED3; // size = 0x3C
 
 // size = 0x4, address = 0x801355A0
 static s32 (*gpfOpen)(char*, struct DVDFileInfo*);
@@ -55,7 +55,7 @@ static s32 (*gpfOpen)(char*, struct DVDFileInfo*);
 // size = 0x4, address = 0x801355A4
 static s32 (*gpfRead)(struct DVDFileInfo*, void*, s32, s32, void (*)(s32, struct DVDFileInfo*));
 
-struct tXL_FILE {
+typedef struct tXL_FILE {
     /* 0x00 */ s32 iBuffer;
     /* 0x04 */ void* pData;
     /* 0x08 */ void* pBuffer;
@@ -64,7 +64,7 @@ struct tXL_FILE {
     /* 0x14 */ s32 nOffset;
     /* 0x18 */ enum __anon_0x2757 eType;
     /* 0x1C */ struct DVDFileInfo info;
-}; // size = 0x58
+} __anon_0x2085; // size = 0x58
 
 // Range: 0x80005E68 -> 0x80005F18
 s32 xlFileEvent(struct tXL_FILE* pFile, s32 nEvent) {
@@ -145,11 +145,11 @@ s32 xlFileClose(struct tXL_FILE** ppFile) {
 // Erased
 static s32 xlFileCreate() {}
 
-enum __anon_0x2757 {
+typedef enum __anon_0x2757 {
     XLFT_NONE = -1,
     XLFT_TEXT = 0,
     XLFT_BINARY = 1,
-};
+} __anon_0x2757;
 
 // Range: 0x80006078 -> 0x8000614C
 s32 xlFileOpen(struct tXL_FILE** ppFile, enum __anon_0x2757 eType, char* szFileName) {

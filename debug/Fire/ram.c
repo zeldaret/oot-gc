@@ -7,21 +7,21 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x4BEF6; // size = 0x10
 
 // size = 0x10, address = 0x800ED6C8
 struct _XL_OBJECTTYPE gClassRAM;
 
-struct __anon_0x4BFE7 {
+typedef struct __anon_0x4BFE7 {
     /* 0x0 */ void* pHost;
     /* 0x4 */ void* pBuffer;
     /* 0x8 */ u32 nSize;
-}; // size = 0xC
+} __anon_0x4BFE7; // size = 0xC
 
 // Range: 0x8006CD98 -> 0x8006CFD0
 s32 ramEvent(struct __anon_0x4BFE7* pRAM, s32 nEvent, void* pArgument) {

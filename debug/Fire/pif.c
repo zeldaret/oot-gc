@@ -7,24 +7,24 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x4A7FA; // size = 0x10
 
 // size = 0x10, address = 0x800ED6B8
 struct _XL_OBJECTTYPE gClassPIF;
 
-struct __anon_0x4A974 {
+typedef struct __anon_0x4A974 {
     /* 0x00 */ void* pROM;
     /* 0x04 */ void* pRAM;
     /* 0x08 */ void* pHost;
     /* 0x0C */ u16 controllerType[5];
     /* 0x16 */ char controllerStatus[5];
     /* 0x1C */ enum __anon_0x4B3FE eControllerType[5];
-}; // size = 0x30
+} __anon_0x4A974; // size = 0x30
 
 // Range: 0x8006BE68 -> 0x8006C090
 s32 pifEvent(struct __anon_0x4A974* pPIF, s32 nEvent, void* pArgument) {
@@ -148,7 +148,7 @@ static s32 pifPut8(struct __anon_0x4A974* pPIF, u32 nAddress, char* pData) {
     // char* pData; // r1+0x8
 }
 
-enum __anon_0x4B3FE {
+typedef enum __anon_0x4B3FE {
     CT_NONE = 0,
     CT_CONTROLLER = 1,
     CT_CONTROLLER_W_PAK = 2,
@@ -158,7 +158,7 @@ enum __anon_0x4B3FE {
     CT_4K = 6,
     CT_16K = 7,
     CT_COUNT = 8,
-};
+} __anon_0x4B3FE;
 
 // Erased
 static s32 pifReadController(struct __anon_0x4A974* pPIF, u8* buffer, u8* prx, s32 channel) {

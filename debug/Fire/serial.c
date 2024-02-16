@@ -7,20 +7,20 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x7869D; // size = 0x10
 
 // size = 0x10, address = 0x800EEA28
 struct _XL_OBJECTTYPE gClassSerial;
 
-struct __anon_0x78791 {
+typedef struct __anon_0x78791 {
     /* 0x0 */ void* pHost;
     /* 0x4 */ s32 nAddress;
-}; // size = 0x8
+} __anon_0x78791; // size = 0x8
 
 // Range: 0x8008EE20 -> 0x8008EF20
 s32 serialEvent(struct __anon_0x78791* pSerial, s32 nEvent, void* pArgument) {

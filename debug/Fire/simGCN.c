@@ -7,9 +7,9 @@
 
 #include "types.h"
 
-struct __anon_0x57A1 {
+typedef struct __anon_0x57A1 {
     /* 0x0 */ s32 nMode;
-}; // size = 0x4
+} __anon_0x57A1; // size = 0x4
 
 // size = 0x4, address = 0x801355D0
 static struct __anon_0x57A1* gpCode;
@@ -173,7 +173,7 @@ u32 gz_iconSize;
 // size = 0x4, address = 0x80134D90
 s32 gHighlightChoice;
 
-enum __anon_0x61D7 {
+typedef enum __anon_0x61D7 {
     S_M_NONE = -1,
     S_M_DISK_COVER_OPEN = 0,
     S_M_DISK_WRONG_DISK = 1,
@@ -223,7 +223,7 @@ enum __anon_0x61D7 {
     S_M_CARD_SV12 = 45,
     S_M_CARD_SV_SHARE = 46,
     S_M_CARD_DEFAULT_ERROR = 47,
-};
+} __anon_0x61D7;
 
 // size = 0x4, address = 0x80134D94
 enum __anon_0x61D7 simulatorMessageCurrent;
@@ -297,14 +297,14 @@ char gpErrorMessageBuffer[20480];
 // size = 0x4, address = 0x801355FC
 s32 gbDisplayedError;
 
-struct __anon_0x6B86 {
+typedef struct __anon_0x6B86 {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x6B86; // size = 0x10
 
-enum __anon_0x6C37 {
+typedef enum __anon_0x6C37 {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -319,9 +319,9 @@ enum __anon_0x6C37 {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x6C37;
 
-enum __anon_0x6D66 {
+typedef enum __anon_0x6D66 {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -340,9 +340,9 @@ enum __anon_0x6D66 {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x6D66;
 
-struct __anon_0x6EA4 {
+typedef struct __anon_0x6EA4 {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -354,19 +354,19 @@ struct __anon_0x6EA4 {
     /* 0x70 */ enum __anon_0x6D66 storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x6EA4; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x6EA4* gpSystem;
 
-enum __anon_0x7115 {
+typedef enum __anon_0x7115 {
     SPM_NONE = -1,
     SPM_PLAY = 0,
     SPM_RAMPQUEUED = 1,
     SPM_RAMPPLAYED = 2,
-};
+} __anon_0x7115;
 
-struct __anon_0x7181 {
+typedef struct __anon_0x7181 {
     /* 0x00 */ void* pSrcData;
     /* 0x04 */ s32 nFrequency;
     /* 0x08 */ s32 nDacrate;
@@ -387,33 +387,33 @@ struct __anon_0x7181 {
     /* 0xCC */ s32 nSizeZero;
     /* 0xD0 */ s32 nSizeHold;
     /* 0xD4 */ s32 nSizeRamp;
-}; // size = 0xD8
+} __anon_0x7181; // size = 0xD8
 
 // size = 0x4, address = 0x80135604
 struct __anon_0x7181* gpSound;
 
-struct __anon_0x7511 {
+typedef struct __anon_0x7511 {
     /* 0x0 */ float rX;
     /* 0x4 */ float rY;
     /* 0x8 */ float rSizeX;
     /* 0xC */ float rSizeY;
-}; // size = 0x10
+} __anon_0x7511; // size = 0x10
 
-struct __anon_0x75AB {
+typedef struct __anon_0x75AB {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nWidth;
     /* 0x08 */ s32 nFormat;
     /* 0x0C */ void* pData;
     /* 0x10 */ s32 nAddress;
-}; // size = 0x14
+} __anon_0x75AB; // size = 0x14
 
-struct __anon_0x76EC {
+typedef struct __anon_0x76EC {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x76EC; // size = 0xC
 
-struct __anon_0x775C {
+typedef struct __anon_0x775C {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x76EC rVecOrigTowards;
     /* 0x10 */ float rColorR;
@@ -428,36 +428,36 @@ struct __anon_0x775C {
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
-}; // size = 0x3C
+} __anon_0x775C; // size = 0x3C
 
-struct __anon_0x798C {
+typedef struct __anon_0x798C {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x76EC rS;
     /* 0x10 */ struct __anon_0x76EC rT;
     /* 0x1C */ struct __anon_0x76EC rSRaw;
     /* 0x28 */ struct __anon_0x76EC rTRaw;
-}; // size = 0x34
+} __anon_0x798C; // size = 0x34
 
-struct __anon_0x7A75 {
+typedef struct __anon_0x7A75 {
     /* 0x00 */ float rSum;
     /* 0x04 */ float rS;
     /* 0x08 */ float rT;
     /* 0x0C */ struct __anon_0x76EC vec;
     /* 0x18 */ u8 anColor[4];
-}; // size = 0x1C
+} __anon_0x7A75; // size = 0x1C
 
-union __anon_0x7BD4 {
+typedef union __anon_0x7BD4 {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
     /* 0x0 */ u32 u32[1024];
     /* 0x0 */ u64 u64[512];
-};
+} __anon_0x7BD4;
 
-struct __anon_0x7C71 {
+typedef struct __anon_0x7C71 {
     /* 0x0 */ union __anon_0x7BD4 data;
-}; // size = 0x1000
+} __anon_0x7C71; // size = 0x1000
 
-enum _GXTexFmt {
+typedef enum _GXTexFmt {
     GX_TF_I4 = 0,
     GX_TF_I8 = 1,
     GX_TF_IA4 = 2,
@@ -484,20 +484,20 @@ enum _GXTexFmt {
     GX_CTF_Z8L = 58,
     GX_CTF_Z16L = 60,
     GX_TF_A8 = 39,
-};
+} __anon_0x7D0A;
 
-struct _GXTlutObj {
+typedef struct _GXTlutObj {
     /* 0x0 */ u32 dummy[3];
-}; // size = 0xC
+} __anon_0x7ECC; // size = 0xC
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x7F13;
 
-struct _FRAME_TEXTURE {
+typedef struct _FRAME_TEXTURE {
     /* 0x00 */ s32 nMode;
     /* 0x04 */ s32 iPackPixel;
     /* 0x08 */ s32 iPackColor;
@@ -517,9 +517,9 @@ struct _FRAME_TEXTURE {
     /* 0x44 */ struct _GXTexObj objectTexture;
     /* 0x64 */ enum _GXTexWrapMode eWrapS;
     /* 0x68 */ enum _GXTexWrapMode eWrapT;
-}; // size = 0x6C
+} __anon_0x7F7C; // size = 0x6C
 
-struct __anon_0x82D9 {
+typedef struct __anon_0x82D9 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nTMEM;
     /* 0x08 */ s32 iTLUT;
@@ -536,15 +536,15 @@ struct __anon_0x82D9 {
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
     /* 0x28 */ u32 nCodePixel;
-}; // size = 0x2C
+} __anon_0x82D9; // size = 0x2C
 
-enum __anon_0x85BB {
+typedef enum __anon_0x85BB {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-};
+} __anon_0x85BB;
 
-struct __anon_0x863F {
+typedef struct __anon_0x863F {
     /* 0x00 */ s32 nCount;
     /* 0x04 */ float rScale;
     /* 0x08 */ float rAspect;
@@ -554,9 +554,9 @@ struct __anon_0x863F {
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x85BB eProjection;
-}; // size = 0x24
+} __anon_0x863F; // size = 0x24
 
-struct __anon_0x87F6 {
+typedef struct __anon_0x87F6 {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
     /* 0x00024 */ s32 bBlurOn;
@@ -647,7 +647,7 @@ struct __anon_0x87F6 {
     /* 0x3D140 */ u16* nCopyBuffer;
     /* 0x3D144 */ u32* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
-}; // size = 0x3D150
+} __anon_0x87F6; // size = 0x3D150
 
 // size = 0x4, address = 0x80135608
 struct __anon_0x87F6* gpFrame;
@@ -664,16 +664,16 @@ void* DemoFrameBuffer1;
 // size = 0x4, address = 0x80135A90
 void* DemoFrameBuffer2;
 
-struct __anon_0x9737 {
+typedef struct __anon_0x9737 {
     /* 0x00 */ s32 configuration;
     /* 0x04 */ s32 size;
     /* 0x08 */ s32 offset;
     /* 0x0C */ char* buffer;
     /* 0x10 */ s32* writtenBlocks;
     /* 0x14 */ s32 writtenConfig;
-}; // size = 0x18
+} __anon_0x9737; // size = 0x18
 
-struct OSCalendarTime {
+typedef struct OSCalendarTime {
     /* 0x00 */ s32 sec;
     /* 0x04 */ s32 min;
     /* 0x08 */ s32 hour;
@@ -684,18 +684,18 @@ struct OSCalendarTime {
     /* 0x1C */ s32 yday;
     /* 0x20 */ s32 msec;
     /* 0x24 */ s32 usec;
-}; // size = 0x28
+} __anon_0x98DA; // size = 0x28
 
-struct CARDFileInfo {
+typedef struct CARDFileInfo {
     /* 0x00 */ s32 chan;
     /* 0x04 */ s32 fileNo;
     /* 0x08 */ s32 offset;
     /* 0x0C */ s32 length;
     /* 0x10 */ u16 iBlock;
     /* 0x12 */ u16 __padding;
-}; // size = 0x14
+} __anon_0x9A48; // size = 0x14
 
-struct __anon_0x9B40 {
+typedef struct __anon_0x9B40 {
     /* 0x000 */ s32 currentGame;
     /* 0x004 */ s32 fileSize;
     /* 0x008 */ char name[33];
@@ -709,9 +709,9 @@ struct __anon_0x9B40 {
     /* 0x110 */ char gameName[16][33];
     /* 0x320 */ struct OSCalendarTime time;
     /* 0x348 */ struct CARDFileInfo fileInfo;
-}; // size = 0x35C
+} __anon_0x9B40; // size = 0x35C
 
-enum __anon_0x9D56 {
+typedef enum __anon_0x9D56 {
     MC_E_NONE = 0,
     MC_E_BUSY = 1,
     MC_E_WRONGDEVICE = 2,
@@ -738,9 +738,9 @@ enum __anon_0x9D56 {
     MC_E_TIME_WRONG = 23,
     MC_E_WRITE_CORRUPTED = 24,
     MC_E_UNKNOWN = 25,
-};
+} __anon_0x9D56;
 
-struct _MCARD {
+typedef struct _MCARD {
     /* 0x000 */ struct __anon_0x9B40 file;
     /* 0x35C */ enum __anon_0x9D56 error;
     /* 0x360 */ s32 slot;
@@ -769,17 +769,17 @@ struct _MCARD {
     /* 0x7AC */ s32 wait;
     /* 0x7B0 */ s32 isBroken;
     /* 0x7B4 */ s32 saveConfiguration;
-}; // size = 0x7B8
+} __anon_0x9FF8; // size = 0x7B8
 
 // size = 0x7B8, address = 0x801079B0
 struct _MCARD mCard;
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0xA4E0; // size = 0x10
 
 // size = 0x10, address = 0x800EA7C8
 struct _XL_OBJECTTYPE gClassCode;
@@ -793,18 +793,18 @@ struct _XL_OBJECTTYPE gClassSound;
 // size = 0x10, address = 0x800EB310
 struct _XL_OBJECTTYPE gClassSystem;
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0xA64E; // size = 0x4
 
-enum __anon_0xA6E7 {
+typedef enum __anon_0xA6E7 {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0xA6E7;
 
 // Range: 0x80007F80 -> 0x80008538
 s32 xlMain() {
@@ -851,7 +851,7 @@ s32 xlMain() {
     // -> s32 gDVDResetToggle;
 }
 
-enum __anon_0xA982 {
+typedef enum __anon_0xA982 {
     SAT_NONE = -1,
     SAT_NAME = 0,
     SAT_PROGRESSIVE = 1,
@@ -862,7 +862,7 @@ enum __anon_0xA982 {
     SAT_MOVIE = 6,
     SAT_RESET = 7,
     SAT_COUNT_ = 8,
-};
+} __anon_0xA982;
 
 // Range: 0x80008538 -> 0x80008578
 s32 simulatorGetArgument(enum __anon_0xA982 eType, char** pszArgument) {
@@ -885,7 +885,7 @@ static s32 simulatorParseArguments() {
     // -> static char* gaszArgument[8];
 }
 
-struct PADStatus {
+typedef struct PADStatus {
     /* 0x0 */ u16 button;
     /* 0x2 */ s8 stickX;
     /* 0x3 */ s8 stickY;
@@ -896,9 +896,9 @@ struct PADStatus {
     /* 0x8 */ u8 analogA;
     /* 0x9 */ u8 analogB;
     /* 0xA */ s8 err;
-}; // size = 0xC
+} __anon_0xAB9F; // size = 0xC
 
-struct __anon_0xAD2F {
+typedef struct __anon_0xAD2F {
     /* 0x00 */ struct PADStatus pst;
     /* 0x0C */ u16 buttonDown;
     /* 0x0E */ u16 buttonUp;
@@ -909,7 +909,7 @@ struct __anon_0xAD2F {
     /* 0x18 */ s16 stickDeltaY;
     /* 0x1A */ s16 substickDeltaX;
     /* 0x1C */ s16 substickDeltaY;
-}; // size = 0x1E
+} __anon_0xAD2F; // size = 0x1E
 
 // size = 0x78, address = 0x80132758
 struct __anon_0xAD2F DemoPad[4];
@@ -1162,7 +1162,7 @@ s32 simulatorReadEEPROM(u8 address, u8* data) {
     // -> struct __anon_0x6EA4* gpSystem;
 }
 
-enum __anon_0xC003 {
+typedef enum __anon_0xC003 {
     CT_NONE = 0,
     CT_CONTROLLER = 1,
     CT_CONTROLLER_W_PAK = 2,
@@ -1172,7 +1172,7 @@ enum __anon_0xC003 {
     CT_4K = 6,
     CT_16K = 7,
     CT_COUNT = 8,
-};
+} __anon_0xC003;
 
 // Range: 0x80008FBC -> 0x80009038
 s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
@@ -1252,14 +1252,14 @@ s32 simulatorReadController(s32 channel, u32* anData) {
     // -> static u32 nPrevButton$701;
 }
 
-struct __anon_0xC654 {
+typedef struct __anon_0xC654 {
     /* 0x000 */ char rom[36];
     /* 0x024 */ s32 controllerConfiguration[4][20];
     /* 0x164 */ s32 rumbleConfiguration;
     /* 0x168 */ s32 storageDevice;
     /* 0x16C */ s32 normalControllerConfig;
     /* 0x170 */ s32 currentControllerConfig;
-}; // size = 0x174
+} __anon_0xC654; // size = 0x174
 
 // Erased
 static s32 simulatorChangeControllerConfig(s32 channel, s32 nCurrButton) {
@@ -1297,11 +1297,11 @@ s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
     // -> static u32 gContMap[4][20];
 }
 
-enum __anon_0xC9F9 {
+typedef enum __anon_0xC9F9 {
     SV_NONE = 0,
     SV_CODE = 1,
     SV_FRAME = 2,
-};
+} __anon_0xC9F9;
 
 // Erased
 static s32 simulatorSetView(enum __anon_0xC9F9 eView) {
@@ -1329,7 +1329,7 @@ static s32 simulatorAddXtraTime() {}
 // Erased
 static s32 simulatorSetPart() {}
 
-enum __anon_0xCB82 {
+typedef enum __anon_0xCB82 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
     VI_TVMODE_NTSC_PROG = 2,
@@ -1342,14 +1342,14 @@ enum __anon_0xCB82 {
     VI_TVMODE_DEBUG_INT = 12,
     VI_TVMODE_DEBUG_PAL_INT = 16,
     VI_TVMODE_DEBUG_PAL_DS = 17,
-};
+} __anon_0xCB82;
 
-enum __anon_0xCCCC {
+typedef enum __anon_0xCCCC {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF = 1,
-};
+} __anon_0xCCCC;
 
-struct _GXRenderModeObj {
+typedef struct _GXRenderModeObj {
     /* 0x00 */ enum __anon_0xCB82 viTVmode;
     /* 0x04 */ u16 fbWidth;
     /* 0x06 */ u16 efbHeight;
@@ -1363,7 +1363,7 @@ struct _GXRenderModeObj {
     /* 0x19 */ u8 aa;
     /* 0x1A */ u8 sample_pattern[12][2];
     /* 0x32 */ u8 vfilter[7];
-}; // size = 0x3C
+} __anon_0xCD7D; // size = 0x3C
 
 // size = 0x4, address = 0x8013559C
 struct _GXRenderModeObj* rmode;
@@ -1397,7 +1397,7 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     // -> struct _MCARD mCard;
 }
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -1405,9 +1405,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0xD175; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -1420,14 +1420,14 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0xD2E5; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0xD50B; // size = 0x3C
 
 // Range: 0x80009A30 -> 0x8000CB7C
 s32 simulatorDrawErrorMessageWait(enum __anon_0x61D7 simulatorErrorMessage) {
@@ -1476,16 +1476,16 @@ s32 simulatorDrawErrorMessageWait(enum __anon_0x61D7 simulatorErrorMessage) {
     // -> u32 gmsg_ld01Size;
 }
 
-enum _GXTexFilter {
+typedef enum _GXTexFilter {
     GX_NEAR = 0,
     GX_LINEAR = 1,
     GX_NEAR_MIP_NEAR = 2,
     GX_LIN_MIP_NEAR = 3,
     GX_NEAR_MIP_LIN = 4,
     GX_LIN_MIP_LIN = 5,
-};
+} __anon_0xD740;
 
-struct __anon_0xD7D1 {
+typedef struct __anon_0xD7D1 {
     /* 0x00 */ u16 height;
     /* 0x02 */ u16 width;
     /* 0x04 */ u32 format;
@@ -1499,33 +1499,33 @@ struct __anon_0xD7D1 {
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
     /* 0x23 */ u8 unpacked;
-}; // size = 0x24
+} __anon_0xD7D1; // size = 0x24
 
-enum _GXTlutFmt {
+typedef enum _GXTlutFmt {
     GX_TL_IA8 = 0,
     GX_TL_RGB565 = 1,
     GX_TL_RGB5A3 = 2,
     GX_MAX_TLUTFMT = 3,
-};
+} __anon_0xD9C4;
 
-struct __anon_0xDA2C {
+typedef struct __anon_0xDA2C {
     /* 0x0 */ u16 numEntries;
     /* 0x2 */ u8 unpacked;
     /* 0x3 */ u8 pad8;
     /* 0x4 */ enum _GXTlutFmt format;
     /* 0x8 */ char* data;
-}; // size = 0xC
+} __anon_0xDA2C; // size = 0xC
 
-struct __anon_0xDAF8 {
+typedef struct __anon_0xDAF8 {
     /* 0x0 */ struct __anon_0xD7D1* textureHeader;
     /* 0x4 */ struct __anon_0xDA2C* CLUTHeader;
-}; // size = 0x8
+} __anon_0xDAF8; // size = 0x8
 
-struct __anon_0xDB69 {
+typedef struct __anon_0xDB69 {
     /* 0x0 */ u32 versionNumber;
     /* 0x4 */ u32 numDescriptors;
     /* 0x8 */ struct __anon_0xDAF8* descriptorArray;
-}; // size = 0xC
+} __anon_0xDB69; // size = 0xC
 
 // Erased
 static s32 simulatorDrawOKMessageLoop(struct __anon_0xDB69* simulatorMessage) {
@@ -1620,9 +1620,9 @@ s32 simulatorDrawErrorMessage(enum __anon_0x61D7 simulatorErrorMessage, s32 draw
     // -> u8 gcoverOpen[10433];
 }
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0xE08E; // size = 0x20
 
 // Range: 0x8000D58C -> 0x8000DBB4
 s32 simulatorDrawOKImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s32 nY0Message, struct __anon_0xDB69* tplOK,

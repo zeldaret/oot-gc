@@ -7,17 +7,17 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x83C1D; // size = 0x10
 
 // size = 0x10, address = 0x800EFFBC
 struct _XL_OBJECTTYPE gClassPeripheral;
 
-struct __anon_0x83D15 {
+typedef struct __anon_0x83D15 {
     /* 0x00 */ void* pHost;
     /* 0x04 */ s32 nStatus;
     /* 0x08 */ s32 nSizeGet;
@@ -32,7 +32,7 @@ struct __anon_0x83D15 {
     /* 0x2C */ s32 nAddressROM;
     /* 0x30 */ s32 nWidthPulse1;
     /* 0x34 */ s32 nWidthPulse2;
-}; // size = 0x38
+} __anon_0x83D15; // size = 0x38
 
 // Range: 0x8009779C -> 0x800978A4
 s32 peripheralEvent(struct __anon_0x83D15* pPeripheral, s32 nEvent, void* pArgument) {
@@ -62,7 +62,7 @@ s32 peripheralGet8() {}
 // Range: 0x800979BC -> 0x800979C4
 s32 peripheralPut64() {}
 
-enum __anon_0x8415D {
+typedef enum __anon_0x8415D {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -81,7 +81,7 @@ enum __anon_0x8415D {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x8415D;
 
 // Range: 0x800979C4 -> 0x80097D48
 s32 peripheralPut32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
@@ -101,20 +101,20 @@ s32 peripheralPut16() {}
 // Range: 0x80097D50 -> 0x80097D58
 s32 peripheralPut8() {}
 
-enum __anon_0x843DE {
+typedef enum __anon_0x843DE {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0x843DE;
 
-struct __anon_0x84447 {
+typedef struct __anon_0x84447 {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x84447; // size = 0x10
 
-enum __anon_0x844F8 {
+typedef enum __anon_0x844F8 {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -129,9 +129,9 @@ enum __anon_0x844F8 {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x844F8;
 
-struct __anon_0x8464B {
+typedef struct __anon_0x8464B {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -143,7 +143,7 @@ struct __anon_0x8464B {
     /* 0x70 */ enum __anon_0x8415D storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x8464B; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x8464B* gpSystem;

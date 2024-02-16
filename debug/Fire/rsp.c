@@ -7,12 +7,12 @@
 
 #include "types.h"
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x56F42; // size = 0x10
 
 // size = 0x10, address = 0x800EE220
 struct _XL_OBJECTTYPE gClassRSP;
@@ -86,7 +86,7 @@ static s16 TMEMMASK$3464[4];
 // size = 0x8, address = 0x801352E0
 static s16 TMEMSHIFT$3465[4];
 
-struct __anon_0x575BD {
+typedef struct __anon_0x575BD {
     /* 0x00 */ s32 nType;
     /* 0x04 */ s32 nFlag;
     /* 0x08 */ s32 nOffsetBoot;
@@ -103,9 +103,9 @@ struct __anon_0x575BD {
     /* 0x34 */ s32 nLengthMBI;
     /* 0x38 */ s32 nOffsetYield;
     /* 0x3C */ s32 nLengthYield;
-}; // size = 0x40
+} __anon_0x575BD; // size = 0x40
 
-struct __anon_0x57890 {
+typedef struct __anon_0x57890 {
     /* 0x00 */ s32 iDL;
     /* 0x04 */ s32 bValid;
     /* 0x08 */ struct __anon_0x575BD task;
@@ -115,80 +115,80 @@ struct __anon_0x57890 {
     /* 0x54 */ u32 nVersionUCode;
     /* 0x58 */ s32 anBaseSegment[16];
     /* 0x98 */ u64* apDL[16];
-}; // size = 0xD8
+} __anon_0x57890; // size = 0xD8
 
-struct __anon_0x57AB1 {
+typedef struct __anon_0x57AB1 {
     /* 0x00 */ float aRotations[2][2];
     /* 0x10 */ float fX;
     /* 0x14 */ float fY;
     /* 0x18 */ float fBaseScaleX;
     /* 0x1C */ float fBaseScaleY;
-}; // size = 0x20
+} __anon_0x57AB1; // size = 0x20
 
-struct __anon_0x57BBE {
+typedef struct __anon_0x57BBE {
     /* 0x0 */ float rS;
     /* 0x4 */ float rT;
     /* 0x8 */ s16 nX;
     /* 0xA */ s16 nY;
     /* 0xC */ s16 nZ;
     /* 0xE */ u8 anData[4];
-}; // size = 0x14
+} __anon_0x57BBE; // size = 0x14
 
-struct __anon_0x57CD6 {
+typedef struct __anon_0x57CD6 {
     /* 0x0 */ char anNormal[3];
-}; // size = 0x3
+} __anon_0x57CD6; // size = 0x3
 
-struct __anon_0x57D55 {
+typedef struct __anon_0x57D55 {
     /* 0x0 */ u8 anMaterial[4];
-}; // size = 0x4
+} __anon_0x57D55; // size = 0x4
 
-struct __anon_0x57DF8 {
+typedef struct __anon_0x57DF8 {
     /* 0x0 */ float aMatrix[4][4];
-}; // size = 0x40
+} __anon_0x57DF8; // size = 0x40
 
-struct __anon_0x57E56 {
+typedef struct __anon_0x57E56 {
     /* 0x0 */ u8 nRed;
     /* 0x1 */ u8 nGreen;
     /* 0x2 */ u8 nBlue;
     /* 0x3 */ char rVectorX;
     /* 0x4 */ char rVectorY;
     /* 0x5 */ char rVectorZ;
-}; // size = 0x6
+} __anon_0x57E56; // size = 0x6
 
-struct __anon_0x58107 {
+typedef struct __anon_0x58107 {
     /* 0x0 */ s16 anSlice[8];
-}; // size = 0x10
+} __anon_0x58107; // size = 0x10
 
-enum __anon_0x581E7 {
+typedef enum __anon_0x581E7 {
     RUT_NOCODE = -1,
     RUT_ABI1 = 0,
     RUT_ABI2 = 1,
     RUT_ABI3 = 2,
     RUT_ABI4 = 3,
     RUT_UNKNOWN = 4,
-};
+} __anon_0x581E7;
 
-struct tXL_LIST {
+typedef struct tXL_LIST {
     /* 0x0 */ s32 nItemSize;
     /* 0x4 */ s32 nItemCount;
     /* 0x8 */ void* pNodeHead;
     /* 0xC */ void* pNodeNext;
-}; // size = 0x10
+} __anon_0x58263; // size = 0x10
 
-struct __anon_0x58360 {
+typedef struct __anon_0x58360 {
     /* 0x0 */ s16 r;
     /* 0x2 */ s16 g;
     /* 0x4 */ s16 b;
     /* 0x6 */ s16 a;
-}; // size = 0x8
+} __anon_0x58360; // size = 0x8
 
-struct __anon_0x583EE {
+typedef struct __anon_0x583EE {
     /* 0x0 */ s16 y;
     /* 0x2 */ s16 u;
     /* 0x4 */ s16 v;
-}; // size = 0x6
+} __anon_0x583EE; // size = 0x6
 
-struct __anon_0x5845E {
+typedef struct __anon_0x5845E {
     /* 0x0000 */ s32 nMode;
     /* 0x0004 */ struct __anon_0x57890 yield;
     /* 0x00DC */ u32 nTickLast;
@@ -284,7 +284,7 @@ struct __anon_0x5845E {
     /* 0x39C0 */ struct __anon_0x58360* rgbaBuf;
     /* 0x39C4 */ struct __anon_0x583EE* yuvBuf;
     /* 0x39C8 */ s32* dctBuf;
-}; // size = 0x39CC
+} __anon_0x5845E; // size = 0x39CC
 
 // Range: 0x80071BB8 -> 0x80071D8C
 s32 rspEvent(struct __anon_0x5845E* pRSP, s32 nEvent, void* pArgument) {
@@ -297,33 +297,33 @@ s32 rspEvent(struct __anon_0x5845E* pRSP, s32 nEvent, void* pArgument) {
 // size = 0x4, address = 0x801356BC
 s32 gNoSwapBuffer;
 
-enum __anon_0x5943B {
+typedef enum __anon_0x5943B {
     RUM_NONE = 0,
     RUM_IDLE = 1,
-};
+} __anon_0x5943B;
 
-struct __anon_0x594BE {
+typedef struct __anon_0x594BE {
     /* 0x0 */ float rX;
     /* 0x4 */ float rY;
     /* 0x8 */ float rSizeX;
     /* 0xC */ float rSizeY;
-}; // size = 0x10
+} __anon_0x594BE; // size = 0x10
 
-struct __anon_0x59558 {
+typedef struct __anon_0x59558 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nWidth;
     /* 0x08 */ s32 nFormat;
     /* 0x0C */ void* pData;
     /* 0x10 */ s32 nAddress;
-}; // size = 0x14
+} __anon_0x59558; // size = 0x14
 
-struct __anon_0x59699 {
+typedef struct __anon_0x59699 {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x59699; // size = 0xC
 
-struct __anon_0x59709 {
+typedef struct __anon_0x59709 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x59699 rVecOrigTowards;
     /* 0x10 */ float rColorR;
@@ -338,36 +338,36 @@ struct __anon_0x59709 {
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
-}; // size = 0x3C
+} __anon_0x59709; // size = 0x3C
 
-struct __anon_0x59939 {
+typedef struct __anon_0x59939 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x59699 rS;
     /* 0x10 */ struct __anon_0x59699 rT;
     /* 0x1C */ struct __anon_0x59699 rSRaw;
     /* 0x28 */ struct __anon_0x59699 rTRaw;
-}; // size = 0x34
+} __anon_0x59939; // size = 0x34
 
-struct __anon_0x59A22 {
+typedef struct __anon_0x59A22 {
     /* 0x00 */ float rSum;
     /* 0x04 */ float rS;
     /* 0x08 */ float rT;
     /* 0x0C */ struct __anon_0x59699 vec;
     /* 0x18 */ u8 anColor[4];
-}; // size = 0x1C
+} __anon_0x59A22; // size = 0x1C
 
-union __anon_0x59B81 {
+typedef union __anon_0x59B81 {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
     /* 0x0 */ u32 u32[1024];
     /* 0x0 */ u64 u64[512];
-};
+} __anon_0x59B81;
 
-struct __anon_0x59C1E {
+typedef struct __anon_0x59C1E {
     /* 0x0 */ union __anon_0x59B81 data;
-}; // size = 0x1000
+} __anon_0x59C1E; // size = 0x1000
 
-enum _GXTexFmt {
+typedef enum _GXTexFmt {
     GX_TF_I4 = 0,
     GX_TF_I8 = 1,
     GX_TF_IA4 = 2,
@@ -394,24 +394,24 @@ enum _GXTexFmt {
     GX_CTF_Z8L = 58,
     GX_CTF_Z16L = 60,
     GX_TF_A8 = 39,
-};
+} __anon_0x59CB7;
 
-struct _GXTlutObj {
+typedef struct _GXTlutObj {
     /* 0x0 */ u32 dummy[3];
-}; // size = 0xC
+} __anon_0x59E79; // size = 0xC
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x59EE0; // size = 0x20
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x59F26;
 
-struct _FRAME_TEXTURE {
+typedef struct _FRAME_TEXTURE {
     /* 0x00 */ s32 nMode;
     /* 0x04 */ s32 iPackPixel;
     /* 0x08 */ s32 iPackColor;
@@ -431,9 +431,9 @@ struct _FRAME_TEXTURE {
     /* 0x44 */ struct _GXTexObj objectTexture;
     /* 0x64 */ enum _GXTexWrapMode eWrapS;
     /* 0x68 */ enum _GXTexWrapMode eWrapT;
-}; // size = 0x6C
+} __anon_0x59F8F; // size = 0x6C
 
-struct __anon_0x5A2EC {
+typedef struct __anon_0x5A2EC {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nTMEM;
     /* 0x08 */ s32 iTLUT;
@@ -450,15 +450,15 @@ struct __anon_0x5A2EC {
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
     /* 0x28 */ u32 nCodePixel;
-}; // size = 0x2C
+} __anon_0x5A2EC; // size = 0x2C
 
-enum __anon_0x5A5CE {
+typedef enum __anon_0x5A5CE {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-};
+} __anon_0x5A5CE;
 
-struct __anon_0x5A64F {
+typedef struct __anon_0x5A64F {
     /* 0x00 */ s32 nCount;
     /* 0x04 */ float rScale;
     /* 0x08 */ float rAspect;
@@ -468,16 +468,16 @@ struct __anon_0x5A64F {
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x5A5CE eProjection;
-}; // size = 0x24
+} __anon_0x5A64F; // size = 0x24
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0x5A7E4; // size = 0x4
 
-struct __anon_0x5A89F {
+typedef struct __anon_0x5A89F {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
     /* 0x00024 */ s32 bBlurOn;
@@ -568,7 +568,7 @@ struct __anon_0x5A89F {
     /* 0x3D140 */ u16* nCopyBuffer;
     /* 0x3D144 */ u32* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
-}; // size = 0x3D150
+} __anon_0x5A89F; // size = 0x3D150
 
 // Range: 0x80071D8C -> 0x80071F6C
 s32 rspUpdate(struct __anon_0x5845E* pRSP, enum __anon_0x5943B eMode) {
@@ -599,7 +599,7 @@ s32 rspEnableABI(struct __anon_0x5845E* pRSP, s32 bFlag) {
     // s32 bFlag; // r1+0x4
 }
 
-struct __anon_0x5B8F2 {
+typedef struct __anon_0x5B8F2 {
     /* 0x00 */ s32 nOffsetCode;
     /* 0x04 */ s32 nLengthCode;
     /* 0x08 */ s32 nOffsetData;
@@ -608,7 +608,7 @@ struct __anon_0x5B8F2 {
     /* 0x50 */ u64 nUCodeCheckSum;
     /* 0x58 */ s32 nCountVertex;
     /* 0x5C */ enum __anon_0x60B3F eType;
-}; // size = 0x60
+} __anon_0x5B8F2; // size = 0x60
 
 // Range: 0x80071FE0 -> 0x800720B8
 s32 rspInvalidateCache(struct __anon_0x5845E* pRSP, s32 nOffset0, s32 nOffset1) {
@@ -699,17 +699,17 @@ s32 rspPut8(struct __anon_0x5845E* pRSP, u32 nAddress, char* pData) {
 // Erased
 static s32 rspSaveUCode() {}
 
-struct __anon_0x5C1E6 {
+typedef struct __anon_0x5C1E6 {
     /* 0x0 */ s32 nOffsetHost;
     /* 0x4 */ s32 nAddressN64;
-}; // size = 0x8
+} __anon_0x5C1E6; // size = 0x8
 
-struct cpu_callerID {
+typedef struct cpu_callerID {
     /* 0x0 */ s32 N64address;
     /* 0x4 */ s32 GCNaddress;
-}; // size = 0x8
+} __anon_0x5C24C; // size = 0x8
 
-struct cpu_function {
+typedef struct cpu_function {
     /* 0x00 */ void* pnBase;
     /* 0x04 */ void* pfCode;
     /* 0x08 */ s32 nCountJump;
@@ -728,9 +728,9 @@ struct cpu_function {
     /* 0x3C */ struct cpu_function* prev;
     /* 0x40 */ struct cpu_function* left;
     /* 0x44 */ struct cpu_function* right;
-}; // size = 0x48
+} __anon_0x5C2BF; // size = 0x48
 
-union __anon_0x5C59B {
+typedef union __anon_0x5C59B {
     /* 0x0 */ char _0s8;
     /* 0x1 */ char _1s8;
     /* 0x2 */ char _2s8;
@@ -761,9 +761,9 @@ union __anon_0x5C59B {
     /* 0x0 */ u32 _0u32;
     /* 0x4 */ u32 u32;
     /* 0x0 */ u64 u64;
-};
+} __anon_0x5C59B;
 
-union __anon_0x5C9AF {
+typedef union __anon_0x5C9AF {
     /* 0x0 */ float _0f32;
     /* 0x4 */ float f32;
     /* 0x0 */ double f64;
@@ -773,9 +773,9 @@ union __anon_0x5C9AF {
     /* 0x0 */ u32 _0u32;
     /* 0x4 */ u32 u32;
     /* 0x0 */ u64 u64;
-};
+} __anon_0x5C9AF;
 
-struct __anon_0x5CEBD {
+typedef struct __anon_0x5CEBD {
     /* 0x00 */ s32 nType;
     /* 0x04 */ void* pObject;
     /* 0x08 */ s32 nOffsetAddress;
@@ -789,9 +789,9 @@ struct __anon_0x5CEBD {
     /* 0x28 */ s32 (*pfPut64)(void*, u32, s64*);
     /* 0x2C */ u32 nAddressPhysical0;
     /* 0x30 */ u32 nAddressPhysical1;
-}; // size = 0x34
+} __anon_0x5CEBD; // size = 0x34
 
-struct cpu_treeRoot {
+typedef struct cpu_treeRoot {
     /* 0x00 */ u16 total;
     /* 0x04 */ s32 total_memory;
     /* 0x08 */ s32 root_address;
@@ -806,21 +806,21 @@ struct cpu_treeRoot {
     /* 0x78 */ s32 side;
     /* 0x7C */ struct cpu_function* restore;
     /* 0x80 */ s32 restore_side;
-}; // size = 0x84
+} __anon_0x5D18B; // size = 0x84
 
-struct _CPU_ADDRESS {
+typedef struct _CPU_ADDRESS {
     /* 0x0 */ s32 nN64;
     /* 0x4 */ s32 nHost;
     /* 0x8 */ struct cpu_function* pFunction;
-}; // size = 0xC
+} __anon_0x5D3CC; // size = 0xC
 
-struct __anon_0x5D481 {
+typedef struct __anon_0x5D481 {
     /* 0x0 */ u32 nAddress;
     /* 0x4 */ u32 nOpcodeOld;
     /* 0x8 */ u32 nOpcodeNew;
-}; // size = 0xC
+} __anon_0x5D481; // size = 0xC
 
-struct OSContext {
+typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
     /* 0x080 */ u32 cr;
     /* 0x084 */ u32 lr;
@@ -836,9 +836,9 @@ struct OSContext {
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
     /* 0x1C8 */ double psf[32];
-}; // size = 0x2C8
+} __anon_0x5D5AC; // size = 0x2C8
 
-struct OSAlarm {
+typedef struct OSAlarm {
     /* 0x00 */ void (*handler)(struct OSAlarm*, struct OSContext*);
     /* 0x04 */ u32 tag;
     /* 0x08 */ s64 fire;
@@ -846,9 +846,9 @@ struct OSAlarm {
     /* 0x14 */ struct OSAlarm* next;
     /* 0x18 */ s64 period;
     /* 0x20 */ s64 start;
-}; // size = 0x28
+} __anon_0x5D803; // size = 0x28
 
-struct cpu_optimize {
+typedef struct cpu_optimize {
     /* 0x00 */ u32 validCheck;
     /* 0x04 */ u32 destGPR_check;
     /* 0x08 */ s32 destGPR;
@@ -859,9 +859,9 @@ struct cpu_optimize {
     /* 0x1C */ s32 addr_last;
     /* 0x20 */ u32 checkType;
     /* 0x24 */ u32 checkNext;
-}; // size = 0x28
+} __anon_0x5D91E; // size = 0x28
 
-struct _CPU {
+typedef struct _CPU {
     /* 0x00000 */ s32 nMode;
     /* 0x00004 */ s32 nTick;
     /* 0x00008 */ void* pHost;
@@ -905,7 +905,7 @@ struct _CPU {
     /* 0x1205C */ u32 nFlagCODE;
     /* 0x12060 */ u32 nCompileFlag;
     /* 0x12064 */ struct cpu_optimize nOptimize;
-}; // size = 0x12090
+} __anon_0x5DACB; // size = 0x12090
 
 // Range: 0x80072A5C -> 0x80072C10
 static s32 rspParseGBI(struct __anon_0x5845E* pRSP, s32* pbDone, s32 nCount) {
@@ -971,20 +971,20 @@ static s32 rspSaveYield(struct __anon_0x5845E* pRSP) {
     struct __anon_0x575BD* pTask; // r4
 }
 
-enum __anon_0x5E613 {
+typedef enum __anon_0x5E613 {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0x5E613;
 
-struct __anon_0x5E675 {
+typedef struct __anon_0x5E675 {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x5E675; // size = 0x10
 
-enum __anon_0x5E726 {
+typedef enum __anon_0x5E726 {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -999,9 +999,9 @@ enum __anon_0x5E726 {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x5E726;
 
-enum __anon_0x5E852 {
+typedef enum __anon_0x5E852 {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -1020,9 +1020,9 @@ enum __anon_0x5E852 {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x5E852;
 
-struct __anon_0x5E98D {
+typedef struct __anon_0x5E98D {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -1034,17 +1034,17 @@ struct __anon_0x5E98D {
     /* 0x70 */ enum __anon_0x5E852 storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x5E98D; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x5E98D* gpSystem;
 
-struct __anon_0x5EBE0 {
+typedef struct __anon_0x5EBE0 {
     /* 0x0 */ s32 nCount;
     /* 0x4 */ u8 anData[768];
-}; // size = 0x304
+} __anon_0x5EBE0; // size = 0x304
 
-struct __anon_0x5EC3E {
+typedef struct __anon_0x5EC3E {
     /* 0x0 */ s16 sx;
     /* 0x2 */ s16 sy;
     /* 0x4 */ s32 invw;
@@ -1053,9 +1053,9 @@ struct __anon_0x5EC3E {
     /* 0xC */ u8 cc;
     /* 0xD */ u8 fog;
     /* 0xE */ s16 wi;
-}; // size = 0x10
+} __anon_0x5EC3E; // size = 0x10
 
-struct __anon_0x5ED4F {
+typedef struct __anon_0x5ED4F {
     /* 0x00 */ u16 imageX;
     /* 0x02 */ u16 imageW;
     /* 0x04 */ s16 frameX;
@@ -1076,9 +1076,9 @@ struct __anon_0x5ED4F {
     /* 0x22 */ u16 tmemLoadTH;
     /* 0x24 */ u16 tmemSizeW;
     /* 0x26 */ u16 tmemSize;
-}; // size = 0x28
+} __anon_0x5ED4F; // size = 0x28
 
-struct __anon_0x5F05A {
+typedef struct __anon_0x5F05A {
     /* 0x00 */ u16 imageX;
     /* 0x02 */ u16 imageW;
     /* 0x04 */ s16 frameX;
@@ -1097,15 +1097,15 @@ struct __anon_0x5F05A {
     /* 0x1E */ u16 scaleH;
     /* 0x20 */ s32 imageYorig;
     /* 0x24 */ u8 padding[4];
-}; // size = 0x28
+} __anon_0x5F05A; // size = 0x28
 
-union __anon_0x5F2FB {
+typedef union __anon_0x5F2FB {
     /* 0x0 */ struct __anon_0x5ED4F b;
     /* 0x0 */ struct __anon_0x5F05A s;
     /* 0x0 */ s64 force_structure_alignment;
-};
+} __anon_0x5F2FB;
 
-struct __anon_0x5F429 {
+typedef struct __anon_0x5F429 {
     /* 0x00 */ s16 objX;
     /* 0x02 */ u16 scaleW;
     /* 0x04 */ u16 imageW;
@@ -1120,20 +1120,20 @@ struct __anon_0x5F429 {
     /* 0x15 */ u8 imageSiz;
     /* 0x16 */ u8 imagePal;
     /* 0x17 */ u8 imageFlags;
-}; // size = 0x18
+} __anon_0x5F429; // size = 0x18
 
-union __anon_0x5F63B {
+typedef union __anon_0x5F63B {
     /* 0x0 */ struct __anon_0x5F429 s;
     /* 0x0 */ s64 force_structure_alignment;
-};
+} __anon_0x5F63B;
 
-struct __anon_0x5F6E9 {
+typedef struct __anon_0x5F6E9 {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x5F6E9; // size = 0xC
 
-struct __anon_0x5F759 {
+typedef struct __anon_0x5F759 {
     /* 0x00 */ s32 bFlip;
     /* 0x04 */ s32 iTile;
     /* 0x08 */ s32 nX0;
@@ -1144,9 +1144,9 @@ struct __anon_0x5F759 {
     /* 0x1C */ float rT;
     /* 0x20 */ float rDeltaS;
     /* 0x24 */ float rDeltaT;
-}; // size = 0x28
+} __anon_0x5F759; // size = 0x28
 
-struct __anon_0x5F8B9 {
+typedef struct __anon_0x5F8B9 {
     /* 0x00 */ u32 type;
     /* 0x04 */ u32 image;
     /* 0x08 */ u16 tmem;
@@ -1155,9 +1155,9 @@ struct __anon_0x5F8B9 {
     /* 0x0E */ u16 sid;
     /* 0x10 */ u32 flag;
     /* 0x14 */ u32 mask;
-}; // size = 0x18
+} __anon_0x5F8B9; // size = 0x18
 
-struct __anon_0x5F9D9 {
+typedef struct __anon_0x5F9D9 {
     /* 0x00 */ u32 type;
     /* 0x04 */ u32 image;
     /* 0x08 */ u16 tmem;
@@ -1166,9 +1166,9 @@ struct __anon_0x5F9D9 {
     /* 0x0E */ u16 sid;
     /* 0x10 */ u32 flag;
     /* 0x14 */ u32 mask;
-}; // size = 0x18
+} __anon_0x5F9D9; // size = 0x18
 
-struct __anon_0x5FAFC {
+typedef struct __anon_0x5FAFC {
     /* 0x00 */ u32 type;
     /* 0x04 */ u32 image;
     /* 0x08 */ u16 phead;
@@ -1177,22 +1177,22 @@ struct __anon_0x5FAFC {
     /* 0x0E */ u16 sid;
     /* 0x10 */ u32 flag;
     /* 0x14 */ u32 mask;
-}; // size = 0x18
+} __anon_0x5FAFC; // size = 0x18
 
-union __anon_0x5FC1B {
+typedef union __anon_0x5FC1B {
     /* 0x0 */ struct __anon_0x5F8B9 block;
     /* 0x0 */ struct __anon_0x5F9D9 tile;
     /* 0x0 */ struct __anon_0x5FAFC tlut;
     /* 0x0 */ s64 force_structure_alignment;
-};
+} __anon_0x5FC1B;
 
-enum __anon_0x6029B {
+typedef enum __anon_0x6029B {
     XLFT_NONE = -1,
     XLFT_TEXT = 0,
     XLFT_BINARY = 1,
-};
+} __anon_0x6029B;
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -1200,9 +1200,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x6034F; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -1215,16 +1215,16 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x604BF; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x606E5; // size = 0x3C
 
-struct tXL_FILE {
+typedef struct tXL_FILE {
     /* 0x00 */ s32 iBuffer;
     /* 0x04 */ void* pData;
     /* 0x08 */ void* pBuffer;
@@ -1233,9 +1233,9 @@ struct tXL_FILE {
     /* 0x14 */ s32 nOffset;
     /* 0x18 */ enum __anon_0x6029B eType;
     /* 0x1C */ struct DVDFileInfo info;
-}; // size = 0x58
+} __anon_0x6079D; // size = 0x58
 
-enum __anon_0x60B3F {
+typedef enum __anon_0x60B3F {
     RUT_NONE = -1,
     RUT_TURBO = 0,
     RUT_SPRITE2D = 1,
@@ -1251,7 +1251,7 @@ enum __anon_0x60B3F {
     RUT_AUDIO1 = 11,
     RUT_AUDIO2 = 12,
     RUT_JPEG = 13,
-};
+} __anon_0x60B3F;
 
 // Range: 0x8007306C -> 0x800741CC
 static s32 rspFindUCode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {

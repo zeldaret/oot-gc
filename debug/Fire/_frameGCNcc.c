@@ -7,7 +7,7 @@
 
 #include "types.h"
 
-enum _GXTevColorArg {
+typedef enum _GXTevColorArg {
     GX_CC_CPREV = 0,
     GX_CC_APREV = 1,
     GX_CC_C0 = 2,
@@ -28,12 +28,12 @@ enum _GXTevColorArg {
     GX_CC_TEXGGG = 17,
     GX_CC_TEXBBB = 18,
     GX_CC_QUARTER = 14,
-};
+} __anon_0x84A0A;
 
 // size = 0x40, address = 0x800F0158
 enum _GXTevColorArg gCombinedColor[16];
 
-enum _GXTevAlphaArg {
+typedef enum _GXTevAlphaArg {
     GX_CA_APREV = 0,
     GX_CA_A0 = 1,
     GX_CA_A1 = 2,
@@ -43,12 +43,12 @@ enum _GXTevAlphaArg {
     GX_CA_KONST = 6,
     GX_CA_ZERO = 7,
     GX_CA_ONE = 6,
-};
+} __anon_0x84BAC;
 
 // size = 0x20, address = 0x800F0198
 enum _GXTevAlphaArg gCombinedAlpha[8];
 
-enum _GXTevStageID {
+typedef enum _GXTevStageID {
     GX_TEVSTAGE0 = 0,
     GX_TEVSTAGE1 = 1,
     GX_TEVSTAGE2 = 2,
@@ -66,7 +66,7 @@ enum _GXTevStageID {
     GX_TEVSTAGE14 = 14,
     GX_TEVSTAGE15 = 15,
     GX_MAX_TEVSTAGE = 16,
-};
+} __anon_0x84CA5;
 
 // size = 0x40, address = 0x800F01B8
 static enum _GXTevStageID ganNameTevStage[16];
@@ -74,7 +74,7 @@ static enum _GXTevStageID ganNameTevStage[16];
 // size = 0x5, address = 0x80135370
 static u8 sOrder[5];
 
-enum _GXTevOp {
+typedef enum _GXTevOp {
     GX_TEV_ADD = 0,
     GX_TEV_SUB = 1,
     GX_TEV_COMP_R8_GT = 8,
@@ -87,38 +87,38 @@ enum _GXTevOp {
     GX_TEV_COMP_RGB8_EQ = 15,
     GX_TEV_COMP_A8_GT = 14,
     GX_TEV_COMP_A8_EQ = 15,
-};
+} __anon_0x84E8A;
 
-enum _GXTevBias {
+typedef enum _GXTevBias {
     GX_TB_ZERO = 0,
     GX_TB_ADDHALF = 1,
     GX_TB_SUBHALF = 2,
     GX_MAX_TEVBIAS = 3,
-};
+} __anon_0x84FB5;
 
-enum _GXTevScale {
+typedef enum _GXTevScale {
     GX_CS_SCALE_1 = 0,
     GX_CS_SCALE_2 = 1,
     GX_CS_SCALE_4 = 2,
     GX_CS_DIVIDE_2 = 3,
     GX_MAX_TEVSCALE = 4,
-};
+} __anon_0x85020;
 
-enum _GXTevRegID {
+typedef enum _GXTevRegID {
     GX_TEVPREV = 0,
     GX_TEVREG0 = 1,
     GX_TEVREG1 = 2,
     GX_TEVREG2 = 3,
     GX_MAX_TEVREG = 4,
-};
+} __anon_0x850A3;
 
-struct TevColorOp {
+typedef struct TevColorOp {
     /* 0x00 */ enum _GXTevOp op;
     /* 0x04 */ enum _GXTevBias bias;
     /* 0x08 */ enum _GXTevScale scale;
     /* 0x0C */ u8 clamp;
     /* 0x10 */ enum _GXTevRegID out_reg;
-}; // size = 0x14
+} __anon_0x85117; // size = 0x14
 
 // size = 0x64, address = 0x800F01F8
 static struct TevColorOp sTevColorOp[5];
@@ -158,20 +158,20 @@ static void UpdateRenderModeList(u32 renderMode, u32 cycle) {
     // -> static u8 sMemShift$301[2][4];
 }
 
-enum __anon_0x8573D {
+typedef enum __anon_0x8573D {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0x8573D;
 
-struct __anon_0x857A7 {
+typedef struct __anon_0x857A7 {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x857A7; // size = 0x10
 
-enum __anon_0x85858 {
+typedef enum __anon_0x85858 {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -186,9 +186,9 @@ enum __anon_0x85858 {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x85858;
 
-enum __anon_0x8598C {
+typedef enum __anon_0x8598C {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -207,9 +207,9 @@ enum __anon_0x8598C {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x8598C;
 
-struct __anon_0x85ACF {
+typedef struct __anon_0x85ACF {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -221,33 +221,33 @@ struct __anon_0x85ACF {
     /* 0x70 */ enum __anon_0x8598C storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x85ACF; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x85ACF* gpSystem;
 
-struct __anon_0x85D00 {
+typedef struct __anon_0x85D00 {
     /* 0x0 */ float rX;
     /* 0x4 */ float rY;
     /* 0x8 */ float rSizeX;
     /* 0xC */ float rSizeY;
-}; // size = 0x10
+} __anon_0x85D00; // size = 0x10
 
-struct __anon_0x85D9A {
+typedef struct __anon_0x85D9A {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nWidth;
     /* 0x08 */ s32 nFormat;
     /* 0x0C */ void* pData;
     /* 0x10 */ s32 nAddress;
-}; // size = 0x14
+} __anon_0x85D9A; // size = 0x14
 
-struct __anon_0x85EDB {
+typedef struct __anon_0x85EDB {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x85EDB; // size = 0xC
 
-struct __anon_0x85F4B {
+typedef struct __anon_0x85F4B {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x85EDB rVecOrigTowards;
     /* 0x10 */ float rColorR;
@@ -262,36 +262,36 @@ struct __anon_0x85F4B {
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
-}; // size = 0x3C
+} __anon_0x85F4B; // size = 0x3C
 
-struct __anon_0x8617B {
+typedef struct __anon_0x8617B {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x85EDB rS;
     /* 0x10 */ struct __anon_0x85EDB rT;
     /* 0x1C */ struct __anon_0x85EDB rSRaw;
     /* 0x28 */ struct __anon_0x85EDB rTRaw;
-}; // size = 0x34
+} __anon_0x8617B; // size = 0x34
 
-struct __anon_0x86264 {
+typedef struct __anon_0x86264 {
     /* 0x00 */ float rSum;
     /* 0x04 */ float rS;
     /* 0x08 */ float rT;
     /* 0x0C */ struct __anon_0x85EDB vec;
     /* 0x18 */ u8 anColor[4];
-}; // size = 0x1C
+} __anon_0x86264; // size = 0x1C
 
-union __anon_0x863C3 {
+typedef union __anon_0x863C3 {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
     /* 0x0 */ u32 u32[1024];
     /* 0x0 */ u64 u64[512];
-};
+} __anon_0x863C3;
 
-struct __anon_0x86460 {
+typedef struct __anon_0x86460 {
     /* 0x0 */ union __anon_0x863C3 data;
-}; // size = 0x1000
+} __anon_0x86460; // size = 0x1000
 
-enum _GXTexFmt {
+typedef enum _GXTexFmt {
     GX_TF_I4 = 0,
     GX_TF_I8 = 1,
     GX_TF_IA4 = 2,
@@ -318,24 +318,24 @@ enum _GXTexFmt {
     GX_CTF_Z8L = 58,
     GX_CTF_Z16L = 60,
     GX_TF_A8 = 39,
-};
+} __anon_0x864F9;
 
-struct _GXTlutObj {
+typedef struct _GXTlutObj {
     /* 0x0 */ u32 dummy[3];
-}; // size = 0xC
+} __anon_0x866BB; // size = 0xC
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x86722; // size = 0x20
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x86768;
 
-struct _FRAME_TEXTURE {
+typedef struct _FRAME_TEXTURE {
     /* 0x00 */ s32 nMode;
     /* 0x04 */ s32 iPackPixel;
     /* 0x08 */ s32 iPackColor;
@@ -355,9 +355,9 @@ struct _FRAME_TEXTURE {
     /* 0x44 */ struct _GXTexObj objectTexture;
     /* 0x64 */ enum _GXTexWrapMode eWrapS;
     /* 0x68 */ enum _GXTexWrapMode eWrapT;
-}; // size = 0x6C
+} __anon_0x867D1; // size = 0x6C
 
-struct __anon_0x86B2E {
+typedef struct __anon_0x86B2E {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nTMEM;
     /* 0x08 */ s32 iTLUT;
@@ -374,15 +374,15 @@ struct __anon_0x86B2E {
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
     /* 0x28 */ u32 nCodePixel;
-}; // size = 0x2C
+} __anon_0x86B2E; // size = 0x2C
 
-enum __anon_0x86E10 {
+typedef enum __anon_0x86E10 {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-};
+} __anon_0x86E10;
 
-struct __anon_0x86E99 {
+typedef struct __anon_0x86E99 {
     /* 0x00 */ s32 nCount;
     /* 0x04 */ float rScale;
     /* 0x08 */ float rAspect;
@@ -392,9 +392,9 @@ struct __anon_0x86E99 {
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x86E10 eProjection;
-}; // size = 0x24
+} __anon_0x86E99; // size = 0x24
 
-struct __anon_0x87050 {
+typedef struct __anon_0x87050 {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
     /* 0x00024 */ s32 bBlurOn;
@@ -485,9 +485,9 @@ struct __anon_0x87050 {
     /* 0x3D140 */ u16* nCopyBuffer;
     /* 0x3D144 */ u32* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
-}; // size = 0x3D150
+} __anon_0x87050; // size = 0x3D150
 
-enum _GXTexCoordID {
+typedef enum _GXTexCoordID {
     GX_TEXCOORD0 = 0,
     GX_TEXCOORD1 = 1,
     GX_TEXCOORD2 = 2,
@@ -498,9 +498,9 @@ enum _GXTexCoordID {
     GX_TEXCOORD7 = 7,
     GX_MAX_TEXCOORD = 8,
     GX_TEXCOORD_NULL = 255,
-};
+} __anon_0x87EDC;
 
-enum _GXTexMapID {
+typedef enum _GXTexMapID {
     GX_TEXMAP0 = 0,
     GX_TEXMAP1 = 1,
     GX_TEXMAP2 = 2,
@@ -512,9 +512,9 @@ enum _GXTexMapID {
     GX_MAX_TEXMAP = 8,
     GX_TEXMAP_NULL = 255,
     GX_TEX_DISABLE = 256,
-};
+} __anon_0x87FB5;
 
-enum _GXChannelID {
+typedef enum _GXChannelID {
     GX_COLOR0 = 0,
     GX_COLOR1 = 1,
     GX_ALPHA0 = 2,
@@ -525,15 +525,15 @@ enum _GXChannelID {
     GX_ALPHA_BUMP = 7,
     GX_ALPHA_BUMPN = 8,
     GX_COLOR_NULL = 255,
-};
+} __anon_0x8808B;
 
-struct TevOrder {
+typedef struct TevOrder {
     /* 0x0 */ enum _GXTexCoordID coordID;
     /* 0x4 */ enum _GXTexMapID mapID;
     /* 0x8 */ enum _GXChannelID chanID;
-}; // size = 0xC
+} __anon_0x88153; // size = 0xC
 
-struct CombineModeTev {
+typedef struct CombineModeTev {
     /* 0x000 */ u32 ccCodes[2][2];
     /* 0x010 */ u8 numCycles;
     /* 0x011 */ u8 numStages;
@@ -544,7 +544,7 @@ struct CombineModeTev {
     /* 0x078 */ struct TevColorOp tevColorOpP[8][2];
     /* 0x1B8 */ enum _GXTevColorArg tevColorArg[8][4];
     /* 0x238 */ enum _GXTevAlphaArg tevAlphaArg[8][4];
-}; // size = 0x2B8
+} __anon_0x882D1; // size = 0x2B8
 
 // Range: 0x80097D9C -> 0x80097E5C
 s32 SetTevStageTable(struct __anon_0x87050* pFrame, s32 numCycles) {
@@ -655,12 +655,12 @@ static void OutputCCMode(s32 cycle, u32 tempColor, u32 tempAlpha) {
     // -> static char* sColorNames[16];
 }
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0x88E4A; // size = 0x4
 
 // Range: 0x800983A0 -> 0x800986A4
 static void SetTableTevStages(struct __anon_0x87050* pFrame, struct CombineModeTev* ctP) {

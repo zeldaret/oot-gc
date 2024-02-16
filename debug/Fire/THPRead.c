@@ -10,19 +10,19 @@
 // size = 0x4, address = 0x80135640
 static s32 ReadThreadCreated;
 
-struct OSThreadQueue {
+typedef struct OSThreadQueue {
     /* 0x0 */ struct OSThread* head;
     /* 0x4 */ struct OSThread* tail;
-}; // size = 0x8
+} __anon_0x14F87; // size = 0x8
 
-struct OSMessageQueue {
+typedef struct OSMessageQueue {
     /* 0x00 */ struct OSThreadQueue queueSend;
     /* 0x08 */ struct OSThreadQueue queueReceive;
     /* 0x10 */ void* msgArray;
     /* 0x14 */ s32 msgCount;
     /* 0x18 */ s32 firstIndex;
     /* 0x1C */ s32 usedCount;
-}; // size = 0x20
+} __anon_0x14FF9; // size = 0x20
 
 // size = 0x20, address = 0x800FB1C0
 static struct OSMessageQueue FreeReadBufferQueue;
@@ -42,7 +42,7 @@ static void* ReadedBufferMessage[10];
 // size = 0x28, address = 0x800FB270
 static void* ReadedBufferMessage2[10];
 
-struct OSContext {
+typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
     /* 0x080 */ u32 cr;
     /* 0x084 */ u32 lr;
@@ -58,31 +58,31 @@ struct OSContext {
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
     /* 0x1C8 */ double psf[32];
-}; // size = 0x2C8
+} __anon_0x15310; // size = 0x2C8
 
-struct OSThreadLink {
+typedef struct OSThreadLink {
     /* 0x0 */ struct OSThread* next;
     /* 0x4 */ struct OSThread* prev;
-}; // size = 0x8
+} __anon_0x15529; // size = 0x8
 
-struct OSMutexLink {
+typedef struct OSMutexLink {
     /* 0x0 */ struct OSMutex* next;
     /* 0x4 */ struct OSMutex* prev;
-}; // size = 0x8
+} __anon_0x1559A; // size = 0x8
 
-struct OSMutex {
+typedef struct OSMutex {
     /* 0x00 */ struct OSThreadQueue queue;
     /* 0x08 */ struct OSThread* thread;
     /* 0x0C */ s32 count;
     /* 0x10 */ struct OSMutexLink link;
-}; // size = 0x18
+} __anon_0x1560A; // size = 0x18
 
-struct OSMutexQueue {
+typedef struct OSMutexQueue {
     /* 0x0 */ struct OSMutex* head;
     /* 0x4 */ struct OSMutex* tail;
-}; // size = 0x8
+} __anon_0x156BB; // size = 0x8
 
-struct OSThread {
+typedef struct OSThread {
     /* 0x000 */ struct OSContext context;
     /* 0x2C8 */ u16 state;
     /* 0x2CA */ u16 attr;
@@ -100,7 +100,7 @@ struct OSThread {
     /* 0x308 */ u32* stackEnd;
     /* 0x30C */ s32 error;
     /* 0x310 */ void* specific[2];
-}; // size = 0x318
+} __anon_0x1574C; // size = 0x318
 
 // size = 0x318, address = 0x800FB298
 static struct OSThread ReadThread;
@@ -177,7 +177,7 @@ void* PopReadedBuffer() {
     // -> static struct OSMessageQueue ReadedBufferQueue;
 }
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -185,9 +185,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x15DE2; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -200,16 +200,16 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x15F52; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x16178; // size = 0x3C
 
-struct __anon_0x16250 {
+typedef struct __anon_0x16250 {
     /* 0x00 */ char magic[4];
     /* 0x04 */ u32 version;
     /* 0x08 */ u32 bufSize;
@@ -222,46 +222,46 @@ struct __anon_0x16250 {
     /* 0x24 */ u32 offsetDataOffsets;
     /* 0x28 */ u32 movieDataOffsets;
     /* 0x2C */ u32 finalFrameDataOffsets;
-}; // size = 0x30
+} __anon_0x16250; // size = 0x30
 
-struct __anon_0x1647C {
+typedef struct __anon_0x1647C {
     /* 0x0 */ u32 numComponents;
     /* 0x4 */ u8 frameComp[16];
-}; // size = 0x14
+} __anon_0x1647C; // size = 0x14
 
-struct __anon_0x164E4 {
+typedef struct __anon_0x164E4 {
     /* 0x0 */ u32 xSize;
     /* 0x4 */ u32 ySize;
     /* 0x8 */ u32 videoType;
-}; // size = 0xC
+} __anon_0x164E4; // size = 0xC
 
-struct __anon_0x16564 {
+typedef struct __anon_0x16564 {
     /* 0x0 */ u32 sndChannels;
     /* 0x4 */ u32 sndFrequency;
     /* 0x8 */ u32 sndNumSamples;
     /* 0xC */ u32 sndNumTracks;
-}; // size = 0x10
+} __anon_0x16564; // size = 0x10
 
-struct __anon_0x1661E {
+typedef struct __anon_0x1661E {
     /* 0x0 */ u8* ytexture;
     /* 0x4 */ u8* utexture;
     /* 0x8 */ u8* vtexture;
     /* 0xC */ s32 frameNumber;
-}; // size = 0x10
+} __anon_0x1661E; // size = 0x10
 
-struct __anon_0x166D4 {
+typedef struct __anon_0x166D4 {
     /* 0x0 */ s16* buffer;
     /* 0x4 */ s16* curPtr;
     /* 0x8 */ u32 validSample;
-}; // size = 0xC
+} __anon_0x166D4; // size = 0xC
 
-struct __anon_0x1675E {
+typedef struct __anon_0x1675E {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
     /* 0x8 */ s32 isValid;
-}; // size = 0xC
+} __anon_0x1675E; // size = 0xC
 
-struct __anon_0x16849 {
+typedef struct __anon_0x16849 {
     /* 0x000 */ struct DVDFileInfo fileInfo;
     /* 0x03C */ struct __anon_0x16250 header;
     /* 0x06C */ struct __anon_0x1647C compInfo;
@@ -296,7 +296,7 @@ struct __anon_0x16849 {
     /* 0x100 */ struct __anon_0x1675E readBuffer[10];
     /* 0x178 */ struct __anon_0x1661E textureSet[3];
     /* 0x1A8 */ struct __anon_0x166D4 audioBuffer[3];
-}; // size = 0x1D0
+} __anon_0x16849; // size = 0x1D0
 
 // size = 0x1D0, address = 0x800F9C80
 struct __anon_0x16849 ActivePlayer;
@@ -355,7 +355,7 @@ void movieReset(s32 IPL, s32 forceMenu) {
     // s32 forceMenu; // r31
 }
 
-struct PADStatus {
+typedef struct PADStatus {
     /* 0x0 */ u16 button;
     /* 0x2 */ s8 stickX;
     /* 0x3 */ s8 stickY;
@@ -366,9 +366,9 @@ struct PADStatus {
     /* 0x8 */ u8 analogA;
     /* 0x9 */ u8 analogB;
     /* 0xA */ s8 err;
-}; // size = 0xC
+} __anon_0x17012; // size = 0xC
 
-struct __anon_0x171A2 {
+typedef struct __anon_0x171A2 {
     /* 0x00 */ struct PADStatus pst;
     /* 0x0C */ u16 buttonDown;
     /* 0x0E */ u16 buttonUp;
@@ -379,7 +379,7 @@ struct __anon_0x171A2 {
     /* 0x18 */ s16 stickDeltaY;
     /* 0x1A */ s16 substickDeltaX;
     /* 0x1C */ s16 substickDeltaY;
-}; // size = 0x1E
+} __anon_0x171A2; // size = 0x1E
 
 // size = 0x78, address = 0x80132758
 struct __anon_0x171A2 DemoPad[4];
@@ -416,7 +416,7 @@ s32 movieDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32
     // -> s32 gMovieErrorToggle;
 }
 
-enum __anon_0x17564 {
+typedef enum __anon_0x17564 {
     M_M_NONE = -1,
     M_M_DISK_COVER_OPEN = 0,
     M_M_DISK_WRONG_DISK = 1,
@@ -425,7 +425,7 @@ enum __anon_0x17564 {
     M_M_DISK_RETRY_ERROR = 4,
     M_M_DISK_NO_DISK = 5,
     M_M_DISK_DEFAULT_ERROR = 6,
-};
+} __anon_0x17564;
 
 // Range: 0x80011F10 -> 0x80012170
 s32 movieDVDShowError(s32 nStatus) {
@@ -484,23 +484,23 @@ u32 Colors_u32[];
 // size = 0x0, address = 0x800E9A20
 u8 TexCoords_u8[];
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x179FB;
 
-enum _GXTexFilter {
+typedef enum _GXTexFilter {
     GX_NEAR = 0,
     GX_LINEAR = 1,
     GX_NEAR_MIP_NEAR = 2,
     GX_LIN_MIP_NEAR = 3,
     GX_NEAR_MIP_LIN = 4,
     GX_LIN_MIP_LIN = 5,
-};
+} __anon_0x17A64;
 
-struct __anon_0x17AF5 {
+typedef struct __anon_0x17AF5 {
     /* 0x00 */ u16 height;
     /* 0x02 */ u16 width;
     /* 0x04 */ u32 format;
@@ -514,44 +514,44 @@ struct __anon_0x17AF5 {
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
     /* 0x23 */ u8 unpacked;
-}; // size = 0x24
+} __anon_0x17AF5; // size = 0x24
 
-enum _GXTlutFmt {
+typedef enum _GXTlutFmt {
     GX_TL_IA8 = 0,
     GX_TL_RGB565 = 1,
     GX_TL_RGB5A3 = 2,
     GX_MAX_TLUTFMT = 3,
-};
+} __anon_0x17CE8;
 
-struct __anon_0x17D50 {
+typedef struct __anon_0x17D50 {
     /* 0x0 */ u16 numEntries;
     /* 0x2 */ u8 unpacked;
     /* 0x3 */ u8 pad8;
     /* 0x4 */ enum _GXTlutFmt format;
     /* 0x8 */ char* data;
-}; // size = 0xC
+} __anon_0x17D50; // size = 0xC
 
-struct __anon_0x17E1C {
+typedef struct __anon_0x17E1C {
     /* 0x0 */ struct __anon_0x17AF5* textureHeader;
     /* 0x4 */ struct __anon_0x17D50* CLUTHeader;
-}; // size = 0x8
+} __anon_0x17E1C; // size = 0x8
 
-struct __anon_0x17E8D {
+typedef struct __anon_0x17E8D {
     /* 0x0 */ u32 versionNumber;
     /* 0x4 */ u32 numDescriptors;
     /* 0x8 */ struct __anon_0x17E1C* descriptorArray;
-}; // size = 0xC
+} __anon_0x17E8D; // size = 0xC
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x17F49; // size = 0x20
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0x17F8F; // size = 0x4
 
 // Range: 0x80012334 -> 0x80012850
 s32 movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {

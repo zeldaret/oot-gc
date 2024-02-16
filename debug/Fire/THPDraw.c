@@ -10,7 +10,7 @@
 // Range: 0x80011138 -> 0x80011250
 void THPGXRestore() {}
 
-enum __anon_0x14611 {
+typedef enum __anon_0x14611 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
     VI_TVMODE_NTSC_PROG = 2,
@@ -23,14 +23,14 @@ enum __anon_0x14611 {
     VI_TVMODE_DEBUG_INT = 12,
     VI_TVMODE_DEBUG_PAL_INT = 16,
     VI_TVMODE_DEBUG_PAL_DS = 17,
-};
+} __anon_0x14611;
 
-enum __anon_0x1475B {
+typedef enum __anon_0x1475B {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF = 1,
-};
+} __anon_0x1475B;
 
-struct _GXRenderModeObj {
+typedef struct _GXRenderModeObj {
     /* 0x00 */ enum __anon_0x14611 viTVmode;
     /* 0x04 */ u16 fbWidth;
     /* 0x06 */ u16 efbHeight;
@@ -44,7 +44,7 @@ struct _GXRenderModeObj {
     /* 0x19 */ u8 aa;
     /* 0x1A */ u8 sample_pattern[12][2];
     /* 0x32 */ u8 vfilter[7];
-}; // size = 0x3C
+} __anon_0x1480C; // size = 0x3C
 
 // Range: 0x80011250 -> 0x80011754
 void THPGXYuv2RgbSetup(struct _GXRenderModeObj* rmode) {
@@ -58,9 +58,9 @@ void THPGXYuv2RgbSetup(struct _GXRenderModeObj* rmode) {
     float mMtx[3][4]; // r1+0x44
 }
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x14BBE; // size = 0x20
 
 // Range: 0x80011754 -> 0x80011938
 void THPGXYuv2RgbDraw(u8* y_data, u8* u_data, u8* v_data, s16 x, s16 y, s16 textureWidth, s16 textureHeight,

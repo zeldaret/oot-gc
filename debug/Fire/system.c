@@ -13,12 +13,12 @@ u32 nTickMultiplier;
 // size = 0x4, address = 0x80134E64
 float fTickScale;
 
-struct _XL_OBJECTTYPE {
+typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
     /* 0x4 */ s32 nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
     /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
-}; // size = 0x10
+} __anon_0x343BA; // size = 0x10
 
 // size = 0x10, address = 0x800EB310
 struct _XL_OBJECTTYPE gClassSystem;
@@ -29,40 +29,40 @@ static u32 contMap[4][20];
 // size = 0x4, address = 0x801356D8
 u32 gnFlagZelda;
 
-struct __anon_0x3459E {
+typedef struct __anon_0x3459E {
     /* 0x000 */ char rom[36];
     /* 0x024 */ s32 controllerConfiguration[4][20];
     /* 0x164 */ s32 rumbleConfiguration;
     /* 0x168 */ s32 storageDevice;
     /* 0x16C */ s32 normalControllerConfig;
     /* 0x170 */ s32 currentControllerConfig;
-}; // size = 0x174
+} __anon_0x3459E; // size = 0x174
 
 // size = 0x174, address = 0x801308E0
 struct __anon_0x3459E gSystemRomConfigurationList[1];
 
-struct __anon_0x34768 {
+typedef struct __anon_0x34768 {
     /* 0x0 */ float rX;
     /* 0x4 */ float rY;
     /* 0x8 */ float rSizeX;
     /* 0xC */ float rSizeY;
-}; // size = 0x10
+} __anon_0x34768; // size = 0x10
 
-struct __anon_0x34802 {
+typedef struct __anon_0x34802 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nWidth;
     /* 0x08 */ s32 nFormat;
     /* 0x0C */ void* pData;
     /* 0x10 */ s32 nAddress;
-}; // size = 0x14
+} __anon_0x34802; // size = 0x14
 
-struct __anon_0x34943 {
+typedef struct __anon_0x34943 {
     /* 0x0 */ float x;
     /* 0x4 */ float y;
     /* 0x8 */ float z;
-}; // size = 0xC
+} __anon_0x34943; // size = 0xC
 
-struct __anon_0x349B3 {
+typedef struct __anon_0x349B3 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x34943 rVecOrigTowards;
     /* 0x10 */ float rColorR;
@@ -77,36 +77,36 @@ struct __anon_0x349B3 {
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
-}; // size = 0x3C
+} __anon_0x349B3; // size = 0x3C
 
-struct __anon_0x34BE3 {
+typedef struct __anon_0x34BE3 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x34943 rS;
     /* 0x10 */ struct __anon_0x34943 rT;
     /* 0x1C */ struct __anon_0x34943 rSRaw;
     /* 0x28 */ struct __anon_0x34943 rTRaw;
-}; // size = 0x34
+} __anon_0x34BE3; // size = 0x34
 
-struct __anon_0x34CCC {
+typedef struct __anon_0x34CCC {
     /* 0x00 */ float rSum;
     /* 0x04 */ float rS;
     /* 0x08 */ float rT;
     /* 0x0C */ struct __anon_0x34943 vec;
     /* 0x18 */ u8 anColor[4];
-}; // size = 0x1C
+} __anon_0x34CCC; // size = 0x1C
 
-union __anon_0x34E2B {
+typedef union __anon_0x34E2B {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
     /* 0x0 */ u32 u32[1024];
     /* 0x0 */ u64 u64[512];
-};
+} __anon_0x34E2B;
 
-struct __anon_0x34EC8 {
+typedef struct __anon_0x34EC8 {
     /* 0x0 */ union __anon_0x34E2B data;
-}; // size = 0x1000
+} __anon_0x34EC8; // size = 0x1000
 
-enum _GXTexFmt {
+typedef enum _GXTexFmt {
     GX_TF_I4 = 0,
     GX_TF_I8 = 1,
     GX_TF_IA4 = 2,
@@ -133,24 +133,24 @@ enum _GXTexFmt {
     GX_CTF_Z8L = 58,
     GX_CTF_Z16L = 60,
     GX_TF_A8 = 39,
-};
+} __anon_0x34F61;
 
-struct _GXTlutObj {
+typedef struct _GXTlutObj {
     /* 0x0 */ u32 dummy[3];
-}; // size = 0xC
+} __anon_0x35123; // size = 0xC
 
-struct _GXTexObj {
+typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
-}; // size = 0x20
+} __anon_0x3518A; // size = 0x20
 
-enum _GXTexWrapMode {
+typedef enum _GXTexWrapMode {
     GX_CLAMP = 0,
     GX_REPEAT = 1,
     GX_MIRROR = 2,
     GX_MAX_TEXWRAPMODE = 3,
-};
+} __anon_0x351D0;
 
-struct _FRAME_TEXTURE {
+typedef struct _FRAME_TEXTURE {
     /* 0x00 */ s32 nMode;
     /* 0x04 */ s32 iPackPixel;
     /* 0x08 */ s32 iPackColor;
@@ -170,9 +170,9 @@ struct _FRAME_TEXTURE {
     /* 0x44 */ struct _GXTexObj objectTexture;
     /* 0x64 */ enum _GXTexWrapMode eWrapS;
     /* 0x68 */ enum _GXTexWrapMode eWrapT;
-}; // size = 0x6C
+} __anon_0x35239; // size = 0x6C
 
-struct __anon_0x35596 {
+typedef struct __anon_0x35596 {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nTMEM;
     /* 0x08 */ s32 iTLUT;
@@ -189,15 +189,15 @@ struct __anon_0x35596 {
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
     /* 0x28 */ u32 nCodePixel;
-}; // size = 0x2C
+} __anon_0x35596; // size = 0x2C
 
-enum __anon_0x35878 {
+typedef enum __anon_0x35878 {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-};
+} __anon_0x35878;
 
-struct __anon_0x358FC {
+typedef struct __anon_0x358FC {
     /* 0x00 */ s32 nCount;
     /* 0x04 */ float rScale;
     /* 0x08 */ float rAspect;
@@ -207,16 +207,16 @@ struct __anon_0x358FC {
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x35878 eProjection;
-}; // size = 0x24
+} __anon_0x358FC; // size = 0x24
 
-struct _GXColor {
+typedef struct _GXColor {
     /* 0x0 */ u8 r;
     /* 0x1 */ u8 g;
     /* 0x2 */ u8 b;
     /* 0x3 */ u8 a;
-}; // size = 0x4
+} __anon_0x35A91; // size = 0x4
 
-struct __anon_0x35B4C {
+typedef struct __anon_0x35B4C {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
     /* 0x00024 */ s32 bBlurOn;
@@ -307,19 +307,19 @@ struct __anon_0x35B4C {
     /* 0x3D140 */ u16* nCopyBuffer;
     /* 0x3D144 */ u32* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
-}; // size = 0x3D150
+} __anon_0x35B4C; // size = 0x3D150
 
 // size = 0x4, address = 0x80135608
 struct __anon_0x35B4C* gpFrame;
 
-enum __anon_0x36A3E {
+typedef enum __anon_0x36A3E {
     SPM_NONE = -1,
     SPM_PLAY = 0,
     SPM_RAMPQUEUED = 1,
     SPM_RAMPPLAYED = 2,
-};
+} __anon_0x36A3E;
 
-struct __anon_0x36AAA {
+typedef struct __anon_0x36AAA {
     /* 0x00 */ void* pSrcData;
     /* 0x04 */ s32 nFrequency;
     /* 0x08 */ s32 nDacrate;
@@ -340,7 +340,7 @@ struct __anon_0x36AAA {
     /* 0xCC */ s32 nSizeZero;
     /* 0xD0 */ s32 nSizeHold;
     /* 0xD4 */ s32 nSizeRamp;
-}; // size = 0xD8
+} __anon_0x36AAA; // size = 0xD8
 
 // size = 0x4, address = 0x80135604
 struct __anon_0x36AAA* gpSound;
@@ -387,14 +387,14 @@ struct _XL_OBJECTTYPE gClassPeripheral;
 // size = 0x10, address = 0x800EE1B0
 struct _XL_OBJECTTYPE gClassRdb;
 
-struct __anon_0x37040 {
+typedef struct __anon_0x37040 {
     /* 0x0 */ s32 nSize;
     /* 0x4 */ s32 nOffsetRAM;
     /* 0x8 */ s32 nOffsetROM;
     /* 0xC */ s32 (*pCallback)();
-}; // size = 0x10
+} __anon_0x37040; // size = 0x10
 
-enum __anon_0x370F1 {
+typedef enum __anon_0x370F1 {
     SRT_NONE = -1,
     SRT_MARIO = 0,
     SRT_WAVERACE = 1,
@@ -409,9 +409,9 @@ enum __anon_0x370F1 {
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
     SRT_UNKNOWN = 12,
-};
+} __anon_0x370F1;
 
-struct __anon_0x37240 {
+typedef struct __anon_0x37240 {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
     /* 0x08 */ s32 bException;
@@ -423,19 +423,19 @@ struct __anon_0x37240 {
     /* 0x70 */ enum __anon_0x394CD storageDevice;
     /* 0x74 */ u8 anException[16];
     /* 0x84 */ s32 bJapaneseVersion;
-}; // size = 0x88
+} __anon_0x37240; // size = 0x88
 
-struct __anon_0x37408 {
+typedef struct __anon_0x37408 {
     /* 0x0 */ s32 nOffsetHost;
     /* 0x4 */ s32 nAddressN64;
-}; // size = 0x8
+} __anon_0x37408; // size = 0x8
 
-struct cpu_callerID {
+typedef struct cpu_callerID {
     /* 0x0 */ s32 N64address;
     /* 0x4 */ s32 GCNaddress;
-}; // size = 0x8
+} __anon_0x3746E; // size = 0x8
 
-struct cpu_function {
+typedef struct cpu_function {
     /* 0x00 */ void* pnBase;
     /* 0x04 */ void* pfCode;
     /* 0x08 */ s32 nCountJump;
@@ -454,9 +454,9 @@ struct cpu_function {
     /* 0x3C */ struct cpu_function* prev;
     /* 0x40 */ struct cpu_function* left;
     /* 0x44 */ struct cpu_function* right;
-}; // size = 0x48
+} __anon_0x374E1; // size = 0x48
 
-union __anon_0x377BD {
+typedef union __anon_0x377BD {
     /* 0x0 */ char _0s8;
     /* 0x1 */ char _1s8;
     /* 0x2 */ char _2s8;
@@ -487,9 +487,9 @@ union __anon_0x377BD {
     /* 0x0 */ u32 _0u32;
     /* 0x4 */ u32 u32;
     /* 0x0 */ u64 u64;
-};
+} __anon_0x377BD;
 
-union __anon_0x37BD1 {
+typedef union __anon_0x37BD1 {
     /* 0x0 */ float _0f32;
     /* 0x4 */ float f32;
     /* 0x0 */ double f64;
@@ -499,9 +499,9 @@ union __anon_0x37BD1 {
     /* 0x0 */ u32 _0u32;
     /* 0x4 */ u32 u32;
     /* 0x0 */ u64 u64;
-};
+} __anon_0x37BD1;
 
-struct __anon_0x380DF {
+typedef struct __anon_0x380DF {
     /* 0x00 */ s32 nType;
     /* 0x04 */ void* pObject;
     /* 0x08 */ s32 nOffsetAddress;
@@ -515,9 +515,9 @@ struct __anon_0x380DF {
     /* 0x28 */ s32 (*pfPut64)(void*, u32, s64*);
     /* 0x2C */ u32 nAddressPhysical0;
     /* 0x30 */ u32 nAddressPhysical1;
-}; // size = 0x34
+} __anon_0x380DF; // size = 0x34
 
-struct cpu_treeRoot {
+typedef struct cpu_treeRoot {
     /* 0x00 */ u16 total;
     /* 0x04 */ s32 total_memory;
     /* 0x08 */ s32 root_address;
@@ -532,21 +532,21 @@ struct cpu_treeRoot {
     /* 0x78 */ s32 side;
     /* 0x7C */ struct cpu_function* restore;
     /* 0x80 */ s32 restore_side;
-}; // size = 0x84
+} __anon_0x383AD; // size = 0x84
 
-struct _CPU_ADDRESS {
+typedef struct _CPU_ADDRESS {
     /* 0x0 */ s32 nN64;
     /* 0x4 */ s32 nHost;
     /* 0x8 */ struct cpu_function* pFunction;
-}; // size = 0xC
+} __anon_0x385EE; // size = 0xC
 
-struct __anon_0x386A3 {
+typedef struct __anon_0x386A3 {
     /* 0x0 */ u32 nAddress;
     /* 0x4 */ u32 nOpcodeOld;
     /* 0x8 */ u32 nOpcodeNew;
-}; // size = 0xC
+} __anon_0x386A3; // size = 0xC
 
-struct OSContext {
+typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
     /* 0x080 */ u32 cr;
     /* 0x084 */ u32 lr;
@@ -562,9 +562,9 @@ struct OSContext {
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
     /* 0x1C8 */ double psf[32];
-}; // size = 0x2C8
+} __anon_0x387CE; // size = 0x2C8
 
-struct OSAlarm {
+typedef struct OSAlarm {
     /* 0x00 */ void (*handler)(struct OSAlarm*, struct OSContext*);
     /* 0x04 */ u32 tag;
     /* 0x08 */ s64 fire;
@@ -572,9 +572,9 @@ struct OSAlarm {
     /* 0x14 */ struct OSAlarm* next;
     /* 0x18 */ s64 period;
     /* 0x20 */ s64 start;
-}; // size = 0x28
+} __anon_0x38A25; // size = 0x28
 
-struct cpu_optimize {
+typedef struct cpu_optimize {
     /* 0x00 */ u32 validCheck;
     /* 0x04 */ u32 destGPR_check;
     /* 0x08 */ s32 destGPR;
@@ -585,9 +585,9 @@ struct cpu_optimize {
     /* 0x1C */ s32 addr_last;
     /* 0x20 */ u32 checkType;
     /* 0x24 */ u32 checkNext;
-}; // size = 0x28
+} __anon_0x38B40; // size = 0x28
 
-struct _CPU {
+typedef struct _CPU {
     /* 0x00000 */ s32 nMode;
     /* 0x00004 */ s32 nTick;
     /* 0x00008 */ void* pHost;
@@ -631,9 +631,9 @@ struct _CPU {
     /* 0x1205C */ u32 nFlagCODE;
     /* 0x12060 */ u32 nCompileFlag;
     /* 0x12064 */ struct cpu_optimize nOptimize;
-}; // size = 0x12090
+} __anon_0x38CED; // size = 0x12090
 
-enum __anon_0x39384 {
+typedef enum __anon_0x39384 {
     MIT_NONE = -1,
     MIT_SP = 0,
     MIT_SI = 1,
@@ -641,17 +641,17 @@ enum __anon_0x39384 {
     MIT_VI = 3,
     MIT_PI = 4,
     MIT_DP = 5,
-};
+} __anon_0x39384;
 
-struct __anon_0x393FF {
+typedef struct __anon_0x393FF {
     /* 0x00 */ char* szType;
     /* 0x04 */ u32 nMask;
     /* 0x08 */ enum __anon_0x3994B eCode;
     /* 0x0C */ enum __anon_0x3979C eType;
     /* 0x10 */ enum __anon_0x39384 eTypeMips;
-}; // size = 0x14
+} __anon_0x393FF; // size = 0x14
 
-enum __anon_0x394CD {
+typedef enum __anon_0x394CD {
     SOT_NONE = -1,
     SOT_CPU = 0,
     SOT_PIF = 1,
@@ -670,7 +670,7 @@ enum __anon_0x394CD {
     SOT_PERIPHERAL = 14,
     SOT_RDB = 15,
     SOT_COUNT = 16,
-};
+} __anon_0x394CD;
 
 // Range: 0x8002CA14 -> 0x8002D2EC
 s32 systemEvent(struct __anon_0x37240* pSystem, s32 nEvent, void* pArgument) {
@@ -704,7 +704,7 @@ s32 systemEvent(struct __anon_0x37240* pSystem, s32 nEvent, void* pArgument) {
     // -> struct __anon_0x35B4C* gpFrame;
 }
 
-enum __anon_0x3979C {
+typedef enum __anon_0x3979C {
     SIT_NONE = -1,
     SIT_SW0 = 0,
     SIT_SW1 = 1,
@@ -723,7 +723,7 @@ enum __anon_0x3979C {
     SIT_THREADSTATUS = 14,
     SIT_PRENMI = 15,
     SIT_COUNT_ = 16,
-};
+} __anon_0x3979C;
 
 // Range: 0x8002D2EC -> 0x8002D324
 s32 systemExceptionPending(struct __anon_0x37240* pSystem, enum __anon_0x3979C eType) {
@@ -732,7 +732,7 @@ s32 systemExceptionPending(struct __anon_0x37240* pSystem, enum __anon_0x3979C e
     // enum __anon_0x3979C eType; // r1+0x4
 }
 
-enum __anon_0x3994B {
+typedef enum __anon_0x3994B {
     CEC_NONE = -1,
     CEC_INTERRUPT = 0,
     CEC_TLB_MODIFICATION = 1,
@@ -767,7 +767,7 @@ enum __anon_0x3994B {
     CEC_RESERVED_30 = 30,
     CEC_VCE_DATA = 31,
     CEC_COUNT = 32,
-};
+} __anon_0x3994B;
 
 // Range: 0x8002D324 -> 0x8002D47C
 s32 systemCheckInterrupts(struct __anon_0x37240* pSystem) {
@@ -838,11 +838,11 @@ s32 systemGetMode(struct __anon_0x37240* pSystem, enum __anon_0x3A085* peMode) {
     // -> struct _XL_OBJECTTYPE gClassSystem;
 }
 
-enum __anon_0x3A085 {
+typedef enum __anon_0x3A085 {
     SM_NONE = -1,
     SM_RUNNING = 0,
     SM_STOPPED = 1,
-};
+} __anon_0x3A085;
 
 // Range: 0x8002D894 -> 0x8002D904
 s32 systemSetMode(struct __anon_0x37240* pSystem, enum __anon_0x3A085 eMode) {
@@ -948,16 +948,16 @@ static s32 systemClearExceptions(struct __anon_0x37240* pSystem) {
     s32 iException; // r1+0x0
 }
 
-struct __anon_0x3A807 {
+typedef struct __anon_0x3A807 {
     /* 0x00 */ s32 configuration;
     /* 0x04 */ s32 size;
     /* 0x08 */ s32 offset;
     /* 0x0C */ char* buffer;
     /* 0x10 */ s32* writtenBlocks;
     /* 0x14 */ s32 writtenConfig;
-}; // size = 0x18
+} __anon_0x3A807; // size = 0x18
 
-struct OSCalendarTime {
+typedef struct OSCalendarTime {
     /* 0x00 */ s32 sec;
     /* 0x04 */ s32 min;
     /* 0x08 */ s32 hour;
@@ -968,18 +968,18 @@ struct OSCalendarTime {
     /* 0x1C */ s32 yday;
     /* 0x20 */ s32 msec;
     /* 0x24 */ s32 usec;
-}; // size = 0x28
+} __anon_0x3A9AA; // size = 0x28
 
-struct CARDFileInfo {
+typedef struct CARDFileInfo {
     /* 0x00 */ s32 chan;
     /* 0x04 */ s32 fileNo;
     /* 0x08 */ s32 offset;
     /* 0x0C */ s32 length;
     /* 0x10 */ u16 iBlock;
     /* 0x12 */ u16 __padding;
-}; // size = 0x14
+} __anon_0x3AB18; // size = 0x14
 
-struct __anon_0x3AC10 {
+typedef struct __anon_0x3AC10 {
     /* 0x000 */ s32 currentGame;
     /* 0x004 */ s32 fileSize;
     /* 0x008 */ char name[33];
@@ -993,9 +993,9 @@ struct __anon_0x3AC10 {
     /* 0x110 */ char gameName[16][33];
     /* 0x320 */ struct OSCalendarTime time;
     /* 0x348 */ struct CARDFileInfo fileInfo;
-}; // size = 0x35C
+} __anon_0x3AC10; // size = 0x35C
 
-enum __anon_0x3AE26 {
+typedef enum __anon_0x3AE26 {
     MC_E_NONE = 0,
     MC_E_BUSY = 1,
     MC_E_WRONGDEVICE = 2,
@@ -1022,9 +1022,9 @@ enum __anon_0x3AE26 {
     MC_E_TIME_WRONG = 23,
     MC_E_WRITE_CORRUPTED = 24,
     MC_E_UNKNOWN = 25,
-};
+} __anon_0x3AE26;
 
-struct _MCARD {
+typedef struct _MCARD {
     /* 0x000 */ struct __anon_0x3AC10 file;
     /* 0x35C */ enum __anon_0x3AE26 error;
     /* 0x360 */ s32 slot;
@@ -1053,7 +1053,7 @@ struct _MCARD {
     /* 0x7AC */ s32 wait;
     /* 0x7B0 */ s32 isBroken;
     /* 0x7B4 */ s32 saveConfiguration;
-}; // size = 0x7B8
+} __anon_0x3B0C8; // size = 0x7B8
 
 // size = 0x7B8, address = 0x801079B0
 struct _MCARD mCard;
@@ -1064,7 +1064,7 @@ u32 gz_iconSize;
 // size = 0x4, address = 0x80134D88
 u32 gz_bnrSize;
 
-struct DVDDiskID {
+typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
     /* 0x6 */ u8 diskNumber;
@@ -1072,9 +1072,9 @@ struct DVDDiskID {
     /* 0x8 */ u8 streaming;
     /* 0x9 */ u8 streamingBufSize;
     /* 0xA */ u8 padding[22];
-}; // size = 0x20
+} __anon_0x3B639; // size = 0x20
 
-struct DVDCommandBlock {
+typedef struct DVDCommandBlock {
     /* 0x00 */ struct DVDCommandBlock* next;
     /* 0x04 */ struct DVDCommandBlock* prev;
     /* 0x08 */ u32 command;
@@ -1087,38 +1087,38 @@ struct DVDCommandBlock {
     /* 0x24 */ struct DVDDiskID* id;
     /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
     /* 0x2C */ void* userData;
-}; // size = 0x30
+} __anon_0x3B7A9; // size = 0x30
 
-struct DVDFileInfo {
+typedef struct DVDFileInfo {
     /* 0x00 */ struct DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
-}; // size = 0x3C
+} __anon_0x3B9CF; // size = 0x3C
 
-enum __anon_0x3BAA7 {
+typedef enum __anon_0x3BAA7 {
     RLM_NONE = -1,
     RLM_PART = 0,
     RLM_FULL = 1,
     RLM_COUNT_ = 2,
-};
+} __anon_0x3BAA7;
 
-struct __anon_0x3BB09 {
+typedef struct __anon_0x3BB09 {
     /* 0x0 */ s32 iCache;
     /* 0x4 */ u32 nSize;
     /* 0x8 */ u32 nTickUsed;
     /* 0xC */ char keep;
-}; // size = 0x10
+} __anon_0x3BB09; // size = 0x10
 
-struct __anon_0x3BC1D {
+typedef struct __anon_0x3BC1D {
     /* 0x00 */ s32 bWait;
     /* 0x04 */ s32 (*pCallback)();
     /* 0x08 */ u8* pTarget;
     /* 0x0C */ u32 nSize;
     /* 0x10 */ u32 nOffset;
-}; // size = 0x14
+} __anon_0x3BC1D; // size = 0x14
 
-struct __anon_0x3BCFD {
+typedef struct __anon_0x3BCFD {
     /* 0x00 */ s32 bWait;
     /* 0x04 */ s32 bDone;
     /* 0x08 */ s32 nResult;
@@ -1131,9 +1131,9 @@ struct __anon_0x3BCFD {
     /* 0x24 */ u32 nOffset1;
     /* 0x28 */ u32 nSize;
     /* 0x2C */ u32 nSizeRead;
-}; // size = 0x30
+} __anon_0x3BCFD; // size = 0x30
 
-struct __anon_0x3BEE8 {
+typedef struct __anon_0x3BEE8 {
     /* 0x00000 */ void* pHost;
     /* 0x00004 */ void* pBuffer;
     /* 0x00008 */ s32 bFlip;
@@ -1155,9 +1155,9 @@ struct __anon_0x3BEE8 {
     /* 0x10EB4 */ s32 nCountOffsetBlocks;
     /* 0x10EB8 */ struct DVDFileInfo fileInfo;
     /* 0x10EF4 */ s32 offsetToRom;
-}; // size = 0x10EF8
+} __anon_0x3BEE8; // size = 0x10EF8
 
-enum __anon_0x3C277 {
+typedef enum __anon_0x3C277 {
     CT_NONE = 0,
     CT_CONTROLLER = 1,
     CT_CONTROLLER_W_PAK = 2,
@@ -1167,16 +1167,16 @@ enum __anon_0x3C277 {
     CT_4K = 6,
     CT_16K = 7,
     CT_COUNT = 8,
-};
+} __anon_0x3C277;
 
-struct __anon_0x3C350 {
+typedef struct __anon_0x3C350 {
     /* 0x00 */ void* pROM;
     /* 0x04 */ void* pRAM;
     /* 0x08 */ void* pHost;
     /* 0x0C */ u16 controllerType[5];
     /* 0x16 */ char controllerStatus[5];
     /* 0x1C */ enum __anon_0x3C277 eControllerType[5];
-}; // size = 0x30
+} __anon_0x3C350; // size = 0x30
 
 // Range: 0x8002DD70 -> 0x80030364
 static s32 systemSetupGameALL(struct __anon_0x37240* pSystem) {
