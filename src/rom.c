@@ -774,7 +774,51 @@ s32 __romCopyUpdate_Complete(void) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadUpdate.s")
+s32 romLoadUpdate(Rom* pROM) {
+    s32 iCache;
+    u32 iBlockLast;
+    u32 temp_r5;
+    u32 iBlock;
+    __anon_0x3EB4F* pDevice;
+
+    pDevice = ((UnknownDeviceStruct*)(pROM->pHost))->pDevice;
+    temp_r5 = pROM->load.nOffset0;
+
+    if (((temp_r5 == 0) && (pROM->load.nOffset1 == 0)) || (pROM->load.bWait != 0)) {
+        return 1;
+    }
+
+    iBlockLast = pROM->load.nOffset1 / 0x2000;
+    for (iBlock = temp_r5 / 0x2000; iBlock <= iBlockLast; pROM->load.nOffset0 = ++iBlock * 0x2000) {
+        if (pDevice->unkB5C != pDevice->unkB60) {
+            return 1;
+        }
+
+        if (!simulatorTestReset(0, 0, 1, 0)) {
+            return 0;
+        }
+        
+        pROM->aBlock[iBlock].nTickUsed = ++pROM->nTick;
+
+        if (pROM->aBlock[iBlock].nSize == 0) {
+            if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
+                return 0;
+            }
+
+            pROM->load.bWait = 1;
+            if (!romLoadBlock(pROM, iBlock, iCache, __romLoadUpdate_Complete)) {
+                return 0;
+            }
+
+            return 1;
+        }
+        
+    }
+
+    pROM->load.nOffset0 = pROM->load.nOffset1 = 0;
+
+    return 1;
+}
 
 s32 __romLoadUpdate_Complete(void) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];

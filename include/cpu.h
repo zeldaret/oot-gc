@@ -27,6 +27,11 @@ typedef struct __anon_0x3EB4F {
     /* 0x28 */ Put64Func pfPut64;
     /* 0x2C */ u32 nAddressPhysical0;
     /* 0x30 */ u32 nAddressPhysical1;
+
+    // another struct?
+    /* 0x034 */ char unk3[0xB28];
+    /* 0xB5C */ u32 unkB5C;
+    /* 0xB60 */ u32 unkB60;
 } __anon_0x3EB4F; // size = 0x34
 
 int cpuSetDevicePut(__anon_0x3EB4F* pDevice, void* pArgument, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
