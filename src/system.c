@@ -298,7 +298,8 @@ s32 systemSetupGameRAM(System* pSystem) {
     }
 
     // Ocarina of Time or Majora's Mask ("CZLJ", "CZLE", "NZSJ", "NZSE")
-    if (romTestCode(pROM, D_80134ED0) || romTestCode(pROM, D_80134EC8) || romTestCode(pROM, D_80134EF8) || romTestCode(pROM, D_80134F00)) {
+    if (romTestCode(pROM, D_80134ED0) || romTestCode(pROM, D_80134EC8) || romTestCode(pROM, D_80134EF8) ||
+        romTestCode(pROM, D_80134F00)) {
         switch (nCode) {
             case 0x5CAC1C8F: // OoT?
                 gnFlagZelda = 2;
