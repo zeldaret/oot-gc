@@ -156,6 +156,9 @@ const f32 D_80135F90 = 0.01666666753590107;
 const f32 D_80135F94 = 1.100000023841858;
 const f64 D_80135F98 = 4503599627370496.0;
 
+extern _XL_OBJECTTYPE gClassFlash;
+extern _XL_OBJECTTYPE gClassSram;
+
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
 
 s32 systemExceptionPending(System* pSystem, s32 nException) {
@@ -181,11 +184,54 @@ s32 systemGetStorageDevice(System* pSystem, s32* pStorageDevice) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetStorageDevice.s")
+s32 systemSetStorageDevice(System* pSystem, s32 eStorageDevice) {
+    pSystem->storageDevice = eStorageDevice;
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetMode.s")
+    if (eStorageDevice == SOT_FLASH) {
+        if (!xlObjectMake(&pSystem->apObject[SOT_FLASH], pSystem, &gClassFlash)) {
+            return 0;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetMode.s")
+        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_FLASH], 0x08000000, 0x0801FFFF, 0)) {
+            return 0;
+        }
+    }
+
+    if (eStorageDevice == SOT_SRAM) {
+        if (!xlObjectMake(&pSystem->apObject[SOT_SRAM], pSystem, &gClassSram)) {
+            return 0;
+        }
+
+        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_SRAM], 0x08000000, 0x08007FFF, 0)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+s32 systemGetMode(System* pSystem, s32* pMode) {
+    if (xlObjectTest(pSystem, &gClassSystem) && (pMode != NULL)) {
+        *pMode = pSystem->eMode;
+        return 1;
+    }
+
+    return 0;
+}
+
+s32 systemSetMode(System* pSystem, s32 pMode) {
+    if (xlObjectTest(pSystem, &gClassSystem)) {
+        pSystem->eMode = pMode;
+
+        if (pMode == SM_STOPPED) {
+            pSystem->nAddressBreak = -1;
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
 
