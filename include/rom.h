@@ -55,7 +55,7 @@ typedef struct RomLoadState {
 typedef struct UnknownDeviceStruct {
     /* 0x00 */ int unk;
     /* 0x04 */ char unk2[0x20];
-    /* 0x24 */ __anon_0x3EB4F* pDevice;
+    /* 0x24 */ struct __anon_0x3EB4F* pDevice;
 } UnknownDeviceStruct;
 
 // __anon_0x4D873
@@ -83,7 +83,7 @@ typedef struct Rom {
     /* 0x10EF4 */ int offsetToRom;
 } Rom; // size = 0x10EF8
 
-int romEvent(Rom* pROM, s32 nEvent, void* pArgument);
+int romEvent(void* pObject, s32 nEvent, void* pArgument);
 int romGetImage(Rom* pROM, char* acNameFile);
 int romSetImage(Rom* pROM, char* szNameFile);
 int romSetCacheSize(Rom* pROM, int nSize);
