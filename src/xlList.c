@@ -4,9 +4,9 @@
 
 static tXL_LIST gListList;
 
-int xlListReset(void) { return 1; }
+s32 xlListReset(void) { return 1; }
 
-int xlListSetup(void) {
+s32 xlListSetup(void) {
     gListList.nItemCount = 0;
     gListList.nItemSize = sizeof(tXL_LIST);
     gListList.pNodeNext = NULL;
@@ -14,7 +14,7 @@ int xlListSetup(void) {
     return 1;
 }
 
-static inline int xlListTest(tXL_LIST* pList) {
+static inline s32 xlListTest(tXL_LIST* pList) {
     tXL_NODE* pNode;
 
     if (pList == &gListList) {
@@ -32,7 +32,7 @@ static inline int xlListTest(tXL_LIST* pList) {
     return 0;
 }
 
-int xlListTestItem(tXL_LIST* pList, void* pItem) {
+s32 xlListTestItem(tXL_LIST* pList, void* pItem) {
     tXL_NODE* pListNode;
 
     if (!xlListTest(pList) || pItem == NULL) {
@@ -50,7 +50,7 @@ int xlListTestItem(tXL_LIST* pList, void* pItem) {
     return 0;
 }
 
-int xlListFreeItem(tXL_LIST* pList, void** ppItem) {
+s32 xlListFreeItem(tXL_LIST* pList, void** ppItem) {
     tXL_NODE* pNode;
     tXL_NODE* pNodeNext;
 
@@ -76,8 +76,8 @@ int xlListFreeItem(tXL_LIST* pList, void** ppItem) {
     return 0;
 }
 
-int xlListMakeItem(tXL_LIST* pList, void** ppItem) {
-    int nSize;
+s32 xlListMakeItem(tXL_LIST* pList, void** ppItem) {
+    s32 nSize;
     tXL_NODE* pListNode;
     tXL_NODE* pNode;
     tXL_NODE* pNodeNext;
@@ -103,7 +103,7 @@ int xlListMakeItem(tXL_LIST* pList, void** ppItem) {
     return 0;
 }
 
-static inline int xlListWipe(tXL_LIST* pList) {
+static inline s32 xlListWipe(tXL_LIST* pList) {
     tXL_NODE* pNode;
     tXL_NODE* pNodeNext;
 
@@ -122,7 +122,7 @@ static inline int xlListWipe(tXL_LIST* pList) {
     return 1;
 }
 
-int xlListFree(tXL_LIST** ppList) {
+s32 xlListFree(tXL_LIST** ppList) {
     if (!xlListWipe(*ppList)) {
         return 0;
     }
