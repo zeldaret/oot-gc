@@ -17,7 +17,7 @@ static s32 diskGetROM64(Disk* pDisk, u32 nAddress, s64* pData);
 static s32 diskGetROM32(Disk* pDisk, u32 nAddress, s32* pData);
 static s32 diskGetROM16(Disk* pDisk, u32 nAddress, s16* pData);
 static s32 diskGetROM8(Disk* pDisk, u32 nAddress, s8* pData);
- 
+
 static s32 diskPutROM64(Disk* pDisk, u32 nAddress, s64* pData);
 static s32 diskPutROM32(Disk* pDisk, u32 nAddress, s32* pData);
 static s32 diskPutROM16(Disk* pDisk, u32 nAddress, s16* pData);
@@ -39,12 +39,14 @@ s32 diskEvent(Disk* pDisk, s32 nEvent, void* pArgument) {
             switch (((CpuDevice*)pArgument)->nType) {
                 case 0:
                     if (!cpuSetDevicePut(((System*)pDisk->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)diskPutDrive8,
-                                         (Put16Func)diskPutDrive16, (Put32Func)diskPutDrive32, (Put64Func)diskPutDrive64)) {
+                                         (Put16Func)diskPutDrive16, (Put32Func)diskPutDrive32,
+                                         (Put64Func)diskPutDrive64)) {
                         return 0;
                     }
 
                     if (!cpuSetDeviceGet(((System*)pDisk->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)diskGetDrive8,
-                                         (Get16Func)diskGetDrive16, (Get32Func)diskGetDrive32, (Get64Func)diskGetDrive64)) {
+                                         (Get16Func)diskGetDrive16, (Get32Func)diskGetDrive32,
+                                         (Get64Func)diskGetDrive64)) {
                         return 0;
                     }
                     break;
