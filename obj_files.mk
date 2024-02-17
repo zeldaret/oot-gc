@@ -8,7 +8,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/xlHeap.o               \
     $(BUILD_DIR)/asm/xlObject.o             \
     $(BUILD_DIR)/asm/simGCN.o               \
-    $(BUILD_DIR)/asm/movie.o                \
+    $(BUILD_DIR)/src/movie.o                \
     $(BUILD_DIR)/asm/THPPlayer.o            \
     $(BUILD_DIR)/asm/THPAudioDecode.o       \
     $(BUILD_DIR)/asm/THPDraw.o              \
