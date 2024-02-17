@@ -83,4 +83,6 @@ typedef struct SystemRomConfig {
     /* 0x0170 */ s32 currentControllerConfig;
 } SystemRomConfig; // size = 0x174
 
+extern u32 gnFlagZelda;
+
 #endif

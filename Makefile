@@ -71,7 +71,7 @@ ASFLAGS := -mgekko -I include
 LDFLAGS := -map $(MAP) -fp hard -nodefaults -w off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -inline deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto,deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
 endif

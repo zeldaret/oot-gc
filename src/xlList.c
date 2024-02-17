@@ -25,6 +25,9 @@ static inline s32 xlListWipe(tXL_LIST* pList) {
     return 1;
 }
 
+#ifndef NON_MATCHING
+#pragma GLOBAL_ASM("asm/non_matchings/xlList/xlListFree.s")
+#else
 s32 xlListFree(tXL_LIST** ppList) {
     if (!xlListWipe(*ppList)) {
         return 0;
@@ -36,6 +39,7 @@ s32 xlListFree(tXL_LIST** ppList) {
 
     return 1;
 }
+#endif
 
 s32 xlListMakeItem(tXL_LIST* pList, void** ppItem) {
     s32 nSize;
