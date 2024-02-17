@@ -176,13 +176,12 @@ s32 systemSetupGameRAM(System* pSystem) {
     Rom* pROM;
     u32 nCode;
     u32 iCode;
-    u32 anCode[0x100];
+    u32 anCode[0x100]; // size = 0x400
 
     bExpansion = 0;
     pROM = SYSTEM_ROM(pSystem);
 
-    // array oob bug? 0x400 vs 0x100
-    if (!romCopy(SYSTEM_ROM(pSystem), anCode, 0x1000, 0x400, NULL)) {
+    if (!romCopy(SYSTEM_ROM(pSystem), anCode, 0x1000, sizeof(anCode), NULL)) {
         return 0;
     }
 
