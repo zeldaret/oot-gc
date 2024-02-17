@@ -29,7 +29,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/mips.o                 \
     $(BUILD_DIR)/asm/disk.o                 \
     $(BUILD_DIR)/asm/flash.o                \
-    $(BUILD_DIR)/asm/sram.o                 \
+    $(BUILD_DIR)/src/sram.o                 \
     $(BUILD_DIR)/asm/audio.o                \
     $(BUILD_DIR)/asm/video.o                \
     $(BUILD_DIR)/asm/serial.o               \

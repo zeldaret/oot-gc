@@ -1,57 +1,48 @@
 #include "types.h"
-#include "cpu.h"
+#include "xlObject.h"
 
 int simulatorWriteSRAM(unsigned int address, unsigned char *data, int size);
 int simulatorReadSRAM(unsigned int address, unsigned char *data, int size);
 
-typedef struct _XL_OBJECTTYPE
-{
-	char *szName; // 0x0
-	int nSizeObject; // 0x4
-	struct _XL_OBJECTTYPE *pClassBase; // 0x8
-	int (*pfEvent)(void */* unknown0 */, int /* unknown1 */, void */* unknown2 */); // 0xC
-}_XL_OBJECTTYPE;
+#define OBJ_NAME "SRAM"
 
-typedef struct __anon_0x74AB9
+typedef struct Sram
 {
 	struct sramHost *pHost; // 0x0
-} __anon_0x74AB9;
+} Sram;
+// __anon_0x74AB9
 
-typedef struct __anon_0x4BFE7
-{
-	void *pHost; // 0x0
-	void *pBuffer; // 0x4
-	unsigned int nSize; // 0x8
-}__anon_0x4BFE7;
+struct Cpu;
+struct Ram;
 
 typedef struct sramHost{
     char unk_0[0x24];
-    __anon_0x3EB4F* device;
+    struct Cpu* pCpu; // TODO the debug info said this was __anon_0x74AB9 (CpuDevice) but the function called takes a CPU
     char unk_28[4];
-    __anon_0x4BFE7* pRam;
+    struct Ram* pRam;
 };
 
-int sramEvent(__anon_0x74AB9* pSram, s32 nEvent, void* pArgument);
+int sramEvent(void* pSram, s32 nEvent, void* pArgument);
 
-static int sramGet64(void*, unsigned int nAddress, signed long long *pData);
-static int sramGet32(void*, unsigned int nAddress, int *pData);
-static int sramGet16(void*, unsigned int nAddress, signed short *pData);
-static int sramGet8(void*, unsigned int nAddress, char *pData);
-static int sramPut64(void*, unsigned int nAddress, signed long long *pData);
-static int sramPut32(void*, unsigned int nAddress, int *pData);
-static int sramPut16(void*, unsigned int nAddress, signed short *pData);
-static int sramPut8(void*, unsigned int nAddress, char *pData);
+static int sramGet64(void* pObject, u32 nAddress, s64* pData);
+static int sramGet32(void* pObject, u32 nAddress, s32* pData);
+static int sramGet16(void* pObject, u32 nAddress, s16* pData);
+static int sramGet8(void* pObject, u32 nAddress, s8* pData);
+static int sramPut64(void* pObject, u32 nAddress, s64* pData);
+static int sramPut32(void* pObject, u32 nAddress, s32* pData);
+static int sramPut16(void* pObject, u32 nAddress, s16* pData);
+static int sramPut8(void* pObject, u32 nAddress, s8* pData);
 
-extern int ramGetBuffer(__anon_0x4BFE7 *pRAM, void *ppRAM, unsigned int nOffset, unsigned int *pnSize);
+extern int ramGetBuffer(struct Ram *pRAM, void *ppRAM, u32 nOffset, u32 *pnSize);
 extern int simulatorWriteSRAM(unsigned int address, unsigned char *data, int size);
 
-// Location: 0x68E70E80
 _XL_OBJECTTYPE gClassSram = {
-    "SRAM", sizeof("SRAM") - 1, NULL, (void*)sramEvent 
+    OBJ_NAME, sizeof(OBJ_NAME) - 1, NULL, sramEvent 
 };
 
+int sramEvent(void* pObject, s32 nEvent, void* pArgument) {
+    Sram* pSram = (Sram*)pObject;
 
-int sramEvent(__anon_0x74AB9* pSram, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pSram->pHost = pArgument;
@@ -61,10 +52,10 @@ int sramEvent(__anon_0x74AB9* pSram, s32 nEvent, void* pArgument) {
             break;
 
         case 0x1002:
-            if (cpuSetDevicePut(pSram->pHost->device, pArgument, sramPut8, sramPut16, sramPut32, sramPut64) == 0) {
+            if (cpuSetDevicePut(pSram->pHost->pCpu, pArgument, sramPut8, sramPut16, sramPut32, sramPut64) == 0) {
                 return 0;
             }
-            if (cpuSetDeviceGet(pSram->pHost->device, pArgument, sramGet8, sramGet16, sramGet32, sramGet64) == 0) {
+            if (cpuSetDeviceGet(pSram->pHost->pCpu, pArgument, sramGet8, sramGet16, sramGet32, sramGet64) == 0) {
                 return 0;
             }
         case 0x1003:
@@ -76,65 +67,65 @@ int sramEvent(__anon_0x74AB9* pSram, s32 nEvent, void* pArgument) {
     return 1;
 }
 
-int sramGet64(void* arg0, unsigned int nAddress, signed long long *pData) {
+// TODO uintptr_t?
+static int sramGet64(void* pObject, u32 nAddress, s64* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(long long));
     return 1;
 }
 
-int sramGet32(void* arg0, unsigned int nAddress, signed int *pData) {
+static int sramGet32(void* pObject, u32 nAddress, s32* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(int));
     return 1;
 }
 
-int sramGet16(void* arg0, unsigned int nAddress, signed short *pData) {
+static int sramGet16(void* pObject, u32 nAddress, s16* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(short));
     return 1;
 }
-int sramGet8(void* arg0, unsigned int nAddress, char *pData) {
+static int sramGet8(void* pObject, u32 nAddress, s8 *pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(char));
     return 1;
 }
 
-int sramPut64(void* arg0, unsigned int nAddress, signed long long *pData) {
+static int sramPut64(void* pObject, u32 nAddress, s64* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(long long));
     return 1;
 }
 
-int sramPut32(void* arg0, unsigned int nAddress, signed int *pData) {
+static int sramPut32(void* pObject, u32 nAddress, s32* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(int));
     return 1;
 }
 
-int sramPut16(void* arg0, unsigned int nAddress, signed short *pData) {
+static int sramPut16(void* pObject, u32 nAddress, s16* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(short));
     return 1;
 }
-int sramPut8(void* arg0, unsigned int nAddress, char *pData) {
+static int sramPut8(void* pObject, u32 nAddress, s8 *pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(char));
     return 1;
 }
 
 
-s32 sramTransferSRAM(__anon_0x74AB9* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
-    void* sp18;
+s32 sramTransferSRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
+    void* pTarget;
 
-    if (ramGetBuffer(pSRAM->pHost->pRam, &sp18, nOffsetRAM, &nSize) == 0) {
+    if (ramGetBuffer(pSRAM->pHost->pRam, &pTarget, nOffsetRAM, &nSize) == 0) {
         return 0;
     }
-    if (simulatorWriteSRAM(nOffsetSRAM & 0x7FFF, sp18, nSize) == 0) {
+    if (simulatorWriteSRAM(nOffsetSRAM & 0x7FFF, pTarget, nSize) == 0) {
         return 0;
     }
     return 1;
 }
-//#pragma GLOBAL_ASM("asm/non_matchings/sram/sramCopySRAM.s")
 
-s32 sramCopySRAM(__anon_0x74AB9* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
-    void* sp18;
+s32 sramCopySRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
+    void* pTarget;
 
-    if (ramGetBuffer(pSRAM->pHost->pRam, &sp18, nOffsetRAM, &nSize) == 0) {
+    if (ramGetBuffer(pSRAM->pHost->pRam, &pTarget, nOffsetRAM, &nSize) == 0) {
         return 0;
     }
-    if (simulatorReadSRAM(nOffsetSRAM & 0x7FFF, sp18, nSize) == 0) {
+    if (simulatorReadSRAM(nOffsetSRAM & 0x7FFF, pTarget, nSize) == 0) {
         return 0;
     }
     return 1;
