@@ -286,14 +286,6 @@ typedef struct __anon_0x5845E {
     /* 0x39C8 */ s32* dctBuf;
 } __anon_0x5845E; // size = 0x39CC
 
-// Range: 0x80071BB8 -> 0x80071D8C
-s32 rspEvent(struct __anon_0x5845E* pRSP, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r31
-}
-
 // size = 0x4, address = 0x801356BC
 s32 gNoSwapBuffer;
 
@@ -570,35 +562,6 @@ typedef struct __anon_0x5A89F {
     /* 0x3D148 */ u16* nCameraBuffer;
 } __anon_0x5A89F; // size = 0x3D150
 
-// Range: 0x80071D8C -> 0x80071F6C
-s32 rspUpdate(struct __anon_0x5845E* pRSP, enum __anon_0x5943B eMode) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r29
-    // enum __anon_0x5943B eMode; // r30
-
-    // Local variables
-    struct __anon_0x575BD* pTask; // r4
-    s32 bDone; // r1+0x10
-    s32 nCount; // r31
-    struct __anon_0x5A89F* pFrame; // r28
-
-    // References
-    // -> s32 gNoSwapBuffer;
-}
-
-// Range: 0x80071F6C -> 0x80071FC0
-s32 rspFrameComplete(struct __anon_0x5845E* pRSP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r31
-}
-
-// Range: 0x80071FC0 -> 0x80071FE0
-s32 rspEnableABI(struct __anon_0x5845E* pRSP, s32 bFlag) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // s32 bFlag; // r1+0x4
-}
-
 typedef struct __anon_0x5B8F2 {
     /* 0x00 */ s32 nOffsetCode;
     /* 0x04 */ s32 nLengthCode;
@@ -609,95 +572,6 @@ typedef struct __anon_0x5B8F2 {
     /* 0x58 */ s32 nCountVertex;
     /* 0x5C */ enum __anon_0x60B3F eType;
 } __anon_0x5B8F2; // size = 0x60
-
-// Range: 0x80071FE0 -> 0x800720B8
-s32 rspInvalidateCache(struct __anon_0x5845E* pRSP, s32 nOffset0, s32 nOffset1) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r28
-    // s32 nOffset0; // r29
-    // s32 nOffset1; // r30
-
-    // Local variables
-    struct __anon_0x5B8F2* pUCode; // r1+0x14
-    void* pListNode; // r31
-    s32 nOffsetUCode0; // r3
-    s32 nOffsetUCode1; // r1+0x8
-}
-
-// Range: 0x800720B8 -> 0x80072124
-s32 rspGet64(struct __anon_0x5845E* pRSP, u32 nAddress, s64* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s64* pData; // r1+0x8
-}
-
-// Range: 0x80072124 -> 0x80072270
-s32 rspGet32(struct __anon_0x5845E* pRSP, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x80072270 -> 0x800722C4
-s32 rspGet16(struct __anon_0x5845E* pRSP, u32 nAddress, s16* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s16* pData; // r1+0x8
-}
-
-// Range: 0x800722C4 -> 0x80072318
-s32 rspGet8(struct __anon_0x5845E* pRSP, u32 nAddress, char* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // char* pData; // r1+0x8
-}
-
-// Range: 0x80072318 -> 0x80072384
-s32 rspPut64(struct __anon_0x5845E* pRSP, u32 nAddress, s64* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s64* pData; // r1+0x8
-}
-
-// Range: 0x80072384 -> 0x800729B4
-s32 rspPut32(struct __anon_0x5845E* pRSP, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r30
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r1+0x10
-
-    // Local variables
-    struct __anon_0x575BD* pTask; // r4
-    s32 nData; // r31
-    s32 nSize; // r1+0x24
-    void* pTarget; // r1+0x20
-    void* pSource; // r4
-    s32 nLength; // r5
-}
-
-// Range: 0x800729B4 -> 0x80072A08
-s32 rspPut16(struct __anon_0x5845E* pRSP, u32 nAddress, s16* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s16* pData; // r1+0x8
-}
-
-// Range: 0x80072A08 -> 0x80072A5C
-s32 rspPut8(struct __anon_0x5845E* pRSP, u32 nAddress, char* pData) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // char* pData; // r1+0x8
-}
-
-// Erased
-static s32 rspSaveUCode() {}
 
 typedef struct __anon_0x5C1E6 {
     /* 0x0 */ s32 nOffsetHost;
@@ -906,70 +780,6 @@ typedef struct _CPU {
     /* 0x12060 */ u32 nCompileFlag;
     /* 0x12064 */ struct cpu_optimize nOptimize;
 } __anon_0x5DACB; // size = 0x12090
-
-// Range: 0x80072A5C -> 0x80072C10
-static s32 rspParseGBI(struct __anon_0x5845E* pRSP, s32* pbDone, s32 nCount) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r27
-    // s32* pbDone; // r28
-    // s32 nCount; // r29
-
-    // Local variables
-    s32 bDone; // r1+0x14
-    s32 nStatus; // r3
-    u64* pDL; // r26
-    struct _CPU* pCPU; // r30
-}
-
-// Range: 0x80072C10 -> 0x80072D6C
-static s32 rspParseGBI_Setup(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r30
-    // struct __anon_0x575BD* pTask; // r31
-
-    // Local variables
-    s32 iSegment; // r1+0x8
-}
-
-// Erased
-static s32 rspTaskComplete(struct __anon_0x5845E* pRSP, s32 bUsedSP, s32 bUsedDP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r30
-    // s32 bUsedSP; // r1+0xC
-    // s32 bUsedDP; // r31
-}
-
-// Erased
-static s32 rspParseDisplayLists(struct __anon_0x5845E* pRSP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r28
-
-    // Local variables
-    s32 bDone; // r1+0xC
-    s32 nStatus; // r3
-    s32* pDL; // r1+0x8
-    u64 nGBI; // r30
-}
-
-// Range: 0x80072D6C -> 0x80072EF4
-static s32 rspLoadYield(struct __anon_0x5845E* pRSP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r30
-
-    // Local variables
-    s32 iData; // r1+0x8
-    struct __anon_0x575BD* pTask; // r3
-}
-
-// Range: 0x80072EF4 -> 0x8007306C
-static s32 rspSaveYield(struct __anon_0x5845E* pRSP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r7
-
-    // Local variables
-    s32 iData; // r1+0x8
-    struct __anon_0x575BD* pTask; // r4
-}
 
 typedef enum __anon_0x5E613 {
     SM_NONE = -1,
@@ -1253,6 +1063,68 @@ typedef enum __anon_0x60B3F {
     RUT_JPEG = 13,
 } __anon_0x60B3F;
 
+// Range: 0x800741CC -> 0x80074454
+static s32 rspLoadMatrix(struct __anon_0x5845E* pRSP, s32 nAddress, f32 (*matrix)[4]) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x8
+    // s32 nAddress; // r4
+    // f32 (* matrix)[4]; // r31
+
+    // Local variables
+    s32* pMtx; // r1+0x18
+    s32 nDataA; // r6
+    s32 nDataB; // r7
+    f32 rScale; // f31
+    f32 rUpper; // r1+0x8
+    f32 rLower; // r1+0x8
+    u16 nUpper; // r1+0x16
+    u16 nLower; // r1+0x14
+}
+
+// Erased
+static s32 rspSetDL(struct __anon_0x5845E* pRSP, s32 nOffsetRDRAM, s32 bPush) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r30
+    // s32 nOffsetRDRAM; // r1+0xC
+    // s32 bPush; // r31
+
+    // Local variables
+    s32 nAddress; // r5
+    s32* pDL; // r1+0x14
+}
+
+// Erased
+static s32 rspPopDL(struct __anon_0x5845E* pRSP) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+}
+
+// Erased
+static s32 rspSetupUCode(struct __anon_0x5845E* pRSP) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x8
+
+    // Local variables
+    struct __anon_0x5A89F* pFrame; // r3
+}
+
+// Erased
+static s32 rspGetNumUCodes(struct __anon_0x5845E* pRSP, u32* pNumCodes) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32* pNumCodes; // r1+0x4
+}
+
+// Erased
+static s32 rspGetUCodeName(struct __anon_0x5845E* pRSP) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+
+    // Local variables
+    u32 nItemCount; // r1+0x0
+    void* pListNode; // r3
+}
+
 // Range: 0x8007306C -> 0x800741CC
 static s32 rspFindUCode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
     // Parameters
@@ -1277,64 +1149,192 @@ static s32 rspFindUCode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTas
     char acUCodeName[64]; // r1+0x1C
 }
 
-// Erased
-static s32 rspGetUCodeName(struct __anon_0x5845E* pRSP) {
+// Range: 0x80072EF4 -> 0x8007306C
+static s32 rspSaveYield(struct __anon_0x5845E* pRSP) {
     // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // struct __anon_0x5845E* pRSP; // r7
 
     // Local variables
-    u32 nItemCount; // r1+0x0
-    void* pListNode; // r3
+    s32 iData; // r1+0x8
+    struct __anon_0x575BD* pTask; // r4
 }
 
-// Erased
-static s32 rspGetNumUCodes(struct __anon_0x5845E* pRSP, u32* pNumCodes) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-    // u32* pNumCodes; // r1+0x4
-}
-
-// Erased
-static s32 rspSetupUCode(struct __anon_0x5845E* pRSP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x8
-
-    // Local variables
-    struct __anon_0x5A89F* pFrame; // r3
-}
-
-// Erased
-static s32 rspPopDL(struct __anon_0x5845E* pRSP) {
-    // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x0
-}
-
-// Erased
-static s32 rspSetDL(struct __anon_0x5845E* pRSP, s32 nOffsetRDRAM, s32 bPush) {
+// Range: 0x80072D6C -> 0x80072EF4
+static s32 rspLoadYield(struct __anon_0x5845E* pRSP) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r30
-    // s32 nOffsetRDRAM; // r1+0xC
-    // s32 bPush; // r31
 
     // Local variables
-    s32 nAddress; // r5
-    s32* pDL; // r1+0x14
+    s32 iData; // r1+0x8
+    struct __anon_0x575BD* pTask; // r3
 }
 
-// Range: 0x800741CC -> 0x80074454
-static s32 rspLoadMatrix(struct __anon_0x5845E* pRSP, s32 nAddress, f32 (*matrix)[4]) {
+// Erased
+static s32 rspParseDisplayLists(struct __anon_0x5845E* pRSP) {
     // Parameters
-    // struct __anon_0x5845E* pRSP; // r1+0x8
-    // s32 nAddress; // r4
-    // f32 (* matrix)[4]; // r31
+    // struct __anon_0x5845E* pRSP; // r28
 
     // Local variables
-    s32* pMtx; // r1+0x18
-    s32 nDataA; // r6
-    s32 nDataB; // r7
-    f32 rScale; // f31
-    f32 rUpper; // r1+0x8
-    f32 rLower; // r1+0x8
-    u16 nUpper; // r1+0x16
-    u16 nLower; // r1+0x14
+    s32 bDone; // r1+0xC
+    s32 nStatus; // r3
+    s32* pDL; // r1+0x8
+    u64 nGBI; // r30
+}
+
+// Erased
+static s32 rspTaskComplete(struct __anon_0x5845E* pRSP, s32 bUsedSP, s32 bUsedDP) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r30
+    // s32 bUsedSP; // r1+0xC
+    // s32 bUsedDP; // r31
+}
+
+// Range: 0x80072C10 -> 0x80072D6C
+static s32 rspParseGBI_Setup(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r30
+    // struct __anon_0x575BD* pTask; // r31
+
+    // Local variables
+    s32 iSegment; // r1+0x8
+}
+
+// Range: 0x80072A5C -> 0x80072C10
+static s32 rspParseGBI(struct __anon_0x5845E* pRSP, s32* pbDone, s32 nCount) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r27
+    // s32* pbDone; // r28
+    // s32 nCount; // r29
+
+    // Local variables
+    s32 bDone; // r1+0x14
+    s32 nStatus; // r3
+    u64* pDL; // r26
+    struct _CPU* pCPU; // r30
+}
+
+// Erased
+static s32 rspSaveUCode() {}
+
+// Range: 0x80072A08 -> 0x80072A5C
+s32 rspPut8(struct __anon_0x5845E* pRSP, u32 nAddress, char* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // char* pData; // r1+0x8
+}
+
+// Range: 0x800729B4 -> 0x80072A08
+s32 rspPut16(struct __anon_0x5845E* pRSP, u32 nAddress, s16* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s16* pData; // r1+0x8
+}
+
+// Range: 0x80072384 -> 0x800729B4
+s32 rspPut32(struct __anon_0x5845E* pRSP, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r30
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r1+0x10
+
+    // Local variables
+    struct __anon_0x575BD* pTask; // r4
+    s32 nData; // r31
+    s32 nSize; // r1+0x24
+    void* pTarget; // r1+0x20
+    void* pSource; // r4
+    s32 nLength; // r5
+}
+
+// Range: 0x80072318 -> 0x80072384
+s32 rspPut64(struct __anon_0x5845E* pRSP, u32 nAddress, s64* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s64* pData; // r1+0x8
+}
+
+// Range: 0x800722C4 -> 0x80072318
+s32 rspGet8(struct __anon_0x5845E* pRSP, u32 nAddress, char* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // char* pData; // r1+0x8
+}
+
+// Range: 0x80072270 -> 0x800722C4
+s32 rspGet16(struct __anon_0x5845E* pRSP, u32 nAddress, s16* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s16* pData; // r1+0x8
+}
+
+// Range: 0x80072124 -> 0x80072270
+s32 rspGet32(struct __anon_0x5845E* pRSP, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x800720B8 -> 0x80072124
+s32 rspGet64(struct __anon_0x5845E* pRSP, u32 nAddress, s64* pData) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s64* pData; // r1+0x8
+}
+
+// Range: 0x80071FE0 -> 0x800720B8
+s32 rspInvalidateCache(struct __anon_0x5845E* pRSP, s32 nOffset0, s32 nOffset1) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r28
+    // s32 nOffset0; // r29
+    // s32 nOffset1; // r30
+
+    // Local variables
+    struct __anon_0x5B8F2* pUCode; // r1+0x14
+    void* pListNode; // r31
+    s32 nOffsetUCode0; // r3
+    s32 nOffsetUCode1; // r1+0x8
+}
+
+// Range: 0x80071FC0 -> 0x80071FE0
+s32 rspEnableABI(struct __anon_0x5845E* pRSP, s32 bFlag) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r1+0x0
+    // s32 bFlag; // r1+0x4
+}
+
+// Range: 0x80071F6C -> 0x80071FC0
+s32 rspFrameComplete(struct __anon_0x5845E* pRSP) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r31
+}
+
+// Range: 0x80071D8C -> 0x80071F6C
+s32 rspUpdate(struct __anon_0x5845E* pRSP, enum __anon_0x5943B eMode) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r29
+    // enum __anon_0x5943B eMode; // r30
+
+    // Local variables
+    struct __anon_0x575BD* pTask; // r4
+    s32 bDone; // r1+0x10
+    s32 nCount; // r31
+    struct __anon_0x5A89F* pFrame; // r28
+
+    // References
+    // -> s32 gNoSwapBuffer;
+}
+
+// Range: 0x80071BB8 -> 0x80071D8C
+s32 rspEvent(struct __anon_0x5845E* pRSP, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x5845E* pRSP; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
 }

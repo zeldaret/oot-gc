@@ -141,23 +141,6 @@ static char* sAlphaNames[2][8];
 // size = 0x40, address = 0x800F0410
 static char* strings$288[4][4];
 
-// Erased
-static void UpdateRenderModeList(u32 renderMode, u32 cycle) {
-    // Parameters
-    // u32 renderMode; // r1+0x8
-    // u32 cycle; // r23
-
-    // Local variables
-    s32 i; // r5
-    u32 p[2][4]; // r1+0x10
-
-    // References
-    // -> static s32 sCurRenderMode$278;
-    // -> static u32 sFoundRenderModes$277[100];
-    // -> static char* strings$288[4][4];
-    // -> static u8 sMemShift$301[2][4];
-}
-
 typedef enum __anon_0x8573D {
     SM_NONE = -1,
     SM_RUNNING = 0,
@@ -546,28 +529,89 @@ typedef struct CombineModeTev {
     /* 0x238 */ enum _GXTevAlphaArg tevAlphaArg[8][4];
 } __anon_0x882D1; // size = 0x2B8
 
-// Range: 0x80097D9C -> 0x80097E5C
-s32 SetTevStageTable(struct __anon_0x87050* pFrame, s32 numCycles) {
-    // Parameters
-    // struct __anon_0x87050* pFrame; // r31
-    // s32 numCycles; // r7
-
-    // Local variables
-    u32 tempColor1; // r3
-    u32 tempAlpha1; // r4
-    u32 tempColor2; // r5
-    u32 tempAlpha2; // r6
-    struct CombineModeTev* ctP; // r4
-
-    // References
-    // -> struct __anon_0x85ACF* gpSystem;
-}
-
 // size = 0x0, address = 0x800EA8B8
 enum _GXTexCoordID ganNameTexCoord[];
 
 // size = 0x0, address = 0x800EA878
 enum _GXTexMapID ganNamePixel[];
+
+typedef struct _GXColor {
+    /* 0x0 */ u8 r;
+    /* 0x1 */ u8 g;
+    /* 0x2 */ u8 b;
+    /* 0x3 */ u8 a;
+} __anon_0x88E4A; // size = 0x4
+
+// Range: 0x800983A0 -> 0x800986A4
+static void SetTableTevStages(struct __anon_0x87050* pFrame, struct CombineModeTev* ctP) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r30
+    // struct CombineModeTev* ctP; // r31
+
+    // Local variables
+    s32 i; // r23
+    s32 iStart; // r1+0x8
+    struct _GXColor color; // r1+0x30
+    struct TevOrder* toP; // r6
+    struct TevColorOp* tcP; // r22
+    enum _GXTevColorArg* cArgP; // r21
+    enum _GXTevAlphaArg* aArgP; // r20
+
+    // References
+    // -> static enum _GXTevStageID ganNameTevStage[16];
+}
+
+// Erased
+static void OutputCCMode(s32 cycle, u32 tempColor, u32 tempAlpha) {
+    // Parameters
+    // s32 cycle; // r1+0x8
+    // u32 tempColor; // r1+0xC
+    // u32 tempAlpha; // r1+0x10
+
+    // Local variables
+    s32 i; // r1+0x8
+    u8 nColor[4]; // r1+0x18
+    u8 nAlpha[4]; // r1+0x14
+
+    // References
+    // -> static char* sAlphaNames[2][8];
+    // -> static char* sColorNames[16];
+}
+
+// Erased
+static void CheckNewCCMode(struct __anon_0x87050* pFrame, s32 numCycles) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r1+0x8
+    // s32 numCycles; // r29
+
+    // Local variables
+    s32 i; // r3
+    u32 tempColor1; // r8
+    u32 tempAlpha1; // r5
+    u32 tempColor2; // r31
+    u32 tempAlpha2; // r30
+
+    // References
+    // -> static u32 sCurCCMode;
+    // -> static u32 sPrevCCModes[100][2][2];
+}
+
+// Range: 0x800981E0 -> 0x800983A0
+void SetNumTexGensChans(struct __anon_0x87050* pFrame, s32 numCycles) {
+    // Parameters
+    // struct __anon_0x87050* pFrame; // r1+0x8
+    // s32 numCycles; // r1+0xC
+
+    // Local variables
+    u8 nColor[4]; // r1+0x14
+    u8 nAlpha[4]; // r1+0x10
+    u32 tempColor; // r5
+    u32 tempAlpha; // r7
+    s32 i; // r8
+    s32 j; // r1+0x8
+    s32 numGens; // r9
+    s32 numChans; // r1+0x8
+}
 
 // Range: 0x80097E5C -> 0x800981E0
 void SetTevStages(struct __anon_0x87050* pFrame, s32 cycle) {
@@ -603,80 +647,36 @@ void SetTevStages(struct __anon_0x87050* pFrame, s32 cycle) {
     // -> static enum _GXTevStageID ganNameTevStage[16];
 }
 
-// Range: 0x800981E0 -> 0x800983A0
-void SetNumTexGensChans(struct __anon_0x87050* pFrame, s32 numCycles) {
+// Range: 0x80097D9C -> 0x80097E5C
+s32 SetTevStageTable(struct __anon_0x87050* pFrame, s32 numCycles) {
     // Parameters
-    // struct __anon_0x87050* pFrame; // r1+0x8
-    // s32 numCycles; // r1+0xC
+    // struct __anon_0x87050* pFrame; // r31
+    // s32 numCycles; // r7
 
     // Local variables
-    u8 nColor[4]; // r1+0x14
-    u8 nAlpha[4]; // r1+0x10
-    u32 tempColor; // r5
-    u32 tempAlpha; // r7
-    s32 i; // r8
-    s32 j; // r1+0x8
-    s32 numGens; // r9
-    s32 numChans; // r1+0x8
+    u32 tempColor1; // r3
+    u32 tempAlpha1; // r4
+    u32 tempColor2; // r5
+    u32 tempAlpha2; // r6
+    struct CombineModeTev* ctP; // r4
+
+    // References
+    // -> struct __anon_0x85ACF* gpSystem;
 }
 
 // Erased
-static void CheckNewCCMode(struct __anon_0x87050* pFrame, s32 numCycles) {
+static void UpdateRenderModeList(u32 renderMode, u32 cycle) {
     // Parameters
-    // struct __anon_0x87050* pFrame; // r1+0x8
-    // s32 numCycles; // r29
+    // u32 renderMode; // r1+0x8
+    // u32 cycle; // r23
 
     // Local variables
-    s32 i; // r3
-    u32 tempColor1; // r8
-    u32 tempAlpha1; // r5
-    u32 tempColor2; // r31
-    u32 tempAlpha2; // r30
+    s32 i; // r5
+    u32 p[2][4]; // r1+0x10
 
     // References
-    // -> static u32 sCurCCMode;
-    // -> static u32 sPrevCCModes[100][2][2];
-}
-
-// Erased
-static void OutputCCMode(s32 cycle, u32 tempColor, u32 tempAlpha) {
-    // Parameters
-    // s32 cycle; // r1+0x8
-    // u32 tempColor; // r1+0xC
-    // u32 tempAlpha; // r1+0x10
-
-    // Local variables
-    s32 i; // r1+0x8
-    u8 nColor[4]; // r1+0x18
-    u8 nAlpha[4]; // r1+0x14
-
-    // References
-    // -> static char* sAlphaNames[2][8];
-    // -> static char* sColorNames[16];
-}
-
-typedef struct _GXColor {
-    /* 0x0 */ u8 r;
-    /* 0x1 */ u8 g;
-    /* 0x2 */ u8 b;
-    /* 0x3 */ u8 a;
-} __anon_0x88E4A; // size = 0x4
-
-// Range: 0x800983A0 -> 0x800986A4
-static void SetTableTevStages(struct __anon_0x87050* pFrame, struct CombineModeTev* ctP) {
-    // Parameters
-    // struct __anon_0x87050* pFrame; // r30
-    // struct CombineModeTev* ctP; // r31
-
-    // Local variables
-    s32 i; // r23
-    s32 iStart; // r1+0x8
-    struct _GXColor color; // r1+0x30
-    struct TevOrder* toP; // r6
-    struct TevColorOp* tcP; // r22
-    enum _GXTevColorArg* cArgP; // r21
-    enum _GXTevAlphaArg* aArgP; // r20
-
-    // References
-    // -> static enum _GXTevStageID ganNameTevStage[16];
+    // -> static s32 sCurRenderMode$278;
+    // -> static u32 sFoundRenderModes$277[100];
+    // -> static char* strings$288[4][4];
+    // -> static u8 sMemShift$301[2][4];
 }

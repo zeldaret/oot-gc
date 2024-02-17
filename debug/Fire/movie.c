@@ -13,13 +13,6 @@ u8* gBufferP;
 // size = 0x4, address = 0x80135420
 s32 __OSCurrHeap;
 
-// Erased
-static void MovieDestroy() {
-    // References
-    // -> u8* gBufferP;
-    // -> s32 __OSCurrHeap;
-}
-
 typedef enum __anon_0xEF02 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
@@ -59,6 +52,20 @@ typedef struct _GXRenderModeObj {
 // size = 0x4, address = 0x8013559C
 struct _GXRenderModeObj* rmode;
 
+// Range: 0x8000F804 -> 0x8000F890
+void MovieInit() {
+    // Local variables
+    char* szText; // r1+0x8
+    u32 size; // r4
+
+    // References
+    // -> u8* gBufferP;
+    // -> s32 __OSCurrHeap;
+}
+
+// Erased
+static void MovieUpdate() {}
+
 // Range: 0x8000F7CC -> 0x8000F804
 void MovieDraw() {
     // References
@@ -66,14 +73,7 @@ void MovieDraw() {
 }
 
 // Erased
-static void MovieUpdate() {}
-
-// Range: 0x8000F804 -> 0x8000F890
-void MovieInit() {
-    // Local variables
-    char* szText; // r1+0x8
-    u32 size; // r4
-
+static void MovieDestroy() {
     // References
     // -> u8* gBufferP;
     // -> s32 __OSCurrHeap;

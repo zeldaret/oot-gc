@@ -123,60 +123,6 @@ static s32 gbReset;
 // size = 0x4, address = 0x80135650
 static u32 gnTickReset;
 
-// Range: 0x80011938 -> 0x80011968
-void PushReadedBuffer2(void* buffer) {
-    // Parameters
-    // void* buffer; // r4
-
-    // References
-    // -> static struct OSMessageQueue ReadedBufferQueue2;
-}
-
-// Range: 0x80011968 -> 0x8001199C
-void* PopReadedBuffer2() {
-    // Local variables
-    void* msg; // r1+0x8
-
-    // References
-    // -> static struct OSMessageQueue ReadedBufferQueue2;
-}
-
-// Range: 0x8001199C -> 0x800119CC
-void PushFreeReadBuffer(void* buffer) {
-    // Parameters
-    // void* buffer; // r4
-
-    // References
-    // -> static struct OSMessageQueue FreeReadBufferQueue;
-}
-
-// Erased
-static void* PopFreeReadBuffer() {
-    // Local variables
-    void* msg; // r1+0x8
-
-    // References
-    // -> static struct OSMessageQueue FreeReadBufferQueue;
-}
-
-// Erased
-static void PushReadedBuffer(void* buffer) {
-    // Parameters
-    // void* buffer; // r4
-
-    // References
-    // -> static struct OSMessageQueue ReadedBufferQueue;
-}
-
-// Range: 0x800119CC -> 0x80011A00
-void* PopReadedBuffer() {
-    // Local variables
-    void* msg; // r1+0x8
-
-    // References
-    // -> static struct OSMessageQueue ReadedBufferQueue;
-}
-
 typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
@@ -301,60 +247,6 @@ typedef struct __anon_0x16849 {
 // size = 0x1D0, address = 0x800F9C80
 struct __anon_0x16849 ActivePlayer;
 
-// Range: 0x80011A00 -> 0x80011B2C
-static void* Reader() {
-    // Local variables
-    struct __anon_0x1675E* readBuffer; // r27
-    s32 offset; // r26
-    s32 size; // r25
-    s32 readFrame; // r24
-
-    // References
-    // -> static struct OSThread ReadThread;
-    // -> struct __anon_0x16849 ActivePlayer;
-    // -> static struct OSMessageQueue ReadedBufferQueue;
-    // -> s32 gMovieErrorToggle;
-    // -> static struct OSMessageQueue FreeReadBufferQueue;
-}
-
-// Erased
-static void ReadThreadCancel() {
-    // References
-    // -> static s32 ReadThreadCreated;
-    // -> static struct OSThread ReadThread;
-}
-
-// Range: 0x80011B2C -> 0x80011B60
-void ReadThreadStart() {
-    // References
-    // -> static struct OSThread ReadThread;
-    // -> static s32 ReadThreadCreated;
-}
-
-// Range: 0x80011B60 -> 0x80011C0C
-s32 CreateReadThread(s32 priority) {
-    // Parameters
-    // s32 priority; // r3
-
-    // References
-    // -> static s32 ReadThreadCreated;
-    // -> static void* ReadedBufferMessage2[10];
-    // -> static struct OSMessageQueue ReadedBufferQueue2;
-    // -> static void* ReadedBufferMessage[10];
-    // -> static struct OSMessageQueue ReadedBufferQueue;
-    // -> static void* FreeReadBufferMessage[10];
-    // -> static struct OSMessageQueue FreeReadBufferQueue;
-    // -> static u8 ReadThreadStack[4096];
-    // -> static struct OSThread ReadThread;
-}
-
-// Range: 0x80011C0C -> 0x80011CAC
-void movieReset(s32 IPL, s32 forceMenu) {
-    // Parameters
-    // s32 IPL; // r30
-    // s32 forceMenu; // r31
-}
-
 typedef struct PADStatus {
     /* 0x0 */ u16 button;
     /* 0x2 */ s8 stickX;
@@ -384,38 +276,6 @@ typedef struct __anon_0x171A2 {
 // size = 0x78, address = 0x80132758
 struct __anon_0x171A2 DemoPad[4];
 
-// Range: 0x80011CAC -> 0x80011E60
-s32 movieTestReset(s32 IPL, s32 forceMenu) {
-    // Parameters
-    // s32 IPL; // r29
-    // s32 forceMenu; // r30
-
-    // Local variables
-    u32 bFlag; // r1+0x8
-    u32 nTick; // r1+0x8
-
-    // References
-    // -> static u32 gnTickReset;
-    // -> static s32 gbReset;
-    // -> struct __anon_0x171A2 DemoPad[4];
-}
-
-// Range: 0x80011E60 -> 0x80011F10
-s32 movieDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
-    // Parameters
-    // struct DVDFileInfo* pFileInfo; // r26
-    // void* anData; // r27
-    // s32 nSizeRead; // r28
-    // s32 nOffset; // r29
-
-    // Local variables
-    s32 nStatus; // r31
-    s32 bRetry; // r30
-
-    // References
-    // -> s32 gMovieErrorToggle;
-}
-
 typedef enum __anon_0x17564 {
     M_M_NONE = -1,
     M_M_DISK_COVER_OPEN = 0,
@@ -426,22 +286,6 @@ typedef enum __anon_0x17564 {
     M_M_DISK_NO_DISK = 5,
     M_M_DISK_DEFAULT_ERROR = 6,
 } __anon_0x17564;
-
-// Range: 0x80011F10 -> 0x80012170
-s32 movieDVDShowError(s32 nStatus) {
-    // Parameters
-    // s32 nStatus; // r1+0x8
-
-    // Local variables
-    enum __anon_0x17564 nMessage; // r31
-
-    // References
-    // -> static u32 gnTickReset;
-    // -> static s32 gbReset;
-    // -> struct __anon_0x171A2 DemoPad[4];
-    // -> static s32 toggle$184;
-    // -> s32 gMovieErrorToggle;
-}
 
 // size = 0x0, address = 0x800DB800
 u8 gcoverOpen[];
@@ -460,20 +304,6 @@ u8 gfatalErr[];
 
 // size = 0x0, address = 0x800DE0E0
 u8 gnoDisk[];
-
-// Range: 0x80012170 -> 0x80012334
-s32 movieDrawErrorMessage(enum __anon_0x17564 movieMessage) {
-    // Parameters
-    // enum __anon_0x17564 movieMessage; // r1+0x8
-
-    // References
-    // -> u8 gfatalErr[];
-    // -> u8 gnoDisk[];
-    // -> u8 gretryErr[];
-    // -> u8 greadingDisk[];
-    // -> u8 gwrongDisk[];
-    // -> u8 gcoverOpen[];
-}
 
 // size = 0x0, address = 0x800E9960
 s16 Vert_s16[];
@@ -553,6 +383,16 @@ typedef struct _GXColor {
     /* 0x3 */ u8 a;
 } __anon_0x17F8F; // size = 0x4
 
+// Range: 0x80012850 -> 0x80012F20
+s32 movieGXInit() {
+    // Local variables
+    s32 i; // r31
+    struct _GXColor GX_DEFAULT_BG; // r1+0x58
+    struct _GXColor BLACK; // r1+0x54
+    struct _GXColor WHITE; // r1+0x50
+    f32 identity_mtx[3][4]; // r1+0x20
+}
+
 // Range: 0x80012334 -> 0x80012850
 s32 movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {
     // Parameters
@@ -574,12 +414,172 @@ s32 movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {
     // -> static f32 gOrthoMtx[4][4];
 }
 
-// Range: 0x80012850 -> 0x80012F20
-s32 movieGXInit() {
+// Range: 0x80012170 -> 0x80012334
+s32 movieDrawErrorMessage(enum __anon_0x17564 movieMessage) {
+    // Parameters
+    // enum __anon_0x17564 movieMessage; // r1+0x8
+
+    // References
+    // -> u8 gfatalErr[];
+    // -> u8 gnoDisk[];
+    // -> u8 gretryErr[];
+    // -> u8 greadingDisk[];
+    // -> u8 gwrongDisk[];
+    // -> u8 gcoverOpen[];
+}
+
+// Range: 0x80011F10 -> 0x80012170
+s32 movieDVDShowError(s32 nStatus) {
+    // Parameters
+    // s32 nStatus; // r1+0x8
+
     // Local variables
-    s32 i; // r31
-    struct _GXColor GX_DEFAULT_BG; // r1+0x58
-    struct _GXColor BLACK; // r1+0x54
-    struct _GXColor WHITE; // r1+0x50
-    f32 identity_mtx[3][4]; // r1+0x20
+    enum __anon_0x17564 nMessage; // r31
+
+    // References
+    // -> static u32 gnTickReset;
+    // -> static s32 gbReset;
+    // -> struct __anon_0x171A2 DemoPad[4];
+    // -> static s32 toggle$184;
+    // -> s32 gMovieErrorToggle;
+}
+
+// Range: 0x80011E60 -> 0x80011F10
+s32 movieDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
+    // Parameters
+    // struct DVDFileInfo* pFileInfo; // r26
+    // void* anData; // r27
+    // s32 nSizeRead; // r28
+    // s32 nOffset; // r29
+
+    // Local variables
+    s32 nStatus; // r31
+    s32 bRetry; // r30
+
+    // References
+    // -> s32 gMovieErrorToggle;
+}
+
+// Range: 0x80011CAC -> 0x80011E60
+s32 movieTestReset(s32 IPL, s32 forceMenu) {
+    // Parameters
+    // s32 IPL; // r29
+    // s32 forceMenu; // r30
+
+    // Local variables
+    u32 bFlag; // r1+0x8
+    u32 nTick; // r1+0x8
+
+    // References
+    // -> static u32 gnTickReset;
+    // -> static s32 gbReset;
+    // -> struct __anon_0x171A2 DemoPad[4];
+}
+
+// Range: 0x80011C0C -> 0x80011CAC
+void movieReset(s32 IPL, s32 forceMenu) {
+    // Parameters
+    // s32 IPL; // r30
+    // s32 forceMenu; // r31
+}
+
+// Range: 0x80011B60 -> 0x80011C0C
+s32 CreateReadThread(s32 priority) {
+    // Parameters
+    // s32 priority; // r3
+
+    // References
+    // -> static s32 ReadThreadCreated;
+    // -> static void* ReadedBufferMessage2[10];
+    // -> static struct OSMessageQueue ReadedBufferQueue2;
+    // -> static void* ReadedBufferMessage[10];
+    // -> static struct OSMessageQueue ReadedBufferQueue;
+    // -> static void* FreeReadBufferMessage[10];
+    // -> static struct OSMessageQueue FreeReadBufferQueue;
+    // -> static u8 ReadThreadStack[4096];
+    // -> static struct OSThread ReadThread;
+}
+
+// Range: 0x80011B2C -> 0x80011B60
+void ReadThreadStart() {
+    // References
+    // -> static struct OSThread ReadThread;
+    // -> static s32 ReadThreadCreated;
+}
+
+// Erased
+static void ReadThreadCancel() {
+    // References
+    // -> static s32 ReadThreadCreated;
+    // -> static struct OSThread ReadThread;
+}
+
+// Range: 0x80011A00 -> 0x80011B2C
+static void* Reader() {
+    // Local variables
+    struct __anon_0x1675E* readBuffer; // r27
+    s32 offset; // r26
+    s32 size; // r25
+    s32 readFrame; // r24
+
+    // References
+    // -> static struct OSThread ReadThread;
+    // -> struct __anon_0x16849 ActivePlayer;
+    // -> static struct OSMessageQueue ReadedBufferQueue;
+    // -> s32 gMovieErrorToggle;
+    // -> static struct OSMessageQueue FreeReadBufferQueue;
+}
+
+// Range: 0x800119CC -> 0x80011A00
+void* PopReadedBuffer() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue ReadedBufferQueue;
+}
+
+// Erased
+static void PushReadedBuffer(void* buffer) {
+    // Parameters
+    // void* buffer; // r4
+
+    // References
+    // -> static struct OSMessageQueue ReadedBufferQueue;
+}
+
+// Erased
+static void* PopFreeReadBuffer() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue FreeReadBufferQueue;
+}
+
+// Range: 0x8001199C -> 0x800119CC
+void PushFreeReadBuffer(void* buffer) {
+    // Parameters
+    // void* buffer; // r4
+
+    // References
+    // -> static struct OSMessageQueue FreeReadBufferQueue;
+}
+
+// Range: 0x80011968 -> 0x8001199C
+void* PopReadedBuffer2() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue ReadedBufferQueue2;
+}
+
+// Range: 0x80011938 -> 0x80011968
+void PushReadedBuffer2(void* buffer) {
+    // Parameters
+    // void* buffer; // r4
+
+    // References
+    // -> static struct OSMessageQueue ReadedBufferQueue2;
 }

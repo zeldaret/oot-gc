@@ -34,34 +34,6 @@ typedef struct __anon_0x83D15 {
     /* 0x34 */ s32 nWidthPulse2;
 } __anon_0x83D15; // size = 0x38
 
-// Range: 0x8009779C -> 0x800978A4
-s32 peripheralEvent(struct __anon_0x83D15* pPeripheral, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x83D15* pPeripheral; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r31
-}
-
-// Range: 0x800978A4 -> 0x800978AC
-s32 peripheralGet64() {}
-
-// Range: 0x800978AC -> 0x800979AC
-s32 peripheralGet32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x83D15* pPeripheral; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x800979AC -> 0x800979B4
-s32 peripheralGet16() {}
-
-// Range: 0x800979B4 -> 0x800979BC
-s32 peripheralGet8() {}
-
-// Range: 0x800979BC -> 0x800979C4
-s32 peripheralPut64() {}
-
 typedef enum __anon_0x8415D {
     SOT_NONE = -1,
     SOT_CPU = 0,
@@ -82,24 +54,6 @@ typedef enum __anon_0x8415D {
     SOT_RDB = 15,
     SOT_COUNT = 16,
 } __anon_0x8415D;
-
-// Range: 0x800979C4 -> 0x80097D48
-s32 peripheralPut32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x83D15* pPeripheral; // r30
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r1+0x10
-
-    // Local variables
-    s32 bFlag; // r31
-    enum __anon_0x8415D storageDevice; // r1+0x14
-}
-
-// Range: 0x80097D48 -> 0x80097D50
-s32 peripheralPut16() {}
-
-// Range: 0x80097D50 -> 0x80097D58
-s32 peripheralPut8() {}
 
 typedef enum __anon_0x843DE {
     SM_NONE = -1,
@@ -155,4 +109,50 @@ static s32 peripheralDMA_Complete() {
 
     // References
     // -> struct __anon_0x8464B* gpSystem;
+}
+
+// Range: 0x80097D50 -> 0x80097D58
+s32 peripheralPut8() {}
+
+// Range: 0x80097D48 -> 0x80097D50
+s32 peripheralPut16() {}
+
+// Range: 0x800979C4 -> 0x80097D48
+s32 peripheralPut32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x83D15* pPeripheral; // r30
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r1+0x10
+
+    // Local variables
+    s32 bFlag; // r31
+    enum __anon_0x8415D storageDevice; // r1+0x14
+}
+
+// Range: 0x800979BC -> 0x800979C4
+s32 peripheralPut64() {}
+
+// Range: 0x800979B4 -> 0x800979BC
+s32 peripheralGet8() {}
+
+// Range: 0x800979AC -> 0x800979B4
+s32 peripheralGet16() {}
+
+// Range: 0x800978AC -> 0x800979AC
+s32 peripheralGet32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x83D15* pPeripheral; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x800978A4 -> 0x800978AC
+s32 peripheralGet64() {}
+
+// Range: 0x8009779C -> 0x800978A4
+s32 peripheralEvent(struct __anon_0x83D15* pPeripheral, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x83D15* pPeripheral; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
 }

@@ -105,37 +105,6 @@ static void* DecodedTextureSetMessage[3];
 // size = 0x4, address = 0x8013565C
 static s32 First;
 
-// Range: 0x80012F20 -> 0x80013004
-s32 CreateVideoDecodeThread(s32 priority, u8* ptr) {
-    // Parameters
-    // s32 priority; // r8
-    // u8* ptr; // r5
-
-    // References
-    // -> static s32 First;
-    // -> static s32 VideoDecodeThreadCreated;
-    // -> static void* DecodedTextureSetMessage[3];
-    // -> static struct OSMessageQueue DecodedTextureSetQueue;
-    // -> static void* FreeTextureSetMessage[3];
-    // -> static struct OSMessageQueue FreeTextureSetQueue;
-    // -> static u8 VideoDecodeThreadStack[4096];
-    // -> static struct OSThread VideoDecodeThread;
-}
-
-// Range: 0x80013004 -> 0x80013038
-void VideoDecodeThreadStart() {
-    // References
-    // -> static struct OSThread VideoDecodeThread;
-    // -> static s32 VideoDecodeThreadCreated;
-}
-
-// Erased
-static void VideoDecodeThreadCancel() {
-    // References
-    // -> static s32 VideoDecodeThreadCreated;
-    // -> static struct OSThread VideoDecodeThread;
-}
-
 typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
@@ -254,37 +223,49 @@ typedef struct __anon_0x1999C {
 // size = 0x1D0, address = 0x800F9C80
 struct __anon_0x1999C ActivePlayer;
 
-// Range: 0x80013038 -> 0x80013114
-static void* VideoDecoder() {
-    // Local variables
-    struct __anon_0x19FA4* readBuffer; // r28
-    s32 old; // r3
-
-    // References
-    // -> struct __anon_0x1999C ActivePlayer;
-}
-
 typedef struct __anon_0x19FA4 {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
     /* 0x8 */ s32 isValid;
 } __anon_0x19FA4; // size = 0xC
 
-// Range: 0x80013114 -> 0x80013248
-static void* VideoDecoderForOnMemory(void* ptr) {
+// Range: 0x80013410 -> 0x80013440
+void PushDecodedTextureSet(void* buffer) {
     // Parameters
-    // void* ptr; // r1+0x8
-
-    // Local variables
-    struct __anon_0x19FA4 readBuffer; // r1+0x10
-    s32 old; // r3
-    s32 tmp; // r4
-    s32 size; // r29
-    s32 readFrame; // r28
+    // void* buffer; // r4
 
     // References
-    // -> static struct OSThread VideoDecodeThread;
-    // -> struct __anon_0x1999C ActivePlayer;
+    // -> static struct OSMessageQueue DecodedTextureSetQueue;
+}
+
+// Range: 0x800133CC -> 0x80013410
+void* PopDecodedTextureSet(s32 flag) {
+    // Parameters
+    // s32 flag; // r5
+
+    // Local variables
+    void* msg; // r1+0xC
+
+    // References
+    // -> static struct OSMessageQueue DecodedTextureSetQueue;
+}
+
+// Range: 0x8001339C -> 0x800133CC
+void PushFreeTextureSet(void* buffer) {
+    // Parameters
+    // void* buffer; // r4
+
+    // References
+    // -> static struct OSMessageQueue FreeTextureSetQueue;
+}
+
+// Range: 0x80013368 -> 0x8001339C
+void* PopFreeTextureSet() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue FreeTextureSetQueue;
 }
 
 // Range: 0x80013248 -> 0x80013368
@@ -305,41 +286,60 @@ static void VideoDecode(struct __anon_0x19FA4* readBuffer) {
     // -> static struct OSThread VideoDecodeThread;
 }
 
-// Range: 0x80013368 -> 0x8001339C
-void* PopFreeTextureSet() {
-    // Local variables
-    void* msg; // r1+0x8
-
-    // References
-    // -> static struct OSMessageQueue FreeTextureSetQueue;
-}
-
-// Range: 0x8001339C -> 0x800133CC
-void PushFreeTextureSet(void* buffer) {
+// Range: 0x80013114 -> 0x80013248
+static void* VideoDecoderForOnMemory(void* ptr) {
     // Parameters
-    // void* buffer; // r4
-
-    // References
-    // -> static struct OSMessageQueue FreeTextureSetQueue;
-}
-
-// Range: 0x800133CC -> 0x80013410
-void* PopDecodedTextureSet(s32 flag) {
-    // Parameters
-    // s32 flag; // r5
+    // void* ptr; // r1+0x8
 
     // Local variables
-    void* msg; // r1+0xC
+    struct __anon_0x19FA4 readBuffer; // r1+0x10
+    s32 old; // r3
+    s32 tmp; // r4
+    s32 size; // r29
+    s32 readFrame; // r28
 
     // References
-    // -> static struct OSMessageQueue DecodedTextureSetQueue;
+    // -> static struct OSThread VideoDecodeThread;
+    // -> struct __anon_0x1999C ActivePlayer;
 }
 
-// Range: 0x80013410 -> 0x80013440
-void PushDecodedTextureSet(void* buffer) {
-    // Parameters
-    // void* buffer; // r4
+// Range: 0x80013038 -> 0x80013114
+static void* VideoDecoder() {
+    // Local variables
+    struct __anon_0x19FA4* readBuffer; // r28
+    s32 old; // r3
 
     // References
+    // -> struct __anon_0x1999C ActivePlayer;
+}
+
+// Erased
+static void VideoDecodeThreadCancel() {
+    // References
+    // -> static s32 VideoDecodeThreadCreated;
+    // -> static struct OSThread VideoDecodeThread;
+}
+
+// Range: 0x80013004 -> 0x80013038
+void VideoDecodeThreadStart() {
+    // References
+    // -> static struct OSThread VideoDecodeThread;
+    // -> static s32 VideoDecodeThreadCreated;
+}
+
+// Range: 0x80012F20 -> 0x80013004
+s32 CreateVideoDecodeThread(s32 priority, u8* ptr) {
+    // Parameters
+    // s32 priority; // r8
+    // u8* ptr; // r5
+
+    // References
+    // -> static s32 First;
+    // -> static s32 VideoDecodeThreadCreated;
+    // -> static void* DecodedTextureSetMessage[3];
     // -> static struct OSMessageQueue DecodedTextureSetQueue;
+    // -> static void* FreeTextureSetMessage[3];
+    // -> static struct OSMessageQueue FreeTextureSetQueue;
+    // -> static u8 VideoDecodeThreadStack[4096];
+    // -> static struct OSThread VideoDecodeThread;
 }
