@@ -37,7 +37,7 @@ _XL_OBJECTTYPE gClassRAM = {
     "RAM",
     sizeof(Ram),
     NULL,
-    (EventFunc)ramEvent,
+    ramEvent,
 };
 
 //! TODO: proper fix
@@ -139,7 +139,6 @@ s32 ramWipe(Ram* pRAM) {
     return 1;
 }
 
-// int ramGetBuffer(Ram *pRAM, void *ppRAM, unsigned int nOffset, unsigned int *pnSize);
 s32 ramGetBuffer(Ram* pRAM, void* ppRAM, u32 nOffset, u32* pnSize) {
     s32 nSize;
 

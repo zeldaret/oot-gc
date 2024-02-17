@@ -1,7 +1,7 @@
 #include "xlObject.h"
 #include "system.h"
 
-int systemEvent(System* pSystem, int nEvent, void* pArgument);
+s32 systemEvent(void* pObject, s32 nEvent, void* pArgument);
 
 char D_800EB300[] = "SYSTEM (N64)";
 
@@ -9,7 +9,7 @@ _XL_OBJECTTYPE gClassSystem = {
     D_800EB300,
     sizeof(System),
     NULL,
-    (EventFunc)systemEvent,
+    systemEvent,
 };
 
 u32 contMap[] = {

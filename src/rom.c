@@ -9,7 +9,7 @@ _XL_OBJECTTYPE gClassROM = {
     "ROM",
     sizeof(Rom),
     NULL,
-    (EventFunc)romEvent,
+    romEvent,
 };
 
 static u32 ganOffsetBlock_ZLJ[198] = {
