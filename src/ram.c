@@ -137,7 +137,7 @@ s32 ramWipe(Ram* pRAM) {
     return 1;
 }
 
-s32 ramGetBuffer(Ram* pRAM, void* ppRAM, u32 nOffset, u32* pnSize) {
+s32 ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize) {
     s32 nSize;
 
     nOffset &= 0x03FFFFFF;
