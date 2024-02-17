@@ -37,9 +37,9 @@ typedef struct _GXRenderModeObj {
     /* 0x32 */ unsigned char vfilter[7];
 } GXRenderModeObj; // size = 0x3C
 
-extern GXRenderModeObj* rmode;
 extern int __OSCurrHeap;
 
+extern GXRenderModeObj* rmode;
 void* gBufferP;
 
 //! TODO: import SDK headers
