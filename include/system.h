@@ -96,4 +96,10 @@ typedef struct SystemRomConfig {
     /* 0x0170 */ s32 currentControllerConfig;
 } SystemRomConfig; // size = 0x174
 
+#define SYSTEM_CPU(pSystem) \
+  (struct Cpu*)(((System*)(pSystem))->apObject[SOT_CPU])
+
+#define SYSTEM_ROM(pSystem) \
+  (struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM])
+
 #endif

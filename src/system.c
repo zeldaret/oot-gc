@@ -2,6 +2,7 @@
 #include "xlObject.h"
 #include "system.h"
 #include "rom.h"
+#include "cpu.h"
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 
@@ -337,7 +338,59 @@ s32 systemGetStorageDevice(System* pSystem, s32* pStorageDevice) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemReset.s")
+s32 systemReset(System* pSystem) {
+    s64 nPC;
+    s32 nOffsetRAM;
+    SystemObjectType eObject;
+
+    pSystem->nAddressBreak = -1;
+
+    if (romGetImage(SYSTEM_ROM(pSystem), NULL)) {
+        if (!systemSetupGameRAM(pSystem)) {
+            return 0;
+        }
+
+        if (!ramWipe(pSystem->apObject[SOT_RAM])) {
+            return 0;
+        }
+
+        if (!romGetPC(SYSTEM_ROM(pSystem), (u64*)&nPC)) {
+            return 0;
+        }
+
+        nOffsetRAM = nPC & 0xFFFFFF;
+        if (!systemCopyROM(pSystem, nOffsetRAM, 0x1000, 0x100000, NULL)) {
+            return 0;
+        }
+
+        if (!cpuReset(SYSTEM_CPU(pSystem))) {
+            return 0;
+        }
+
+        cpuSetXPC(SYSTEM_CPU(pSystem), nPC, 0, 0);
+        
+        if (!systemSetupGameALL(pSystem)) {
+            return 0;
+        }
+
+        eObject = SOT_CPU;
+        for (; eObject < SOT_COUNT; eObject++) {
+            if (pSystem->apObject[eObject] != NULL && !xlObjectEvent(pSystem->apObject[eObject], 0x1003, NULL)) {
+                return 0;
+            }
+        }
+
+        if (!xlObjectEvent(pSystem->pFrame, 0x1003, NULL)) {
+            return 0;
+        }
+
+        if (!xlObjectEvent(pSystem->pSound, 0x1003, NULL)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
 

@@ -265,6 +265,9 @@ struct Cpu {
     /* 0x12064 */ CpuOptimize nOptimize;
 }; // size = 0x12090
 
+s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi);
+s32 cpuReset(Cpu* pCPU);
+
 s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
                     Put64Func pfPut64);
 
