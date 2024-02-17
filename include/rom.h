@@ -54,12 +54,6 @@ typedef struct RomLoadState {
     /* 0x2C */ u32 nSizeRead;
 } RomLoadState; // size = 0x30
 
-typedef struct UnknownDeviceStruct {
-    /* 0x00 */ s32 unk;
-    /* 0x04 */ char unk2[0x20];
-    /* 0x24 */ struct __anon_0x3EB4F* pDevice;
-} UnknownDeviceStruct;
-
 // __anon_0x4D873
 typedef struct Rom {
     /* 0x00000 */ void* pHost;
