@@ -43,7 +43,7 @@ else
 endif
 
 PPC_BIN_PREFIX := $(DEVKITPPC)/bin/powerpc-eabi-
-AS := $(PPC_BIN_PREFIX)-as
+AS := $(PPC_BIN_PREFIX)as
 OBJCOPY := $(PPC_BIN_PREFIX)objcopy
 OBJDUMP := $(PPC_BIN_PREFIX)objdump
 
