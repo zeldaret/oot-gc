@@ -3,7 +3,7 @@
 #include "system.h"
 #include "rom.h"
 
-int systemEvent(System* pSystem, int nEvent, void* pArgument);
+s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 
 char D_800EB300[] = "SYSTEM (N64)";
 

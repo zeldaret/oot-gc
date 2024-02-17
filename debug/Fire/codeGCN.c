@@ -1,152 +1,125 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Fire\codeGCN.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x8001C444 -> 0x8001C498
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include "types.h"
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
+typedef struct _XL_OBJECTTYPE {
+    /* 0x0 */ char* szName;
+    /* 0x4 */ s32 nSizeObject;
+    /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
+    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+} __anon_0x1F88E; // size = 0x10
 
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
+// size = 0x10, address = 0x800EA7C8
+struct _XL_OBJECTTYPE gClassCode;
 
-// size: 0x10
-struct _XL_OBJECTTYPE
-{
-	char *szName; // 0x0
-	int nSizeObject; // 0x4
-	_XL_OBJECTTYPE *pClassBase; // 0x8
-	int (*pfEvent)(void */* unknown0 */, int /* unknown1 */, void */* unknown2 */); // 0xC
-};
+typedef enum __anon_0x1F980 {
+    XLFT_NONE = -1,
+    XLFT_TEXT = 0,
+    XLFT_BINARY = 1,
+} __anon_0x1F980;
 
-// Location: 0x800EA7C8
-_XL_OBJECTTYPE gClassCode;
+typedef struct DVDDiskID {
+    /* 0x0 */ char gameName[4];
+    /* 0x4 */ char company[2];
+    /* 0x6 */ u8 diskNumber;
+    /* 0x7 */ u8 gameVersion;
+    /* 0x8 */ u8 streaming;
+    /* 0x9 */ u8 streamingBufSize;
+    /* 0xA */ u8 padding[22];
+} __anon_0x1FA38; // size = 0x20
 
-// size: 0x4
-enum __anon_0x1F980
-{
-	XLFT_NONE = 4294967295,
-	XLFT_TEXT = 0,
-	XLFT_BINARY = 1
-};
+typedef struct DVDCommandBlock {
+    /* 0x00 */ struct DVDCommandBlock* next;
+    /* 0x04 */ struct DVDCommandBlock* prev;
+    /* 0x08 */ u32 command;
+    /* 0x0C */ s32 state;
+    /* 0x10 */ u32 offset;
+    /* 0x14 */ u32 length;
+    /* 0x18 */ void* addr;
+    /* 0x1C */ u32 currTransferSize;
+    /* 0x20 */ u32 transferredSize;
+    /* 0x24 */ struct DVDDiskID* id;
+    /* 0x28 */ void (*callback)(s32, struct DVDCommandBlock*);
+    /* 0x2C */ void* userData;
+} __anon_0x1FBA8; // size = 0x30
 
-// size: 0x20
-struct DVDDiskID
-{
-	char gameName[4]; // 0x0
-	char company[2]; // 0x4
-	unsigned char diskNumber; // 0x6
-	unsigned char gameVersion; // 0x7
-	unsigned char streaming; // 0x8
-	unsigned char streamingBufSize; // 0x9
-	unsigned char padding[22]; // 0xA
-};
+typedef struct DVDFileInfo {
+    /* 0x00 */ struct DVDCommandBlock cb;
+    /* 0x30 */ u32 startAddr;
+    /* 0x34 */ u32 length;
+    /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
+} __anon_0x1FDCE; // size = 0x3C
 
-// size: 0x30
-struct DVDCommandBlock
-{
-	DVDCommandBlock *next; // 0x0
-	DVDCommandBlock *prev; // 0x4
-	unsigned long command; // 0x8
-	long state; // 0xC
-	unsigned long offset; // 0x10
-	unsigned long length; // 0x14
-	void *addr; // 0x18
-	unsigned long currTransferSize; // 0x1C
-	unsigned long transferredSize; // 0x20
-	DVDDiskID *id; // 0x24
-	void (*callback)(long /* unknown0 */, DVDCommandBlock */* unknown1 */); // 0x28
-	void *userData; // 0x2C
-};
+typedef struct tXL_FILE {
+    /* 0x00 */ s32 iBuffer;
+    /* 0x04 */ void* pData;
+    /* 0x08 */ void* pBuffer;
+    /* 0x0C */ s32 nAttributes;
+    /* 0x10 */ s32 nSize;
+    /* 0x14 */ s32 nOffset;
+    /* 0x18 */ enum __anon_0x1F980 eType;
+    /* 0x1C */ struct DVDFileInfo info;
+} __anon_0x1FE86; // size = 0x58
 
-// size: 0x3C
-struct DVDFileInfo
-{
-	DVDCommandBlock cb; // 0x0
-	unsigned long startAddr; // 0x30
-	unsigned long length; // 0x34
-	void (*callback)(long /* unknown0 */, DVDFileInfo */* unknown1 */); // 0x38
-};
+// size = 0x4, address = 0x80135680
+static void* gpBufferFunction;
 
-// size: 0x58
-struct tXL_FILE
-{
-	int iBuffer; // 0x0
-	void *pData; // 0x4
-	void *pBuffer; // 0x8
-	int nAttributes; // 0xC
-	int nSize; // 0x10
-	int nOffset; // 0x14
-	__anon_0x1F980 eType; // 0x18
-	DVDFileInfo info; // 0x1C
-};
+// size = 0x4, address = 0x80135684
+static u32* ganDataCode;
 
-// Location: 0x0
-tXL_FILE *gpFileCode;
+typedef struct _CODE_CACHE_NODE {
+    /* 0x0 */ s32 checksum;
+    /* 0x4 */ s32 length;
+    /* 0x8 */ struct _CODE_CACHE_NODE* next;
+    /* 0xC */ struct _CODE_CACHE_NODE* child;
+} __anon_0x20141; // size = 0x10
 
-// Location: 0x0
-unsigned int gnSizeCode;
+// Range: 0x8001C444 -> 0x8001C498
+s32 codeEvent(s32 nEvent) {
+    // Parameters
+    // s32 nEvent; // r1+0x4
 
-// Local to compilation unit
-// Location: 0x80135680
-static void *gpBufferFunction;
-
-// Location: 0x0
-char gpBufferFunctionCache[65536];
-
-// Local to compilation unit
-// Location: 0x80135684
-static unsigned int *ganDataCode;
-
-// Location: 0x0
-unsigned int gnCountFunction;
-
-// Location: 0x0
-unsigned int gnLastCountFunction;
-
-// Location: 0x0
-int gSizeInARAM;
-
-// size: 0x10
-struct _CODE_CACHE_NODE
-{
-	int checksum; // 0x0
-	int length; // 0x4
-	_CODE_CACHE_NODE *next; // 0x8
-	_CODE_CACHE_NODE *child; // 0xC
-};
-
-// Location: 0x0
-_CODE_CACHE_NODE gCodeCacheHead;
-
-int codeEvent(int nEvent)
-{
-	// References: ganDataCode (0x80135684)
-	// References: gpBufferFunction (0x80135680)
+    // References
+    // -> static u32* ganDataCode;
+    // -> static void* gpBufferFunction;
 }
 
-// Location: 0x0
-int gCatalogLoaded;
+// Erased
+static s32 codeCheckCatalog(s32 nAddress0, s32 nAddress1) {
+    // Parameters
+    // s32 nAddress0; // r4
+    // s32 nAddress1; // r5
 
-int codeCheckCatalog(int nAddress0, int nAddress1)
-{
-	int iFunction;
-	int instruction;
-	unsigned int checksum;
-	// References: gnCountFunction (0x0)
-	// References: ganDataCode (0x80135684)
-	// References: gCatalogLoaded (0x0)
+    // Local variables
+    s32 iFunction; // r1+0x8
+    s32 instruction; // r31
+    u32 checksum; // r1+0x14
+
+    // References
+    // -> static u32 gnCountFunction;
+    // -> static u32* ganDataCode;
+    // -> static s32 gCatalogLoaded;
 }
 
-int codeSendFilePart();
+// Erased
+static s32 codeSendFilePart() {}
 
-int hioInit();
+// Erased
+static s32 hioInit() {}
 
-int hioSendBuffer();
+// Erased
+static s32 hioSendBuffer() {}
 
-void hioCallback();
+// Erased
+static void hioCallback() {}
 
-int hioCallbackDevice();
+// Erased
+static s32 hioCallbackDevice() {}
 
-int hioInitSend();
-
+// Erased
+static s32 hioInitSend() {}
