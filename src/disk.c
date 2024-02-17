@@ -3,32 +3,82 @@
 #include "cpu.h"
 #include "disk.h"
 
-static s32 diskGetDrive64(Disk* pDisk, u32 nAddress, s64* pData);
-static s32 diskGetDrive32(Disk* pDisk, u32 nAddress, s32* pData);
-static s32 diskGetDrive16(Disk* pDisk, u32 nAddress, s16* pData);
-static s32 diskGetDrive8(Disk* pDisk, u32 nAddress, s8* pData);
-
-static s32 diskPutDrive64(Disk* pDisk, u32 nAddress, s64* pData);
-static s32 diskPutDrive32(Disk* pDisk, u32 nAddress, s32* pData);
-static s32 diskPutDrive16(Disk* pDisk, u32 nAddress, s16* pData);
-static s32 diskPutDrive8(Disk* pDisk, u32 nAddress, s8* pData);
-
-static s32 diskGetROM64(Disk* pDisk, u32 nAddress, s64* pData);
-static s32 diskGetROM32(Disk* pDisk, u32 nAddress, s32* pData);
-static s32 diskGetROM16(Disk* pDisk, u32 nAddress, s16* pData);
-static s32 diskGetROM8(Disk* pDisk, u32 nAddress, s8* pData);
-
-static s32 diskPutROM64(Disk* pDisk, u32 nAddress, s64* pData);
-static s32 diskPutROM32(Disk* pDisk, u32 nAddress, s32* pData);
-static s32 diskPutROM16(Disk* pDisk, u32 nAddress, s16* pData);
-static s32 diskPutROM8(Disk* pDisk, u32 nAddress, s8* pData);
-
 _XL_OBJECTTYPE gClassDisk = {
     "DISK",
     sizeof(Disk),
     NULL,
     (EventFunc)diskEvent,
 };
+
+s32 diskPutROM8(Disk* pDisk, u32 nAddress, s8* pData) { return 1; }
+
+s32 diskPutROM16(Disk* pDisk, u32 nAddress, s16* pData) { return 1; }
+
+s32 diskPutROM32(Disk* pDisk, u32 nAddress, s32* pData) { return 1; }
+
+s32 diskPutROM64(Disk* pDisk, u32 nAddress, s64* pData) { return 1; }
+
+s32 diskGetROM8(Disk* pDisk, u32 nAddress, s8* pData) {
+    *pData = 0;
+    return 1;
+}
+
+s32 diskGetROM16(Disk* pDisk, u32 nAddress, s16* pData) {
+    *pData = 0;
+    return 1;
+}
+
+s32 diskGetROM32(Disk* pDisk, u32 nAddress, s32* pData) {
+    *pData = 0;
+    return 1;
+}
+
+s32 diskGetROM64(Disk* pDisk, u32 nAddress, s64* pData) {
+    *pData = 0;
+    return 1;
+}
+
+s32 diskPutDrive8(Disk* pDisk, u32 nAddress, s8* pData) { return 1; }
+
+s32 diskPutDrive16(Disk* pDisk, u32 nAddress, s16* pData) { return 1; }
+
+s32 diskPutDrive32(Disk* pDisk, u32 nAddress, s32* pData) {
+    nAddress &= 0x00FFFFFF;
+
+    switch (nAddress) {
+        case 0x508:
+            return 0;
+        case 0x510:
+        default:
+            break;
+    }
+
+    return 1;
+}
+
+s32 diskPutDrive64(Disk* pDisk, u32 nAddress, s64* pData) { return 1; }
+
+s32 diskGetDrive8(Disk* pDisk, u32 nAddress, s8* pData) { return 1; }
+
+s32 diskGetDrive16(Disk* pDisk, u32 nAddress, s16* pData) { return 1; }
+
+s32 diskGetDrive32(Disk* pDisk, u32 nAddress, s32* pData) {
+    nAddress &= 0x00FFFFFF;
+
+    switch (nAddress) {
+        case 0x508:
+            *pData = 0;
+            break;
+        case 0x510:
+            return 0;
+        default:
+            break;
+    }
+
+    return 1;
+}
+
+s32 diskGetDrive64(Disk* pDisk, u32 nAddress, s64* pData) { return 1; }
 
 s32 diskEvent(Disk* pDisk, s32 nEvent, void* pArgument) {
     switch (nEvent) {
@@ -74,73 +124,3 @@ s32 diskEvent(Disk* pDisk, s32 nEvent, void* pArgument) {
 
     return 1;
 }
-
-s32 diskGetDrive64(Disk* pDisk, u32 nAddress, s64* pData) { return 1; }
-
-s32 diskGetDrive32(Disk* pDisk, u32 nAddress, s32* pData) {
-    nAddress &= 0x00FFFFFF;
-
-    switch (nAddress) {
-        case 0x508:
-            *pData = 0;
-            break;
-        case 0x510:
-            return 0;
-        default:
-            break;
-    }
-
-    return 1;
-}
-
-s32 diskGetDrive16(Disk* pDisk, u32 nAddress, s16* pData) { return 1; }
-
-s32 diskGetDrive8(Disk* pDisk, u32 nAddress, s8* pData) { return 1; }
-
-s32 diskPutDrive64(Disk* pDisk, u32 nAddress, s64* pData) { return 1; }
-
-s32 diskPutDrive32(Disk* pDisk, u32 nAddress, s32* pData) {
-    nAddress &= 0x00FFFFFF;
-
-    switch (nAddress) {
-        case 0x508:
-            return 0;
-        case 0x510:
-        default:
-            break;
-    }
-
-    return 1;
-}
-
-s32 diskPutDrive16(Disk* pDisk, u32 nAddress, s16* pData) { return 1; }
-
-s32 diskPutDrive8(Disk* pDisk, u32 nAddress, s8* pData) { return 1; }
-
-s32 diskGetROM64(Disk* pDisk, u32 nAddress, s64* pData) {
-    *pData = 0;
-    return 1;
-}
-
-s32 diskGetROM32(Disk* pDisk, u32 nAddress, s32* pData) {
-    *pData = 0;
-    return 1;
-}
-
-s32 diskGetROM16(Disk* pDisk, u32 nAddress, s16* pData) {
-    *pData = 0;
-    return 1;
-}
-
-s32 diskGetROM8(Disk* pDisk, u32 nAddress, s8* pData) {
-    *pData = 0;
-    return 1;
-}
-
-s32 diskPutROM64(Disk* pDisk, u32 nAddress, s64* pData) { return 1; }
-
-s32 diskPutROM32(Disk* pDisk, u32 nAddress, s32* pData) { return 1; }
-
-s32 diskPutROM16(Disk* pDisk, u32 nAddress, s16* pData) { return 1; }
-
-s32 diskPutROM8(Disk* pDisk, u32 nAddress, s8* pData) { return 1; }
