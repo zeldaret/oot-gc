@@ -2,6 +2,7 @@
 #include "xlObject.h"
 #include "system.h"
 #include "rom.h"
+#include "ram.h"
 #include "cpu.h"
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
@@ -166,25 +167,22 @@ extern int atoi(const char* str);
 
 s32 simulatorGetArgument(SystemArgumentType eType, char* pszArgument);
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameRAM.s")
-#else
 s32 systemSetupGameRAM(System* pSystem) {
-    char* szExtra;
-    int nSizeCacheROM;
-    int nSizeExtra;
-    int nSizeRAM;
-    unsigned int nCode;
-    unsigned int iCode;
-    unsigned int anCode[0x100];
-    int bExpansion;
+    s32 szExtra;
+    s32 bExpansion;
+    s32 nSizeRAM;
+    s32 nSizeCacheROM;
+    s32 nSizeExtra;
     Rom* pROM;
+    u32 nCode;
+    u32 iCode;
+    u32 anCode[0x100];
 
     bExpansion = 0;
-    pROM = pSystem->apObject[SOT_ROM];
+    pROM = SYSTEM_ROM(pSystem);
 
     // array oob bug? 0x400 vs 0x100
-    if (!romCopy(pROM, anCode, 0x1000, 0x400, NULL)) {
+    if (!romCopy(SYSTEM_ROM(pSystem), anCode, 0x1000, 0x400, NULL)) {
         return 0;
     }
 
@@ -235,11 +233,11 @@ s32 systemSetupGameRAM(System* pSystem) {
         nSizeCacheROM = 0x800000;
     }
 
-    if (simulatorGetArgument(SAT_XTRA, szExtra)) {
-        nSizeExtra = atoi(szExtra) << 0x14;
+    if (simulatorGetArgument(SAT_XTRA, (char*)&szExtra)) {
+        nSizeExtra = atoi((char*)szExtra) << 0x14;
 
-        if (nSizeExtra > (s32)(nSizeRAM + 0xFFF00000)) {
-            nSizeExtra = nSizeRAM;
+        if (nSizeExtra > (s32)(nSizeCacheROM + 0xFFF00000)) {
+            nSizeExtra = nSizeCacheROM + 0xFFF00000;
         }
 
         nSizeRAM += nSizeExtra;
@@ -250,13 +248,12 @@ s32 systemSetupGameRAM(System* pSystem) {
         return 0;
     }
 
-    if (!romSetCacheSize(pSystem->apObject[SOT_ROM], nSizeCacheROM)) {
+    if (!romSetCacheSize(SYSTEM_ROM(pSystem), nSizeCacheROM)) {
         return 0;
     }
 
     return 1;
 }
-#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
 

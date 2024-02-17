@@ -102,4 +102,7 @@ typedef struct SystemRomConfig {
 #define SYSTEM_ROM(pSystem) \
   (struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM])
 
+#define SYSTEM_RAM(pSystem) \
+  (struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM])
+
 #endif
