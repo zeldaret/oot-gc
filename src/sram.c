@@ -1,23 +1,23 @@
 #include "types.h"
 #include "xlObject.h"
 
-int simulatorWriteSRAM(unsigned int address, unsigned char *data, int size);
-int simulatorReadSRAM(unsigned int address, unsigned char *data, int size);
+int simulatorWriteSRAM(unsigned int address, unsigned char* data, int size);
+int simulatorReadSRAM(unsigned int address, unsigned char* data, int size);
 
 #define OBJ_NAME "SRAM"
 
-typedef struct Sram
-{
-	struct sramHost *pHost; // 0x0
+typedef struct Sram {
+    struct sramHost* pHost; // 0x0
 } Sram;
 // __anon_0x74AB9
 
 struct Cpu;
 struct Ram;
 
-typedef struct sramHost{
+typedef struct sramHost {
     char unk_0[0x24];
-    struct Cpu* pCpu; // TODO the debug info said this was __anon_0x74AB9 (CpuDevice) but the function called takes a CPU
+    struct Cpu*
+        pCpu; // TODO the debug info said this was __anon_0x74AB9 (CpuDevice) but the function called takes a CPU
     char unk_28[4];
     struct Ram* pRam;
 };
@@ -33,12 +33,10 @@ static int sramPut32(void* pObject, u32 nAddress, s32* pData);
 static int sramPut16(void* pObject, u32 nAddress, s16* pData);
 static int sramPut8(void* pObject, u32 nAddress, s8* pData);
 
-extern int ramGetBuffer(struct Ram *pRAM, void *ppRAM, u32 nOffset, u32 *pnSize);
-extern int simulatorWriteSRAM(unsigned int address, unsigned char *data, int size);
+extern int ramGetBuffer(struct Ram* pRAM, void* ppRAM, u32 nOffset, u32* pnSize);
+extern int simulatorWriteSRAM(unsigned int address, unsigned char* data, int size);
 
-_XL_OBJECTTYPE gClassSram = {
-    OBJ_NAME, sizeof(OBJ_NAME) - 1, NULL, sramEvent 
-};
+_XL_OBJECTTYPE gClassSram = {OBJ_NAME, sizeof(Sram), NULL, sramEvent};
 
 int sramEvent(void* pObject, s32 nEvent, void* pArgument) {
     Sram* pSram = (Sram*)pObject;
@@ -82,7 +80,7 @@ static int sramGet16(void* pObject, u32 nAddress, s16* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(short));
     return 1;
 }
-static int sramGet8(void* pObject, u32 nAddress, s8 *pData) {
+static int sramGet8(void* pObject, u32 nAddress, s8* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(char));
     return 1;
 }
@@ -101,11 +99,10 @@ static int sramPut16(void* pObject, u32 nAddress, s16* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(short));
     return 1;
 }
-static int sramPut8(void* pObject, u32 nAddress, s8 *pData) {
+static int sramPut8(void* pObject, u32 nAddress, s8* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (unsigned char*)pData, sizeof(char));
     return 1;
 }
-
 
 s32 sramTransferSRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
     void* pTarget;
