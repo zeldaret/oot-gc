@@ -1,23 +1,24 @@
 #ifndef _XL_OBJECT_H
 #define _XL_OBJECT_H
 
+#include "types.h"
+
 typedef struct _XL_OBJECTTYPE _XL_OBJECTTYPE;
 
-typedef int (*EventFunc)(void* pObject, int nEvent, void* pArgument);
+typedef s32 (*EventFunc)(void* pObject, s32 nEvent, void* pArgument);
 
-// size: 0x10
 struct _XL_OBJECTTYPE {
-    char* szName; // 0x0
-    int nSizeObject; // 0x4
-    _XL_OBJECTTYPE* pClassBase; // 0x8
-    EventFunc pfEvent; // 0xC
-};
+    /* 0x0 */ char* szName;
+    /* 0x4 */ s32 nSizeObject;
+    /* 0x8 */ _XL_OBJECTTYPE* pClassBase;
+    /* 0xC */ EventFunc pfEvent;
+}; // size: 0x10
 
-int xlObjectReset(void);
-int xlObjectSetup(void);
-int xlObjectEvent(void* pObject, int nEvent, void* pArgument);
-int xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType);
-int xlObjectFree(void** ppObject);
-int xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType);
+s32 xlObjectReset(void);
+s32 xlObjectSetup(void);
+s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument);
+s32 xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType);
+s32 xlObjectFree(void** ppObject);
+s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType);
 
 #endif
