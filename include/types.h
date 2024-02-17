@@ -14,6 +14,7 @@ typedef unsigned char u8;
 typedef float f32;
 typedef double f64;
 
-typedef unsigned int size_t;
+typedef unsigned long size_t;
+typedef unsigned long uintptr_t;
 
 #endif
