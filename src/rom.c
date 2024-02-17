@@ -158,24 +158,26 @@ s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
             }
             break;
         case 0x1002:
-            switch (((UnknownDeviceStruct*)pArgument)->unk) {
+            switch (((CpuDevice*)pArgument)->nType) {
                 case 0:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pROM->pHost)->pDevice, pArgument, romPut8, romPut16,
-                                         romPut32, romPut64)) {
+                    if (!cpuSetDevicePut(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)romPut8,
+                                         (Put16Func)romPut16, (Put32Func)romPut32, (Put64Func)romPut64)) {
                         return 0;
                     }
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pROM->pHost)->pDevice, pArgument, romGet8, romGet16,
-                                         romGet32, romGet64)) {
+                    if (!cpuSetDeviceGet(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)romGet8,
+                                         (Get16Func)romGet16, (Get32Func)romGet32, (Get64Func)romGet64)) {
                         return 0;
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pROM->pHost)->pDevice, pArgument, romPutDebug8,
-                                         romPutDebug16, romPutDebug32, romPutDebug64)) {
+                    if (!cpuSetDevicePut(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)romPutDebug8,
+                                         (Put16Func)romPutDebug16, (Put32Func)romPutDebug32,
+                                         (Put64Func)romPutDebug64)) {
                         return 0;
                     }
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pROM->pHost)->pDevice, pArgument, romGetDebug8,
-                                         romGetDebug16, romGetDebug32, romGetDebug64)) {
+                    if (!cpuSetDeviceGet(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)romGetDebug8,
+                                         (Get16Func)romGetDebug16, (Get32Func)romGetDebug32,
+                                         (Get64Func)romGetDebug64)) {
                         return 0;
                     }
                     break;

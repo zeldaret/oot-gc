@@ -1,5 +1,7 @@
-#include "xlObject.h"
+#include "cpu.h"
 #include "ram.h"
+#include "system.h"
+#include "xlObject.h"
 
 s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument);
 
@@ -40,13 +42,6 @@ _XL_OBJECTTYPE gClassRAM = {
     (EventFunc)ramEvent,
 };
 
-//! TODO: proper fix
-typedef struct UnknownDeviceStruct {
-    /* 0x00 */ int unk;
-    /* 0x04 */ char unk2[0x20];
-    /* 0x24 */ struct __anon_0x3EB4F* pDevice;
-} UnknownDeviceStruct;
-
 s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
@@ -55,37 +50,39 @@ s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument) {
             pRAM->pHost = pArgument;
             break;
         case 0x1002:
-            switch (((UnknownDeviceStruct*)pArgument)->unk & 0xFF) {
+            switch (((CpuDevice*)pArgument)->nType & 0xFF) {
                 case 0:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPut8, ramPut16,
-                                         ramPut32, ramPut64)) {
+                    if (!cpuSetDevicePut(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)ramPut8,
+                                         (Put16Func)ramPut16, (Put32Func)ramPut32, (Put64Func)ramPut64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGet8, ramGet16,
-                                         ramGet32, ramGet64)) {
+                    if (!cpuSetDeviceGet(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)ramGet8,
+                                         (Get16Func)ramGet16, (Get32Func)ramGet32, (Get64Func)ramGet64)) {
                         return 0;
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPutRI8, ramPutRI16,
-                                         ramPutRI32, ramPutRI64)) {
+                    if (!cpuSetDevicePut(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)ramPutRI8,
+                                         (Put16Func)ramPutRI16, (Put32Func)ramPutRI32, (Put64Func)ramPutRI64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGetRI8, ramGetRI16,
-                                         ramGetRI32, ramGetRI64)) {
+                    if (!cpuSetDeviceGet(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)ramGetRI8,
+                                         (Get16Func)ramGetRI16, (Get32Func)ramGetRI32, (Get64Func)ramGetRI64)) {
                         return 0;
                     }
                     break;
                 case 2:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPutControl8,
-                                         ramPutControl16, ramPutControl32, ramPutControl64)) {
+                    if (!cpuSetDevicePut(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)ramPutControl8,
+                                         (Put16Func)ramPutControl16, (Put32Func)ramPutControl32,
+                                         (Put64Func)ramPutControl64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGetControl8,
-                                         ramGetControl16, ramGetControl32, ramGetControl64)) {
+                    if (!cpuSetDeviceGet(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)ramGetControl8,
+                                         (Get16Func)ramGetControl16, (Get32Func)ramGetControl32,
+                                         (Get64Func)ramGetControl64)) {
                         return 0;
                     }
                     break;
