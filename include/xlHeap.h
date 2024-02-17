@@ -1,13 +1,13 @@
 #ifndef _XL_HEAP_H
 #define _XL_HEAP_H
 
-int xlHeapReset(void);
-int xlHeapSetup(void* pHeap, int nSizeBytes);
-int xlHeapGetFree(int* pnFreeBytes);
-int xlHeapFill32(void* pHeap, int nByteCount, unsigned int nData);
-int xlHeapCopy(void* pHeapTarget, void* pHeapSource, int nByteCount);
-int xlHeapCompact(void);
-int xlHeapFree(void** ppHeap);
-int xlHeapTake(void** ppHeap, int nByteCount);
+s32 xlHeapReset(void);
+s32 xlHeapSetup(void* pHeap, s32 nSizeBytes);
+s32 xlHeapGetFree(s32* pnFreeBytes);
+s32 xlHeapFill32(void* pHeap, s32 nByteCount, u32 nData);
+s32 xlHeapCopy(void* pHeapTarget, void* pHeapSource, s32 nByteCount);
+s32 xlHeapCompact(void);
+s32 xlHeapFree(void** ppHeap);
+s32 xlHeapTake(void** ppHeap, s32 nByteCount);
 
 #endif
