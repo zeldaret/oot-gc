@@ -8246,7 +8246,7 @@ glabel gretryErr
 
 /* 000DF4E0 800E2460 32E1 */
 glabel gfatalErr
-    .incbin "SIM_original.elf", 0x000DF4E0, 0x000032E0
+    .incbin "SIM_original.elf", 0x000DF4E0, 0x000032E1
 
 .balign 32
 
@@ -8264,7 +8264,7 @@ glabel greadingDisk
 
 /* 000E5360 800E82E0 0741 */
 glabel gbar
-    .incbin "SIM_original.elf", 0x000E5360, 0x00000740
+    .incbin "SIM_original.elf", 0x000E5360, 0x00000741
 
 .balign 32
 
