@@ -121,6 +121,7 @@ distclean:
 format:
 	clang-format -i include/*.h src/*.c
 
+# Note: this is meant for testing/modding purposes
 dol: $(DOL) compare
 
 .PHONY: all setup clean format dol distclean
