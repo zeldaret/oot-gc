@@ -1,65 +1,83 @@
-﻿void THPGXRestore();
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Fire\THPDraw.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C89
+    Code range: 0x80011138 -> 0x80011938
+*/
 
-// size: 0x4
-enum __anon_0x14611
-{
-	VI_TVMODE_NTSC_INT = 0,
-	VI_TVMODE_NTSC_DS = 1,
-	VI_TVMODE_NTSC_PROG = 2,
-	VI_TVMODE_PAL_INT = 4,
-	VI_TVMODE_PAL_DS = 5,
-	VI_TVMODE_EURGB60_INT = 20,
-	VI_TVMODE_EURGB60_DS = 21,
-	VI_TVMODE_MPAL_INT = 8,
-	VI_TVMODE_MPAL_DS = 9,
-	VI_TVMODE_DEBUG_INT = 12,
-	VI_TVMODE_DEBUG_PAL_INT = 16,
-	VI_TVMODE_DEBUG_PAL_DS = 17
-};
+#include "types.h"
 
-// size: 0x4
-enum __anon_0x1475B
-{
-	VI_XFBMODE_SF = 0,
-	VI_XFBMODE_DF = 1
-};
+// Range: 0x80011138 -> 0x80011250
+void THPGXRestore() {}
 
-// size: 0x3C
-struct _GXRenderModeObj
-{
-	__anon_0x14611 viTVmode; // 0x0
-	unsigned short fbWidth; // 0x4
-	unsigned short efbHeight; // 0x6
-	unsigned short xfbHeight; // 0x8
-	unsigned short viXOrigin; // 0xA
-	unsigned short viYOrigin; // 0xC
-	unsigned short viWidth; // 0xE
-	unsigned short viHeight; // 0x10
-	__anon_0x1475B xFBmode; // 0x14
-	unsigned char field_rendering; // 0x18
-	unsigned char aa; // 0x19
-	unsigned char sample_pattern[12][2]; // 0x1A
-	unsigned char vfilter[7]; // 0x32
-};
+typedef enum __anon_0x14611 {
+    VI_TVMODE_NTSC_INT = 0,
+    VI_TVMODE_NTSC_DS = 1,
+    VI_TVMODE_NTSC_PROG = 2,
+    VI_TVMODE_PAL_INT = 4,
+    VI_TVMODE_PAL_DS = 5,
+    VI_TVMODE_EURGB60_INT = 20,
+    VI_TVMODE_EURGB60_DS = 21,
+    VI_TVMODE_MPAL_INT = 8,
+    VI_TVMODE_MPAL_DS = 9,
+    VI_TVMODE_DEBUG_INT = 12,
+    VI_TVMODE_DEBUG_PAL_INT = 16,
+    VI_TVMODE_DEBUG_PAL_DS = 17,
+} __anon_0x14611;
 
-void THPGXYuv2RgbSetup(_GXRenderModeObj *rmode)
-{
-	long scrWidth;
-	long scrHeight;
-	float pMtx[4][4];
-	float mMtx[3][4];
+typedef enum __anon_0x1475B {
+    VI_XFBMODE_SF = 0,
+    VI_XFBMODE_DF = 1,
+} __anon_0x1475B;
+
+typedef struct _GXRenderModeObj {
+    /* 0x00 */ enum __anon_0x14611 viTVmode;
+    /* 0x04 */ u16 fbWidth;
+    /* 0x06 */ u16 efbHeight;
+    /* 0x08 */ u16 xfbHeight;
+    /* 0x0A */ u16 viXOrigin;
+    /* 0x0C */ u16 viYOrigin;
+    /* 0x0E */ u16 viWidth;
+    /* 0x10 */ u16 viHeight;
+    /* 0x14 */ enum __anon_0x1475B xFBmode;
+    /* 0x18 */ u8 field_rendering;
+    /* 0x19 */ u8 aa;
+    /* 0x1A */ u8 sample_pattern[12][2];
+    /* 0x32 */ u8 vfilter[7];
+} __anon_0x1480C; // size = 0x3C
+
+// Range: 0x80011250 -> 0x80011754
+void THPGXYuv2RgbSetup(struct _GXRenderModeObj* rmode) {
+    // Parameters
+    // struct _GXRenderModeObj* rmode; // r1+0x8
+
+    // Local variables
+    s32 scrWidth; // r28
+    s32 scrHeight; // r27
+    float pMtx[4][4]; // r1+0x74
+    float mMtx[3][4]; // r1+0x44
 }
 
-// size: 0x20
-struct _GXTexObj
-{
-	unsigned long dummy[8]; // 0x0
-};
+typedef struct _GXTexObj {
+    /* 0x0 */ u32 dummy[8];
+} __anon_0x14BBE; // size = 0x20
 
-void THPGXYuv2RgbDraw(unsigned char *y_data, unsigned char *u_data, unsigned char *v_data, signed short x, signed short y, signed short textureWidth, signed short textureHeight, signed short polygonWidth, signed short polygonHeight)
-{
-	_GXTexObj tobj0;
-	_GXTexObj tobj1;
-	_GXTexObj tobj2;
+// Range: 0x80011754 -> 0x80011938
+void THPGXYuv2RgbDraw(u8* y_data, u8* u_data, u8* v_data, s16 x, s16 y, s16 textureWidth, s16 textureHeight,
+                      s16 polygonWidth, s16 polygonHeight) {
+    // Parameters
+    // u8* y_data; // r3
+    // u8* u_data; // r24
+    // u8* v_data; // r25
+    // s16 x; // r30
+    // s16 y; // r31
+    // s16 textureWidth; // r28
+    // s16 textureHeight; // r29
+    // s16 polygonWidth; // r26
+    // s16 polygonHeight; // r27
+
+    // Local variables
+    struct _GXTexObj tobj0; // r1+0x60
+    struct _GXTexObj tobj1; // r1+0x40
+    struct _GXTexObj tobj2; // r1+0x20
 }
-

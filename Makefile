@@ -29,9 +29,6 @@ COMPARE_TO := $(ELF:.elf=_S.elf)
 # Object files in link order
 include obj_files.mk
 
-GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(C_FILES)
-GLOBAL_ASM_O_FILES = $(addprefix $(BUILD_DIR)/,$(GLOBAL_ASM_C_FILES:.c=.o))
-
 #-------------------------------------------------------------------------------
 # Tools
 #-------------------------------------------------------------------------------
@@ -112,7 +109,7 @@ setup:
 	$(MAKE) -C tools/elf2dol
 
 clean:
-	rm -f -d -r
+	rm -f -d -r build
 
 distclean:
 	rm -f -r SIM.elf SIM_S.elf
@@ -142,15 +139,11 @@ $(ELF): $(O_FILES) $(LDSCRIPT)
 $(DOL): $(ELF)
 	$(ELF2DOL) $< $@ $(SDATA_PDHR) $(SBSS_PDHR) $(TARGET_COL)
 
-$(GLOBAL_ASM_O_FILES) : BUILD_C := $(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)"
-
-BUILD_C ?= $(CC) $(CFLAGS) -c -o
-
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
-	$(BUILD_C) $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
