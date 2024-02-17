@@ -42,14 +42,14 @@ else
 	WINE := wine
 endif
 
-PPC_BIN_PREFIX := $(DEVKITPPC)/bin/powerpc-eabi
+PPC_BIN_PREFIX := $(DEVKITPPC)/bin/powerpc-eabi-
 AS := $(PPC_BIN_PREFIX)-as
-OBJCOPY := $(PPC_BIN_PREFIX)-objcopy
-OBJDUMP := $(PPC_BIN_PREFIX)-objdump
+OBJCOPY := $(PPC_BIN_PREFIX)objcopy
+OBJDUMP := $(PPC_BIN_PREFIX)objdump
 
-MWCC := tools/mwcc_compiler/$(MWCC_VERSION)
-CC := $(WINE) $(MWCC)/mwcceppc.exe
-LD := $(WINE) $(MWCC)/mwldeppc.exe
+MWCC_DIR := tools/mwcc_compiler/$(MWCC_VERSION)
+CC := $(WINE) $(MWCC_DIR)/mwcceppc.exe
+LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 
 CPP := cpp
 SHA1SUM := sha1sum
@@ -118,7 +118,7 @@ distclean:
 format:
 	clang-format -i include/*.h src/*.c
 
-# Note: this is meant for testing/modding purposes
+# Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
 dol: $(DOL) compare
 
 .PHONY: all setup clean format dol distclean
