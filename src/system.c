@@ -155,48 +155,48 @@ const f32 D_80135F90 = 0.01666666753590107;
 const f32 D_80135F94 = 1.100000023841858;
 const f64 D_80135F98 = 4503599627370496.0;
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemExceptionPending.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCheckInterrupts.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemReset.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetStorageDevice.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetStorageDevice.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetMode.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetMode.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/__systemCopyROM_Complete.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut32.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut16.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut8.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet64.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet32.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet16.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetException.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameRAM.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameRAM.s")
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetException.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet16.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet32.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet64.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut8.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut16.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut32.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/__systemCopyROM_Complete.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetMode.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetMode.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetStorageDevice.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetStorageDevice.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemReset.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemCheckInterrupts.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemExceptionPending.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")

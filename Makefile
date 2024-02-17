@@ -22,7 +22,7 @@ LDSCRIPT := $(BUILD_DIR)/ldscript.lcf
 
 # Outputs
 ELF := $(BUILD_DIR)/$(TARGET).elf
-MAP := $(ELF:.elf=.map)/
+MAP := $(ELF:.elf=.map)
 DOL := $(ELF:.elf=.dol)
 COMPARE_TO := $(ELF:.elf=_S.elf)
 
@@ -71,7 +71,7 @@ ASFLAGS := -mgekko -I include
 LDFLAGS := -map $(MAP) -fp hard -nodefaults -w off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -inline deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
 endif
