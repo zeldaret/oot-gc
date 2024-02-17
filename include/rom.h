@@ -85,7 +85,7 @@ typedef struct Rom {
     /* 0x10EF4 */ s32 offsetToRom;
 } Rom; // size = 0x10EF8
 
-s32 romEvent(void* pObject, s32 nEvent, void* pArgument);
+s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument);
 s32 romGetImage(Rom* pROM, char* acNameFile);
 s32 romSetImage(Rom* pROM, char* szNameFile);
 s32 romSetCacheSize(Rom* pROM, s32 nSize);

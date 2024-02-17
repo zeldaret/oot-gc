@@ -9,7 +9,7 @@ _XL_OBJECTTYPE gClassROM = {
     "ROM",
     sizeof(Rom),
     NULL,
-    romEvent,
+    (EventFunc)romEvent,
 };
 
 static u32 ganOffsetBlock_ZLJ[198] = {
@@ -128,9 +128,7 @@ void DCInvalidateRange(void* addr, u32 nBytes);
 #define ARStartDMARead(mmem, aram, len) ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, mmem, aram, len)
 #define ARStartDMAWrite(mmem, aram, len) ARStartDMA(ARAM_DIR_MRAM_TO_ARAM, mmem, aram, len)
 
-s32 romEvent(void* pObject, s32 nEvent, void* pArgument) {
-    Rom* pROM = (Rom*)pObject;
-
+s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pROM->nSize = 0;

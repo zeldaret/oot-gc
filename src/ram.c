@@ -1,7 +1,7 @@
 #include "xlObject.h"
 #include "ram.h"
 
-s32 ramEvent(void* pObject, s32 nEvent, void* pArgument);
+s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument);
 
 static s32 ramGet64(Ram* pRAM, u32 nAddress, s64* pData);
 static s32 ramGet32(Ram* pRAM, u32 nAddress, s32* pData);
@@ -37,7 +37,7 @@ _XL_OBJECTTYPE gClassRAM = {
     "RAM",
     sizeof(Ram),
     NULL,
-    ramEvent,
+    (EventFunc)ramEvent,
 };
 
 //! TODO: proper fix
@@ -47,9 +47,7 @@ typedef struct UnknownDeviceStruct {
     /* 0x24 */ struct __anon_0x3EB4F* pDevice;
 } UnknownDeviceStruct;
 
-s32 ramEvent(void* pObject, s32 nEvent, void* pArgument) {
-    Ram* pRAM = (Ram*)pObject;
-
+s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pRAM->nSize = 0;
