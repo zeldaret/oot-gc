@@ -252,7 +252,7 @@ void ZeldaDrawFrameCamera(struct __anon_0x24C38* pFrame, void* buffer) {
     // void* buffer; // r29
 
     // Local variables
-    float matrix[3][4]; // r1+0x30
+    f32 matrix[3][4]; // r1+0x30
     struct _GXColor color; // r1+0x2C
 
     // References
@@ -274,12 +274,12 @@ void ZeldaDrawFrameShrink(struct __anon_0x24C38* pFrame, s32 posX, s32 posY, s32
     // s32 size; // r1+0x14
 
     // Local variables
-    float matrix[3][4]; // r1+0x28
-    float nX0; // f31
-    float nX1; // f30
-    float nY0; // f29
-    float nY1; // f28
-    float scale; // f4
+    f32 matrix[3][4]; // r1+0x28
+    f32 nX0; // f31
+    f32 nX1; // f30
+    f32 nY0; // f29
+    f32 nY1; // f28
+    f32 scale; // f4
     void* frameBuffer; // r26
     struct _GXColor color; // r1+0x20
 
@@ -295,7 +295,7 @@ static void ZeldaDrawFrameHiRes(struct __anon_0x24C38* pFrame, void* pSrc) {
     // void* pSrc; // r29
 
     // Local variables
-    float matrix[3][4]; // r1+0x38
+    f32 matrix[3][4]; // r1+0x38
     struct _GXColor color; // r1+0x14
 
     // References
@@ -317,7 +317,7 @@ static void ZeldaGreyScaleConvert(struct __anon_0x24C38* pFrame) {
     // struct __anon_0x24C38* pFrame; // r31
 
     // Local variables
-    float matrix[3][4]; // r1+0x38
+    f32 matrix[3][4]; // r1+0x38
     void* dataP; // r29
     struct _GXColor color; // r1+0x10
 
@@ -411,7 +411,7 @@ void ZeldaDrawFrame(struct __anon_0x24C38* pFrame, u16* pData) {
     // u16* pData; // r29
 
     // Local variables
-    float matrix[3][4]; // r1+0x38
+    f32 matrix[3][4]; // r1+0x38
     struct _GXColor color; // r1+0x14
 
     // References
@@ -425,7 +425,7 @@ void ZeldaDrawFrameBlur(struct __anon_0x24C38* pFrame, u16* pData) {
     // u16* pData; // r29
 
     // Local variables
-    float matrix[3][4]; // r1+0x38
+    f32 matrix[3][4]; // r1+0x38
     struct _GXColor color; // r1+0x14
 
     // References
@@ -439,7 +439,7 @@ void ZeldaDrawFrameNoBlend(struct __anon_0x24C38* pFrame, u16* pData) {
     // u16* pData; // r30
 
     // Local variables
-    float matrix[3][4]; // r1+0x30
+    f32 matrix[3][4]; // r1+0x30
 
     // References
     // -> static struct _GXTexObj sFrameObj$1564;
@@ -452,7 +452,7 @@ static void ZeldaDrawFrameZTexture(struct __anon_0x24C38* pFrame, u32* pData) {
     // u32* pData; // r30
 
     // Local variables
-    float matrix[3][4]; // r1+0x30
+    f32 matrix[3][4]; // r1+0x30
 
     // References
     // -> static struct _GXTexObj sFrameObj1$1562;
@@ -534,7 +534,7 @@ s32 frameBegin(struct __anon_0x24C38* pFrame, s32 nCountVertex) {
 
     // Local variables
     s32 i; // r28
-    float matrix[3][4]; // r1+0x14
+    f32 matrix[3][4]; // r1+0x14
 
     // References
     // -> enum _GXTexCoordID ganNameTexCoord[8];
@@ -558,11 +558,11 @@ s32 frameSetColor(struct __anon_0x24C38* pFrame, enum __anon_0x2D223 eType, u32 
 }
 
 // Range: 0x80025FE4 -> 0x80025FF4
-s32 frameSetDepth(struct __anon_0x24C38* pFrame, float rDepth, float rDelta) {
+s32 frameSetDepth(struct __anon_0x24C38* pFrame, f32 rDepth, f32 rDelta) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r1+0x0
-    // float rDepth; // r1+0x4
-    // float rDelta; // r1+0x8
+    // f32 rDepth; // r1+0x4
+    // f32 rDelta; // r1+0x8
 }
 
 // Erased
@@ -604,14 +604,14 @@ static s32 frameDrawRectTexture_Setup(struct __anon_0x24C38* pFrame, struct __an
     // struct __anon_0x2D2B6* pRectangle; // r23
 
     // Local variables
-    float matrix[3][4]; // r1+0x98
-    float matrixA[3][4]; // r1+0x68
-    float matrixB[3][4]; // r1+0x38
+    f32 matrix[3][4]; // r1+0x98
+    f32 matrixA[3][4]; // r1+0x68
+    f32 matrixB[3][4]; // r1+0x38
     struct _FRAME_TEXTURE* pTexture[8]; // r1+0x18
-    float rScaleS; // f29
-    float rScaleT; // f28
-    float rSlideS; // f2
-    float rSlideT; // r1+0x8
+    f32 rScaleS; // f29
+    f32 rScaleT; // f28
+    f32 rSlideS; // f2
+    f32 rSlideT; // r1+0x8
     u32 bFlag; // r1+0x14
     u32 nColors; // r1+0x10
     s32 iTile; // r25
@@ -635,16 +635,16 @@ static s32 frameDrawRectTexture(struct __anon_0x24C38* pFrame, struct __anon_0x2
 
     // Local variables
     s32 bCopy; // r11
-    float rDepth; // f31
-    float rDeltaT; // f5
-    float rX0; // f30
-    float rY0; // f29
-    float rX1; // f28
-    float rY1; // f27
-    float rS0; // f26
-    float rT0; // f25
-    float rS1; // f24
-    float rT1; // f23
+    f32 rDepth; // f31
+    f32 rDeltaT; // f5
+    f32 rX0; // f30
+    f32 rY0; // f29
+    f32 rX1; // f28
+    f32 rY1; // f27
+    f32 rS0; // f26
+    f32 rT0; // f25
+    f32 rS1; // f24
+    f32 rT1; // f23
 
     // References
     // -> static s32 gnCountMapHack;
@@ -672,11 +672,11 @@ static s32 frameDrawRectFill(struct __anon_0x24C38* pFrame, struct __anon_0x2D2B
 
     // Local variables
     s32 bFlag; // r8
-    float rDepth; // f31
-    float rX0; // f30
-    float rY0; // f29
-    float rX1; // f28
-    float rY1; // f27
+    f32 rDepth; // f31
+    f32 rX0; // f30
+    f32 rY0; // f29
+    f32 rX1; // f28
+    f32 rY1; // f27
 }
 
 // Range: 0x80026D30 -> 0x80026E0C
@@ -788,7 +788,7 @@ static s32 frameDrawTriangle_C3T3(struct __anon_0x24C38* pFrame, struct __anon_0
     // struct __anon_0x2D45B* pPrimitive; // r30
 
     // Local variables
-    float(*pMatrix)[4]; // r3
+    f32(*pMatrix)[4]; // r3
 
     // References
     // -> static u32 gHackCreditsColor;
@@ -805,9 +805,9 @@ static s32 frameCheckTriangleDivide(struct __anon_0x24C38* pFrame, struct __anon
     s32 iData; // r25
     u8* anData; // r24
     struct __anon_0x23FC4 aNewVertArray[8]; // r1+0x184
-    float fInterp; // r1+0x8
-    float fTempColor1; // f2
-    float fTempColor2; // f3
+    f32 fInterp; // r1+0x8
+    f32 fTempColor1; // f2
+    f32 fTempColor2; // f3
     u32 nNewVertCount; // r5
     u32 bInFront; // r7
     u32 bBehind; // r8
@@ -915,26 +915,26 @@ static s32 frameDrawSetupSP(struct __anon_0x24C38* pFrame, s32* pnColors, s32* p
     // s32 nVertexCount; // r31
 
     // Local variables
-    float rValue23; // f1
+    f32 rValue23; // f1
     s32 bTextureGen; // r22
-    float rNear; // f24
-    float rFar; // f4
-    float rScaleS; // f25
-    float rScaleT; // f24
-    float rSlideS; // f4
-    float rSlideT; // f2
+    f32 rNear; // f24
+    f32 rFar; // f4
+    f32 rScaleS; // f25
+    f32 rScaleT; // f24
+    f32 rSlideS; // f4
+    f32 rSlideT; // f2
     struct _FRAME_TEXTURE* pTexture[8]; // r1+0x12C
     s32 nColors; // r21
     s32 bFlag; // r20
     s32 iTile; // r19
     s32 iHint; // r1+0x8
-    float matrix[3][4]; // r1+0xFC
-    float matrixA[3][4]; // r1+0xCC
-    float matrixB[3][4]; // r1+0x9C
-    float matrix44[4][4]; // r1+0x5C
-    float matrixProjection[4][4]; // r1+0x1C
+    f32 matrix[3][4]; // r1+0xFC
+    f32 matrixA[3][4]; // r1+0xCC
+    f32 matrixB[3][4]; // r1+0x9C
+    f32 matrix44[4][4]; // r1+0x5C
+    f32 matrixProjection[4][4]; // r1+0x1C
     enum _GXProjectionType eTypeProjection; // r4
-    float scale; // r1+0x8
+    f32 scale; // r1+0x8
     s32 nCount; // r18
     s32 iIndex; // r6
 
@@ -953,7 +953,7 @@ s32 frameDrawSetup2D(struct __anon_0x24C38* pFrame) {
     // struct __anon_0x24C38* pFrame; // r31
 
     // Local variables
-    float matrix44[4][4]; // r1+0x10
+    f32 matrix44[4][4]; // r1+0x10
 
     // References
     // -> static s32 snScissorChanged;
@@ -1107,17 +1107,17 @@ static s32 frameDrawSetupFog_Default(struct __anon_0x24C38* pFrame) {
 
     // Local variables
     s32 iHint; // r6
-    float rNear; // f31
-    float rFar; // f30
-    float rFOVY; // f29
-    float matrixProjection[4][4]; // r1+0x34
+    f32 rNear; // f31
+    f32 rFar; // f30
+    f32 rFOVY; // f29
+    f32 matrixProjection[4][4]; // r1+0x34
     struct _GXFogAdjTable fogTable; // r1+0x20
-    float rMax; // f2
-    float rMin; // r1+0x8
-    float rIntpV; // f4
-    float rMinimum; // r1+0x8
-    float rMultiplier; // f3
-    float rOffset; // r1+0x8
+    f32 rMax; // f2
+    f32 rMin; // r1+0x8
+    f32 rIntpV; // f4
+    f32 rMinimum; // r1+0x8
+    f32 rMultiplier; // f3
+    f32 rOffset; // r1+0x8
 }
 
 // Range: 0x8002C67C -> 0x8002CA14
@@ -1127,25 +1127,25 @@ static s32 frameDrawSetupFog_Zelda1(struct __anon_0x24C38* pFrame) {
 
     // Local variables
     enum _GXFogType nFogType; // r5
-    float rNear; // r1+0x8
-    float rFar; // f2
+    f32 rNear; // r1+0x8
+    f32 rFar; // f2
     u32 nMode; // r1+0x8
     u32 iHint; // r8
-    float rFogNear; // f3
-    float rFogFar; // f4
-    float rFogMin; // f1
-    float rFogMax; // f2
-    float rMultiplier; // f6
-    float rOffset; // f7
-    float rMinimum; // f1
-    float rMaximum; // f9
-    float dplane; // f6
-    float dplane; // f5
-    float dplane; // f5
-    float dplane; // f5
-    float dplane; // f5
-    float rFarScale; // f8
-    float rNearScale; // f10
+    f32 rFogNear; // f3
+    f32 rFogFar; // f4
+    f32 rFogMin; // f1
+    f32 rFogMax; // f2
+    f32 rMultiplier; // f6
+    f32 rOffset; // f7
+    f32 rMinimum; // f1
+    f32 rMaximum; // f9
+    f32 dplane; // f6
+    f32 dplane; // f5
+    f32 dplane; // f5
+    f32 dplane; // f5
+    f32 dplane; // f5
+    f32 rFarScale; // f8
+    f32 rNearScale; // f10
 
     // References
     // -> struct __anon_0x26A4E* gpSystem;

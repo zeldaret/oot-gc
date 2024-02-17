@@ -229,7 +229,7 @@ typedef enum __anon_0x61D7 {
 enum __anon_0x61D7 simulatorMessageCurrent;
 
 // size = 0x40, address = 0x800F4540
-static float gOrthoMtx[4][4];
+static f32 gOrthoMtx[4][4];
 
 // size = 0x4, address = 0x801355D4
 s32 gButtonDownToggle;
@@ -393,10 +393,10 @@ typedef struct __anon_0x7181 {
 struct __anon_0x7181* gpSound;
 
 typedef struct __anon_0x7511 {
-    /* 0x0 */ float rX;
-    /* 0x4 */ float rY;
-    /* 0x8 */ float rSizeX;
-    /* 0xC */ float rSizeY;
+    /* 0x0 */ f32 rX;
+    /* 0x4 */ f32 rY;
+    /* 0x8 */ f32 rSizeX;
+    /* 0xC */ f32 rSizeY;
 } __anon_0x7511; // size = 0x10
 
 typedef struct __anon_0x75AB {
@@ -408,23 +408,23 @@ typedef struct __anon_0x75AB {
 } __anon_0x75AB; // size = 0x14
 
 typedef struct __anon_0x76EC {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x76EC; // size = 0xC
 
 typedef struct __anon_0x775C {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x76EC rVecOrigTowards;
-    /* 0x10 */ float rColorR;
-    /* 0x14 */ float rColorG;
-    /* 0x18 */ float rColorB;
-    /* 0x1C */ float rVectorX;
-    /* 0x20 */ float rVectorY;
-    /* 0x24 */ float rVectorZ;
-    /* 0x28 */ float kc;
-    /* 0x2C */ float kl;
-    /* 0x30 */ float kq;
+    /* 0x10 */ f32 rColorR;
+    /* 0x14 */ f32 rColorG;
+    /* 0x18 */ f32 rColorB;
+    /* 0x1C */ f32 rVectorX;
+    /* 0x20 */ f32 rVectorY;
+    /* 0x24 */ f32 rVectorZ;
+    /* 0x28 */ f32 kc;
+    /* 0x2C */ f32 kl;
+    /* 0x30 */ f32 kq;
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
@@ -439,9 +439,9 @@ typedef struct __anon_0x798C {
 } __anon_0x798C; // size = 0x34
 
 typedef struct __anon_0x7A75 {
-    /* 0x00 */ float rSum;
-    /* 0x04 */ float rS;
-    /* 0x08 */ float rT;
+    /* 0x00 */ f32 rSum;
+    /* 0x04 */ f32 rS;
+    /* 0x08 */ f32 rT;
     /* 0x0C */ struct __anon_0x76EC vec;
     /* 0x18 */ u8 anColor[4];
 } __anon_0x7A75; // size = 0x1C
@@ -546,11 +546,11 @@ typedef enum __anon_0x85BB {
 
 typedef struct __anon_0x863F {
     /* 0x00 */ s32 nCount;
-    /* 0x04 */ float rScale;
-    /* 0x08 */ float rAspect;
-    /* 0x0C */ float rFieldOfViewY;
-    /* 0x10 */ float rClipNear;
-    /* 0x14 */ float rClipFar;
+    /* 0x04 */ f32 rScale;
+    /* 0x08 */ f32 rAspect;
+    /* 0x0C */ f32 rFieldOfViewY;
+    /* 0x10 */ f32 rClipNear;
+    /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x85BB eProjection;
@@ -582,8 +582,8 @@ typedef struct __anon_0x87F6 {
     /* 0x00074 */ s32 bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ float rScaleX;
-    /* 0x00084 */ float rScaleY;
+    /* 0x00080 */ f32 rScaleX;
+    /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[10];
@@ -592,8 +592,8 @@ typedef struct __anon_0x87F6 {
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ float rDepth;
-    /* 0x00128 */ float rDelta;
+    /* 0x00124 */ f32 rDepth;
+    /* 0x00128 */ f32 rDelta;
     /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct __anon_0x775C aLight[8];
@@ -629,13 +629,13 @@ typedef struct __anon_0x87F6 {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C4D4 */ f32 matrixView[4][4];
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ enum __anon_0x85BB eTypeProjection;
-    /* 0x3C520 */ float aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ float matrixProjection[4][4];
-    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ f32 matrixProjection[4][4];
+    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
     /* 0x3C820 */ struct __anon_0x863F aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
@@ -946,7 +946,7 @@ static s32 editSoundMenu() {
 static void MyGXInit() {
     // Local variables
     s32 i; // r31
-    float identity_mtx[3][4]; // r1+0x50
+    f32 identity_mtx[3][4]; // r1+0x50
 }
 
 // Erased
@@ -1008,7 +1008,7 @@ static s32 simulatorDrawCursor(s32 nX, s32 nY) {
 // Range: 0x800088E4 -> 0x80008A14
 s32 simulatorMCardPollDrawFormatBar() {
     // Local variables
-    float rate; // r1+0x8
+    f32 rate; // r1+0x8
     s32 nBytes; // r1+0x8
 
     // References
@@ -1019,7 +1019,7 @@ s32 simulatorMCardPollDrawFormatBar() {
 // Range: 0x80008A14 -> 0x80008B44
 s32 simulatorMCardPollDrawBar() {
     // Local variables
-    float rate; // r1+0x8
+    f32 rate; // r1+0x8
     s32 nBytes; // r1+0x8
 
     // References
@@ -1237,7 +1237,7 @@ s32 simulatorReadController(s32 channel, u32* anData) {
     // u32* anData; // r30
 
     // Local variables
-    float subStickTest; // f1
+    f32 subStickTest; // f1
     s32 stickX; // r1+0x8
     s32 stickY; // r1+0x8
     s32 subStickX; // r6
@@ -1494,7 +1494,7 @@ typedef struct __anon_0xD7D1 {
     /* 0x10 */ enum _GXTexWrapMode wrapT;
     /* 0x14 */ enum _GXTexFilter minFilter;
     /* 0x18 */ enum _GXTexFilter magFilter;
-    /* 0x1C */ float LODBias;
+    /* 0x1C */ f32 LODBias;
     /* 0x20 */ u8 edgeLODEnable;
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
@@ -1639,8 +1639,8 @@ s32 simulatorDrawOKImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s32 n
     struct _GXTexObj texObj; // r1+0x98
     struct _GXColor color0; // r1+0x94
     struct _GXColor color1; // r1+0x90
-    float identity_mtx[3][4]; // r1+0x5C
-    float g2DviewMtx[3][4]; // r1+0x2C
+    f32 identity_mtx[3][4]; // r1+0x5C
+    f32 g2DviewMtx[3][4]; // r1+0x2C
 
     // References
     // -> struct __anon_0x87F6* gpFrame;
@@ -1652,7 +1652,7 @@ s32 simulatorDrawOKImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s32 n
     // -> u32 Colors_u32[3];
     // -> s16 VertYes_s16[12];
     // -> s16 Vert_s16[12];
-    // -> static float gOrthoMtx[4][4];
+    // -> static f32 gOrthoMtx[4][4];
 }
 
 // Range: 0x8000DBB4 -> 0x8000E484
@@ -1674,8 +1674,8 @@ s32 simulatorDrawYesNoImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s3
     struct _GXTexObj texObj; // r1+0xAC
     struct _GXColor color0; // r1+0xA4
     struct _GXColor color1; // r1+0xA0
-    float identity_mtx[3][4]; // r1+0x70
-    float g2DviewMtx[3][4]; // r1+0x40
+    f32 identity_mtx[3][4]; // r1+0x70
+    f32 g2DviewMtx[3][4]; // r1+0x40
 
     // References
     // -> struct __anon_0x87F6* gpFrame;
@@ -1689,7 +1689,7 @@ s32 simulatorDrawYesNoImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s3
     // -> s16 VertNo_s16[12];
     // -> s16 VertYes_s16[12];
     // -> s16 Vert_s16[12];
-    // -> static float gOrthoMtx[4][4];
+    // -> static f32 gOrthoMtx[4][4];
 }
 
 // Range: 0x8000E484 -> 0x8000ECA0
@@ -1705,9 +1705,9 @@ s32 simulatorDrawImage(struct __anon_0xDB69* tpl, s32 nX0, s32 nY0, s32 drawBar,
     struct _GXTexObj texObj; // r1+0xDC
     struct _GXTexObj texObj2; // r1+0xBC
     struct _GXColor color; // r1+0xB4
-    float identity_mtx[3][4]; // r1+0x84
-    float g2DviewMtx[3][4]; // r1+0x54
-    float g2[3][4]; // r1+0x24
+    f32 identity_mtx[3][4]; // r1+0x84
+    f32 g2DviewMtx[3][4]; // r1+0x54
+    f32 g2[3][4]; // r1+0x24
 
     // References
     // -> struct __anon_0x87F6* gpFrame;
@@ -1720,7 +1720,7 @@ s32 simulatorDrawImage(struct __anon_0xDB69* tpl, s32 nX0, s32 nY0, s32 drawBar,
     // -> u32 Colors_u32[3];
     // -> s16 Vert_s16Bar[12];
     // -> s16 Vert_s16[12];
-    // -> static float gOrthoMtx[4][4];
+    // -> static f32 gOrthoMtx[4][4];
 }
 
 // Range: 0x8000ECA0 -> 0x8000ECC4
@@ -1812,5 +1812,5 @@ s32 simulatorGXInit() {
     struct _GXColor GX_DEFAULT_BG; // r1+0x58
     struct _GXColor BLACK; // r1+0x54
     struct _GXColor WHITE; // r1+0x50
-    float identity_mtx[3][4]; // r1+0x20
+    f32 identity_mtx[3][4]; // r1+0x20
 }

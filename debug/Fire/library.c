@@ -21,10 +21,10 @@ struct _XL_OBJECTTYPE gClassLibrary;
 static u32 __osRcpImTable[64];
 
 // size = 0x4, address = 0x80135328
-static float dtor$466;
+static f32 dtor$466;
 
 // size = 0x4, address = 0x8013532C
-static float dtor$480;
+static f32 dtor$480;
 
 // size = 0x4, address = 0x80135330
 static u32 nAddress$605;
@@ -144,7 +144,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -153,7 +153,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x7A111; // size = 0x2C8
 
 typedef struct OSAlarm {
@@ -396,13 +396,13 @@ s32 osViSwapBuffer_Entry(struct _CPU* pCPU) {
 }
 
 typedef struct __anon_0x7BB81 {
-    /* 0x0 */ float f_odd;
-    /* 0x4 */ float f_even;
+    /* 0x0 */ f32 f_odd;
+    /* 0x4 */ f32 f_even;
 } __anon_0x7BB81; // size = 0x8
 
 typedef union __anon_0x7BBDC {
     /* 0x0 */ struct __anon_0x7BB81 f;
-    /* 0x0 */ double d;
+    /* 0x0 */ f64 d;
     /* 0x0 */ s64 u64;
 } __anon_0x7BBDC;
 
@@ -639,9 +639,9 @@ typedef struct __anon_0x7D2A5 {
 } __anon_0x7D2A5; // size = 0x20
 
 typedef union __anon_0x7D2DB {
-    /* 0x0 */ float _0f32;
-    /* 0x4 */ float f32;
-    /* 0x0 */ double f64;
+    /* 0x0 */ f32 _0f32;
+    /* 0x4 */ f32 f32;
+    /* 0x0 */ f64 f64;
     /* 0x0 */ s32 _0s32;
     /* 0x4 */ s32 s32;
     /* 0x0 */ s64 s64;
@@ -662,27 +662,27 @@ void guLookAtReflect(struct _CPU* pCPU) {
     s32 e1; // r5
     s32 e2; // r8
     union __anon_0x7D2DB data; // r1+0x68
-    float mf[4][4]; // r1+0x28
+    f32 mf[4][4]; // r1+0x28
     u32* m; // r1+0x24
     u32* sp; // r1+0x20
     s32* ai; // r9
     s32* af; // r10
-    float xEye; // f3
-    float yEye; // f4
-    float zEye; // f5
-    float xAt; // r1+0x8
-    float yAt; // r1+0x8
-    float zAt; // f1
-    float xUp; // r1+0x8
-    float yUp; // f1
-    float zUp; // f2
-    float len; // f9
-    float xLook; // f6
-    float yLook; // f7
-    float zLook; // f8
-    float xRight; // f9
-    float yRight; // f10
-    float zRight; // f11
+    f32 xEye; // f3
+    f32 yEye; // f4
+    f32 zEye; // f5
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
+    f32 len; // f9
+    f32 xLook; // f6
+    f32 yLook; // f7
+    f32 zLook; // f8
+    f32 xRight; // f9
+    f32 yRight; // f10
+    f32 zRight; // f11
 }
 
 // Range: 0x8009190C -> 0x80091E60
@@ -695,22 +695,22 @@ void guLookAtReflectF(struct _CPU* pCPU) {
     union __anon_0x7D2DB data; // r1+0x20
     u32* mf; // r1+0x1C
     u32* sp; // r1+0x18
-    float xEye; // f3
-    float yEye; // f4
-    float zEye; // f5
-    float xAt; // r1+0x8
-    float yAt; // r1+0x8
-    float zAt; // f1
-    float xUp; // r1+0x8
-    float yUp; // f1
-    float zUp; // f2
-    float len; // f9
-    float xLook; // f6
-    float yLook; // f7
-    float zLook; // f8
-    float xRight; // f9
-    float yRight; // f10
-    float zRight; // f11
+    f32 xEye; // f3
+    f32 yEye; // f4
+    f32 zEye; // f5
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
+    f32 len; // f9
+    f32 xLook; // f6
+    f32 yLook; // f7
+    f32 zLook; // f8
+    f32 xRight; // f9
+    f32 yRight; // f10
+    f32 zRight; // f11
 }
 
 typedef struct __anon_0x7DB47 {
@@ -738,36 +738,36 @@ void guLookAtHilite(struct _CPU* pCPU) {
     s32 e1; // r5
     s32 e2; // r8
     union __anon_0x7D2DB data; // r1+0x78
-    float mf[4][4]; // r1+0x38
+    f32 mf[4][4]; // r1+0x38
     u32* m; // r1+0x34
     u32* sp; // r1+0x30
     s32* ai; // r9
     s32* af; // r10
-    float len; // f5
-    float xLook; // r1+0x8
-    float yLook; // f1
-    float zLook; // f2
-    float xRight; // f3
-    float yRight; // f4
-    float zRight; // f5
-    float xHilite; // f29
-    float yHilite; // f28
-    float zHilite; // f27
-    float xEye; // f6
-    float yEye; // f7
-    float zEye; // f8
-    float xAt; // r1+0x8
-    float yAt; // f1
-    float zAt; // f2
-    float xUp; // f3
-    float yUp; // f12
-    float zUp; // f4
-    float xl1; // f27
-    float yl1; // f28
-    float zl1; // f26
-    float xl2; // f9
-    float yl2; // f10
-    float zl2; // f11
+    f32 len; // f5
+    f32 xLook; // r1+0x8
+    f32 yLook; // f1
+    f32 zLook; // f2
+    f32 xRight; // f3
+    f32 yRight; // f4
+    f32 zRight; // f5
+    f32 xHilite; // f29
+    f32 yHilite; // f28
+    f32 zHilite; // f27
+    f32 xEye; // f6
+    f32 yEye; // f7
+    f32 zEye; // f8
+    f32 xAt; // r1+0x8
+    f32 yAt; // f1
+    f32 zAt; // f2
+    f32 xUp; // f3
+    f32 yUp; // f12
+    f32 zUp; // f4
+    f32 xl1; // f27
+    f32 yl1; // f28
+    f32 zl1; // f26
+    f32 xl2; // f9
+    f32 yl2; // f10
+    f32 zl2; // f11
     s32 twidth; // r6
     s32 theight; // r7
 }
@@ -783,39 +783,39 @@ void guLookAtHiliteF(struct _CPU* pCPU) {
     union __anon_0x7D2DB data; // r1+0x30
     u32* mf; // r1+0x2C
     u32* sp; // r1+0x28
-    float len; // f5
-    float xLook; // r1+0x8
-    float yLook; // f1
-    float zLook; // f2
-    float xRight; // f3
-    float yRight; // f4
-    float zRight; // f5
-    float xHilite; // f29
-    float yHilite; // f28
-    float zHilite; // f27
-    float xEye; // f6
-    float yEye; // f7
-    float zEye; // f8
-    float xAt; // r1+0x8
-    float yAt; // f1
-    float zAt; // f2
-    float xUp; // f3
-    float yUp; // f12
-    float zUp; // f4
-    float xl1; // f27
-    float yl1; // f28
-    float zl1; // f26
-    float xl2; // f9
-    float yl2; // f10
-    float zl2; // f11
+    f32 len; // f5
+    f32 xLook; // r1+0x8
+    f32 yLook; // f1
+    f32 zLook; // f2
+    f32 xRight; // f3
+    f32 yRight; // f4
+    f32 zRight; // f5
+    f32 xHilite; // f29
+    f32 yHilite; // f28
+    f32 zHilite; // f27
+    f32 xEye; // f6
+    f32 yEye; // f7
+    f32 zEye; // f8
+    f32 xAt; // r1+0x8
+    f32 yAt; // f1
+    f32 zAt; // f2
+    f32 xUp; // f3
+    f32 yUp; // f12
+    f32 zUp; // f4
+    f32 xl1; // f27
+    f32 yl1; // f28
+    f32 zl1; // f26
+    f32 xl2; // f9
+    f32 yl2; // f10
+    f32 zl2; // f11
     s32 twidth; // r6
     s32 theight; // r7
 }
 
 // Erased
-static s32 __float2int(float x) {
+static s32 __float2int(f32 x) {
     // Parameters
-    // float x; // r1+0x8
+    // f32 x; // r1+0x8
 }
 
 // Range: 0x80093188 -> 0x800935A0
@@ -824,7 +824,7 @@ void guLookAt(struct _CPU* pCPU) {
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    float mf[4][4]; // r1+0x30
+    f32 mf[4][4]; // r1+0x30
     s32* m; // r1+0x2C
     u32* sp; // r1+0x28
     union __anon_0x7D2DB data; // r1+0x20
@@ -834,22 +834,22 @@ void guLookAt(struct _CPU* pCPU) {
     s32 e2; // r8
     s32* ai; // r9
     s32* af; // r10
-    float len; // f6
-    float xLook; // f3
-    float yLook; // f4
-    float zLook; // f5
-    float xRight; // f6
-    float yRight; // f7
-    float zRight; // f8
-    float xEye; // f9
-    float yEye; // f10
-    float zEye; // f11
-    float xAt; // r1+0x8
-    float yAt; // r1+0x8
-    float zAt; // f1
-    float xUp; // r1+0x8
-    float yUp; // f1
-    float zUp; // f2
+    f32 len; // f6
+    f32 xLook; // f3
+    f32 yLook; // f4
+    f32 zLook; // f5
+    f32 xRight; // f6
+    f32 yRight; // f7
+    f32 zRight; // f8
+    f32 xEye; // f9
+    f32 yEye; // f10
+    f32 zEye; // f11
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
 }
 
 // Range: 0x800935A0 -> 0x8009392C
@@ -858,24 +858,24 @@ void guLookAtF(struct _CPU* pCPU) {
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    float len; // f9
-    float xAt; // r1+0x8
-    float yAt; // r1+0x8
-    float zAt; // f1
-    float xUp; // r1+0x8
-    float yUp; // f1
-    float zUp; // f2
-    float xEye; // f3
-    float yEye; // f4
-    float zEye; // f5
+    f32 len; // f9
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
+    f32 xEye; // f3
+    f32 yEye; // f4
+    f32 zEye; // f5
     u32* mf; // r1+0x34
     u32* sp; // r1+0x30
-    float xLook; // f6
-    float yLook; // f7
-    float zLook; // f8
-    float xRight; // f9
-    float yRight; // f10
-    float zRight; // f11
+    f32 xLook; // f6
+    f32 yLook; // f7
+    f32 zLook; // f8
+    f32 xRight; // f9
+    f32 yRight; // f10
+    f32 zRight; // f11
     union __anon_0x7D2DB data; // r1+0x28
     union __anon_0x7D2DB data0; // r1+0x20
     union __anon_0x7D2DB data1; // r1+0x18
@@ -894,23 +894,23 @@ void guRotate(struct _CPU* pCPU) {
     s32 j; // r1+0x8
     s32 e1; // r7
     s32 e2; // r8
-    float mf[4][4]; // r1+0x18
-    float sine; // r1+0x8
-    float cosine; // r1+0x8
-    float a; // f30
-    float x; // f29
-    float y; // f28
-    float z; // f27
-    float ab; // f13
-    float bc; // f30
-    float ca; // f29
-    float t; // f26
-    float magnitude; // f2
+    f32 mf[4][4]; // r1+0x18
+    f32 sine; // r1+0x8
+    f32 cosine; // r1+0x8
+    f32 a; // f30
+    f32 x; // f29
+    f32 y; // f28
+    f32 z; // f27
+    f32 ab; // f13
+    f32 bc; // f30
+    f32 ca; // f29
+    f32 t; // f26
+    f32 magnitude; // f2
     s32* ai; // r9
     s32* af; // r10
 
     // References
-    // -> static float dtor$480;
+    // -> static f32 dtor$480;
 }
 
 // Range: 0x80093C78 -> 0x80093F88
@@ -919,27 +919,27 @@ void guRotateF(struct _CPU* pCPU) {
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    float m; // f2
+    f32 m; // f2
     s32 i; // r8
     s32 j; // r4
-    float a; // f31
-    float x; // f30
-    float y; // f29
-    float z; // f28
+    f32 a; // f31
+    f32 x; // f30
+    f32 y; // f29
+    f32 z; // f28
     u32* mf; // r1+0x2C
     u32* sp; // r1+0x28
     union __anon_0x7D2DB data; // r1+0x20
     union __anon_0x7D2DB data0; // r1+0x18
     union __anon_0x7D2DB data1; // r1+0x10
-    float sine; // r1+0x8
-    float cosine; // r1+0x8
-    float ab; // f27
-    float bc; // f26
-    float ca; // f25
-    float t; // f4
+    f32 sine; // r1+0x8
+    f32 cosine; // r1+0x8
+    f32 ab; // f27
+    f32 bc; // f26
+    f32 ca; // f25
+    f32 t; // f4
 
     // References
-    // -> static float dtor$466;
+    // -> static f32 dtor$466;
 }
 
 // Range: 0x80093F88 -> 0x80094174
@@ -954,7 +954,7 @@ void guTranslate(struct _CPU* pCPU) {
     s32 e1; // r7
     s32 e2; // r8
     union __anon_0x7D2DB data; // r1+0x58
-    float mf[4][4]; // r1+0x14
+    f32 mf[4][4]; // r1+0x14
     s32* ai; // r9
     s32* af; // r10
 }
@@ -978,7 +978,7 @@ void guScale(struct _CPU* pCPU) {
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    float mf[4][4]; // r1+0x24
+    f32 mf[4][4]; // r1+0x24
     s32* m; // r1+0x20
     s32 i; // r6
     s32 j; // r1+0x8
@@ -1003,10 +1003,10 @@ void guScaleF(struct _CPU* pCPU) {
 }
 
 typedef struct __anon_0x7F9D8 {
-    /* 0x0 */ float rX;
-    /* 0x4 */ float rY;
-    /* 0x8 */ float rSizeX;
-    /* 0xC */ float rSizeY;
+    /* 0x0 */ f32 rX;
+    /* 0x4 */ f32 rY;
+    /* 0x8 */ f32 rSizeX;
+    /* 0xC */ f32 rSizeY;
 } __anon_0x7F9D8; // size = 0x10
 
 typedef struct __anon_0x7FA72 {
@@ -1018,23 +1018,23 @@ typedef struct __anon_0x7FA72 {
 } __anon_0x7FA72; // size = 0x14
 
 typedef struct __anon_0x7FBB3 {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x7FBB3; // size = 0xC
 
 typedef struct __anon_0x7FC23 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x7FBB3 rVecOrigTowards;
-    /* 0x10 */ float rColorR;
-    /* 0x14 */ float rColorG;
-    /* 0x18 */ float rColorB;
-    /* 0x1C */ float rVectorX;
-    /* 0x20 */ float rVectorY;
-    /* 0x24 */ float rVectorZ;
-    /* 0x28 */ float kc;
-    /* 0x2C */ float kl;
-    /* 0x30 */ float kq;
+    /* 0x10 */ f32 rColorR;
+    /* 0x14 */ f32 rColorG;
+    /* 0x18 */ f32 rColorB;
+    /* 0x1C */ f32 rVectorX;
+    /* 0x20 */ f32 rVectorY;
+    /* 0x24 */ f32 rVectorZ;
+    /* 0x28 */ f32 kc;
+    /* 0x2C */ f32 kl;
+    /* 0x30 */ f32 kq;
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
@@ -1049,9 +1049,9 @@ typedef struct __anon_0x7FE53 {
 } __anon_0x7FE53; // size = 0x34
 
 typedef struct __anon_0x7FF3C {
-    /* 0x00 */ float rSum;
-    /* 0x04 */ float rS;
-    /* 0x08 */ float rT;
+    /* 0x00 */ f32 rSum;
+    /* 0x04 */ f32 rS;
+    /* 0x08 */ f32 rT;
     /* 0x0C */ struct __anon_0x7FBB3 vec;
     /* 0x18 */ u8 anColor[4];
 } __anon_0x7FF3C; // size = 0x1C
@@ -1160,11 +1160,11 @@ typedef enum __anon_0x80AE8 {
 
 typedef struct __anon_0x80B6D {
     /* 0x00 */ s32 nCount;
-    /* 0x04 */ float rScale;
-    /* 0x08 */ float rAspect;
-    /* 0x0C */ float rFieldOfViewY;
-    /* 0x10 */ float rClipNear;
-    /* 0x14 */ float rClipFar;
+    /* 0x04 */ f32 rScale;
+    /* 0x08 */ f32 rAspect;
+    /* 0x0C */ f32 rFieldOfViewY;
+    /* 0x10 */ f32 rClipNear;
+    /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x80AE8 eProjection;
@@ -1203,8 +1203,8 @@ typedef struct __anon_0x80DBD {
     /* 0x00074 */ s32 bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ float rScaleX;
-    /* 0x00084 */ float rScaleY;
+    /* 0x00080 */ f32 rScaleX;
+    /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[10];
@@ -1213,8 +1213,8 @@ typedef struct __anon_0x80DBD {
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ float rDepth;
-    /* 0x00128 */ float rDelta;
+    /* 0x00124 */ f32 rDepth;
+    /* 0x00128 */ f32 rDelta;
     /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct __anon_0x7FC23 aLight[8];
@@ -1250,13 +1250,13 @@ typedef struct __anon_0x80DBD {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C4D4 */ f32 matrixView[4][4];
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ enum __anon_0x80AE8 eTypeProjection;
-    /* 0x3C520 */ float aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ float matrixProjection[4][4];
-    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ f32 matrixProjection[4][4];
+    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
     /* 0x3C820 */ struct __anon_0x80B6D aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
@@ -1279,10 +1279,10 @@ void GenPerspective_1080(struct _CPU* pCPU) {
     union __anon_0x7D2DB data; // r1+0x18
     u32* mf; // r1+0x10
     u32* sp; // r1+0xC
-    float fovy; // f3
-    float aspect; // f4
-    float rNear; // f1
-    float rFar; // f2
+    f32 fovy; // f3
+    f32 aspect; // f4
+    f32 rNear; // f1
+    f32 rFar; // f2
     struct __anon_0x80DBD* pFrame; // r31
 }
 
@@ -1293,16 +1293,16 @@ void guPerspective(struct _CPU* pCPU) {
 
     // Local variables
     s32* m; // r1+0x60
-    float fovy; // f30
-    float aspect; // f29
-    float rNear; // f28
-    float rFar; // f27
-    float scale; // f5
-    float _cot; // f2
+    f32 fovy; // f30
+    f32 aspect; // f29
+    f32 rNear; // f28
+    f32 rFar; // f27
+    f32 scale; // f5
+    f32 _cot; // f2
     s32 i; // r6
     s32 j; // r1+0x8
     union __anon_0x7D2DB data; // r1+0x58
-    float mf[4][4]; // r1+0x18
+    f32 mf[4][4]; // r1+0x18
     s32 e1; // r7
     s32 e2; // r8
     u32* sp; // r1+0x14
@@ -1318,18 +1318,18 @@ void guPerspectiveF(struct _CPU* pCPU) {
     // Local variables
     s32 i; // r8
     s32 j; // r4
-    float cot; // f2
+    f32 cot; // f2
     s16* perspNorm; // r1+0x30
     u32* mf; // r1+0x2C
     u32* sp; // r1+0x28
     union __anon_0x7D2DB data0; // r1+0x20
     union __anon_0x7D2DB data1; // r1+0x18
     union __anon_0x7D2DB data; // r1+0x10
-    float fovy; // f29
-    float aspect; // f28
-    float rNear; // f27
-    float rFar; // f31
-    float scale; // f5
+    f32 fovy; // f29
+    f32 aspect; // f28
+    f32 rNear; // f27
+    f32 rFar; // f31
+    f32 scale; // f5
 }
 
 // Range: 0x80094B78 -> 0x80094E54
@@ -1344,17 +1344,17 @@ void guOrtho(struct _CPU* pCPU) {
     s32 e1; // r7
     s32 e2; // r8
     union __anon_0x7D2DB data; // r1+0x58
-    float mf[4][4]; // r1+0x18
+    f32 mf[4][4]; // r1+0x18
     u32* sp; // r1+0x14
     s32* ai; // r9
     s32* af; // r10
-    float l; // f31
-    float r; // f30
-    float b; // f29
-    float t; // f28
-    float n; // f27
-    float f; // f26
-    float scale; // f5
+    f32 l; // f31
+    f32 r; // f30
+    f32 b; // f29
+    f32 t; // f28
+    f32 n; // f27
+    f32 f; // f26
+    f32 scale; // f5
 }
 
 // Range: 0x80094E54 -> 0x800950C4
@@ -1367,13 +1367,13 @@ void guOrthoF(struct _CPU* pCPU) {
     s32 j; // r4
     u32* mf; // r1+0x2C
     u32* sp; // r1+0x28
-    float l; // f29
-    float r; // f28
-    float b; // f27
-    float t; // f26
-    float n; // f31
-    float f; // f30
-    float scale; // f5
+    f32 l; // f29
+    f32 r; // f28
+    f32 b; // f27
+    f32 t; // f26
+    f32 n; // f31
+    f32 f; // f30
+    f32 scale; // f5
     union __anon_0x7D2DB data0; // r1+0x20
     union __anon_0x7D2DB data1; // r1+0x18
     union __anon_0x7D2DB data; // r1+0x10
@@ -1394,7 +1394,7 @@ void guMtxIdentF(struct _CPU* pCPU) {
     // struct _CPU* pCPU; // r3
 
     // Local variables
-    float* mf; // r1+0x20
+    f32* mf; // r1+0x20
     s32 i; // r7
     s32 j; // r1+0x8
     union __anon_0x7D2DB data1; // r1+0x18
@@ -1407,7 +1407,7 @@ void guMtxF2L(struct _CPU* pCPU) {
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    float* mf; // r1+0x24
+    f32* mf; // r1+0x24
     s32 e1; // r6
     s32 e2; // r7
     s32 i; // r8
@@ -1426,7 +1426,7 @@ void guMtxCatF(struct _CPU* pCPU) {
     // Local variables
     s32 i; // r9
     s32 j; // r23
-    float temp[4][4]; // r1+0x38
+    f32 temp[4][4]; // r1+0x38
     union __anon_0x7D2DB data1; // r1+0x30
     union __anon_0x7D2DB data2; // r1+0x28
     u32* mf; // r1+0x24

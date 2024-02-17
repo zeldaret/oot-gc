@@ -17,7 +17,7 @@ static s32 rspParseGBI_F3DEX2(struct __anon_0x5845E* pRSP, u64** ppnGBI, s32* pb
     // Local variables
     s32 iVertex; // r4
     s32 bDone; // r25
-    float matrix[4][4]; // r1+0x410
+    f32 matrix[4][4]; // r1+0x410
     struct __anon_0x5EBE0 primitive; // r1+0x10C
     u64* pnGBI; // r28
     u32 nCommandLo; // r6
@@ -122,7 +122,7 @@ static s32 rspParseGBI_F3DEX1(struct __anon_0x5845E* pRSP, u64** ppnGBI, s32* pb
     // s32* pbDone; // r24
 
     // Local variables
-    float matrix[4][4]; // r1+0x3B0
+    f32 matrix[4][4]; // r1+0x3B0
     struct __anon_0x5EBE0 primitive; // r1+0xAC
     u32 iVertex; // r4
     u32 bDone; // r24
@@ -202,11 +202,11 @@ static s32 rspSetGeometryMode1(struct __anon_0x5845E* pRSP, s32 nMode) {
 }
 
 // Erased
-static s32 MulMatrices(float (*aOutMatrix)[4], float (*aLeftMatrix)[4], float (*aRightMatrix)[4]) {
+static s32 MulMatrices(f32 (*aOutMatrix)[4], f32 (*aLeftMatrix)[4], f32 (*aRightMatrix)[4]) {
     // Parameters
-    // float (* aOutMatrix)[4]; // r3
-    // float (* aLeftMatrix)[4]; // r4
-    // float (* aRightMatrix)[4]; // r5
+    // f32 (* aOutMatrix)[4]; // r3
+    // f32 (* aLeftMatrix)[4]; // r4
+    // f32 (* aRightMatrix)[4]; // r5
 
     // Local variables
     s32 i; // r8

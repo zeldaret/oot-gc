@@ -220,24 +220,24 @@ u32 anRenderModeDatabaseFill[100];
 u32 anRenderModeDatabaseCycle1[100];
 
 typedef struct __anon_0x239BA {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x239BA; // size = 0xC
 
 // Range: 0x8001D34C -> 0x8001D39C
-void PSMTX44MultVecNoW(float (*m)[4], struct __anon_0x239BA* src, struct __anon_0x239BA* dst) {
+void PSMTX44MultVecNoW(f32 (*m)[4], struct __anon_0x239BA* src, struct __anon_0x239BA* dst) {
     // Parameters
-    // float (* m)[4]; // r3
+    // f32 (* m)[4]; // r3
     // struct __anon_0x239BA* src; // r4
     // struct __anon_0x239BA* dst; // r5
 }
 
 typedef struct __anon_0x23B04 {
-    /* 0x0 */ float rX;
-    /* 0x4 */ float rY;
-    /* 0x8 */ float rSizeX;
-    /* 0xC */ float rSizeY;
+    /* 0x0 */ f32 rX;
+    /* 0x4 */ f32 rY;
+    /* 0x8 */ f32 rSizeX;
+    /* 0xC */ f32 rSizeY;
 } __anon_0x23B04; // size = 0x10
 
 typedef struct __anon_0x23B9E {
@@ -251,15 +251,15 @@ typedef struct __anon_0x23B9E {
 typedef struct __anon_0x23CAB {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x274AD rVecOrigTowards;
-    /* 0x10 */ float rColorR;
-    /* 0x14 */ float rColorG;
-    /* 0x18 */ float rColorB;
-    /* 0x1C */ float rVectorX;
-    /* 0x20 */ float rVectorY;
-    /* 0x24 */ float rVectorZ;
-    /* 0x28 */ float kc;
-    /* 0x2C */ float kl;
-    /* 0x30 */ float kq;
+    /* 0x10 */ f32 rColorR;
+    /* 0x14 */ f32 rColorG;
+    /* 0x18 */ f32 rColorB;
+    /* 0x1C */ f32 rVectorX;
+    /* 0x20 */ f32 rVectorY;
+    /* 0x24 */ f32 rVectorZ;
+    /* 0x28 */ f32 kc;
+    /* 0x2C */ f32 kl;
+    /* 0x30 */ f32 kq;
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
@@ -274,9 +274,9 @@ typedef struct __anon_0x23EDB {
 } __anon_0x23EDB; // size = 0x34
 
 typedef struct __anon_0x23FC4 {
-    /* 0x00 */ float rSum;
-    /* 0x04 */ float rS;
-    /* 0x08 */ float rT;
+    /* 0x00 */ f32 rSum;
+    /* 0x04 */ f32 rS;
+    /* 0x08 */ f32 rT;
     /* 0x0C */ struct __anon_0x274AD vec;
     /* 0x18 */ u8 anColor[4];
 } __anon_0x23FC4; // size = 0x1C
@@ -368,11 +368,11 @@ typedef struct __anon_0x247BF {
 
 typedef struct __anon_0x24A81 {
     /* 0x00 */ s32 nCount;
-    /* 0x04 */ float rScale;
-    /* 0x08 */ float rAspect;
-    /* 0x0C */ float rFieldOfViewY;
-    /* 0x10 */ float rClipNear;
-    /* 0x14 */ float rClipFar;
+    /* 0x04 */ f32 rScale;
+    /* 0x08 */ f32 rAspect;
+    /* 0x0C */ f32 rFieldOfViewY;
+    /* 0x10 */ f32 rClipNear;
+    /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x25D5E eProjection;
@@ -404,8 +404,8 @@ typedef struct __anon_0x24C38 {
     /* 0x00074 */ s32 bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ float rScaleX;
-    /* 0x00084 */ float rScaleY;
+    /* 0x00080 */ f32 rScaleX;
+    /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[10];
@@ -414,8 +414,8 @@ typedef struct __anon_0x24C38 {
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ float rDepth;
-    /* 0x00128 */ float rDelta;
+    /* 0x00124 */ f32 rDepth;
+    /* 0x00128 */ f32 rDelta;
     /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct __anon_0x23CAB aLight[8];
@@ -451,13 +451,13 @@ typedef struct __anon_0x24C38 {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C4D4 */ f32 matrixView[4][4];
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ enum __anon_0x25D5E eTypeProjection;
-    /* 0x3C520 */ float aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ float matrixProjection[4][4];
-    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ f32 matrixProjection[4][4];
+    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
     /* 0x3C820 */ struct __anon_0x24A81 aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
@@ -511,17 +511,17 @@ typedef enum __anon_0x25D5E {
 
 // Range: 0x8001D624 -> 0x8001D740
 s32 frameSetMatrixHint(struct __anon_0x24C38* pFrame, enum __anon_0x25D5E eProjection, s32 nAddressFloat,
-                       s32 nAddressFixed, float rNear, float rFar, float rFOVY, float rAspect, float rScale) {
+                       s32 nAddressFixed, f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r3
     // enum __anon_0x25D5E eProjection; // r1+0x4
     // s32 nAddressFloat; // r5
     // s32 nAddressFixed; // r6
-    // float rNear; // f1
-    // float rFar; // r1+0x14
-    // float rFOVY; // r1+0x18
-    // float rAspect; // r1+0x1C
-    // float rScale; // r1+0x20
+    // f32 rNear; // f1
+    // f32 rFar; // r1+0x14
+    // f32 rFOVY; // r1+0x18
+    // f32 rAspect; // r1+0x1C
+    // f32 rScale; // r1+0x20
 
     // Local variables
     s32 iHint; // r10
@@ -590,10 +590,10 @@ s32 frameSetViewport(struct __anon_0x24C38* pFrame, s16* pData) {
 
     // Local variables
     s32 iScale; // r1+0x8
-    float rY; // f1
-    float rSizeX; // f3
-    float rSizeY; // r1+0x8
-    float arScale[3]; // r1+0x28
+    f32 rY; // f1
+    f32 rSizeX; // f3
+    f32 rSizeY; // r1+0x8
+    f32 arScale[3]; // r1+0x28
 }
 
 // Range: 0x8001DA74 -> 0x8001DB24
@@ -753,11 +753,11 @@ s32 frameCullDL(struct __anon_0x24C38* pFrame, s32 nVertexStart, s32 nVertexEnd)
     // s32 nVertexEnd; // r1+0x8
 
     // Local variables
-    float rX; // r1+0x0
-    float rY; // f2
-    float rZ; // f1
-    float rW; // r1+0x0
-    float(*matrix)[4]; // r5
+    f32 rX; // r1+0x0
+    f32 rY; // f2
+    f32 rZ; // f1
+    f32 rW; // r1+0x0
+    f32(*matrix)[4]; // r5
     struct __anon_0x23FC4* vtxP; // r6
     struct __anon_0x23FC4* endVtxP; // r4
     s32 nCode; // r1+0x0
@@ -771,9 +771,9 @@ s32 __float_nan[];
 s32 __float_huge[];
 
 typedef struct __anon_0x274AD {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x274AD; // size = 0xC
 
 // Range: 0x8001EDCC -> 0x8001F850
@@ -785,35 +785,35 @@ s32 frameLoadVertex(struct __anon_0x24C38* pFrame, void* pBuffer, s32 iVertex0, 
     // s32 nCount; // r31
 
     // Local variables
-    float mag; // f5
+    f32 mag; // f5
     s32 iLight; // r29
     s32 nLight; // r28
     s32 nTexGen; // r27
-    float colorS; // f7
-    float colorT; // f6
-    float rS; // f8
-    float rT; // f9
-    float arNormal[3]; // r1+0x40
-    float arPosition[3]; // r1+0x34
+    f32 colorS; // f7
+    f32 colorT; // f6
+    f32 rS; // f8
+    f32 rT; // f9
+    f32 arNormal[3]; // r1+0x40
+    f32 arPosition[3]; // r1+0x34
     struct __anon_0x23FC4* pVertex; // r8
     u32 nData32; // r12
     struct __anon_0x23CAB* aLight; // r26
     struct __anon_0x23CAB* pLight; // r25
     s32 iVertex1; // r1+0x8
-    float rScale; // r1+0x8
-    float rScaleST; // r1+0x8
+    f32 rScale; // r1+0x8
+    f32 rScaleST; // r1+0x8
     char* pnData8; // r24
     s16* pnData16; // r23
-    float(*matrixView)[4]; // r22
-    float(*matrixModel)[4]; // r21
-    float rColorR; // f7
-    float rColorG; // f8
-    float rColorB; // f9
-    float rDiffuse; // f27
-    float rInverseW; // f6
-    float rInverseLength; // r1+0x8
+    f32(*matrixView)[4]; // r22
+    f32(*matrixModel)[4]; // r21
+    f32 rColorR; // f7
+    f32 rColorG; // f8
+    f32 rColorB; // f9
+    f32 rDiffuse; // f27
+    f32 rInverseW; // f6
+    f32 rInverseLength; // r1+0x8
     struct __anon_0x274AD vec; // r1+0x28
-    float distance; // r1+0x8
+    f32 distance; // r1+0x8
 
     // References
     // -> struct __anon_0x26A4E* gpSystem;
@@ -822,16 +822,16 @@ s32 frameLoadVertex(struct __anon_0x24C38* pFrame, void* pBuffer, s32 iVertex0, 
 }
 
 // Erased
-static s32 frameProjectVertex(struct __anon_0x24C38* pFrame, s32 iVertex, float* prX, float* prY, float* prZ) {
+static s32 frameProjectVertex(struct __anon_0x24C38* pFrame, s32 iVertex, f32* prX, f32* prY, f32* prZ) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r1+0x0
     // s32 iVertex; // r1+0x4
-    // float* prX; // r1+0x8
-    // float* prY; // r1+0xC
-    // float* prZ; // r1+0x10
+    // f32* prX; // r1+0x8
+    // f32* prY; // r1+0xC
+    // f32* prZ; // r1+0x10
 
     // Local variables
-    float rW; // r1+0x0
+    f32 rW; // r1+0x0
     struct __anon_0x23FC4* pVertex; // r8
 }
 
@@ -841,20 +841,20 @@ typedef enum __anon_0x27B8C {
 } __anon_0x27B8C;
 
 // Range: 0x8001F850 -> 0x8001F970
-s32 frameGetMatrix(struct __anon_0x24C38* pFrame, float (*matrix)[4], enum __anon_0x27B8C eType, s32 bPull) {
+s32 frameGetMatrix(struct __anon_0x24C38* pFrame, f32 (*matrix)[4], enum __anon_0x27B8C eType, s32 bPull) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r30
-    // float (* matrix)[4]; // r7
+    // f32 (* matrix)[4]; // r7
     // enum __anon_0x27B8C eType; // r1+0x10
     // s32 bPull; // r31
 }
 
 // Range: 0x8001F970 -> 0x8001FFFC
-s32 frameSetMatrix(struct __anon_0x24C38* pFrame, float (*matrix)[4], enum __anon_0x27B8C eType, s32 bLoad, s32 bPush,
+s32 frameSetMatrix(struct __anon_0x24C38* pFrame, f32 (*matrix)[4], enum __anon_0x27B8C eType, s32 bLoad, s32 bPush,
                    s32 nAddressN64) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r29
-    // float (* matrix)[4]; // r30
+    // f32 (* matrix)[4]; // r30
     // enum __anon_0x27B8C eType; // r26
     // s32 bLoad; // r28
     // s32 bPush; // r27
@@ -862,8 +862,8 @@ s32 frameSetMatrix(struct __anon_0x24C38* pFrame, float (*matrix)[4], enum __ano
 
     // Local variables
     s32 bFlag; // r28
-    float(*matrixTarget)[4]; // r3
-    float matrixResult[4][4]; // r1+0x48
+    f32(*matrixTarget)[4]; // r3
+    f32 matrixResult[4][4]; // r1+0x48
 
     // References
     // -> struct __anon_0x26A4E* gpSystem;
@@ -1034,16 +1034,16 @@ typedef struct __anon_0x28C10 {
 } __anon_0x28C10; // size = 0xD8
 
 typedef struct __anon_0x28E31 {
-    /* 0x00 */ float aRotations[2][2];
-    /* 0x10 */ float fX;
-    /* 0x14 */ float fY;
-    /* 0x18 */ float fBaseScaleX;
-    /* 0x1C */ float fBaseScaleY;
+    /* 0x00 */ f32 aRotations[2][2];
+    /* 0x10 */ f32 fX;
+    /* 0x14 */ f32 fY;
+    /* 0x18 */ f32 fBaseScaleX;
+    /* 0x1C */ f32 fBaseScaleY;
 } __anon_0x28E31; // size = 0x20
 
 typedef struct __anon_0x28F3E {
-    /* 0x0 */ float rS;
-    /* 0x4 */ float rT;
+    /* 0x0 */ f32 rS;
+    /* 0x4 */ f32 rT;
     /* 0x8 */ s16 nX;
     /* 0xA */ s16 nY;
     /* 0xC */ s16 nZ;
@@ -1059,7 +1059,7 @@ typedef struct __anon_0x290D5 {
 } __anon_0x290D5; // size = 0x4
 
 typedef struct __anon_0x29178 {
-    /* 0x0 */ float aMatrix[4][4];
+    /* 0x0 */ f32 aMatrix[4][4];
 } __anon_0x29178; // size = 0x40
 
 typedef struct __anon_0x291D6 {
@@ -1111,7 +1111,7 @@ typedef struct __anon_0x297E0 {
     /* 0x00E0 */ s32 (*pfUpdateWaiting)();
     /* 0x00E4 */ u32 n2TriMult;
     /* 0x00E8 */ s32 aStatus[4];
-    /* 0x00F8 */ float aMatrixOrtho[4][4];
+    /* 0x00F8 */ f32 aMatrixOrtho[4][4];
     /* 0x0138 */ u32 nMode2D;
     /* 0x013C */ struct __anon_0x28E31 twoDValues;
     /* 0x015C */ s32 nPass;
@@ -1373,9 +1373,9 @@ typedef union __anon_0x2B65C {
 } __anon_0x2B65C;
 
 typedef union __anon_0x2BA70 {
-    /* 0x0 */ float _0f32;
-    /* 0x4 */ float f32;
-    /* 0x0 */ double f64;
+    /* 0x0 */ f32 _0f32;
+    /* 0x4 */ f32 f32;
+    /* 0x0 */ f64 f64;
     /* 0x0 */ s32 _0s32;
     /* 0x4 */ s32 s32;
     /* 0x0 */ s64 s64;
@@ -1435,7 +1435,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -1444,7 +1444,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x2C66D; // size = 0x2C8
 
 typedef struct OSAlarm {
@@ -1533,10 +1533,10 @@ typedef struct __anon_0x2D2B6 {
     /* 0x0C */ s32 nY0;
     /* 0x10 */ s32 nX1;
     /* 0x14 */ s32 nY1;
-    /* 0x18 */ float rS;
-    /* 0x1C */ float rT;
-    /* 0x20 */ float rDeltaS;
-    /* 0x24 */ float rDeltaT;
+    /* 0x18 */ f32 rS;
+    /* 0x1C */ f32 rT;
+    /* 0x20 */ f32 rDeltaS;
+    /* 0x24 */ f32 rDeltaT;
 } __anon_0x2D2B6; // size = 0x28
 
 typedef struct __anon_0x2D45B {
@@ -1763,25 +1763,25 @@ static s32 frameConvertYUVtoRGB(u32* YUV, u32* RGB) {
 }
 
 // Erased
-static s32 frameConcatenateMatrix(float (*matrixResult)[4], float (*matrixA)[4], float (*matrixB)[4]) {
+static s32 frameConcatenateMatrix(f32 (*matrixResult)[4], f32 (*matrixA)[4], f32 (*matrixB)[4]) {
     // Parameters
-    // float (* matrixResult)[4]; // r1+0x8
-    // float (* matrixA)[4]; // r4
-    // float (* matrixB)[4]; // r5
+    // f32 (* matrixResult)[4]; // r1+0x8
+    // f32 (* matrixA)[4]; // r4
+    // f32 (* matrixB)[4]; // r5
 }
 
 // Range: 0x8002113C -> 0x80021204
-s32 frameScaleMatrix(float (*matrixResult)[4], float (*matrix)[4], float rScale) {
+s32 frameScaleMatrix(f32 (*matrixResult)[4], f32 (*matrix)[4], f32 rScale) {
     // Parameters
-    // float (* matrixResult)[4]; // r1+0x0
-    // float (* matrix)[4]; // r1+0x4
-    // float rScale; // r1+0x8
+    // f32 (* matrixResult)[4]; // r1+0x0
+    // f32 (* matrix)[4]; // r1+0x4
+    // f32 rScale; // r1+0x8
 }
 
 // Erased
-static s32 frameVectorTimesMatrix(float* fOutVector, float* fInVector, float (*matrix)[4]) {
+static s32 frameVectorTimesMatrix(f32* fOutVector, f32* fInVector, f32 (*matrix)[4]) {
     // Parameters
-    // float* fOutVector; // r1+0x4
-    // float* fInVector; // r1+0x8
-    // float (* matrix)[4]; // r1+0xC
+    // f32* fOutVector; // r1+0x4
+    // f32* fInVector; // r1+0x8
+    // f32 (* matrix)[4]; // r1+0xC
 }

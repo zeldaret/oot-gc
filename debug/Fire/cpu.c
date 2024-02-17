@@ -309,9 +309,9 @@ typedef union __anon_0x3E22D {
 } __anon_0x3E22D;
 
 typedef union __anon_0x3E641 {
-    /* 0x0 */ float _0f32;
-    /* 0x4 */ float f32;
-    /* 0x0 */ double f64;
+    /* 0x0 */ f32 _0f32;
+    /* 0x4 */ f32 f32;
+    /* 0x0 */ f64 f64;
     /* 0x0 */ s32 _0s32;
     /* 0x4 */ s32 s32;
     /* 0x0 */ s64 s64;
@@ -365,7 +365,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -374,7 +374,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x3F1AB; // size = 0x2C8
 
 typedef struct OSAlarm {
@@ -1047,10 +1047,10 @@ static s32 cpuSetFCR(struct _CPU* pCPU, s32* anRegister) {
 }
 
 // Erased
-static s32 cpuSetFPR(struct _CPU* pCPU, double* arRegister, s32 bDouble) {
+static s32 cpuSetFPR(struct _CPU* pCPU, f64* arRegister, s32 bDouble) {
     // Parameters
     // struct _CPU* pCPU; // r29
-    // double* arRegister; // r30
+    // f64* arRegister; // r30
     // s32 bDouble; // r31
 
     // Local variables
@@ -1119,10 +1119,10 @@ static s32 cpuGetFCR(struct _CPU* pCPU, s32* anRegister) {
 }
 
 // Erased
-static s32 cpuGetFPR(struct _CPU* pCPU, double* arRegister, s32 bDouble) {
+static s32 cpuGetFPR(struct _CPU* pCPU, f64* arRegister, s32 bDouble) {
     // Parameters
     // struct _CPU* pCPU; // r29
-    // double* arRegister; // r30
+    // f64* arRegister; // r30
     // s32 bDouble; // r31
 
     // Local variables
@@ -1338,7 +1338,7 @@ s32 __float_nan[];
 s32 __float_huge[];
 
 // size = 0x4, address = 0x80134E64
-float fTickScale;
+f32 fTickScale;
 
 // size = 0x4, address = 0x80134E60
 u32 nTickMultiplier;

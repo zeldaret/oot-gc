@@ -54,8 +54,8 @@ void THPGXYuv2RgbSetup(struct _GXRenderModeObj* rmode) {
     // Local variables
     s32 scrWidth; // r28
     s32 scrHeight; // r27
-    float pMtx[4][4]; // r1+0x74
-    float mMtx[3][4]; // r1+0x44
+    f32 pMtx[4][4]; // r1+0x74
+    f32 mMtx[3][4]; // r1+0x44
 }
 
 typedef struct _GXTexObj {

@@ -16,7 +16,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -25,7 +25,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x125F9; // size = 0x2C8
 
 typedef struct OSThreadQueue {
@@ -175,7 +175,7 @@ typedef struct __anon_0x13633 {
     /* 0x04 */ u32 version;
     /* 0x08 */ u32 bufSize;
     /* 0x0C */ u32 audioMaxSamples;
-    /* 0x10 */ float frameRate;
+    /* 0x10 */ f32 frameRate;
     /* 0x14 */ u32 numFrames;
     /* 0x18 */ u32 firstFrameSize;
     /* 0x1C */ u32 movieDataSize;
@@ -239,9 +239,9 @@ typedef struct __anon_0x13BA7 {
     /* 0x0D0 */ s32 prevCount;
     /* 0x0D4 */ s32 curCount;
     /* 0x0D8 */ s32 videoAhead;
-    /* 0x0DC */ float curVolume;
-    /* 0x0E0 */ float targetVolume;
-    /* 0x0E4 */ float deltaVolume;
+    /* 0x0DC */ f32 curVolume;
+    /* 0x0E0 */ f32 targetVolume;
+    /* 0x0E4 */ f32 deltaVolume;
     /* 0x0E8 */ s32 rampCount;
     /* 0x0EC */ s32 curAudioTrack;
     /* 0x0F0 */ s32 curVideoNumber;

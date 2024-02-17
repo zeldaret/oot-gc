@@ -11,7 +11,7 @@
 u32 nTickMultiplier;
 
 // size = 0x4, address = 0x80134E64
-float fTickScale;
+f32 fTickScale;
 
 typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
@@ -42,10 +42,10 @@ typedef struct __anon_0x3459E {
 struct __anon_0x3459E gSystemRomConfigurationList[1];
 
 typedef struct __anon_0x34768 {
-    /* 0x0 */ float rX;
-    /* 0x4 */ float rY;
-    /* 0x8 */ float rSizeX;
-    /* 0xC */ float rSizeY;
+    /* 0x0 */ f32 rX;
+    /* 0x4 */ f32 rY;
+    /* 0x8 */ f32 rSizeX;
+    /* 0xC */ f32 rSizeY;
 } __anon_0x34768; // size = 0x10
 
 typedef struct __anon_0x34802 {
@@ -57,23 +57,23 @@ typedef struct __anon_0x34802 {
 } __anon_0x34802; // size = 0x14
 
 typedef struct __anon_0x34943 {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x34943; // size = 0xC
 
 typedef struct __anon_0x349B3 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x34943 rVecOrigTowards;
-    /* 0x10 */ float rColorR;
-    /* 0x14 */ float rColorG;
-    /* 0x18 */ float rColorB;
-    /* 0x1C */ float rVectorX;
-    /* 0x20 */ float rVectorY;
-    /* 0x24 */ float rVectorZ;
-    /* 0x28 */ float kc;
-    /* 0x2C */ float kl;
-    /* 0x30 */ float kq;
+    /* 0x10 */ f32 rColorR;
+    /* 0x14 */ f32 rColorG;
+    /* 0x18 */ f32 rColorB;
+    /* 0x1C */ f32 rVectorX;
+    /* 0x20 */ f32 rVectorY;
+    /* 0x24 */ f32 rVectorZ;
+    /* 0x28 */ f32 kc;
+    /* 0x2C */ f32 kl;
+    /* 0x30 */ f32 kq;
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
@@ -88,9 +88,9 @@ typedef struct __anon_0x34BE3 {
 } __anon_0x34BE3; // size = 0x34
 
 typedef struct __anon_0x34CCC {
-    /* 0x00 */ float rSum;
-    /* 0x04 */ float rS;
-    /* 0x08 */ float rT;
+    /* 0x00 */ f32 rSum;
+    /* 0x04 */ f32 rS;
+    /* 0x08 */ f32 rT;
     /* 0x0C */ struct __anon_0x34943 vec;
     /* 0x18 */ u8 anColor[4];
 } __anon_0x34CCC; // size = 0x1C
@@ -199,11 +199,11 @@ typedef enum __anon_0x35878 {
 
 typedef struct __anon_0x358FC {
     /* 0x00 */ s32 nCount;
-    /* 0x04 */ float rScale;
-    /* 0x08 */ float rAspect;
-    /* 0x0C */ float rFieldOfViewY;
-    /* 0x10 */ float rClipNear;
-    /* 0x14 */ float rClipFar;
+    /* 0x04 */ f32 rScale;
+    /* 0x08 */ f32 rAspect;
+    /* 0x0C */ f32 rFieldOfViewY;
+    /* 0x10 */ f32 rClipNear;
+    /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x35878 eProjection;
@@ -242,8 +242,8 @@ typedef struct __anon_0x35B4C {
     /* 0x00074 */ s32 bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ float rScaleX;
-    /* 0x00084 */ float rScaleY;
+    /* 0x00080 */ f32 rScaleX;
+    /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[10];
@@ -252,8 +252,8 @@ typedef struct __anon_0x35B4C {
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ float rDepth;
-    /* 0x00128 */ float rDelta;
+    /* 0x00124 */ f32 rDepth;
+    /* 0x00128 */ f32 rDelta;
     /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct __anon_0x349B3 aLight[8];
@@ -289,13 +289,13 @@ typedef struct __anon_0x35B4C {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C4D4 */ f32 matrixView[4][4];
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ enum __anon_0x35878 eTypeProjection;
-    /* 0x3C520 */ float aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ float matrixProjection[4][4];
-    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ f32 matrixProjection[4][4];
+    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
     /* 0x3C820 */ struct __anon_0x358FC aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
@@ -490,9 +490,9 @@ typedef union __anon_0x377BD {
 } __anon_0x377BD;
 
 typedef union __anon_0x37BD1 {
-    /* 0x0 */ float _0f32;
-    /* 0x4 */ float f32;
-    /* 0x0 */ double f64;
+    /* 0x0 */ f32 _0f32;
+    /* 0x4 */ f32 f32;
+    /* 0x0 */ f64 f64;
     /* 0x0 */ s32 _0s32;
     /* 0x4 */ s32 s32;
     /* 0x0 */ s64 s64;
@@ -552,7 +552,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -561,7 +561,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x387CE; // size = 0x2C8
 
 typedef struct OSAlarm {
@@ -1206,7 +1206,7 @@ static s32 systemSetupGameALL(struct __anon_0x37240* pSystem) {
     // -> u32 gz_iconSize;
     // -> u32 nTickMultiplier;
     // -> u32 gnFlagZelda;
-    // -> float fTickScale;
+    // -> f32 fTickScale;
 }
 
 // Range: 0x80030364 -> 0x80030B38

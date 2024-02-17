@@ -1087,7 +1087,7 @@ typedef struct __anon_0x1F23C {
     /* 0x10 */ enum _GXTexWrapMode wrapT;
     /* 0x14 */ enum _GXTexFilter minFilter;
     /* 0x18 */ enum _GXTexFilter magFilter;
-    /* 0x1C */ float LODBias;
+    /* 0x1C */ f32 LODBias;
     /* 0x20 */ u8 edgeLODEnable;
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;

@@ -227,10 +227,10 @@ typedef struct __anon_0x85ACF {
 struct __anon_0x85ACF* gpSystem;
 
 typedef struct __anon_0x85D00 {
-    /* 0x0 */ float rX;
-    /* 0x4 */ float rY;
-    /* 0x8 */ float rSizeX;
-    /* 0xC */ float rSizeY;
+    /* 0x0 */ f32 rX;
+    /* 0x4 */ f32 rY;
+    /* 0x8 */ f32 rSizeX;
+    /* 0xC */ f32 rSizeY;
 } __anon_0x85D00; // size = 0x10
 
 typedef struct __anon_0x85D9A {
@@ -242,23 +242,23 @@ typedef struct __anon_0x85D9A {
 } __anon_0x85D9A; // size = 0x14
 
 typedef struct __anon_0x85EDB {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x85EDB; // size = 0xC
 
 typedef struct __anon_0x85F4B {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x85EDB rVecOrigTowards;
-    /* 0x10 */ float rColorR;
-    /* 0x14 */ float rColorG;
-    /* 0x18 */ float rColorB;
-    /* 0x1C */ float rVectorX;
-    /* 0x20 */ float rVectorY;
-    /* 0x24 */ float rVectorZ;
-    /* 0x28 */ float kc;
-    /* 0x2C */ float kl;
-    /* 0x30 */ float kq;
+    /* 0x10 */ f32 rColorR;
+    /* 0x14 */ f32 rColorG;
+    /* 0x18 */ f32 rColorB;
+    /* 0x1C */ f32 rVectorX;
+    /* 0x20 */ f32 rVectorY;
+    /* 0x24 */ f32 rVectorZ;
+    /* 0x28 */ f32 kc;
+    /* 0x2C */ f32 kl;
+    /* 0x30 */ f32 kq;
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
@@ -273,9 +273,9 @@ typedef struct __anon_0x8617B {
 } __anon_0x8617B; // size = 0x34
 
 typedef struct __anon_0x86264 {
-    /* 0x00 */ float rSum;
-    /* 0x04 */ float rS;
-    /* 0x08 */ float rT;
+    /* 0x00 */ f32 rSum;
+    /* 0x04 */ f32 rS;
+    /* 0x08 */ f32 rT;
     /* 0x0C */ struct __anon_0x85EDB vec;
     /* 0x18 */ u8 anColor[4];
 } __anon_0x86264; // size = 0x1C
@@ -384,11 +384,11 @@ typedef enum __anon_0x86E10 {
 
 typedef struct __anon_0x86E99 {
     /* 0x00 */ s32 nCount;
-    /* 0x04 */ float rScale;
-    /* 0x08 */ float rAspect;
-    /* 0x0C */ float rFieldOfViewY;
-    /* 0x10 */ float rClipNear;
-    /* 0x14 */ float rClipFar;
+    /* 0x04 */ f32 rScale;
+    /* 0x08 */ f32 rAspect;
+    /* 0x0C */ f32 rFieldOfViewY;
+    /* 0x10 */ f32 rClipNear;
+    /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x86E10 eProjection;
@@ -420,8 +420,8 @@ typedef struct __anon_0x87050 {
     /* 0x00074 */ s32 bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ float rScaleX;
-    /* 0x00084 */ float rScaleY;
+    /* 0x00080 */ f32 rScaleX;
+    /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[10];
@@ -430,8 +430,8 @@ typedef struct __anon_0x87050 {
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ float rDepth;
-    /* 0x00128 */ float rDelta;
+    /* 0x00124 */ f32 rDepth;
+    /* 0x00128 */ f32 rDelta;
     /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct __anon_0x85F4B aLight[8];
@@ -467,13 +467,13 @@ typedef struct __anon_0x87050 {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C4D4 */ f32 matrixView[4][4];
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ enum __anon_0x86E10 eTypeProjection;
-    /* 0x3C520 */ float aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ float matrixProjection[4][4];
-    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ f32 matrixProjection[4][4];
+    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
     /* 0x3C820 */ struct __anon_0x86E99 aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;

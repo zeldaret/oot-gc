@@ -13,10 +13,10 @@ static s32 rspSetupS2DEX(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r31
 
     // Local variables
-    float fL; // f31
-    float fR; // f30
-    float fB; // f29
-    float fT; // f28
+    f32 fL; // f31
+    f32 fR; // f30
+    f32 fB; // f29
+    f32 fT; // f28
     struct __anon_0x5A89F* pFrame; // r4
 }
 
@@ -107,27 +107,27 @@ static s32 rspObjRectangleR(struct __anon_0x5845E* pRSP, struct __anon_0x5A89F* 
 
     // Local variables
     u16 nSizLineBytes; // r5
-    float fLeft; // f30
-    float fRight; // f29
-    float fTop; // f28
-    float fBottom; // f27
-    float fTexRight; // f26
-    float fTexBottom; // f25
-    float fTexLeft; // f24
-    float fTexTop; // f23
+    f32 fLeft; // f30
+    f32 fRight; // f29
+    f32 fTop; // f28
+    f32 fBottom; // f27
+    f32 fTexRight; // f26
+    f32 fTexBottom; // f25
+    f32 fTexLeft; // f24
+    f32 fTexTop; // f23
     s32 nTexTrim2; // r28
     s32 nTexTrim5; // r27
-    float fSpriteWidth; // f22
-    float fSpriteHeight; // f1
+    f32 fSpriteWidth; // f22
+    f32 fSpriteHeight; // f1
     s32 nClampSetting; // r1+0x8
     union __anon_0x5F63B objSprite; // r1+0x438
     struct __anon_0x5A2EC* pTile; // r31
     struct __anon_0x5EBE0 primitive; // r1+0x12C
-    float mtxTransL[3][4]; // r1+0xFC
-    float mtxTransW[3][4]; // r1+0xCC
-    float mtxScale[3][4]; // r1+0x9C
-    float mtxTemp[3][4]; // r1+0x6C
-    float mtxOut[3][4]; // r1+0x3C
+    f32 mtxTransL[3][4]; // r1+0xFC
+    f32 mtxTransW[3][4]; // r1+0xCC
+    f32 mtxScale[3][4]; // r1+0x9C
+    f32 mtxTemp[3][4]; // r1+0x6C
+    f32 mtxOut[3][4]; // r1+0x3C
     struct __anon_0x5F6E9 vecIn; // r1+0x30
     struct __anon_0x5F6E9 vecOut; // r1+0x24
 }
@@ -141,29 +141,29 @@ static s32 rspObjSprite(struct __anon_0x5845E* pRSP, struct __anon_0x5A89F* pFra
 
     // Local variables
     u16 nSizLineBytes; // r5
-    float fLeft; // f29
-    float fRight; // r1+0x8
-    float fTop; // f28
-    float fBottom; // r1+0x8
-    float fTexRight; // f27
-    float fTexBottom; // f26
-    float fTexLeft; // f25
-    float fTexTop; // f24
-    float fScaleX; // f23
-    float fScaleY; // f22
-    float fSpriteWidth; // f2
-    float fSpriteHeight; // f4
+    f32 fLeft; // f29
+    f32 fRight; // r1+0x8
+    f32 fTop; // f28
+    f32 fBottom; // r1+0x8
+    f32 fTexRight; // f27
+    f32 fTexBottom; // f26
+    f32 fTexLeft; // f25
+    f32 fTexTop; // f24
+    f32 fScaleX; // f23
+    f32 fScaleY; // f22
+    f32 fSpriteWidth; // f2
+    f32 fSpriteHeight; // f4
     s32 nTexTrim2; // r28
     s32 nTexTrim5; // r27
     s32 nClampSetting; // r1+0x8
     union __anon_0x5F63B objSprite; // r1+0x438
     struct __anon_0x5A2EC* pTile; // r31
     struct __anon_0x5EBE0 primitive; // r1+0x12C
-    float mtxTransL[3][4]; // r1+0xFC
-    float mtxTransW[3][4]; // r1+0xCC
-    float mtxScale[3][4]; // r1+0x9C
-    float mtxTemp[3][4]; // r1+0x6C
-    float mtxOut[3][4]; // r1+0x3C
+    f32 mtxTransL[3][4]; // r1+0xFC
+    f32 mtxTransW[3][4]; // r1+0xCC
+    f32 mtxScale[3][4]; // r1+0x9C
+    f32 mtxTemp[3][4]; // r1+0x6C
+    f32 mtxOut[3][4]; // r1+0x3C
     struct __anon_0x5F6E9 vecIn; // r1+0x30
     struct __anon_0x5F6E9 vecOut; // r1+0x24
 }
@@ -177,8 +177,8 @@ static s32 rspObjRectangle(struct __anon_0x5845E* pRSP, struct __anon_0x5A89F* p
 
     // Local variables
     u16 nSizLineBytes; // r5
-    float fDeltaS; // f3
-    float fDeltaT; // f4
+    f32 fDeltaS; // f3
+    f32 fDeltaT; // f4
     union __anon_0x5F63B objSprite; // r1+0x48
     struct __anon_0x5A2EC* pTile; // r31
     struct __anon_0x5F759 primitive; // r1+0x1C
@@ -489,19 +489,19 @@ static s32 rspFillObjSprite(struct __anon_0x5845E* pRSP, s32 nAddress, union __a
 }
 
 // Range: 0x8007AC1C -> 0x8007AC6C
-static s32 Matrix4by4Identity(float (*matrix4b4)[4]) {
+static s32 Matrix4by4Identity(f32 (*matrix4b4)[4]) {
     // Parameters
-    // float (* matrix4b4)[4]; // r1+0x0
+    // f32 (* matrix4b4)[4]; // r1+0x0
 }
 
 // Erased
-static s32 frameFillVertex(struct __anon_0x5A89F* pFrame, s32 nIndex, s16 nX, s16 nY, s16 nZ, float rS, float rT) {
+static s32 frameFillVertex(struct __anon_0x5A89F* pFrame, s32 nIndex, s16 nX, s16 nY, s16 nZ, f32 rS, f32 rT) {
     // Parameters
     // struct __anon_0x5A89F* pFrame; // r1+0x8
     // s32 nIndex; // r1+0xC
     // s16 nX; // r1+0x10
     // s16 nY; // r1+0x12
     // s16 nZ; // r1+0x14
-    // float rS; // r1+0x18
-    // float rT; // r1+0x1C
+    // f32 rS; // r1+0x18
+    // f32 rT; // r1+0x1C
 }

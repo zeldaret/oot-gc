@@ -480,9 +480,9 @@ typedef union __anon_0x4F530 {
 } __anon_0x4F530;
 
 typedef union __anon_0x4F944 {
-    /* 0x0 */ float _0f32;
-    /* 0x4 */ float f32;
-    /* 0x0 */ double f64;
+    /* 0x0 */ f32 _0f32;
+    /* 0x4 */ f32 f32;
+    /* 0x0 */ f64 f64;
     /* 0x0 */ s32 _0s32;
     /* 0x4 */ s32 s32;
     /* 0x0 */ s64 s64;
@@ -542,7 +542,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -551,7 +551,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x50541; // size = 0x2C8
 
 typedef struct OSAlarm {
@@ -773,13 +773,13 @@ typedef struct _GXTexObj {
 } __anon_0x51BD0; // size = 0x20
 
 // Range: 0x8006F208 -> 0x8006F488
-static s32 romCacheGame_ZELDA(float rProgress) {
+static s32 romCacheGame_ZELDA(f32 rProgress) {
     // Parameters
-    // float rProgress; // f31
+    // f32 rProgress; // f31
 
     // Local variables
     s32 nSize; // r31
-    float matrix44[4][4]; // r1+0x2C
+    f32 matrix44[4][4]; // r1+0x2C
     struct _GXTexObj textureObject; // r1+0xC
 
     // References
@@ -792,14 +792,14 @@ static s32 romCacheGame_ZELDA(float rProgress) {
 
 // Range: 0x8006F488 -> 0x8006F5D4
 static s32 romLoadRange(struct __anon_0x4D873* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
-                        s32 (*pfProgress)(float)) {
+                        s32 (*pfProgress)(f32)) {
     // Parameters
     // struct __anon_0x4D873* pROM; // r26
     // s32 begin; // r1+0xC
     // s32 end; // r1+0x10
     // s32* blockCount; // r27
     // s32 whichBlock; // r1+0x18
-    // s32 (* pfProgress)(float); // r28
+    // s32 (* pfProgress)(f32); // r28
 
     // Local variables
     s32 iCache; // r1+0x20

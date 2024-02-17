@@ -118,16 +118,16 @@ typedef struct __anon_0x57890 {
 } __anon_0x57890; // size = 0xD8
 
 typedef struct __anon_0x57AB1 {
-    /* 0x00 */ float aRotations[2][2];
-    /* 0x10 */ float fX;
-    /* 0x14 */ float fY;
-    /* 0x18 */ float fBaseScaleX;
-    /* 0x1C */ float fBaseScaleY;
+    /* 0x00 */ f32 aRotations[2][2];
+    /* 0x10 */ f32 fX;
+    /* 0x14 */ f32 fY;
+    /* 0x18 */ f32 fBaseScaleX;
+    /* 0x1C */ f32 fBaseScaleY;
 } __anon_0x57AB1; // size = 0x20
 
 typedef struct __anon_0x57BBE {
-    /* 0x0 */ float rS;
-    /* 0x4 */ float rT;
+    /* 0x0 */ f32 rS;
+    /* 0x4 */ f32 rT;
     /* 0x8 */ s16 nX;
     /* 0xA */ s16 nY;
     /* 0xC */ s16 nZ;
@@ -143,7 +143,7 @@ typedef struct __anon_0x57D55 {
 } __anon_0x57D55; // size = 0x4
 
 typedef struct __anon_0x57DF8 {
-    /* 0x0 */ float aMatrix[4][4];
+    /* 0x0 */ f32 aMatrix[4][4];
 } __anon_0x57DF8; // size = 0x40
 
 typedef struct __anon_0x57E56 {
@@ -195,7 +195,7 @@ typedef struct __anon_0x5845E {
     /* 0x00E0 */ s32 (*pfUpdateWaiting)();
     /* 0x00E4 */ u32 n2TriMult;
     /* 0x00E8 */ s32 aStatus[4];
-    /* 0x00F8 */ float aMatrixOrtho[4][4];
+    /* 0x00F8 */ f32 aMatrixOrtho[4][4];
     /* 0x0138 */ u32 nMode2D;
     /* 0x013C */ struct __anon_0x57AB1 twoDValues;
     /* 0x015C */ s32 nPass;
@@ -303,10 +303,10 @@ typedef enum __anon_0x5943B {
 } __anon_0x5943B;
 
 typedef struct __anon_0x594BE {
-    /* 0x0 */ float rX;
-    /* 0x4 */ float rY;
-    /* 0x8 */ float rSizeX;
-    /* 0xC */ float rSizeY;
+    /* 0x0 */ f32 rX;
+    /* 0x4 */ f32 rY;
+    /* 0x8 */ f32 rSizeX;
+    /* 0xC */ f32 rSizeY;
 } __anon_0x594BE; // size = 0x10
 
 typedef struct __anon_0x59558 {
@@ -318,23 +318,23 @@ typedef struct __anon_0x59558 {
 } __anon_0x59558; // size = 0x14
 
 typedef struct __anon_0x59699 {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x59699; // size = 0xC
 
 typedef struct __anon_0x59709 {
     /* 0x00 */ s32 bTransformed;
     /* 0x04 */ struct __anon_0x59699 rVecOrigTowards;
-    /* 0x10 */ float rColorR;
-    /* 0x14 */ float rColorG;
-    /* 0x18 */ float rColorB;
-    /* 0x1C */ float rVectorX;
-    /* 0x20 */ float rVectorY;
-    /* 0x24 */ float rVectorZ;
-    /* 0x28 */ float kc;
-    /* 0x2C */ float kl;
-    /* 0x30 */ float kq;
+    /* 0x10 */ f32 rColorR;
+    /* 0x14 */ f32 rColorG;
+    /* 0x18 */ f32 rColorB;
+    /* 0x1C */ f32 rVectorX;
+    /* 0x20 */ f32 rVectorY;
+    /* 0x24 */ f32 rVectorZ;
+    /* 0x28 */ f32 kc;
+    /* 0x2C */ f32 kl;
+    /* 0x30 */ f32 kq;
     /* 0x34 */ s16 coordX;
     /* 0x36 */ s16 coordY;
     /* 0x38 */ s16 coordZ;
@@ -349,9 +349,9 @@ typedef struct __anon_0x59939 {
 } __anon_0x59939; // size = 0x34
 
 typedef struct __anon_0x59A22 {
-    /* 0x00 */ float rSum;
-    /* 0x04 */ float rS;
-    /* 0x08 */ float rT;
+    /* 0x00 */ f32 rSum;
+    /* 0x04 */ f32 rS;
+    /* 0x08 */ f32 rT;
     /* 0x0C */ struct __anon_0x59699 vec;
     /* 0x18 */ u8 anColor[4];
 } __anon_0x59A22; // size = 0x1C
@@ -460,11 +460,11 @@ typedef enum __anon_0x5A5CE {
 
 typedef struct __anon_0x5A64F {
     /* 0x00 */ s32 nCount;
-    /* 0x04 */ float rScale;
-    /* 0x08 */ float rAspect;
-    /* 0x0C */ float rFieldOfViewY;
-    /* 0x10 */ float rClipNear;
-    /* 0x14 */ float rClipFar;
+    /* 0x04 */ f32 rScale;
+    /* 0x08 */ f32 rAspect;
+    /* 0x0C */ f32 rFieldOfViewY;
+    /* 0x10 */ f32 rClipNear;
+    /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
     /* 0x20 */ enum __anon_0x5A5CE eProjection;
@@ -503,8 +503,8 @@ typedef struct __anon_0x5A89F {
     /* 0x00074 */ s32 bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ float rScaleX;
-    /* 0x00084 */ float rScaleY;
+    /* 0x00080 */ f32 rScaleX;
+    /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[10];
@@ -513,8 +513,8 @@ typedef struct __anon_0x5A89F {
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ float rDepth;
-    /* 0x00128 */ float rDelta;
+    /* 0x00124 */ f32 rDepth;
+    /* 0x00128 */ f32 rDelta;
     /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct __anon_0x59709 aLight[8];
@@ -550,13 +550,13 @@ typedef struct __anon_0x5A89F {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ float matrixView[4][4];
+    /* 0x3C4D4 */ f32 matrixView[4][4];
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ enum __anon_0x5A5CE eTypeProjection;
-    /* 0x3C520 */ float aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ float matrixProjection[4][4];
-    /* 0x3C7E0 */ float matrixProjectionExtra[4][4];
+    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
+    /* 0x3C7A0 */ f32 matrixProjection[4][4];
+    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
     /* 0x3C820 */ struct __anon_0x5A64F aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
@@ -764,9 +764,9 @@ typedef union __anon_0x5C59B {
 } __anon_0x5C59B;
 
 typedef union __anon_0x5C9AF {
-    /* 0x0 */ float _0f32;
-    /* 0x4 */ float f32;
-    /* 0x0 */ double f64;
+    /* 0x0 */ f32 _0f32;
+    /* 0x4 */ f32 f32;
+    /* 0x0 */ f64 f64;
     /* 0x0 */ s32 _0s32;
     /* 0x4 */ s32 s32;
     /* 0x0 */ s64 s64;
@@ -826,7 +826,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -835,7 +835,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x5D5AC; // size = 0x2C8
 
 typedef struct OSAlarm {
@@ -1128,9 +1128,9 @@ typedef union __anon_0x5F63B {
 } __anon_0x5F63B;
 
 typedef struct __anon_0x5F6E9 {
-    /* 0x0 */ float x;
-    /* 0x4 */ float y;
-    /* 0x8 */ float z;
+    /* 0x0 */ f32 x;
+    /* 0x4 */ f32 y;
+    /* 0x8 */ f32 z;
 } __anon_0x5F6E9; // size = 0xC
 
 typedef struct __anon_0x5F759 {
@@ -1140,10 +1140,10 @@ typedef struct __anon_0x5F759 {
     /* 0x0C */ s32 nY0;
     /* 0x10 */ s32 nX1;
     /* 0x14 */ s32 nY1;
-    /* 0x18 */ float rS;
-    /* 0x1C */ float rT;
-    /* 0x20 */ float rDeltaS;
-    /* 0x24 */ float rDeltaT;
+    /* 0x18 */ f32 rS;
+    /* 0x1C */ f32 rT;
+    /* 0x20 */ f32 rDeltaS;
+    /* 0x24 */ f32 rDeltaT;
 } __anon_0x5F759; // size = 0x28
 
 typedef struct __anon_0x5F8B9 {
@@ -1322,19 +1322,19 @@ static s32 rspSetDL(struct __anon_0x5845E* pRSP, s32 nOffsetRDRAM, s32 bPush) {
 }
 
 // Range: 0x800741CC -> 0x80074454
-static s32 rspLoadMatrix(struct __anon_0x5845E* pRSP, s32 nAddress, float (*matrix)[4]) {
+static s32 rspLoadMatrix(struct __anon_0x5845E* pRSP, s32 nAddress, f32 (*matrix)[4]) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
     // s32 nAddress; // r4
-    // float (* matrix)[4]; // r31
+    // f32 (* matrix)[4]; // r31
 
     // Local variables
     s32* pMtx; // r1+0x18
     s32 nDataA; // r6
     s32 nDataB; // r7
-    float rScale; // f31
-    float rUpper; // r1+0x8
-    float rLower; // r1+0x8
+    f32 rScale; // f31
+    f32 rUpper; // r1+0x8
+    f32 rLower; // r1+0x8
     u16 nUpper; // r1+0x16
     u16 nLower; // r1+0x14
 }

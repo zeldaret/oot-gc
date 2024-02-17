@@ -127,7 +127,7 @@ typedef struct __anon_0x9F7 {
     /* 0x10 */ enum _GXTexWrapMode wrapT;
     /* 0x14 */ enum _GXTexFilter minFilter;
     /* 0x18 */ enum _GXTexFilter magFilter;
-    /* 0x1C */ float LODBias;
+    /* 0x1C */ f32 LODBias;
     /* 0x20 */ u8 edgeLODEnable;
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
@@ -197,14 +197,14 @@ static s32 xlCoreGetUpper24MB(void* ppBuffer) {
 }
 
 typedef union DoubleLongLong {
-    /* 0x0 */ double f;
+    /* 0x0 */ f64 f;
     /* 0x0 */ s64 i;
 } __anon_0x1026;
 
 // Erased
 static s32 xlCoreEnableFPExceptions() {
     // Local variables
-    double control; // r1+0x8
+    f64 control; // r1+0x8
     union DoubleLongLong d; // r1+0x8
 }
 

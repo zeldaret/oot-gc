@@ -221,7 +221,7 @@ static s32 cpuExecuteUpdate(struct _CPU* pCPU, s32* pnAddressGCN, u32 nCount) {
     // References
     // -> struct __anon_0x3DB14* gpSystem;
     // -> u32 nTickMultiplier;
-    // -> float fTickScale;
+    // -> f32 fTickScale;
 }
 
 // Erased

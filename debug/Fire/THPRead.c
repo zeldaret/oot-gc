@@ -48,7 +48,7 @@ typedef struct OSContext {
     /* 0x084 */ u32 lr;
     /* 0x088 */ u32 ctr;
     /* 0x08C */ u32 xer;
-    /* 0x090 */ double fpr[32];
+    /* 0x090 */ f64 fpr[32];
     /* 0x190 */ u32 fpscr_pad;
     /* 0x194 */ u32 fpscr;
     /* 0x198 */ u32 srr0;
@@ -57,7 +57,7 @@ typedef struct OSContext {
     /* 0x1A2 */ u16 state;
     /* 0x1A4 */ u32 gqr[8];
     /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ double psf[32];
+    /* 0x1C8 */ f64 psf[32];
 } __anon_0x15310; // size = 0x2C8
 
 typedef struct OSThreadLink {
@@ -109,7 +109,7 @@ static struct OSThread ReadThread;
 static u8 ReadThreadStack[4096];
 
 // size = 0x40, address = 0x800FC5B0
-static float gOrthoMtx[4][4];
+static f32 gOrthoMtx[4][4];
 
 // size = 0x4, address = 0x80135644
 s32 gMovieErrorToggle;
@@ -214,7 +214,7 @@ typedef struct __anon_0x16250 {
     /* 0x04 */ u32 version;
     /* 0x08 */ u32 bufSize;
     /* 0x0C */ u32 audioMaxSamples;
-    /* 0x10 */ float frameRate;
+    /* 0x10 */ f32 frameRate;
     /* 0x14 */ u32 numFrames;
     /* 0x18 */ u32 firstFrameSize;
     /* 0x1C */ u32 movieDataSize;
@@ -284,9 +284,9 @@ typedef struct __anon_0x16849 {
     /* 0x0D0 */ s32 prevCount;
     /* 0x0D4 */ s32 curCount;
     /* 0x0D8 */ s32 videoAhead;
-    /* 0x0DC */ float curVolume;
-    /* 0x0E0 */ float targetVolume;
-    /* 0x0E4 */ float deltaVolume;
+    /* 0x0DC */ f32 curVolume;
+    /* 0x0E0 */ f32 targetVolume;
+    /* 0x0E4 */ f32 deltaVolume;
     /* 0x0E8 */ s32 rampCount;
     /* 0x0EC */ s32 curAudioTrack;
     /* 0x0F0 */ s32 curVideoNumber;
@@ -509,7 +509,7 @@ typedef struct __anon_0x17AF5 {
     /* 0x10 */ enum _GXTexWrapMode wrapT;
     /* 0x14 */ enum _GXTexFilter minFilter;
     /* 0x18 */ enum _GXTexFilter magFilter;
-    /* 0x1C */ float LODBias;
+    /* 0x1C */ f32 LODBias;
     /* 0x20 */ u8 edgeLODEnable;
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
@@ -563,15 +563,15 @@ s32 movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {
     // Local variables
     struct _GXTexObj texObj; // r1+0xB0
     struct _GXColor color; // r1+0xA8
-    float identity_mtx[3][4]; // r1+0x78
-    float g2DviewMtx[3][4]; // r1+0x48
-    float g2[3][4]; // r1+0x18
+    f32 identity_mtx[3][4]; // r1+0x78
+    f32 g2DviewMtx[3][4]; // r1+0x48
+    f32 g2[3][4]; // r1+0x18
 
     // References
     // -> u8 TexCoords_u8[];
     // -> u32 Colors_u32[];
     // -> s16 Vert_s16[];
-    // -> static float gOrthoMtx[4][4];
+    // -> static f32 gOrthoMtx[4][4];
 }
 
 // Range: 0x80012850 -> 0x80012F20
@@ -581,5 +581,5 @@ s32 movieGXInit() {
     struct _GXColor GX_DEFAULT_BG; // r1+0x58
     struct _GXColor BLACK; // r1+0x54
     struct _GXColor WHITE; // r1+0x50
-    float identity_mtx[3][4]; // r1+0x20
+    f32 identity_mtx[3][4]; // r1+0x20
 }
