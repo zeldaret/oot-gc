@@ -155,7 +155,7 @@ s32 ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize) {
         }
     }
 
-    *((u32*)ppRAM) = (u32)pRAM->pBuffer + nOffset;
+    *((u8**)ppRAM) = (u8*)pRAM->pBuffer + nOffset;
     return 1;
 }
 
