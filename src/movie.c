@@ -68,4 +68,3 @@ void MovieDraw(void) {
     THPPlayerDrawCurrentFrame(rmode, 0, -8, 0x280, 0x1B8);
     THPPlayerDrawDone();
 }
-
