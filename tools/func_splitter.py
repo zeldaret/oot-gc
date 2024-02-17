@@ -64,6 +64,9 @@ def splitAsm(inputFile: str):
         # create the folders if necessary
         os.makedirs(os.path.dirname(f"asm/non_matchings/{inputFile}/"), exist_ok=True)
 
+        # reverse function order for -inline deferred
+        parsedFunctions.reverse()
+
         # write the files
         for i, (functionName, functionData) in enumerate(parsedFunctions):
             cPath = f"src/{inputFile}.c"
