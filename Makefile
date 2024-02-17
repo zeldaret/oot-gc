@@ -63,7 +63,7 @@ ASFLAGS := -mgekko -I include
 LDFLAGS := -map $(MAP) -fp hard -nodefaults -w off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -inline deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
 
 # postprocess
 PROCFLAGS := -fprologue-fixup=old_stack

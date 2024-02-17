@@ -4,7 +4,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/xlCoreGCN.o            \
     $(BUILD_DIR)/asm/xlPostGCN.o            \
     $(BUILD_DIR)/asm/xlFileGCN.o            \
-    $(BUILD_DIR)/src/xlList.o               \
+    $(BUILD_DIR)/asm/xlList.o               \
     $(BUILD_DIR)/asm/xlHeap.o               \
     $(BUILD_DIR)/asm/xlObject.o             \
     $(BUILD_DIR)/asm/simGCN.o               \
@@ -18,10 +18,10 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/codeGCN.o              \
     $(BUILD_DIR)/asm/soundGCN.o             \
     $(BUILD_DIR)/asm/frame.o                \
-    $(BUILD_DIR)/src/system.o               \
+    $(BUILD_DIR)/asm/system.o               \
     $(BUILD_DIR)/asm/cpu.o                  \
     $(BUILD_DIR)/asm/pif.o                  \
-    $(BUILD_DIR)/src/ram.o                  \
+    $(BUILD_DIR)/asm/ram.o                  \
     $(BUILD_DIR)/src/rom.o                  \
     $(BUILD_DIR)/asm/rdp.o                  \
     $(BUILD_DIR)/asm/rdb.o                  \

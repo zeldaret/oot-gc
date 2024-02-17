@@ -79,19 +79,19 @@ typedef struct Rom {
     /* 0x10EF4 */ s32 offsetToRom;
 } Rom; // size = 0x10EF8
 
-s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument);
-s32 romGetImage(Rom* pROM, char* acNameFile);
-s32 romSetImage(Rom* pROM, char* szNameFile);
-s32 romSetCacheSize(Rom* pROM, s32 nSize);
-s32 romUpdate(Rom* pROM);
+s32 romGetPC(Rom* pROM, u64* pnPC);
+s32 romGetCode(Rom* pROM, char* acCode);
+s32 romTestCode(Rom* pROM, char* acCode);
 
 //! NOTE: The debug informations indicates that `nSize` is unsigned, but the
 //! generated code seems to treat it as signed.
 s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
 s32 romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFunc* pCallback);
 
-s32 romTestCode(Rom* pROM, char* acCode);
-s32 romGetCode(Rom* pROM, char* acCode);
-s32 romGetPC(Rom* pROM, u64* pnPC);
+s32 romUpdate(Rom* pROM);
+s32 romSetCacheSize(Rom* pROM, s32 nSize);
+s32 romSetImage(Rom* pROM, char* szNameFile);
+s32 romGetImage(Rom* pROM, char* acNameFile);
+s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument);
 
 #endif
