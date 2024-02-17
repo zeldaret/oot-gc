@@ -30,12 +30,12 @@ s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
             break;
         case 0x1002:
             if (!cpuSetDevicePut(((System*)pSerial->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)serialPut8,
-                                    (Put16Func)serialPut16, (Put32Func)serialPut32, (Put64Func)serialPut64)) {
+                                 (Put16Func)serialPut16, (Put32Func)serialPut32, (Put64Func)serialPut64)) {
                 return 0;
             }
 
             if (!cpuSetDeviceGet(((System*)pSerial->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)serialGet8,
-                                    (Get16Func)serialGet16, (Get32Func)serialGet32, (Get64Func)serialGet64)) {
+                                 (Get16Func)serialGet16, (Get32Func)serialGet32, (Get64Func)serialGet64)) {
                 return 0;
             }
             break;
@@ -51,16 +51,14 @@ s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
     return 1;
 }
 
-s32 serialGet64(Serial* pSerial, u32 nAddress, s64* pData) {
-    return 0;
-}
+s32 serialGet64(Serial* pSerial, u32 nAddress, s64* pData) { return 0; }
 
 s32 serialGet32(Serial* pSerial, u32 nAddress, s32* pData) {
     nAddress &= 0x1F;
 
     switch (nAddress) {
         case 0x00:
-        *pData = pSerial->nAddress;
+            *pData = pSerial->nAddress;
             break;
         case 0x04:
             *pData = 0;
@@ -78,17 +76,11 @@ s32 serialGet32(Serial* pSerial, u32 nAddress, s32* pData) {
     return 1;
 }
 
-s32 serialGet16(Serial* pSerial, u32 nAddress, s16* pData) {
-    return 0;
-}
+s32 serialGet16(Serial* pSerial, u32 nAddress, s16* pData) { return 0; }
 
-s32 serialGet8(Serial* pSerial, u32 nAddress, s8* pData) {
-    return 0;
-}
+s32 serialGet8(Serial* pSerial, u32 nAddress, s8* pData) { return 0; }
 
-s32 serialPut64(Serial* pSerial, u32 nAddress, s64* pData) {
-    return 0;
-}
+s32 serialPut64(Serial* pSerial, u32 nAddress, s64* pData) { return 0; }
 
 s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
     u32 nSize;
@@ -136,10 +128,6 @@ s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
     return 1;
 }
 
-s32 serialPut16(Serial* pSerial, u32 nAddress, s16* pData) {
-    return 0;
-}
+s32 serialPut16(Serial* pSerial, u32 nAddress, s16* pData) { return 0; }
 
-s32 serialPut8(Serial* pSerial, u32 nAddress, s8* pData) {
-    return 0;
-}
+s32 serialPut8(Serial* pSerial, u32 nAddress, s8* pData) { return 0; }

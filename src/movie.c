@@ -51,7 +51,7 @@ void MovieDraw(void) {
 }
 
 void MovieInit(void) {
-    char *szText;
+    char* szText;
     u32 size;
 
     THPPlayerInit(0);
