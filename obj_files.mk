@@ -27,7 +27,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/rdb.o                  \
     $(BUILD_DIR)/asm/rsp.o                  \
     $(BUILD_DIR)/asm/mips.o                 \
-    $(BUILD_DIR)/asm/disk.o                 \
+    $(BUILD_DIR)/src/disk.o                 \
     $(BUILD_DIR)/asm/flash.o                \
     $(BUILD_DIR)/asm/sram.o                 \
     $(BUILD_DIR)/asm/audio.o                \

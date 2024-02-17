@@ -4,15 +4,16 @@
 #include "ram.h"
 #include "cpu.h"
 
-s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument);
-
 static s32 serialGet64(Serial* pSerial, u32 nAddress, s64* pData);
 static s32 serialGet32(Serial* pSerial, u32 nAddress, s32* pData);
 static s32 serialGet16(Serial* pSerial, u32 nAddress, s16* pData);
 static s32 serialGet8(Serial* pSerial, u32 nAddress, s8* pData);
 
 static s32 serialPut64(Serial* pSerial, u32 nAddress, s64* pData);
+
+// not static because it's required for library.s
 s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData);
+
 static s32 serialPut16(Serial* pSerial, u32 nAddress, s16* pData);
 static s32 serialPut8(Serial* pSerial, u32 nAddress, s8* pData);
 
