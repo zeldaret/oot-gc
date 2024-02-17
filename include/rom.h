@@ -85,8 +85,8 @@ s32 romTestCode(Rom* pROM, char* acCode);
 
 //! NOTE: The debug informations indicates that `nSize` is unsigned, but the
 //! generated code seems to treat it as signed.
-s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
 s32 romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFunc* pCallback);
+s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
 
 s32 romUpdate(Rom* pROM);
 s32 romSetCacheSize(Rom* pROM, s32 nSize);
