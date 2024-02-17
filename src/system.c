@@ -165,106 +165,6 @@ extern int atoi(const char* str);
 
 s32 simulatorGetArgument(SystemArgumentType eType, char* pszArgument);
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
-
-s32 systemExceptionPending(System* pSystem, s32 nException) {
-    if ((nException > -1) && (nException < ARRAY_COUNT(pSystem->anException))) {
-        if (pSystem->anException[nException] != 0) {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    return 0;
-}
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCheckInterrupts.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemReset.s")
-
-s32 systemGetStorageDevice(System* pSystem, s32* pStorageDevice) {
-    *pStorageDevice = pSystem->storageDevice;
-    return 1;
-}
-
-s32 systemSetStorageDevice(System* pSystem, s32 eStorageDevice) {
-    pSystem->storageDevice = eStorageDevice;
-
-    if (eStorageDevice == SOT_FLASH) {
-        if (!xlObjectMake(&pSystem->apObject[SOT_FLASH], pSystem, &gClassFlash)) {
-            return 0;
-        }
-
-        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_FLASH], 0x08000000, 0x0801FFFF, 0)) {
-            return 0;
-        }
-    }
-
-    if (eStorageDevice == SOT_SRAM) {
-        if (!xlObjectMake(&pSystem->apObject[SOT_SRAM], pSystem, &gClassSram)) {
-            return 0;
-        }
-
-        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_SRAM], 0x08000000, 0x08007FFF, 0)) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-s32 systemGetMode(System* pSystem, s32* pMode) {
-    if (xlObjectTest(pSystem, &gClassSystem) && (pMode != NULL)) {
-        *pMode = pSystem->eMode;
-        return 1;
-    }
-
-    return 0;
-}
-
-s32 systemSetMode(System* pSystem, s32 pMode) {
-    if (xlObjectTest(pSystem, &gClassSystem)) {
-        pSystem->eMode = pMode;
-
-        if (pMode == SM_STOPPED) {
-            pSystem->nAddressBreak = -1;
-        }
-
-        return 1;
-    }
-
-    return 0;
-}
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/__systemCopyROM_Complete.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut32.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut16.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut8.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet64.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet32.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet16.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetException.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
-
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
-
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameRAM.s")
 #else
@@ -356,3 +256,103 @@ s32 systemSetupGameRAM(System* pSystem) {
     return 1;
 }
 #endif
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetException.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet16.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet32.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet64.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut8.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut16.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut32.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/__systemCopyROM_Complete.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
+
+s32 systemSetMode(System* pSystem, s32 pMode) {
+    if (xlObjectTest(pSystem, &gClassSystem)) {
+        pSystem->eMode = pMode;
+
+        if (pMode == SM_STOPPED) {
+            pSystem->nAddressBreak = -1;
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
+
+s32 systemGetMode(System* pSystem, s32* pMode) {
+    if (xlObjectTest(pSystem, &gClassSystem) && (pMode != NULL)) {
+        *pMode = pSystem->eMode;
+        return 1;
+    }
+
+    return 0;
+}
+
+s32 systemSetStorageDevice(System* pSystem, s32 eStorageDevice) {
+    pSystem->storageDevice = eStorageDevice;
+
+    if (eStorageDevice == SOT_FLASH) {
+        if (!xlObjectMake(&pSystem->apObject[SOT_FLASH], pSystem, &gClassFlash)) {
+            return 0;
+        }
+
+        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_FLASH], 0x08000000, 0x0801FFFF, 0)) {
+            return 0;
+        }
+    }
+
+    if (eStorageDevice == SOT_SRAM) {
+        if (!xlObjectMake(&pSystem->apObject[SOT_SRAM], pSystem, &gClassSram)) {
+            return 0;
+        }
+
+        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_SRAM], 0x08000000, 0x08007FFF, 0)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+s32 systemGetStorageDevice(System* pSystem, s32* pStorageDevice) {
+    *pStorageDevice = pSystem->storageDevice;
+    return 1;
+}
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemReset.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemCheckInterrupts.s")
+
+s32 systemExceptionPending(System* pSystem, s32 nException) {
+    if ((nException > -1) && (nException < ARRAY_COUNT(pSystem->anException))) {
+        if (pSystem->anException[nException] != 0) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    return 0;
+}
+
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")

@@ -658,9 +658,12 @@ class GlobalAsmBlock:
                         # Don't let functions become too large. When a function reaches 284
                         # instructions, and -O2 -framepointer flags are passed, the IRIX
                         # compiler decides it is a great idea to start optimizing more.
+
+                        # Keep last function name for reversed function order due to -inline deferred
+                        text_name = state.make_name('large_func')  
                         fn_emitted = 0
                         fn_skipped = 0
-                        src[line] += '((volatile void *) 0); }} int {}(void) {{ return '.format(state.make_name('large_func'))
+                        src[line] += '((volatile void *) 0); }} int {}(void) {{ return '.format(text_name)
                     if fn_skipped < state.skip_instr_count:
                         fn_skipped += 1
                         tot_skipped += 1
@@ -699,9 +702,12 @@ class GlobalAsmBlock:
                         # Don't let functions become too large. When a function reaches 284
                         # instructions, and -O2 -framepointer flags are passed, the IRIX
                         # compiler decides it is a great idea to start optimizing more.
+                        
+                        # Keep last function name for reversed function order due to -inline deferred
+                        text_name = state.make_name('large_func')  
                         fn_emitted = 0
                         fn_skipped = 0
-                        src[line] += '((volatile void *) 0); }} int {}(void) {{ return '.format(state.make_name('large_func'))
+                        src[line] += '((volatile void *) 0); }} int {}(void) {{ return '.format(text_name)
                     if fn_skipped < state.skip_instr_count:
                         fn_skipped += 1
                         tot_skipped += 1
@@ -916,7 +922,8 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
     # simplicity we pad with nops/.space so that addresses match exactly, so we
     # don't have to fix up relocations/symbol references.
     all_text_glabels = set()
-    for function in functions:
+    # -inline deferred will reverse function order
+    for function in reversed(functions):
         ifdefed = False
         for sectype, (temp_name, size) in function.data.items():
             if temp_name is None:
