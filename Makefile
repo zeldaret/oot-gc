@@ -22,7 +22,7 @@ LDSCRIPT := $(BUILD_DIR)/ldscript.lcf
 
 # Outputs
 ELF := $(BUILD_DIR)/$(TARGET).elf
-MAP := $(ELF:.elf=.map)/
+MAP := $(ELF:.elf=.map)
 DOL := $(ELF:.elf=.dol)
 COMPARE_TO := $(ELF:.elf=_S.elf)
 
