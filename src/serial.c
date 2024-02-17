@@ -4,9 +4,6 @@
 #include "ram.h"
 #include "cpu.h"
 
-// not static because it's required for library.s
-s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData);
-
 _XL_OBJECTTYPE gClassSerial = {
     "SERIAL",
     sizeof(Serial),
