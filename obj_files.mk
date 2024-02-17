@@ -32,7 +32,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/sram.o                 \
     $(BUILD_DIR)/asm/audio.o                \
     $(BUILD_DIR)/asm/video.o                \
-    $(BUILD_DIR)/asm/serial.o               \
+    $(BUILD_DIR)/src/serial.o               \
     $(BUILD_DIR)/asm/library.o              \
     $(BUILD_DIR)/asm/peripheral.o           \
     $(BUILD_DIR)/asm/_frameGCNcc.o          \
