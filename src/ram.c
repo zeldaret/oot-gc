@@ -1,7 +1,7 @@
 #include "xlObject.h"
 #include "ram.h"
 
-s32 ramEvent(void* pObject, s32 nEvent, void *pArgument);
+s32 ramEvent(void* pObject, s32 nEvent, void* pArgument);
 
 static s32 ramGet64(Ram* pRAM, u32 nAddress, s64* pData);
 static s32 ramGet32(Ram* pRAM, u32 nAddress, s32* pData);
@@ -22,7 +22,7 @@ static s32 ramPutRI64(Ram* pRAM, u32 nAddress, s64* pData);
 static s32 ramPutRI16(Ram* pRAM, u32 nAddress, s32* pData);
 static s32 ramPutRI32(Ram* pRAM, u32 nAddress, s16* pData);
 static s32 ramPutRI8(Ram* pRAM, u32 nAddress, s8* pData);
-    
+
 static s32 ramGetControl64(Ram* pRAM, u32 nAddress, s64* pData);
 static s32 ramGetControl16(Ram* pRAM, u32 nAddress, s32* pData);
 static s32 ramGetControl32(Ram* pRAM, u32 nAddress, s16* pData);
@@ -59,29 +59,35 @@ s32 ramEvent(void* pObject, s32 nEvent, void* pArgument) {
         case 0x1002:
             switch (((UnknownDeviceStruct*)pArgument)->unk & 0xFF) {
                 case 0:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPut8, ramPut16, ramPut32, ramPut64)) {
+                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPut8, ramPut16,
+                                         ramPut32, ramPut64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGet8, ramGet16, ramGet32, ramGet64)) {
+                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGet8, ramGet16,
+                                         ramGet32, ramGet64)) {
                         return 0;
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPutRI8, ramPutRI16, ramPutRI32, ramPutRI64)) {
+                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPutRI8, ramPutRI16,
+                                         ramPutRI32, ramPutRI64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGetRI8, ramGetRI16, ramGetRI32, ramGetRI64)) {
+                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGetRI8, ramGetRI16,
+                                         ramGetRI32, ramGetRI64)) {
                         return 0;
                     }
                     break;
                 case 2:
-                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPutControl8, ramPutControl16, ramPutControl32, ramPutControl64)) {
+                    if (!cpuSetDevicePut(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramPutControl8,
+                                         ramPutControl16, ramPutControl32, ramPutControl64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGetControl8, ramGetControl16, ramGetControl32, ramGetControl64)) {
+                    if (!cpuSetDeviceGet(((UnknownDeviceStruct*)pRAM->pHost)->pDevice, pArgument, ramGetControl8,
+                                         ramGetControl16, ramGetControl32, ramGetControl64)) {
                         return 0;
                     }
                     break;
@@ -143,7 +149,7 @@ s32 ramGetBuffer(Ram* pRAM, void* ppRAM, u32 nOffset, u32* pnSize) {
         return 0;
     }
 
-    if ((pnSize != NULL) && ((u32) (nOffset + *pnSize) >= pRAM->nSize)) {
+    if ((pnSize != NULL) && ((u32)(nOffset + *pnSize) >= pRAM->nSize)) {
         nSize = pRAM->nSize - nOffset;
         *pnSize = nSize;
 
@@ -244,9 +250,7 @@ static s32 ramPut8(Ram* pRAM, u32 nAddress, s8* pData) {
     return 1;
 }
 
-static s32 ramGetRI64(Ram* pRAM, u32 nAddress, s64* pData) {
-    return 0;
-}
+static s32 ramGetRI64(Ram* pRAM, u32 nAddress, s64* pData) { return 0; }
 
 static s32 ramGetRI32(Ram* pRAM, u32 nAddress, s16* pData) {
     nAddress &= 0x1F;
@@ -266,17 +270,11 @@ static s32 ramGetRI32(Ram* pRAM, u32 nAddress, s16* pData) {
     }
 }
 
-static s32 ramGetRI16(Ram* pRAM, u32 nAddress, s32* pData) {
-    return 0;
-}
+static s32 ramGetRI16(Ram* pRAM, u32 nAddress, s32* pData) { return 0; }
 
-static s32 ramGetRI8(Ram* pRAM, u32 nAddress, s8* pData) {
-    return 0;
-}
+static s32 ramGetRI8(Ram* pRAM, u32 nAddress, s8* pData) { return 0; }
 
-static s32 ramPutRI64(Ram* pRAM, u32 nAddress, s64* pData) {
-    return 0;
-}
+static s32 ramPutRI64(Ram* pRAM, u32 nAddress, s64* pData) { return 0; }
 
 static s32 ramPutRI32(Ram* pRAM, u32 nAddress, s16* pData) {
     nAddress &= 0x1F;
@@ -296,17 +294,11 @@ static s32 ramPutRI32(Ram* pRAM, u32 nAddress, s16* pData) {
     }
 }
 
-static s32 ramPutRI16(Ram* pRAM, u32 nAddress, s32* pData) {
-    return 0;
-}
+static s32 ramPutRI16(Ram* pRAM, u32 nAddress, s32* pData) { return 0; }
 
-static s32 ramPutRI8(Ram* pRAM, u32 nAddress, s8* pData) {
-    return 0;
-}
+static s32 ramPutRI8(Ram* pRAM, u32 nAddress, s8* pData) { return 0; }
 
-static s32 ramGetControl64(Ram* pRAM, u32 nAddress, s64* pData) {
-    return 0;
-}
+static s32 ramGetControl64(Ram* pRAM, u32 nAddress, s64* pData) { return 0; }
 
 static s32 ramGetControl32(Ram* pRAM, u32 nAddress, s16* pData) {
     nAddress &= 0x3F;
@@ -328,17 +320,11 @@ static s32 ramGetControl32(Ram* pRAM, u32 nAddress, s16* pData) {
     }
 }
 
-static s32 ramGetControl16(Ram* pRAM, u32 nAddress, s32* pData) {
-    return 0;
-}
+static s32 ramGetControl16(Ram* pRAM, u32 nAddress, s32* pData) { return 0; }
 
-static s32 ramGetControl8(Ram* pRAM, u32 nAddress, s8* pData) {
-    return 0;
-}
+static s32 ramGetControl8(Ram* pRAM, u32 nAddress, s8* pData) { return 0; }
 
-static s32 ramPutControl64(Ram* pRAM, u32 nAddress, s64* pData) {
-    return 0;
-}
+static s32 ramPutControl64(Ram* pRAM, u32 nAddress, s64* pData) { return 0; }
 
 static s32 ramPutControl32(Ram* pRAM, u32 nAddress, s16* pData) {
     nAddress &= 0x3F;
@@ -360,10 +346,6 @@ static s32 ramPutControl32(Ram* pRAM, u32 nAddress, s16* pData) {
     }
 }
 
-static s32 ramPutControl16(Ram* pRAM, u32 nAddress, s32* pData) {
-    return 0;
-}
+static s32 ramPutControl16(Ram* pRAM, u32 nAddress, s32* pData) { return 0; }
 
-static s32 ramPutControl8(Ram* pRAM, u32 nAddress, s8* pData) {
-    return 0;
-}
+static s32 ramPutControl8(Ram* pRAM, u32 nAddress, s8* pData) { return 0; }
