@@ -225,14 +225,6 @@ typedef struct __anon_0x239BA {
     /* 0x8 */ f32 z;
 } __anon_0x239BA; // size = 0xC
 
-// Range: 0x8001D34C -> 0x8001D39C
-void PSMTX44MultVecNoW(f32 (*m)[4], struct __anon_0x239BA* src, struct __anon_0x239BA* dst) {
-    // Parameters
-    // f32 (* m)[4]; // r3
-    // struct __anon_0x239BA* src; // r4
-    // struct __anon_0x239BA* dst; // r5
-}
-
 typedef struct __anon_0x23B04 {
     /* 0x0 */ f32 rX;
     /* 0x4 */ f32 rY;
@@ -476,79 +468,11 @@ typedef struct __anon_0x25A82 {
     /* 0x4 */ s32 nCountTextures;
 } __anon_0x25A82; // size = 0x8
 
-// Range: 0x8001D39C -> 0x8001D4B8
-s32 frameGetTextureInfo(struct __anon_0x24C38* pFrame, struct __anon_0x25A82* pInfo) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r3
-    // struct __anon_0x25A82* pInfo; // r1+0xC
-
-    // Local variables
-    struct _FRAME_TEXTURE* pTexture; // r10
-    s32 iTexture; // r5
-    s32 nCount; // r6
-    s32 nSize; // r1+0x8
-}
-
-// Range: 0x8001D4B8 -> 0x8001D624
-s32 frameInvalidateCache(struct __anon_0x24C38* pFrame, s32 nOffset0, s32 nOffset1) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r25
-    // s32 nOffset0; // r1+0xC
-    // s32 nOffset1; // r1+0x10
-
-    // Local variables
-    s32 iTexture0; // r28
-    s32 iTexture1; // r27
-    struct _FRAME_TEXTURE* pTexture; // r23
-    struct _FRAME_TEXTURE* pTextureNext; // r26
-}
-
 typedef enum __anon_0x25D5E {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
 } __anon_0x25D5E;
-
-// Range: 0x8001D624 -> 0x8001D740
-s32 frameSetMatrixHint(struct __anon_0x24C38* pFrame, enum __anon_0x25D5E eProjection, s32 nAddressFloat,
-                       s32 nAddressFixed, f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r3
-    // enum __anon_0x25D5E eProjection; // r1+0x4
-    // s32 nAddressFloat; // r5
-    // s32 nAddressFixed; // r6
-    // f32 rNear; // f1
-    // f32 rFar; // r1+0x14
-    // f32 rFOVY; // r1+0x18
-    // f32 rAspect; // r1+0x1C
-    // f32 rScale; // r1+0x20
-
-    // Local variables
-    s32 iHint; // r10
-}
-
-// Erased
-static s32 frameGetMatrixHint(struct __anon_0x24C38* pFrame, u32 nAddress, s32* piHint) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r3
-    // u32 nAddress; // r1+0x4
-    // s32* piHint; // r1+0x8
-
-    // Local variables
-    s32 iHint; // r8
-}
-
-// Range: 0x8001D740 -> 0x8001D7F8
-s32 frameFixMatrixHint(struct __anon_0x24C38* pFrame, s32 nAddressFloat, s32 nAddressFixed) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r3
-    // s32 nAddressFloat; // r1+0x4
-    // s32 nAddressFixed; // r1+0x8
-
-    // Local variables
-    s32 iHint; // r8
-    s32 iHintTest; // r9
-}
 
 typedef enum __anon_0x2614E {
     FBT_NONE = -1,
@@ -559,68 +483,11 @@ typedef enum __anon_0x2614E {
     FBT_COUNT = 4,
 } __anon_0x2614E;
 
-// Range: 0x8001D7F8 -> 0x8001D830
-s32 frameSetBuffer(struct __anon_0x24C38* pFrame, enum __anon_0x2614E eType) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // enum __anon_0x2614E eType; // r1+0x4
-}
-
 typedef enum __anon_0x2625D {
     FRT_NONE = -1,
     FRT_COLD = 0,
     FRT_WARM = 1,
 } __anon_0x2625D;
-
-// Range: 0x8001D830 -> 0x8001D8E0
-s32 frameResetUCode(struct __anon_0x24C38* pFrame, enum __anon_0x2625D eType) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // enum __anon_0x2625D eType; // r1+0x4
-
-    // Local variables
-    s32 iMode; // r6
-}
-
-// Range: 0x8001D8E0 -> 0x8001DA74
-s32 frameSetViewport(struct __anon_0x24C38* pFrame, s16* pData) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x8
-    // s16* pData; // r1+0xC
-
-    // Local variables
-    s32 iScale; // r1+0x8
-    f32 rY; // f1
-    f32 rSizeX; // f3
-    f32 rSizeY; // r1+0x8
-    f32 arScale[3]; // r1+0x28
-}
-
-// Range: 0x8001DA74 -> 0x8001DB24
-s32 frameSetLookAt(struct __anon_0x24C38* pFrame, s32 iLookAt, char* pData) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 iLookAt; // r1+0x4
-    // char* pData; // r1+0x8
-}
-
-// Range: 0x8001DB24 -> 0x8001DC4C
-s32 frameSetLight(struct __anon_0x24C38* pFrame, s32 iLight, char* pData) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x8
-    // s32 iLight; // r1+0xC
-    // char* pData; // r1+0x10
-
-    // Local variables
-    struct __anon_0x23CAB* pLight; // r6
-}
-
-// Range: 0x8001DC4C -> 0x8001DC58
-s32 frameSetLightCount(struct __anon_0x24C38* pFrame, s32 nCount) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 nCount; // r1+0x4
-}
 
 typedef enum __anon_0x266CE {
     SM_NONE = -1,
@@ -696,74 +563,6 @@ typedef enum __anon_0x26C3F {
     FLT_BLOCK = 1,
 } __anon_0x26C3F;
 
-// Range: 0x8001DC58 -> 0x8001EBA0
-s32 frameLoadTMEM(struct __anon_0x24C38* pFrame, enum __anon_0x26C3F eType, s32 iTile) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r29
-    // enum __anon_0x26C3F eType; // r30
-    // s32 iTile; // r31
-
-    // Local variables
-    s32 bFlip; // r10
-    s32 iTMEM; // r5
-    s32 nSize; // r6
-    s32 nStep; // r11
-    s32 nDelta; // r12
-    s32 iScan; // r12
-    s32 nOffset; // r7
-    struct __anon_0x247BF* pTile; // r1+0x8
-    u8 nData8; // r30
-    u16 nData16; // r30
-    u32 nData32; // r30
-    u32 nSum; // r1+0x8
-    u64* pSource; // r4
-    s32 nCount; // r6
-    s32 nScanFull; // r7
-    s32 nScanPart; // r8
-    u8* pSource8; // r31
-    u16* pSource16; // r31
-    u32* pSource32; // r31
-
-    // References
-    // -> struct __anon_0x26A4E* gpSystem;
-}
-
-// Range: 0x8001EBA0 -> 0x8001EC80
-s32 frameLoadTLUT(struct __anon_0x24C38* pFrame, s32 nCount, s32 iTile) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r30
-    // s32 nCount; // r1+0xC
-    // s32 iTile; // r1+0x10
-
-    // Local variables
-    s32 iTMEM; // r28
-    s32 nSize; // r27
-    u32 nSum; // r26
-    u64 nData64; // r25
-    u16 nData16; // r3
-    u16* pSource; // r31
-    s32 tileNum; // r4
-}
-
-// Range: 0x8001EC80 -> 0x8001EDCC
-s32 frameCullDL(struct __anon_0x24C38* pFrame, s32 nVertexStart, s32 nVertexEnd) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 nVertexStart; // r1+0x4
-    // s32 nVertexEnd; // r1+0x8
-
-    // Local variables
-    f32 rX; // r1+0x0
-    f32 rY; // f2
-    f32 rZ; // f1
-    f32 rW; // r1+0x0
-    f32(*matrix)[4]; // r5
-    struct __anon_0x23FC4* vtxP; // r6
-    struct __anon_0x23FC4* endVtxP; // r4
-    s32 nCode; // r1+0x0
-    s32 nCodeFull; // r7
-}
-
 // size = 0x0, address = 0x800F3E78
 s32 __float_nan[];
 
@@ -776,98 +575,10 @@ typedef struct __anon_0x274AD {
     /* 0x8 */ f32 z;
 } __anon_0x274AD; // size = 0xC
 
-// Range: 0x8001EDCC -> 0x8001F850
-s32 frameLoadVertex(struct __anon_0x24C38* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r30
-    // void* pBuffer; // r4
-    // s32 iVertex0; // r20
-    // s32 nCount; // r31
-
-    // Local variables
-    f32 mag; // f5
-    s32 iLight; // r29
-    s32 nLight; // r28
-    s32 nTexGen; // r27
-    f32 colorS; // f7
-    f32 colorT; // f6
-    f32 rS; // f8
-    f32 rT; // f9
-    f32 arNormal[3]; // r1+0x40
-    f32 arPosition[3]; // r1+0x34
-    struct __anon_0x23FC4* pVertex; // r8
-    u32 nData32; // r12
-    struct __anon_0x23CAB* aLight; // r26
-    struct __anon_0x23CAB* pLight; // r25
-    s32 iVertex1; // r1+0x8
-    f32 rScale; // r1+0x8
-    f32 rScaleST; // r1+0x8
-    char* pnData8; // r24
-    s16* pnData16; // r23
-    f32(*matrixView)[4]; // r22
-    f32(*matrixModel)[4]; // r21
-    f32 rColorR; // f7
-    f32 rColorG; // f8
-    f32 rColorB; // f9
-    f32 rDiffuse; // f27
-    f32 rInverseW; // f6
-    f32 rInverseLength; // r1+0x8
-    struct __anon_0x274AD vec; // r1+0x28
-    f32 distance; // r1+0x8
-
-    // References
-    // -> struct __anon_0x26A4E* gpSystem;
-    // -> s32 __float_huge[];
-    // -> s32 __float_nan[];
-}
-
-// Erased
-static s32 frameProjectVertex(struct __anon_0x24C38* pFrame, s32 iVertex, f32* prX, f32* prY, f32* prZ) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 iVertex; // r1+0x4
-    // f32* prX; // r1+0x8
-    // f32* prY; // r1+0xC
-    // f32* prZ; // r1+0x10
-
-    // Local variables
-    f32 rW; // r1+0x0
-    struct __anon_0x23FC4* pVertex; // r8
-}
-
 typedef enum __anon_0x27B8C {
     FMT_MODELVIEW = 0,
     FMT_PROJECTION = 1,
 } __anon_0x27B8C;
-
-// Range: 0x8001F850 -> 0x8001F970
-s32 frameGetMatrix(struct __anon_0x24C38* pFrame, f32 (*matrix)[4], enum __anon_0x27B8C eType, s32 bPull) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r30
-    // f32 (* matrix)[4]; // r7
-    // enum __anon_0x27B8C eType; // r1+0x10
-    // s32 bPull; // r31
-}
-
-// Range: 0x8001F970 -> 0x8001FFFC
-s32 frameSetMatrix(struct __anon_0x24C38* pFrame, f32 (*matrix)[4], enum __anon_0x27B8C eType, s32 bLoad, s32 bPush,
-                   s32 nAddressN64) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r29
-    // f32 (* matrix)[4]; // r30
-    // enum __anon_0x27B8C eType; // r26
-    // s32 bLoad; // r28
-    // s32 bPush; // r27
-    // s32 nAddressN64; // r31
-
-    // Local variables
-    s32 bFlag; // r28
-    f32(*matrixTarget)[4]; // r3
-    f32 matrixResult[4][4]; // r1+0x48
-
-    // References
-    // -> struct __anon_0x26A4E* gpSystem;
-}
 
 typedef enum __anon_0x27E96 {
     FMT_NONE = -1,
@@ -884,85 +595,12 @@ typedef enum __anon_0x27E96 {
     FMT_COUNT = 10,
 } __anon_0x27E96;
 
-// Range: 0x8001FFFC -> 0x80020014
-s32 frameGetMode(struct __anon_0x24C38* pFrame, enum __anon_0x27E96 eType, u32* pnMode) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // enum __anon_0x27E96 eType; // r1+0x4
-    // u32* pnMode; // r1+0x8
-}
-
-// Range: 0x80020014 -> 0x800201A8
-s32 frameSetMode(struct __anon_0x24C38* pFrame, enum __anon_0x27E96 eType, u32 nMode) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // enum __anon_0x27E96 eType; // r1+0x4
-    // u32 nMode; // r1+0x8
-
-    // Local variables
-    u32 nFlag; // r8
-    u32 nModeChanged; // r9
-}
-
 typedef enum __anon_0x2813A {
     FS_NONE = -1,
     FS_SOURCE = 0,
     FS_TARGET = 1,
     FS_COUNT = 2,
 } __anon_0x2813A;
-
-// Erased
-static s32 frameGetSize(struct __anon_0x24C38* pFrame, enum __anon_0x2813A eSize, s32* pnSizeX, s32* pnSizeY) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // enum __anon_0x2813A eSize; // r1+0x4
-    // s32* pnSizeX; // r1+0x8
-    // s32* pnSizeY; // r1+0xC
-}
-
-// Range: 0x800201A8 -> 0x800202D0
-s32 frameSetSize(struct __anon_0x24C38* pFrame, enum __anon_0x2813A eSize, s32 nSizeX, s32 nSizeY) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x8
-    // enum __anon_0x2813A eSize; // r1+0xC
-    // s32 nSizeX; // r1+0x10
-    // s32 nSizeY; // r1+0x14
-}
-
-// Erased
-static s32 frameGetWire(struct __anon_0x24C38* pFrame, s32* pbWire) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32* pbWire; // r1+0x4
-}
-
-// Erased
-static s32 frameSetWire(struct __anon_0x24C38* pFrame, s32 bWire) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 bWire; // r1+0x4
-}
-
-// Erased
-static s32 frameGetFill(struct __anon_0x24C38* pFrame, s32* pbFill) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32* pbFill; // r1+0x4
-}
-
-// Range: 0x800202D0 -> 0x800202FC
-s32 frameSetFill(struct __anon_0x24C38* pFrame, s32 bFill) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 bFill; // r1+0x4
-}
-
-// Range: 0x800202FC -> 0x80020340
-s32 frameDrawReset(struct __anon_0x24C38* pFrame, s32 nFlag) {
-    // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
-    // s32 nFlag; // r1+0x4
-}
 
 typedef struct __anon_0x285E5 {
     /* 0x0 */ s32 shift;
@@ -1615,44 +1253,115 @@ typedef enum _GXFogType {
 } __anon_0x2D8A4;
 
 // Erased
-static s32 frameUpdateTrackBuffer() {}
-
-// Erased
-static s32 frameCheckTrackBuffer() {}
-
-// Erased
-static s32 frameSetupTrackBuffer() {}
-
-// Range: 0x80020340 -> 0x80020764
-static s32 frameLoadTile(struct __anon_0x24C38* pFrame, struct _FRAME_TEXTURE** ppTexture, s32 iTileCode) {
+static s32 frameVectorTimesMatrix(f32* fOutVector, f32* fInVector, f32 (*matrix)[4]) {
     // Parameters
-    // struct __anon_0x24C38* pFrame; // r29
-    // struct _FRAME_TEXTURE** ppTexture; // r30
-    // s32 iTileCode; // r31
+    // f32* fOutVector; // r1+0x4
+    // f32* fInVector; // r1+0x8
+    // f32 (* matrix)[4]; // r1+0xC
+}
 
-    // Local variables
-    s32 bFlag; // r27
-    struct __anon_0x247BF* pTile; // r26
-    struct _FRAME_TEXTURE* pTexture; // r1+0x18
-    struct _FRAME_TEXTURE* pTextureLast; // r25
-    u32 nData0; // r24
-    u32 nData1; // r23
-    u32 nData2; // r22
-    u32 nData3; // r21
-    s32 iTexture; // r1+0x8
-    s32 nShift; // r3
+// Range: 0x8002113C -> 0x80021204
+s32 frameScaleMatrix(f32 (*matrixResult)[4], f32 (*matrix)[4], f32 rScale) {
+    // Parameters
+    // f32 (* matrixResult)[4]; // r1+0x0
+    // f32 (* matrix)[4]; // r1+0x4
+    // f32 rScale; // r1+0x8
 }
 
 // Erased
-static s32 frameMultiTexture(struct __anon_0x24C38* pFrame) {
+static s32 frameConcatenateMatrix(f32 (*matrixResult)[4], f32 (*matrixA)[4], f32 (*matrixB)[4]) {
     // Parameters
-    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // f32 (* matrixResult)[4]; // r1+0x8
+    // f32 (* matrixA)[4]; // r4
+    // f32 (* matrixB)[4]; // r5
+}
+
+// Range: 0x80021070 -> 0x8002113C
+static s32 frameConvertYUVtoRGB(u32* YUV, u32* RGB) {
+    // Parameters
+    // u32* YUV; // r1+0x0
+    // u32* RGB; // r1+0x4
 
     // Local variables
-    s32 iMode; // r5
-    s32 iType; // r1+0x0
-    s32 nMode; // r1+0x0
-    s32 nUsed; // r6
+    s32 Yl; // r7
+    s32 R; // r1+0x0
+    s32 G; // r5
+    s32 B; // r8
+}
+
+// Range: 0x80020FA4 -> 0x80021070
+static s32 packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount) {
+    // Parameters
+    // s32* piPack; // r1+0x0
+    // u32* anPack; // r4
+    // s32 nPackCount; // r5
+    // s32 nBlockCount; // r1+0xC
+
+    // Local variables
+    s32 nOffset; // r9
+    s32 nCount; // r10
+    s32 iPack; // r11
+    u32 nPack; // r5
+    u32 nMask; // r12
+    u32 nMask0; // r7
+}
+
+// Range: 0x80020F3C -> 0x80020FA4
+static s32 packFreeBlocks(s32* piPack, u32* anPack) {
+    // Parameters
+    // s32* piPack; // r1+0x0
+    // u32* anPack; // r1+0x4
+
+    // Local variables
+    s32 iPack; // r1+0x0
+    u32 nMask; // r7
+}
+
+// Erased
+static s32 packReset(u32* anPack, s32 nPackCount) {
+    // Parameters
+    // u32* anPack; // r3
+    // s32 nPackCount; // r1+0x4
+
+    // Local variables
+    s32 iPack; // r7
+}
+
+// Range: 0x80020E20 -> 0x80020F3C
+static s32 frameMakeTexture(struct __anon_0x24C38* pFrame, struct _FRAME_TEXTURE** ppTexture) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r3
+    // struct _FRAME_TEXTURE** ppTexture; // r1+0xC
+
+    // Local variables
+    u32 nMask; // r5
+    s32 iTexture; // r9
+    s32 iTextureUsed; // r8
+}
+
+// Erased
+static s32 frameFreeTexture(struct __anon_0x24C38* pFrame, struct _FRAME_TEXTURE* pTexture) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r31
+    // struct _FRAME_TEXTURE* pTexture; // r29
+
+    // Local variables
+    s32 iTexture; // r30
+}
+
+// Range: 0x80020958 -> 0x80020E20
+static s32 frameSetupCache(struct __anon_0x24C38* pFrame) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r30
+
+    // Local variables
+    s32 iTexture; // r1+0x8
+}
+
+// Erased
+static s32 frameResetCache(struct __anon_0x24C38* pFrame) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r31
 }
 
 // Range: 0x80020764 -> 0x80020958
@@ -1675,113 +1384,404 @@ static s32 frameUpdateCache(struct __anon_0x24C38* pFrame) {
 }
 
 // Erased
-static s32 frameResetCache(struct __anon_0x24C38* pFrame) {
+static s32 frameMultiTexture(struct __anon_0x24C38* pFrame) {
     // Parameters
-    // struct __anon_0x24C38* pFrame; // r31
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+
+    // Local variables
+    s32 iMode; // r5
+    s32 iType; // r1+0x0
+    s32 nMode; // r1+0x0
+    s32 nUsed; // r6
 }
 
-// Range: 0x80020958 -> 0x80020E20
-static s32 frameSetupCache(struct __anon_0x24C38* pFrame) {
+// Range: 0x80020340 -> 0x80020764
+static s32 frameLoadTile(struct __anon_0x24C38* pFrame, struct _FRAME_TEXTURE** ppTexture, s32 iTileCode) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r29
+    // struct _FRAME_TEXTURE** ppTexture; // r30
+    // s32 iTileCode; // r31
+
+    // Local variables
+    s32 bFlag; // r27
+    struct __anon_0x247BF* pTile; // r26
+    struct _FRAME_TEXTURE* pTexture; // r1+0x18
+    struct _FRAME_TEXTURE* pTextureLast; // r25
+    u32 nData0; // r24
+    u32 nData1; // r23
+    u32 nData2; // r22
+    u32 nData3; // r21
+    s32 iTexture; // r1+0x8
+    s32 nShift; // r3
+}
+
+// Erased
+static s32 frameSetupTrackBuffer() {}
+
+// Erased
+static s32 frameCheckTrackBuffer() {}
+
+// Erased
+static s32 frameUpdateTrackBuffer() {}
+
+// Range: 0x800202FC -> 0x80020340
+s32 frameDrawReset(struct __anon_0x24C38* pFrame, s32 nFlag) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 nFlag; // r1+0x4
+}
+
+// Range: 0x800202D0 -> 0x800202FC
+s32 frameSetFill(struct __anon_0x24C38* pFrame, s32 bFill) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 bFill; // r1+0x4
+}
+
+// Erased
+static s32 frameGetFill(struct __anon_0x24C38* pFrame, s32* pbFill) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32* pbFill; // r1+0x4
+}
+
+// Erased
+static s32 frameSetWire(struct __anon_0x24C38* pFrame, s32 bWire) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 bWire; // r1+0x4
+}
+
+// Erased
+static s32 frameGetWire(struct __anon_0x24C38* pFrame, s32* pbWire) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32* pbWire; // r1+0x4
+}
+
+// Range: 0x800201A8 -> 0x800202D0
+s32 frameSetSize(struct __anon_0x24C38* pFrame, enum __anon_0x2813A eSize, s32 nSizeX, s32 nSizeY) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x8
+    // enum __anon_0x2813A eSize; // r1+0xC
+    // s32 nSizeX; // r1+0x10
+    // s32 nSizeY; // r1+0x14
+}
+
+// Erased
+static s32 frameGetSize(struct __anon_0x24C38* pFrame, enum __anon_0x2813A eSize, s32* pnSizeX, s32* pnSizeY) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // enum __anon_0x2813A eSize; // r1+0x4
+    // s32* pnSizeX; // r1+0x8
+    // s32* pnSizeY; // r1+0xC
+}
+
+// Range: 0x80020014 -> 0x800201A8
+s32 frameSetMode(struct __anon_0x24C38* pFrame, enum __anon_0x27E96 eType, u32 nMode) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // enum __anon_0x27E96 eType; // r1+0x4
+    // u32 nMode; // r1+0x8
+
+    // Local variables
+    u32 nFlag; // r8
+    u32 nModeChanged; // r9
+}
+
+// Range: 0x8001FFFC -> 0x80020014
+s32 frameGetMode(struct __anon_0x24C38* pFrame, enum __anon_0x27E96 eType, u32* pnMode) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // enum __anon_0x27E96 eType; // r1+0x4
+    // u32* pnMode; // r1+0x8
+}
+
+// Range: 0x8001F970 -> 0x8001FFFC
+s32 frameSetMatrix(struct __anon_0x24C38* pFrame, f32 (*matrix)[4], enum __anon_0x27B8C eType, s32 bLoad, s32 bPush,
+                   s32 nAddressN64) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r29
+    // f32 (* matrix)[4]; // r30
+    // enum __anon_0x27B8C eType; // r26
+    // s32 bLoad; // r28
+    // s32 bPush; // r27
+    // s32 nAddressN64; // r31
+
+    // Local variables
+    s32 bFlag; // r28
+    f32(*matrixTarget)[4]; // r3
+    f32 matrixResult[4][4]; // r1+0x48
+
+    // References
+    // -> struct __anon_0x26A4E* gpSystem;
+}
+
+// Range: 0x8001F850 -> 0x8001F970
+s32 frameGetMatrix(struct __anon_0x24C38* pFrame, f32 (*matrix)[4], enum __anon_0x27B8C eType, s32 bPull) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r30
-
-    // Local variables
-    s32 iTexture; // r1+0x8
+    // f32 (* matrix)[4]; // r7
+    // enum __anon_0x27B8C eType; // r1+0x10
+    // s32 bPull; // r31
 }
 
 // Erased
-static s32 frameFreeTexture(struct __anon_0x24C38* pFrame, struct _FRAME_TEXTURE* pTexture) {
+static s32 frameProjectVertex(struct __anon_0x24C38* pFrame, s32 iVertex, f32* prX, f32* prY, f32* prZ) {
     // Parameters
-    // struct __anon_0x24C38* pFrame; // r31
-    // struct _FRAME_TEXTURE* pTexture; // r29
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 iVertex; // r1+0x4
+    // f32* prX; // r1+0x8
+    // f32* prY; // r1+0xC
+    // f32* prZ; // r1+0x10
 
     // Local variables
-    s32 iTexture; // r30
+    f32 rW; // r1+0x0
+    struct __anon_0x23FC4* pVertex; // r8
 }
 
-// Range: 0x80020E20 -> 0x80020F3C
-static s32 frameMakeTexture(struct __anon_0x24C38* pFrame, struct _FRAME_TEXTURE** ppTexture) {
+// Range: 0x8001EDCC -> 0x8001F850
+s32 frameLoadVertex(struct __anon_0x24C38* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r30
+    // void* pBuffer; // r4
+    // s32 iVertex0; // r20
+    // s32 nCount; // r31
+
+    // Local variables
+    f32 mag; // f5
+    s32 iLight; // r29
+    s32 nLight; // r28
+    s32 nTexGen; // r27
+    f32 colorS; // f7
+    f32 colorT; // f6
+    f32 rS; // f8
+    f32 rT; // f9
+    f32 arNormal[3]; // r1+0x40
+    f32 arPosition[3]; // r1+0x34
+    struct __anon_0x23FC4* pVertex; // r8
+    u32 nData32; // r12
+    struct __anon_0x23CAB* aLight; // r26
+    struct __anon_0x23CAB* pLight; // r25
+    s32 iVertex1; // r1+0x8
+    f32 rScale; // r1+0x8
+    f32 rScaleST; // r1+0x8
+    char* pnData8; // r24
+    s16* pnData16; // r23
+    f32(*matrixView)[4]; // r22
+    f32(*matrixModel)[4]; // r21
+    f32 rColorR; // f7
+    f32 rColorG; // f8
+    f32 rColorB; // f9
+    f32 rDiffuse; // f27
+    f32 rInverseW; // f6
+    f32 rInverseLength; // r1+0x8
+    struct __anon_0x274AD vec; // r1+0x28
+    f32 distance; // r1+0x8
+
+    // References
+    // -> struct __anon_0x26A4E* gpSystem;
+    // -> s32 __float_huge[];
+    // -> s32 __float_nan[];
+}
+
+// Range: 0x8001EC80 -> 0x8001EDCC
+s32 frameCullDL(struct __anon_0x24C38* pFrame, s32 nVertexStart, s32 nVertexEnd) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 nVertexStart; // r1+0x4
+    // s32 nVertexEnd; // r1+0x8
+
+    // Local variables
+    f32 rX; // r1+0x0
+    f32 rY; // f2
+    f32 rZ; // f1
+    f32 rW; // r1+0x0
+    f32(*matrix)[4]; // r5
+    struct __anon_0x23FC4* vtxP; // r6
+    struct __anon_0x23FC4* endVtxP; // r4
+    s32 nCode; // r1+0x0
+    s32 nCodeFull; // r7
+}
+
+// Range: 0x8001EBA0 -> 0x8001EC80
+s32 frameLoadTLUT(struct __anon_0x24C38* pFrame, s32 nCount, s32 iTile) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r30
+    // s32 nCount; // r1+0xC
+    // s32 iTile; // r1+0x10
+
+    // Local variables
+    s32 iTMEM; // r28
+    s32 nSize; // r27
+    u32 nSum; // r26
+    u64 nData64; // r25
+    u16 nData16; // r3
+    u16* pSource; // r31
+    s32 tileNum; // r4
+}
+
+// Range: 0x8001DC58 -> 0x8001EBA0
+s32 frameLoadTMEM(struct __anon_0x24C38* pFrame, enum __anon_0x26C3F eType, s32 iTile) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r29
+    // enum __anon_0x26C3F eType; // r30
+    // s32 iTile; // r31
+
+    // Local variables
+    s32 bFlip; // r10
+    s32 iTMEM; // r5
+    s32 nSize; // r6
+    s32 nStep; // r11
+    s32 nDelta; // r12
+    s32 iScan; // r12
+    s32 nOffset; // r7
+    struct __anon_0x247BF* pTile; // r1+0x8
+    u8 nData8; // r30
+    u16 nData16; // r30
+    u32 nData32; // r30
+    u32 nSum; // r1+0x8
+    u64* pSource; // r4
+    s32 nCount; // r6
+    s32 nScanFull; // r7
+    s32 nScanPart; // r8
+    u8* pSource8; // r31
+    u16* pSource16; // r31
+    u32* pSource32; // r31
+
+    // References
+    // -> struct __anon_0x26A4E* gpSystem;
+}
+
+// Range: 0x8001DC4C -> 0x8001DC58
+s32 frameSetLightCount(struct __anon_0x24C38* pFrame, s32 nCount) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 nCount; // r1+0x4
+}
+
+// Range: 0x8001DB24 -> 0x8001DC4C
+s32 frameSetLight(struct __anon_0x24C38* pFrame, s32 iLight, char* pData) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x8
+    // s32 iLight; // r1+0xC
+    // char* pData; // r1+0x10
+
+    // Local variables
+    struct __anon_0x23CAB* pLight; // r6
+}
+
+// Range: 0x8001DA74 -> 0x8001DB24
+s32 frameSetLookAt(struct __anon_0x24C38* pFrame, s32 iLookAt, char* pData) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // s32 iLookAt; // r1+0x4
+    // char* pData; // r1+0x8
+}
+
+// Range: 0x8001D8E0 -> 0x8001DA74
+s32 frameSetViewport(struct __anon_0x24C38* pFrame, s16* pData) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x8
+    // s16* pData; // r1+0xC
+
+    // Local variables
+    s32 iScale; // r1+0x8
+    f32 rY; // f1
+    f32 rSizeX; // f3
+    f32 rSizeY; // r1+0x8
+    f32 arScale[3]; // r1+0x28
+}
+
+// Range: 0x8001D830 -> 0x8001D8E0
+s32 frameResetUCode(struct __anon_0x24C38* pFrame, enum __anon_0x2625D eType) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // enum __anon_0x2625D eType; // r1+0x4
+
+    // Local variables
+    s32 iMode; // r6
+}
+
+// Range: 0x8001D7F8 -> 0x8001D830
+s32 frameSetBuffer(struct __anon_0x24C38* pFrame, enum __anon_0x2614E eType) {
+    // Parameters
+    // struct __anon_0x24C38* pFrame; // r1+0x0
+    // enum __anon_0x2614E eType; // r1+0x4
+}
+
+// Range: 0x8001D740 -> 0x8001D7F8
+s32 frameFixMatrixHint(struct __anon_0x24C38* pFrame, s32 nAddressFloat, s32 nAddressFixed) {
     // Parameters
     // struct __anon_0x24C38* pFrame; // r3
-    // struct _FRAME_TEXTURE** ppTexture; // r1+0xC
+    // s32 nAddressFloat; // r1+0x4
+    // s32 nAddressFixed; // r1+0x8
 
     // Local variables
-    u32 nMask; // r5
-    s32 iTexture; // r9
-    s32 iTextureUsed; // r8
+    s32 iHint; // r8
+    s32 iHintTest; // r9
 }
 
 // Erased
-static s32 packReset(u32* anPack, s32 nPackCount) {
+static s32 frameGetMatrixHint(struct __anon_0x24C38* pFrame, u32 nAddress, s32* piHint) {
     // Parameters
-    // u32* anPack; // r3
-    // s32 nPackCount; // r1+0x4
+    // struct __anon_0x24C38* pFrame; // r3
+    // u32 nAddress; // r1+0x4
+    // s32* piHint; // r1+0x8
 
     // Local variables
-    s32 iPack; // r7
+    s32 iHint; // r8
 }
 
-// Range: 0x80020F3C -> 0x80020FA4
-static s32 packFreeBlocks(s32* piPack, u32* anPack) {
+// Range: 0x8001D624 -> 0x8001D740
+s32 frameSetMatrixHint(struct __anon_0x24C38* pFrame, enum __anon_0x25D5E eProjection, s32 nAddressFloat,
+                       s32 nAddressFixed, f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
     // Parameters
-    // s32* piPack; // r1+0x0
-    // u32* anPack; // r1+0x4
+    // struct __anon_0x24C38* pFrame; // r3
+    // enum __anon_0x25D5E eProjection; // r1+0x4
+    // s32 nAddressFloat; // r5
+    // s32 nAddressFixed; // r6
+    // f32 rNear; // f1
+    // f32 rFar; // r1+0x14
+    // f32 rFOVY; // r1+0x18
+    // f32 rAspect; // r1+0x1C
+    // f32 rScale; // r1+0x20
 
     // Local variables
-    s32 iPack; // r1+0x0
-    u32 nMask; // r7
+    s32 iHint; // r10
 }
 
-// Range: 0x80020FA4 -> 0x80021070
-static s32 packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount) {
+// Range: 0x8001D4B8 -> 0x8001D624
+s32 frameInvalidateCache(struct __anon_0x24C38* pFrame, s32 nOffset0, s32 nOffset1) {
     // Parameters
-    // s32* piPack; // r1+0x0
-    // u32* anPack; // r4
-    // s32 nPackCount; // r5
-    // s32 nBlockCount; // r1+0xC
+    // struct __anon_0x24C38* pFrame; // r25
+    // s32 nOffset0; // r1+0xC
+    // s32 nOffset1; // r1+0x10
 
     // Local variables
-    s32 nOffset; // r9
-    s32 nCount; // r10
-    s32 iPack; // r11
-    u32 nPack; // r5
-    u32 nMask; // r12
-    u32 nMask0; // r7
+    s32 iTexture0; // r28
+    s32 iTexture1; // r27
+    struct _FRAME_TEXTURE* pTexture; // r23
+    struct _FRAME_TEXTURE* pTextureNext; // r26
 }
 
-// Range: 0x80021070 -> 0x8002113C
-static s32 frameConvertYUVtoRGB(u32* YUV, u32* RGB) {
+// Range: 0x8001D39C -> 0x8001D4B8
+s32 frameGetTextureInfo(struct __anon_0x24C38* pFrame, struct __anon_0x25A82* pInfo) {
     // Parameters
-    // u32* YUV; // r1+0x0
-    // u32* RGB; // r1+0x4
+    // struct __anon_0x24C38* pFrame; // r3
+    // struct __anon_0x25A82* pInfo; // r1+0xC
 
     // Local variables
-    s32 Yl; // r7
-    s32 R; // r1+0x0
-    s32 G; // r5
-    s32 B; // r8
+    struct _FRAME_TEXTURE* pTexture; // r10
+    s32 iTexture; // r5
+    s32 nCount; // r6
+    s32 nSize; // r1+0x8
 }
 
-// Erased
-static s32 frameConcatenateMatrix(f32 (*matrixResult)[4], f32 (*matrixA)[4], f32 (*matrixB)[4]) {
+// Range: 0x8001D34C -> 0x8001D39C
+void PSMTX44MultVecNoW(f32 (*m)[4], struct __anon_0x239BA* src, struct __anon_0x239BA* dst) {
     // Parameters
-    // f32 (* matrixResult)[4]; // r1+0x8
-    // f32 (* matrixA)[4]; // r4
-    // f32 (* matrixB)[4]; // r5
-}
-
-// Range: 0x8002113C -> 0x80021204
-s32 frameScaleMatrix(f32 (*matrixResult)[4], f32 (*matrix)[4], f32 rScale) {
-    // Parameters
-    // f32 (* matrixResult)[4]; // r1+0x0
-    // f32 (* matrix)[4]; // r1+0x4
-    // f32 rScale; // r1+0x8
-}
-
-// Erased
-static s32 frameVectorTimesMatrix(f32* fOutVector, f32* fInVector, f32 (*matrix)[4]) {
-    // Parameters
-    // f32* fOutVector; // r1+0x4
-    // f32* fInVector; // r1+0x8
-    // f32 (* matrix)[4]; // r1+0xC
+    // f32 (* m)[4]; // r3
+    // struct __anon_0x239BA* src; // r4
+    // struct __anon_0x239BA* dst; // r5
 }

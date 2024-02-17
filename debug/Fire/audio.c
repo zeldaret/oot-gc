@@ -28,40 +28,11 @@ typedef struct __anon_0x753E7 {
     /* 0x1C */ s32 nStatus;
 } __anon_0x753E7; // size = 0x20
 
-// Range: 0x8008E4A8 -> 0x8008E5C8
-s32 audioEvent(struct __anon_0x753E7* pAudio, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x753E7* pAudio; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r31
-}
+// Range: 0x8008E898 -> 0x8008E8A0
+s32 audioPut8() {}
 
-// Range: 0x8008E5C8 -> 0x8008E620
-s32 audioEnable(struct __anon_0x753E7* pAudio, s32 bEnable) {
-    // Parameters
-    // struct __anon_0x753E7* pAudio; // r3
-    // s32 bEnable; // r1+0xC
-}
-
-// Range: 0x8008E620 -> 0x8008E628
-s32 audioGet64() {}
-
-// Range: 0x8008E628 -> 0x8008E730
-s32 audioGet32(struct __anon_0x753E7* pAudio, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x753E7* pAudio; // r30
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r31
-}
-
-// Range: 0x8008E730 -> 0x8008E738
-s32 audioGet16() {}
-
-// Range: 0x8008E738 -> 0x8008E740
-s32 audioGet8() {}
-
-// Range: 0x8008E740 -> 0x8008E748
-s32 audioPut64() {}
+// Range: 0x8008E890 -> 0x8008E898
+s32 audioPut16() {}
 
 // Range: 0x8008E748 -> 0x8008E890
 s32 audioPut32(struct __anon_0x753E7* pAudio, u32 nAddress, s32* pData) {
@@ -74,8 +45,37 @@ s32 audioPut32(struct __anon_0x753E7* pAudio, u32 nAddress, s32* pData) {
     void* pBuffer; // r1+0x14
 }
 
-// Range: 0x8008E890 -> 0x8008E898
-s32 audioPut16() {}
+// Range: 0x8008E740 -> 0x8008E748
+s32 audioPut64() {}
 
-// Range: 0x8008E898 -> 0x8008E8A0
-s32 audioPut8() {}
+// Range: 0x8008E738 -> 0x8008E740
+s32 audioGet8() {}
+
+// Range: 0x8008E730 -> 0x8008E738
+s32 audioGet16() {}
+
+// Range: 0x8008E628 -> 0x8008E730
+s32 audioGet32(struct __anon_0x753E7* pAudio, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x753E7* pAudio; // r30
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r31
+}
+
+// Range: 0x8008E620 -> 0x8008E628
+s32 audioGet64() {}
+
+// Range: 0x8008E5C8 -> 0x8008E620
+s32 audioEnable(struct __anon_0x753E7* pAudio, s32 bEnable) {
+    // Parameters
+    // struct __anon_0x753E7* pAudio; // r3
+    // s32 bEnable; // r1+0xC
+}
+
+// Range: 0x8008E4A8 -> 0x8008E5C8
+s32 audioEvent(struct __anon_0x753E7* pAudio, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x753E7* pAudio; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
+}

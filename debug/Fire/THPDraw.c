@@ -7,9 +7,6 @@
 
 #include "types.h"
 
-// Range: 0x80011138 -> 0x80011250
-void THPGXRestore() {}
-
 typedef enum __anon_0x14611 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
@@ -46,18 +43,6 @@ typedef struct _GXRenderModeObj {
     /* 0x32 */ u8 vfilter[7];
 } __anon_0x1480C; // size = 0x3C
 
-// Range: 0x80011250 -> 0x80011754
-void THPGXYuv2RgbSetup(struct _GXRenderModeObj* rmode) {
-    // Parameters
-    // struct _GXRenderModeObj* rmode; // r1+0x8
-
-    // Local variables
-    s32 scrWidth; // r28
-    s32 scrHeight; // r27
-    f32 pMtx[4][4]; // r1+0x74
-    f32 mMtx[3][4]; // r1+0x44
-}
-
 typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
 } __anon_0x14BBE; // size = 0x20
@@ -81,3 +66,18 @@ void THPGXYuv2RgbDraw(u8* y_data, u8* u_data, u8* v_data, s16 x, s16 y, s16 text
     struct _GXTexObj tobj1; // r1+0x40
     struct _GXTexObj tobj2; // r1+0x20
 }
+
+// Range: 0x80011250 -> 0x80011754
+void THPGXYuv2RgbSetup(struct _GXRenderModeObj* rmode) {
+    // Parameters
+    // struct _GXRenderModeObj* rmode; // r1+0x8
+
+    // Local variables
+    s32 scrWidth; // r28
+    s32 scrHeight; // r27
+    f32 pMtx[4][4]; // r1+0x74
+    f32 mMtx[3][4]; // r1+0x44
+}
+
+// Range: 0x80011138 -> 0x80011250
+void THPGXRestore() {}

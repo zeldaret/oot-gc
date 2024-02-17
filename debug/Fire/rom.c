@@ -125,24 +125,6 @@ typedef struct __anon_0x4D873 {
     /* 0x10EF4 */ s32 offsetToRom;
 } __anon_0x4D873; // size = 0x10EF8
 
-// Range: 0x8006D3AC -> 0x8006D5D8
-s32 romEvent(struct __anon_0x4D873* pROM, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r31
-}
-
-// Range: 0x8006D5D8 -> 0x8006D620
-s32 romGetImage(struct __anon_0x4D873* pROM, char* acNameFile) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-    // char* acNameFile; // r1+0x4
-
-    // Local variables
-    s32 iName; // r6
-}
-
 typedef enum __anon_0x4DD08 {
     XLFT_NONE = -1,
     XLFT_TEXT = 0,
@@ -159,261 +141,6 @@ typedef struct tXL_FILE {
     /* 0x18 */ enum __anon_0x4DD08 eType;
     /* 0x1C */ struct DVDFileInfo info;
 } __anon_0x4DD5C; // size = 0x58
-
-// Range: 0x8006D620 -> 0x8006D794
-s32 romSetImage(struct __anon_0x4D873* pROM, char* szNameFile) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r28
-    // char* szNameFile; // r29
-
-    // Local variables
-    struct tXL_FILE* pFile; // r1+0x14
-    s32 iName; // r5
-    s32 nSize; // r1+0x10
-}
-
-// Erased
-static s32 romGetCacheSize(struct __anon_0x4D873* pROM, s32* pnSize) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-    // s32* pnSize; // r1+0x4
-}
-
-// Range: 0x8006D794 -> 0x8006D830
-s32 romSetCacheSize(struct __anon_0x4D873* pROM, s32 nSize) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r30
-    // s32 nSize; // r4
-}
-
-// Erased
-static s32 romCopyBusy(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-}
-
-// Range: 0x8006D830 -> 0x8006D990
-s32 romUpdate(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r31
-
-    // Local variables
-    s32 nStatus; // r30
-}
-
-// Range: 0x8006D990 -> 0x8006DBF8
-s32 romCopyImmediate(struct __anon_0x4D873* pROM, void* pTarget, s32 nOffsetROM, u32 nSize) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r26
-    // void* pTarget; // r27
-    // s32 nOffsetROM; // r28
-    // u32 nSize; // r29
-
-    // Local variables
-    void* pSource; // r4
-    struct __anon_0x4CFE6* pBlock; // r3
-    s32 nOffsetARAM; // r23
-    s32 nSizeCopy; // r31
-    s32 nOffsetBlock; // r1+0x8
-    s32 nSizeCopyARAM; // r22
-    s32 nSizeDMA; // r21
-    s32 nOffset; // r20
-    s32 nOffsetTarget; // r19
-    u8* pBuffer; // r30
-    u8 anBuffer[608]; // r1+0x18
-}
-
-// Range: 0x8006DBF8 -> 0x8006DE90
-s32 romCopy(struct __anon_0x4D873* pROM, void* pTarget, s32 nOffset, u32 nSize, s32 (*pCallback)()) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r27
-    // void* pTarget; // r28
-    // s32 nOffset; // r29
-    // u32 nSize; // r30
-    // s32 (* pCallback)(); // r31
-
-    // Local variables
-    void* pSource; // r4
-    struct tXL_FILE* pFile; // r1+0x1C
-}
-
-// Erased
-static s32 romGetSize(struct __anon_0x4D873* pROM, s32* pnSize) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-    // s32* pnSize; // r1+0x4
-}
-
-// Range: 0x8006DE90 -> 0x8006DEA4
-static s32 romGetDebug64(s64* pData) {
-    // Parameters
-    // s64* pData; // r1+0x8
-}
-
-// Range: 0x8006DEA4 -> 0x8006DEB4
-static s32 romGetDebug32(s32* pData) {
-    // Parameters
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x8006DEB4 -> 0x8006DEC4
-static s32 romGetDebug16(s16* pData) {
-    // Parameters
-    // s16* pData; // r1+0x8
-}
-
-// Range: 0x8006DEC4 -> 0x8006DED4
-static s32 romGetDebug8(char* pData) {
-    // Parameters
-    // char* pData; // r1+0x8
-}
-
-// Range: 0x8006DED4 -> 0x8006DEDC
-static s32 romPutDebug64() {}
-
-// Range: 0x8006DEDC -> 0x8006DEE4
-static s32 romPutDebug32() {}
-
-// Range: 0x8006DEE4 -> 0x8006DEEC
-static s32 romPutDebug16() {}
-
-// Range: 0x8006DEEC -> 0x8006DEF4
-static s32 romPutDebug8() {}
-
-// Range: 0x8006DEF4 -> 0x8006DF70
-static s32 romGet64(struct __anon_0x4D873* pROM, u32 nAddress, s64* pData) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r3
-    // u32 nAddress; // r4
-    // s64* pData; // r31
-
-    // Local variables
-    u64 nData; // r1+0x18
-}
-
-// Range: 0x8006DF70 -> 0x8006DFE0
-static s32 romGet32(struct __anon_0x4D873* pROM, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r3
-    // u32 nAddress; // r4
-    // s32* pData; // r31
-
-    // Local variables
-    u32 nData; // r1+0x14
-}
-
-// Range: 0x8006DFE0 -> 0x8006E050
-static s32 romGet16(struct __anon_0x4D873* pROM, u32 nAddress, s16* pData) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r3
-    // u32 nAddress; // r4
-    // s16* pData; // r31
-
-    // Local variables
-    u16 nData; // r1+0x14
-}
-
-// Range: 0x8006E050 -> 0x8006E0C0
-static s32 romGet8(struct __anon_0x4D873* pROM, u32 nAddress, char* pData) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r3
-    // u32 nAddress; // r4
-    // char* pData; // r31
-
-    // Local variables
-    u8 nData; // r1+0x14
-}
-
-// Range: 0x8006E0C0 -> 0x8006E0C8
-static s32 romPut64() {}
-
-// Range: 0x8006E0C8 -> 0x8006E0D0
-static s32 romPut32() {}
-
-// Range: 0x8006E0D0 -> 0x8006E0D8
-static s32 romPut16() {}
-
-// Range: 0x8006E0D8 -> 0x8006E0E0
-static s32 romPut8() {}
-
-// Range: 0x8006E0E0 -> 0x8006E1A4
-s32 romTestCode(struct __anon_0x4D873* pROM, char* acCode) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x8
-    // char* acCode; // r1+0xC
-
-    // Local variables
-    s32 iCode; // r1+0x8
-    char acCodeCurrent[5]; // r1+0x1C
-}
-
-// Erased
-static s32 romGetMask(struct __anon_0x4D873* pROM, s32* pnMask) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-    // s32* pnMask; // r1+0x4
-}
-
-// Erased
-static s32 romGetName(struct __anon_0x4D873* pROM, char* acName) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-    // char* acName; // r1+0x4
-
-    // Local variables
-    s32 iName; // r10
-}
-
-// Range: 0x8006E1A4 -> 0x8006E1D8
-s32 romGetCode(struct __anon_0x4D873* pROM, char* acCode) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-    // char* acCode; // r1+0x4
-}
-
-// Range: 0x8006E1D8 -> 0x8006E3D4
-s32 romGetPC(struct __anon_0x4D873* pROM, u64* pnPC) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r3
-    // u64* pnPC; // r31
-
-    // Local variables
-    s32 nOffset; // r5
-    u32 nData; // r5
-    u32 iData; // r1+0x8
-    u32 anData[1024]; // r1+0x18
-}
-
-// Erased
-static s32 romLoad(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r31
-}
-
-// Range: 0x8006E3D4 -> 0x8006E83C
-static s32 romLoadFullOrPart(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r31
-
-    // Local variables
-    struct tXL_FILE* pFile; // r1+0x1C
-    s32 iBlock; // r1+0x8
-    s32 nLoad; // r27
-    s32 nStep; // r28
-    s32 iData; // r7
-    u32 nData; // r1+0x8
-}
-
-// Erased
-static s32 romCacheAllBlocks(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r27
-
-    // Local variables
-    s32 iCache; // r1+0xC
-    u32 iBlock; // r28
-    u32 iBlockLast; // r1+0x8
-}
 
 typedef struct __anon_0x4F17B {
     /* 0x0 */ s32 nOffsetHost;
@@ -623,22 +350,6 @@ typedef struct _CPU {
     /* 0x12064 */ struct cpu_optimize nOptimize;
 } __anon_0x50A60; // size = 0x12090
 
-// Range: 0x8006E83C -> 0x8006EAC0
-static s32 romCopyUpdate(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r29
-
-    // Local variables
-    struct __anon_0x4CFE6* pBlock; // r28
-    s32 iCache; // r1+0xC
-    s32 nTickLast; // r27
-    u8* anData; // r1+0x8
-    u32 iBlock; // r26
-    u32 nSize; // r26
-    u32 nOffsetBlock; // r1+0x8
-    struct _CPU* pCPU; // r30
-}
-
 typedef enum __anon_0x51281 {
     SM_NONE = -1,
     SM_RUNNING = 0,
@@ -707,37 +418,6 @@ typedef struct __anon_0x515FB {
 // size = 0x4, address = 0x80135600
 struct __anon_0x515FB* gpSystem;
 
-// Range: 0x8006EAC0 -> 0x8006EADC
-static s32 __romCopyUpdate_Complete() {
-    // References
-    // -> struct __anon_0x515FB* gpSystem;
-}
-
-// Range: 0x8006EADC -> 0x8006EC3C
-static s32 romLoadUpdate(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r29
-
-    // Local variables
-    s32 iCache; // r1+0xC
-    struct __anon_0x4CFE6* pBlock; // r4
-    u32 iBlock0; // r31
-    u32 iBlock1; // r25
-    struct _CPU* pCPU; // r30
-}
-
-// Erased
-static s32 romLoadInProgress(struct __anon_0x4D873* pROM) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x0
-}
-
-// Range: 0x8006EC3C -> 0x8006EC58
-static s32 __romLoadUpdate_Complete() {
-    // References
-    // -> struct __anon_0x515FB* gpSystem;
-}
-
 // size = 0x4, address = 0x801355D8
 s32 gDVDResetToggle;
 
@@ -746,6 +426,173 @@ u32 gnFlagZelda;
 
 // size = 0x4, address = 0x801355FC
 s32 gbDisplayedError;
+
+typedef struct _GXTexObj {
+    /* 0x0 */ u32 dummy[8];
+} __anon_0x51BD0; // size = 0x20
+
+typedef enum __anon_0x5219D {
+    RCT_NONE = -1,
+    RCT_RAM = 0,
+    RCT_ARAM = 1,
+} __anon_0x5219D;
+
+// Erased
+static s32 romTestARAM() {}
+
+// Erased
+static s32 romMatchRange(struct __anon_0x4D873* pROM, u32 nOffset, s32* pnOffset0, s32* pnOffset1) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+    // u32 nOffset; // r1+0x4
+    // s32* pnOffset0; // r1+0x8
+    // s32* pnOffset1; // r1+0xC
+
+    // Local variables
+    s32 iBlock; // r10
+}
+
+// Erased
+static s32 romFreeBlock(struct __anon_0x4D873* pROM, s32 iBlock) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+    // s32 iBlock; // r1+0x4
+
+    // Local variables
+    s32 iCache; // r4
+    struct __anon_0x4CFE6* pBlock; // r1+0x0
+}
+
+// Range: 0x8006FDFC -> 0x8006FEC0
+static s32 romFindFreeCache(struct __anon_0x4D873* pROM, s32* piCache, enum __anon_0x5219D eType) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+    // s32* piCache; // r1+0x4
+    // enum __anon_0x5219D eType; // r1+0x8
+
+    // Local variables
+    s32 iBlock; // r7
+}
+
+// Range: 0x8006FC4C -> 0x8006FDFC
+static s32 romFindOldestBlock(struct __anon_0x4D873* pROM, s32* piBlock, enum __anon_0x5219D eTypeCache,
+                              s32 whichBlock) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r3
+    // s32* piBlock; // r1+0x4
+    // enum __anon_0x5219D eTypeCache; // r1+0x8
+    // s32 whichBlock; // r1+0xC
+
+    // Local variables
+    struct __anon_0x4CFE6* pBlock; // r7
+    s32 iBlock; // r8
+    s32 iBlockOldest; // r9
+    u32 nTick; // r10
+    u32 nTickDelta; // r11
+    u32 nTickDeltaOldest; // r12
+}
+
+// Range: 0x8006FA38 -> 0x8006FC4C
+static s32 romMakeFreeCache(struct __anon_0x4D873* pROM, s32* piCache, enum __anon_0x5219D eType) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r30
+    // s32* piCache; // r31
+    // enum __anon_0x5219D eType; // r1+0x10
+
+    // Local variables
+    s32 iCache; // r1+0x20
+    s32 iBlockOldest; // r1+0x1C
+}
+
+// Range: 0x8006F7E0 -> 0x8006FA38
+static s32 romSetBlockCache(struct __anon_0x4D873* pROM, s32 iBlock, enum __anon_0x5219D eType) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r30
+    // s32 iBlock; // r1+0xC
+    // enum __anon_0x5219D eType; // r1+0x10
+
+    // Local variables
+    struct __anon_0x4CFE6* pBlock; // r31
+    s32 iCacheRAM; // r1+0x18
+    s32 iCacheARAM; // r1+0x14
+    s32 nOffsetRAM; // r28
+    s32 nOffsetARAM; // r29
+}
+
+// Range: 0x8006F6EC -> 0x8006F7E0
+static s32 __romLoadBlock_Complete(struct __anon_0x4D873* pROM) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x8
+
+    // Local variables
+    u32 iData; // r9
+    u32 nData; // r1+0x8
+}
+
+// Range: 0x8006F6D0 -> 0x8006F6EC
+static void __romLoadBlock_CompleteGCN(s32 nResult) {
+    // Parameters
+    // s32 nResult; // r1+0x0
+
+    // Local variables
+    struct __anon_0x4D873* pROM; // r4
+
+    // References
+    // -> struct __anon_0x515FB* gpSystem;
+}
+
+// Range: 0x8006F5D4 -> 0x8006F6D0
+static s32 romLoadBlock(struct __anon_0x4D873* pROM, s32 iBlock, s32 iCache, s32 (*pCallback)()) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r31
+    // s32 iBlock; // r1+0xC
+    // s32 iCache; // r1+0x10
+    // s32 (* pCallback)(); // r1+0x14
+
+    // Local variables
+    u8* anData; // r8
+    s32 nSizeRead; // r10
+    u32 nSize; // r10
+    u32 nOffset; // r1+0x8
+}
+
+// Erased
+static s32 romKeepCheck() {}
+
+// Range: 0x8006F488 -> 0x8006F5D4
+static s32 romLoadRange(struct __anon_0x4D873* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
+                        s32 (*pfProgress)(f32)) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r26
+    // s32 begin; // r1+0xC
+    // s32 end; // r1+0x10
+    // s32* blockCount; // r27
+    // s32 whichBlock; // r1+0x18
+    // s32 (* pfProgress)(f32); // r28
+
+    // Local variables
+    s32 iCache; // r1+0x20
+    u32 iBlock; // r30
+    u32 iBlockLast; // r29
+}
+
+// Range: 0x8006F208 -> 0x8006F488
+static s32 romCacheGame_ZELDA(f32 rProgress) {
+    // Parameters
+    // f32 rProgress; // f31
+
+    // Local variables
+    s32 nSize; // r31
+    f32 matrix44[4][4]; // r1+0x2C
+    struct _GXTexObj textureObject; // r1+0xC
+
+    // References
+    // -> static s32 gbProgress;
+    // -> static s32 iImage$294;
+    // -> struct __anon_0x515FB* gpSystem;
+    // -> static void* gpImageBack;
+    // -> s32 gbDisplayedError;
+}
 
 // Range: 0x8006EC58 -> 0x8006F208
 static s32 romCacheGame(struct __anon_0x4D873* pROM) {
@@ -768,169 +615,322 @@ static s32 romCacheGame(struct __anon_0x4D873* pROM) {
     // -> static u32 ganOffsetBlock_ZLJ[198];
 }
 
-typedef struct _GXTexObj {
-    /* 0x0 */ u32 dummy[8];
-} __anon_0x51BD0; // size = 0x20
-
-// Range: 0x8006F208 -> 0x8006F488
-static s32 romCacheGame_ZELDA(f32 rProgress) {
-    // Parameters
-    // f32 rProgress; // f31
-
-    // Local variables
-    s32 nSize; // r31
-    f32 matrix44[4][4]; // r1+0x2C
-    struct _GXTexObj textureObject; // r1+0xC
-
+// Range: 0x8006EC3C -> 0x8006EC58
+static s32 __romLoadUpdate_Complete() {
     // References
-    // -> static s32 gbProgress;
-    // -> static s32 iImage$294;
     // -> struct __anon_0x515FB* gpSystem;
-    // -> static void* gpImageBack;
-    // -> s32 gbDisplayedError;
-}
-
-// Range: 0x8006F488 -> 0x8006F5D4
-static s32 romLoadRange(struct __anon_0x4D873* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
-                        s32 (*pfProgress)(f32)) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r26
-    // s32 begin; // r1+0xC
-    // s32 end; // r1+0x10
-    // s32* blockCount; // r27
-    // s32 whichBlock; // r1+0x18
-    // s32 (* pfProgress)(f32); // r28
-
-    // Local variables
-    s32 iCache; // r1+0x20
-    u32 iBlock; // r30
-    u32 iBlockLast; // r29
 }
 
 // Erased
-static s32 romKeepCheck() {}
-
-// Range: 0x8006F5D4 -> 0x8006F6D0
-static s32 romLoadBlock(struct __anon_0x4D873* pROM, s32 iBlock, s32 iCache, s32 (*pCallback)()) {
+static s32 romLoadInProgress(struct __anon_0x4D873* pROM) {
     // Parameters
-    // struct __anon_0x4D873* pROM; // r31
-    // s32 iBlock; // r1+0xC
-    // s32 iCache; // r1+0x10
-    // s32 (* pCallback)(); // r1+0x14
-
-    // Local variables
-    u8* anData; // r8
-    s32 nSizeRead; // r10
-    u32 nSize; // r10
-    u32 nOffset; // r1+0x8
+    // struct __anon_0x4D873* pROM; // r1+0x0
 }
 
-// Range: 0x8006F6D0 -> 0x8006F6EC
-static void __romLoadBlock_CompleteGCN(s32 nResult) {
+// Range: 0x8006EADC -> 0x8006EC3C
+static s32 romLoadUpdate(struct __anon_0x4D873* pROM) {
     // Parameters
-    // s32 nResult; // r1+0x0
+    // struct __anon_0x4D873* pROM; // r29
 
     // Local variables
-    struct __anon_0x4D873* pROM; // r4
+    s32 iCache; // r1+0xC
+    struct __anon_0x4CFE6* pBlock; // r4
+    u32 iBlock0; // r31
+    u32 iBlock1; // r25
+    struct _CPU* pCPU; // r30
+}
 
+// Range: 0x8006EAC0 -> 0x8006EADC
+static s32 __romCopyUpdate_Complete() {
     // References
     // -> struct __anon_0x515FB* gpSystem;
 }
 
-// Range: 0x8006F6EC -> 0x8006F7E0
-static s32 __romLoadBlock_Complete(struct __anon_0x4D873* pROM) {
+// Range: 0x8006E83C -> 0x8006EAC0
+static s32 romCopyUpdate(struct __anon_0x4D873* pROM) {
     // Parameters
-    // struct __anon_0x4D873* pROM; // r1+0x8
+    // struct __anon_0x4D873* pROM; // r29
 
     // Local variables
-    u32 iData; // r9
+    struct __anon_0x4CFE6* pBlock; // r28
+    s32 iCache; // r1+0xC
+    s32 nTickLast; // r27
+    u8* anData; // r1+0x8
+    u32 iBlock; // r26
+    u32 nSize; // r26
+    u32 nOffsetBlock; // r1+0x8
+    struct _CPU* pCPU; // r30
+}
+
+// Erased
+static s32 romCacheAllBlocks(struct __anon_0x4D873* pROM) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r27
+
+    // Local variables
+    s32 iCache; // r1+0xC
+    u32 iBlock; // r28
+    u32 iBlockLast; // r1+0x8
+}
+
+// Range: 0x8006E3D4 -> 0x8006E83C
+static s32 romLoadFullOrPart(struct __anon_0x4D873* pROM) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r31
+
+    // Local variables
+    struct tXL_FILE* pFile; // r1+0x1C
+    s32 iBlock; // r1+0x8
+    s32 nLoad; // r27
+    s32 nStep; // r28
+    s32 iData; // r7
     u32 nData; // r1+0x8
 }
 
-typedef enum __anon_0x5219D {
-    RCT_NONE = -1,
-    RCT_RAM = 0,
-    RCT_ARAM = 1,
-} __anon_0x5219D;
-
-// Range: 0x8006F7E0 -> 0x8006FA38
-static s32 romSetBlockCache(struct __anon_0x4D873* pROM, s32 iBlock, enum __anon_0x5219D eType) {
+// Erased
+static s32 romLoad(struct __anon_0x4D873* pROM) {
     // Parameters
-    // struct __anon_0x4D873* pROM; // r30
-    // s32 iBlock; // r1+0xC
-    // enum __anon_0x5219D eType; // r1+0x10
-
-    // Local variables
-    struct __anon_0x4CFE6* pBlock; // r31
-    s32 iCacheRAM; // r1+0x18
-    s32 iCacheARAM; // r1+0x14
-    s32 nOffsetRAM; // r28
-    s32 nOffsetARAM; // r29
+    // struct __anon_0x4D873* pROM; // r31
 }
 
-// Range: 0x8006FA38 -> 0x8006FC4C
-static s32 romMakeFreeCache(struct __anon_0x4D873* pROM, s32* piCache, enum __anon_0x5219D eType) {
-    // Parameters
-    // struct __anon_0x4D873* pROM; // r30
-    // s32* piCache; // r31
-    // enum __anon_0x5219D eType; // r1+0x10
-
-    // Local variables
-    s32 iCache; // r1+0x20
-    s32 iBlockOldest; // r1+0x1C
-}
-
-// Range: 0x8006FC4C -> 0x8006FDFC
-static s32 romFindOldestBlock(struct __anon_0x4D873* pROM, s32* piBlock, enum __anon_0x5219D eTypeCache,
-                              s32 whichBlock) {
+// Range: 0x8006E1D8 -> 0x8006E3D4
+s32 romGetPC(struct __anon_0x4D873* pROM, u64* pnPC) {
     // Parameters
     // struct __anon_0x4D873* pROM; // r3
-    // s32* piBlock; // r1+0x4
-    // enum __anon_0x5219D eTypeCache; // r1+0x8
-    // s32 whichBlock; // r1+0xC
+    // u64* pnPC; // r31
 
     // Local variables
-    struct __anon_0x4CFE6* pBlock; // r7
-    s32 iBlock; // r8
-    s32 iBlockOldest; // r9
-    u32 nTick; // r10
-    u32 nTickDelta; // r11
-    u32 nTickDeltaOldest; // r12
+    s32 nOffset; // r5
+    u32 nData; // r5
+    u32 iData; // r1+0x8
+    u32 anData[1024]; // r1+0x18
 }
 
-// Range: 0x8006FDFC -> 0x8006FEC0
-static s32 romFindFreeCache(struct __anon_0x4D873* pROM, s32* piCache, enum __anon_0x5219D eType) {
+// Range: 0x8006E1A4 -> 0x8006E1D8
+s32 romGetCode(struct __anon_0x4D873* pROM, char* acCode) {
     // Parameters
     // struct __anon_0x4D873* pROM; // r1+0x0
-    // s32* piCache; // r1+0x4
-    // enum __anon_0x5219D eType; // r1+0x8
-
-    // Local variables
-    s32 iBlock; // r7
+    // char* acCode; // r1+0x4
 }
 
 // Erased
-static s32 romFreeBlock(struct __anon_0x4D873* pROM, s32 iBlock) {
+static s32 romGetName(struct __anon_0x4D873* pROM, char* acName) {
     // Parameters
     // struct __anon_0x4D873* pROM; // r1+0x0
-    // s32 iBlock; // r1+0x4
+    // char* acName; // r1+0x4
 
     // Local variables
-    s32 iCache; // r4
-    struct __anon_0x4CFE6* pBlock; // r1+0x0
+    s32 iName; // r10
 }
 
 // Erased
-static s32 romMatchRange(struct __anon_0x4D873* pROM, u32 nOffset, s32* pnOffset0, s32* pnOffset1) {
+static s32 romGetMask(struct __anon_0x4D873* pROM, s32* pnMask) {
     // Parameters
     // struct __anon_0x4D873* pROM; // r1+0x0
-    // u32 nOffset; // r1+0x4
-    // s32* pnOffset0; // r1+0x8
-    // s32* pnOffset1; // r1+0xC
+    // s32* pnMask; // r1+0x4
+}
+
+// Range: 0x8006E0E0 -> 0x8006E1A4
+s32 romTestCode(struct __anon_0x4D873* pROM, char* acCode) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x8
+    // char* acCode; // r1+0xC
 
     // Local variables
-    s32 iBlock; // r10
+    s32 iCode; // r1+0x8
+    char acCodeCurrent[5]; // r1+0x1C
+}
+
+// Range: 0x8006E0D8 -> 0x8006E0E0
+static s32 romPut8() {}
+
+// Range: 0x8006E0D0 -> 0x8006E0D8
+static s32 romPut16() {}
+
+// Range: 0x8006E0C8 -> 0x8006E0D0
+static s32 romPut32() {}
+
+// Range: 0x8006E0C0 -> 0x8006E0C8
+static s32 romPut64() {}
+
+// Range: 0x8006E050 -> 0x8006E0C0
+static s32 romGet8(struct __anon_0x4D873* pROM, u32 nAddress, char* pData) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r3
+    // u32 nAddress; // r4
+    // char* pData; // r31
+
+    // Local variables
+    u8 nData; // r1+0x14
+}
+
+// Range: 0x8006DFE0 -> 0x8006E050
+static s32 romGet16(struct __anon_0x4D873* pROM, u32 nAddress, s16* pData) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r3
+    // u32 nAddress; // r4
+    // s16* pData; // r31
+
+    // Local variables
+    u16 nData; // r1+0x14
+}
+
+// Range: 0x8006DF70 -> 0x8006DFE0
+static s32 romGet32(struct __anon_0x4D873* pROM, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r3
+    // u32 nAddress; // r4
+    // s32* pData; // r31
+
+    // Local variables
+    u32 nData; // r1+0x14
+}
+
+// Range: 0x8006DEF4 -> 0x8006DF70
+static s32 romGet64(struct __anon_0x4D873* pROM, u32 nAddress, s64* pData) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r3
+    // u32 nAddress; // r4
+    // s64* pData; // r31
+
+    // Local variables
+    u64 nData; // r1+0x18
+}
+
+// Range: 0x8006DEEC -> 0x8006DEF4
+static s32 romPutDebug8() {}
+
+// Range: 0x8006DEE4 -> 0x8006DEEC
+static s32 romPutDebug16() {}
+
+// Range: 0x8006DEDC -> 0x8006DEE4
+static s32 romPutDebug32() {}
+
+// Range: 0x8006DED4 -> 0x8006DEDC
+static s32 romPutDebug64() {}
+
+// Range: 0x8006DEC4 -> 0x8006DED4
+static s32 romGetDebug8(char* pData) {
+    // Parameters
+    // char* pData; // r1+0x8
+}
+
+// Range: 0x8006DEB4 -> 0x8006DEC4
+static s32 romGetDebug16(s16* pData) {
+    // Parameters
+    // s16* pData; // r1+0x8
+}
+
+// Range: 0x8006DEA4 -> 0x8006DEB4
+static s32 romGetDebug32(s32* pData) {
+    // Parameters
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x8006DE90 -> 0x8006DEA4
+static s32 romGetDebug64(s64* pData) {
+    // Parameters
+    // s64* pData; // r1+0x8
 }
 
 // Erased
-static s32 romTestARAM() {}
+static s32 romGetSize(struct __anon_0x4D873* pROM, s32* pnSize) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+    // s32* pnSize; // r1+0x4
+}
+
+// Range: 0x8006DBF8 -> 0x8006DE90
+s32 romCopy(struct __anon_0x4D873* pROM, void* pTarget, s32 nOffset, u32 nSize, s32 (*pCallback)()) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r27
+    // void* pTarget; // r28
+    // s32 nOffset; // r29
+    // u32 nSize; // r30
+    // s32 (* pCallback)(); // r31
+
+    // Local variables
+    void* pSource; // r4
+    struct tXL_FILE* pFile; // r1+0x1C
+}
+
+// Range: 0x8006D990 -> 0x8006DBF8
+s32 romCopyImmediate(struct __anon_0x4D873* pROM, void* pTarget, s32 nOffsetROM, u32 nSize) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r26
+    // void* pTarget; // r27
+    // s32 nOffsetROM; // r28
+    // u32 nSize; // r29
+
+    // Local variables
+    void* pSource; // r4
+    struct __anon_0x4CFE6* pBlock; // r3
+    s32 nOffsetARAM; // r23
+    s32 nSizeCopy; // r31
+    s32 nOffsetBlock; // r1+0x8
+    s32 nSizeCopyARAM; // r22
+    s32 nSizeDMA; // r21
+    s32 nOffset; // r20
+    s32 nOffsetTarget; // r19
+    u8* pBuffer; // r30
+    u8 anBuffer[608]; // r1+0x18
+}
+
+// Range: 0x8006D830 -> 0x8006D990
+s32 romUpdate(struct __anon_0x4D873* pROM) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r31
+
+    // Local variables
+    s32 nStatus; // r30
+}
+
+// Erased
+static s32 romCopyBusy(struct __anon_0x4D873* pROM) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+}
+
+// Range: 0x8006D794 -> 0x8006D830
+s32 romSetCacheSize(struct __anon_0x4D873* pROM, s32 nSize) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r30
+    // s32 nSize; // r4
+}
+
+// Erased
+static s32 romGetCacheSize(struct __anon_0x4D873* pROM, s32* pnSize) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+    // s32* pnSize; // r1+0x4
+}
+
+// Range: 0x8006D620 -> 0x8006D794
+s32 romSetImage(struct __anon_0x4D873* pROM, char* szNameFile) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r28
+    // char* szNameFile; // r29
+
+    // Local variables
+    struct tXL_FILE* pFile; // r1+0x14
+    s32 iName; // r5
+    s32 nSize; // r1+0x10
+}
+
+// Range: 0x8006D5D8 -> 0x8006D620
+s32 romGetImage(struct __anon_0x4D873* pROM, char* acNameFile) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r1+0x0
+    // char* acNameFile; // r1+0x4
+
+    // Local variables
+    s32 iName; // r6
+}
+
+// Range: 0x8006D3AC -> 0x8006D5D8
+s32 romEvent(struct __anon_0x4D873* pROM, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x4D873* pROM; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
+}

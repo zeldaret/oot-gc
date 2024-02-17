@@ -174,109 +174,6 @@ typedef struct CombineModeTev {
 // size = 0x2B8, address = 0x80130C50
 static struct CombineModeTev tevStages$519;
 
-// Range: 0x800986A4 -> 0x80098AE0
-struct CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alpha2, u32 numCycles) {
-    // Parameters
-    // u32 color1; // r26
-    // u32 alpha1; // r27
-    // u32 color2; // r28
-    // u32 alpha2; // r29
-    // u32 numCycles; // r30
-
-    // Local variables
-    u8 stageValues[2][2][4]; // r1+0x28
-    s32 i; // r1+0x8
-    s32 j; // r6
-    u8* tempPtr; // r1+0x8
-
-    // References
-    // -> static struct CombineModeTev tevStages$519;
-    // -> static enum _GXTevAlphaArg sUsualAArgs[4];
-    // -> static enum _GXTevColorArg sUsualCArgs[4];
-}
-
-// Range: 0x80098AE0 -> 0x80098BCC
-void BuildCycle(struct CombineModeTev* tvP, u8 (*stageValues)[4]) {
-    // Parameters
-    // struct CombineModeTev* tvP; // r31
-    // u8 (* stageValues)[4]; // r29
-
-    // Local variables
-    s32 numCParts; // r1+0x8
-    s32 numAParts; // r1+0x8
-    s32 i; // r5
-}
-
-// Range: 0x80098BCC -> 0x8009B6BC
-s32 SetupStage(struct CombineModeTev* tvP, u8* stageValues, s32 type) {
-    // Parameters
-    // struct CombineModeTev* tvP; // r26
-    // u8* stageValues; // r27
-    // s32 type; // r22
-
-    // Local variables
-    s32 zero; // r1+0x8
-    s32 curStage; // r31
-    s32 textureFoundPos; // r30
-    s32 numFound[2]; // r1+0x18
-    s32 retStages; // r29
-    s32 ret; // r1+0x8
-    s32 i; // r21
-    s32 num; // r6
-    s32 j; // r7
-    s32 foundTypes; // r28
-    s32 texelNum; // r10
-    s32 mask; // r5
-    s32 mask; // r21
-    s32 index1; // r1+0x8
-    s32 index2; // r23
-    s32 index1; // r1+0x8
-    s32 index2; // r23
-    s32 flag; // r7
-    s32 mask; // r4
-
-    // References
-    // -> enum _GXTevAlphaArg gAlphaArgs[10];
-    // -> static struct TevColorOp sUsualOps[4];
-    // -> enum _GXTevColorArg gColorArgs[16];
-    // -> static s32 lightType$184[2][2];
-    // -> static s32 texelType$183[2][4];
-    // -> static s32 zeroType$182[2];
-}
-
-// Erased
-static void AddColorTevOrder(struct CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
-    // Parameters
-    // struct CombineModeTev* tvP; // r1+0x0
-    // s32 foundTypes; // r1+0x4
-    // s32 curStage; // r1+0x8
-}
-
-// Range: 0x8009B6BC -> 0x8009B7DC
-static s32 AddAlphaTevOrder(struct CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
-    // Parameters
-    // struct CombineModeTev* tvP; // r1+0x0
-    // s32 foundTypes; // r1+0x4
-    // s32 curStage; // r5
-
-    // Local variables
-    s32 ret; // r6
-
-    // References
-    // -> static struct TevColorOp sUsualOps[4];
-}
-
-// Range: 0x8009B7DC -> 0x8009B914
-void SetAlpha(u8* stageValues, u32 alphaVal, u8 cycle) {
-    // Parameters
-    // u8* stageValues; // r1+0x0
-    // u32 alphaVal; // r1+0x4
-    // u8 cycle; // r1+0x8
-
-    // Local variables
-    s32 i; // r8
-}
-
 typedef enum __anon_0x8A896 {
     SM_NONE = -1,
     SM_RUNNING = 0,
@@ -357,4 +254,107 @@ void SetColor(u8* stageValues, u32 colorVal, u8 cycle) {
 
     // References
     // -> struct __anon_0x8AC22* gpSystem;
+}
+
+// Range: 0x8009B7DC -> 0x8009B914
+void SetAlpha(u8* stageValues, u32 alphaVal, u8 cycle) {
+    // Parameters
+    // u8* stageValues; // r1+0x0
+    // u32 alphaVal; // r1+0x4
+    // u8 cycle; // r1+0x8
+
+    // Local variables
+    s32 i; // r8
+}
+
+// Range: 0x8009B6BC -> 0x8009B7DC
+static s32 AddAlphaTevOrder(struct CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
+    // Parameters
+    // struct CombineModeTev* tvP; // r1+0x0
+    // s32 foundTypes; // r1+0x4
+    // s32 curStage; // r5
+
+    // Local variables
+    s32 ret; // r6
+
+    // References
+    // -> static struct TevColorOp sUsualOps[4];
+}
+
+// Erased
+static void AddColorTevOrder(struct CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
+    // Parameters
+    // struct CombineModeTev* tvP; // r1+0x0
+    // s32 foundTypes; // r1+0x4
+    // s32 curStage; // r1+0x8
+}
+
+// Range: 0x80098BCC -> 0x8009B6BC
+s32 SetupStage(struct CombineModeTev* tvP, u8* stageValues, s32 type) {
+    // Parameters
+    // struct CombineModeTev* tvP; // r26
+    // u8* stageValues; // r27
+    // s32 type; // r22
+
+    // Local variables
+    s32 zero; // r1+0x8
+    s32 curStage; // r31
+    s32 textureFoundPos; // r30
+    s32 numFound[2]; // r1+0x18
+    s32 retStages; // r29
+    s32 ret; // r1+0x8
+    s32 i; // r21
+    s32 num; // r6
+    s32 j; // r7
+    s32 foundTypes; // r28
+    s32 texelNum; // r10
+    s32 mask; // r5
+    s32 mask; // r21
+    s32 index1; // r1+0x8
+    s32 index2; // r23
+    s32 index1; // r1+0x8
+    s32 index2; // r23
+    s32 flag; // r7
+    s32 mask; // r4
+
+    // References
+    // -> enum _GXTevAlphaArg gAlphaArgs[10];
+    // -> static struct TevColorOp sUsualOps[4];
+    // -> enum _GXTevColorArg gColorArgs[16];
+    // -> static s32 lightType$184[2][2];
+    // -> static s32 texelType$183[2][4];
+    // -> static s32 zeroType$182[2];
+}
+
+// Range: 0x80098AE0 -> 0x80098BCC
+void BuildCycle(struct CombineModeTev* tvP, u8 (*stageValues)[4]) {
+    // Parameters
+    // struct CombineModeTev* tvP; // r31
+    // u8 (* stageValues)[4]; // r29
+
+    // Local variables
+    s32 numCParts; // r1+0x8
+    s32 numAParts; // r1+0x8
+    s32 i; // r5
+}
+
+// Range: 0x800986A4 -> 0x80098AE0
+struct CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alpha2, u32 numCycles) {
+    // Parameters
+    // u32 color1; // r26
+    // u32 alpha1; // r27
+    // u32 color2; // r28
+    // u32 alpha2; // r29
+    // u32 numCycles; // r30
+
+    // Local variables
+    u8 stageValues[2][2][4]; // r1+0x28
+    s32 i; // r1+0x8
+    s32 j; // r6
+    u8* tempPtr; // r1+0x8
+
+    // References
+    // -> static struct CombineModeTev tevStages$519;
+    // -> static enum _GXTevAlphaArg sUsualAArgs[4];
+    // -> static enum _GXTevColorArg sUsualCArgs[4];
 }

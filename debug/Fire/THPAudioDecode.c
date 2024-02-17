@@ -102,42 +102,6 @@ static void* FreeAudioBufferMessage[3];
 // size = 0xC, address = 0x800FB1B4
 static void* DecodedAudioBufferMessage[3];
 
-// Range: 0x80010D9C -> 0x80010E7C
-s32 CreateAudioDecodeThread(s32 priority, u8* ptr) {
-    // Parameters
-    // s32 priority; // r8
-    // u8* ptr; // r5
-
-    // References
-    // -> static s32 AudioDecodeThreadCreated;
-    // -> static void* DecodedAudioBufferMessage[3];
-    // -> static struct OSMessageQueue DecodedAudioBufferQueue;
-    // -> static void* FreeAudioBufferMessage[3];
-    // -> static struct OSMessageQueue FreeAudioBufferQueue;
-    // -> static u8 AudioDecodeThreadStack[4096];
-    // -> static struct OSThread AudioDecodeThread;
-}
-
-// Range: 0x80010E7C -> 0x80010EB0
-void AudioDecodeThreadStart() {
-    // References
-    // -> static struct OSThread AudioDecodeThread;
-    // -> static s32 AudioDecodeThreadCreated;
-}
-
-// Erased
-static void AudioDecodeThreadCancel() {
-    // References
-    // -> static s32 AudioDecodeThreadCreated;
-    // -> static struct OSThread AudioDecodeThread;
-}
-
-// Range: 0x80010EB0 -> 0x80010ED8
-static void* AudioDecoder() {
-    // Local variables
-    struct __anon_0x14130* readBuffer; // r31
-}
-
 typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
@@ -262,20 +226,43 @@ typedef struct __anon_0x14130 {
     /* 0x8 */ s32 isValid;
 } __anon_0x14130; // size = 0xC
 
-// Range: 0x80010ED8 -> 0x80010F88
-static void* AudioDecoderForOnMemory(void* ptr) {
+// Range: 0x80011108 -> 0x80011138
+void PushDecodedAudioBuffer(void* buffer) {
     // Parameters
-    // void* ptr; // r1+0x8
-
-    // Local variables
-    struct __anon_0x14130 readBuffer; // r1+0x10
-    s32 tmp; // r4
-    s32 size; // r28
-    s32 readFrame; // r31
+    // void* buffer; // r4
 
     // References
-    // -> static struct OSThread AudioDecodeThread;
-    // -> struct __anon_0x13BA7 ActivePlayer;
+    // -> static struct OSMessageQueue DecodedAudioBufferQueue;
+}
+
+// Range: 0x800110C4 -> 0x80011108
+void* PopDecodedAudioBuffer(s32 flag) {
+    // Parameters
+    // s32 flag; // r5
+
+    // Local variables
+    void* msg; // r1+0xC
+
+    // References
+    // -> static struct OSMessageQueue DecodedAudioBufferQueue;
+}
+
+// Range: 0x80011094 -> 0x800110C4
+void PushFreeAudioBuffer(void* buffer) {
+    // Parameters
+    // void* buffer; // r4
+
+    // References
+    // -> static struct OSMessageQueue FreeAudioBufferQueue;
+}
+
+// Range: 0x80011060 -> 0x80011094
+void* PopFreeAudioBuffer() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue FreeAudioBufferQueue;
 }
 
 // Range: 0x80010F88 -> 0x80011060
@@ -294,41 +281,54 @@ static void AudioDecode(struct __anon_0x14130* readBuffer) {
     // -> struct __anon_0x13BA7 ActivePlayer;
 }
 
-// Range: 0x80011060 -> 0x80011094
-void* PopFreeAudioBuffer() {
-    // Local variables
-    void* msg; // r1+0x8
-
-    // References
-    // -> static struct OSMessageQueue FreeAudioBufferQueue;
-}
-
-// Range: 0x80011094 -> 0x800110C4
-void PushFreeAudioBuffer(void* buffer) {
+// Range: 0x80010ED8 -> 0x80010F88
+static void* AudioDecoderForOnMemory(void* ptr) {
     // Parameters
-    // void* buffer; // r4
-
-    // References
-    // -> static struct OSMessageQueue FreeAudioBufferQueue;
-}
-
-// Range: 0x800110C4 -> 0x80011108
-void* PopDecodedAudioBuffer(s32 flag) {
-    // Parameters
-    // s32 flag; // r5
+    // void* ptr; // r1+0x8
 
     // Local variables
-    void* msg; // r1+0xC
+    struct __anon_0x14130 readBuffer; // r1+0x10
+    s32 tmp; // r4
+    s32 size; // r28
+    s32 readFrame; // r31
 
     // References
-    // -> static struct OSMessageQueue DecodedAudioBufferQueue;
+    // -> static struct OSThread AudioDecodeThread;
+    // -> struct __anon_0x13BA7 ActivePlayer;
 }
 
-// Range: 0x80011108 -> 0x80011138
-void PushDecodedAudioBuffer(void* buffer) {
+// Range: 0x80010EB0 -> 0x80010ED8
+static void* AudioDecoder() {
+    // Local variables
+    struct __anon_0x14130* readBuffer; // r31
+}
+
+// Erased
+static void AudioDecodeThreadCancel() {
+    // References
+    // -> static s32 AudioDecodeThreadCreated;
+    // -> static struct OSThread AudioDecodeThread;
+}
+
+// Range: 0x80010E7C -> 0x80010EB0
+void AudioDecodeThreadStart() {
+    // References
+    // -> static struct OSThread AudioDecodeThread;
+    // -> static s32 AudioDecodeThreadCreated;
+}
+
+// Range: 0x80010D9C -> 0x80010E7C
+s32 CreateAudioDecodeThread(s32 priority, u8* ptr) {
     // Parameters
-    // void* buffer; // r4
+    // s32 priority; // r8
+    // u8* ptr; // r5
 
     // References
+    // -> static s32 AudioDecodeThreadCreated;
+    // -> static void* DecodedAudioBufferMessage[3];
     // -> static struct OSMessageQueue DecodedAudioBufferQueue;
+    // -> static void* FreeAudioBufferMessage[3];
+    // -> static struct OSMessageQueue FreeAudioBufferQueue;
+    // -> static u8 AudioDecodeThreadStack[4096];
+    // -> static struct OSThread AudioDecodeThread;
 }

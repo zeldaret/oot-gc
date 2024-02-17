@@ -29,31 +29,61 @@ typedef struct __anon_0x5062 {
     /* 0x4 */ struct _XL_OBJECTTYPE* pType;
 } __anon_0x5062; // size = 0x8
 
-// Range: 0x80007BC0 -> 0x80007C30
-s32 xlObjectReset() {
-    // Local variables
-    struct __anon_0x5062* pData; // r3
-    void* pListNode; // r31
-
-    // References
-    // -> static struct tXL_LIST* gpListData;
-}
-
-// Range: 0x80007C30 -> 0x80007C6C
-s32 xlObjectSetup() {
-    // References
-    // -> static struct tXL_LIST* gpListData;
-}
-
-// Range: 0x80007C6C -> 0x80007D24
-s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
+// Erased
+static s32 xlObjectFindData(struct __anon_0x5062** ppData, struct _XL_OBJECTTYPE* pType) {
     // Parameters
-    // void* pObject; // r26
-    // s32 nEvent; // r27
-    // void* pArgument; // r28
+    // struct __anon_0x5062** ppData; // r1+0x0
+    // struct _XL_OBJECTTYPE* pType; // r1+0x4
 
     // Local variables
-    struct __anon_0x5062* pData; // r29
+    void* pListNode; // r6
+
+    // References
+    // -> static struct tXL_LIST* gpListData;
+}
+
+// Erased
+static s32 xlObjectMakeData(struct __anon_0x5062** ppData, struct _XL_OBJECTTYPE* pType) {
+    // Parameters
+    // struct __anon_0x5062** ppData; // r30
+    // struct _XL_OBJECTTYPE* pType; // r31
+
+    // References
+    // -> static struct tXL_LIST* gpListData;
+}
+
+// Range: 0x80007E24 -> 0x80007F80
+s32 xlObjectMake(void* ppObject, void* pArgument, struct _XL_OBJECTTYPE* pType) {
+    // Parameters
+    // void* ppObject; // r28
+    // void* pArgument; // r29
+    // struct _XL_OBJECTTYPE* pType; // r30
+
+    // Local variables
+    s32 bFlag; // r31
+    struct __anon_0x5062* pData; // r1+0x14
+
+    // References
+    // -> static struct tXL_LIST* gpListData;
+}
+
+// Range: 0x80007D8C -> 0x80007E24
+s32 xlObjectFree(void* ppObject) {
+    // Parameters
+    // void* ppObject; // r30
+
+    // Local variables
+    struct __anon_0x5062* pData; // r31
+}
+
+// Range: 0x80007D24 -> 0x80007D8C
+s32 xlObjectTest(void* pObject, struct _XL_OBJECTTYPE* pType) {
+    // Parameters
+    // void* pObject; // r1+0x8
+    // struct _XL_OBJECTTYPE* pType; // r30
+
+    // Local variables
+    struct __anon_0x5062* pData; // r31
 
     // References
     // -> static struct tXL_LIST* gpListData;
@@ -72,61 +102,31 @@ static s32 xlObjectFindType(void* pObject, struct _XL_OBJECTTYPE** ppType) {
     // -> static struct tXL_LIST* gpListData;
 }
 
-// Range: 0x80007D24 -> 0x80007D8C
-s32 xlObjectTest(void* pObject, struct _XL_OBJECTTYPE* pType) {
+// Range: 0x80007C6C -> 0x80007D24
+s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
     // Parameters
-    // void* pObject; // r1+0x8
-    // struct _XL_OBJECTTYPE* pType; // r30
+    // void* pObject; // r26
+    // s32 nEvent; // r27
+    // void* pArgument; // r28
 
     // Local variables
-    struct __anon_0x5062* pData; // r31
+    struct __anon_0x5062* pData; // r29
 
     // References
     // -> static struct tXL_LIST* gpListData;
 }
 
-// Range: 0x80007D8C -> 0x80007E24
-s32 xlObjectFree(void* ppObject) {
-    // Parameters
-    // void* ppObject; // r30
-
-    // Local variables
-    struct __anon_0x5062* pData; // r31
-}
-
-// Range: 0x80007E24 -> 0x80007F80
-s32 xlObjectMake(void* ppObject, void* pArgument, struct _XL_OBJECTTYPE* pType) {
-    // Parameters
-    // void* ppObject; // r28
-    // void* pArgument; // r29
-    // struct _XL_OBJECTTYPE* pType; // r30
-
-    // Local variables
-    s32 bFlag; // r31
-    struct __anon_0x5062* pData; // r1+0x14
-
+// Range: 0x80007C30 -> 0x80007C6C
+s32 xlObjectSetup() {
     // References
     // -> static struct tXL_LIST* gpListData;
 }
 
-// Erased
-static s32 xlObjectMakeData(struct __anon_0x5062** ppData, struct _XL_OBJECTTYPE* pType) {
-    // Parameters
-    // struct __anon_0x5062** ppData; // r30
-    // struct _XL_OBJECTTYPE* pType; // r31
-
-    // References
-    // -> static struct tXL_LIST* gpListData;
-}
-
-// Erased
-static s32 xlObjectFindData(struct __anon_0x5062** ppData, struct _XL_OBJECTTYPE* pType) {
-    // Parameters
-    // struct __anon_0x5062** ppData; // r1+0x0
-    // struct _XL_OBJECTTYPE* pType; // r1+0x4
-
+// Range: 0x80007BC0 -> 0x80007C30
+s32 xlObjectReset() {
     // Local variables
-    void* pListNode; // r6
+    struct __anon_0x5062* pData; // r3
+    void* pListNode; // r31
 
     // References
     // -> static struct tXL_LIST* gpListData;

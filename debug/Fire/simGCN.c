@@ -806,51 +806,6 @@ typedef enum __anon_0xA6E7 {
     SM_STOPPED = 1,
 } __anon_0xA6E7;
 
-// Range: 0x80007F80 -> 0x80008538
-s32 xlMain() {
-    // Local variables
-    struct _GXColor color; // r1+0x3C
-    enum __anon_0xA6E7 eMode; // r1+0x38
-    s32 nSize0; // r1+0x34
-    s32 nSize1; // r1+0x30
-    s32 iName; // r5
-    char* szNameROM; // r1+0x2C
-    char acNameROM[32]; // r1+0xC
-    s32 rumbleYes; // r1+0x8
-
-    // References
-    // -> static struct __anon_0x57A1* gpCode;
-    // -> struct __anon_0x87F6* gpFrame;
-    // -> struct __anon_0x7181* gpSound;
-    // -> struct __anon_0x6EA4* gpSystem;
-    // -> struct _XL_OBJECTTYPE gClassSystem;
-    // -> struct _XL_OBJECTTYPE gClassSound;
-    // -> struct _XL_OBJECTTYPE gClassFrame;
-    // -> struct _XL_OBJECTTYPE gClassCode;
-    // -> static char* gaszArgument[8];
-    // -> struct _MCARD mCard;
-    // -> static u32 gnTickReset;
-    // -> static s32 gbReset;
-    // -> u8 gmesgOK[833];
-    // -> u8 gno[1473];
-    // -> u8 gyes[1473];
-    // -> u8 gbar[1857];
-    // -> u8 greadingDisk[3137];
-    // -> u8 gwrongDisk[7937];
-    // -> u8 gfatalErr[13025];
-    // -> u8 gretryErr[9281];
-    // -> u8 gnoDisk[7937];
-    // -> u8 gcoverOpen[10433];
-    // -> void* DemoFrameBuffer1;
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> u8 DemoStatEnable;
-    // -> s32 gResetBeginFlag;
-    // -> s32 gButtonDownToggle;
-    // -> s32 gbDisplayedError;
-    // -> s32 gDVDResetToggle;
-}
-
 typedef enum __anon_0xA982 {
     SAT_NONE = -1,
     SAT_NAME = 0,
@@ -863,27 +818,6 @@ typedef enum __anon_0xA982 {
     SAT_RESET = 7,
     SAT_COUNT_ = 8,
 } __anon_0xA982;
-
-// Range: 0x80008538 -> 0x80008578
-s32 simulatorGetArgument(enum __anon_0xA982 eType, char** pszArgument) {
-    // Parameters
-    // enum __anon_0xA982 eType; // r1+0x0
-    // char** pszArgument; // r1+0x4
-
-    // References
-    // -> static char* gaszArgument[8];
-}
-
-// Range: 0x80008578 -> 0x800086DC
-static s32 simulatorParseArguments() {
-    // Local variables
-    s32 iArgument; // r23
-    char* szText; // r1+0x14
-    char* szValue; // r1+0x10
-
-    // References
-    // -> static char* gaszArgument[8];
-}
 
 typedef struct PADStatus {
     /* 0x0 */ u16 button;
@@ -914,254 +848,6 @@ typedef struct __anon_0xAD2F {
 // size = 0x78, address = 0x80132758
 struct __anon_0xAD2F DemoPad[4];
 
-// Erased
-static s32 editSoundMenu() {
-    // Local variables
-    s32* menuValues[3]; // r1+0x94
-    s32 menuMinMax[3][2]; // r1+0x7C
-    char* menuNames[3]; // r1+0x70
-    char* menuHelp[3]; // r1+0x64
-    char str[32]; // r1+0x44
-    s32 curItem; // r24
-    s32 bDone; // r1+0xA0
-    s32 i; // r6
-    u32 heldButtons; // r7
-    u32 buttons; // r8
-    u32 downButtons; // r1+0x8
-    u8 holdCount[16]; // r1+0x34
-    struct _GXColor color[3]; // r1+0x28
-    s32 step; // r20
-    u32 bit; // r1+0x8
-    struct _GXColor* colorP; // r31
-
-    // References
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-    // -> u8 DemoStatEnable;
-}
-
-// Erased
-static void MyGXInit() {
-    // Local variables
-    s32 i; // r31
-    f32 identity_mtx[3][4]; // r1+0x50
-}
-
-// Erased
-static s32 simulatorMenu() {}
-
-// Erased
-static s32 simulatorPickROM() {}
-
-// Erased
-static s32 simulatorDrawOKScreen(char* line1, char* line2, char* line3) {
-    // Parameters
-    // char* line1; // r22
-    // char* line2; // r23
-    // char* line3; // r24
-
-    // Local variables
-    s32 nCount; // r25
-
-    // References
-    // -> s32 gButtonDownToggle;
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-    // -> u8 DemoStatEnable;
-}
-
-// Erased
-static s32 simulatorDrawYesNoScreen(char* line1, char* line2, char* line3, s32* yes) {
-    // Parameters
-    // char* line1; // r21
-    // char* line2; // r22
-    // char* line3; // r23
-    // s32* yes; // r24
-
-    // Local variables
-    s32 nCount; // r25
-
-    // References
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> s32 gButtonDownToggle;
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-    // -> u8 DemoStatEnable;
-}
-
-// Range: 0x800086DC -> 0x800088E4
-static s32 simulatorDrawCursor(s32 nX, s32 nY) {
-    // Parameters
-    // s32 nX; // r30
-    // s32 nY; // r31
-
-    // Local variables
-    struct _GXColor color; // r1+0x18
-    s32 nTick; // r4
-}
-
-// Range: 0x800088E4 -> 0x80008A14
-s32 simulatorMCardPollDrawFormatBar() {
-    // Local variables
-    f32 rate; // r1+0x8
-    s32 nBytes; // r1+0x8
-
-    // References
-    // -> char gpErrorMessageBuffer[20480];
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80008A14 -> 0x80008B44
-s32 simulatorMCardPollDrawBar() {
-    // Local variables
-    f32 rate; // r1+0x8
-    s32 nBytes; // r1+0x8
-
-    // References
-    // -> char gpErrorMessageBuffer[20480];
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80008B44 -> 0x80008BDC
-s32 simulatorDrawMCardText() {
-    // References
-    // -> char gpErrorMessageBuffer[20480];
-}
-
-// Erased
-static s32 simulatorDrawText(s32 nX, s32 nY, char* szText, s32 nColorR, s32 nColorG, s32 nColorB) {
-    // Parameters
-    // s32 nX; // r26
-    // s32 nY; // r27
-    // char* szText; // r28
-    // s32 nColorR; // r29
-    // s32 nColorG; // r30
-    // s32 nColorB; // r31
-
-    // Local variables
-    struct _GXColor color; // r1+0x24
-}
-
-// Range: 0x80008BDC -> 0x80008DBC
-s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
-    // Parameters
-    // s32 IPL; // r24
-    // s32 forceMenu; // r25
-    // s32 allowReset; // r26
-    // s32 usePreviousSettings; // r27
-
-    // Local variables
-    u32 bFlag; // r1+0x8
-    u32 nTick; // r1+0x8
-    s32 prevIPLSetting; // r28
-    s32 prevForceMenuSetting; // r27
-    s32 prevAllowResetSetting; // r1+0x8
-
-    // References
-    // -> static u32 gnTickReset;
-    // -> static s32 gbReset;
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> s32 gResetBeginFlag;
-    // -> s32 gPreviousAllowResetSetting;
-    // -> s32 gPreviousForceMenuSetting;
-    // -> s32 gPreviousIPLSetting;
-}
-
-// Erased
-static void sScreenshotFree() {}
-
-// Erased
-static void* sScreenshotAlloc() {}
-
-// Range: 0x80008DBC -> 0x80008DE4
-s32 simulatorRumbleStop(s32 channel) {
-    // Parameters
-    // s32 channel; // r3
-}
-
-// Range: 0x80008DE4 -> 0x80008E0C
-s32 simulatorRumbleStart(s32 channel) {
-    // Parameters
-    // s32 channel; // r3
-}
-
-// Range: 0x80008E0C -> 0x80008E40
-s32 simulatorWriteFLASH(u32 address, u8* data, s32 size) {
-    // Parameters
-    // u32 address; // r4
-    // u8* data; // r6
-    // s32 size; // r5
-
-    // References
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80008E40 -> 0x80008E74
-s32 simulatorReadFLASH(u32 address, u8* data, s32 size) {
-    // Parameters
-    // u32 address; // r4
-    // u8* data; // r6
-    // s32 size; // r5
-
-    // References
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80008E74 -> 0x80008EA8
-s32 simulatorWriteSRAM(u32 address, u8* data, s32 size) {
-    // Parameters
-    // u32 address; // r4
-    // u8* data; // r6
-    // s32 size; // r5
-
-    // References
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80008EA8 -> 0x80008EDC
-s32 simulatorReadSRAM(u32 address, u8* data, s32 size) {
-    // Parameters
-    // u32 address; // r4
-    // u8* data; // r6
-    // s32 size; // r5
-
-    // References
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80008EDC -> 0x80008F4C
-s32 simulatorWriteEEPROM(u8 address, u8* data) {
-    // Parameters
-    // u8 address; // r30
-    // u8* data; // r31
-
-    // Local variables
-    s32 size; // r1+0x10
-
-    // References
-    // -> struct _MCARD mCard;
-    // -> struct __anon_0x6EA4* gpSystem;
-}
-
-// Range: 0x80008F4C -> 0x80008FBC
-s32 simulatorReadEEPROM(u8 address, u8* data) {
-    // Parameters
-    // u8 address; // r30
-    // u8* data; // r31
-
-    // Local variables
-    s32 size; // r1+0x10
-
-    // References
-    // -> struct _MCARD mCard;
-    // -> struct __anon_0x6EA4* gpSystem;
-}
-
 typedef enum __anon_0xC003 {
     CT_NONE = 0,
     CT_CONTROLLER = 1,
@@ -1174,84 +860,6 @@ typedef enum __anon_0xC003 {
     CT_COUNT = 8,
 } __anon_0xC003;
 
-// Range: 0x80008FBC -> 0x80009038
-s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
-    // Parameters
-    // s32 channel; // r29
-    // u16 address; // r30
-    // u8* data; // r31
-
-    // Local variables
-    enum __anon_0xC003 type; // r1+0x14
-
-    // References
-    // -> struct __anon_0x6EA4* gpSystem;
-}
-
-// Range: 0x80009038 -> 0x800090B4
-s32 simulatorReadPak(s32 channel, u16 address, u8* data) {
-    // Parameters
-    // s32 channel; // r29
-    // u16 address; // r30
-    // u8* data; // r31
-
-    // Local variables
-    enum __anon_0xC003 type; // r1+0x14
-
-    // References
-    // -> struct __anon_0x6EA4* gpSystem;
-}
-
-// Range: 0x800090B4 -> 0x80009108
-s32 simulatorDetectController(s32 channel) {
-    // Parameters
-    // s32 channel; // r31
-
-    // Local variables
-    struct PADStatus status[4]; // r1+0xC
-}
-
-// Erased
-static s32 simulatorResetController() {}
-
-// Range: 0x80009108 -> 0x80009110
-s32 simulatorShowLoad() {}
-
-// Erased
-static void DEMOInitWindow(s32 nSizeX, s32 nSizeY, s32 nColorR, s32 nColorG, s32 nColorB) {
-    // Parameters
-    // s32 nSizeX; // r3
-    // s32 nSizeY; // r1+0xC
-    // s32 nColorR; // r29
-    // s32 nColorG; // r30
-    // s32 nColorB; // r31
-
-    // Local variables
-    struct _GXColor color; // r1+0x20
-}
-
-// Range: 0x80009110 -> 0x80009684
-s32 simulatorReadController(s32 channel, u32* anData) {
-    // Parameters
-    // s32 channel; // r29
-    // u32* anData; // r30
-
-    // Local variables
-    f32 subStickTest; // f1
-    s32 stickX; // r1+0x8
-    s32 stickY; // r1+0x8
-    s32 subStickX; // r6
-    s32 subStickY; // r7
-    s32 nDirButton; // r3
-
-    // References
-    // -> static u32 gContMap[4][20];
-    // -> static u32 nCurrButton$702;
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> s32 gButtonDownToggle;
-    // -> static u32 nPrevButton$701;
-}
-
 typedef struct __anon_0xC654 {
     /* 0x000 */ char rom[36];
     /* 0x024 */ s32 controllerConfiguration[4][20];
@@ -1261,73 +869,11 @@ typedef struct __anon_0xC654 {
     /* 0x170 */ s32 currentControllerConfig;
 } __anon_0xC654; // size = 0x174
 
-// Erased
-static s32 simulatorChangeControllerConfig(s32 channel, s32 nCurrButton) {
-    // Parameters
-    // s32 channel; // r31
-    // s32 nCurrButton; // r1+0xC
-
-    // References
-    // -> static u32 gContMap[4][20];
-    // -> static struct __anon_0xC654 gSystemRomConfigurationList[1];
-    // -> struct __anon_0x6EA4* gpSystem;
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80009684 -> 0x8000974C
-s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
-    // Parameters
-    // u32* mapDataOutput; // r1+0x0
-    // u32* mapDataInput; // r1+0x4
-
-    // Local variables
-    s32 i; // r7
-}
-
-// Range: 0x8000974C -> 0x80009824
-s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
-    // Parameters
-    // u32* mapData; // r1+0x0
-    // s32 channel; // r1+0x4
-
-    // Local variables
-    s32 i; // r7
-
-    // References
-    // -> static u32 gContMap[4][20];
-}
-
 typedef enum __anon_0xC9F9 {
     SV_NONE = 0,
     SV_CODE = 1,
     SV_FRAME = 2,
 } __anon_0xC9F9;
-
-// Erased
-static s32 simulatorSetView(enum __anon_0xC9F9 eView) {
-    // Parameters
-    // enum __anon_0xC9F9 eView; // r1+0x8
-
-    // References
-    // -> static struct __anon_0x57A1* gpCode;
-    // -> struct __anon_0x87F6* gpFrame;
-}
-
-// Erased
-static enum __anon_0xC9F9 simulatorGetView() {
-    // References
-    // -> static struct __anon_0x57A1* gpCode;
-    // -> struct __anon_0x87F6* gpFrame;
-}
-
-// Erased
-static s32 simulatorShowParts() {}
-
-// Erased
-static s32 simulatorAddXtraTime() {}
-
-// Erased
-static s32 simulatorSetPart() {}
 
 typedef enum __anon_0xCB82 {
     VI_TVMODE_NTSC_INT = 0,
@@ -1371,32 +917,6 @@ struct _GXRenderModeObj* rmode;
 // size = 0x4, address = 0x80135644
 s32 gMovieErrorToggle;
 
-// Range: 0x80009824 -> 0x80009980
-void simulatorResetAndPlayMovie() {
-    // Local variables
-    struct _GXColor color; // r1+0x14
-    struct _GXRenderModeObj* simrmode; // r31
-
-    // References
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-    // -> u8 DemoStatEnable;
-    // -> s32 gMovieErrorToggle;
-    // -> struct _GXRenderModeObj* rmode;
-    // -> struct _MCARD mCard;
-}
-
-// Range: 0x80009980 -> 0x80009A30
-void simulatorReset(s32 IPL, s32 forceMenu) {
-    // Parameters
-    // s32 IPL; // r30
-    // s32 forceMenu; // r31
-
-    // References
-    // -> struct _MCARD mCard;
-}
-
 typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
     /* 0x4 */ char company[2];
@@ -1428,53 +948,6 @@ typedef struct DVDFileInfo {
     /* 0x34 */ u32 length;
     /* 0x38 */ void (*callback)(s32, struct DVDFileInfo*);
 } __anon_0xD50B; // size = 0x3C
-
-// Range: 0x80009A30 -> 0x8000CB7C
-s32 simulatorDrawErrorMessageWait(enum __anon_0x61D7 simulatorErrorMessage) {
-    // Parameters
-    // enum __anon_0x61D7 simulatorErrorMessage; // r1+0x8
-
-    // Local variables
-    struct DVDFileInfo fileInfo; // r1+0x80
-
-    // References
-    // -> s32 gButtonDownToggle;
-    // -> struct __anon_0x6EA4* gpSystem;
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> u8 gmesgOK[833];
-    // -> char gpErrorMessageBuffer[20480];
-    // -> u8 gyes[1473];
-    // -> u32 gmsg_sv_shareSize;
-    // -> enum __anon_0x61D7 simulatorMessageCurrent;
-    // -> u32 gmsg_sv12Size;
-    // -> u32 gmsg_sv11Size;
-    // -> u32 gmsg_sv10Size;
-    // -> u32 gmsg_sv07Size;
-    // -> u32 gmsg_sv06_3Size;
-    // -> u32 gmsg_sv06_2Size;
-    // -> u32 gmsg_sv06_1Size;
-    // -> u32 gmsg_sv05_1Size;
-    // -> u32 gmsg_sv04Size;
-    // -> u32 gmsg_sv03Size;
-    // -> u32 gmsg_sv02Size;
-    // -> u32 gmsg_sv01_2Size;
-    // -> u32 gmsg_sv01Size;
-    // -> u32 gmsg_in05Size;
-    // -> u32 gmsg_in04Size;
-    // -> u32 gmsg_in03Size;
-    // -> u32 gmsg_gf06Size;
-    // -> u32 gmsg_gf05Size;
-    // -> u32 gmsg_gf04Size;
-    // -> u32 gmsg_gf03Size;
-    // -> u32 gmsg_ld06_3Size;
-    // -> u32 gmsg_ld06_2Size;
-    // -> u32 gmsg_ld06_1Size;
-    // -> u32 gmsg_ld05_1Size;
-    // -> u32 gmsg_ld04Size;
-    // -> u32 gmsg_ld03Size;
-    // -> u32 gmsg_ld02Size;
-    // -> u32 gmsg_ld01Size;
-}
 
 typedef enum _GXTexFilter {
     GX_NEAR = 0,
@@ -1527,120 +1000,50 @@ typedef struct __anon_0xDB69 {
     /* 0x8 */ struct __anon_0xDAF8* descriptorArray;
 } __anon_0xDB69; // size = 0xC
 
-// Erased
-static s32 simulatorDrawOKMessageLoop(struct __anon_0xDB69* simulatorMessage) {
-    // Parameters
-    // struct __anon_0xDB69* simulatorMessage; // r27
-
-    // References
-    // -> s32 gButtonDownToggle;
-    // -> struct __anon_0x6EA4* gpSystem;
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> u8 gmesgOK[833];
-    // -> u8 gyes[1473];
-}
-
-// Range: 0x8000CB7C -> 0x8000CF24
-s32 simulatorDrawYesNoMessage(enum __anon_0x61D7 simulatorMessage, s32* yes) {
-    // Parameters
-    // enum __anon_0x61D7 simulatorMessage; // r1+0x8
-    // s32* yes; // r30
-
-    // Local variables
-    struct DVDFileInfo fileInfo; // r1+0x10
-
-    // References
-    // -> char gpErrorMessageBuffer[20480];
-    // -> u32 gmsg_sv08Size;
-    // -> enum __anon_0x61D7 simulatorMessageCurrent;
-    // -> u32 gmsg_sv06_5Size;
-    // -> u32 gmsg_sv06_4Size;
-    // -> u32 gmsg_in01Size;
-    // -> u32 gmsg_gf01Size;
-    // -> u32 gmsg_ld07Size;
-    // -> u32 gmsg_ld06_4Size;
-    // -> u32 gmsg_ld05_2Size;
-}
-
-// Range: 0x8000CF24 -> 0x8000D1F0
-s32 simulatorDrawYesNoMessageLoop(struct __anon_0xDB69* simulatorQuestion, s32* yes) {
-    // Parameters
-    // struct __anon_0xDB69* simulatorQuestion; // r26
-    // s32* yes; // r27
-
-    // References
-    // -> struct __anon_0x6EA4* gpSystem;
-    // -> struct __anon_0xAD2F DemoPad[4];
-    // -> s32 gButtonDownToggle;
-    // -> u8 gno[1473];
-    // -> u8 gyes[1473];
-    // -> s32 gHighlightChoice;
-}
-
-// Erased
-static s32 simulatorDrawErrorMessageFromDVD(s32 drawBar, s32 percent) {
-    // Parameters
-    // s32 drawBar; // r29
-    // s32 percent; // r30
-
-    // References
-    // -> char gpErrorMessageBuffer[20480];
-}
-
-// Range: 0x8000D1F0 -> 0x8000D35C
-s32 simulatorPrepareMessage(enum __anon_0x61D7 simulatorErrorMessage) {
-    // Parameters
-    // enum __anon_0x61D7 simulatorErrorMessage; // r1+0x8
-
-    // Local variables
-    struct DVDFileInfo fileInfo; // r1+0xC
-
-    // References
-    // -> char gpErrorMessageBuffer[20480];
-    // -> u32 gmsg_gf02Size;
-    // -> enum __anon_0x61D7 simulatorMessageCurrent;
-    // -> u32 gmsg_sv09Size;
-    // -> u32 gmsg_in02Size;
-}
-
-// Range: 0x8000D35C -> 0x8000D58C
-s32 simulatorDrawErrorMessage(enum __anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent) {
-    // Parameters
-    // enum __anon_0x61D7 simulatorErrorMessage; // r28
-    // s32 drawBar; // r29
-    // s32 percent; // r31
-
-    // References
-    // -> s32 gbDisplayedError;
-    // -> u8 gfatalErr[13025];
-    // -> u8 gnoDisk[7937];
-    // -> u8 gretryErr[9281];
-    // -> u8 greadingDisk[3137];
-    // -> u8 gwrongDisk[7937];
-    // -> u8 gcoverOpen[10433];
-}
-
 typedef struct _GXTexObj {
     /* 0x0 */ u32 dummy[8];
 } __anon_0xE08E; // size = 0x20
 
-// Range: 0x8000D58C -> 0x8000DBB4
-s32 simulatorDrawOKImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s32 nY0Message, struct __anon_0xDB69* tplOK,
-                         s32 nX0OK, s32 nY0OK) {
+// Range: 0x8000F0FC -> 0x8000F7CC
+s32 simulatorGXInit() {
+    // Local variables
+    s32 i; // r31
+    struct _GXColor GX_DEFAULT_BG; // r1+0x58
+    struct _GXColor BLACK; // r1+0x54
+    struct _GXColor WHITE; // r1+0x50
+    f32 identity_mtx[3][4]; // r1+0x20
+}
+
+// Range: 0x8000F020 -> 0x8000F0FC
+void simulatorUnpackTexPalette(struct __anon_0xDB69* pal) {
     // Parameters
-    // struct __anon_0xDB69* tplMessage; // r29
-    // s32 nX0Message; // r28
-    // s32 nY0Message; // r27
-    // struct __anon_0xDB69* tplOK; // r23
-    // s32 nX0OK; // r24
-    // s32 nY0OK; // r25
+    // struct __anon_0xDB69* pal; // r1+0x0
 
     // Local variables
-    struct _GXTexObj texObj; // r1+0x98
-    struct _GXColor color0; // r1+0x94
-    struct _GXColor color1; // r1+0x90
-    f32 identity_mtx[3][4]; // r1+0x5C
-    f32 g2DviewMtx[3][4]; // r1+0x2C
+    u16 i; // r4
+}
+
+// Erased
+static void simulatorDEMOSwapBuffers() {
+    // References
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+}
+
+// Erased
+static void simulatorDEMODoneRender() {
+    // References
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+    // -> u8 DemoStatEnable;
+}
+
+// Erased
+static s32 simulatorDrawBlack() {
+    // Local variables
+    struct _GXColor color; // r1+0x6C
 
     // References
     // -> struct __anon_0x87F6* gpFrame;
@@ -1648,9 +1051,78 @@ s32 simulatorDrawOKImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s32 n
     // -> void* DemoFrameBuffer2;
     // -> void* DemoFrameBuffer1;
     // -> u8 DemoStatEnable;
+}
+
+// Range: 0x8000EE18 -> 0x8000F020
+s32 simulatorDVDShowError(s32 nStatus) {
+    // Parameters
+    // s32 nStatus; // r26
+
+    // Local variables
+    s32 continueToggle; // r28
+    enum __anon_0x61D7 nMessage; // r27
+
+    // References
+    // -> struct __anon_0x6EA4* gpSystem;
+    // -> s32 gDVDResetToggle;
+    // -> static s32 toggle$192;
+}
+
+// Range: 0x8000EDA8 -> 0x8000EE18
+s32 simulatorDVDOpen(char* szNameFile, struct DVDFileInfo* pFileInfo) {
+    // Parameters
+    // char* szNameFile; // r30
+    // struct DVDFileInfo* pFileInfo; // r31
+
+    // Local variables
+    s32 nStatus; // r3
+}
+
+// Range: 0x8000ECC4 -> 0x8000EDA8
+s32 simulatorDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset,
+                     void (*callback)(s32, struct DVDFileInfo*)) {
+    // Parameters
+    // struct DVDFileInfo* pFileInfo; // r26
+    // void* anData; // r27
+    // s32 nSizeRead; // r28
+    // s32 nOffset; // r29
+    // void (* callback)(s32, struct DVDFileInfo*); // r7
+
+    // Local variables
+    s32 nStatus; // r31
+    s32 bRetry; // r30
+}
+
+// Range: 0x8000ECA0 -> 0x8000ECC4
+s32 simulatorPlayMovie() {}
+
+// Range: 0x8000E484 -> 0x8000ECA0
+s32 simulatorDrawImage(struct __anon_0xDB69* tpl, s32 nX0, s32 nY0, s32 drawBar, s32 percent) {
+    // Parameters
+    // struct __anon_0xDB69* tpl; // r22
+    // s32 nX0; // r30
+    // s32 nY0; // r23
+    // s32 drawBar; // r24
+    // s32 percent; // r25
+
+    // Local variables
+    struct _GXTexObj texObj; // r1+0xDC
+    struct _GXTexObj texObj2; // r1+0xBC
+    struct _GXColor color; // r1+0xB4
+    f32 identity_mtx[3][4]; // r1+0x84
+    f32 g2DviewMtx[3][4]; // r1+0x54
+    f32 g2[3][4]; // r1+0x24
+
+    // References
+    // -> struct __anon_0x87F6* gpFrame;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+    // -> u8 DemoStatEnable;
+    // -> u8 gbar[1857];
     // -> u8 TexCoords_u8[8];
     // -> u32 Colors_u32[3];
-    // -> s16 VertYes_s16[12];
+    // -> s16 Vert_s16Bar[12];
     // -> s16 Vert_s16[12];
     // -> static f32 gOrthoMtx[4][4];
 }
@@ -1692,22 +1164,23 @@ s32 simulatorDrawYesNoImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s3
     // -> static f32 gOrthoMtx[4][4];
 }
 
-// Range: 0x8000E484 -> 0x8000ECA0
-s32 simulatorDrawImage(struct __anon_0xDB69* tpl, s32 nX0, s32 nY0, s32 drawBar, s32 percent) {
+// Range: 0x8000D58C -> 0x8000DBB4
+s32 simulatorDrawOKImage(struct __anon_0xDB69* tplMessage, s32 nX0Message, s32 nY0Message, struct __anon_0xDB69* tplOK,
+                         s32 nX0OK, s32 nY0OK) {
     // Parameters
-    // struct __anon_0xDB69* tpl; // r22
-    // s32 nX0; // r30
-    // s32 nY0; // r23
-    // s32 drawBar; // r24
-    // s32 percent; // r25
+    // struct __anon_0xDB69* tplMessage; // r29
+    // s32 nX0Message; // r28
+    // s32 nY0Message; // r27
+    // struct __anon_0xDB69* tplOK; // r23
+    // s32 nX0OK; // r24
+    // s32 nY0OK; // r25
 
     // Local variables
-    struct _GXTexObj texObj; // r1+0xDC
-    struct _GXTexObj texObj2; // r1+0xBC
-    struct _GXColor color; // r1+0xB4
-    f32 identity_mtx[3][4]; // r1+0x84
-    f32 g2DviewMtx[3][4]; // r1+0x54
-    f32 g2[3][4]; // r1+0x24
+    struct _GXTexObj texObj; // r1+0x98
+    struct _GXColor color0; // r1+0x94
+    struct _GXColor color1; // r1+0x90
+    f32 identity_mtx[3][4]; // r1+0x5C
+    f32 g2DviewMtx[3][4]; // r1+0x2C
 
     // References
     // -> struct __anon_0x87F6* gpFrame;
@@ -1715,102 +1188,629 @@ s32 simulatorDrawImage(struct __anon_0xDB69* tpl, s32 nX0, s32 nY0, s32 drawBar,
     // -> void* DemoFrameBuffer2;
     // -> void* DemoFrameBuffer1;
     // -> u8 DemoStatEnable;
-    // -> u8 gbar[1857];
     // -> u8 TexCoords_u8[8];
     // -> u32 Colors_u32[3];
-    // -> s16 Vert_s16Bar[12];
+    // -> s16 VertYes_s16[12];
     // -> s16 Vert_s16[12];
     // -> static f32 gOrthoMtx[4][4];
 }
 
-// Range: 0x8000ECA0 -> 0x8000ECC4
-s32 simulatorPlayMovie() {}
-
-// Range: 0x8000ECC4 -> 0x8000EDA8
-s32 simulatorDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset,
-                     void (*callback)(s32, struct DVDFileInfo*)) {
+// Range: 0x8000D35C -> 0x8000D58C
+s32 simulatorDrawErrorMessage(enum __anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent) {
     // Parameters
-    // struct DVDFileInfo* pFileInfo; // r26
-    // void* anData; // r27
-    // s32 nSizeRead; // r28
-    // s32 nOffset; // r29
-    // void (* callback)(s32, struct DVDFileInfo*); // r7
+    // enum __anon_0x61D7 simulatorErrorMessage; // r28
+    // s32 drawBar; // r29
+    // s32 percent; // r31
 
-    // Local variables
-    s32 nStatus; // r31
-    s32 bRetry; // r30
+    // References
+    // -> s32 gbDisplayedError;
+    // -> u8 gfatalErr[13025];
+    // -> u8 gnoDisk[7937];
+    // -> u8 gretryErr[9281];
+    // -> u8 greadingDisk[3137];
+    // -> u8 gwrongDisk[7937];
+    // -> u8 gcoverOpen[10433];
 }
 
-// Range: 0x8000EDA8 -> 0x8000EE18
-s32 simulatorDVDOpen(char* szNameFile, struct DVDFileInfo* pFileInfo) {
+// Range: 0x8000D1F0 -> 0x8000D35C
+s32 simulatorPrepareMessage(enum __anon_0x61D7 simulatorErrorMessage) {
     // Parameters
-    // char* szNameFile; // r30
-    // struct DVDFileInfo* pFileInfo; // r31
+    // enum __anon_0x61D7 simulatorErrorMessage; // r1+0x8
 
     // Local variables
-    s32 nStatus; // r3
+    struct DVDFileInfo fileInfo; // r1+0xC
+
+    // References
+    // -> char gpErrorMessageBuffer[20480];
+    // -> u32 gmsg_gf02Size;
+    // -> enum __anon_0x61D7 simulatorMessageCurrent;
+    // -> u32 gmsg_sv09Size;
+    // -> u32 gmsg_in02Size;
 }
 
-// Range: 0x8000EE18 -> 0x8000F020
-s32 simulatorDVDShowError(s32 nStatus) {
+// Erased
+static s32 simulatorDrawErrorMessageFromDVD(s32 drawBar, s32 percent) {
     // Parameters
-    // s32 nStatus; // r26
+    // s32 drawBar; // r29
+    // s32 percent; // r30
 
-    // Local variables
-    s32 continueToggle; // r28
-    enum __anon_0x61D7 nMessage; // r27
+    // References
+    // -> char gpErrorMessageBuffer[20480];
+}
+
+// Range: 0x8000CF24 -> 0x8000D1F0
+s32 simulatorDrawYesNoMessageLoop(struct __anon_0xDB69* simulatorQuestion, s32* yes) {
+    // Parameters
+    // struct __anon_0xDB69* simulatorQuestion; // r26
+    // s32* yes; // r27
 
     // References
     // -> struct __anon_0x6EA4* gpSystem;
-    // -> s32 gDVDResetToggle;
-    // -> static s32 toggle$192;
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> s32 gButtonDownToggle;
+    // -> u8 gno[1473];
+    // -> u8 gyes[1473];
+    // -> s32 gHighlightChoice;
 }
 
-// Erased
-static s32 simulatorDrawBlack() {
-    // Local variables
-    struct _GXColor color; // r1+0x6C
-
-    // References
-    // -> struct __anon_0x87F6* gpFrame;
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-    // -> u8 DemoStatEnable;
-}
-
-// Erased
-static void simulatorDEMODoneRender() {
-    // References
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-    // -> u8 DemoStatEnable;
-}
-
-// Erased
-static void simulatorDEMOSwapBuffers() {
-    // References
-    // -> void* DemoCurrentBuffer;
-    // -> void* DemoFrameBuffer2;
-    // -> void* DemoFrameBuffer1;
-}
-
-// Range: 0x8000F020 -> 0x8000F0FC
-void simulatorUnpackTexPalette(struct __anon_0xDB69* pal) {
+// Range: 0x8000CB7C -> 0x8000CF24
+s32 simulatorDrawYesNoMessage(enum __anon_0x61D7 simulatorMessage, s32* yes) {
     // Parameters
-    // struct __anon_0xDB69* pal; // r1+0x0
+    // enum __anon_0x61D7 simulatorMessage; // r1+0x8
+    // s32* yes; // r30
 
     // Local variables
-    u16 i; // r4
+    struct DVDFileInfo fileInfo; // r1+0x10
+
+    // References
+    // -> char gpErrorMessageBuffer[20480];
+    // -> u32 gmsg_sv08Size;
+    // -> enum __anon_0x61D7 simulatorMessageCurrent;
+    // -> u32 gmsg_sv06_5Size;
+    // -> u32 gmsg_sv06_4Size;
+    // -> u32 gmsg_in01Size;
+    // -> u32 gmsg_gf01Size;
+    // -> u32 gmsg_ld07Size;
+    // -> u32 gmsg_ld06_4Size;
+    // -> u32 gmsg_ld05_2Size;
 }
 
-// Range: 0x8000F0FC -> 0x8000F7CC
-s32 simulatorGXInit() {
+// Erased
+static s32 simulatorDrawOKMessageLoop(struct __anon_0xDB69* simulatorMessage) {
+    // Parameters
+    // struct __anon_0xDB69* simulatorMessage; // r27
+
+    // References
+    // -> s32 gButtonDownToggle;
+    // -> struct __anon_0x6EA4* gpSystem;
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> u8 gmesgOK[833];
+    // -> u8 gyes[1473];
+}
+
+// Range: 0x80009A30 -> 0x8000CB7C
+s32 simulatorDrawErrorMessageWait(enum __anon_0x61D7 simulatorErrorMessage) {
+    // Parameters
+    // enum __anon_0x61D7 simulatorErrorMessage; // r1+0x8
+
+    // Local variables
+    struct DVDFileInfo fileInfo; // r1+0x80
+
+    // References
+    // -> s32 gButtonDownToggle;
+    // -> struct __anon_0x6EA4* gpSystem;
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> u8 gmesgOK[833];
+    // -> char gpErrorMessageBuffer[20480];
+    // -> u8 gyes[1473];
+    // -> u32 gmsg_sv_shareSize;
+    // -> enum __anon_0x61D7 simulatorMessageCurrent;
+    // -> u32 gmsg_sv12Size;
+    // -> u32 gmsg_sv11Size;
+    // -> u32 gmsg_sv10Size;
+    // -> u32 gmsg_sv07Size;
+    // -> u32 gmsg_sv06_3Size;
+    // -> u32 gmsg_sv06_2Size;
+    // -> u32 gmsg_sv06_1Size;
+    // -> u32 gmsg_sv05_1Size;
+    // -> u32 gmsg_sv04Size;
+    // -> u32 gmsg_sv03Size;
+    // -> u32 gmsg_sv02Size;
+    // -> u32 gmsg_sv01_2Size;
+    // -> u32 gmsg_sv01Size;
+    // -> u32 gmsg_in05Size;
+    // -> u32 gmsg_in04Size;
+    // -> u32 gmsg_in03Size;
+    // -> u32 gmsg_gf06Size;
+    // -> u32 gmsg_gf05Size;
+    // -> u32 gmsg_gf04Size;
+    // -> u32 gmsg_gf03Size;
+    // -> u32 gmsg_ld06_3Size;
+    // -> u32 gmsg_ld06_2Size;
+    // -> u32 gmsg_ld06_1Size;
+    // -> u32 gmsg_ld05_1Size;
+    // -> u32 gmsg_ld04Size;
+    // -> u32 gmsg_ld03Size;
+    // -> u32 gmsg_ld02Size;
+    // -> u32 gmsg_ld01Size;
+}
+
+// Range: 0x80009980 -> 0x80009A30
+void simulatorReset(s32 IPL, s32 forceMenu) {
+    // Parameters
+    // s32 IPL; // r30
+    // s32 forceMenu; // r31
+
+    // References
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x80009824 -> 0x80009980
+void simulatorResetAndPlayMovie() {
+    // Local variables
+    struct _GXColor color; // r1+0x14
+    struct _GXRenderModeObj* simrmode; // r31
+
+    // References
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+    // -> u8 DemoStatEnable;
+    // -> s32 gMovieErrorToggle;
+    // -> struct _GXRenderModeObj* rmode;
+    // -> struct _MCARD mCard;
+}
+
+// Erased
+static s32 simulatorSetPart() {}
+
+// Erased
+static s32 simulatorAddXtraTime() {}
+
+// Erased
+static s32 simulatorShowParts() {}
+
+// Erased
+static enum __anon_0xC9F9 simulatorGetView() {
+    // References
+    // -> static struct __anon_0x57A1* gpCode;
+    // -> struct __anon_0x87F6* gpFrame;
+}
+
+// Erased
+static s32 simulatorSetView(enum __anon_0xC9F9 eView) {
+    // Parameters
+    // enum __anon_0xC9F9 eView; // r1+0x8
+
+    // References
+    // -> static struct __anon_0x57A1* gpCode;
+    // -> struct __anon_0x87F6* gpFrame;
+}
+
+// Range: 0x8000974C -> 0x80009824
+s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
+    // Parameters
+    // u32* mapData; // r1+0x0
+    // s32 channel; // r1+0x4
+
+    // Local variables
+    s32 i; // r7
+
+    // References
+    // -> static u32 gContMap[4][20];
+}
+
+// Range: 0x80009684 -> 0x8000974C
+s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
+    // Parameters
+    // u32* mapDataOutput; // r1+0x0
+    // u32* mapDataInput; // r1+0x4
+
+    // Local variables
+    s32 i; // r7
+}
+
+// Erased
+static s32 simulatorChangeControllerConfig(s32 channel, s32 nCurrButton) {
+    // Parameters
+    // s32 channel; // r31
+    // s32 nCurrButton; // r1+0xC
+
+    // References
+    // -> static u32 gContMap[4][20];
+    // -> static struct __anon_0xC654 gSystemRomConfigurationList[1];
+    // -> struct __anon_0x6EA4* gpSystem;
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x80009110 -> 0x80009684
+s32 simulatorReadController(s32 channel, u32* anData) {
+    // Parameters
+    // s32 channel; // r29
+    // u32* anData; // r30
+
+    // Local variables
+    f32 subStickTest; // f1
+    s32 stickX; // r1+0x8
+    s32 stickY; // r1+0x8
+    s32 subStickX; // r6
+    s32 subStickY; // r7
+    s32 nDirButton; // r3
+
+    // References
+    // -> static u32 gContMap[4][20];
+    // -> static u32 nCurrButton$702;
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> s32 gButtonDownToggle;
+    // -> static u32 nPrevButton$701;
+}
+
+// Erased
+static void DEMOInitWindow(s32 nSizeX, s32 nSizeY, s32 nColorR, s32 nColorG, s32 nColorB) {
+    // Parameters
+    // s32 nSizeX; // r3
+    // s32 nSizeY; // r1+0xC
+    // s32 nColorR; // r29
+    // s32 nColorG; // r30
+    // s32 nColorB; // r31
+
+    // Local variables
+    struct _GXColor color; // r1+0x20
+}
+
+// Range: 0x80009108 -> 0x80009110
+s32 simulatorShowLoad() {}
+
+// Erased
+static s32 simulatorResetController() {}
+
+// Range: 0x800090B4 -> 0x80009108
+s32 simulatorDetectController(s32 channel) {
+    // Parameters
+    // s32 channel; // r31
+
+    // Local variables
+    struct PADStatus status[4]; // r1+0xC
+}
+
+// Range: 0x80009038 -> 0x800090B4
+s32 simulatorReadPak(s32 channel, u16 address, u8* data) {
+    // Parameters
+    // s32 channel; // r29
+    // u16 address; // r30
+    // u8* data; // r31
+
+    // Local variables
+    enum __anon_0xC003 type; // r1+0x14
+
+    // References
+    // -> struct __anon_0x6EA4* gpSystem;
+}
+
+// Range: 0x80008FBC -> 0x80009038
+s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
+    // Parameters
+    // s32 channel; // r29
+    // u16 address; // r30
+    // u8* data; // r31
+
+    // Local variables
+    enum __anon_0xC003 type; // r1+0x14
+
+    // References
+    // -> struct __anon_0x6EA4* gpSystem;
+}
+
+// Range: 0x80008F4C -> 0x80008FBC
+s32 simulatorReadEEPROM(u8 address, u8* data) {
+    // Parameters
+    // u8 address; // r30
+    // u8* data; // r31
+
+    // Local variables
+    s32 size; // r1+0x10
+
+    // References
+    // -> struct _MCARD mCard;
+    // -> struct __anon_0x6EA4* gpSystem;
+}
+
+// Range: 0x80008EDC -> 0x80008F4C
+s32 simulatorWriteEEPROM(u8 address, u8* data) {
+    // Parameters
+    // u8 address; // r30
+    // u8* data; // r31
+
+    // Local variables
+    s32 size; // r1+0x10
+
+    // References
+    // -> struct _MCARD mCard;
+    // -> struct __anon_0x6EA4* gpSystem;
+}
+
+// Range: 0x80008EA8 -> 0x80008EDC
+s32 simulatorReadSRAM(u32 address, u8* data, s32 size) {
+    // Parameters
+    // u32 address; // r4
+    // u8* data; // r6
+    // s32 size; // r5
+
+    // References
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x80008E74 -> 0x80008EA8
+s32 simulatorWriteSRAM(u32 address, u8* data, s32 size) {
+    // Parameters
+    // u32 address; // r4
+    // u8* data; // r6
+    // s32 size; // r5
+
+    // References
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x80008E40 -> 0x80008E74
+s32 simulatorReadFLASH(u32 address, u8* data, s32 size) {
+    // Parameters
+    // u32 address; // r4
+    // u8* data; // r6
+    // s32 size; // r5
+
+    // References
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x80008E0C -> 0x80008E40
+s32 simulatorWriteFLASH(u32 address, u8* data, s32 size) {
+    // Parameters
+    // u32 address; // r4
+    // u8* data; // r6
+    // s32 size; // r5
+
+    // References
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x80008DE4 -> 0x80008E0C
+s32 simulatorRumbleStart(s32 channel) {
+    // Parameters
+    // s32 channel; // r3
+}
+
+// Range: 0x80008DBC -> 0x80008DE4
+s32 simulatorRumbleStop(s32 channel) {
+    // Parameters
+    // s32 channel; // r3
+}
+
+// Erased
+static void* sScreenshotAlloc() {}
+
+// Erased
+static void sScreenshotFree() {}
+
+// Range: 0x80008BDC -> 0x80008DBC
+s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
+    // Parameters
+    // s32 IPL; // r24
+    // s32 forceMenu; // r25
+    // s32 allowReset; // r26
+    // s32 usePreviousSettings; // r27
+
+    // Local variables
+    u32 bFlag; // r1+0x8
+    u32 nTick; // r1+0x8
+    s32 prevIPLSetting; // r28
+    s32 prevForceMenuSetting; // r27
+    s32 prevAllowResetSetting; // r1+0x8
+
+    // References
+    // -> static u32 gnTickReset;
+    // -> static s32 gbReset;
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> s32 gResetBeginFlag;
+    // -> s32 gPreviousAllowResetSetting;
+    // -> s32 gPreviousForceMenuSetting;
+    // -> s32 gPreviousIPLSetting;
+}
+
+// Erased
+static s32 simulatorDrawText(s32 nX, s32 nY, char* szText, s32 nColorR, s32 nColorG, s32 nColorB) {
+    // Parameters
+    // s32 nX; // r26
+    // s32 nY; // r27
+    // char* szText; // r28
+    // s32 nColorR; // r29
+    // s32 nColorG; // r30
+    // s32 nColorB; // r31
+
+    // Local variables
+    struct _GXColor color; // r1+0x24
+}
+
+// Range: 0x80008B44 -> 0x80008BDC
+s32 simulatorDrawMCardText() {
+    // References
+    // -> char gpErrorMessageBuffer[20480];
+}
+
+// Range: 0x80008A14 -> 0x80008B44
+s32 simulatorMCardPollDrawBar() {
+    // Local variables
+    f32 rate; // r1+0x8
+    s32 nBytes; // r1+0x8
+
+    // References
+    // -> char gpErrorMessageBuffer[20480];
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x800088E4 -> 0x80008A14
+s32 simulatorMCardPollDrawFormatBar() {
+    // Local variables
+    f32 rate; // r1+0x8
+    s32 nBytes; // r1+0x8
+
+    // References
+    // -> char gpErrorMessageBuffer[20480];
+    // -> struct _MCARD mCard;
+}
+
+// Range: 0x800086DC -> 0x800088E4
+static s32 simulatorDrawCursor(s32 nX, s32 nY) {
+    // Parameters
+    // s32 nX; // r30
+    // s32 nY; // r31
+
+    // Local variables
+    struct _GXColor color; // r1+0x18
+    s32 nTick; // r4
+}
+
+// Erased
+static s32 simulatorDrawYesNoScreen(char* line1, char* line2, char* line3, s32* yes) {
+    // Parameters
+    // char* line1; // r21
+    // char* line2; // r22
+    // char* line3; // r23
+    // s32* yes; // r24
+
+    // Local variables
+    s32 nCount; // r25
+
+    // References
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> s32 gButtonDownToggle;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+    // -> u8 DemoStatEnable;
+}
+
+// Erased
+static s32 simulatorDrawOKScreen(char* line1, char* line2, char* line3) {
+    // Parameters
+    // char* line1; // r22
+    // char* line2; // r23
+    // char* line3; // r24
+
+    // Local variables
+    s32 nCount; // r25
+
+    // References
+    // -> s32 gButtonDownToggle;
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+    // -> u8 DemoStatEnable;
+}
+
+// Erased
+static s32 simulatorPickROM() {}
+
+// Erased
+static s32 simulatorMenu() {}
+
+// Erased
+static void MyGXInit() {
     // Local variables
     s32 i; // r31
-    struct _GXColor GX_DEFAULT_BG; // r1+0x58
-    struct _GXColor BLACK; // r1+0x54
-    struct _GXColor WHITE; // r1+0x50
-    f32 identity_mtx[3][4]; // r1+0x20
+    f32 identity_mtx[3][4]; // r1+0x50
+}
+
+// Erased
+static s32 editSoundMenu() {
+    // Local variables
+    s32* menuValues[3]; // r1+0x94
+    s32 menuMinMax[3][2]; // r1+0x7C
+    char* menuNames[3]; // r1+0x70
+    char* menuHelp[3]; // r1+0x64
+    char str[32]; // r1+0x44
+    s32 curItem; // r24
+    s32 bDone; // r1+0xA0
+    s32 i; // r6
+    u32 heldButtons; // r7
+    u32 buttons; // r8
+    u32 downButtons; // r1+0x8
+    u8 holdCount[16]; // r1+0x34
+    struct _GXColor color[3]; // r1+0x28
+    s32 step; // r20
+    u32 bit; // r1+0x8
+    struct _GXColor* colorP; // r31
+
+    // References
+    // -> struct __anon_0xAD2F DemoPad[4];
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> void* DemoFrameBuffer1;
+    // -> u8 DemoStatEnable;
+}
+
+// Range: 0x80008578 -> 0x800086DC
+static s32 simulatorParseArguments() {
+    // Local variables
+    s32 iArgument; // r23
+    char* szText; // r1+0x14
+    char* szValue; // r1+0x10
+
+    // References
+    // -> static char* gaszArgument[8];
+}
+
+// Range: 0x80008538 -> 0x80008578
+s32 simulatorGetArgument(enum __anon_0xA982 eType, char** pszArgument) {
+    // Parameters
+    // enum __anon_0xA982 eType; // r1+0x0
+    // char** pszArgument; // r1+0x4
+
+    // References
+    // -> static char* gaszArgument[8];
+}
+
+// Range: 0x80007F80 -> 0x80008538
+s32 xlMain() {
+    // Local variables
+    struct _GXColor color; // r1+0x3C
+    enum __anon_0xA6E7 eMode; // r1+0x38
+    s32 nSize0; // r1+0x34
+    s32 nSize1; // r1+0x30
+    s32 iName; // r5
+    char* szNameROM; // r1+0x2C
+    char acNameROM[32]; // r1+0xC
+    s32 rumbleYes; // r1+0x8
+
+    // References
+    // -> static struct __anon_0x57A1* gpCode;
+    // -> struct __anon_0x87F6* gpFrame;
+    // -> struct __anon_0x7181* gpSound;
+    // -> struct __anon_0x6EA4* gpSystem;
+    // -> struct _XL_OBJECTTYPE gClassSystem;
+    // -> struct _XL_OBJECTTYPE gClassSound;
+    // -> struct _XL_OBJECTTYPE gClassFrame;
+    // -> struct _XL_OBJECTTYPE gClassCode;
+    // -> static char* gaszArgument[8];
+    // -> struct _MCARD mCard;
+    // -> static u32 gnTickReset;
+    // -> static s32 gbReset;
+    // -> u8 gmesgOK[833];
+    // -> u8 gno[1473];
+    // -> u8 gyes[1473];
+    // -> u8 gbar[1857];
+    // -> u8 greadingDisk[3137];
+    // -> u8 gwrongDisk[7937];
+    // -> u8 gfatalErr[13025];
+    // -> u8 gretryErr[9281];
+    // -> u8 gnoDisk[7937];
+    // -> u8 gcoverOpen[10433];
+    // -> void* DemoFrameBuffer1;
+    // -> void* DemoCurrentBuffer;
+    // -> void* DemoFrameBuffer2;
+    // -> u8 DemoStatEnable;
+    // -> s32 gResetBeginFlag;
+    // -> s32 gButtonDownToggle;
+    // -> s32 gbDisplayedError;
+    // -> s32 gDVDResetToggle;
 }

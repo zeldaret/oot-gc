@@ -36,56 +36,6 @@ typedef struct __anon_0x75B37 {
     /* 0x3C */ s32 nSyncLeap;
 } __anon_0x75B37; // size = 0x40
 
-// Range: 0x8008E8A0 -> 0x8008E9F4
-s32 videoEvent(struct __anon_0x75B37* pVideo, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x75B37* pVideo; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r31
-}
-
-// Erased
-static s32 videoGetMode(struct __anon_0x75B37* pVideo, s32* pbBlack, s32* pnSizeX, s32* pnSizeY) {
-    // Parameters
-    // struct __anon_0x75B37* pVideo; // r1+0x8
-    // s32* pbBlack; // r1+0xC
-    // s32* pnSizeX; // r1+0x10
-    // s32* pnSizeY; // r1+0x14
-
-    // Local variables
-    s32 nSizeX; // r1+0x8
-    s32 nSizeY; // r3
-}
-
-// Range: 0x8008E9F4 -> 0x8008EA60
-s32 videoForceRetrace(struct __anon_0x75B37* pVideo) {
-    // Parameters
-    // struct __anon_0x75B37* pVideo; // r31
-}
-
-// Erased
-static s32 videoTickScan() {}
-
-// Range: 0x8008EA60 -> 0x8008EA68
-s32 videoGet64() {}
-
-// Range: 0x8008EA68 -> 0x8008EB84
-s32 videoGet32(struct __anon_0x75B37* pVideo, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x75B37* pVideo; // r30
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r31
-}
-
-// Range: 0x8008EB84 -> 0x8008EB8C
-s32 videoGet16() {}
-
-// Range: 0x8008EB8C -> 0x8008EB94
-s32 videoGet8() {}
-
-// Range: 0x8008EB94 -> 0x8008EB9C
-s32 videoPut64() {}
-
 typedef struct __anon_0x76165 {
     /* 0x0 */ f32 rX;
     /* 0x4 */ f32 rY;
@@ -354,6 +304,12 @@ typedef struct __anon_0x77548 {
     /* 0x3D148 */ u16* nCameraBuffer;
 } __anon_0x77548; // size = 0x3D150
 
+// Range: 0x8008EE18 -> 0x8008EE20
+s32 videoPut8() {}
+
+// Range: 0x8008EE10 -> 0x8008EE18
+s32 videoPut16() {}
+
 // Range: 0x8008EB9C -> 0x8008EE10
 s32 videoPut32(struct __anon_0x75B37* pVideo, u32 nAddress, s32* pData) {
     // Parameters
@@ -367,8 +323,52 @@ s32 videoPut32(struct __anon_0x75B37* pVideo, u32 nAddress, s32* pData) {
     struct __anon_0x761FF* pBuffer; // r29
 }
 
-// Range: 0x8008EE10 -> 0x8008EE18
-s32 videoPut16() {}
+// Range: 0x8008EB94 -> 0x8008EB9C
+s32 videoPut64() {}
 
-// Range: 0x8008EE18 -> 0x8008EE20
-s32 videoPut8() {}
+// Range: 0x8008EB8C -> 0x8008EB94
+s32 videoGet8() {}
+
+// Range: 0x8008EB84 -> 0x8008EB8C
+s32 videoGet16() {}
+
+// Range: 0x8008EA68 -> 0x8008EB84
+s32 videoGet32(struct __anon_0x75B37* pVideo, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x75B37* pVideo; // r30
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r31
+}
+
+// Range: 0x8008EA60 -> 0x8008EA68
+s32 videoGet64() {}
+
+// Erased
+static s32 videoTickScan() {}
+
+// Range: 0x8008E9F4 -> 0x8008EA60
+s32 videoForceRetrace(struct __anon_0x75B37* pVideo) {
+    // Parameters
+    // struct __anon_0x75B37* pVideo; // r31
+}
+
+// Erased
+static s32 videoGetMode(struct __anon_0x75B37* pVideo, s32* pbBlack, s32* pnSizeX, s32* pnSizeY) {
+    // Parameters
+    // struct __anon_0x75B37* pVideo; // r1+0x8
+    // s32* pbBlack; // r1+0xC
+    // s32* pnSizeX; // r1+0x10
+    // s32* pnSizeY; // r1+0x14
+
+    // Local variables
+    s32 nSizeX; // r1+0x8
+    s32 nSizeY; // r3
+}
+
+// Range: 0x8008E8A0 -> 0x8008E9F4
+s32 videoEvent(struct __anon_0x75B37* pVideo, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x75B37* pVideo; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
+}

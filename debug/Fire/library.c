@@ -245,156 +245,6 @@ typedef struct __anon_0x7AE26 {
     /* 0x40 */ s32 anAddress[10];
 } __anon_0x7AE26; // size = 0x68
 
-// Range: 0x8008F0F4 -> 0x8008F234
-s32 libraryEvent(struct __anon_0x7AE26* pLibrary, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r1+0x10
-
-    // References
-    // -> struct __anon_0x7AD10 gaFunction[54];
-}
-
-// Range: 0x8008F234 -> 0x8008F32C
-s32 libraryCall(struct __anon_0x7AE26* pLibrary, struct _CPU* pCPU, s32 iFunction) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r29
-    // struct _CPU* pCPU; // r30
-    // s32 iFunction; // r31
-
-    // References
-    // -> struct __anon_0x7AD10 gaFunction[54];
-}
-
-// Range: 0x8008F32C -> 0x8008F420
-s32 libraryFunctionReplaced(s32 iFunction) {
-    // Parameters
-    // s32 iFunction; // r1+0x4
-
-    // References
-    // -> struct __anon_0x7AD10 gaFunction[54];
-}
-
-// Erased
-static s32 libraryUpdate(struct __anon_0x7AE26* pLibrary) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r31
-
-    // Local variables
-    struct _CPU* pCPU; // r29
-    struct cpu_function* pFunction; // r1+0xC
-}
-
-// Range: 0x8008F420 -> 0x8008F584
-static s32 librarySearch(struct __anon_0x7AE26* pLibrary, struct cpu_function* pFunction) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r29
-    // struct cpu_function* pFunction; // r30
-}
-
-// Range: 0x8008F584 -> 0x8008FB6C
-s32 libraryTestFunction(struct __anon_0x7AE26* pLibrary, struct cpu_function* pFunction) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r30
-    // struct cpu_function* pFunction; // r26
-
-    // Local variables
-    s32 iFunction; // r31
-    s32 iData; // r24
-    s32 bFlag; // r29
-    s32 bDone; // r27
-    s32 bReturn; // r21
-    u32 iCode; // r5
-    u32* pnCode; // r1+0x1C
-    u32* pnCodeTemp; // r1+0x18
-    u32 nSizeCode; // r1+0x8
-    u32 nChecksum; // r1+0x14
-    u32 nOpcode; // r1+0x8
-    u32 nAddress; // r1+0x8
-
-    // References
-    // -> struct __anon_0x7AD10 gaFunction[54];
-}
-
-// Erased
-static s32 libraryCheckHandler(struct __anon_0x7AE26* pLibrary, s32 bException) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r31
-    // s32 bException; // r4
-}
-
-// Range: 0x8008FB6C -> 0x8009007C
-static s32 libraryFindFunctions(struct __anon_0x7AE26* pLibrary) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r24
-
-    // Local variables
-    struct _CPU* pCPU; // r3
-    s32 iFunction; // r29
-    struct __anon_0x79A22** apDevice; // r28
-    u8* aiDevice; // r27
-    u32 nOpcode; // r1+0x10
-    u32* pnCode; // r1+0xC
-    u32 nAddress; // r29
-    u32 nAddressLast; // r31
-    u32 nAddressEnqueueThread; // r26
-    u32 nAddressDispatchThread; // r25
-
-    // References
-    // -> struct __anon_0x7AD10 gaFunction[54];
-}
-
-// Range: 0x8009007C -> 0x800907B0
-static s32 libraryFindVariables(struct __anon_0x7AE26* pLibrary) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r24
-
-    // Local variables
-    struct _CPU* pCPU; // r27
-    struct __anon_0x79A22** apDevice; // r26
-    u8* aiDevice; // r25
-    u32 nAddress; // r23
-    u32 nAddressLast; // r28
-    u32 nOffset; // r1+0x28
-    u32 nOpcode; // r1+0x24
-    u32 anCode[6]; // r1+0xC
-}
-
-// Range: 0x800907B0 -> 0x80090AB0
-static s32 libraryFindException(struct __anon_0x7AE26* pLibrary, s32 bException) {
-    // Parameters
-    // struct __anon_0x7AE26* pLibrary; // r27
-    // s32 bException; // r28
-
-    // Local variables
-    struct _CPU* pCPU; // r30
-    struct __anon_0x79A22** apDevice; // r29
-    u8* aiDevice; // r31
-    u32 anCode[6]; // r1+0x10
-}
-
-// Range: 0x80090AB0 -> 0x80090AC4
-s32 zeldaLoadSZS_Exit(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x0
-}
-
-// Range: 0x80090AC4 -> 0x80090AD8
-s32 zeldaLoadSZS_Entry(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x0
-}
-
-// Range: 0x80090AD8 -> 0x80090B40
-s32 osViSwapBuffer_Entry(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x8
-
-    // References
-    // -> static u32 nAddress$605;
-}
-
 typedef struct __anon_0x7BB81 {
     /* 0x0 */ f32 f_odd;
     /* 0x4 */ f32 f_even;
@@ -498,128 +348,6 @@ typedef struct __anon_0x7C62D {
     /* 0x14 */ void* piHandle;
 } __anon_0x7C62D; // size = 0x18
 
-// Range: 0x80090B40 -> 0x80090C68
-s32 dmaSoundRomHandler_ZELDA1(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    void* pTarget; // r1+0x18
-    struct OSMesgQueue_s* mq; // r1+0x14
-    u32* msg; // r1+0x10
-    struct __anon_0x7C62D* pIOMessage; // r1+0xC
-    s32 first; // r30
-    s32 msgCount; // r29
-    s32 validCount; // r28
-    s32 nSize; // r6
-    s32 nAddress; // r5
-    s32 nOffsetRAM; // r5
-    s32 nOffsetROM; // r5
-}
-
-// Range: 0x80090C68 -> 0x80090C78
-s32 pictureSnap_Zelda2(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x0
-}
-
-// Range: 0x80090C78 -> 0x80090DE0
-s32 starfoxCopy(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r25
-
-    // Local variables
-    s32* A0; // r1+0x18
-    s32 A1; // r31
-    s32 A2; // r30
-    s32 A3; // r29
-    s32 T0; // r28
-    s32 T1; // r24
-    s32 T2; // r1+0x8
-    s32 T3; // r23
-    s32 T8; // r27
-    s32 T9; // r26
-    s16* pData16; // r1+0x14
-    char* source; // r1+0x10
-    char* target; // r1+0xC
-}
-
-// Range: 0x80090DE0 -> 0x80090E8C
-s32 osEepromLongWrite(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r28
-
-    // Local variables
-    s32 length; // r31
-    s32 ret; // r30
-    u8 address; // r29
-    u8* buffer; // r1+0xC
-}
-
-// Range: 0x80090E8C -> 0x80090F38
-s32 osEepromLongRead(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r28
-
-    // Local variables
-    s32 length; // r31
-    s32 ret; // r30
-    u8 address; // r29
-    u8* buffer; // r1+0xC
-}
-
-// Range: 0x80090F38 -> 0x80090FB0
-s32 osEepromWrite(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r30
-
-    // Local variables
-    u8 address; // r31
-    u8* buffer; // r1+0xC
-}
-
-// Range: 0x80090FB0 -> 0x80091028
-s32 osEepromRead(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r30
-
-    // Local variables
-    u8 address; // r31
-    u8* buffer; // r1+0xC
-}
-
-// Range: 0x80091028 -> 0x80091100
-s32 __osEepStatus(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    s32 ret; // r5
-    s32 nSize; // r1+0x10
-    u8* status; // r1+0xC
-}
-
-// Range: 0x80091100 -> 0x8009120C
-s32 osAiSetNextBuffer(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r30
-
-    // Local variables
-    u32 size; // r31
-    u32 nData32; // r1+0x10
-}
-
-// Range: 0x8009120C -> 0x80091338
-s32 osAiSetFrequency(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    u32 dacRate; // r1+0x8
-    u8 bitRate; // r28
-    u32 nData32; // r1+0x10
-}
-
 typedef struct __anon_0x7D115 {
     /* 0x0 */ u8 col[3];
     /* 0x3 */ char pad1;
@@ -650,69 +378,6 @@ typedef union __anon_0x7D2DB {
     /* 0x0 */ u64 u64;
 } __anon_0x7D2DB;
 
-// Range: 0x80091338 -> 0x8009190C
-void guLookAtReflect(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    struct __anon_0x7D2A5* l; // r1+0x70
-    s32 i; // r7
-    s32 j; // r1+0x8
-    s32 e1; // r5
-    s32 e2; // r8
-    union __anon_0x7D2DB data; // r1+0x68
-    f32 mf[4][4]; // r1+0x28
-    u32* m; // r1+0x24
-    u32* sp; // r1+0x20
-    s32* ai; // r9
-    s32* af; // r10
-    f32 xEye; // f3
-    f32 yEye; // f4
-    f32 zEye; // f5
-    f32 xAt; // r1+0x8
-    f32 yAt; // r1+0x8
-    f32 zAt; // f1
-    f32 xUp; // r1+0x8
-    f32 yUp; // f1
-    f32 zUp; // f2
-    f32 len; // f9
-    f32 xLook; // f6
-    f32 yLook; // f7
-    f32 zLook; // f8
-    f32 xRight; // f9
-    f32 yRight; // f10
-    f32 zRight; // f11
-}
-
-// Range: 0x8009190C -> 0x80091E60
-void guLookAtReflectF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    struct __anon_0x7D2A5* l; // r1+0x28
-    union __anon_0x7D2DB data; // r1+0x20
-    u32* mf; // r1+0x1C
-    u32* sp; // r1+0x18
-    f32 xEye; // f3
-    f32 yEye; // f4
-    f32 zEye; // f5
-    f32 xAt; // r1+0x8
-    f32 yAt; // r1+0x8
-    f32 zAt; // f1
-    f32 xUp; // r1+0x8
-    f32 yUp; // f1
-    f32 zUp; // f2
-    f32 len; // f9
-    f32 xLook; // f6
-    f32 yLook; // f7
-    f32 zLook; // f8
-    f32 xRight; // f9
-    f32 yRight; // f10
-    f32 zRight; // f11
-}
-
 typedef struct __anon_0x7DB47 {
     /* 0x0 */ s32 x1;
     /* 0x4 */ s32 y1;
@@ -724,283 +389,6 @@ typedef union __anon_0x7DBF9 {
     /* 0x0 */ struct __anon_0x7DB47 h;
     /* 0x0 */ s32 force_structure_alignment[4];
 } __anon_0x7DBF9;
-
-// Range: 0x80091E60 -> 0x80092834
-void guLookAtHilite(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    struct __anon_0x7D2A5* l; // r1+0x84
-    union __anon_0x7DBF9* h; // r1+0x80
-    s32 i; // r7
-    s32 j; // r1+0x8
-    s32 e1; // r5
-    s32 e2; // r8
-    union __anon_0x7D2DB data; // r1+0x78
-    f32 mf[4][4]; // r1+0x38
-    u32* m; // r1+0x34
-    u32* sp; // r1+0x30
-    s32* ai; // r9
-    s32* af; // r10
-    f32 len; // f5
-    f32 xLook; // r1+0x8
-    f32 yLook; // f1
-    f32 zLook; // f2
-    f32 xRight; // f3
-    f32 yRight; // f4
-    f32 zRight; // f5
-    f32 xHilite; // f29
-    f32 yHilite; // f28
-    f32 zHilite; // f27
-    f32 xEye; // f6
-    f32 yEye; // f7
-    f32 zEye; // f8
-    f32 xAt; // r1+0x8
-    f32 yAt; // f1
-    f32 zAt; // f2
-    f32 xUp; // f3
-    f32 yUp; // f12
-    f32 zUp; // f4
-    f32 xl1; // f27
-    f32 yl1; // f28
-    f32 zl1; // f26
-    f32 xl2; // f9
-    f32 yl2; // f10
-    f32 zl2; // f11
-    s32 twidth; // r6
-    s32 theight; // r7
-}
-
-// Range: 0x80092834 -> 0x80093188
-void guLookAtHiliteF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    struct __anon_0x7D2A5* l; // r1+0x3C
-    union __anon_0x7DBF9* h; // r1+0x38
-    union __anon_0x7D2DB data; // r1+0x30
-    u32* mf; // r1+0x2C
-    u32* sp; // r1+0x28
-    f32 len; // f5
-    f32 xLook; // r1+0x8
-    f32 yLook; // f1
-    f32 zLook; // f2
-    f32 xRight; // f3
-    f32 yRight; // f4
-    f32 zRight; // f5
-    f32 xHilite; // f29
-    f32 yHilite; // f28
-    f32 zHilite; // f27
-    f32 xEye; // f6
-    f32 yEye; // f7
-    f32 zEye; // f8
-    f32 xAt; // r1+0x8
-    f32 yAt; // f1
-    f32 zAt; // f2
-    f32 xUp; // f3
-    f32 yUp; // f12
-    f32 zUp; // f4
-    f32 xl1; // f27
-    f32 yl1; // f28
-    f32 zl1; // f26
-    f32 xl2; // f9
-    f32 yl2; // f10
-    f32 zl2; // f11
-    s32 twidth; // r6
-    s32 theight; // r7
-}
-
-// Erased
-static s32 __float2int(f32 x) {
-    // Parameters
-    // f32 x; // r1+0x8
-}
-
-// Range: 0x80093188 -> 0x800935A0
-void guLookAt(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    f32 mf[4][4]; // r1+0x30
-    s32* m; // r1+0x2C
-    u32* sp; // r1+0x28
-    union __anon_0x7D2DB data; // r1+0x20
-    s32 i; // r6
-    s32 j; // r1+0x8
-    s32 e1; // r7
-    s32 e2; // r8
-    s32* ai; // r9
-    s32* af; // r10
-    f32 len; // f6
-    f32 xLook; // f3
-    f32 yLook; // f4
-    f32 zLook; // f5
-    f32 xRight; // f6
-    f32 yRight; // f7
-    f32 zRight; // f8
-    f32 xEye; // f9
-    f32 yEye; // f10
-    f32 zEye; // f11
-    f32 xAt; // r1+0x8
-    f32 yAt; // r1+0x8
-    f32 zAt; // f1
-    f32 xUp; // r1+0x8
-    f32 yUp; // f1
-    f32 zUp; // f2
-}
-
-// Range: 0x800935A0 -> 0x8009392C
-void guLookAtF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    f32 len; // f9
-    f32 xAt; // r1+0x8
-    f32 yAt; // r1+0x8
-    f32 zAt; // f1
-    f32 xUp; // r1+0x8
-    f32 yUp; // f1
-    f32 zUp; // f2
-    f32 xEye; // f3
-    f32 yEye; // f4
-    f32 zEye; // f5
-    u32* mf; // r1+0x34
-    u32* sp; // r1+0x30
-    f32 xLook; // f6
-    f32 yLook; // f7
-    f32 zLook; // f8
-    f32 xRight; // f9
-    f32 yRight; // f10
-    f32 zRight; // f11
-    union __anon_0x7D2DB data; // r1+0x28
-    union __anon_0x7D2DB data0; // r1+0x20
-    union __anon_0x7D2DB data1; // r1+0x18
-}
-
-// Range: 0x8009392C -> 0x80093C78
-void guRotate(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    s32* m; // r1+0x64
-    u32* sp; // r1+0x60
-    union __anon_0x7D2DB data; // r1+0x58
-    s32 i; // r6
-    s32 j; // r1+0x8
-    s32 e1; // r7
-    s32 e2; // r8
-    f32 mf[4][4]; // r1+0x18
-    f32 sine; // r1+0x8
-    f32 cosine; // r1+0x8
-    f32 a; // f30
-    f32 x; // f29
-    f32 y; // f28
-    f32 z; // f27
-    f32 ab; // f13
-    f32 bc; // f30
-    f32 ca; // f29
-    f32 t; // f26
-    f32 magnitude; // f2
-    s32* ai; // r9
-    s32* af; // r10
-
-    // References
-    // -> static f32 dtor$480;
-}
-
-// Range: 0x80093C78 -> 0x80093F88
-void guRotateF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    f32 m; // f2
-    s32 i; // r8
-    s32 j; // r4
-    f32 a; // f31
-    f32 x; // f30
-    f32 y; // f29
-    f32 z; // f28
-    u32* mf; // r1+0x2C
-    u32* sp; // r1+0x28
-    union __anon_0x7D2DB data; // r1+0x20
-    union __anon_0x7D2DB data0; // r1+0x18
-    union __anon_0x7D2DB data1; // r1+0x10
-    f32 sine; // r1+0x8
-    f32 cosine; // r1+0x8
-    f32 ab; // f27
-    f32 bc; // f26
-    f32 ca; // f25
-    f32 t; // f4
-
-    // References
-    // -> static f32 dtor$466;
-}
-
-// Range: 0x80093F88 -> 0x80094174
-void guTranslate(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    s32* m; // r1+0x60
-    s32 i; // r6
-    s32 j; // r1+0x8
-    s32 e1; // r7
-    s32 e2; // r8
-    union __anon_0x7D2DB data; // r1+0x58
-    f32 mf[4][4]; // r1+0x14
-    s32* ai; // r9
-    s32* af; // r10
-}
-
-// Range: 0x80094174 -> 0x80094294
-void guTranslateF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    s32 i; // r8
-    s32 j; // r4
-    u32* mf; // r1+0x20
-    union __anon_0x7D2DB data0; // r1+0x18
-    union __anon_0x7D2DB data1; // r1+0x10
-}
-
-// Range: 0x80094294 -> 0x80094480
-void guScale(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    f32 mf[4][4]; // r1+0x24
-    s32* m; // r1+0x20
-    s32 i; // r6
-    s32 j; // r1+0x8
-    s32 e1; // r7
-    s32 e2; // r8
-    union __anon_0x7D2DB data; // r1+0x18
-    s32* ai; // r9
-    s32* af; // r10
-}
-
-// Range: 0x80094480 -> 0x800945A8
-void guScaleF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    s32 i; // r8
-    s32 j; // r4
-    u32* mf; // r1+0x20
-    union __anon_0x7D2DB data0; // r1+0x18
-    union __anon_0x7D2DB data1; // r1+0x10
-}
 
 typedef struct __anon_0x7F9D8 {
     /* 0x0 */ f32 rX;
@@ -1270,66 +658,276 @@ typedef struct __anon_0x80DBD {
     /* 0x3D148 */ u16* nCameraBuffer;
 } __anon_0x80DBD; // size = 0x3D150
 
-// Range: 0x800945A8 -> 0x80094658
-void GenPerspective_1080(struct _CPU* pCPU) {
+// Range: 0x80096AB8 -> 0x8009779C
+static s32 __osException(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r29
+
+    // Local variables
+    s32 iBit; // r3
+    struct __anon_0x7AE26* pLibrary; // r1+0x8
+    s64 nData64; // r1+0x28
+    s64 nCause; // r1+0x20
+    struct __OSThread_s* __osRunningThread; // r1+0x18
+    struct __anon_0x79A22** apDevice; // r31
+    u8* aiDevice; // r30
+    u32 nStatus; // r22
+    u32 nStatusRSP; // r1+0x14
+    u32 nData32; // r1+0x10
+    u32 __OSGlobalIntMask; // r23
+    u32 nS0; // r18
+    u32 nS1; // r17
+    u32 nMask; // r1+0xC
+}
+
+// Range: 0x80096728 -> 0x80096AB8
+static s32 send_mesg(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r28
+
+    // Local variables
+    struct __anon_0x7AE26* pLibrary; // r1+0x8
+    struct __anon_0x79A22** apDevice; // r30
+    u8* aiDevice; // r29
+}
+
+// Range: 0x8009643C -> 0x80096728
+static s32 __osEnqueueAndYield(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r30
 
     // Local variables
-    union __anon_0x7D2DB data; // r1+0x18
-    u32* mf; // r1+0x10
-    u32* sp; // r1+0xC
-    f32 fovy; // f3
-    f32 aspect; // f4
-    f32 rNear; // f1
-    f32 rFar; // f2
-    struct __anon_0x80DBD* pFrame; // r31
+    s64 nData64; // r1+0x18
+    struct __anon_0x7AE26* pLibrary; // r3
+    struct __OSThread_s* __osRunningThread; // r1+0x10
+    u32 __OSGlobalIntMask; // r31
+    u32 nStatus; // r1+0x8
+    u32 nData32; // r5
+    u32 nMask; // r1+0xC
+    struct __anon_0x79A22** apDevice; // r6
+    u8* aiDevice; // r7
 }
 
-// Range: 0x80094658 -> 0x8009491C
-void guPerspective(struct _CPU* pCPU) {
+// Range: 0x80096214 -> 0x8009643C
+static s32 __osEnqueueThread(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r29
+
+    // Local variables
+    struct __anon_0x79A22** apDevice; // r31
+    u8* aiDevice; // r30
+}
+
+// Range: 0x80096140 -> 0x80096214
+static s32 __osPopThread(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r29
+
+    // Local variables
+    struct __anon_0x79A22** apDevice; // r31
+    u8* aiDevice; // r30
+}
+
+// Range: 0x80095B9C -> 0x80096140
+static s32 __osDispatchThread(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r27
+
+    // Local variables
+    struct __anon_0x7AE26* pLibrary; // r29
+    u32 nAddress; // r5
+    u64 nData64; // r0
+    struct __OSThread_s* __osRunningThread; // r1+0x10
+    u32 nData32; // r1+0xC
+    u32 __OSGlobalIntMask; // r28
+    u32 nStatus; // r6
+    u32 nMask; // r6
+
+    // References
+    // -> static u32 __osRcpImTable[64];
+}
+
+// Erased
+static s32 __ptException() {}
+
+// Range: 0x80095B48 -> 0x80095B9C
+static s32 osGetMemSize(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    s32* m; // r1+0x60
-    f32 fovy; // f30
-    f32 aspect; // f29
-    f32 rNear; // f28
-    f32 rFar; // f27
-    f32 scale; // f5
-    f32 _cot; // f2
-    s32 i; // r6
+    u32 nSize; // r1+0xC
+}
+
+// Range: 0x80095AC0 -> 0x80095B48
+static s32 osInvalICache(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r29
+
+    // Local variables
+    u32 nAddress; // r30
+    u32 nSize; // r1+0x8
+}
+
+// Range: 0x80095A30 -> 0x80095AC0
+static s32 __osDisableInt(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r30
+
+    // Local variables
+    u32 nStatus; // r1+0x8
+    u64 nData64; // r1+0x18
+}
+
+// Range: 0x800959A4 -> 0x80095A30
+static s32 __osRestoreInt(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    u64 nStatus; // r1+0x10
+}
+
+// Range: 0x80095954 -> 0x800959A4
+static s32 __osSpSetStatus(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x8
+
+    // Local variables
+    u32 nData32; // r1+0xC
+}
+
+// Range: 0x80095920 -> 0x80095954
+static void __cosf(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+}
+
+// Range: 0x800958EC -> 0x80095920
+static void __sinf(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+}
+
+// Range: 0x800958A8 -> 0x800958EC
+void _bzero(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    s32 nSize; // r5
+    void* pBuffer; // r1+0xC
+}
+
+// Range: 0x8009584C -> 0x800958A8
+void _bcopy(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    s32 nSize; // r5
+    void* pSource; // r1+0x10
+    void* pTarget; // r1+0xC
+}
+
+// Range: 0x800957F0 -> 0x8009584C
+void _memcpy(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    s32 nSize; // r5
+    void* pSource; // r1+0x10
+    void* pTarget; // r1+0xC
+}
+
+// Range: 0x800957E0 -> 0x800957F0
+void osPhysicalToVirtual(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x0
+}
+
+// Range: 0x8009576C -> 0x800957E0
+void osVirtualToPhysical(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x0
+}
+
+// Range: 0x80095454 -> 0x8009576C
+void guMtxCatF(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r23
+
+    // Local variables
+    s32 i; // r9
+    s32 j; // r23
+    f32 temp[4][4]; // r1+0x38
+    union __anon_0x7D2DB data1; // r1+0x30
+    union __anon_0x7D2DB data2; // r1+0x28
+    u32* mf; // r1+0x24
+    u32* nf; // r1+0x20
+    u32* res; // r1+0x1C
+}
+
+// Range: 0x8009524C -> 0x80095454
+void guMtxF2L(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    f32* mf; // r1+0x24
+    s32 e1; // r6
+    s32 e2; // r7
+    s32 i; // r8
     s32 j; // r1+0x8
-    union __anon_0x7D2DB data; // r1+0x58
-    f32 mf[4][4]; // r1+0x18
-    s32 e1; // r7
-    s32 e2; // r8
-    u32* sp; // r1+0x14
+    s32* m; // r1+0x20
+    union __anon_0x7D2DB data; // r1+0x18
     s32* ai; // r9
     s32* af; // r10
 }
 
-// Range: 0x8009491C -> 0x80094B78
-void guPerspectiveF(struct _CPU* pCPU) {
+// Range: 0x80095178 -> 0x8009524C
+void guMtxIdentF(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r3
+
+    // Local variables
+    f32* mf; // r1+0x20
+    s32 i; // r7
+    s32 j; // r1+0x8
+    union __anon_0x7D2DB data1; // r1+0x18
+    union __anon_0x7D2DB data0; // r1+0x10
+}
+
+// Range: 0x800950C4 -> 0x80095178
+void guMtxIdent(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r3
+
+    // Local variables
+    s32* m; // r1+0xC
+}
+
+// Range: 0x80094E54 -> 0x800950C4
+void guOrthoF(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
     s32 i; // r8
     s32 j; // r4
-    f32 cot; // f2
-    s16* perspNorm; // r1+0x30
     u32* mf; // r1+0x2C
     u32* sp; // r1+0x28
+    f32 l; // f29
+    f32 r; // f28
+    f32 b; // f27
+    f32 t; // f26
+    f32 n; // f31
+    f32 f; // f30
+    f32 scale; // f5
     union __anon_0x7D2DB data0; // r1+0x20
     union __anon_0x7D2DB data1; // r1+0x18
     union __anon_0x7D2DB data; // r1+0x10
-    f32 fovy; // f29
-    f32 aspect; // f28
-    f32 rNear; // f27
-    f32 rFar; // f31
-    f32 scale; // f5
 }
 
 // Range: 0x80094B78 -> 0x80094E54
@@ -1357,274 +955,676 @@ void guOrtho(struct _CPU* pCPU) {
     f32 scale; // f5
 }
 
-// Range: 0x80094E54 -> 0x800950C4
-void guOrthoF(struct _CPU* pCPU) {
+// Range: 0x8009491C -> 0x80094B78
+void guPerspectiveF(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
     s32 i; // r8
     s32 j; // r4
+    f32 cot; // f2
+    s16* perspNorm; // r1+0x30
     u32* mf; // r1+0x2C
     u32* sp; // r1+0x28
-    f32 l; // f29
-    f32 r; // f28
-    f32 b; // f27
-    f32 t; // f26
-    f32 n; // f31
-    f32 f; // f30
-    f32 scale; // f5
     union __anon_0x7D2DB data0; // r1+0x20
     union __anon_0x7D2DB data1; // r1+0x18
     union __anon_0x7D2DB data; // r1+0x10
+    f32 fovy; // f29
+    f32 aspect; // f28
+    f32 rNear; // f27
+    f32 rFar; // f31
+    f32 scale; // f5
 }
 
-// Range: 0x800950C4 -> 0x80095178
-void guMtxIdent(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r3
-
-    // Local variables
-    s32* m; // r1+0xC
-}
-
-// Range: 0x80095178 -> 0x8009524C
-void guMtxIdentF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r3
-
-    // Local variables
-    f32* mf; // r1+0x20
-    s32 i; // r7
-    s32 j; // r1+0x8
-    union __anon_0x7D2DB data1; // r1+0x18
-    union __anon_0x7D2DB data0; // r1+0x10
-}
-
-// Range: 0x8009524C -> 0x80095454
-void guMtxF2L(struct _CPU* pCPU) {
+// Range: 0x80094658 -> 0x8009491C
+void guPerspective(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    f32* mf; // r1+0x24
-    s32 e1; // r6
-    s32 e2; // r7
-    s32 i; // r8
+    s32* m; // r1+0x60
+    f32 fovy; // f30
+    f32 aspect; // f29
+    f32 rNear; // f28
+    f32 rFar; // f27
+    f32 scale; // f5
+    f32 _cot; // f2
+    s32 i; // r6
     s32 j; // r1+0x8
+    union __anon_0x7D2DB data; // r1+0x58
+    f32 mf[4][4]; // r1+0x18
+    s32 e1; // r7
+    s32 e2; // r8
+    u32* sp; // r1+0x14
+    s32* ai; // r9
+    s32* af; // r10
+}
+
+// Range: 0x800945A8 -> 0x80094658
+void GenPerspective_1080(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r30
+
+    // Local variables
+    union __anon_0x7D2DB data; // r1+0x18
+    u32* mf; // r1+0x10
+    u32* sp; // r1+0xC
+    f32 fovy; // f3
+    f32 aspect; // f4
+    f32 rNear; // f1
+    f32 rFar; // f2
+    struct __anon_0x80DBD* pFrame; // r31
+}
+
+// Range: 0x80094480 -> 0x800945A8
+void guScaleF(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    s32 i; // r8
+    s32 j; // r4
+    u32* mf; // r1+0x20
+    union __anon_0x7D2DB data0; // r1+0x18
+    union __anon_0x7D2DB data1; // r1+0x10
+}
+
+// Range: 0x80094294 -> 0x80094480
+void guScale(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    f32 mf[4][4]; // r1+0x24
     s32* m; // r1+0x20
+    s32 i; // r6
+    s32 j; // r1+0x8
+    s32 e1; // r7
+    s32 e2; // r8
     union __anon_0x7D2DB data; // r1+0x18
     s32* ai; // r9
     s32* af; // r10
 }
 
-// Range: 0x80095454 -> 0x8009576C
-void guMtxCatF(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r23
-
-    // Local variables
-    s32 i; // r9
-    s32 j; // r23
-    f32 temp[4][4]; // r1+0x38
-    union __anon_0x7D2DB data1; // r1+0x30
-    union __anon_0x7D2DB data2; // r1+0x28
-    u32* mf; // r1+0x24
-    u32* nf; // r1+0x20
-    u32* res; // r1+0x1C
-}
-
-// Range: 0x8009576C -> 0x800957E0
-void osVirtualToPhysical(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x0
-}
-
-// Range: 0x800957E0 -> 0x800957F0
-void osPhysicalToVirtual(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x0
-}
-
-// Range: 0x800957F0 -> 0x8009584C
-void _memcpy(struct _CPU* pCPU) {
+// Range: 0x80094174 -> 0x80094294
+void guTranslateF(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    s32 nSize; // r5
-    void* pSource; // r1+0x10
-    void* pTarget; // r1+0xC
+    s32 i; // r8
+    s32 j; // r4
+    u32* mf; // r1+0x20
+    union __anon_0x7D2DB data0; // r1+0x18
+    union __anon_0x7D2DB data1; // r1+0x10
 }
 
-// Range: 0x8009584C -> 0x800958A8
-void _bcopy(struct _CPU* pCPU) {
+// Range: 0x80093F88 -> 0x80094174
+void guTranslate(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    s32 nSize; // r5
-    void* pSource; // r1+0x10
-    void* pTarget; // r1+0xC
+    s32* m; // r1+0x60
+    s32 i; // r6
+    s32 j; // r1+0x8
+    s32 e1; // r7
+    s32 e2; // r8
+    union __anon_0x7D2DB data; // r1+0x58
+    f32 mf[4][4]; // r1+0x14
+    s32* ai; // r9
+    s32* af; // r10
 }
 
-// Range: 0x800958A8 -> 0x800958EC
-void _bzero(struct _CPU* pCPU) {
+// Range: 0x80093C78 -> 0x80093F88
+void guRotateF(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    s32 nSize; // r5
-    void* pBuffer; // r1+0xC
+    f32 m; // f2
+    s32 i; // r8
+    s32 j; // r4
+    f32 a; // f31
+    f32 x; // f30
+    f32 y; // f29
+    f32 z; // f28
+    u32* mf; // r1+0x2C
+    u32* sp; // r1+0x28
+    union __anon_0x7D2DB data; // r1+0x20
+    union __anon_0x7D2DB data0; // r1+0x18
+    union __anon_0x7D2DB data1; // r1+0x10
+    f32 sine; // r1+0x8
+    f32 cosine; // r1+0x8
+    f32 ab; // f27
+    f32 bc; // f26
+    f32 ca; // f25
+    f32 t; // f4
+
+    // References
+    // -> static f32 dtor$466;
 }
 
-// Range: 0x800958EC -> 0x80095920
-static void __sinf(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-}
-
-// Range: 0x80095920 -> 0x80095954
-static void __cosf(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-}
-
-// Range: 0x80095954 -> 0x800959A4
-static s32 __osSpSetStatus(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x8
-
-    // Local variables
-    u32 nData32; // r1+0xC
-}
-
-// Range: 0x800959A4 -> 0x80095A30
-static s32 __osRestoreInt(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    u64 nStatus; // r1+0x10
-}
-
-// Range: 0x80095A30 -> 0x80095AC0
-static s32 __osDisableInt(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r30
-
-    // Local variables
-    u32 nStatus; // r1+0x8
-    u64 nData64; // r1+0x18
-}
-
-// Range: 0x80095AC0 -> 0x80095B48
-static s32 osInvalICache(struct _CPU* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r29
-
-    // Local variables
-    u32 nAddress; // r30
-    u32 nSize; // r1+0x8
-}
-
-// Range: 0x80095B48 -> 0x80095B9C
-static s32 osGetMemSize(struct _CPU* pCPU) {
+// Range: 0x8009392C -> 0x80093C78
+void guRotate(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    u32 nSize; // r1+0xC
+    s32* m; // r1+0x64
+    u32* sp; // r1+0x60
+    union __anon_0x7D2DB data; // r1+0x58
+    s32 i; // r6
+    s32 j; // r1+0x8
+    s32 e1; // r7
+    s32 e2; // r8
+    f32 mf[4][4]; // r1+0x18
+    f32 sine; // r1+0x8
+    f32 cosine; // r1+0x8
+    f32 a; // f30
+    f32 x; // f29
+    f32 y; // f28
+    f32 z; // f27
+    f32 ab; // f13
+    f32 bc; // f30
+    f32 ca; // f29
+    f32 t; // f26
+    f32 magnitude; // f2
+    s32* ai; // r9
+    s32* af; // r10
+
+    // References
+    // -> static f32 dtor$480;
+}
+
+// Range: 0x800935A0 -> 0x8009392C
+void guLookAtF(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    f32 len; // f9
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
+    f32 xEye; // f3
+    f32 yEye; // f4
+    f32 zEye; // f5
+    u32* mf; // r1+0x34
+    u32* sp; // r1+0x30
+    f32 xLook; // f6
+    f32 yLook; // f7
+    f32 zLook; // f8
+    f32 xRight; // f9
+    f32 yRight; // f10
+    f32 zRight; // f11
+    union __anon_0x7D2DB data; // r1+0x28
+    union __anon_0x7D2DB data0; // r1+0x20
+    union __anon_0x7D2DB data1; // r1+0x18
+}
+
+// Range: 0x80093188 -> 0x800935A0
+void guLookAt(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    f32 mf[4][4]; // r1+0x30
+    s32* m; // r1+0x2C
+    u32* sp; // r1+0x28
+    union __anon_0x7D2DB data; // r1+0x20
+    s32 i; // r6
+    s32 j; // r1+0x8
+    s32 e1; // r7
+    s32 e2; // r8
+    s32* ai; // r9
+    s32* af; // r10
+    f32 len; // f6
+    f32 xLook; // f3
+    f32 yLook; // f4
+    f32 zLook; // f5
+    f32 xRight; // f6
+    f32 yRight; // f7
+    f32 zRight; // f8
+    f32 xEye; // f9
+    f32 yEye; // f10
+    f32 zEye; // f11
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
 }
 
 // Erased
-static s32 __ptException() {}
-
-// Range: 0x80095B9C -> 0x80096140
-static s32 __osDispatchThread(struct _CPU* pCPU) {
+static s32 __float2int(f32 x) {
     // Parameters
-    // struct _CPU* pCPU; // r27
-
-    // Local variables
-    struct __anon_0x7AE26* pLibrary; // r29
-    u32 nAddress; // r5
-    u64 nData64; // r0
-    struct __OSThread_s* __osRunningThread; // r1+0x10
-    u32 nData32; // r1+0xC
-    u32 __OSGlobalIntMask; // r28
-    u32 nStatus; // r6
-    u32 nMask; // r6
-
-    // References
-    // -> static u32 __osRcpImTable[64];
+    // f32 x; // r1+0x8
 }
 
-// Range: 0x80096140 -> 0x80096214
-static s32 __osPopThread(struct _CPU* pCPU) {
+// Range: 0x80092834 -> 0x80093188
+void guLookAtHiliteF(struct _CPU* pCPU) {
     // Parameters
-    // struct _CPU* pCPU; // r29
+    // struct _CPU* pCPU; // r31
 
     // Local variables
-    struct __anon_0x79A22** apDevice; // r31
-    u8* aiDevice; // r30
+    struct __anon_0x7D2A5* l; // r1+0x3C
+    union __anon_0x7DBF9* h; // r1+0x38
+    union __anon_0x7D2DB data; // r1+0x30
+    u32* mf; // r1+0x2C
+    u32* sp; // r1+0x28
+    f32 len; // f5
+    f32 xLook; // r1+0x8
+    f32 yLook; // f1
+    f32 zLook; // f2
+    f32 xRight; // f3
+    f32 yRight; // f4
+    f32 zRight; // f5
+    f32 xHilite; // f29
+    f32 yHilite; // f28
+    f32 zHilite; // f27
+    f32 xEye; // f6
+    f32 yEye; // f7
+    f32 zEye; // f8
+    f32 xAt; // r1+0x8
+    f32 yAt; // f1
+    f32 zAt; // f2
+    f32 xUp; // f3
+    f32 yUp; // f12
+    f32 zUp; // f4
+    f32 xl1; // f27
+    f32 yl1; // f28
+    f32 zl1; // f26
+    f32 xl2; // f9
+    f32 yl2; // f10
+    f32 zl2; // f11
+    s32 twidth; // r6
+    s32 theight; // r7
 }
 
-// Range: 0x80096214 -> 0x8009643C
-static s32 __osEnqueueThread(struct _CPU* pCPU) {
+// Range: 0x80091E60 -> 0x80092834
+void guLookAtHilite(struct _CPU* pCPU) {
     // Parameters
-    // struct _CPU* pCPU; // r29
+    // struct _CPU* pCPU; // r31
 
     // Local variables
-    struct __anon_0x79A22** apDevice; // r31
-    u8* aiDevice; // r30
+    struct __anon_0x7D2A5* l; // r1+0x84
+    union __anon_0x7DBF9* h; // r1+0x80
+    s32 i; // r7
+    s32 j; // r1+0x8
+    s32 e1; // r5
+    s32 e2; // r8
+    union __anon_0x7D2DB data; // r1+0x78
+    f32 mf[4][4]; // r1+0x38
+    u32* m; // r1+0x34
+    u32* sp; // r1+0x30
+    s32* ai; // r9
+    s32* af; // r10
+    f32 len; // f5
+    f32 xLook; // r1+0x8
+    f32 yLook; // f1
+    f32 zLook; // f2
+    f32 xRight; // f3
+    f32 yRight; // f4
+    f32 zRight; // f5
+    f32 xHilite; // f29
+    f32 yHilite; // f28
+    f32 zHilite; // f27
+    f32 xEye; // f6
+    f32 yEye; // f7
+    f32 zEye; // f8
+    f32 xAt; // r1+0x8
+    f32 yAt; // f1
+    f32 zAt; // f2
+    f32 xUp; // f3
+    f32 yUp; // f12
+    f32 zUp; // f4
+    f32 xl1; // f27
+    f32 yl1; // f28
+    f32 zl1; // f26
+    f32 xl2; // f9
+    f32 yl2; // f10
+    f32 zl2; // f11
+    s32 twidth; // r6
+    s32 theight; // r7
 }
 
-// Range: 0x8009643C -> 0x80096728
-static s32 __osEnqueueAndYield(struct _CPU* pCPU) {
+// Range: 0x8009190C -> 0x80091E60
+void guLookAtReflectF(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    struct __anon_0x7D2A5* l; // r1+0x28
+    union __anon_0x7D2DB data; // r1+0x20
+    u32* mf; // r1+0x1C
+    u32* sp; // r1+0x18
+    f32 xEye; // f3
+    f32 yEye; // f4
+    f32 zEye; // f5
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
+    f32 len; // f9
+    f32 xLook; // f6
+    f32 yLook; // f7
+    f32 zLook; // f8
+    f32 xRight; // f9
+    f32 yRight; // f10
+    f32 zRight; // f11
+}
+
+// Range: 0x80091338 -> 0x8009190C
+void guLookAtReflect(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    struct __anon_0x7D2A5* l; // r1+0x70
+    s32 i; // r7
+    s32 j; // r1+0x8
+    s32 e1; // r5
+    s32 e2; // r8
+    union __anon_0x7D2DB data; // r1+0x68
+    f32 mf[4][4]; // r1+0x28
+    u32* m; // r1+0x24
+    u32* sp; // r1+0x20
+    s32* ai; // r9
+    s32* af; // r10
+    f32 xEye; // f3
+    f32 yEye; // f4
+    f32 zEye; // f5
+    f32 xAt; // r1+0x8
+    f32 yAt; // r1+0x8
+    f32 zAt; // f1
+    f32 xUp; // r1+0x8
+    f32 yUp; // f1
+    f32 zUp; // f2
+    f32 len; // f9
+    f32 xLook; // f6
+    f32 yLook; // f7
+    f32 zLook; // f8
+    f32 xRight; // f9
+    f32 yRight; // f10
+    f32 zRight; // f11
+}
+
+// Range: 0x8009120C -> 0x80091338
+s32 osAiSetFrequency(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    u32 dacRate; // r1+0x8
+    u8 bitRate; // r28
+    u32 nData32; // r1+0x10
+}
+
+// Range: 0x80091100 -> 0x8009120C
+s32 osAiSetNextBuffer(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r30
 
     // Local variables
-    s64 nData64; // r1+0x18
-    struct __anon_0x7AE26* pLibrary; // r3
-    struct __OSThread_s* __osRunningThread; // r1+0x10
-    u32 __OSGlobalIntMask; // r31
-    u32 nStatus; // r1+0x8
-    u32 nData32; // r5
-    u32 nMask; // r1+0xC
-    struct __anon_0x79A22** apDevice; // r6
-    u8* aiDevice; // r7
+    u32 size; // r31
+    u32 nData32; // r1+0x10
 }
 
-// Range: 0x80096728 -> 0x80096AB8
-static s32 send_mesg(struct _CPU* pCPU) {
+// Range: 0x80091028 -> 0x80091100
+s32 __osEepStatus(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    s32 ret; // r5
+    s32 nSize; // r1+0x10
+    u8* status; // r1+0xC
+}
+
+// Range: 0x80090FB0 -> 0x80091028
+s32 osEepromRead(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r30
+
+    // Local variables
+    u8 address; // r31
+    u8* buffer; // r1+0xC
+}
+
+// Range: 0x80090F38 -> 0x80090FB0
+s32 osEepromWrite(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r30
+
+    // Local variables
+    u8 address; // r31
+    u8* buffer; // r1+0xC
+}
+
+// Range: 0x80090E8C -> 0x80090F38
+s32 osEepromLongRead(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r28
 
     // Local variables
-    struct __anon_0x7AE26* pLibrary; // r1+0x8
-    struct __anon_0x79A22** apDevice; // r30
-    u8* aiDevice; // r29
+    s32 length; // r31
+    s32 ret; // r30
+    u8 address; // r29
+    u8* buffer; // r1+0xC
 }
 
-// Range: 0x80096AB8 -> 0x8009779C
-static s32 __osException(struct _CPU* pCPU) {
+// Range: 0x80090DE0 -> 0x80090E8C
+s32 osEepromLongWrite(struct _CPU* pCPU) {
     // Parameters
-    // struct _CPU* pCPU; // r29
+    // struct _CPU* pCPU; // r28
 
     // Local variables
-    s32 iBit; // r3
-    struct __anon_0x7AE26* pLibrary; // r1+0x8
-    s64 nData64; // r1+0x28
-    s64 nCause; // r1+0x20
-    struct __OSThread_s* __osRunningThread; // r1+0x18
-    struct __anon_0x79A22** apDevice; // r31
-    u8* aiDevice; // r30
-    u32 nStatus; // r22
-    u32 nStatusRSP; // r1+0x14
-    u32 nData32; // r1+0x10
-    u32 __OSGlobalIntMask; // r23
-    u32 nS0; // r18
-    u32 nS1; // r17
-    u32 nMask; // r1+0xC
+    s32 length; // r31
+    s32 ret; // r30
+    u8 address; // r29
+    u8* buffer; // r1+0xC
+}
+
+// Range: 0x80090C78 -> 0x80090DE0
+s32 starfoxCopy(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r25
+
+    // Local variables
+    s32* A0; // r1+0x18
+    s32 A1; // r31
+    s32 A2; // r30
+    s32 A3; // r29
+    s32 T0; // r28
+    s32 T1; // r24
+    s32 T2; // r1+0x8
+    s32 T3; // r23
+    s32 T8; // r27
+    s32 T9; // r26
+    s16* pData16; // r1+0x14
+    char* source; // r1+0x10
+    char* target; // r1+0xC
+}
+
+// Range: 0x80090C68 -> 0x80090C78
+s32 pictureSnap_Zelda2(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x0
+}
+
+// Range: 0x80090B40 -> 0x80090C68
+s32 dmaSoundRomHandler_ZELDA1(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r31
+
+    // Local variables
+    void* pTarget; // r1+0x18
+    struct OSMesgQueue_s* mq; // r1+0x14
+    u32* msg; // r1+0x10
+    struct __anon_0x7C62D* pIOMessage; // r1+0xC
+    s32 first; // r30
+    s32 msgCount; // r29
+    s32 validCount; // r28
+    s32 nSize; // r6
+    s32 nAddress; // r5
+    s32 nOffsetRAM; // r5
+    s32 nOffsetROM; // r5
+}
+
+// Range: 0x80090AD8 -> 0x80090B40
+s32 osViSwapBuffer_Entry(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x8
+
+    // References
+    // -> static u32 nAddress$605;
+}
+
+// Range: 0x80090AC4 -> 0x80090AD8
+s32 zeldaLoadSZS_Entry(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x0
+}
+
+// Range: 0x80090AB0 -> 0x80090AC4
+s32 zeldaLoadSZS_Exit(struct _CPU* pCPU) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x0
+}
+
+// Range: 0x800907B0 -> 0x80090AB0
+static s32 libraryFindException(struct __anon_0x7AE26* pLibrary, s32 bException) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r27
+    // s32 bException; // r28
+
+    // Local variables
+    struct _CPU* pCPU; // r30
+    struct __anon_0x79A22** apDevice; // r29
+    u8* aiDevice; // r31
+    u32 anCode[6]; // r1+0x10
+}
+
+// Range: 0x8009007C -> 0x800907B0
+static s32 libraryFindVariables(struct __anon_0x7AE26* pLibrary) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r24
+
+    // Local variables
+    struct _CPU* pCPU; // r27
+    struct __anon_0x79A22** apDevice; // r26
+    u8* aiDevice; // r25
+    u32 nAddress; // r23
+    u32 nAddressLast; // r28
+    u32 nOffset; // r1+0x28
+    u32 nOpcode; // r1+0x24
+    u32 anCode[6]; // r1+0xC
+}
+
+// Range: 0x8008FB6C -> 0x8009007C
+static s32 libraryFindFunctions(struct __anon_0x7AE26* pLibrary) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r24
+
+    // Local variables
+    struct _CPU* pCPU; // r3
+    s32 iFunction; // r29
+    struct __anon_0x79A22** apDevice; // r28
+    u8* aiDevice; // r27
+    u32 nOpcode; // r1+0x10
+    u32* pnCode; // r1+0xC
+    u32 nAddress; // r29
+    u32 nAddressLast; // r31
+    u32 nAddressEnqueueThread; // r26
+    u32 nAddressDispatchThread; // r25
+
+    // References
+    // -> struct __anon_0x7AD10 gaFunction[54];
+}
+
+// Erased
+static s32 libraryCheckHandler(struct __anon_0x7AE26* pLibrary, s32 bException) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r31
+    // s32 bException; // r4
+}
+
+// Range: 0x8008F584 -> 0x8008FB6C
+s32 libraryTestFunction(struct __anon_0x7AE26* pLibrary, struct cpu_function* pFunction) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r30
+    // struct cpu_function* pFunction; // r26
+
+    // Local variables
+    s32 iFunction; // r31
+    s32 iData; // r24
+    s32 bFlag; // r29
+    s32 bDone; // r27
+    s32 bReturn; // r21
+    u32 iCode; // r5
+    u32* pnCode; // r1+0x1C
+    u32* pnCodeTemp; // r1+0x18
+    u32 nSizeCode; // r1+0x8
+    u32 nChecksum; // r1+0x14
+    u32 nOpcode; // r1+0x8
+    u32 nAddress; // r1+0x8
+
+    // References
+    // -> struct __anon_0x7AD10 gaFunction[54];
+}
+
+// Range: 0x8008F420 -> 0x8008F584
+static s32 librarySearch(struct __anon_0x7AE26* pLibrary, struct cpu_function* pFunction) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r29
+    // struct cpu_function* pFunction; // r30
+}
+
+// Erased
+static s32 libraryUpdate(struct __anon_0x7AE26* pLibrary) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r31
+
+    // Local variables
+    struct _CPU* pCPU; // r29
+    struct cpu_function* pFunction; // r1+0xC
+}
+
+// Range: 0x8008F32C -> 0x8008F420
+s32 libraryFunctionReplaced(s32 iFunction) {
+    // Parameters
+    // s32 iFunction; // r1+0x4
+
+    // References
+    // -> struct __anon_0x7AD10 gaFunction[54];
+}
+
+// Range: 0x8008F234 -> 0x8008F32C
+s32 libraryCall(struct __anon_0x7AE26* pLibrary, struct _CPU* pCPU, s32 iFunction) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r29
+    // struct _CPU* pCPU; // r30
+    // s32 iFunction; // r31
+
+    // References
+    // -> struct __anon_0x7AD10 gaFunction[54];
+}
+
+// Range: 0x8008F0F4 -> 0x8008F234
+s32 libraryEvent(struct __anon_0x7AE26* pLibrary, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x7AE26* pLibrary; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r1+0x10
+
+    // References
+    // -> struct __anon_0x7AD10 gaFunction[54];
 }
