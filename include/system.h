@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+typedef s32 SystemCopyCallbackFunc(void);
+
 // __anon_0x394CD
 typedef enum SystemMode {
     SM_NONE = -1,
@@ -68,7 +70,7 @@ typedef struct SystemRomCopy {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nOffsetRAM;
     /* 0x08 */ s32 nOffsetROM;
-    /* 0x0C */ s32 (*pCallback)();
+    /* 0x0C */ SystemCopyCallbackFunc* pCallback;
 } SystemRomCopy; // size = 0x10
 
 // __anon_0x37240
@@ -99,6 +101,7 @@ typedef struct SystemRomConfig {
 #define SYSTEM_CPU(pSystem) (struct Cpu*)(((System*)(pSystem))->apObject[SOT_CPU])
 #define SYSTEM_ROM(pSystem) (struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM])
 #define SYSTEM_RAM(pSystem) (struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM])
+#define SYSTEM_RSP(pSystem) (struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP])
 
 extern u32 gnFlagZelda;
 

@@ -161,6 +161,7 @@ const f64 D_80135F98 = 4503599627370496.0;
 
 extern _XL_OBJECTTYPE gClassFlash;
 extern _XL_OBJECTTYPE gClassSram;
+extern System* gpSystem;
 
 //! TODO: import sdk headers
 extern int atoi(const char* str);
@@ -276,9 +277,78 @@ s32 systemSetupGameRAM(System* pSystem) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/__systemCopyROM_Complete.s")
+#else
+static s32 __systemCopyROM_Complete(void) {
+    s32 iAddress;
+    s32 nCount;
+    u32 nAddress0;
+    u32 nAddress1;
+    u32 anAddress[0x20]; // size = 0x80
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
+    nAddress0 = gpSystem->romCopy.nOffsetRAM;
+    nAddress1 = nAddress0 + gpSystem->romCopy.nSize - 1;
+
+    if (!frameInvalidateCache(gpSystem->pFrame, nAddress0, nAddress1)) {
+        return 0;
+    }
+
+    if (!rspInvalidateCache(SYSTEM_RSP(gpSystem), nAddress0, nAddress1)) {
+        return 0;
+    }
+
+    if (!cpuGetOffsetAddress(SYSTEM_CPU(gpSystem), anAddress, &nCount, gpSystem->romCopy.nOffsetRAM, gpSystem->romCopy.nSize)) {
+        return 0;
+    }
+
+    for (iAddress = 0; iAddress < nCount; iAddress++) {
+        // iAddress?
+        if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), anAddress[0], anAddress[gpSystem->romCopy.nSize - 1])) {
+            return 0;
+        }
+    }
+
+    gpSystem->romCopy.nSize = 0;
+    if ((gpSystem->romCopy.pCallback != NULL) && !gpSystem->romCopy.pCallback()) {
+        return 0;
+    }
+
+    return 1;
+}
+#endif
+
+//! TODO: remove when the function above is matched
+static s32 __systemCopyROM_Complete(void);
+
+s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize,  SystemCopyCallbackFunc* pCallback) {
+    void* pTarget;
+
+    pSystem->romCopy.nSize = nSize;
+    pSystem->romCopy.pCallback = pCallback;
+    pSystem->romCopy.nOffsetRAM = nOffsetRAM & 0x7FFFFF;
+    pSystem->romCopy.nOffsetROM = nOffsetROM;
+
+    if (!ramGetBuffer(SYSTEM_RAM(pSystem), &pTarget, nOffsetRAM, (u32*)&nSize)) {
+        return 0;
+    }
+
+    if (pCallback == NULL) {
+        if (!romCopy(SYSTEM_ROM(pSystem), pTarget, nOffsetROM, nSize, NULL)) {
+            return 0;
+        }
+
+        if (!__systemCopyROM_Complete()) {
+            return 0;
+        }
+    } else {
+        if (!romCopy(SYSTEM_ROM(pSystem), pTarget, nOffsetROM, nSize, __systemCopyROM_Complete)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 s32 systemSetMode(System* pSystem, s32 pMode) {
     if (xlObjectTest(pSystem, &gClassSystem)) {
