@@ -364,7 +364,7 @@ s32 systemReset(System* pSystem) {
         }
 
         cpuSetXPC(SYSTEM_CPU(pSystem), nPC, 0, 0);
-        
+
         if (!systemSetupGameALL(pSystem)) {
             return 0;
         }
