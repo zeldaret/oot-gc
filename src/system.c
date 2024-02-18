@@ -299,7 +299,8 @@ static s32 __systemCopyROM_Complete(void) {
         return 0;
     }
 
-    if (!cpuGetOffsetAddress(SYSTEM_CPU(gpSystem), anAddress, &nCount, gpSystem->romCopy.nOffsetRAM, gpSystem->romCopy.nSize)) {
+    if (!cpuGetOffsetAddress(SYSTEM_CPU(gpSystem), anAddress, &nCount, gpSystem->romCopy.nOffsetRAM,
+                             gpSystem->romCopy.nSize)) {
         return 0;
     }
 
@@ -328,7 +329,7 @@ static s32 __systemCopyROM_Complete(void) {
 //! TODO: remove when the function above is matched
 static s32 __systemCopyROM_Complete(void);
 
-s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize,  SystemCopyCallbackFunc* pCallback) {
+s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback) {
     void* pTarget;
 
     pSystem->romCopy.nSize = nSize;
@@ -492,8 +493,9 @@ s32 systemCheckInterrupts(System* pSystem) {
                 bUsed = 0;
 
                 if (exception.eCode == 0) {
-                    if (cpuTestInterrupt(SYSTEM_CPU(pSystem), exception.nMask) && 
-                        ((exception.eTypeMips == MIT_NONE) || mipsSetInterrupt(SYSTEM_MIPS(pSystem), exception.eTypeMips))) {
+                    if (cpuTestInterrupt(SYSTEM_CPU(pSystem), exception.nMask) &&
+                        ((exception.eTypeMips == MIT_NONE) ||
+                         mipsSetInterrupt(SYSTEM_MIPS(pSystem), exception.eTypeMips))) {
                         bUsed = 1;
                     }
                 } else {
