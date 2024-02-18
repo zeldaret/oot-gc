@@ -286,6 +286,7 @@ static s32 __systemCopyROM_Complete(void) {
     u32 nAddress0;
     u32 nAddress1;
     u32 anAddress[0x20]; // size = 0x80
+    u32* ptr;
 
     nAddress0 = gpSystem->romCopy.nOffsetRAM;
     nAddress1 = nAddress0 + gpSystem->romCopy.nSize - 1;
@@ -302,9 +303,15 @@ static s32 __systemCopyROM_Complete(void) {
         return 0;
     }
 
-    for (iAddress = 0; iAddress < nCount; iAddress++) {
-        // iAddress?
-        if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), anAddress[0], anAddress[gpSystem->romCopy.nSize - 1])) {
+    // for (iAddress = 0; iAddress < nCount; iAddress++) {
+    //     // iAddress?
+    //     if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), anAddress[0], anAddress[gpSystem->romCopy.nSize - 1])) {
+    //         return 0;
+    //     }
+    // }
+
+    for (iAddress = 0, ptr = anAddress; iAddress < nCount; iAddress++, ptr++) {
+        if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), *ptr, *ptr + (gpSystem->romCopy.nSize - 1))) {
             return 0;
         }
     }
@@ -460,7 +467,64 @@ s32 systemReset(System* pSystem) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCheckInterrupts.s")
+s32 systemCheckInterrupts(System* pSystem) {
+    s32 iException;
+    s32 nMaskFinal;
+    s32 bUsed;
+    s32 bDone;
+    SystemException exception;
+    CpuExceptionCode eCodeFinal;
+
+    nMaskFinal = 0;
+    eCodeFinal = CEC_NONE;
+    bDone = 0;
+    pSystem->bException = 0;
+
+    for (iException = 0; iException < ARRAY_COUNT(pSystem->anException); iException++) {
+        if (pSystem->anException[iException] != 0) {
+            pSystem->bException = 1;
+
+            if (!bDone) {
+                if (!systemGetException(pSystem, iException, &exception)) {
+                    return 0;
+                }
+
+                bUsed = 0;
+
+                if (exception.eCode == 0) {
+                    if (cpuTestInterrupt(SYSTEM_CPU(pSystem), exception.nMask) && 
+                        ((exception.eTypeMips == MIT_NONE) || mipsSetInterrupt(SYSTEM_MIPS(pSystem), exception.eTypeMips))) {
+                        bUsed = 1;
+                    }
+                } else {
+                    bDone = 1;
+
+                    if (nMaskFinal == 0) {
+                        bUsed = 1;
+                        eCodeFinal = exception.eCode;
+                    }
+                }
+
+                if (bUsed) {
+                    nMaskFinal |= exception.nMask;
+                    pSystem->anException[iException] = 0;
+                }
+            }
+        }
+    }
+
+    if (nMaskFinal != 0) {
+        if (!cpuException(SYSTEM_CPU(pSystem), CEC_INTERRUPT, nMaskFinal)) {
+            return 0;
+        }
+    } else {
+        if ((eCodeFinal != CEC_NONE) && !cpuException(SYSTEM_CPU(pSystem), eCodeFinal, 0)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 s32 systemExceptionPending(System* pSystem, s32 nException) {
     if ((nException > -1) && (nException < ARRAY_COUNT(pSystem->anException))) {

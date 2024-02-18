@@ -2,6 +2,8 @@
 #define _SYSTEM_H
 
 #include "types.h"
+#include "mips.h"
+#include "cpu.h"
 
 typedef s32 SystemCopyCallbackFunc(void);
 
@@ -65,6 +67,37 @@ typedef enum SystemArgumentType {
     /*  8 */ SAT_COUNT
 } SystemArgumentType;
 
+// __anon_0x3979C
+typedef enum SystemInterruptType {
+    SIT_NONE = -1,
+    SIT_SW0 = 0,
+    SIT_SW1 = 1,
+    SIT_CART = 2,
+    SIT_COUNTER = 3,
+    SIT_RDB = 4,
+    SIT_SP = 5,
+    SIT_SI = 6,
+    SIT_AI = 7,
+    SIT_VI = 8,
+    SIT_PI = 9,
+    SIT_DP = 10,
+    SIT_CPU_BREAK = 11,
+    SIT_SP_BREAK = 12,
+    SIT_FAULT = 13,
+    SIT_THREADSTATUS = 14,
+    SIT_PRENMI = 15,
+    SIT_COUNT_ = 16,
+} SystemInterruptType;
+
+// __anon_0x393FF
+typedef struct SystemException {
+    /* 0x00 */ char* szType;
+    /* 0x04 */ u32 nMask;
+    /* 0x08 */ CpuExceptionCode eCode;
+    /* 0x0C */ SystemInterruptType eType;
+    /* 0x10 */ MipsInterruptType eTypeMips;
+} SystemException; // size = 0x14
+
 // __anon_0x37040
 typedef struct SystemRomCopy {
     /* 0x00 */ s32 nSize;
@@ -102,6 +135,7 @@ typedef struct SystemRomConfig {
 #define SYSTEM_ROM(pSystem) (struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM])
 #define SYSTEM_RAM(pSystem) (struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM])
 #define SYSTEM_RSP(pSystem) (struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP])
+#define SYSTEM_MIPS(pSystem) (struct Mips*)(((System*)(pSystem))->apObject[SOT_MIPS])
 
 extern u32 gnFlagZelda;
 

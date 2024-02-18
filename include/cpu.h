@@ -3,6 +3,44 @@
 
 #include "types.h"
 
+// __anon_0x3994B
+typedef enum CpuExceptionCode {
+    CEC_NONE = -1,
+    CEC_INTERRUPT = 0,
+    CEC_TLB_MODIFICATION = 1,
+    CEC_TLB_LOAD = 2,
+    CEC_TLB_STORE = 3,
+    CEC_ADDRESS_LOAD = 4,
+    CEC_ADDRESS_STORE = 5,
+    CEC_BUS_INSTRUCTION = 6,
+    CEC_BUS_DATA = 7,
+    CEC_SYSCALL = 8,
+    CEC_BREAK = 9,
+    CEC_RESERVED = 10,
+    CEC_COPROCESSOR = 11,
+    CEC_OVERFLOW = 12,
+    CEC_TRAP = 13,
+    CEC_VCE_INSTRUCTION = 14,
+    CEC_FLOAT = 15,
+    CEC_RESERVED_16 = 16,
+    CEC_RESERVED_17 = 17,
+    CEC_RESERVED_18 = 18,
+    CEC_RESERVED_19 = 19,
+    CEC_RESERVED_20 = 20,
+    CEC_RESERVED_21 = 21,
+    CEC_RESERVED_22 = 22,
+    CEC_WATCH = 23,
+    CEC_RESERVED_24 = 24,
+    CEC_RESERVED_25 = 25,
+    CEC_RESERVED_26 = 26,
+    CEC_RESERVED_27 = 27,
+    CEC_RESERVED_28 = 28,
+    CEC_RESERVED_29 = 29,
+    CEC_RESERVED_30 = 30,
+    CEC_VCE_DATA = 31,
+    CEC_COUNT = 32,
+} CpuExceptionCode;
+
 //! TODO: Move to Dolphin SDK headers
 typedef struct OSContext {
     /* 0x000 */ u32 gpr[32];
