@@ -5,7 +5,7 @@
     Code range: 0x80006648 -> 0x80007BC0
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // size = 0x4, address = 0x801355A8
 static u32* gpHeap;

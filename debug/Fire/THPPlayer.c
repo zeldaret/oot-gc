@@ -5,7 +5,7 @@
     Code range: 0x8000F890 -> 0x80010D9C
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // size = 0x100, address = 0x800EA1E8
 static u16 VolumeTable[128];

@@ -5,7 +5,7 @@
     Code range: 0x80021204 -> 0x8002CA14
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // Erased
 static s32 frameSetProjection(struct __anon_0x24C38* pFrame, s32 iHint) {

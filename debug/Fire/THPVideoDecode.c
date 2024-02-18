@@ -5,7 +5,7 @@
     Code range: 0x80012F20 -> 0x80013440
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // size = 0x4, address = 0x80135658
 static s32 VideoDecodeThreadCreated;

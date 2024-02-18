@@ -5,7 +5,7 @@
     Code range: 0x80007F80 -> 0x8000F7CC
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 typedef struct __anon_0x57A1 {
     /* 0x0 */ s32 nMode;

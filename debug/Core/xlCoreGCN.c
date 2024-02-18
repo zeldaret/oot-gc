@@ -5,7 +5,7 @@
     Code range: 0x800055A0 -> 0x80005E04
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // size = 0x8081, address = 0x800D3720
 u8 gTgPcTPL[32897];

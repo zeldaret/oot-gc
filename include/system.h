@@ -1,7 +1,7 @@
 #ifndef _SYSTEM_H
 #define _SYSTEM_H
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // __anon_0x394CD
 typedef enum SystemMode {
