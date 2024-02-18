@@ -834,7 +834,7 @@ s32 romGetPC(Rom* pROM, u64* pnPC) {
 }
 
 s32 romGetCode(Rom* pROM, char* acCode) {
-    int iCode;
+    s32 iCode;
 
     for (iCode = 0; iCode < 4; iCode++) {
         acCode[iCode] = pROM->acHeader[iCode + 0x3B];
@@ -845,7 +845,7 @@ s32 romGetCode(Rom* pROM, char* acCode) {
 }
 
 s32 romTestCode(Rom* pROM, char* acCode) {
-    int iCode;
+    s32 iCode;
     char acCodeCurrent[5];
 
     romGetCode(pROM, acCodeCurrent);
