@@ -5,22 +5,21 @@
 
 typedef u8 PERFId;
 
-typedef enum 
-{
+typedef enum {
     PERF_CPU_EVENT,
     PERF_CPU_GP_EVENT,
     PERF_GP_EVENT,
 } PerfType;
 
-typedef void *(*PERFAllocator)(u32 size);
-typedef void (*PERFDeallocator)(void *block);
+typedef void* (*PERFAllocator)(u32 size);
+typedef void (*PERFDeallocator)(void* block);
 typedef void (*PERFDrawCallback)(void);
 
-u32 PERFInit(u32 numSamples, u32 numFramesHistory, u32 numTypes,
-    PERFAllocator allocator, PERFDeallocator deallocator, PERFDrawCallback initDraw);
+u32 PERFInit(u32 numSamples, u32 numFramesHistory, u32 numTypes, PERFAllocator allocator, PERFDeallocator deallocator,
+             PERFDrawCallback initDraw);
 void PERFEventStart(PERFId id);
 void PERFEventEnd(PERFId id);
-void PERFSetEvent(PERFId id, char *name, PerfType type);
+void PERFSetEvent(PERFId id, char* name, PerfType type);
 void PERFSetDrawBWBarKey(BOOL tf);
 void PERFDumpScreen(void);
 void PERFStartFrame(void);

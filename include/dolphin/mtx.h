@@ -3,19 +3,16 @@
 
 #include <dolphin/types.h>
 
-typedef struct
-{
-	f32 x, y, z;
+typedef struct {
+    f32 x, y, z;
 } Vec, *VecPtr, Point3d, *Point3dPtr;
 
-typedef struct
-{
+typedef struct {
     s16 x, y, z;
 } S16Vec, *S16VecPtr;
 
-typedef struct
-{
-	f32 x, y, z, w;
+typedef struct {
+    f32 x, y, z, w;
 } Quaternion, *QuaternionPtr, Qtrn, *QtrnPtr;
 
 typedef f32 Mtx[3][4];
@@ -29,10 +26,10 @@ void C_MTXLookAt(Mtx m, Point3dPtr camPos, VecPtr camUp, Point3dPtr target);
 
 void PSMTXIdentity(Mtx m);
 
-#define MTXFrustum     C_MTXFrustum
-#define MTXOrtho       C_MTXOrtho
-#define MTXPerspective C_MTXPerspective 
-#define MTXScale       C_MTXScale
-#define MTXLookAt      C_MTXLookAt
+#define MTXFrustum C_MTXFrustum
+#define MTXOrtho C_MTXOrtho
+#define MTXPerspective C_MTXPerspective
+#define MTXScale C_MTXScale
+#define MTXLookAt C_MTXLookAt
 
 #endif

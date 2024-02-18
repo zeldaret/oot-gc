@@ -5,8 +5,7 @@
 
 #define OS_CONTEXT_STATE_EXC 0x02u
 
-typedef struct OSContext
-{
+typedef struct OSContext {
     /*0x000*/ u32 gpr[32];
     /*0x080*/ u32 cr;
     /*0x084*/ u32 lr;
@@ -24,11 +23,11 @@ typedef struct OSContext
 } OSContext;
 
 u32 OSGetStackPointer(void);
-void OSDumpContext(OSContext *context);
-void OSLoadContext(OSContext *context);
-u32 OSSaveContext(OSContext *context);
-void OSClearContext(OSContext *context);
-OSContext *OSGetCurrentContext(void);
-void OSSetCurrentContext(OSContext *context);
+void OSDumpContext(OSContext* context);
+void OSLoadContext(OSContext* context);
+u32 OSSaveContext(OSContext* context);
+void OSClearContext(OSContext* context);
+OSContext* OSGetCurrentContext(void);
+void OSSetCurrentContext(OSContext* context);
 
 #endif

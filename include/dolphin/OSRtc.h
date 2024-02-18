@@ -15,7 +15,7 @@ struct SramControl {
     int enabled;
     int locked;
     int sync;
-    void (* callback)();
+    void (*callback)();
 };
 
 struct OSSram {
@@ -39,16 +39,16 @@ struct OSSramEx {
     unsigned char _padding1[4];
 };
 
-int __OSGetRTC(unsigned long * rtc);
+int __OSGetRTC(unsigned long* rtc);
 int __OSSetRTC(unsigned long rtc);
 void __OSInitSram();
-struct OSSram * __OSLockSram();
-struct OSSramEx * __OSLockSramEx(void);
+struct OSSram* __OSLockSram();
+struct OSSramEx* __OSLockSramEx(void);
 int __OSUnlockSram(int commit);
 int __OSUnlockSramEx(int commit);
 int __OSSyncSram();
 int __OSCheckSram();
-int __OSReadROM(void * buffer, long length, long offset);
+int __OSReadROM(void* buffer, long length, long offset);
 unsigned long OSGetSoundMode();
 void OSSetSoundMode(unsigned long mode);
 unsigned long OSGetVideoMode();

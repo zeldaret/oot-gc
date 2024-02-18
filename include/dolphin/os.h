@@ -27,39 +27,38 @@ typedef u32 OSTick;
 #define OS_BASE_UNCACHED 0xC0000000
 
 #ifdef __MWERKS__
-u32 __OSBusClock  : (OS_BASE_CACHED | 0x00F8);
+u32 __OSBusClock : (OS_BASE_CACHED | 0x00F8);
 u32 __OSCoreClock : (OS_BASE_CACHED | 0x00FC);
-OSThread *__gUnkThread1 : (OS_BASE_CACHED | 0x00D8);
+OSThread* __gUnkThread1 : (OS_BASE_CACHED | 0x00D8);
 OSThreadQueue __OSActiveThreadQueue : (OS_BASE_CACHED | 0x00DC);
-OSThread *__gCurrentThread : (OS_BASE_CACHED | 0x00E4);
+OSThread* __gCurrentThread : (OS_BASE_CACHED | 0x00E4);
 #else
-#define __OSBusClock  (*(u32 *)(OS_BASE_CACHED | 0x00F8))
-#define __OSCoreClock (*(u32 *)(OS_BASE_CACHED | 0x00FC))
+#define __OSBusClock (*(u32*)(OS_BASE_CACHED | 0x00F8))
+#define __OSCoreClock (*(u32*)(OS_BASE_CACHED | 0x00FC))
 #endif
-#define OS_BUS_CLOCK   __OSBusClock
-#define OS_CORE_CLOCK  __OSCoreClock
-#define OS_TIMER_CLOCK (OS_BUS_CLOCK/4)
+#define OS_BUS_CLOCK __OSBusClock
+#define OS_CORE_CLOCK __OSCoreClock
+#define OS_TIMER_CLOCK (OS_BUS_CLOCK / 4)
 
-#define OSTicksToSeconds(ticks)      ((ticks)   / (OS_TIMER_CLOCK))
-#define OSTicksToMilliseconds(ticks) ((ticks)   / (OS_TIMER_CLOCK/1000))
-#define OSTicksToMicroseconds(ticks) ((ticks)*8 / (OS_TIMER_CLOCK/125000))
+#define OSTicksToSeconds(ticks) ((ticks) / (OS_TIMER_CLOCK))
+#define OSTicksToMilliseconds(ticks) ((ticks) / (OS_TIMER_CLOCK / 1000))
+#define OSTicksToMicroseconds(ticks) ((ticks)*8 / (OS_TIMER_CLOCK / 125000))
 #define OSSecondsToTicks(sec) ((sec) * (OS_TIMER_CLOCK))
 #define OSMillisecondsToTicks(msec) ((msec) * (OS_TIMER_CLOCK / 1000))
 #define OSNanosecondsToTicks(nsec) (((nsec) * (OS_TIMER_CLOCK / 125000)) / 8000)
 
 void OSInit(void);
 
-void *OSGetArenaHi(void);
-void *OSGetArenaLo(void);
-void OSSetArenaHi(void *);
-void OSSetArenaLo(void *);
+void* OSGetArenaHi(void);
+void* OSGetArenaLo(void);
+void OSSetArenaHi(void*);
+void OSSetArenaLo(void*);
 
 u32 OSGetPhysicalMemSize(void);
 
 void __OSPSInit();
 
-typedef struct OSCalendarTime
-{
+typedef struct OSCalendarTime {
     /*0x00*/ int sec;
     /*0x04*/ int min;
     /*0x08*/ int hour;
@@ -74,21 +73,21 @@ typedef struct OSCalendarTime
 
 OSTick OSGetTick(void);
 OSTime OSGetTime(void);
-void OSTicksToCalendarTime(OSTime ticks, OSCalendarTime *td);
+void OSTicksToCalendarTime(OSTime ticks, OSCalendarTime* td);
 BOOL OSEnableInterrupts(void);
 BOOL OSDisableInterrupts(void);
 BOOL OSRestoreInterrupts(BOOL level);
 
-#define OS_SOUND_MODE_MONO   0
+#define OS_SOUND_MODE_MONO 0
 #define OS_SOUND_MODE_STEREO 1
 
 u32 OSGetSoundMode(void);
 void OSSetSoundMode(u32 mode);
 
-void OSReport(char *, ...);
-void OSPanic(char *file, int line, char *msg, ...);
+void OSReport(char*, ...);
+void OSPanic(char* file, int line, char* msg, ...);
 
-#define OSRoundUp32B(x)   (((u32)(x) + 32 - 1) & ~(32 - 1))
+#define OSRoundUp32B(x) (((u32)(x) + 32 - 1) & ~(32 - 1))
 #define OSRoundDown32B(x) (((u32)(x)) & ~(32 - 1))
 
 #endif

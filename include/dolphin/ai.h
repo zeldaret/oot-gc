@@ -15,8 +15,8 @@ void AIResetStreamSampleCount(void);
 void AISetStreamPlayState(u32 state);
 u32 AIGetStreamPlayState(void);
 
-#define AI_SAMPLERATE_32KHZ  0
-#define AI_SAMPLERATE_48KHZ  1
+#define AI_SAMPLERATE_32KHZ 0
+#define AI_SAMPLERATE_48KHZ 1
 
 void AISetDSPSampleRate(u32 rate);
 u32 AIGetDSPSampleRate(void);
@@ -27,12 +27,12 @@ void AISetStreamVolLeft(u8 volume);
 u8 AIGetStreamVolLeft(void);
 void AISetStreamVolRight(u8 volume);
 u8 AIGetStreamVolRight(void);
-void AIInit(u8 *stack);
+void AIInit(u8* stack);
 
 #ifdef __MWERKS__
 extern volatile u32 __AIRegs[8] : 0xCC006C00;
 #else
-#define __AIRegs ((volatile u32 *)0xCC006C00)
+#define __AIRegs ((volatile u32*)0xCC006C00)
 #endif
 
 #endif

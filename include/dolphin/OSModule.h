@@ -8,14 +8,12 @@ typedef u32 OSModuleID;
 struct OSModuleInfo;
 typedef struct OSModuleInfo OSModuleInfo;
 
-typedef struct OSModuleLink
-{
-    OSModuleInfo *next;
-    OSModuleInfo *prev;
+typedef struct OSModuleLink {
+    OSModuleInfo* next;
+    OSModuleInfo* prev;
 } OSModuleLink;
 
-struct OSModuleInfo
-{
+struct OSModuleInfo {
     /*0x00*/ OSModuleID id;
     /*0x04*/ OSModuleLink link;
     /*0x0C*/ u32 numSections;
@@ -25,8 +23,8 @@ struct OSModuleInfo
     /*0x1C*/ u32 version;
 };
 
-void OSSetStringTable(void *);
-BOOL OSLink(OSModuleInfo *newModule, void *bss);
-BOOL OSUnlink(OSModuleInfo *oldModule);
+void OSSetStringTable(void*);
+BOOL OSLink(OSModuleInfo* newModule, void* bss);
+BOOL OSUnlink(OSModuleInfo* oldModule);
 
 #endif

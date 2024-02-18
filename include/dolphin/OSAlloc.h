@@ -7,14 +7,14 @@ typedef int OSHeapHandle;
 
 extern volatile OSHeapHandle __OSCurrHeap;
 
-void *OSInitAlloc(void *, void *, int);
-OSHeapHandle OSCreateHeap(void *, void *);
+void* OSInitAlloc(void*, void*, int);
+OSHeapHandle OSCreateHeap(void*, void*);
 OSHeapHandle OSSetCurrentHeap(OSHeapHandle);
-void *OSAllocFromHeap(OSHeapHandle, u32);
+void* OSAllocFromHeap(OSHeapHandle, u32);
 long OSCheckHeap(OSHeapHandle);
-void OSFreeToHeap(OSHeapHandle heap, void *ptr);
+void OSFreeToHeap(OSHeapHandle heap, void* ptr);
 
 #define OSAlloc(size) OSAllocFromHeap(__OSCurrHeap, (size))
-#define OSFree(ptr)   OSFreeToHeap(__OSCurrHeap, (ptr))
+#define OSFree(ptr) OSFreeToHeap(__OSCurrHeap, (ptr))
 
 #endif
