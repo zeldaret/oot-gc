@@ -1,9 +1,12 @@
 #include "cpu.h"
-#include "rom.h"
-#include "types.h"
-#include "xlObject.h"
-#include "system.h"
 #include "macros.h"
+#include "ram.h"
+#include "rom.h"
+#include "simGCN.h"
+#include "system.h"
+#include "types.h"
+#include "xlCoreGCN.h"
+#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassROM = {
     "ROM",
@@ -62,35 +65,11 @@ static u32 ganOffsetBlock_URAZLJ[198] = {
     0x01F45A0F, 0x01F45A10, 0x01F4F24F, 0x01F4F250, 0x01F57B7F, 0x01F57B80, 0x01F6255F, 0x01F62560, 0x01F739DF,
 };
 
-char D_800EDF28[] = "urazle.tpl";
-char D_800EDF34[] = "urazlj.tpl";
-
-char D_8013527C[5] = "CZLE";
-char D_80135284[5] = "CZLJ";
-char D_8013528C[8] = "zle.tpl";
-char D_80135294[8] = "zlj.tpl";
-char D_8013529C[1] = "";
-char D_801352A0[5] = "NZSJ";
-char D_801352A8[5] = "NZSE";
-
 static s32 gbProgress;
 static void* gpImageBack;
 static s32 iImage;
 
-const f32 D_80135FD0 = 1.0;
-const f64 D_80135FD8 = 4503601774854144.0;
-const f64 D_80135FE0 = 4503599627370496.0;
-const f32 D_80135FE8 = 0.0f;
-const f32 D_80135FEC = 640.0f;
-const f32 D_80135FF0 = 480.0f;
-const f32 D_80135FF4 = 479.0f;
-const f32 D_80135FF8 = 639.0f;
-const f32 D_80135FFC = 0.5f;
-const f32 D_80136000 = 400.0f;
-
-extern System* gpSystem;
-
-//! TODO: remove this when the SDK files are present
+//! TODO: remove these declarations when the SDK files are present
 u32 ARGetDMAStatus(void);
 void ARStartDMA(u32 type, u32 mainmem_addr, u32 aram_addr, u32 length);
 u32 ARGetBaseAddress(void);
@@ -101,6 +80,35 @@ void DCInvalidateRange(void* addr, u32 nBytes);
 
 #define ARStartDMARead(mmem, aram, len) ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, mmem, aram, len)
 #define ARStartDMAWrite(mmem, aram, len) ARStartDMA(ARAM_DIR_MRAM_TO_ARAM, mmem, aram, len)
+
+typedef f32 Mtx44[4][4];
+void GXSetViewport(f32 left, f32 top, f32 width, f32 height, f32 nearZ, f32 farZ);
+void C_MTXOrtho(Mtx44 m, f32 top, f32 bottom, f32 left, f32 right, f32 near, f32 far);
+
+typedef struct _GXTexObj {
+    /* 0x0 */ u32 dummy[8];
+} GXTexObj; // size = 0x20
+
+typedef union {
+    u8 u8;
+    u16 u16;
+    u32 u32;
+    u64 u64;
+    s8 s8;
+    s16 s16;
+    s32 s32;
+    s64 s64;
+    f32 f32;
+    f64 f64;
+} PPCWGPipe;
+
+#define GXFIFO_ADDR 0xCC008000
+
+#ifdef __MWERKS__
+volatile PPCWGPipe GXWGFifo : GXFIFO_ADDR;
+#else
+#define GXWGFifo (*(volatile PPCWGPipe*)GXFIFO_ADDR)
+#endif
 
 static s32 romFindFreeCache(Rom* pROM, s32* piCache, RomCacheType eType) {
     s32 iBlock;
@@ -277,7 +285,7 @@ static s32 romSetBlockCache(Rom* pROM, s32 iBlock, RomCacheType eType) {
     return 1;
 }
 
-s32 __romLoadBlock_Complete(Rom* pROM) {
+static s32 __romLoadBlock_Complete(Rom* pROM) {
     s32 iBlock;
 
     if (pROM->bFlip) {
@@ -304,7 +312,7 @@ s32 __romLoadBlock_Complete(Rom* pROM) {
     return 1;
 }
 
-void __romLoadBlock_CompleteGCN(long nResult, DVDFileInfo* fileInfo) {
+static void __romLoadBlock_CompleteGCN(long nResult, DVDFileInfo* fileInfo) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
 
     pROM->load.nResult = nResult;
@@ -350,12 +358,8 @@ static s32 romLoadBlock(Rom* pROM, s32 iBlock, s32 iCache, UnknownCallbackFunc p
     return 1;
 }
 
-//! TODO: remove this when ``romLoadFullOrPart`` is matched
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadRange.s")
-#else
-s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
-                 ProgressCallbackFunc* pProgressCallback) {
+static s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
+                        ProgressCallbackFunc* pProgressCallback) {
     s32 iCache;
     u32 iBlock;
     u32 iBlockLast;
@@ -386,11 +390,159 @@ s32 romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whichBlock,
 
     return 1;
 }
-#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romCacheGame_ZELDA.s")
+static s32 romCacheGame_ZELDA(f32 rProgress) {
+    s32 nSize;
+    Mtx44 matrix44;
+    GXTexObj textureObject;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romCacheGame.s")
+    f32 var_f1;
+    s32 temp_r31;
+
+    if (gbDisplayedError != 0) {
+        gbDisplayedError = 0;
+
+        TEXGetGXTexObjFromPalette(gpImageBack, &textureObject, 0);
+        xlCoreBeforeRender();
+        GXSetViewport(0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 1.0f);
+        C_MTXOrtho(matrix44, 0.0f, 479.0f, 0.0f, 639.0f, 0.0f, 1.0f);
+        GXSetProjection(matrix44, 1);
+        GXSetCullMode(0);
+        GXSetZMode(0, 3, 1);
+        GXSetNumChans(0);
+        GXSetNumTexGens(1);
+        GXSetNumTevStages(1);
+        GXSetTevOp(0, 3);
+        GXSetTevOrder(0, 0, 0, 0xFF);
+        GXClearVtxDesc();
+        GXSetVtxDesc(9, 1);
+        GXSetVtxDesc(0xD, 1);
+        GXSetVtxAttrFmt(0, 9, 0, 4, 0);
+        GXSetVtxAttrFmt(0, 0xD, 1, 0, 0);
+        GXLoadTexObj(&textureObject, 0);
+        GXBegin(0x80, 0, 4);
+
+        GXWGFifo.f32 = 0.0f;
+        GXWGFifo.f32 = 0.0f;
+        GXWGFifo.s8 = 0;
+        GXWGFifo.s8 = 0;
+        GXWGFifo.f32 = 640.0f;
+        GXWGFifo.f32 = 0.0f;
+        GXWGFifo.s8 = 1;
+        GXWGFifo.s8 = 0;
+        GXWGFifo.f32 = 640.0f;
+        GXWGFifo.f32 = 480.0f;
+        GXWGFifo.s8 = 1;
+        GXWGFifo.s8 = 1;
+        GXWGFifo.f32 = 0.0f;
+        GXWGFifo.f32 = 480.0f;
+        GXWGFifo.s8 = 0;
+        GXWGFifo.s8 = 1;
+
+        DEMODoneRender();
+    }
+
+    if (!(iImage & 7)) {
+        VIWaitForRetrace();
+
+        if (gbProgress != 0) {
+            var_f1 = (rProgress / 2.0f) + 0.5f;
+        } else {
+            var_f1 = rProgress / 2.0f;
+        }
+        temp_r31 = (s32)(400.0f * var_f1);
+
+        if (!_frameDrawRectangle(gpSystem->pFrame, 0x4083407D, 120, 430, 400, 8)) {
+            return 0;
+        }
+
+        if (!_frameDrawRectangle(gpSystem->pFrame, 0x8F9B8F7C, 120, 430, temp_r31, 8)) {
+            return 0;
+        }
+    }
+
+    iImage += 1;
+    if (rProgress == 1.0f) {
+        gbProgress = 1;
+    }
+    return 1;
+}
+
+static s32 romCacheGame(Rom* pROM) {
+    s32 blockCount;
+    s32 nSize;
+    char* szName;
+    s32 bIsCZLE;
+    s32 bIsCZLJ;
+    tXL_FILE* pFile;
+
+    blockCount = 0;
+    gDVDResetToggle = 1;
+
+    bIsCZLE = romTestCode(pROM, "CZLE");
+    bIsCZLJ = romTestCode(pROM, "CZLJ");
+    if (bIsCZLE || bIsCZLJ) {
+        if (gnFlagZelda & 2) {
+            if (!bIsCZLE) {
+                pROM->anOffsetBlock = ganOffsetBlock_ZLJ;
+                pROM->nCountOffsetBlocks = 0xC6;
+            }
+        } else if (!bIsCZLE) {
+            pROM->anOffsetBlock = ganOffsetBlock_URAZLJ;
+            pROM->nCountOffsetBlocks = 0xC6;
+        }
+
+        if (bIsCZLE) {
+            szName = gnFlagZelda & 2 ? "zle.tpl" : "urazle.tpl";
+        } else if (bIsCZLJ) {
+            szName = gnFlagZelda & 2 ? "zlj.tpl" : "urazlj.tpl";
+        } else {
+            szName = "";
+        }
+        if (xlFileOpen(&pFile, 1, szName) != 0) {
+            nSize = pFile->nSize;
+            gpImageBack = (u8*)((Ram*)((System*)pROM->pHost)->apObject[SOT_RAM])->pBuffer + 0x300000;
+            if (xlFileGet(pFile, gpImageBack, nSize) == 0) {
+                return 0;
+            }
+            if (xlFileClose(&pFile) == 0) {
+                return 0;
+            }
+            simulatorUnpackTexPalette(gpImageBack);
+            DCStoreRange(gpImageBack, nSize);
+            gbProgress = 0;
+            gbDisplayedError = 1;
+        }
+        if (gnFlagZelda & 2) {
+            if (!romLoadRange(pROM, 0, 0xA6251F, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return 0;
+            }
+            if (!romLoadRange(pROM, 0xAFDAA0, 0x0168515F, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return 0;
+            }
+        } else {
+            if (!romLoadRange(pROM, 0, 0xA6251F, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return 0;
+            }
+            if (!romLoadRange(pROM, 0xAFDB00, 0x01684BCF, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return 0;
+            }
+        }
+    } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
+        if (!romLoadRange(pROM, 0, 0xEFAB5F, &blockCount, 1, NULL)) {
+            return 0;
+        }
+        if (!romLoadRange(pROM, 0x0167CE40, 0x016B4E8F, &blockCount, 1, NULL)) {
+            return 0;
+        }
+        if (!romLoadRange(pROM, 0x01F82960, pROM->nSize - 1, &blockCount, 1, NULL)) {
+            return 0;
+        }
+    }
+
+    gDVDResetToggle = 0;
+    return 1;
+}
 
 s32 __romLoadUpdate_Complete(void) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
@@ -399,21 +551,150 @@ s32 __romLoadUpdate_Complete(void) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadUpdate.s")
+static s32 romLoadUpdate(Rom* pROM) {
+    s32 iCache;
+    RomBlock* pBlock;
+    u32 iBlock0;
+    u32 iBlock1;
+    Cpu* pCPU;
 
-s32 __romCopyUpdate_Complete(void) {
+    pCPU = ((System*)pROM->pHost)->apObject[SOT_CPU];
+    if ((pROM->load.nOffset0 == 0 && pROM->load.nOffset1 == 0) || pROM->load.bWait) {
+        return 1;
+    }
+
+    iBlock0 = pROM->load.nOffset0 >> 0xD;
+    iBlock1 = pROM->load.nOffset1 >> 0xD;
+
+    while (iBlock0 <= iBlock1) {
+        if (pCPU->nRetrace != pCPU->nRetraceUsed) {
+            return 1;
+        }
+
+        if (!simulatorTestReset(0, 0, 1, 0)) {
+            return 0;
+        }
+
+        pBlock = &pROM->aBlock[iBlock0];
+        pBlock->nTickUsed = ++pROM->nTick;
+        if (pBlock->nSize == 0) {
+            if (!romMakeFreeCache(pROM, &iCache, 0)) {
+                return 0;
+            }
+
+            pROM->load.bWait = 1;
+            if (!romLoadBlock(pROM, iBlock0, iCache, &__romLoadUpdate_Complete)) {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        pROM->load.nOffset0 = ++iBlock0 * 0x2000;
+    }
+
+    pROM->load.nOffset1 = 0U;
+    pROM->load.nOffset0 = 0U;
+    return 1;
+}
+
+static s32 __romCopyUpdate_Complete(void) {
     Rom* pROM = gpSystem->apObject[SOT_ROM];
 
     pROM->copy.bWait = 0;
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romCopyUpdate.s")
+static s32 romCopyUpdate(Rom* pROM) {
+    RomBlock* pBlock;
+    s32 pad;
+    s32 iCache;
+    s32 nTickLast;
+    u8* anData;
+    u32 iBlock;
+    u32 nSize;
+    u32 nOffsetBlock;
+    Cpu* pCPU;
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rom/romLoadFullOrPart.s")
-#else
-// weird float issue at ``simulatorShowLoad(1, pROM->acNameFile, D_80135FD0);``
+    s32 var_r0;
+    s32 var_r5;
+
+    pCPU = ((System*)pROM->pHost)->apObject[SOT_CPU];
+
+    //! TODO: inline function?
+    var_r5 = 0;
+    if (pROM->load.nOffset0 == 0 && pROM->load.nOffset1 == 0) {
+        var_r5 = 1;
+    }
+    if (var_r5 != 0) {
+        var_r0 = 0;
+    } else {
+        var_r0 = 1;
+    }
+    if (var_r0 || pROM->copy.nSize == 0 || pROM->copy.bWait) {
+        return 1;
+    }
+
+    while (pROM->copy.nSize != 0) {
+        if (pROM->copy.pCallback != NULL && pCPU->nRetrace != pCPU->nRetraceUsed) {
+            return 1;
+        }
+
+        if (!simulatorTestReset(0, 0, 1, 0)) {
+            return 0;
+        }
+
+        iBlock = pROM->copy.nOffset / 0x2000;
+        pBlock = &pROM->aBlock[iBlock];
+        nTickLast = pBlock->nTickUsed;
+        pBlock->nTickUsed = ++pROM->nTick;
+
+        if (pBlock->nSize != 0) {
+            if (pBlock->iCache < 0 && !romSetBlockCache(pROM, iBlock, 0)) {
+                return 0;
+            }
+        } else {
+            if (!romMakeFreeCache(pROM, &iCache, 0)) {
+                return 0;
+            }
+
+            if (pROM->copy.pCallback == NULL) {
+                if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
+                    return 0;
+                }
+            } else {
+                pBlock->nTickUsed = nTickLast;
+                pROM->nTick--;
+                pROM->copy.bWait = 1;
+                if (!romLoadBlock(pROM, iBlock, iCache, &__romCopyUpdate_Complete)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        }
+
+        nOffsetBlock = pROM->copy.nOffset & 0x1FFF;
+        if ((nSize = pBlock->nSize - nOffsetBlock) > pROM->copy.nSize) {
+            nSize = pROM->copy.nSize;
+        }
+
+        anData = &pROM->pCacheRAM[pBlock->iCache * 0x2000];
+        if (!xlHeapCopy(pROM->copy.pTarget, anData + nOffsetBlock, nSize)) {
+            return 0;
+        }
+
+        pROM->copy.pTarget = (u8*)pROM->copy.pTarget + nSize;
+        pROM->copy.nSize -= nSize;
+        pROM->copy.nOffset += nSize;
+    }
+
+    if (pROM->copy.pCallback != NULL && !pROM->copy.pCallback()) {
+        return 0;
+    }
+    return 1;
+}
+
 inline s32 romLoadFullOrPartLoop(Rom* pROM) {
     s32 i;
     s32 iCache;
@@ -438,7 +719,7 @@ inline s32 romLoadFullOrPartLoop(Rom* pROM) {
     return 1;
 }
 
-s32 romLoadFullOrPart(Rom* pROM) {
+static s32 romLoadFullOrPart(Rom* pROM) {
     tXL_FILE* pFile;
     s32 pad;
 
@@ -481,7 +762,7 @@ s32 romLoadFullOrPart(Rom* pROM) {
             }
 
             xlFileGet(pFile, pROM->pBuffer, pROM->nSize);
-            simulatorShowLoad(1, pROM->acNameFile, D_80135FD0);
+            simulatorShowLoad(1, pROM->acNameFile, 1.0f);
         } else {
             for (i = 0; i < (s32)pROM->nSize;) {
                 if (!simulatorTestReset(0, 0, 1, 0)) {
@@ -513,7 +794,6 @@ s32 romLoadFullOrPart(Rom* pROM) {
 
     return 1;
 }
-#endif
 
 s32 romGetPC(Rom* pROM, u64* pnPC) {
     s32 nOffset;
@@ -554,29 +834,28 @@ s32 romGetPC(Rom* pROM, u64* pnPC) {
 }
 
 s32 romGetCode(Rom* pROM, char* acCode) {
-    acCode[0] = pROM->acHeader[0x3B];
-    acCode[1] = pROM->acHeader[0x3C];
-    acCode[2] = pROM->acHeader[0x3D];
-    acCode[3] = pROM->acHeader[0x3E];
+    s32 iCode;
+
+    for (iCode = 0; iCode < 4; iCode++) {
+        acCode[iCode] = pROM->acHeader[iCode + 0x3B];
+    }
     acCode[4] = '\0';
+
     return 1;
 }
 
 s32 romTestCode(Rom* pROM, char* acCode) {
     s32 iCode;
     char acCodeCurrent[5];
-    s32 iOffset = 0x3B;
 
-    for (iCode = 0; iCode < 4; iCode++) {
-        acCodeCurrent[iCode] = pROM->acHeader[iOffset + iCode];
-    }
-    acCodeCurrent[4] = '\0';
+    romGetCode(pROM, acCodeCurrent);
 
     for (iCode = 0; iCode < 4; iCode++) {
         if (acCode[iCode] != acCodeCurrent[iCode]) {
             return 0;
         }
     }
+
     return 1;
 }
 

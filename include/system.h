@@ -105,4 +105,6 @@ typedef struct SystemRomConfig {
 #define SYSTEM_RAM(pSystem) \
   (struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM])
 
+extern u32 gnFlagZelda;
+
 #endif

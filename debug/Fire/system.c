@@ -672,38 +672,6 @@ typedef enum __anon_0x394CD {
     SOT_COUNT = 16,
 } __anon_0x394CD;
 
-// Range: 0x8002CA14 -> 0x8002D2EC
-s32 systemEvent(struct __anon_0x37240* pSystem, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r31
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r26
-
-    // Local variables
-    struct _CPU* pCPU; // r30
-    struct __anon_0x393FF exception; // r1+0x1C
-    enum __anon_0x394CD eObject; // r1+0x8
-    enum __anon_0x394CD storageDevice; // r1+0x8
-
-    // References
-    // -> struct _XL_OBJECTTYPE gClassRdb;
-    // -> struct _XL_OBJECTTYPE gClassPeripheral;
-    // -> struct _XL_OBJECTTYPE gClassLibrary;
-    // -> struct _XL_OBJECTTYPE gClassSerial;
-    // -> struct _XL_OBJECTTYPE gClassVideo;
-    // -> struct _XL_OBJECTTYPE gClassAudio;
-    // -> struct _XL_OBJECTTYPE gClassDisk;
-    // -> struct _XL_OBJECTTYPE gClassMips;
-    // -> struct _XL_OBJECTTYPE gClassRDP;
-    // -> struct _XL_OBJECTTYPE gClassRSP;
-    // -> struct _XL_OBJECTTYPE gClassROM;
-    // -> struct _XL_OBJECTTYPE gClassRAM;
-    // -> struct _XL_OBJECTTYPE gClassPIF;
-    // -> struct _XL_OBJECTTYPE gClassCPU;
-    // -> struct __anon_0x36AAA* gpSound;
-    // -> struct __anon_0x35B4C* gpFrame;
-}
-
 typedef enum __anon_0x3979C {
     SIT_NONE = -1,
     SIT_SW0 = 0,
@@ -724,13 +692,6 @@ typedef enum __anon_0x3979C {
     SIT_PRENMI = 15,
     SIT_COUNT_ = 16,
 } __anon_0x3979C;
-
-// Range: 0x8002D2EC -> 0x8002D324
-s32 systemExceptionPending(struct __anon_0x37240* pSystem, enum __anon_0x3979C eType) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r1+0x0
-    // enum __anon_0x3979C eType; // r1+0x4
-}
 
 typedef enum __anon_0x3994B {
     CEC_NONE = -1,
@@ -769,74 +730,11 @@ typedef enum __anon_0x3994B {
     CEC_COUNT = 32,
 } __anon_0x3994B;
 
-// Range: 0x8002D324 -> 0x8002D47C
-s32 systemCheckInterrupts(struct __anon_0x37240* pSystem) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r25
-
-    // Local variables
-    s32 iException; // r30
-    s32 nMaskFinal; // r29
-    s32 bUsed; // r28
-    s32 bDone; // r27
-    struct __anon_0x393FF exception; // r1+0xC
-    enum __anon_0x3994B eCodeFinal; // r26
-}
-
-// Range: 0x8002D47C -> 0x8002D578
-s32 systemExecute(struct __anon_0x37240* pSystem, s32 nCount) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r31
-    // s32 nCount; // r4
-
-    // References
-    // -> struct _XL_OBJECTTYPE gClassSystem;
-}
-
-// Range: 0x8002D578 -> 0x8002D730
-s32 systemReset(struct __anon_0x37240* pSystem) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r29
-
-    // Local variables
-    s64 nPC; // r1+0x10
-    s32 nOffsetRAM; // r4
-    enum __anon_0x394CD eObject; // r30
-}
-
-// Range: 0x8002D730 -> 0x8002D740
-s32 systemGetStorageDevice(struct __anon_0x37240* pSystem, enum __anon_0x394CD* pStorageDevice) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r1+0x0
-    // enum __anon_0x394CD* pStorageDevice; // r1+0x4
-}
-
 // size = 0x10, address = 0x800EE758
 struct _XL_OBJECTTYPE gClassFlash;
 
 // size = 0x10, address = 0x800EE768
 struct _XL_OBJECTTYPE gClassSram;
-
-// Range: 0x8002D740 -> 0x8002D82C
-s32 systemSetStorageDevice(struct __anon_0x37240* pSystem, enum __anon_0x394CD storageDevice) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r30
-    // enum __anon_0x394CD storageDevice; // r31
-
-    // References
-    // -> struct _XL_OBJECTTYPE gClassSram;
-    // -> struct _XL_OBJECTTYPE gClassFlash;
-}
-
-// Range: 0x8002D82C -> 0x8002D894
-s32 systemGetMode(struct __anon_0x37240* pSystem, enum __anon_0x3A085* peMode) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r30
-    // enum __anon_0x3A085* peMode; // r31
-
-    // References
-    // -> struct _XL_OBJECTTYPE gClassSystem;
-}
 
 typedef enum __anon_0x3A085 {
     SM_NONE = -1,
@@ -844,109 +742,8 @@ typedef enum __anon_0x3A085 {
     SM_STOPPED = 1,
 } __anon_0x3A085;
 
-// Range: 0x8002D894 -> 0x8002D904
-s32 systemSetMode(struct __anon_0x37240* pSystem, enum __anon_0x3A085 eMode) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r30
-    // enum __anon_0x3A085 eMode; // r31
-
-    // References
-    // -> struct _XL_OBJECTTYPE gClassSystem;
-}
-
-// Erased
-static s32 systemClearBreak(struct __anon_0x37240* pSystem) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r1+0x0
-}
-
-// Erased
-static s32 systemSetBreak(struct __anon_0x37240* pSystem, s64 nAddress) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r1+0x0
-    // s64 nAddress; // r1+0x8
-}
-
-// Range: 0x8002D904 -> 0x8002D9F8
-s32 systemCopyROM(struct __anon_0x37240* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, s32 (*pCallback)()) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r29
-    // s32 nOffsetRAM; // r4
-    // s32 nOffsetROM; // r30
-    // s32 nSize; // r1+0x14
-    // s32 (* pCallback)(); // r31
-
-    // Local variables
-    void* pTarget; // r1+0x1C
-}
-
 // size = 0x4, address = 0x80135600
 struct __anon_0x37240* gpSystem;
-
-// Range: 0x8002D9F8 -> 0x8002DB30
-static s32 __systemCopyROM_Complete() {
-    // Local variables
-    s32 iAddress; // r30
-    s32 nCount; // r1+0x88
-    u32 nAddress0; // r30
-    u32 nAddress1; // r31
-    u32 anAddress[32]; // r1+0x8
-
-    // References
-    // -> struct __anon_0x37240* gpSystem;
-}
-
-// Range: 0x8002DB30 -> 0x8002DB38
-static s32 systemPut64() {}
-
-// Range: 0x8002DB38 -> 0x8002DB40
-static s32 systemPut32() {}
-
-// Range: 0x8002DB40 -> 0x8002DB48
-static s32 systemPut16() {}
-
-// Range: 0x8002DB48 -> 0x8002DB50
-static s32 systemPut8() {}
-
-// Range: 0x8002DB50 -> 0x8002DB64
-static s32 systemGet64(s64* pData) {
-    // Parameters
-    // s64* pData; // r1+0x8
-}
-
-// Range: 0x8002DB64 -> 0x8002DB74
-static s32 systemGet32(s32* pData) {
-    // Parameters
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x8002DB74 -> 0x8002DB84
-static s32 systemGet16(s16* pData) {
-    // Parameters
-    // s16* pData; // r1+0x8
-}
-
-// Range: 0x8002DB84 -> 0x8002DB94
-static s32 systemGet8(char* pData) {
-    // Parameters
-    // char* pData; // r1+0x8
-}
-
-// Range: 0x8002DB94 -> 0x8002DD70
-static s32 systemGetException(enum __anon_0x3979C eType, struct __anon_0x393FF* pException) {
-    // Parameters
-    // enum __anon_0x3979C eType; // r1+0x4
-    // struct __anon_0x393FF* pException; // r1+0x8
-}
-
-// Erased
-static s32 systemClearExceptions(struct __anon_0x37240* pSystem) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r1+0x0
-
-    // Local variables
-    s32 iException; // r1+0x0
-}
 
 typedef struct __anon_0x3A807 {
     /* 0x00 */ s32 configuration;
@@ -1178,6 +975,54 @@ typedef struct __anon_0x3C350 {
     /* 0x1C */ enum __anon_0x3C277 eControllerType[5];
 } __anon_0x3C350; // size = 0x30
 
+// Range: 0x80030B38 -> 0x80030E70
+static s32 systemSetupGameRAM(struct __anon_0x37240* pSystem) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r27
+
+    // Local variables
+    char* szExtra; // r1+0x414
+    s32 bExpansion; // r30
+    s32 nSizeRAM; // r28
+    s32 nSizeCacheROM; // r29
+    s32 nSizeExtra; // r3
+    struct __anon_0x3BEE8* pROM; // r29
+    u32 nCode; // r28
+    u32 iCode; // r1+0x8
+    u32 anCode[256]; // r1+0x14
+
+    // References
+    // -> u32 gnFlagZelda;
+}
+
+// Erased
+static s32 systemMapControllerIndex(s32 gameIndex, s32 configIndex) {
+    // Parameters
+    // s32 gameIndex; // r1+0xC
+    // s32 configIndex; // r30
+
+    // Local variables
+    s32 i; // r31
+
+    // References
+    // -> static u32 contMap[4][20];
+    // -> struct __anon_0x3459E gSystemRomConfigurationList[1];
+}
+
+// Range: 0x80030364 -> 0x80030B38
+s32 systemGetInitialConfiguration(struct __anon_0x3BEE8* pROM, s32 index) {
+    // Parameters
+    // struct __anon_0x3BEE8* pROM; // r24
+    // s32 index; // r1+0x10
+
+    // Local variables
+    char* szText; // r1+0x14
+
+    // References
+    // -> struct __anon_0x3459E gSystemRomConfigurationList[1];
+    // -> static u32 contMap[4][20];
+}
+
 // Range: 0x8002DD70 -> 0x80030364
 static s32 systemSetupGameALL(struct __anon_0x37240* pSystem) {
     // Parameters
@@ -1209,50 +1054,205 @@ static s32 systemSetupGameALL(struct __anon_0x37240* pSystem) {
     // -> f32 fTickScale;
 }
 
-// Range: 0x80030364 -> 0x80030B38
-s32 systemGetInitialConfiguration(struct __anon_0x3BEE8* pROM, s32 index) {
+// Erased
+static s32 systemClearExceptions(struct __anon_0x37240* pSystem) {
     // Parameters
-    // struct __anon_0x3BEE8* pROM; // r24
-    // s32 index; // r1+0x10
+    // struct __anon_0x37240* pSystem; // r1+0x0
 
     // Local variables
-    char* szText; // r1+0x14
+    s32 iException; // r1+0x0
+}
+
+// Range: 0x8002DB94 -> 0x8002DD70
+static s32 systemGetException(enum __anon_0x3979C eType, struct __anon_0x393FF* pException) {
+    // Parameters
+    // enum __anon_0x3979C eType; // r1+0x4
+    // struct __anon_0x393FF* pException; // r1+0x8
+}
+
+// Range: 0x8002DB84 -> 0x8002DB94
+static s32 systemGet8(char* pData) {
+    // Parameters
+    // char* pData; // r1+0x8
+}
+
+// Range: 0x8002DB74 -> 0x8002DB84
+static s32 systemGet16(s16* pData) {
+    // Parameters
+    // s16* pData; // r1+0x8
+}
+
+// Range: 0x8002DB64 -> 0x8002DB74
+static s32 systemGet32(s32* pData) {
+    // Parameters
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x8002DB50 -> 0x8002DB64
+static s32 systemGet64(s64* pData) {
+    // Parameters
+    // s64* pData; // r1+0x8
+}
+
+// Range: 0x8002DB48 -> 0x8002DB50
+static s32 systemPut8() {}
+
+// Range: 0x8002DB40 -> 0x8002DB48
+static s32 systemPut16() {}
+
+// Range: 0x8002DB38 -> 0x8002DB40
+static s32 systemPut32() {}
+
+// Range: 0x8002DB30 -> 0x8002DB38
+static s32 systemPut64() {}
+
+// Range: 0x8002D9F8 -> 0x8002DB30
+static s32 __systemCopyROM_Complete() {
+    // Local variables
+    s32 iAddress; // r30
+    s32 nCount; // r1+0x88
+    u32 nAddress0; // r30
+    u32 nAddress1; // r31
+    u32 anAddress[32]; // r1+0x8
 
     // References
-    // -> struct __anon_0x3459E gSystemRomConfigurationList[1];
-    // -> static u32 contMap[4][20];
+    // -> struct __anon_0x37240* gpSystem;
+}
+
+// Range: 0x8002D904 -> 0x8002D9F8
+s32 systemCopyROM(struct __anon_0x37240* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, s32 (*pCallback)()) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r29
+    // s32 nOffsetRAM; // r4
+    // s32 nOffsetROM; // r30
+    // s32 nSize; // r1+0x14
+    // s32 (* pCallback)(); // r31
+
+    // Local variables
+    void* pTarget; // r1+0x1C
 }
 
 // Erased
-static s32 systemMapControllerIndex(s32 gameIndex, s32 configIndex) {
+static s32 systemSetBreak(struct __anon_0x37240* pSystem, s64 nAddress) {
     // Parameters
-    // s32 gameIndex; // r1+0xC
-    // s32 configIndex; // r30
-
-    // Local variables
-    s32 i; // r31
-
-    // References
-    // -> static u32 contMap[4][20];
-    // -> struct __anon_0x3459E gSystemRomConfigurationList[1];
+    // struct __anon_0x37240* pSystem; // r1+0x0
+    // s64 nAddress; // r1+0x8
 }
 
-// Range: 0x80030B38 -> 0x80030E70
-static s32 systemSetupGameRAM(struct __anon_0x37240* pSystem) {
+// Erased
+static s32 systemClearBreak(struct __anon_0x37240* pSystem) {
     // Parameters
-    // struct __anon_0x37240* pSystem; // r27
+    // struct __anon_0x37240* pSystem; // r1+0x0
+}
 
-    // Local variables
-    char* szExtra; // r1+0x414
-    s32 bExpansion; // r30
-    s32 nSizeRAM; // r28
-    s32 nSizeCacheROM; // r29
-    s32 nSizeExtra; // r3
-    struct __anon_0x3BEE8* pROM; // r29
-    u32 nCode; // r28
-    u32 iCode; // r1+0x8
-    u32 anCode[256]; // r1+0x14
+// Range: 0x8002D894 -> 0x8002D904
+s32 systemSetMode(struct __anon_0x37240* pSystem, enum __anon_0x3A085 eMode) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r30
+    // enum __anon_0x3A085 eMode; // r31
 
     // References
-    // -> u32 gnFlagZelda;
+    // -> struct _XL_OBJECTTYPE gClassSystem;
+}
+
+// Range: 0x8002D82C -> 0x8002D894
+s32 systemGetMode(struct __anon_0x37240* pSystem, enum __anon_0x3A085* peMode) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r30
+    // enum __anon_0x3A085* peMode; // r31
+
+    // References
+    // -> struct _XL_OBJECTTYPE gClassSystem;
+}
+
+// Range: 0x8002D740 -> 0x8002D82C
+s32 systemSetStorageDevice(struct __anon_0x37240* pSystem, enum __anon_0x394CD storageDevice) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r30
+    // enum __anon_0x394CD storageDevice; // r31
+
+    // References
+    // -> struct _XL_OBJECTTYPE gClassSram;
+    // -> struct _XL_OBJECTTYPE gClassFlash;
+}
+
+// Range: 0x8002D730 -> 0x8002D740
+s32 systemGetStorageDevice(struct __anon_0x37240* pSystem, enum __anon_0x394CD* pStorageDevice) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r1+0x0
+    // enum __anon_0x394CD* pStorageDevice; // r1+0x4
+}
+
+// Range: 0x8002D578 -> 0x8002D730
+s32 systemReset(struct __anon_0x37240* pSystem) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r29
+
+    // Local variables
+    s64 nPC; // r1+0x10
+    s32 nOffsetRAM; // r4
+    enum __anon_0x394CD eObject; // r30
+}
+
+// Range: 0x8002D47C -> 0x8002D578
+s32 systemExecute(struct __anon_0x37240* pSystem, s32 nCount) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r31
+    // s32 nCount; // r4
+
+    // References
+    // -> struct _XL_OBJECTTYPE gClassSystem;
+}
+
+// Range: 0x8002D324 -> 0x8002D47C
+s32 systemCheckInterrupts(struct __anon_0x37240* pSystem) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r25
+
+    // Local variables
+    s32 iException; // r30
+    s32 nMaskFinal; // r29
+    s32 bUsed; // r28
+    s32 bDone; // r27
+    struct __anon_0x393FF exception; // r1+0xC
+    enum __anon_0x3994B eCodeFinal; // r26
+}
+
+// Range: 0x8002D2EC -> 0x8002D324
+s32 systemExceptionPending(struct __anon_0x37240* pSystem, enum __anon_0x3979C eType) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r1+0x0
+    // enum __anon_0x3979C eType; // r1+0x4
+}
+
+// Range: 0x8002CA14 -> 0x8002D2EC
+s32 systemEvent(struct __anon_0x37240* pSystem, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r31
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r26
+
+    // Local variables
+    struct _CPU* pCPU; // r30
+    struct __anon_0x393FF exception; // r1+0x1C
+    enum __anon_0x394CD eObject; // r1+0x8
+    enum __anon_0x394CD storageDevice; // r1+0x8
+
+    // References
+    // -> struct _XL_OBJECTTYPE gClassRdb;
+    // -> struct _XL_OBJECTTYPE gClassPeripheral;
+    // -> struct _XL_OBJECTTYPE gClassLibrary;
+    // -> struct _XL_OBJECTTYPE gClassSerial;
+    // -> struct _XL_OBJECTTYPE gClassVideo;
+    // -> struct _XL_OBJECTTYPE gClassAudio;
+    // -> struct _XL_OBJECTTYPE gClassDisk;
+    // -> struct _XL_OBJECTTYPE gClassMips;
+    // -> struct _XL_OBJECTTYPE gClassRDP;
+    // -> struct _XL_OBJECTTYPE gClassRSP;
+    // -> struct _XL_OBJECTTYPE gClassROM;
+    // -> struct _XL_OBJECTTYPE gClassRAM;
+    // -> struct _XL_OBJECTTYPE gClassPIF;
+    // -> struct _XL_OBJECTTYPE gClassCPU;
+    // -> struct __anon_0x36AAA* gpSound;
+    // -> struct __anon_0x35B4C* gpFrame;
 }

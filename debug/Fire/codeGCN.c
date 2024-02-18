@@ -79,15 +79,23 @@ typedef struct _CODE_CACHE_NODE {
     /* 0xC */ struct _CODE_CACHE_NODE* child;
 } __anon_0x20141; // size = 0x10
 
-// Range: 0x8001C444 -> 0x8001C498
-s32 codeEvent(s32 nEvent) {
-    // Parameters
-    // s32 nEvent; // r1+0x4
+// Erased
+static s32 hioInitSend() {}
 
-    // References
-    // -> static u32* ganDataCode;
-    // -> static void* gpBufferFunction;
-}
+// Erased
+static s32 hioCallbackDevice() {}
+
+// Erased
+static void hioCallback() {}
+
+// Erased
+static s32 hioSendBuffer() {}
+
+// Erased
+static s32 hioInit() {}
+
+// Erased
+static s32 codeSendFilePart() {}
 
 // Erased
 static s32 codeCheckCatalog(s32 nAddress0, s32 nAddress1) {
@@ -106,20 +114,12 @@ static s32 codeCheckCatalog(s32 nAddress0, s32 nAddress1) {
     // -> static s32 gCatalogLoaded;
 }
 
-// Erased
-static s32 codeSendFilePart() {}
+// Range: 0x8001C444 -> 0x8001C498
+s32 codeEvent(s32 nEvent) {
+    // Parameters
+    // s32 nEvent; // r1+0x4
 
-// Erased
-static s32 hioInit() {}
-
-// Erased
-static s32 hioSendBuffer() {}
-
-// Erased
-static void hioCallback() {}
-
-// Erased
-static s32 hioCallbackDevice() {}
-
-// Erased
-static s32 hioInitSend() {}
+    // References
+    // -> static u32* ganDataCode;
+    // -> static void* gpBufferFunction;
+}

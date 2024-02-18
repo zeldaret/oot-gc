@@ -50,85 +50,6 @@ typedef struct __anon_0x52CD0 {
     /* 0x2C */ s32 nClockTMEM;
 } __anon_0x52CD0; // size = 0x30
 
-// Range: 0x8006FEC0 -> 0x80070064
-s32 rdpEvent(struct __anon_0x52CD0* pRDP, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x52CD0* pRDP; // r30
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r31
-}
-
-// Range: 0x80070064 -> 0x8007006C
-static s32 rdpGetSpan64() {}
-
-// Range: 0x8007006C -> 0x800700DC
-static s32 rdpGetSpan32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x52CD0* pRDP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x800700DC -> 0x800700E4
-static s32 rdpGetSpan16() {}
-
-// Range: 0x800700E4 -> 0x800700EC
-static s32 rdpGetSpan8() {}
-
-// Range: 0x800700EC -> 0x800700F4
-static s32 rdpPutSpan64() {}
-
-// Range: 0x800700F4 -> 0x80070158
-static s32 rdpPutSpan32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x52CD0* pRDP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x80070158 -> 0x80070160
-static s32 rdpPutSpan16() {}
-
-// Range: 0x80070160 -> 0x80070168
-static s32 rdpPutSpan8() {}
-
-// Range: 0x80070168 -> 0x80070170
-static s32 rdpGet64() {}
-
-// Range: 0x80070170 -> 0x80070214
-static s32 rdpGet32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x52CD0* pRDP; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s32* pData; // r1+0x8
-}
-
-// Range: 0x80070214 -> 0x8007021C
-static s32 rdpGet16() {}
-
-// Range: 0x8007021C -> 0x80070224
-static s32 rdpGet8() {}
-
-// Range: 0x80070224 -> 0x8007022C
-static s32 rdpPut64() {}
-
-// Range: 0x8007022C -> 0x80070330
-static s32 rdpPut32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x52CD0* pRDP; // r3
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r1+0x10
-
-    // Local variables
-    s32 nData; // r4
-}
-
-// Range: 0x80070330 -> 0x80070338
-static s32 rdpPut16() {}
-
-// Range: 0x80070338 -> 0x80070340
-static s32 rdpPut8() {}
-
 typedef enum __anon_0x533F6 {
     SM_NONE = -1,
     SM_RUNNING = 0,
@@ -572,4 +493,83 @@ s32 rdpParseGBI(struct __anon_0x52CD0* pRDP, u64** ppnGBI) {
     // -> static s32 nZCount$125;
     // -> static u32 sCommandCodes$168[3];
     // -> static s32 nZBufferCount$126;
+}
+
+// Range: 0x80070338 -> 0x80070340
+static s32 rdpPut8() {}
+
+// Range: 0x80070330 -> 0x80070338
+static s32 rdpPut16() {}
+
+// Range: 0x8007022C -> 0x80070330
+static s32 rdpPut32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x52CD0* pRDP; // r3
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r1+0x10
+
+    // Local variables
+    s32 nData; // r4
+}
+
+// Range: 0x80070224 -> 0x8007022C
+static s32 rdpPut64() {}
+
+// Range: 0x8007021C -> 0x80070224
+static s32 rdpGet8() {}
+
+// Range: 0x80070214 -> 0x8007021C
+static s32 rdpGet16() {}
+
+// Range: 0x80070170 -> 0x80070214
+static s32 rdpGet32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x52CD0* pRDP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x80070168 -> 0x80070170
+static s32 rdpGet64() {}
+
+// Range: 0x80070160 -> 0x80070168
+static s32 rdpPutSpan8() {}
+
+// Range: 0x80070158 -> 0x80070160
+static s32 rdpPutSpan16() {}
+
+// Range: 0x800700F4 -> 0x80070158
+static s32 rdpPutSpan32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x52CD0* pRDP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x800700EC -> 0x800700F4
+static s32 rdpPutSpan64() {}
+
+// Range: 0x800700E4 -> 0x800700EC
+static s32 rdpGetSpan8() {}
+
+// Range: 0x800700DC -> 0x800700E4
+static s32 rdpGetSpan16() {}
+
+// Range: 0x8007006C -> 0x800700DC
+static s32 rdpGetSpan32(struct __anon_0x52CD0* pRDP, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x52CD0* pRDP; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x80070064 -> 0x8007006C
+static s32 rdpGetSpan64() {}
+
+// Range: 0x8006FEC0 -> 0x80070064
+s32 rdpEvent(struct __anon_0x52CD0* pRDP, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x52CD0* pRDP; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
 }

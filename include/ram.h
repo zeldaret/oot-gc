@@ -11,5 +11,6 @@ typedef struct Ram {
 } Ram; // size = 0x0C
 
 s32 ramSetSize(Ram* pRAM, s32 nSize);
+s32 ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize);
 
 #endif

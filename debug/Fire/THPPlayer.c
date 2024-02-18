@@ -247,197 +247,6 @@ typedef struct __anon_0x10B6F {
 // size = 0x1D0, address = 0x800F9C80
 struct __anon_0x10B6F ActivePlayer;
 
-// Range: 0x8000F890 -> 0x8000F9C8
-s32 THPPlayerInit(s32 audioSystem) {
-    // Parameters
-    // s32 audioSystem; // r30
-
-    // Local variables
-    s32 old; // r30
-
-    // References
-    // -> static s32 Initialized;
-    // -> static s32 SoundBufferIndex;
-    // -> static s16 SoundBuffer[2][320];
-    // -> static s32 AudioSystem;
-    // -> static void (* OldAIDCallback)();
-    // -> static s16* CurAudioBuffer;
-    // -> static s16* LastAudioBuffer;
-    // -> static void* UsedTextureSetMessage[3];
-    // -> static struct OSMessageQueue UsedTextureSetQueue;
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static void THPPlayerQuit() {
-    // Local variables
-    s32 old; // r31
-
-    // References
-    // -> static s32 Initialized;
-    // -> static void (* OldAIDCallback)();
-}
-
-// Range: 0x8000F9C8 -> 0x8000FC40
-s32 THPPlayerOpen(char* fileName, s32 onMemory) {
-    // Parameters
-    // char* fileName; // r21
-    // s32 onMemory; // r30
-
-    // Local variables
-    s32 offset; // r22
-    s32 i; // r21
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-    // -> static s32 WorkBuffer[16];
-    // -> static s32 Initialized;
-}
-
-// Erased
-static s32 THPPlayerClose() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Range: 0x8000FC40 -> 0x8000FCE8
-u32 THPPlayerCalcNeedMemory() {
-    // Local variables
-    u32 size; // r6
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Range: 0x8000FCE8 -> 0x8000FF24
-s32 THPPlayerSetBuffer(u8* buffer) {
-    // Parameters
-    // u8* buffer; // r1+0x8
-
-    // Local variables
-    u32 i; // r1+0x8
-    u8* ptr; // r30
-    u32 ysize; // r27
-    u32 uvsize; // r26
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Range: 0x8000FF24 -> 0x8000FFF0
-static void InitAllMessageQueue() {
-    // Local variables
-    s32 i; // r28
-    struct __anon_0x10A84* readBuffer; // r3
-    struct __anon_0x10944* textureSet; // r3
-    struct __anon_0x109FA* audioBuffer; // r3
-
-    // References
-    // -> static void* PrepareReadyMessage;
-    // -> static struct OSMessageQueue PrepareReadyQueue;
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static s32 WaitUntilPrepare() {
-    // Local variables
-    void* msg; // r1+0x8
-
-    // References
-    // -> static struct OSMessageQueue PrepareReadyQueue;
-}
-
-// Range: 0x8000FFF0 -> 0x80010020
-void PrepareReady(s32 flag) {
-    // Parameters
-    // s32 flag; // r4
-
-    // References
-    // -> static struct OSMessageQueue PrepareReadyQueue;
-}
-
-// Range: 0x80010020 -> 0x80010294
-s32 THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack) {
-    // Parameters
-    // s32 frameNum; // r29
-    // s32 playFlag; // r26
-    // s32 audioTrack; // r27
-
-    // Local variables
-    s32 offset; // r6
-    u8* ptr; // r26
-
-    // References
-    // -> static void (* OldVIPostCallback)(u32);
-    // -> struct __anon_0x10B6F ActivePlayer;
-    // -> static struct OSMessageQueue PrepareReadyQueue;
-    // -> static s32 WorkBuffer[16];
-}
-
-// Range: 0x80010294 -> 0x800102F0
-s32 THPPlayerPlay() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static void THPPlayerStop() {
-    // Local variables
-    void* texture; // r1+0x8
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-    // -> static void (* OldVIPostCallback)(u32);
-}
-
-// Erased
-static s32 THPPlayerPause() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static s32 THPPlayerSkip() {
-    // Local variables
-    s32 old; // r3
-    s32 frameNumber; // r3
-    s32 audioGet; // r29
-    s32 videoGet; // r1+0x8
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Range: 0x800102F0 -> 0x8001058C
-static void PlayControl(u32 retraceCount) {
-    // Parameters
-    // u32 retraceCount; // r3
-
-    // Local variables
-    s32 diff; // r1+0x8
-    s32 frameNumber; // r4
-    struct __anon_0x10944* textureSet; // r29
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-    // -> static void (* OldVIPostCallback)(u32);
-}
-
-// Range: 0x8001058C -> 0x800105F8
-static s32 ProperTimingForStart() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Range: 0x800105F8 -> 0x8001071C
-static s32 ProperTimingForGettingNextFrame() {
-    // Local variables
-    s32 frameRate; // r30
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
 typedef enum __anon_0x119E9 {
     VI_TVMODE_NTSC_INT = 0,
     VI_TVMODE_NTSC_DS = 1,
@@ -474,95 +283,24 @@ typedef struct _GXRenderModeObj {
     /* 0x32 */ u8 vfilter[7];
 } __anon_0x11BE8; // size = 0x3C
 
-// Range: 0x8001071C -> 0x800107E8
-s32 THPPlayerDrawCurrentFrame(struct _GXRenderModeObj* rmode, u32 x, u32 y, u32 polygonW, u32 polygonH) {
+// Erased
+static s32 THPPlayerGetVolume() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static s32 THPPlayerSetVolume(s32 vol, s32 time) {
     // Parameters
-    // struct _GXRenderModeObj* rmode; // r3
-    // u32 x; // r26
-    // u32 y; // r27
-    // u32 polygonW; // r28
-    // u32 polygonH; // r29
+    // s32 vol; // r28
+    // s32 time; // r29
 
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static s32 THPPlayerGetVideoInfo(struct __anon_0x1080A* videoInfo) {
-    // Parameters
-    // struct __anon_0x1080A* videoInfo; // r3
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static s32 THPPlayerGetAudioInfo(struct __anon_0x1088A* audioInfo) {
-    // Parameters
-    // struct __anon_0x1088A* audioInfo; // r3
-
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static f32 THPPlayerGetFrameRate() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static u32 THPPlayerGetTotalFrame() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Erased
-static s32 THPPlayerGetState() {
-    // References
-    // -> struct __anon_0x10B6F ActivePlayer;
-}
-
-// Range: 0x800107E8 -> 0x80010818
-static void PushUsedTextureSet(void* buffer) {
-    // Parameters
-    // void* buffer; // r4
-
-    // References
-    // -> static struct OSMessageQueue UsedTextureSetQueue;
-}
-
-// Erased
-static void* PopUsedTextureSet() {
     // Local variables
-    void* msg; // r1+0x8
+    s32 old; // r3
+    s32 samplePerMs; // r30
 
     // References
-    // -> static struct OSMessageQueue UsedTextureSetQueue;
-}
-
-// Range: 0x80010818 -> 0x80010888
-void THPPlayerDrawDone() {
-    // Local variables
-    void* textureSet; // r3
-
-    // References
-    // -> static struct OSMessageQueue UsedTextureSetQueue;
-    // -> static s32 Initialized;
-}
-
-// Range: 0x80010888 -> 0x80010A00
-static void THPAudioMixCallback() {
-    // Local variables
-    s32 old; // r30
-
-    // References
-    // -> static s32 SoundBufferIndex;
-    // -> static s16 SoundBuffer[2][320];
-    // -> static s16* CurAudioBuffer;
-    // -> static void (* OldAIDCallback)();
-    // -> static s16* LastAudioBuffer;
-    // -> static s32 AudioSystem;
+    // -> struct __anon_0x10B6F ActivePlayer;
 }
 
 // Range: 0x80010A00 -> 0x80010D9C
@@ -587,22 +325,284 @@ static void MixAudio(s16* destination, s16* source, u32 sample) {
     // -> static u16 VolumeTable[128];
 }
 
-// Erased
-static s32 THPPlayerSetVolume(s32 vol, s32 time) {
-    // Parameters
-    // s32 vol; // r28
-    // s32 time; // r29
-
+// Range: 0x80010888 -> 0x80010A00
+static void THPAudioMixCallback() {
     // Local variables
-    s32 old; // r3
-    s32 samplePerMs; // r30
+    s32 old; // r30
+
+    // References
+    // -> static s32 SoundBufferIndex;
+    // -> static s16 SoundBuffer[2][320];
+    // -> static s16* CurAudioBuffer;
+    // -> static void (* OldAIDCallback)();
+    // -> static s16* LastAudioBuffer;
+    // -> static s32 AudioSystem;
+}
+
+// Range: 0x80010818 -> 0x80010888
+void THPPlayerDrawDone() {
+    // Local variables
+    void* textureSet; // r3
+
+    // References
+    // -> static struct OSMessageQueue UsedTextureSetQueue;
+    // -> static s32 Initialized;
+}
+
+// Erased
+static void* PopUsedTextureSet() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue UsedTextureSetQueue;
+}
+
+// Range: 0x800107E8 -> 0x80010818
+static void PushUsedTextureSet(void* buffer) {
+    // Parameters
+    // void* buffer; // r4
+
+    // References
+    // -> static struct OSMessageQueue UsedTextureSetQueue;
+}
+
+// Erased
+static s32 THPPlayerGetState() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static u32 THPPlayerGetTotalFrame() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static f32 THPPlayerGetFrameRate() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static s32 THPPlayerGetAudioInfo(struct __anon_0x1088A* audioInfo) {
+    // Parameters
+    // struct __anon_0x1088A* audioInfo; // r3
 
     // References
     // -> struct __anon_0x10B6F ActivePlayer;
 }
 
 // Erased
-static s32 THPPlayerGetVolume() {
+static s32 THPPlayerGetVideoInfo(struct __anon_0x1080A* videoInfo) {
+    // Parameters
+    // struct __anon_0x1080A* videoInfo; // r3
+
     // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x8001071C -> 0x800107E8
+s32 THPPlayerDrawCurrentFrame(struct _GXRenderModeObj* rmode, u32 x, u32 y, u32 polygonW, u32 polygonH) {
+    // Parameters
+    // struct _GXRenderModeObj* rmode; // r3
+    // u32 x; // r26
+    // u32 y; // r27
+    // u32 polygonW; // r28
+    // u32 polygonH; // r29
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x800105F8 -> 0x8001071C
+static s32 ProperTimingForGettingNextFrame() {
+    // Local variables
+    s32 frameRate; // r30
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x8001058C -> 0x800105F8
+static s32 ProperTimingForStart() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x800102F0 -> 0x8001058C
+static void PlayControl(u32 retraceCount) {
+    // Parameters
+    // u32 retraceCount; // r3
+
+    // Local variables
+    s32 diff; // r1+0x8
+    s32 frameNumber; // r4
+    struct __anon_0x10944* textureSet; // r29
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+    // -> static void (* OldVIPostCallback)(u32);
+}
+
+// Erased
+static s32 THPPlayerSkip() {
+    // Local variables
+    s32 old; // r3
+    s32 frameNumber; // r3
+    s32 audioGet; // r29
+    s32 videoGet; // r1+0x8
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static s32 THPPlayerPause() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static void THPPlayerStop() {
+    // Local variables
+    void* texture; // r1+0x8
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+    // -> static void (* OldVIPostCallback)(u32);
+}
+
+// Range: 0x80010294 -> 0x800102F0
+s32 THPPlayerPlay() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x80010020 -> 0x80010294
+s32 THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack) {
+    // Parameters
+    // s32 frameNum; // r29
+    // s32 playFlag; // r26
+    // s32 audioTrack; // r27
+
+    // Local variables
+    s32 offset; // r6
+    u8* ptr; // r26
+
+    // References
+    // -> static void (* OldVIPostCallback)(u32);
+    // -> struct __anon_0x10B6F ActivePlayer;
+    // -> static struct OSMessageQueue PrepareReadyQueue;
+    // -> static s32 WorkBuffer[16];
+}
+
+// Range: 0x8000FFF0 -> 0x80010020
+void PrepareReady(s32 flag) {
+    // Parameters
+    // s32 flag; // r4
+
+    // References
+    // -> static struct OSMessageQueue PrepareReadyQueue;
+}
+
+// Erased
+static s32 WaitUntilPrepare() {
+    // Local variables
+    void* msg; // r1+0x8
+
+    // References
+    // -> static struct OSMessageQueue PrepareReadyQueue;
+}
+
+// Range: 0x8000FF24 -> 0x8000FFF0
+static void InitAllMessageQueue() {
+    // Local variables
+    s32 i; // r28
+    struct __anon_0x10A84* readBuffer; // r3
+    struct __anon_0x10944* textureSet; // r3
+    struct __anon_0x109FA* audioBuffer; // r3
+
+    // References
+    // -> static void* PrepareReadyMessage;
+    // -> static struct OSMessageQueue PrepareReadyQueue;
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x8000FCE8 -> 0x8000FF24
+s32 THPPlayerSetBuffer(u8* buffer) {
+    // Parameters
+    // u8* buffer; // r1+0x8
+
+    // Local variables
+    u32 i; // r1+0x8
+    u8* ptr; // r30
+    u32 ysize; // r27
+    u32 uvsize; // r26
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x8000FC40 -> 0x8000FCE8
+u32 THPPlayerCalcNeedMemory() {
+    // Local variables
+    u32 size; // r6
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Erased
+static s32 THPPlayerClose() {
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+}
+
+// Range: 0x8000F9C8 -> 0x8000FC40
+s32 THPPlayerOpen(char* fileName, s32 onMemory) {
+    // Parameters
+    // char* fileName; // r21
+    // s32 onMemory; // r30
+
+    // Local variables
+    s32 offset; // r22
+    s32 i; // r21
+
+    // References
+    // -> struct __anon_0x10B6F ActivePlayer;
+    // -> static s32 WorkBuffer[16];
+    // -> static s32 Initialized;
+}
+
+// Erased
+static void THPPlayerQuit() {
+    // Local variables
+    s32 old; // r31
+
+    // References
+    // -> static s32 Initialized;
+    // -> static void (* OldAIDCallback)();
+}
+
+// Range: 0x8000F890 -> 0x8000F9C8
+s32 THPPlayerInit(s32 audioSystem) {
+    // Parameters
+    // s32 audioSystem; // r30
+
+    // Local variables
+    s32 old; // r30
+
+    // References
+    // -> static s32 Initialized;
+    // -> static s32 SoundBufferIndex;
+    // -> static s16 SoundBuffer[2][320];
+    // -> static s32 AudioSystem;
+    // -> static void (* OldAIDCallback)();
+    // -> static s16* CurAudioBuffer;
+    // -> static s16* LastAudioBuffer;
+    // -> static void* UsedTextureSetMessage[3];
+    // -> static struct OSMessageQueue UsedTextureSetQueue;
     // -> struct __anon_0x10B6F ActivePlayer;
 }
