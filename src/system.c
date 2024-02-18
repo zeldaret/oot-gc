@@ -580,7 +580,7 @@ inline s32 systemTestClassObject(System* pSystem) {
 
         return 1;
     }
-    
+
     return 0;
 }
 
