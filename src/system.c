@@ -34,10 +34,10 @@ void* jtbl_800EB460[] = {
     (void*)0x8002D024, (void*)0x8002D070, (void*)0x8002D090, (void*)0x8002D0DC,
 };
 
+//! TODO: remove these (needed for systemGetException.s)
 char D_800EB4A0[] = "BREAK (CPU)";
 char D_800EB4AC[] = "BREAK (SP)";
 char D_800EB4B8[] = "THREADSTATUS";
-
 void* jtbl_800EB4C8[] = {
     (void*)0x8002DBDC, (void*)0x8002DBF4, (void*)0x8002DC0C, (void*)0x8002DC24, (void*)0x8002DC3C, (void*)0x8002DC54,
     (void*)0x8002DC70, (void*)0x8002DC90, (void*)0x8002DCB0, (void*)0x8002DCD0, (void*)0x8002DCEC, (void*)0x8002DD0C,
@@ -73,6 +73,7 @@ SystemRomConfig gSystemRomConfigurationList;
 u32 nTickMultiplier = 2;
 f32 fTickScale = 1.0;
 
+//! TODO: remove these (needed for systemGetException.s)
 static char D_80134E68[] = "";
 static char D_80134E6C[] = "SW0";
 static char D_80134E70[] = "SW1";
@@ -259,7 +260,105 @@ s32 systemSetupGameRAM(System* pSystem) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
 
+// technically matching but data shenanigans because of the strings
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGetException.s")
+#else
+static s32 systemGetException(System* pSystem, SystemInterruptType eType, SystemException* pException) {
+    pException->nMask = 0;
+    pException->szType = "";
+    pException->eType = eType;
+    pException->eCode = CEC_NONE;
+    pException->eTypeMips = MIT_NONE;
+
+    switch (eType) {
+        case SIT_SW0:
+            pException->nMask = 5;
+            pException->szType = "SW0";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_SW1:
+            pException->nMask = 6;
+            pException->szType = "SW1";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_CART:
+            pException->nMask = 0xC;
+            pException->szType = "CART";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_COUNTER:
+            pException->nMask = 0x84;
+            pException->szType = "COUNTER";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_RDB:
+            pException->nMask = 0x24;
+            pException->szType = "RDB";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_SP:
+            pException->nMask = 4;
+            pException->szType = "SP";
+            pException->eTypeMips = MIT_SP;
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_SI:
+            pException->nMask = 4;
+            pException->szType = "SI";
+            pException->eTypeMips = MIT_SI;
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_AI:
+            pException->nMask = 4;
+            pException->szType = "AI";
+            pException->eTypeMips = MIT_AI;
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_VI:
+            pException->nMask = 4;
+            pException->szType = "VI";
+            pException->eTypeMips = MIT_VI;
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_PI:
+            pException->nMask = 4;
+            pException->szType = "PI";
+            pException->eTypeMips = MIT_PI;
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_DP:
+            pException->nMask = 4;
+            pException->szType = "DP";
+            pException->eTypeMips = MIT_DP;
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_CPU_BREAK:
+            pException->szType = "BREAK (CPU)";
+            pException->eCode = CEC_BREAK;
+            break;
+        case SIT_SP_BREAK:
+            pException->nMask = 4;
+            pException->szType = "BREAK (SP)";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        case SIT_FAULT:
+            pException->szType = "FAULT";
+            break;
+        case SIT_THREADSTATUS:
+            pException->szType = "THREADSTATUS";
+            break;
+        case SIT_PRENMI:
+            pException->szType = "PRENMI";
+            pException->eCode = CEC_INTERRUPT;
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
 
@@ -327,6 +426,10 @@ static s32 __systemCopyROM_Complete(void) {
 #endif
 
 //! TODO: remove when the function above is matched
+// match but makes systemReset not match for some reasons
+#ifndef NON_MATCHING
+#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
+#else
 static s32 __systemCopyROM_Complete(void);
 
 s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback) {
@@ -357,6 +460,7 @@ s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, Sy
 
     return 1;
 }
+#endif
 
 s32 systemSetMode(System* pSystem, s32 pMode) {
     if (xlObjectTest(pSystem, &gClassSystem)) {
@@ -466,7 +570,41 @@ s32 systemReset(System* pSystem) {
     return 1;
 }
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
+#else
+inline s32 systemTestClassObject(System* pSystem) {
+    if (xlObjectTest(pSystem, &gClassSystem)) {
+        pSystem->eMode = SM_STOPPED;
+        pSystem->nAddressBreak = -1;
+
+        return 1;
+    }
+    
+    return 0;
+}
+
+s32 systemExecute(System* pSystem, s32 nCount) {
+    Cpu* pCPU = pSystem->apObject[SOT_CPU];
+
+    if (!cpuExecute(pCPU, pSystem->nAddressBreak)) {
+        if (!systemTestClassObject(pSystem)) {
+            return 0;
+        }
+
+        return 0; // ?
+    }
+
+    // m2c: if (((arg0->unk6C ^ (*(arg0 + 0x24))->unk28) | (arg0->unk68 ^ 0)) == 0) {
+    if (!(((Cpu*)(&pSystem->apObject[SOT_CPU]))->nPC | pSystem->nAddressBreak)) {
+        if (!systemTestClassObject(pSystem)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+#endif
 
 s32 systemCheckInterrupts(System* pSystem) {
     s32 iException;
