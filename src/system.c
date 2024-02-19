@@ -222,8 +222,8 @@ extern System* gpSystem;
 //! TODO: import sdk headers
 extern int atoi(const char* str);
 
-s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback);
 s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
+s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
 
 static s32 systemSetupGameRAM(System* pSystem) {
     char* szExtra;
@@ -312,12 +312,6 @@ static s32 systemSetupGameRAM(System* pSystem) {
     return 1;
 }
 
-// regalloc issues
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
-#else
-s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
-
 inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 controllerConfig, s32 rumbleConfig,
                                              s32 bSetControllerConfig) {
     s32 iConfigList;
@@ -338,6 +332,10 @@ inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 co
 
 s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     char* szText;
+
+    // fake match
+    (void)contMap;
+    (void)contMap;
 
     if (!romGetCode(pROM, gSystemRomConfigurationList[index].rom)) {
         return 0;
@@ -438,11 +436,10 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
 
     return 1;
 }
-#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
 
-// technically matching but data shenanigans because of the strings
+// technically matching but data shenanigans because of the strings/switch
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGetException.s")
 #else
