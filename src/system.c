@@ -424,7 +424,7 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
 
     } else if (romTestCode(pROM, D_80135070)) {
-        // ("NYLJ")
+        // Panel de Pon 64 ("NYLJ")
         gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
 
     } else if (romTestCode(pROM, D_80134F74) || romTestCode(pROM, D_80134F7C)) {
@@ -598,11 +598,6 @@ static s32 __systemCopyROM_Complete(void) {
     return 1;
 }
 
-//! TODO: remove when the function above is matched
-// match but makes systemReset not match for some reasons
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
-#else
 s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback) {
     void* pTarget;
 
@@ -629,9 +624,9 @@ s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, Sy
         }
     }
 
+    NO_INLINE;
     return 1;
 }
-#endif
 
 s32 systemSetMode(System* pSystem, SystemMode eMode) {
     if (xlObjectTest(pSystem, &gClassSystem)) {
