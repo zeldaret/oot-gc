@@ -86,7 +86,7 @@ typedef enum SystemInterruptType {
     SIT_FAULT = 13,
     SIT_THREADSTATUS = 14,
     SIT_PRENMI = 15,
-    SIT_COUNT_ = 16,
+    SIT_COUNT = 16,
 } SystemInterruptType;
 
 // __anon_0x393FF
@@ -131,11 +131,11 @@ typedef struct SystemRomConfig {
     /* 0x0170 */ s32 currentControllerConfig;
 } SystemRomConfig; // size = 0x174
 
-#define SYSTEM_CPU(pSystem) (struct Cpu*)(((System*)(pSystem))->apObject[SOT_CPU])
-#define SYSTEM_RAM(pSystem) (struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM])
-#define SYSTEM_ROM(pSystem) (struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM])
-#define SYSTEM_RSP(pSystem) (struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP])
-#define SYSTEM_MIPS(pSystem) (struct Mips*)(((System*)(pSystem))->apObject[SOT_MIPS])
+#define SYSTEM_CPU(pSystem) ((struct Cpu*)(((System*)(pSystem))->apObject[SOT_CPU]))
+#define SYSTEM_ROM(pSystem) ((struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM]))
+#define SYSTEM_RAM(pSystem) ((struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM]))
+#define SYSTEM_RSP(pSystem) ((struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP]))
+#define SYSTEM_MIPS(pSystem) ((struct Mips*)(((System*)(pSystem))->apObject[SOT_MIPS]))
 
 extern u32 gnFlagZelda;
 

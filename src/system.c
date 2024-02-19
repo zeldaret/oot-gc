@@ -10,23 +10,40 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 char D_800EB300[] = "SYSTEM (N64)";
 
 _XL_OBJECTTYPE gClassSystem = {
+    // size = 0x10
     D_800EB300,
     sizeof(System),
     NULL,
     (EventFunc)systemEvent,
 };
 
-u32 contMap[] = {
-    0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x00200000, 0x00100000, 0x20000000, 0x10000000, 0x08000000,
-    0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000,
-    0x00020000, 0x00010000, 0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x20000000, 0x00100000, 0x20000000,
-    0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
-    0x00080000, 0x00040000, 0x00020000, 0x00010000, 0x80000000, 0x40000000, 0x00010000, 0x00020000, 0x20000000,
-    0x00100000, 0x00040000, 0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00200000, 0x00200000,
-    0x00200000, 0x00200000, 0x00080000, 0x00040000, 0x00020000, 0x00010000, 0x80000000, 0x40000000, 0x00200000,
-    0x00000000, 0x20000000, 0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
-    0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+// clang-format off
+static u32 contMap[4][20] = { // size = 0x140
+    // 1
+    0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x00200000,
+    0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 
+    0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 
+    0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+ 
+    // 2
+    0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x20000000, 
+    0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 
+    0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 
+    0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+
+    // 3
+    0x80000000, 0x40000000, 0x00010000, 0x00020000, 0x20000000,
+    0x00100000, 0x00040000, 0x10000000, 0x08000000, 0x04000000, 
+    0x02000000, 0x01000000, 0x00200000, 0x00200000, 0x00200000, 
+    0x00200000, 0x00080000, 0x00040000, 0x00020000, 0x00010000, 
+
+    // 4
+    0x80000000, 0x40000000, 0x00200000, 0x00000000, 0x20000000, 
+    0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 
+    0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000,
+    0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
 };
+// clang-format on
 
 void* jtbl_800EB460[] = {
     (void*)0x8002CC70, (void*)0x8002CCBC, (void*)0x8002CD04, (void*)0x8002CD9C, (void*)0x8002CE0C, (void*)0x8002CE54,
@@ -68,7 +85,7 @@ char D_800EB62C[] = "POKEMONSTADIUM";
 char D_800EB63C[] = "Panel de Pon";
 char D_800EB64C[] = "YoshiStory";
 
-SystemRomConfig gSystemRomConfigurationList;
+SystemRomConfig gSystemRomConfigurationList[1];
 
 u32 nTickMultiplier = 2;
 f32 fTickScale = 1.0;
@@ -89,70 +106,108 @@ static char D_80134E9C[] = "DP";
 static char D_80134EA0[] = "FAULT";
 static char D_80134EA8[] = "PRENMI";
 
-static char D_80134EB0[] = "NSME";
-static char D_80134EB8[] = "NSMJ";
+//! TODO: remove later
+static char D_80134EB0[] = "NSME"; // Super Mario 64
+static char D_80134EB8[] = "NSMJ"; // Super Mario 64
+
 static char D_80134EC0[] = "MARIO";
-static char D_80134EC8[] = "CZLE";
-static char D_80134ED0[] = "CZLJ";
+
+//! TODO: remove later
+static char D_80134EC8[] = "CZLE"; // Ocarina of Time
+static char D_80134ED0[] = "CZLJ"; // Ocarina of Time
+
 static char D_80134ED8[] = "ZELDA1";
 static char D_80134EE0[] = "ZELDAX";
 static char D_80134EE8[] = "ZELDA";
 static char D_80134EF0[] = "ZELDAD";
-static char D_80134EF8[] = "NZSJ";
-static char D_80134F00[] = "NZSE";
+
+//! TODO: remove later
+static char D_80134EF8[] = "NZSJ"; // Majora's Mask
+static char D_80134F00[] = "NZSE"; // Majora's Mask
+
 static char D_80134F08[] = "ZELDA3";
+
+//! TODO: remove later
 static char D_80134F10[] = "NPWE";
 static char D_80134F18[] = "PILOT";
 static char D_80134F20[] = "NAFJ";
+
 static char D_80134F28[] = "AF";
 static char D_80134F2C[] = "NBCE";
 static char D_80134F34[] = "NBKE";
 static char D_80134F3C[] = "NGEE";
 static char D_80134F44[] = "NFUE";
 static char D_80134F4C[] = "NBYE";
+
+//! TODO: remove later
 static char D_80134F54[] = "NCUE";
+
 static char D_80134F5C[] = "CRUISE";
 static char D_80134F64[] = "NDNE";
 static char D_80134F6C[] = "NDOE";
+
+//! TODO: remove later
 static char D_80134F74[] = "NN6E";
 static char D_80134F7C[] = "NN6J";
+
 static char D_80134F84[] = "DRMARIO";
 static char D_80134F8C[] = "CFZE";
 static char D_80134F94[] = "NLRE";
 static char D_80134F9C[] = "NMFE";
+
+//! TODO: remove later
 static char D_80134FA4[] = "NKTE";
+
 static char D_80134FAC[] = "KART";
 static char D_80134FB4[] = "NK4E";
 static char D_80134FBC[] = "CLBE";
 static char D_80134FC4[] = "MP1";
 static char D_80134FC8[] = "NMWE";
 static char D_80134FD0[] = "MP2";
+
+//! TODO: remove later
 static char D_80134FD4[] = "NMVE";
+
 static char D_80134FDC[] = "MP3";
 static char D_80134FE0[] = "NM3E";
 static char D_80134FE8[] = "NRIE";
+
+//! TODO: remove later
 static char D_80134FF0[] = "NMQE";
 static char D_80134FF8[] = "NPOE";
+
 static char D_80135000[] = "NQKE";
 static char D_80135008[] = "NRSE";
 static char D_80135010[] = "NRZE";
+
+//! TODO: remove later
 static char D_80135018[] = "NFXE";
 static char D_80135020[] = "NFXJ";
+
 static char D_80135028[] = "STARFOX";
 static char D_80135030[] = "Starfox";
 static char D_80135038[] = "NGUJ";
 static char D_80135040[] = "NALE";
+
+//! TODO: remove later
 static char D_80135048[] = "NTEA";
+
 static char D_80135050[] = "1080";
 static char D_80135058[] = "NTPE";
 static char D_80135060[] = "NEPE";
 static char D_80135068[] = "NM8E";
+
+//! TODO: remove later
 static char D_80135070[] = "NYLJ";
+
 static char D_80135078[] = "PANEL";
 static char D_80135080[] = "NTUE";
 static char D_80135088[] = "NWRE";
+
+//! TODO: remove later
 static char D_80135090[] = "NYSE";
 static char D_80135098[] = "NBNJ";
+
 static char D_801350A0[] = "XXX";
 
 u32 gnFlagZelda;
@@ -167,10 +222,11 @@ extern System* gpSystem;
 //! TODO: import sdk headers
 extern int atoi(const char* str);
 
-s32 simulatorGetArgument(SystemArgumentType eType, char* pszArgument);
+s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback);
+s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
 
-s32 systemSetupGameRAM(System* pSystem) {
-    s32 szExtra;
+static s32 systemSetupGameRAM(System* pSystem) {
+    char* szExtra;
     s32 bExpansion;
     s32 nSizeRAM;
     s32 nSizeCacheROM;
@@ -234,7 +290,7 @@ s32 systemSetupGameRAM(System* pSystem) {
         nSizeCacheROM = 0x800000;
     }
 
-    if (simulatorGetArgument(SAT_XTRA, (char*)&szExtra)) {
+    if (simulatorGetArgument(SAT_XTRA, &szExtra)) {
         nSizeExtra = atoi((char*)szExtra) << 0x14;
 
         if (nSizeExtra > (s32)(nSizeCacheROM + 0xFFF00000)) {
@@ -256,7 +312,133 @@ s32 systemSetupGameRAM(System* pSystem) {
     return 1;
 }
 
+// regalloc issues
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemGetInitialConfiguration.s")
+#else
+s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
+
+inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 controllerConfig, s32 rumbleConfig,
+                                             s32 bSetControllerConfig) {
+    s32 iConfigList;
+
+    pRomConfig->rumbleConfiguration = 0;
+
+    for (iConfigList = 0; iConfigList < 4; iConfigList++) {
+        simulatorCopyControllerMap((u32*)pRomConfig->controllerConfiguration[iConfigList],
+                                   contMap[((controllerConfig >> (iConfigList * 8)) & 0x7F)]);
+        pRomConfig->rumbleConfiguration |= (1 << (iConfigList * 8)) & rumbleConfig;
+    }
+
+    if (bSetControllerConfig) {
+        pRomConfig->normalControllerConfig = controllerConfig;
+        pRomConfig->currentControllerConfig = controllerConfig;
+    }
+}
+
+s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
+    char* szText;
+
+    if (!romGetCode(pROM, gSystemRomConfigurationList[index].rom)) {
+        return 0;
+    }
+
+    systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0, 0);
+    gSystemRomConfigurationList[index].storageDevice = SOT_CPU;
+
+    if (romTestCode(pROM, D_80134EB0) || romTestCode(pROM, D_80134EB8)) {
+        // Super Mario 64 ("NSME", "NSMJ")
+        systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x01010101, 0x20202, 0);
+        gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
+
+    } else if (romTestCode(pROM, D_80134EC8) || romTestCode(pROM, D_80134ED0)) {
+        // Ocarina of Time ("CZLE", "CZLJ")
+        gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
+
+        if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == 49)) {
+            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 0xFF050505, 1);
+            } else {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 0xFF010101, 1);
+            }
+        } else if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 0x40404, 1);
+        } else {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0, 1);
+        }
+
+    } else if (romTestCode(pROM, D_80134EF8) || romTestCode(pROM, D_80134F00)) {
+        // Majora's Mask ("NZSE", "NZSJ")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
+
+        if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == 49)) {
+            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 0xFF050505, 1);
+            } else {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 0xFF010101, 1);
+            }
+        } else if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 0x40404, 1);
+        } else {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0, 1);
+        }
+
+    } else if (romTestCode(pROM, D_80134F10)) {
+        // Pilotwings 64 ("NPWE")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
+
+    } else if (romTestCode(pROM, D_80134F20)) {
+        // Animal Forest ("NAFJ")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
+
+    } else if (romTestCode(pROM, D_80134F54)) {
+        // Cruis'n ("NCUE")
+        gSystemRomConfigurationList[index].storageDevice = 20; // bug?
+
+    } else if (romTestCode(pROM, D_80134FA4)) {
+        // Mario Kart 64 ("NKTE")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
+
+    } else if (romTestCode(pROM, D_80135018) || romTestCode(pROM, D_80135020)) {
+        // Star Fox 64 ("NFXE", "NFXJ")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
+
+    } else if (romTestCode(pROM, D_80134FD4)) {
+        // Mario Party 3 ("NMVE")
+        gSystemRomConfigurationList[index].storageDevice = SOT_FLASH;
+
+    } else if (romTestCode(pROM, D_80135090)) {
+        // Yoshi's Story ("NYSE")
+        gSystemRomConfigurationList[index].storageDevice = SOT_FLASH;
+
+    } else if (romTestCode(pROM, D_80135048)) {
+        // 1080° Snowboarding ("NTEA")
+        gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
+
+    } else if (romTestCode(pROM, D_80134FF0)) {
+        // Paper Mario ("NMQE")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
+
+    } else if (romTestCode(pROM, D_80134FF8)) {
+        // Pokémon Stadium ("NPOE")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
+
+    } else if (romTestCode(pROM, D_80135070)) {
+        // ("NYLJ")
+        gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
+
+    } else if (romTestCode(pROM, D_80134F74) || romTestCode(pROM, D_80134F7C)) {
+        // Dr. Mario 64 ("NN6E", "NN6J")
+        gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
+
+    } else if (romTestCode(pROM, D_80135098)) {
+        // Bakuretsu Muteki Bangaioh ("NBNJ")
+        gSystemRomConfigurationList[index].storageDevice = SOT_FLASH;
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
 
@@ -376,21 +558,18 @@ static s32 systemGetException(System* pSystem, SystemInterruptType eType, System
 
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/__systemCopyROM_Complete.s")
-#else
 static s32 __systemCopyROM_Complete(void) {
     s32 iAddress;
     s32 nCount;
     u32 nAddress0;
     u32 nAddress1;
     u32 anAddress[0x20]; // size = 0x80
-    u32* ptr;
 
     nAddress0 = gpSystem->romCopy.nOffsetRAM;
     nAddress1 = nAddress0 + gpSystem->romCopy.nSize - 1;
 
-    if (!frameInvalidateCache(gpSystem->pFrame, nAddress0, nAddress1)) {
+    if (!frameInvalidateCache(gpSystem->pFrame, gpSystem->romCopy.nOffsetRAM,
+                              gpSystem->romCopy.nOffsetRAM + gpSystem->romCopy.nSize - 1)) {
         return 0;
     }
 
@@ -403,15 +582,10 @@ static s32 __systemCopyROM_Complete(void) {
         return 0;
     }
 
-    // for (iAddress = 0; iAddress < nCount; iAddress++) {
-    //     // iAddress?
-    //     if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), anAddress[0], anAddress[gpSystem->romCopy.nSize - 1])) {
-    //         return 0;
-    //     }
-    // }
-
-    for (iAddress = 0, ptr = anAddress; iAddress < nCount; iAddress++, ptr++) {
-        if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), *ptr, *ptr + (gpSystem->romCopy.nSize - 1))) {
+    for (iAddress = 0; iAddress < nCount; iAddress++) {
+        nAddress0 = anAddress[iAddress];
+        nAddress1 = nAddress0 + gpSystem->romCopy.nSize - 1;
+        if (!cpuInvalidateCache(SYSTEM_CPU(gpSystem), nAddress0, nAddress1)) {
             return 0;
         }
     }
@@ -423,15 +597,12 @@ static s32 __systemCopyROM_Complete(void) {
 
     return 1;
 }
-#endif
 
 //! TODO: remove when the function above is matched
 // match but makes systemReset not match for some reasons
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemCopyROM.s")
 #else
-static s32 __systemCopyROM_Complete(void);
-
 s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback) {
     void* pTarget;
 
@@ -462,11 +633,11 @@ s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, Sy
 }
 #endif
 
-s32 systemSetMode(System* pSystem, s32 pMode) {
+s32 systemSetMode(System* pSystem, SystemMode eMode) {
     if (xlObjectTest(pSystem, &gClassSystem)) {
-        pSystem->eMode = pMode;
+        pSystem->eMode = eMode;
 
-        if (pMode == SM_STOPPED) {
+        if (eMode == SM_STOPPED) {
             pSystem->nAddressBreak = -1;
         }
 
@@ -476,16 +647,16 @@ s32 systemSetMode(System* pSystem, s32 pMode) {
     return 0;
 }
 
-s32 systemGetMode(System* pSystem, s32* pMode) {
-    if (xlObjectTest(pSystem, &gClassSystem) && (pMode != NULL)) {
-        *pMode = pSystem->eMode;
+s32 systemGetMode(System* pSystem, SystemMode* peMode) {
+    if (xlObjectTest(pSystem, &gClassSystem) && (peMode != NULL)) {
+        *peMode = pSystem->eMode;
         return 1;
     }
 
     return 0;
 }
 
-s32 systemSetStorageDevice(System* pSystem, s32 eStorageDevice) {
+s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice) {
     pSystem->storageDevice = eStorageDevice;
 
     if (eStorageDevice == SOT_FLASH) {
@@ -511,7 +682,7 @@ s32 systemSetStorageDevice(System* pSystem, s32 eStorageDevice) {
     return 1;
 }
 
-s32 systemGetStorageDevice(System* pSystem, s32* pStorageDevice) {
+s32 systemGetStorageDevice(System* pSystem, SystemObjectType* pStorageDevice) {
     *pStorageDevice = pSystem->storageDevice;
     return 1;
 }
@@ -570,9 +741,6 @@ s32 systemReset(System* pSystem) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemExecute.s")
-#else
 inline s32 systemTestClassObject(System* pSystem) {
     if (xlObjectTest(pSystem, &gClassSystem)) {
         pSystem->eMode = SM_STOPPED;
@@ -585,18 +753,15 @@ inline s32 systemTestClassObject(System* pSystem) {
 }
 
 s32 systemExecute(System* pSystem, s32 nCount) {
-    Cpu* pCPU = pSystem->apObject[SOT_CPU];
-
-    if (!cpuExecute(pCPU, pSystem->nAddressBreak)) {
+    if (!cpuExecute(SYSTEM_CPU(pSystem), pSystem->nAddressBreak)) {
         if (!systemTestClassObject(pSystem)) {
             return 0;
         }
 
-        return 0; // ?
+        return 0;
     }
 
-    // m2c: if (((arg0->unk6C ^ (*(arg0 + 0x24))->unk28) | (arg0->unk68 ^ 0)) == 0) {
-    if (!(((Cpu*)(&pSystem->apObject[SOT_CPU]))->nPC | pSystem->nAddressBreak)) {
+    if (pSystem->nAddressBreak == SYSTEM_CPU(pSystem)->nPC) {
         if (!systemTestClassObject(pSystem)) {
             return 0;
         }
@@ -604,7 +769,6 @@ s32 systemExecute(System* pSystem, s32 nCount) {
 
     return 1;
 }
-#endif
 
 s32 systemCheckInterrupts(System* pSystem) {
     s32 iException;
@@ -666,7 +830,7 @@ s32 systemCheckInterrupts(System* pSystem) {
     return 1;
 }
 
-s32 systemExceptionPending(System* pSystem, s32 nException) {
+s32 systemExceptionPending(System* pSystem, SystemInterruptType nException) {
     if ((nException > -1) && (nException < ARRAY_COUNT(pSystem->anException))) {
         if (pSystem->anException[nException] != 0) {
             return 1;

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "system.h"
 
 //! TODO: move these typedefs
 typedef enum _VI_XFBMode {
@@ -45,13 +46,15 @@ void* gBufferP;
 //! TODO: import SDK headers
 void* OSAllocFromHeap(int, u32);
 
+s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
+
 void MovieInit(void) {
     char* szText;
     u32 size;
 
     THPPlayerInit(0);
 
-    if (!simulatorGetArgument(6, &szText)) {
+    if (!simulatorGetArgument(SAT_MOVIE, &szText)) {
         THPPlayerOpen("final_zelda_credits_sound.thp", 0);
     } else {
         THPPlayerOpen(szText, 0);
