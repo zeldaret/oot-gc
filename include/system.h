@@ -132,8 +132,9 @@ typedef struct SystemRomConfig {
 } SystemRomConfig; // size = 0x174
 
 #define SYSTEM_CPU(pSystem) ((struct Cpu*)(((System*)(pSystem))->apObject[SOT_CPU]))
-#define SYSTEM_ROM(pSystem) ((struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM]))
+#define SYSTEM_PIF(pSystem) ((struct Pif*)(((System*)(pSystem))->apObject[SOT_PIF]))
 #define SYSTEM_RAM(pSystem) ((struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM]))
+#define SYSTEM_ROM(pSystem) ((struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM]))
 #define SYSTEM_RSP(pSystem) ((struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP]))
 #define SYSTEM_MIPS(pSystem) ((struct Mips*)(((System*)(pSystem))->apObject[SOT_MIPS]))
 

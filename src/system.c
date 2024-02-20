@@ -4,6 +4,9 @@
 #include "rom.h"
 #include "ram.h"
 #include "cpu.h"
+#include "mcard.h"
+#include "pif.h"
+#include "simGCN.h"
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 
@@ -312,7 +315,7 @@ static s32 systemSetupGameRAM(System* pSystem) {
     return 1;
 }
 
-inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 controllerConfig, s32 rumbleConfig,
+inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 controllerConfig,
                                              s32 bSetControllerConfig) {
     s32 iConfigList;
 
@@ -321,7 +324,7 @@ inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 co
     for (iConfigList = 0; iConfigList < 4; iConfigList++) {
         simulatorCopyControllerMap((u32*)pRomConfig->controllerConfiguration[iConfigList],
                                    contMap[((controllerConfig >> (iConfigList * 8)) & 0x7F)]);
-        pRomConfig->rumbleConfiguration |= (1 << (iConfigList * 8)) & rumbleConfig;
+        pRomConfig->rumbleConfiguration |= (1 << (iConfigList * 8)) & (controllerConfig >> 7);
     }
 
     if (bSetControllerConfig) {
@@ -341,12 +344,12 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         return 0;
     }
 
-    systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0, 0);
+    systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0);
     gSystemRomConfigurationList[index].storageDevice = SOT_CPU;
 
     if (romTestCode(pROM, D_80134EB0) || romTestCode(pROM, D_80134EB8)) {
         // Super Mario 64 ("NSME", "NSMJ")
-        systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x01010101, 0x20202, 0);
+        systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x01010101, 0);
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
 
     } else if (romTestCode(pROM, D_80134EC8) || romTestCode(pROM, D_80134ED0)) {
@@ -355,14 +358,14 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
 
         if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == 49)) {
             if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
-                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 0xFF050505, 1);
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 1);
             } else {
-                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 0xFF010101, 1);
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 1);
             }
         } else if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 0x40404, 1);
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 1);
         } else {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0, 1);
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 1);
         }
 
     } else if (romTestCode(pROM, D_80134EF8) || romTestCode(pROM, D_80134F00)) {
@@ -371,14 +374,14 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
 
         if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == 49)) {
             if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
-                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 0xFF050505, 1);
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 1);
             } else {
-                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 0xFF010101, 1);
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 1);
             }
         } else if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 0x40404, 1);
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 1);
         } else {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 0, 1);
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 1);
         }
 
     } else if (romTestCode(pROM, D_80134F10)) {
@@ -437,7 +440,777 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     return 1;
 }
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
+#else
+//! TODO: remove when sdk headers are here
+extern u32 __OSBusClock : 0x800000F8;
+#define OS_BUS_CLOCK (__OSBusClock)
+#define OS_TIMER_CLOCK (OS_BUS_CLOCK / 4)
+#define OSSecondsToTicks(sec) ((sec)*OS_TIMER_CLOCK)
+
+extern s32 gz_bnrSize;
+extern s32 gz_iconSize;
+extern MemCard mCard;
+
+s32 simulatorSetControllerMap(u32* mapData, s32 channel);
+s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
+s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
+              s32* defaultConfiguration, s32 fileSize, s32 gameSize);
+s32 systemSetupGameALL(System* pSystem) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r18
+
+    // Local variables
+    s32 nSizeSound; // r23
+    s32 iController; // r21
+    s32 nSize; // r1+0x60
+    u32* anMode; // r1+0x5C
+    s32 i; // r25
+    u64 nTimeRetrace; // r1+0x10
+    char acCode[5]; // r1+0x54
+    DVDFileInfo fileInfo; // r1+0x18
+    Cpu* pCPU; // r31
+    Rom* pROM; // r19
+    Pif* pPIF; // r29
+    s32 defaultConfiguration; // r1+0x14
+
+    pCPU = SYSTEM_CPU(pSystem);
+    pROM = SYSTEM_ROM(pSystem);
+    pPIF = SYSTEM_PIF(pSystem);
+
+    if (!xlHeapTake(&mCard.saveIcon, gz_iconSize | 0x30000000)) {
+        return 0;
+    }
+
+    if (!xlHeapTake(&mCard.saveBanner, gz_bnrSize | 0x30000000)) {
+        return 0;
+    }
+
+    nSizeSound = 0x2000;
+    memset(&defaultConfiguration, 0, 4);
+    pSystem->eTypeROM = SRT_UNKNOWN;
+
+    if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300, NULL)) {
+        return 0;
+    }
+
+    // ?????
+    anMode[0] = 1;
+    anMode[1] = 0;
+    anMode[2] = 0xB0000000;
+    anMode[3] = 0;
+    anMode[4] = 0x17D7;
+    anMode[5] = 1;
+
+    nTimeRetrace = OSSecondsToTicks(D_80135F90);
+
+    if (!ramGetSize(SYSTEM_RAM(pSystem), &nSize)) {
+        return 0;
+    }
+
+    anMode[6] = nSize;
+    systemGetInitialConfiguration(pSystem, pROM, 0);
+
+    i = 0;
+    if (gSystemRomConfigurationList[i].storageDevice & 1) {
+        if (!systemSetStorageDevice(pSystem, SOT_SRAM)) {
+            return 0;
+        }
+    } else if (gSystemRomConfigurationList[i].storageDevice & 2) {
+        if (!systemSetStorageDevice(pSystem, SOT_FLASH)) {
+            return 0;
+        }
+    } else if (!systemSetStorageDevice(pSystem, SOT_NONE)) {
+        return 0;
+    }
+
+    if (gSystemRomConfigurationList[i].storageDevice & 4) {
+        if (!pifSetEEPROMType(pPIF, CT_4K)) {
+            return 0;
+        }
+    } else if (gSystemRomConfigurationList[i].storageDevice & 8) {
+        if (!pifSetEEPROMType(pPIF, CT_16K)) {
+            return 0;
+        }
+    } else if (!pifSetEEPROMType(pPIF, CT_NONE)) {
+        return 0;
+    }
+
+    if (romTestCode(pROM, D_80134EB0) || romTestCode(pROM, D_80134EB8)) {
+        // Super Mario 64 ("NSME", "NSMJ")
+        pSystem->eTypeROM = SRT_MARIO;
+        nSizeSound = 0x1000;
+
+        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+
+        if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+        mcardOpen(&mCard, D_80134EC0, D_800EB528, mCard.saveIcon, mCard.saveBanner, D_80134EC0, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+
+        if (!cpuSetCodeHack(pCPU, 0x80317938, 0x5420FFFE, 0)) {
+            return 0;
+        }
+    } else if (romTestCode(pROM, D_80134EC8) || romTestCode(pROM, D_80134ED0)) {
+        // Ocarina of Time ("CZLE", "CZLJ")
+        pSystem->eTypeROM = SRT_ZELDA1;
+        nSizeSound = 0x1000;
+
+        if (gnFlagZelda & 1) {
+            if (romTestCode(pROM, D_80134EC8)) {
+                if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
+                    return 0;
+                }
+
+                if (!cpuSetCodeHack(pCPU, 0x8006E468, 0x97040000, -1)) {
+                    return 0;
+                }
+            } else {
+                if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
+                    return 0;
+                }
+
+                if (!cpuSetCodeHack(pCPU, 0x8006E468, 0x97040000, -1)) {
+                    return 0;
+                }
+            }
+        } else if (romTestCode(pROM, D_80134EC8)) {
+            if (!cpuSetCodeHack(pCPU, 0x8005BB14, ((gnFlagZelda & 2) ? 0x9463D040 : 0x9463D000), -1)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x80066638, 0x97040000, -1)) {
+                return 0;
+            }
+        } else {
+            if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x80066658, 0x97040000, -1)) {
+                return 0;
+            }
+        }
+
+        if (!(gnFlagZelda & 1)) {
+            if (!(gnFlagZelda & 2)) {
+                // CE-J/MQ-J?
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134ED8, D_800EB534, mCard.saveIcon, mCard.saveBanner, D_80134EE0, &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+            } else {
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+                
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+                
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134ED8, D_800EB534, mCard.saveIcon, mCard.saveBanner, D_80134EE8, &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+            }
+        } else {
+            // debug rom?
+            if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                return 0;
+            }
+            
+            DVDClose(&fileInfo);
+            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+            
+            if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                return 0;
+            }
+            
+            DVDClose(&fileInfo);
+            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+            mcardOpen(&mCard, D_80134EF0, D_800EB548, mCard.saveIcon, mCard.saveBanner, D_80134EF0, &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+        }
+
+        pCPU->nCompileFlag = (s32)(pCPU->nCompileFlag | 0x110);
+    } else if (romTestCode(pROM, D_80134EF8) || romTestCode(pROM, D_80134F00)) {
+        // Majora's Mask
+        pSystem->eTypeROM = SRT_ZELDA2;
+        nSizeSound = 0x1000;
+
+        if (romTestCode(pROM, D_80134EF8)) {
+            pSystem->bJapaneseVersion = 1;
+        } else {
+            pSystem->bJapaneseVersion = 0;
+        }
+
+        nTickMultiplier = 2;
+        fTickScale = D_80135F94;
+
+        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
+            return 0;
+        }
+
+        anMode[4] = 0x17D9;
+
+        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+        
+        if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+        
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+        mcardOpen(&mCard, D_80134F08, D_800EB564, mCard.saveIcon, mCard.saveBanner, D_80134F08, &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
+
+        if (gnFlagZelda & 1) {
+            if (cpuSetCodeHack(pCPU, 0x801C6FC0, 0x95630000, -1) == 0) {
+                return 0;
+            }
+        } else if (romTestCode(pROM, D_80134EF8)) {
+            if (!cpuSetCodeHack(pCPU, 0x80179994, 0x95630000, -1)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDA84, 0x860C0000, 0x6025)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDA88, 0x860D0004, 0x6825)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDB0C, 0x86180000, 0xC025)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDB20, 0x86190004, 0xC825)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDB34, 0x86080002, 0x4025)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDB4C, 0x8609FFFA, 0x4825)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDB60, 0x860AFFFE, 0x5025)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDB94, 0x844EFFFA, 0x7025)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDBA8, 0x844FFFFE, 0x7825)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDC20, 0x860A0006, 0x5025)) {
+                return 0;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x800BDC34, 0x860B000A, 0x5825)) {
+                return 0;
+            }
+        } else if (!cpuSetCodeHack(pCPU, 0x80178A80, 0x95630000, -1)) {
+            return 0;
+        }
+
+        pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x1010);
+    } else if (romTestCode(pROM, D_80134F10)) {
+        // Pilotwings 64
+        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+        
+        if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+        mcardOpen(&mCard, D_80134F18, D_800EB574, mCard.saveIcon, mCard.saveBanner, D_80134F18, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+    } else if (romTestCode(pROM, D_80134F20)) {
+        // Animal Forest
+        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+        
+        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+            return 0;
+        }
+
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+        mcardOpen(&mCard, D_80134F28, D_800EB580, mCard.saveIcon, mCard.saveBanner, D_80134F28, &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
+    } else if (romTestCode(pROM, D_80134F2C)) {
+        // Blast Corps
+        if (!cpuSetCodeHack(pCPU, 0x80244CFC, 0x1420FFFA, 0)) {
+            return 0;
+        }
+    } else if (!romTestCode(pROM, D_80134F34) && !romTestCode(pROM, D_80134F3C) && !romTestCode(pROM, D_80134F44)) {
+        if (romTestCode(pROM, D_80134F4C)) {
+            // A Bug's Life
+            if (!cpuSetCodeHack(pCPU, 0x8007ADD0, 0x1440FFF9, 0)) {
+                return 0;
+            }
+        } else if (romTestCode(pROM, D_80134F54)) {
+            // Cruis'n USA
+            if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                return 0;
+            }
+
+            DVDClose(&fileInfo);
+            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+            
+            if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                return 0;
+            }
+
+            DVDClose(&fileInfo);
+            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+            mcardOpen(&mCard, D_80134F5C, D_800EB590, mCard.saveIcon, mCard.saveBanner, D_80134F5C, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+            
+            if (!cpuSetCodeHack(pCPU, 0x80103E0C, 0x1616FFF2, 0)) {
+                return 0;
+            }
+        } else if (!romTestCode(pROM, D_80134F64)) {
+            if (romTestCode(pROM, D_80134F6C)) {
+                // Donkey Kong 64
+                if (!cpuSetCodeHack(pCPU, 0x80000A04, 0x1462FFFF, 0)) {
+                    return 0;
+                }
+            } else if ((romTestCode(pROM, D_80134F74)) || (romTestCode(pROM, D_80134F7C))) {
+                // Dr. Mario 64
+                nTickMultiplier = 3;
+
+                if (!cpuSetCodeHack(pCPU, 0x800005EC, 0x3C028001, -1)) {
+                    return 0;
+                }
+
+                if (romTestCode(pROM, D_80134F7C)) {
+                    if (!cpuSetCodeHack(pCPU, 0x8006D458, 0x0C0189E9, 0x0C0189A3)) {
+                        return 0;
+                    }
+                    if (!cpuSetCodeHack(pCPU, 0x8006D664, 0x0C0189E9, 0x0C0189A3)) {
+                        return 0;
+                    }
+                    if (!cpuSetCodeHack(pCPU, 0x8006D6D0, 0x0C0189E9, 0x0C0189A3)) {
+                        return 0;
+                    }
+                } else {
+                    if (!cpuSetCodeHack(pCPU, 0x8006D338, 0x0C0189A9, 0x0C018963)) {
+                        return 0;
+                    } 
+                    if (!cpuSetCodeHack(pCPU, 0x8006D544, 0x0C0189A9, 0x0C018963)) {
+                        return 0;
+                    } 
+                    if (!cpuSetCodeHack(pCPU, 0x8006D5B0, 0x0C0189A9, 0x0C018963)) {
+                        return 0;
+                    }
+                }
+
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134F84, D_800EB5A0, mCard.saveIcon, mCard.saveBanner, D_80134F84, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+                gpSystem->eTypeROM = SRT_DRMARIO;
+                pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x10);
+            } else if (romTestCode(pROM, D_80134F8C)) {
+                // F-Zero X
+                if (!cpuSetCodeHack(pCPU, 0x800673A8, 0x144DFFFC, 0)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x80067564, 0x144FFFFC, 0)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x8006759C, 0x1459FFFC, 0)) {
+                    return 0;
+                }
+            } else if (romTestCode(pROM, D_80134F94)) {
+                // Lode Runner 3D
+                if (!cpuSetCodeHack(pCPU, 0x80097B6C, 0x1443FFF9, 0)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x80097BF4, 0x1443FFF9, 0)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x80096D08, 0x08025B40, 0x1000FFFF)) {
+                    return 0;
+                }
+            } else if (romTestCode(pROM, D_80134F9C)) {
+                // Mario Golf
+                if (!cpuSetCodeHack(pCPU, 0x800B2DCC, 0x8C430004, -1)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x800B2E70, 0x8C430004, -1)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x80029EB8, 0x8C4252CC, -1)) {
+                    return 0;
+                }
+            } else if (romTestCode(pROM, D_80134FA4)) {
+                // Mario Kart 64
+                pSystem->eTypeROM = SRT_MARIOKART;
+
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134FAC, D_800EB5AC, mCard.saveIcon, mCard.saveBanner, D_80134FAC, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+                pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x10);
+            } else if (romTestCode(pROM, D_80134FB4)) {
+                // Kirby 64
+                if (!audioEnable(pSystem->apObject[SOT_AUDIO], 0)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x80020BCC, 0x8DF80034, -1)) {
+                    return 0;
+                }
+                if (!cpuSetCodeHack(pCPU, 0x80020EBC, 0x8DEFF330, -1)) {
+                    return 0;
+                }
+            } else if (romTestCode(pROM, D_80134FBC)) {
+                // Mario Party 1
+                pSystem->eTypeROM = SRT_MARIOPARTY1;
+                
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134FC4, D_800EB5B8, mCard.saveIcon, mCard.saveBanner, D_80134FC4, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+            } else if (romTestCode(pROM, D_80134FC8)) {
+                // Mario Party 2
+                pSystem->eTypeROM = SRT_MARIOPARTY2;
+                
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+                
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134FD0, D_800EB5C8, mCard.saveIcon, mCard.saveBanner, D_80134FD0, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+            } else if (romTestCode(pROM, D_80134FD4)) {
+                // Mario Party 3
+                pSystem->eTypeROM = SRT_MARIOPARTY3;
+                
+                if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+                
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                
+                if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                    return 0;
+                }
+                
+                DVDClose(&fileInfo);
+                simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                mcardOpen(&mCard, D_80134FDC, D_800EB5D8, mCard.saveIcon, mCard.saveBanner, D_80134FDC, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x800);
+            } else if (!romTestCode(pROM, D_80134FE0) && !romTestCode(pROM, D_80134FE8)) {
+                if (romTestCode(pROM, D_80134FF0)) {
+                    // Paper Mario
+                    if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                        return 0;
+                    }
+                    
+                    DVDClose(&fileInfo);
+                    simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                    
+                    if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                        return 0;
+                    }
+                    
+                    DVDClose(&fileInfo);
+                    simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+
+                    mcardOpen(&mCard, D_800EB5E8, D_800EB5F4, mCard.saveIcon, mCard.saveBanner, D_800EB600, &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
+                } else if (romTestCode(pROM, D_80134FF8)) {
+                    if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                        return 0;
+                    }
+
+                    DVDClose(&fileInfo);
+                    simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                    
+                    if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                        return 0;
+                    }
+
+                    DVDClose(&fileInfo);
+                    simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+
+                    mcardOpen(&mCard, D_800EB60C, D_800EB61C, mCard.saveIcon, mCard.saveBanner, D_800EB62C, &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
+                } else if (romTestCode(pROM, D_80135000)) {
+                    if (!cpuSetCodeHack(pCPU, 0x8004989C, 0x1459FFFB, 0)) {
+                        return 0;
+                    }
+                    if (!cpuSetCodeHack(pCPU, 0x80049FF0, 0x1608FFFB, 0)) {
+                        return 0;
+                    }
+                    if (!cpuSetCodeHack(pCPU, 0x8004A384, 0x15E0FFFB, 0)) {
+                        return 0;
+                    }
+                    if (!cpuSetCodeHack(pCPU, 0x8004A97C, 0x15E0FFFB, 0)) {
+                        return 0;
+                    }
+                    if (!cpuSetCodeHack(pCPU, 0x80048FF8, 0x1000FFFD, 0x1000FFFF)) {
+                        return 0;
+                    }
+                } else if (!romTestCode(pROM, D_80135008) && !romTestCode(pROM, D_80135010)) {
+                    if (romTestCode(pROM, D_80135018) || romTestCode(pROM, D_80135020)) {
+                        pSystem->eTypeROM = SRT_STARFOX;
+
+                        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                            return 0;
+                        }
+
+                        DVDClose(&fileInfo);
+                        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                        
+                        if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                            return 0;
+                        }
+                        
+                        DVDClose(&fileInfo);
+                        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                        mcardOpen(&mCard, D_80135028, D_80135030, mCard.saveIcon, mCard.saveBanner, D_80135028, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
+                        pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x110);
+                    } else if (romTestCode(pROM, D_80135038)) {
+                        if (!cpuSetCodeHack(pCPU, 0x80025D30, 0x3C018006, -1)) {
+                            return 0;
+                        }
+                    } else if (romTestCode(pROM, D_80135040)) {
+                        if (!cpuSetCodeHack(pCPU, 0x8000092C, 0x3C028004, -1)) {
+                            return 0;
+                        }
+                        if (!cpuSetCodeHack(pCPU, 0x8002103C, 0x3C028004, -1)) {
+                            return 0;
+                        }
+                        if (!cpuSetCodeHack(pCPU, 0x80021048, 0x3C028004, -1)) {
+                            return 0;
+                        }
+                        if (!cpuSetCodeHack(pCPU, 0x800A1BB8, 0x1440FFFD, 0)) {
+                            return 0;
+                        }
+                        if (!cpuSetCodeHack(pCPU, 0x800A1BE0, 0x1440FFFD, 0)) {
+                            return 0;
+                        }
+                        pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x110);
+                    } else if (romTestCode(pROM, D_80135048)) {
+                        pSystem->eTypeROM = SRT_1080;
+                        
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
+                            return 0;
+                        }
+                        
+                        anMode[4] = 0x17D7;
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x200U, NULL)) {
+                            return 0;
+                        }
+                        
+                        anMode[0] = 0xAC290000;
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x284U, NULL)) {
+                            return 0;
+                        }
+                        
+                        anMode[0] = 0x240B17D7;
+                        if (!cpuSetCodeHack(pCPU, 0x800F04E8, 0x1218FFFB, 0)) {
+                            return 0;
+                        }
+                        
+                        if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                            return 0;
+                        }
+                        
+                        DVDClose(&fileInfo);
+                        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                        
+                        if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                            return 0;
+                        }
+                        
+                        DVDClose(&fileInfo);
+                        simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                        mcardOpen(&mCard, D_80135050, D_80135050, mCard.saveIcon, mCard.saveBanner, D_80135050, &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+                    } else if (!romTestCode(pROM, D_80135058) && !romTestCode(pROM, D_80135060)) {
+                        if (romTestCode(pROM, D_80135068)) {
+                            if (!cpuSetCodeHack(pCPU, 0x80031D94, 0x8C421F6C, -1)) {
+                                return 0;
+                            }
+                        } else if (romTestCode(pROM, D_80135070)) {
+                            pSystem->eTypeROM = SRT_PANEL;
+                            if (!cpuSetCodeHack(pCPU, 0x800A58F8, 0x8C62FF8C, -1)) {
+                                return 0;
+                            }
+
+                            if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                                return 0;
+                            }
+
+                            DVDClose(&fileInfo);
+                            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+
+                            if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                                return 0;
+                            }
+
+                            DVDClose(&fileInfo);
+                            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+
+                            mcardOpen(&mCard, D_80135078, D_800EB63C, mCard.saveIcon, mCard.saveBanner, D_80135078, &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+                            pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x10);
+                        } else if (romTestCode(pROM, D_80135080)) {
+                            if (!cpuSetCodeHack(pCPU, 0x8002BDD0, 0xA0000000, 0)) {
+                                return 0;
+                            }
+                        } else if (romTestCode(pROM, D_80135088)) {
+                            pSystem->eTypeROM = SRT_WAVERACE;
+                            
+                            if (!cpuSetCodeHack(pCPU, 0x8004795C, 0x1448FFFC, 0)) {
+                                return 0;
+                            }
+
+                            if (!cpuSetCodeHack(pCPU, 0x80047994, 0x144AFFFC, 0)) {
+                                return 0;
+                            }
+
+                            pCPU->nCompileFlag = (s32) (pCPU->nCompileFlag | 0x10);
+                        } else if (romTestCode(pROM, D_80135090)) {
+                            if (DVDOpen(D_800EB508, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                                return 0;
+                            }
+
+                            DVDClose(&fileInfo);
+                            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveIcon);
+                            
+                            if (DVDOpen(D_800EB518, &fileInfo) == 1 && !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, 0)) {
+                                return 0;
+                            }
+
+                            DVDClose(&fileInfo);
+                            simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
+                            mcardOpen(&mCard, D_800EB64C, D_800EB64C, mCard.saveIcon, mCard.saveBanner, D_800EB64C, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x800);
+                        } else if (romTestCode(pROM, D_80135098)) {
+                            mcardOpen(&mCard, D_801350A0, D_801350A0, mCard.saveIcon, mCard.saveBanner, D_801350A0, &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x800);
+                            
+                            if (!cpuSetCodeHack(pCPU, 0x80000548, 0x08000156, 0x1000FFFF)) {
+                                return 0;
+                            }
+
+                            if (!cpuSetCodeHack(pCPU, 0x80000730, 0x3C02800C, -1)) {
+                                return 0;
+                            }
+                        } else if (!romGetCode(pROM, acCode)) {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (!soundSetBufferSize(gpSystem->pSound, nSizeSound)) {
+        return 0;
+    }
+
+    pCPU->nTimeRetrace = nTimeRetrace;
+    systemSetControllerConfiguration(&gSystemRomConfigurationList[0], gSystemRomConfigurationList[i].currentControllerConfig, 0);
+
+
+    for (iController = 0; iController < 4; iController++) {
+
+        simulatorSetControllerMap((u32*)gSystemRomConfigurationList[i].controllerConfiguration[iController], iController);
+        if (gSystemRomConfigurationList[i].storageDevice & 0x10) {
+            if (!pifSetControllerType(pPIF, iController, 2)) {
+                return 0;
+            }
+        } else if (gSystemRomConfigurationList[0].rumbleConfiguration & (1 << (iController * 8))) {
+            if (!pifSetControllerType(pPIF, iController, 3)) {
+                return 0;
+            }
+        } else if (!pifSetControllerType(pPIF, iController, 1)) {
+            return 0;
+        }
+    }
+
+    if (mCard.saveToggle == 1) {
+        systemSetControllerConfiguration(&gSystemRomConfigurationList[0], mCard.file.game.configuration, 0);
+    }
+
+    return 1;
+}
+#endif
 
 // technically matching but data shenanigans because of the strings/switch
 #ifndef NON_MATCHING
@@ -671,6 +1444,7 @@ s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice) {
         }
     }
 
+    NO_INLINE;
     return 1;
 }
 
@@ -834,4 +1608,272 @@ s32 systemExceptionPending(System* pSystem, SystemInterruptType nException) {
     return 0;
 }
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
+#else
+extern _XL_OBJECTTYPE gClassRdb;
+extern _XL_OBJECTTYPE gClassPeripheral;
+extern _XL_OBJECTTYPE gClassLibrary;
+extern _XL_OBJECTTYPE gClassSerial;
+extern _XL_OBJECTTYPE gClassVideo;
+extern _XL_OBJECTTYPE gClassAudio;
+extern _XL_OBJECTTYPE gClassDisk;
+extern _XL_OBJECTTYPE gClassMips;
+extern _XL_OBJECTTYPE gClassRDP;
+extern _XL_OBJECTTYPE gClassRSP;
+extern _XL_OBJECTTYPE gClassROM;
+extern _XL_OBJECTTYPE gClassRAM;
+extern _XL_OBJECTTYPE gClassPIF;
+extern _XL_OBJECTTYPE gClassCPU;
+extern void* gpFrame;
+extern void* gpSound;
+
+static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData);
+static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData);
+static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData);
+static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData);
+static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData);
+static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
+static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
+static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
+
+s32 cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nType);
+static s32 systemGetException(System* pSystem, SystemInterruptType eType, SystemException* pException);
+s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
+
+s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r31
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r26
+
+    // Local variables
+    Cpu* pCPU; // r30
+    SystemException exception; // r1+0x1C
+    SystemObjectType eObject; // r1+0x8
+    SystemObjectType storageDevice; // r1+0x8
+
+    pCPU = pSystem->apObject[SOT_CPU];
+    // pCPU = (Cpu*)pArgument;
+
+    switch (nEvent) {
+        case 2:
+            pSystem->eMode = SM_STOPPED;
+            pSystem->eTypeROM = SRT_NONE;
+            pSystem->nAddressBreak = -1;
+            pSystem->bJapaneseVersion = 0;
+            pSystem->romCopy.nSize = 0;
+            pSystem->pFrame = gpFrame;
+            pSystem->pSound = gpSound;
+
+            for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
+                pSystem->apObject[eObject] = NULL;
+            }
+
+            pSystem->bException = 0;
+            pSystem->anException[SOT_CPU] = 0;
+            pSystem->anException[SOT_PIF] = 0;
+            pSystem->anException[SOT_RAM] = 0;
+            pSystem->anException[SOT_ROM] = 0;
+            pSystem->anException[SOT_RSP] = 0;
+            pSystem->anException[SOT_RDP] = 0;
+            pSystem->anException[SOT_MIPS] = 0;
+            pSystem->anException[SOT_DISK] = 0;
+            pSystem->anException[SOT_FLASH] = 0;
+            pSystem->anException[SOT_SRAM] = 0;
+            pSystem->anException[SOT_AUDIO] = 0;
+            pSystem->anException[SOT_VIDEO] = 0;
+            pSystem->anException[SOT_SERIAL] = 0;
+            pSystem->anException[SOT_LIBRARY] = 0;
+            pSystem->anException[SOT_PERIPHERAL] = 0;
+            pSystem->anException[SOT_RDB] = 0;
+
+            for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
+                switch (eObject) {
+                    case SOT_CPU:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_CPU], pArgument, &gClassCPU)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_CPU], 0, -1, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_PIF:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_PIF], pArgument, &gClassPIF)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PIF], 0x1FC00000, 0x1FC007FF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_RAM:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RAM], pArgument, &gClassRAM)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RAM], 0, 0x03EFFFFF, 0x100)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RAM], 0x03F00000, 0x03FFFFFF, 2)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RAM], 0x04700000, 0x047FFFFF, 1)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_ROM:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_ROM], pArgument, &gClassROM)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_ROM], 0x10000000, 0x1FBFFFFF, 0)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_ROM], 0x1FF00000, 0x1FF0FFFF, 1)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_RSP:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RSP], pArgument, &gClassRSP)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RSP], 0x04000000, 0x040FFFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_RDP:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RDP], pArgument, &gClassRDP)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDP], 0x04100000, 0x041FFFFF, 0)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDP], 0x04200000, 0x042FFFFF, 1)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_MIPS:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_MIPS], pArgument, &gClassMips)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_MIPS], 0x04300000, 0x043FFFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_DISK:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_DISK], pArgument, &gClassDisk)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_DISK], 0x05000000, 0x05FFFFFF, 0)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_DISK], 0x06000000, 0x06FFFFFF, 1)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_FLASH:
+                        pSystem->apObject[SOT_FLASH] = NULL;
+                        break;
+                    case SOT_SRAM:
+                        pSystem->apObject[SOT_SRAM] = NULL;
+                        break;
+                    case SOT_AUDIO:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_AUDIO], pArgument, &gClassAudio)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_AUDIO], 0x04500000, 0x045FFFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_VIDEO:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_VIDEO], pArgument, &gClassVideo)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_VIDEO], 0x04400000, 0x044FFFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_SERIAL:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_SERIAL], pArgument, &gClassSerial)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_SERIAL], 0x04800000, 0x048FFFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_LIBRARY:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_LIBRARY], pArgument, &gClassLibrary)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_PERIPHERAL:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_PERIPHERAL], pArgument, &gClassPeripheral)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PERIPHERAL], 0x04600000, 0x046FFFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    case SOT_RDB:
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RDB], pArgument, &gClassRdb)) {
+                            return 0;
+                        }
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDB], 0x04900000, 0x0490FFFF, 0)) {
+                            return 0;
+                        }
+                        break;
+                    default:
+                        return 0;
+                }
+            }
+            break;
+        case 3:
+            for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
+                if ((eObject != SOT_FLASH) && (eObject != SOT_SRAM)) {
+                    if (!xlObjectFree(&pSystem->apObject[eObject])) {
+                        return 0;
+                    }
+                } else if (eObject == SOT_FLASH) {
+                    if ((pSystem->storageDevice == SOT_FLASH) && !xlObjectFree(&pSystem->apObject[SOT_FLASH])) {
+                        return 0;
+                    }
+                } else if ((eObject == SOT_SRAM) && (pSystem->storageDevice == SOT_SRAM) && !xlObjectFree(&pSystem->apObject[SOT_SRAM])) {
+                    return 0;
+                }
+            }
+            break;
+        case 0x1001:
+            if (!systemGetException(pSystem, nEvent, &exception)) {
+                return 0;
+            }
+            if (exception.eTypeMips != MIT_NONE) {
+                mipsResetInterrupt(pSystem->apObject[SOT_MIPS], exception.eTypeMips);
+            }
+            break;
+        case 0x1000:
+            if ((nEvent > SIT_NONE) && (nEvent < SIT_COUNT)) {
+                pSystem->bException = 1;
+                pSystem->anException[nEvent]++;
+                break;
+            }
+            return 0;
+        case 0x1002:
+            if (!cpuSetDevicePut(SYSTEM_CPU(pSystem), pArgument, (Put8Func)systemPut8, (Put16Func)systemPut16, (Put32Func)systemPut32, (Put64Func)systemPut64)) {
+                return 0;
+            }
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pSystem), pArgument, (Get8Func)systemGet8, (Get16Func)systemGet16, (Get32Func)systemGet32, (Get64Func)systemGet64)) {
+                return 0;
+            }
+            break;
+        case 0:
+        case 1:
+        case 5:
+        case 6:
+        case 7:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+#endif
