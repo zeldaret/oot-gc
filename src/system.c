@@ -215,19 +215,25 @@ static char D_80135098[] = "NBNJ";
 static char D_801350A0[] = "XXX";
 
 u32 gnFlagZelda;
-const f32 D_80135F90 = 0.01666666753590107;
-const f32 D_80135F94 = 1.100000023841858;
-const f64 D_80135F98 = 4503599627370496.0;
 
 extern _XL_OBJECTTYPE gClassFlash;
 extern _XL_OBJECTTYPE gClassSram;
 extern System* gpSystem;
+
+extern s32 gz_bnrSize;
+extern s32 gz_iconSize;
+extern MemCard mCard;
 
 //! TODO: import sdk headers
 extern int atoi(const char* str);
 
 s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
 s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
+
+s32 simulatorSetControllerMap(u32* mapData, s32 channel);
+s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
+s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
+              s32* defaultConfiguration, s32 fileSize, s32 gameSize);
 
 static s32 systemSetupGameRAM(System* pSystem) {
     char* szExtra;
@@ -441,15 +447,6 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     return 1;
 }
 
-extern s32 gz_bnrSize;
-extern s32 gz_iconSize;
-extern MemCard mCard;
-
-s32 simulatorSetControllerMap(u32* mapData, s32 channel);
-s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
-s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
-              s32* defaultConfiguration, s32 fileSize, s32 gameSize);
-
 s32 systemSetupGameALL(System* pSystem) {
     // Parameters
     // struct __anon_0x37240* pSystem; // r18
@@ -495,7 +492,7 @@ s32 systemSetupGameALL(System* pSystem) {
     anMode[4] = 0x17D7;
     anMode[5] = 1;
 
-    nTimeRetrace = OSSecondsToTicks(D_80135F90);
+    nTimeRetrace = OSSecondsToTicks(1.0f / 60.0f);
 
     if (!ramGetSize(SYSTEM_RAM(pSystem), &nSize)) {
         return 0;
@@ -669,7 +666,7 @@ s32 systemSetupGameALL(System* pSystem) {
         }
 
         nTickMultiplier = 2;
-        fTickScale = D_80135F94;
+        fTickScale = 1.1f;
 
         if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
             return 0;
