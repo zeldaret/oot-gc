@@ -100,12 +100,15 @@ ifneq ($(NON_MATCHING),1)
 	@md5sum -c checksum.md5
 endif
 
+setup:
 # Strip debugging sections and .mwcats.text section so only the important sections remain
 # Tested to ensure it doesn't crash at least on Dolphin
-# Also copy again to strip symbols since we don't want to diff those
-setup:
 	$(OBJCOPY) SIM_original.elf SIM.elf -R .mwcats.text -g
+# Copy again to strip symbols since we don't want to diff those
 	$(OBJCOPY) SIM.elf SIM_S.elf -S
+# Patch linker executable
+	tools/patch_linker.sh $(MWCC_DIR)/mwldeppc.exe
+# Build tools
 	$(MAKE) -C tools/elf2dol
 
 clean:
@@ -116,7 +119,7 @@ distclean:
 	$(MAKE) -C tools/elf2dol clean
 
 format:
-	clang-format -i include/*.h include/dolphin/*.h src/*.c
+	clang-format -i $(shell find include src -name '*.h' -o -name '*.c')
 
 # Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
 dol: $(DOL) compare
