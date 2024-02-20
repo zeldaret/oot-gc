@@ -119,7 +119,7 @@ distclean:
 	$(MAKE) -C tools/elf2dol clean
 
 format:
-	clang-format -i $(shell find include src -name '*.h' -o -name '*.c')
+	find include src -name '*.h' -o -name '*.c' | xargs clang-format -i
 
 # Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
 dol: $(DOL) compare
