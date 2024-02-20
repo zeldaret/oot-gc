@@ -1,7 +1,7 @@
 #ifndef _MCARD_H
 #define _MCARD_H
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // __anon_0x1B0CB
 typedef enum MemCardError {
@@ -52,20 +52,6 @@ typedef struct CARDFileInfo {
     /* 0x10 */ u16 iBlock;
     /* 0x12 */ u16 __padding;
 } CARDFileInfo; // size = 0x14
-
-//! TODO: remove when sdk headers are here
-typedef struct OSCalendarTime {
-    /* 0x00 */ s32 sec;
-    /* 0x04 */ s32 min;
-    /* 0x08 */ s32 hour;
-    /* 0x0C */ s32 mday;
-    /* 0x10 */ s32 mon;
-    /* 0x14 */ s32 year;
-    /* 0x18 */ s32 wday;
-    /* 0x1C */ s32 yday;
-    /* 0x20 */ s32 msec;
-    /* 0x24 */ s32 usec;
-} OSCalendarTime; // size = 0x28
 
 typedef struct __anon_0x1AEB5 {
     /* 0x000 */ s32 currentGame;

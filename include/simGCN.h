@@ -1,19 +1,11 @@
 #ifndef _SIMGCN_H
 #define _SIMGCN_H
 
-#include "system.h"
 #include <dolphin/types.h>
+#include <dolphin/gx.h>
+#include "system.h"
 
-// __anon_0x966
-typedef enum _GXTexFilter {
-    GX_NEAR = 0,
-    GX_LINEAR = 1,
-    GX_NEAR_MIP_NEAR = 2,
-    GX_LIN_MIP_NEAR = 3,
-    GX_NEAR_MIP_LIN = 4,
-    GX_LIN_MIP_LIN = 5,
-} _GXTexFilter;
-
+// missing from the sdk?
 // __anon_0xBEA
 typedef enum _GXTlutFmt {
     GX_TL_IA8 = 0,
@@ -22,23 +14,15 @@ typedef enum _GXTlutFmt {
     GX_MAX_TLUTFMT = 3,
 } _GXTlutFmt;
 
-// __anon_0x8FD
-typedef enum _GXTexWrapMode {
-    GX_CLAMP = 0,
-    GX_REPEAT = 1,
-    GX_MIRROR = 2,
-    GX_MAX_TEXWRAPMODE = 3,
-} _GXTexWrapMode;
-
 typedef struct __anon_0xD7D1 {
     /* 0x00 */ u16 height;
     /* 0x02 */ u16 width;
     /* 0x04 */ u32 format;
     /* 0x08 */ char* data;
-    /* 0x0C */ _GXTexWrapMode wrapS;
-    /* 0x10 */ _GXTexWrapMode wrapT;
-    /* 0x14 */ _GXTexFilter minFilter;
-    /* 0x18 */ _GXTexFilter magFilter;
+    /* 0x0C */ GXTexWrapMode wrapS;
+    /* 0x10 */ GXTexWrapMode wrapT;
+    /* 0x14 */ GXTexFilter minFilter;
+    /* 0x18 */ GXTexFilter magFilter;
     /* 0x1C */ f32 LODBias;
     /* 0x20 */ u8 edgeLODEnable;
     /* 0x21 */ u8 minLOD;

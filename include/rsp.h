@@ -1,7 +1,7 @@
 #ifndef _RSP_H
 #define _RSP_H
 
-#include "types.h"
+#include <dolphin/types.h>
 
 typedef enum __anon_0x581E7 {
     RUT_NOCODE = -1,
