@@ -5,7 +5,7 @@
     Code range: 0x8008CF0C -> 0x8008D248
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // Erased
 static s32 rspVMULF(s16* pVec1, s16* pVec2, s16* pVecResult, u32 nElement, s32* pAcc) {

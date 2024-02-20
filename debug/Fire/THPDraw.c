@@ -5,7 +5,7 @@
     Code range: 0x80011138 -> 0x80011938
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 typedef enum __anon_0x14611 {
     VI_TVMODE_NTSC_INT = 0,

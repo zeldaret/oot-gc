@@ -2,7 +2,7 @@
 #define _SIMGCN_H
 
 #include "system.h"
-#include "types.h"
+#include <dolphin/types.h>
 
 // __anon_0x966
 typedef enum _GXTexFilter {

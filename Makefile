@@ -62,7 +62,7 @@ ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
 POSTPROC := tools/postprocess.py
 
 # Options
-INCLUDES := -i include
+INCLUDES := -I- -i include
 
 # Assembler Flags
 ASFLAGS := -mgekko -I include
@@ -116,7 +116,7 @@ distclean:
 	$(MAKE) -C tools/elf2dol clean
 
 format:
-	clang-format -i include/*.h src/*.c
+	clang-format -i include/*.h include/dolphin/*.h src/*.c
 
 # Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
 dol: $(DOL) compare
