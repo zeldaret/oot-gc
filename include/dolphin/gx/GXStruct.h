@@ -8,8 +8,7 @@
 extern "C" {
 #endif
 
-typedef struct
-{
+typedef struct {
     /*0x00*/ VITVMode viTVmode;
     /*0x04*/ u16 fbWidth;
     /*0x06*/ u16 efbHeight;
@@ -25,36 +24,30 @@ typedef struct
     u8 vfilter[7];
 } GXRenderModeObj;
 
-typedef struct
-{
+typedef struct {
     u8 r;
-    u8 g; 
-    u8 b; 
+    u8 g;
+    u8 b;
     u8 a;
 } GXColor;
 
-typedef struct
-{
+typedef struct {
     u32 dummy[8];
 } GXTexObj;
 
-typedef struct
-{
+typedef struct {
     u32 dummy[16];
 } GXLightObj;
 
-typedef struct
-{
+typedef struct {
     u32 dummy[4];
 } GXTexRegion;
 
-typedef struct
-{
+typedef struct {
     u32 dummy[4];
 } GXTlutRegion;
 
-typedef struct
-{
+typedef struct {
     u16 r[10];
 } GXFogAdjTable;
 

@@ -10,7 +10,7 @@ extern "C" {
 // 0x800E2B9C
 void GXSetFog(GXFogType type, f32 startz, f32 endz, f32 nearz, f32 farz, GXColor color);
 // 0x800E2D50
-void GXSetFogRangeAdj(GXBool enable, u16 center, GXFogAdjTable *table);
+void GXSetFogRangeAdj(GXBool enable, u16 center, GXFogAdjTable* table);
 // 0x800E2E50
 void GXSetBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor, GXLogicOp op);
 // 0x800E2F54
