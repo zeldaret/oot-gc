@@ -9,6 +9,7 @@
 #include "simGCN.h"
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
+s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
 
 char D_800EB300[] = "SYSTEM (N64)";
 
@@ -440,15 +441,6 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemSetupGameALL.s")
-#else
-//! TODO: remove when sdk headers are here
-extern u32 __OSBusClock : 0x800000F8;
-#define OS_BUS_CLOCK (__OSBusClock)
-#define OS_TIMER_CLOCK (OS_BUS_CLOCK / 4)
-#define OSSecondsToTicks(sec) ((sec)*OS_TIMER_CLOCK)
-
 extern s32 gz_bnrSize;
 extern s32 gz_iconSize;
 extern MemCard mCard;
@@ -457,6 +449,7 @@ s32 simulatorSetControllerMap(u32* mapData, s32 channel);
 s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
 s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
               s32* defaultConfiguration, s32 fileSize, s32 gameSize);
+
 s32 systemSetupGameALL(System* pSystem) {
     // Parameters
     // struct __anon_0x37240* pSystem; // r18
@@ -495,7 +488,6 @@ s32 systemSetupGameALL(System* pSystem) {
         return 0;
     }
 
-    // ?????
     anMode[0] = 1;
     anMode[1] = 0;
     anMode[2] = 0xB0000000;
@@ -1249,14 +1241,14 @@ s32 systemSetupGameALL(System* pSystem) {
                                      gSystemRomConfigurationList[i].currentControllerConfig, 0);
 
     for (iController = 0; iController < 4; iController++) {
-
         simulatorSetControllerMap((u32*)gSystemRomConfigurationList[i].controllerConfiguration[iController],
                                   iController);
+
         if (gSystemRomConfigurationList[i].storageDevice & 0x10) {
             if (!pifSetControllerType(pPIF, iController, 2)) {
                 return 0;
             }
-        } else if (gSystemRomConfigurationList[0].rumbleConfiguration & (1 << (iController * 8))) {
+        } else if ((1 << (iController << 3)) & gSystemRomConfigurationList[0].rumbleConfiguration) {
             if (!pifSetControllerType(pPIF, iController, 3)) {
                 return 0;
             }
@@ -1271,7 +1263,6 @@ s32 systemSetupGameALL(System* pSystem) {
 
     return 1;
 }
-#endif
 
 // technically matching but data shenanigans because of the strings/switch
 #ifndef NON_MATCHING
@@ -1698,9 +1689,21 @@ static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
 static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
 static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
 
-s32 cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nType);
-static s32 systemGetException(System* pSystem, SystemInterruptType eType, SystemException* pException);
 s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
+
+inline s32 systemClearExceptions(System* pSystem) {
+    // Parameters
+    // struct __anon_0x37240* pSystem; // r1+0x0
+
+    // Local variables
+    s32 iException; // r1+0x0
+
+    pSystem->bException = 0;
+    for (iException = 0; iException < 16; iException++) {
+        pSystem->anException[iException] = 0;
+    }
+    return 1;
+}
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
     // Parameters
@@ -1713,9 +1716,6 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
     SystemException exception; // r1+0x1C
     SystemObjectType eObject; // r1+0x8
     SystemObjectType storageDevice; // r1+0x8
-
-    pCPU = pSystem->apObject[SOT_CPU];
-    // pCPU = (Cpu*)pArgument;
 
     switch (nEvent) {
         case 2:
@@ -1731,36 +1731,21 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                 pSystem->apObject[eObject] = NULL;
             }
 
-            pSystem->bException = 0;
-            pSystem->anException[SOT_CPU] = 0;
-            pSystem->anException[SOT_PIF] = 0;
-            pSystem->anException[SOT_RAM] = 0;
-            pSystem->anException[SOT_ROM] = 0;
-            pSystem->anException[SOT_RSP] = 0;
-            pSystem->anException[SOT_RDP] = 0;
-            pSystem->anException[SOT_MIPS] = 0;
-            pSystem->anException[SOT_DISK] = 0;
-            pSystem->anException[SOT_FLASH] = 0;
-            pSystem->anException[SOT_SRAM] = 0;
-            pSystem->anException[SOT_AUDIO] = 0;
-            pSystem->anException[SOT_VIDEO] = 0;
-            pSystem->anException[SOT_SERIAL] = 0;
-            pSystem->anException[SOT_LIBRARY] = 0;
-            pSystem->anException[SOT_PERIPHERAL] = 0;
-            pSystem->anException[SOT_RDB] = 0;
+            systemClearExceptions(pSystem);
 
             for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
                 switch (eObject) {
                     case SOT_CPU:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_CPU], pArgument, &gClassCPU)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_CPU], pSystem, &gClassCPU)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_CPU], 0, -1, 0)) {
+                        pCPU = (Cpu*)pSystem->apObject[SOT_CPU];
+                        if (!cpuMapObject(pCPU, pSystem, 0, -1, 0)) {
                             return 0;
                         }
                         break;
                     case SOT_PIF:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_PIF], pArgument, &gClassPIF)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_PIF], pSystem, &gClassPIF)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PIF], 0x1FC00000, 0x1FC007FF, 0)) {
@@ -1768,7 +1753,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_RAM:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_RAM], pArgument, &gClassRAM)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RAM], pSystem, &gClassRAM)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RAM], 0, 0x03EFFFFF, 0x100)) {
@@ -1782,7 +1767,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_ROM:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_ROM], pArgument, &gClassROM)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_ROM], pSystem, &gClassROM)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_ROM], 0x10000000, 0x1FBFFFFF, 0)) {
@@ -1793,7 +1778,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_RSP:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_RSP], pArgument, &gClassRSP)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RSP], pSystem, &gClassRSP)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RSP], 0x04000000, 0x040FFFFF, 0)) {
@@ -1801,7 +1786,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_RDP:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_RDP], pArgument, &gClassRDP)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RDP], pSystem, &gClassRDP)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDP], 0x04100000, 0x041FFFFF, 0)) {
@@ -1812,7 +1797,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_MIPS:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_MIPS], pArgument, &gClassMips)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_MIPS], pSystem, &gClassMips)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_MIPS], 0x04300000, 0x043FFFFF, 0)) {
@@ -1820,7 +1805,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_DISK:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_DISK], pArgument, &gClassDisk)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_DISK], pSystem, &gClassDisk)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_DISK], 0x05000000, 0x05FFFFFF, 0)) {
@@ -1837,7 +1822,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         pSystem->apObject[SOT_SRAM] = NULL;
                         break;
                     case SOT_AUDIO:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_AUDIO], pArgument, &gClassAudio)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_AUDIO], pSystem, &gClassAudio)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_AUDIO], 0x04500000, 0x045FFFFF, 0)) {
@@ -1845,7 +1830,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_VIDEO:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_VIDEO], pArgument, &gClassVideo)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_VIDEO], pSystem, &gClassVideo)) {
                             return 0;
                         }
                         if (!cpuMapObject(pCPU, pSystem->apObject[SOT_VIDEO], 0x04400000, 0x044FFFFF, 0)) {
@@ -1853,31 +1838,31 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         }
                         break;
                     case SOT_SERIAL:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_SERIAL], pArgument, &gClassSerial)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_SERIAL], pSystem, &gClassSerial)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_SERIAL], 0x04800000, 0x048FFFFF, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_SERIAL], 0x04800000, 0x04900000 - 1, 0)) {
                             return 0;
                         }
                         break;
                     case SOT_LIBRARY:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_LIBRARY], pArgument, &gClassLibrary)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_LIBRARY], pSystem, &gClassLibrary)) {
                             return 0;
                         }
                         break;
                     case SOT_PERIPHERAL:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_PERIPHERAL], pArgument, &gClassPeripheral)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_PERIPHERAL], pSystem, &gClassPeripheral)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PERIPHERAL], 0x04600000, 0x046FFFFF, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PERIPHERAL], 0x04600000, 0x04700000 - 1, 0)) {
                             return 0;
                         }
                         break;
                     case SOT_RDB:
-                        if (!xlObjectMake(&pSystem->apObject[SOT_RDB], pArgument, &gClassRdb)) {
+                        if (!xlObjectMake(&pSystem->apObject[SOT_RDB], pSystem, &gClassRdb)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDB], 0x04900000, 0x0490FFFF, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDB], 0x04900000, 0x04910000 - 1, 0)) {
                             return 0;
                         }
                         break;
@@ -1887,23 +1872,23 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             }
             break;
         case 3:
-            for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
-                if ((eObject != SOT_FLASH) && (eObject != SOT_SRAM)) {
-                    if (!xlObjectFree(&pSystem->apObject[eObject])) {
+            for (storageDevice = SOT_CPU; storageDevice < SOT_COUNT; storageDevice++) {
+                if ((storageDevice != SOT_FLASH) && (storageDevice != SOT_SRAM)) {
+                    if (!xlObjectFree(&pSystem->apObject[storageDevice])) {
                         return 0;
                     }
-                } else if (eObject == SOT_FLASH) {
+                } else if (storageDevice == SOT_FLASH) {
                     if ((pSystem->storageDevice == SOT_FLASH) && !xlObjectFree(&pSystem->apObject[SOT_FLASH])) {
                         return 0;
                     }
-                } else if ((eObject == SOT_SRAM) && (pSystem->storageDevice == SOT_SRAM) &&
+                } else if ((storageDevice == SOT_SRAM) && (pSystem->storageDevice == SOT_SRAM) &&
                            !xlObjectFree(&pSystem->apObject[SOT_SRAM])) {
                     return 0;
                 }
             }
             break;
         case 0x1001:
-            if (!systemGetException(pSystem, nEvent, &exception)) {
+            if (!systemGetException(pSystem, (SystemInterruptType)pArgument, &exception)) {
                 return 0;
             }
             if (exception.eTypeMips != MIT_NONE) {
@@ -1911,9 +1896,9 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             }
             break;
         case 0x1000:
-            if ((nEvent > SIT_NONE) && (nEvent < SIT_COUNT)) {
+            if (((SystemInterruptType)pArgument > SIT_NONE) && ((SystemInterruptType)pArgument < SIT_COUNT)) {
                 pSystem->bException = 1;
-                pSystem->anException[nEvent]++;
+                pSystem->anException[(SystemInterruptType)pArgument]++;
                 break;
             }
             return 0;
