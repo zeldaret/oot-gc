@@ -1,45 +1,8 @@
 #ifndef _XL_FILE_GCN_H
 #define _XL_FILE_GCN_H
 
-#include "types.h"
-
-//! TODO: Move DVDDiskID etc. to Dolphin SDK headers
-
-typedef struct DVDDiskID {
-    /* 0x0 */ char gameName[4];
-    /* 0x4 */ char company[2];
-    /* 0x6 */ u8 diskNumber;
-    /* 0x7 */ u8 gameVersion;
-    /* 0x8 */ u8 streaming;
-    /* 0x9 */ u8 streamingBufSize;
-    /* 0xA */ u8 padding[22];
-} DVDDiskID; // size = 0x20
-
-typedef struct DVDCommandBlock DVDCommandBlock;
-
-struct DVDCommandBlock {
-    /* 0x00 */ DVDCommandBlock* next;
-    /* 0x04 */ DVDCommandBlock* prev;
-    /* 0x08 */ u32 command;
-    /* 0x0C */ long state;
-    /* 0x10 */ u32 offset;
-    /* 0x14 */ u32 length;
-    /* 0x18 */ void* addr;
-    /* 0x1C */ u32 currTransferSize;
-    /* 0x20 */ u32 transferredSize;
-    /* 0x24 */ DVDDiskID* id;
-    /* 0x28 */ void (*callback)(long /* unknown0 */, DVDCommandBlock* /* unknown1 */);
-    /* 0x2C */ void* userData;
-}; // size = 0x30
-
-typedef struct DVDFileInfo DVDFileInfo;
-
-struct DVDFileInfo {
-    /* 0x00 */ DVDCommandBlock cb;
-    /* 0x30 */ u32 startAddr;
-    /* 0x34 */ u32 length;
-    /* 0x38 */ void (*callback)(long /* unknown0 */, DVDFileInfo* /* unknown1 */);
-}; // size = 0x3C
+#include <dolphin/dvd.h>
+#include <dolphin/types.h>
 
 typedef enum __anon_0x2757 {
     XLFT_NONE = -1,

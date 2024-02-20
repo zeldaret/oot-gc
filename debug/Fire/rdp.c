@@ -5,7 +5,7 @@
     Code range: 0x8006FEC0 -> 0x800715D0
 */
 
-#include "types.h"
+#include <dolphin/types.h>
 
 typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
