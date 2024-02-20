@@ -18,53 +18,43 @@ f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0}
 f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
 u8 gcoverOpen[] = {
-// #pragma GLOBAL_ASM("src/TPL/gcoverOpen.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000D8880, 0x000028C1)
 };
 
 u8 gnoDisk[] = {
-// #pragma GLOBAL_ASM("src/TPL/gnoDisk.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000DB160, 0x00001F01)
 };
 
 u8 gretryErr[] = {
-// #pragma GLOBAL_ASM("src/TPL/gretryErr.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000DD080, 0x00002441)
 };
 
 u8 gfatalErr[] = {
-// #pragma GLOBAL_ASM("src/TPL/gfatalErr.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x000032E1)
 };
 
 u8 gwrongDisk[] = {
-// #pragma GLOBAL_ASM("src/TPL/gwrongDisk.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x00001F01)
 };
 
 u8 greadingDisk[] = {
-// #pragma GLOBAL_ASM("src/TPL/greadingDisk.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000E4700, 0x00000C41)
 };
 
 u8 gbar[] = {
-// #pragma GLOBAL_ASM("src/TPL/gbar.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000E5360, 0x00000741)
 };
 
 u8 gyes[] = {
-// #pragma GLOBAL_ASM("src/TPL/gyes.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x000005C1)
 };
 
 u8 gno[] = {
-// #pragma GLOBAL_ASM("src/TPL/gno.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x000005C1)
 };
 
 u8 gmesgOK[] = {
-// #pragma GLOBAL_ASM("src/TPL/gmesgOK.s")
-0x00
+#pragma INCBIN("SIM_original.elf", 0x000E6680, 0x00000341)
 };
 
 s16 Vert_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
