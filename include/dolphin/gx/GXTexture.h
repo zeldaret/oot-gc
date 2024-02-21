@@ -4,10 +4,6 @@
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef GXTexRegion* (*GXTexRegionCallback)(GXTexObj* t_obj, GXTexMapID id);
 typedef GXTlutRegion* (*GXTlutRegionCallback)(u32 idx);
 
@@ -24,9 +20,5 @@ void GXInitTexCacheRegion(GXTexRegion* region, GXBool is_32b_mipmap, u32 tmem_ev
 void GXInitTlutRegion(GXTlutRegion* region, u32 tmem_addr, GXTlutSize tlut_size);
 GXTexRegionCallback GXSetTexRegionCallback(GXTexRegionCallback f);
 GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback f);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

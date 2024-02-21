@@ -3,10 +3,6 @@
 
 #include "dolphin/gx/GXEnum.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // 0x800E2B9C
 void GXSetFog(GXFogType type, f32 startz, f32 endz, f32 nearz, f32 farz, GXColor color);
 // 0x800E2D50
@@ -31,9 +27,5 @@ void GXSetDstAlpha(GXBool enable, u8 alpha);
 void GXSetFieldMask(GXBool odd_mask, GXBool even_mask);
 // 0x800E3268
 void GXSetFieldMode(GXBool field_mode, GXBool half_aspect_ratio);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -4,10 +4,6 @@
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void GXSetNumChans(u8 nChans);
 void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc amb_src, GXColorSrc mat_src, u32 light_mask,
                    GXDiffuseFn diff_fn, GXAttnFn attn_fn);
@@ -21,9 +17,5 @@ void GXInitLightDir(GXLightObj* lt_obj, f32 nx, f32 ny, f32 nz);
 void GXInitLightColor(GXLightObj* lt_obj, GXColor color);
 void GXInitLightAttnK(GXLightObj* lt_obj, f32 k0, f32 k1, f32 k2);
 void GXLoadLightObjImm(GXLightObj* lt_obj, GXLightID light);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

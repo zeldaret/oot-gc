@@ -4,10 +4,6 @@
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // 0x800E2214
 void GXSetTevOp(GXTevStageID id, GXTevMode mode);
 // 0x800E23B8
@@ -41,9 +37,5 @@ void GXSetZTexture(GXZTexOp op, GXTexFmt fmt, u32 bias);
 void GXSetTevOrder(GXTevStageID stage, GXTexCoordID coord, GXTexMapID map, GXChannelID color);
 // 0x800E2B68
 void GXSetNumTevStages(u8 nStages);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
