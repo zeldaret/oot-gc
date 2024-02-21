@@ -11,46 +11,48 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
+import platform
 import re
+import subprocess
 import urllib.parse
 import urllib.request
 
 COMPILER_NAME = "mwcc_233_159"
 COMPILER_FLAGS = (
-    "-Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -nodefaults -msgstyle gcc"
+    "-Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto,deferred -sym on -nodefaults -msgstyle gcc"
 )
-INCLUDE_PATTERN = re.compile(r'^#include\s*[<"](.+?)[>"]$')
-GUARD_PATTERN = re.compile(r'^#ifndef\s+(.*)$')
-INCLUDE_DIR = Path("include")
+CPP_ARGS = [
+    "-P",
+    "-I",
+    "include",
+    "-D",
+    "__MWERKS__",
+]
 
-defines = set()
+
+def homebrew_gcc_cpp() -> str:
+    for lookup_path in ["/usr/local/bin", "/opt/homebrew/bin"]:
+        try:
+            return max(f for f in os.listdir(lookup_path) if f.startswith("cpp-"))
+        except ValueError:
+            pass
+    print(
+        "Error while looking up in " + ":".join(lookup_paths) + " for cpp- executable"
+    )
+    sys.exit(1)
 
 
 def process_file(path: Path) -> str:
-    lines = path.read_text().splitlines()
-    out_text = ""
-    for i, line in enumerate(lines):
-        guard_match = GUARD_PATTERN.match(line.strip())
-        if i == 0 and guard_match:
-            if guard_match[1] in defines:
-                break
-            defines.add(guard_match[1])
-            continue
+    is_macos = platform.system() == "Darwin"
+    cpp = homebrew_gcc_cpp() if is_macos else "cpp"
 
-        if line.startswith("#if") or line.startswith("#endif"):
-            continue
-
-        include_match = INCLUDE_PATTERN.match(line.strip())
-        if include_match:
-            out_text += f'/* "{path}" line {i + 1} "{include_match[1]}" */\n'
-            out_text += process_file(INCLUDE_DIR / include_match[1])
-            out_text += f'/* end "{include_match[1]}" */\n'
-        else:
-            out_text += line
-            out_text += "\n"
-
-    return out_text
+    cpp_command = [cpp] + CPP_ARGS + [str(path)]
+    cpp_output = subprocess.run(
+        cpp_command, capture_output=True, text=True, check=True
+    ).stdout
+    return re.sub(r"#pragma INCBIN.*\n", "0", cpp_output)
 
 
 def main():
