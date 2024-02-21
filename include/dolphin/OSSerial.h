@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_OSSERIAL_H
 #define _DOLPHIN_OSSERIAL_H
 
-#include <dolphin/hw_regs.h>
+#include "dolphin/hw_regs.h"
 
 #define CHAN_NONE -1
 

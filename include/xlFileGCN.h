@@ -1,8 +1,8 @@
 #ifndef _XL_FILE_GCN_H
 #define _XL_FILE_GCN_H
 
-#include <dolphin/dvd.h>
-#include <dolphin/types.h>
+#include "dolphin/dvd.h"
+#include "dolphin/types.h"
 
 typedef enum __anon_0x2757 {
     XLFT_NONE = -1,

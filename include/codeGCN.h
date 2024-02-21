@@ -1,7 +1,7 @@
 #ifndef _CODEGCN_H
 #define _CODEGCN_H
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // based on how other "gClass" works, we can assume this was the struct used for Code
 typedef struct Code {

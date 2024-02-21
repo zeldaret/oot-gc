@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_OSTIME_H_
 #define _DOLPHIN_OSTIME_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Time base frequency = 1/4 bus clock
 #define OS_TIME_SPEED (OS_BUS_CLOCK / 4)

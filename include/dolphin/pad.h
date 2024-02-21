@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_PAD_H_
 #define _DOLPHIN_PAD_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 #define PAD_SPEC_0 0
 #define PAD_SPEC_1 1

@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_AI_H_
 #define _DOLPHIN_AI_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef void (*AISCallback)(u32 count);
 typedef void (*AIDCallback)();

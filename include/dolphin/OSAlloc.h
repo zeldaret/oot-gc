@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_OSALLOC_H_
 #define _DOLPHIN_OSALLOC_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef int OSHeapHandle;
 

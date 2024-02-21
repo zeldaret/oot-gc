@@ -1,8 +1,8 @@
 #ifndef _DOLPHIN_GX_GXGET_H_
 #define _DOLPHIN_GX_GXGET_H_
 
-#include <dolphin/gx/GXEnum.h>
-#include <dolphin/gx/GXStruct.h>
+#include "dolphin/gx/GXEnum.h"
+#include "dolphin/gx/GXStruct.h"
 
 #ifdef __cplusplus
 extern "C" {

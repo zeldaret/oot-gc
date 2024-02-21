@@ -1,7 +1,7 @@
 #ifndef _XL_LIST_H
 #define _XL_LIST_H
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef struct tXL_NODE tXL_NODE;
 

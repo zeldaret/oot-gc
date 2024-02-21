@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_GX_GXDISPLIST_H_
 #define _DOLPHIN_GX_GXDISPLIST_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 #ifdef __cplusplus
 extern "C" {

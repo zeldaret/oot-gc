@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_OSCACHE_H_
 #define _DOLPHIN_OSCACHE_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 void LCEnable();
 void DCInvalidateRange(void* addr, u32 nBytes);

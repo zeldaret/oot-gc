@@ -1,7 +1,7 @@
-#include <dolphin/ar.h>
-#include <dolphin/gx.h>
-#include <dolphin/mtx.h>
-#include <dolphin/types.h>
+#include "dolphin/ar.h"
+#include "dolphin/gx.h"
+#include "dolphin/mtx.h"
+#include "dolphin/types.h"
 
 #include "cpu.h"
 #include "macros.h"

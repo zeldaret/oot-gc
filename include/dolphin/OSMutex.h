@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_OSMUTEX_H_
 #define _DOLPHIN_OSMUTEX_H_
 
-#include <dolphin/OSThread.h>
+#include "dolphin/OSThread.h"
 
 typedef struct OSMutex {
     /*0x00*/ OSThreadQueue queue;

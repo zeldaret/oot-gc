@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_BASE_PPCARCH_H_
 #define _DOLPHIN_BASE_PPCARCH_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // GEKKO registers
 #define GQR0 0x390

@@ -1,8 +1,8 @@
 #ifndef _DOLPHIN_AMC_AMCEXI2COMM_H_
 #define _DOLPHIN_AMC_AMCEXI2COMM_H_
 
-#include <dolphin/os.h>
-#include <dolphin/amc/AmcTypes.h>
+#include "dolphin/os.h"
+#include "dolphin/amc/AmcTypes.h"
 
 typedef enum {
     AMC_EXI_NO_ERROR = 0,

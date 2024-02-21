@@ -1,6 +1,6 @@
 #ifndef _DOLPHIN_HIO_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 BOOL HIOReadMailbox(u32* word);
 BOOL HIOWriteMailbox(u32 word);

@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_VIFUNCS_H_
 #define _DOLPHIN_VIFUNCS_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 void VIInit(void);
 void VIConfigure(GXRenderModeObj* rm);

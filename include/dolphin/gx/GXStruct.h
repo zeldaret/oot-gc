@@ -1,8 +1,8 @@
 #ifndef _DOLPHIN_GX_GXSTRUCT_H_
 #define _DOLPHIN_GX_GXSTRUCT_H_
 
-#include <dolphin/types.h>
-#include <dolphin/vitypes.h>
+#include "dolphin/types.h"
+#include "dolphin/vitypes.h"
 
 #ifdef __cplusplus
 extern "C" {

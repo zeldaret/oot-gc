@@ -62,7 +62,7 @@ ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
 POSTPROC := tools/postprocess.py
 
 # Options
-INCLUDES := -I- -i include
+INCLUDES := -Iinclude
 
 # Assembler Flags
 ASFLAGS := -mgekko -I include

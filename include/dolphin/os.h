@@ -1,21 +1,21 @@
 #ifndef _DOLPHIN_OS_H_
 #define _DOLPHIN_OS_H_
 
-#include <dolphin/OSAlloc.h>
-#include <dolphin/OSCache.h>
-#include <dolphin/OSContext.h>
-#include <dolphin/OSInterrupt.h>
-#include <dolphin/OSModule.h>
-#include <dolphin/OSThread.h>
-#include <dolphin/OSMutex.h>
-#include <dolphin/OSFont.h>
-#include <dolphin/OSReset.h>
-#include <dolphin/OSResetSW.h>
-#include <dolphin/OSError.h>
-#include <dolphin/OSTime.h>
-#include <dolphin/OSStopwatch.h>
-#include <dolphin/OSSerial.h>
-#include <dolphin/OSRtc.h>
+#include "dolphin/OSAlloc.h"
+#include "dolphin/OSCache.h"
+#include "dolphin/OSContext.h"
+#include "dolphin/OSInterrupt.h"
+#include "dolphin/OSModule.h"
+#include "dolphin/OSThread.h"
+#include "dolphin/OSMutex.h"
+#include "dolphin/OSFont.h"
+#include "dolphin/OSReset.h"
+#include "dolphin/OSResetSW.h"
+#include "dolphin/OSError.h"
+#include "dolphin/OSTime.h"
+#include "dolphin/OSStopwatch.h"
+#include "dolphin/OSSerial.h"
+#include "dolphin/OSRtc.h"
 
 // private macro, maybe shouldn't be defined here?
 #define OFFSET(addr, align) (((u32)(addr) & ((align)-1)))

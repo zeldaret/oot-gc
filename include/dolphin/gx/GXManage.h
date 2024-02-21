@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_GX_GXMANAGE_H_
 #define _DOLPHIN_GX_GXMANAGE_H_
 
-#include <dolphin/gx/GXFifo.h>
+#include "dolphin/gx/GXFifo.h"
 
 #ifdef __cplusplus
 extern "C" {

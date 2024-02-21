@@ -1,9 +1,9 @@
 #ifndef _DOLPHIN_CARD_H_
 #define _DOLPHIN_CARD_H_
 
-#include <dolphin/OSAlarm.h>
-#include <dolphin/dsp.h>
-#include <dolphin/dvd.h>
+#include "dolphin/OSAlarm.h"
+#include "dolphin/dsp.h"
+#include "dolphin/dvd.h"
 
 #define CARD_RESULT_UNLOCKED 1
 #define CARD_RESULT_READY 0

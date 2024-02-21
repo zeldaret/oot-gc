@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_PERF_H_
 #define _DOLPHIN_PERF_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef u8 PERFId;
 

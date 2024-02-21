@@ -5,7 +5,7 @@
 #define OS_RESET_HOTRESET 1
 #define OS_RESET_SHUTDOWN 2
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 struct OSResetFunctionQueue {
     struct OSResetFunctionInfo* head;
