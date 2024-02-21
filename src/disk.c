@@ -88,25 +88,25 @@ s32 diskEvent(Disk* pDisk, s32 nEvent, void* pArgument) {
         case 0x1002:
             switch (((CpuDevice*)pArgument)->nType) {
                 case 0:
-                    if (!cpuSetDevicePut(((System*)pDisk->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)diskPutDrive8,
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pDisk->pHost), pArgument, (Put8Func)diskPutDrive8,
                                          (Put16Func)diskPutDrive16, (Put32Func)diskPutDrive32,
                                          (Put64Func)diskPutDrive64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((System*)pDisk->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)diskGetDrive8,
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pDisk->pHost), pArgument, (Get8Func)diskGetDrive8,
                                          (Get16Func)diskGetDrive16, (Get32Func)diskGetDrive32,
                                          (Get64Func)diskGetDrive64)) {
                         return 0;
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(((System*)pDisk->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)diskPutROM8,
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pDisk->pHost), pArgument, (Put8Func)diskPutROM8,
                                          (Put16Func)diskPutROM16, (Put32Func)diskPutROM32, (Put64Func)diskPutROM64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((System*)pDisk->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)diskGetROM8,
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pDisk->pHost), pArgument, (Get8Func)diskGetROM8,
                                          (Get16Func)diskGetROM16, (Get32Func)diskGetROM32, (Get64Func)diskGetROM64)) {
                         return 0;
                     }

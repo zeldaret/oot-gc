@@ -2,14 +2,18 @@
 #include "audio.h"
 #include "cpu.h"
 #include "dolphin.h"
+#include "flash.h"
+#include "frame.h"
 #include "macros.h"
-#include "mcard.h"
+#include "mcardGCN.h"
 #include "mips.h"
 #include "pif.h"
 #include "ram.h"
 #include "rom.h"
 #include "rsp.h"
 #include "simGCN.h"
+#include "soundGCN.h"
+#include "sram.h"
 #include "xlObject.h"
 
 //! TODO: move these declarations to the proper headers
@@ -809,7 +813,7 @@ static s32 systemSetupGameALL(System* pSystem) {
                 pCPU->nCompileFlag = (s32)(pCPU->nCompileFlag | 0x10);
             } else if (romTestCode(pROM, "NK4E")) {
                 // Kirby 64
-                if (!audioEnable(pSystem->apObject[SOT_AUDIO], 0)) {
+                if (!audioEnable(SYSTEM_AUDIO(pSystem), 0)) {
                     return 0;
                 }
                 if (!cpuSetCodeHack(pCPU, 0x80020BCC, 0x8DF80034, -1)) {
@@ -1107,7 +1111,7 @@ static s32 systemSetupGameALL(System* pSystem) {
         }
     }
 
-    if (!soundSetBufferSize(gpSystem->pSound, nSizeSound)) {
+    if (!soundSetBufferSize(SYSTEM_SOUND(gpSystem), nSizeSound)) {
         return 0;
     }
 
@@ -1260,7 +1264,7 @@ static s32 __systemCopyROM_Complete(void) {
     nAddress0 = gpSystem->romCopy.nOffsetRAM;
     nAddress1 = nAddress0 + gpSystem->romCopy.nSize - 1;
 
-    if (!frameInvalidateCache(gpSystem->pFrame, gpSystem->romCopy.nOffsetRAM,
+    if (!frameInvalidateCache(SYSTEM_FRAME(gpSystem), gpSystem->romCopy.nOffsetRAM,
                               gpSystem->romCopy.nOffsetRAM + gpSystem->romCopy.nSize - 1)) {
         return 0;
     }
@@ -1351,7 +1355,7 @@ s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice) {
             return 0;
         }
 
-        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_FLASH], 0x08000000, 0x0801FFFF, 0)) {
+        if (!cpuMapObject(SYSTEM_CPU(pSystem), pSystem->apObject[SOT_FLASH], 0x08000000, 0x0801FFFF, 0)) {
             return 0;
         }
     }
@@ -1361,7 +1365,7 @@ s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice) {
             return 0;
         }
 
-        if (!cpuMapObject(pSystem->apObject[SOT_CPU], pSystem->apObject[SOT_SRAM], 0x08000000, 0x08007FFF, 0)) {
+        if (!cpuMapObject(SYSTEM_CPU(pSystem), pSystem->apObject[SOT_SRAM], 0x08000000, 0x08007FFF, 0)) {
             return 0;
         }
     }
@@ -1387,7 +1391,7 @@ s32 systemReset(System* pSystem) {
             return 0;
         }
 
-        if (!ramWipe(pSystem->apObject[SOT_RAM])) {
+        if (!ramWipe(SYSTEM_RAM(pSystem))) {
             return 0;
         }
 
@@ -1567,7 +1571,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         if (!xlObjectMake(&pSystem->apObject[SOT_CPU], pSystem, &gClassCPU)) {
                             return 0;
                         }
-                        pCPU = (Cpu*)pSystem->apObject[SOT_CPU];
+                        pCPU = SYSTEM_CPU(pSystem);
                         if (!cpuMapObject(pCPU, pSystem, 0, 0xFFFFFFFF, 0)) {
                             return 0;
                         }
@@ -1720,7 +1724,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                 return 0;
             }
             if (exception.eTypeMips != MIT_NONE) {
-                mipsResetInterrupt(pSystem->apObject[SOT_MIPS], exception.eTypeMips);
+                mipsResetInterrupt(SYSTEM_MIPS(pSystem), exception.eTypeMips);
             }
             break;
         case 0x1000:

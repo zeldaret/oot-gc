@@ -1,5 +1,6 @@
 #include "serial.h"
 #include "cpu.h"
+#include "pif.h"
 #include "ram.h"
 #include "system.h"
 #include "xlObject.h"
@@ -28,11 +29,11 @@ s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
         case 0x04:
             nSize = 0x40;
 
-            if (!ramGetBuffer(((System*)pSerial->pHost)->apObject[SOT_RAM], &aData, pSerial->nAddress, &nSize)) {
+            if (!ramGetBuffer(SYSTEM_RAM(pSerial->pHost), &aData, pSerial->nAddress, &nSize)) {
                 return 0;
             }
 
-            if (!pifGetData(((System*)pSerial->pHost)->apObject[SOT_PIF], aData)) {
+            if (!pifGetData(SYSTEM_PIF(pSerial->pHost), aData)) {
                 return 0;
             }
 
@@ -41,11 +42,11 @@ s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
         case 0x10:
             nSize = 0x40;
 
-            if (!ramGetBuffer(((System*)pSerial->pHost)->apObject[SOT_RAM], &aData, pSerial->nAddress, &nSize)) {
+            if (!ramGetBuffer(SYSTEM_RAM(pSerial->pHost), &aData, pSerial->nAddress, &nSize)) {
                 return 0;
             }
 
-            if (!pifSetData(((System*)pSerial->pHost)->apObject[SOT_PIF], aData)) {
+            if (!pifSetData(SYSTEM_PIF(pSerial->pHost), aData)) {
                 return 0;
             }
 
@@ -98,13 +99,13 @@ s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
             pSerial->pHost = pArgument;
             break;
         case 0x1002:
-            if (!cpuSetDevicePut(((System*)pSerial->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)serialPut8,
-                                 (Put16Func)serialPut16, (Put32Func)serialPut32, (Put64Func)serialPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pSerial->pHost), pArgument, (Put8Func)serialPut8, (Put16Func)serialPut16,
+                                 (Put32Func)serialPut32, (Put64Func)serialPut64)) {
                 return 0;
             }
 
-            if (!cpuSetDeviceGet(((System*)pSerial->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)serialGet8,
-                                 (Get16Func)serialGet16, (Get32Func)serialGet32, (Get64Func)serialGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pSerial->pHost), pArgument, (Get8Func)serialGet8, (Get16Func)serialGet16,
+                                 (Get32Func)serialGet32, (Get64Func)serialGet64)) {
                 return 0;
             }
             break;
