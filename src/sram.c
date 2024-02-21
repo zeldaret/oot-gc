@@ -1,6 +1,5 @@
-#include <dolphin/types.h>
-
 #include "cpu.h"
+#include "dolphin.h"
 #include "system.h"
 #include "xlObject.h"
 

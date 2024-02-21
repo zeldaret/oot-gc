@@ -1,9 +1,6 @@
-#include <dolphin/gx.h>
-#include <dolphin/os.h>
-#include <dolphin/types.h>
-#include <dolphin/vi.h>
-#include "system.h"
+#include "dolphin.h"
 #include "simGCN.h"
+#include "system.h"
 
 extern GXRenderModeObj* rmode;
 void* gBufferP;

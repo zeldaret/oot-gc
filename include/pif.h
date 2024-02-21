@@ -1,6 +1,8 @@
 #ifndef _PIF_H
 #define _PIF_H
 
+#include "dolphin.h"
+
 // __anon_0x3C277
 typedef enum ControllerType {
     CT_NONE = 0,

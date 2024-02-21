@@ -5,7 +5,7 @@
     Code range: 0x80080AA4 -> 0x8008CF0C
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Range: 0x8008BBDC -> 0x8008CF0C
 static s32 rspInitAudioDMEM1(struct __anon_0x5845E* pRSP) {

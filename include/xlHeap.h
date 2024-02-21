@@ -1,7 +1,7 @@
 #ifndef _XL_HEAP_H
 #define _XL_HEAP_H
 
-#include <dolphin/types.h>
+#include "dolphin.h"
 
 extern s32 gnSizeHeap;
 

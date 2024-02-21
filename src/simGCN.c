@@ -1,5 +1,5 @@
-#include "macros.h"
 #include "simGCN.h"
+#include "macros.h"
 
 const f32 D_800D2FE0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 

@@ -1,5 +1,5 @@
-#include "cpu.h"
 #include "ram.h"
+#include "cpu.h"
 #include "system.h"
 #include "xlObject.h"
 

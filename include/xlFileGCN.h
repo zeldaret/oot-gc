@@ -1,8 +1,7 @@
 #ifndef _XL_FILE_GCN_H
 #define _XL_FILE_GCN_H
 
-#include <dolphin/dvd.h>
-#include <dolphin/types.h>
+#include "dolphin.h"
 
 typedef enum __anon_0x2757 {
     XLFT_NONE = -1,
@@ -29,7 +28,7 @@ s32 xlFileOpen(tXL_FILE** ppFile, __anon_0x2757 eType, char* szFileName);
 s32 xlFileGetSize(s32* pnSize, char* szFileName);
 s32 xlFileSetRead(s32 (*pfRead)(DVDFileInfo* /* unknown0 */, void* /* unknown1 */, s32 /* unknown2 */,
                                 s32 /* unknown3 */,
-                                void (* /* unknown4 */)(long /* unknown0 */, DVDFileInfo* /* unknown1 */)));
+                                void (* /* unknown4 */)(s32 /* unknown0 */, DVDFileInfo* /* unknown1 */)));
 s32 xlFileSetOpen(s32 (*pfOpen)(char* /* unknown0 */, DVDFileInfo* /* unknown1 */));
 
 #endif

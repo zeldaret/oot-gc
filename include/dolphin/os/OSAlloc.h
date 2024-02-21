@@ -1,17 +1,17 @@
-#ifndef _DOLPHIN_OSALLOC_H_
-#define _DOLPHIN_OSALLOC_H_
+#ifndef _DOLPHIN_OS_OSALLOC_H_
+#define _DOLPHIN_OS_OSALLOC_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
-typedef int OSHeapHandle;
+typedef s32 OSHeapHandle;
 
 extern volatile OSHeapHandle __OSCurrHeap;
 
-void* OSInitAlloc(void*, void*, int);
+void* OSInitAlloc(void*, void*, s32);
 OSHeapHandle OSCreateHeap(void*, void*);
 OSHeapHandle OSSetCurrentHeap(OSHeapHandle);
 void* OSAllocFromHeap(OSHeapHandle, u32);
-long OSCheckHeap(OSHeapHandle);
+s32 OSCheckHeap(OSHeapHandle);
 void OSFreeToHeap(OSHeapHandle heap, void* ptr);
 
 #define OSAlloc(size) OSAllocFromHeap(__OSCurrHeap, (size))

@@ -1,5 +1,3 @@
-#include <dolphin/types.h>
-
 #include "xlHeap.h"
 
 static u32* gpHeap;

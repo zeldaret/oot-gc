@@ -1,18 +1,8 @@
 #ifndef _SIMGCN_H
 #define _SIMGCN_H
 
-#include <dolphin/types.h>
-#include <dolphin/gx.h>
+#include "dolphin.h"
 #include "system.h"
-
-//! TODO: missing from the sdk?
-// __anon_0xBEA
-typedef enum _GXTlutFmt {
-    GX_TL_IA8 = 0,
-    GX_TL_RGB565 = 1,
-    GX_TL_RGB5A3 = 2,
-    GX_MAX_TLUTFMT = 3,
-} _GXTlutFmt;
 
 typedef struct __anon_0xD7D1 {
     /* 0x00 */ u16 height;
@@ -34,7 +24,7 @@ typedef struct __anon_0xDA2C {
     /* 0x0 */ u16 numEntries;
     /* 0x2 */ u8 unpacked;
     /* 0x3 */ u8 pad8;
-    /* 0x4 */ _GXTlutFmt format;
+    /* 0x4 */ GXTlutFmt format;
     /* 0x8 */ char* data;
 } __anon_0xDA2C; // size = 0xC
 

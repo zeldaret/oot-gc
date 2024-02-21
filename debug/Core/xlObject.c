@@ -5,7 +5,7 @@
     Code range: 0x80007BC0 -> 0x80007F80
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef struct tXL_LIST {
     /* 0x0 */ s32 nItemSize;

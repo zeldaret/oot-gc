@@ -1,5 +1,5 @@
-#include "xlObject.h"
 #include "codeGCN.h"
+#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassCode = {
     "Code",

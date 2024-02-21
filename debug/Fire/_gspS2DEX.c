@@ -5,7 +5,7 @@
     Code range: 0x80077850 -> 0x8007AC6C
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Erased
 static s32 frameFillVertex(struct __anon_0x5A89F* pFrame, s32 nIndex, s16 nX, s16 nY, s16 nZ, f32 rS, f32 rT) {

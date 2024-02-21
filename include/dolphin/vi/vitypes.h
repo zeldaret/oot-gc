@@ -1,6 +1,8 @@
 #ifndef _DOLPHIN_VITYPES_H_
 #define _DOLPHIN_VITYPES_H_
 
+#include "dolphin/types.h"
+
 #define VI_TVMODE(format, interlace) (((format) << 2) + (interlace))
 
 #define VI_INTERLACE 0
@@ -14,7 +16,9 @@
 #define VI_DEBUG_PAL 4
 #define VI_EURGB60 5
 
-typedef enum {
+typedef void (*VIRetraceCallback)(u32 retraceCount);
+
+typedef enum VITVMode {
     VI_TVMODE_NTSC_INT = VI_TVMODE(VI_NTSC, VI_INTERLACE),
     VI_TVMODE_NTSC_DS = VI_TVMODE(VI_NTSC, VI_NON_INTERLACE),
     VI_TVMODE_NTSC_PROG = VI_TVMODE(VI_NTSC, VI_PROGRESSIVE),
@@ -29,7 +33,7 @@ typedef enum {
     VI_TVMODE_DEBUG_PAL_DS = VI_TVMODE(VI_DEBUG_PAL, VI_NON_INTERLACE)
 } VITVMode;
 
-typedef enum {
+typedef enum VIXFBMode {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF
 } VIXFBMode;
