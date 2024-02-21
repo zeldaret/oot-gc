@@ -7,14 +7,10 @@
 
 #include "dolphin/types.h"
 
-struct OSResetFunctionQueue {
-    struct OSResetFunctionInfo* head;
-    struct OSResetFunctionInfo* tail;
-};
-
 typedef BOOL (*OSResetFunction)(BOOL);
 
 typedef struct OSResetFunctionInfo OSResetFunctionInfo;
+
 struct OSResetFunctionInfo {
     OSResetFunction func;
     u32 priority;
@@ -22,9 +18,13 @@ struct OSResetFunctionInfo {
     OSResetFunctionInfo* prev;
 };
 
+typedef struct OSResetFunctionQueue {
+    OSResetFunctionInfo* head;
+    OSResetFunctionInfo* tail;
+} OSResetFunctionQueue;
+
 void OSRegisterResetFunction(OSResetFunctionInfo* info);
-void OSUnregisterResetFunction(OSResetFunctionInfo* info);
-void OSResetSystem(int reset, u32 resetCode, BOOL forceMenu);
-unsigned long OSGetResetCode();
+void OSResetSystem(s32 reset, u32 resetCode, BOOL forceMenu);
+u32 OSGetResetCode(void);
 
 #endif

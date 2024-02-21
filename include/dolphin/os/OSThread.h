@@ -5,49 +5,56 @@
 
 typedef s32 OSPriority;
 
-struct OSThread;
 struct OSMutex;
-struct OSMutexQueue;
+struct OSThread;
 
+typedef struct OSMutex OSMutex;
 typedef struct OSThread OSThread;
 
 typedef struct OSThreadQueue {
-    struct OSThread* head;
-    struct OSThread* tail;
+    OSThread* head;
+    OSThread* tail;
 } OSThreadQueue;
 
 typedef struct OSThreadLink {
-    struct OSThread* next;
-    struct OSThread* prev;
+    OSThread* next;
+    OSThread* prev;
 } OSThreadLink;
 
 typedef struct OSMutexQueue {
-    struct OSMutex* head;
-    struct OSMutex* tail;
+    OSMutex* head;
+    OSMutex* tail;
 } OSMutexQueue;
 
 typedef struct OSMutexLink {
-    struct OSMutex* next;
-    struct OSMutex* prev;
+    OSMutex* next;
+    OSMutex* prev;
 } OSMutexLink;
 
-typedef struct OSThread {
-    /*0x000*/ struct OSContext context;
-    /*0x2C8*/ u16 state;
-    /*0x2CA*/ u16 attr;
-    /*0x2CC*/ s32 suspend;
-    /*0x2D0*/ OSPriority priority;
-    /*0x2D4*/ OSPriority base;
-    /*0x2D8*/ void* val;
-    /*0x2DC*/ struct OSThreadQueue* queue;
-    /*0x2E0*/ struct OSThreadLink link;
-    /*0x2E8*/ struct OSThreadQueue queueJoin;
-    /*0x2F0*/ struct OSMutex* mutex;
-    /*0x2F4*/ struct OSMutexQueue queueMutex;
-    /*0x2FC*/ struct OSThreadLink linkActive;
-    /*0x304*/ u8* stackBase;
-    /*0x308*/ u32* stackEnd;
-} OSThread;
+struct OSMutex {
+    OSThreadQueue queue;
+    OSThread* thread;
+    s32 count;
+    OSMutexLink link;
+};
+
+struct OSThread {
+    /* 0x000 */ OSContext context;
+    /* 0x2C8 */ u16 state;
+    /* 0x2CA */ u16 attr;
+    /* 0x2CC */ s32 suspend;
+    /* 0x2D0 */ OSPriority priority;
+    /* 0x2D4 */ OSPriority base;
+    /* 0x2D8 */ void* val;
+    /* 0x2DC */ OSThreadQueue* queue;
+    /* 0x2E0 */ OSThreadLink link;
+    /* 0x2E8 */ OSThreadQueue queueJoin;
+    /* 0x2F0 */ OSMutex* mutex;
+    /* 0x2F4 */ OSMutexQueue queueMutex;
+    /* 0x2FC */ OSThreadLink linkActive;
+    /* 0x304 */ u8* stackBase;
+    /* 0x308 */ u32* stackEnd;
+};
 
 enum OS_THREAD_STATE {
     OS_THREAD_STATE_READY = 1,
@@ -65,11 +72,18 @@ enum OS_THREAD_STATE {
 #define OS_THREAD_STACK_MAGIC 0xDEADBABE
 
 void OSInitThreadQueue(OSThreadQueue* queue);
+OSThread* OSGetCurrentThread(void);
+s32 OSDisableScheduler(void);
+s32 OSEnableScheduler(void);
+BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
+                    OSPriority priority, u16 attr);
+void OSExitThread(void* val);
+void OSCancelThread(OSThread* thread);
+s32 OSResumeThread(OSThread* thread);
+s32 OSSuspendThread(OSThread* thread);
 void OSSleepThread(OSThreadQueue* queue);
 void OSWakeupThread(OSThreadQueue* queue);
-s32 OSSuspendThread(OSThread* thread);
-s32 OSResumeThread(OSThread* thread);
-OSThread* OSGetCurrentThread(void);
+void OSClearStack(u8 val);
 
 #define IsSuspended(suspend) (suspend > 0)
 

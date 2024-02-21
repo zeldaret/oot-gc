@@ -3,11 +3,4 @@
 
 #include "dolphin/os/OSThread.h"
 
-typedef struct OSMutex {
-    /*0x00*/ OSThreadQueue queue;
-    /*0x08*/ OSThread* thread;
-    /*0x0C*/ s32 count;
-    /*0x10*/ OSMutexLink link;
-} OSMutex;
-
 #endif

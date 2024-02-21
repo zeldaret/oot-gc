@@ -1,6 +1,7 @@
 #ifndef _DOLPHIN_OS_OSINTERRUPT_H_
 #define _DOLPHIN_OS_OSINTERRUPT_H_
 
+#include "dolphin/os/OSContext.h"
 #include "dolphin/types.h"
 
 typedef s16 __OSInterrupt;
@@ -39,7 +40,12 @@ typedef u32 OSInterruptMask;
 
 typedef void (*__OSInterruptHandler)(__OSInterrupt intr, OSContext* ctx);
 
+BOOL OSDisableInterrupts(void);
+BOOL OSEnableInterrupts(void);
+BOOL OSRestoreInterrupts(BOOL level);
 __OSInterruptHandler __OSSetInterruptHandler(__OSInterrupt interrupt, __OSInterruptHandler handler);
+__OSInterruptHandler __OSGetInterruptHandler(__OSInterrupt interrupt);
+OSInterruptMask __OSMaskInterrupts(OSInterruptMask mask);
 OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask mask);
 
 #endif

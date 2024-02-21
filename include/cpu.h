@@ -1,7 +1,7 @@
 #ifndef _CPU_H
 #define _CPU_H
 
-#include "dolphin/os/OSAlarm.h"
+#include "dolphin/os.h"
 #include "dolphin/types.h"
 
 typedef s32 (*Put8Func)(void* pObject, u32 nAddress, s8* pData);

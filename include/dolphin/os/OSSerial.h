@@ -25,36 +25,34 @@
 
 #define ROUND(n, a) (((u32)(n) + (a)-1) & ~((a)-1))
 
-struct SIControl {
-    long chan;
-    unsigned long poll;
-    unsigned long inputBytes;
+typedef struct SIControl {
+    s32 chan;
+    u32 poll;
+    u32 inputBytes;
     void* input;
-    void (*callback)(long, unsigned long, struct OSContext*);
-};
+    void (*callback)(s32, u32, OSContext*);
+} SIControl;
 
-struct SIPacket {
-    long chan;
+typedef struct SIPacket {
+    s32 chan;
     void* output;
-    unsigned long outputBytes;
+    u32 outputBytes;
     void* input;
-    unsigned long inputBytes;
-    void (*callback)(long, unsigned long, struct OSContext*);
-    long long time;
-};
+    u32 inputBytes;
+    void (*callback)(s32, u32, OSContext*);
+    s64 time;
+} SIPacket;
 
-int SIBusy();
-void SIInit();
-unsigned long SISync();
-unsigned long SIGetStatus();
-void SISetCommand(long chan, unsigned long command);
-unsigned long SIGetCommand(long chan);
-void SITransferCommands();
-unsigned long SISetXY(unsigned long x, unsigned long y);
-unsigned long SIEnablePolling(unsigned long poll);
-unsigned long SIDisablePolling(unsigned long poll);
-void SIGetResponse(long chan, void* data);
-int SITransfer(long chan, void* output, unsigned long outputBytes, void* input, unsigned long inputBytes,
-               void (*callback)(long, unsigned long, struct OSContext*), long long time);
+s32 SIBusy(void);
+void SIInit(void);
+u32 SIGetStatus(void);
+void SISetCommand(s32 chan, u32 command);
+void SITransferCommands(void);
+u32 SISetXY(u32 x, u32 y);
+u32 SIEnablePolling(u32 poll);
+u32 SIDisablePolling(u32 poll);
+void SIGetResponse(s32 chan, void* data);
+s32 SITransfer(s32 chan, void* output, u32 outputBytes, void* input, u32 inputBytes,
+               void (*callback)(s32, u32, OSContext*), s64 time);
 
 #endif

@@ -4,9 +4,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/types.h"
 
-void __OSResetSWInterruptHandler();
-void (*OSSetResetCallback(void (*callback)()))();
-int OSGetResetSwitchState();
+void __OSResetSWInterruptHandler(void);
 BOOL OSGetResetButtonState(void);
 
 #endif

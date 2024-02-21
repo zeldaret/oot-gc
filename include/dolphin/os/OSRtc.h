@@ -1,61 +1,50 @@
 #ifndef _DOLPHIN_OS_OSRTC_H_
 #define _DOLPHIN_OS_OSRTC_H_
 
-// make the assert happy
+#include "dolphin/types.h"
+
 #define OS_SOUND_MODE_MONO 0
 #define OS_SOUND_MODE_STEREO 1
 
-// make the asserts happy
-#define OS_VIDEO_MODE_NTSC 0
-#define OS_VIDEO_MODE_MPAL 2
+typedef struct SramControl {
+    u8 sram[64];
+    u32 offset;
+    s32 enabled;
+    s32 locked;
+    s32 sync;
+    void (*callback)(void);
+} SramControl;
 
-struct SramControl {
-    unsigned char sram[64];
-    unsigned long offset;
-    int enabled;
-    int locked;
-    int sync;
-    void (*callback)();
-};
+typedef struct OSSram {
+    u16 checkSum;
+    u16 checkSumInv;
+    u32 ead0;
+    u32 ead1;
+    u32 counterBias;
+    s8 displayOffsetH;
+    u8 ntd;
+    u8 language;
+    u8 flags;
+} OSSram;
 
-struct OSSram {
-    unsigned short checkSum;
-    unsigned short checkSumInv;
-    unsigned long ead0;
-    unsigned long ead1;
-    unsigned long counterBias;
-    signed char displayOffsetH;
-    unsigned char ntd;
-    unsigned char language;
-    unsigned char flags;
-};
+typedef struct OSSramEx {
+    u8 flashID[2][12];
+    u32 wirelessKeyboardID;
+    u16 wirelessPadID[4];
+    u16 _padding0;
+    u8 flashIDCheckSum[2];
+    u8 _padding1[4];
+} OSSramEx;
 
-struct OSSramEx {
-    unsigned char flashID[2][12];
-    unsigned long wirelessKeyboardID;
-    unsigned short wirelessPadID[4];
-    unsigned short _padding0;
-    unsigned char flashIDCheckSum[2];
-    unsigned char _padding1[4];
-};
-
-int __OSGetRTC(unsigned long* rtc);
-int __OSSetRTC(unsigned long rtc);
-void __OSInitSram();
-struct OSSram* __OSLockSram();
-struct OSSramEx* __OSLockSramEx(void);
-int __OSUnlockSram(int commit);
-int __OSUnlockSramEx(int commit);
-int __OSSyncSram();
-int __OSCheckSram();
-int __OSReadROM(void* buffer, long length, long offset);
-unsigned long OSGetSoundMode();
-void OSSetSoundMode(unsigned long mode);
-unsigned long OSGetVideoMode();
-void OSSetVideoMode(unsigned long mode);
-unsigned char OSGetLanguage();
-void OSSetLanguage(unsigned char language);
-unsigned char __OSGetBootMode();
-void __OSSetBootMode(unsigned char ntd);
+void __OSInitSram(void);
+OSSram* __OSLockSram(void);
+OSSramEx* __OSLockSramEx(void);
+s32 __OSUnlockSram(s32 commit);
+s32 __OSUnlockSramEx(s32 commit);
+s32 __OSSyncSram(void);
+u32 OSGetSoundMode(void);
+void OSSetSoundMode(u32 mode);
+u32 OSGetWirelessID(u32 chan);
+void OSSetWirelessID(u32 chan, u16 id);
 
 #endif
