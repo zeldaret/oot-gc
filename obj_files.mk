@@ -6,7 +6,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/xlFileGCN.o            \
     $(BUILD_DIR)/src/xlList.o               \
     $(BUILD_DIR)/asm/xlHeap.o               \
-    $(BUILD_DIR)/asm/xlObject.o             \
+    $(BUILD_DIR)/src/xlObject.o             \
     $(BUILD_DIR)/asm/simGCN.o               \
     $(BUILD_DIR)/src/movie.o                \
     $(BUILD_DIR)/asm/THPPlayer.o            \
