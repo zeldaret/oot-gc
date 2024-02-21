@@ -2,7 +2,7 @@
 #define _DOLPHIN_GX_GXSTRUCT_H_
 
 #include "dolphin/types.h"
-#include "dolphin/vitypes.h"
+#include "dolphin/vi/vitypes.h"
 
 typedef struct _GXRenderModeObj {
     /* 0x00 */ VITVMode viTVmode;

@@ -1,8 +1,7 @@
 #ifndef _DOLPHIN_VI_H_
 #define _DOLPHIN_VI_H_
 
-#include "dolphin/gx/GXStruct.h"
-#include "dolphin/vifuncs.h"
-#include "dolphin/vitypes.h"
+#include "dolphin/vi/vifuncs.h"
+#include "dolphin/vi/vitypes.h"
 
 #endif

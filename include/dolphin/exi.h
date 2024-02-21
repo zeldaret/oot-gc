@@ -1,10 +1,14 @@
 #ifndef _DOLPHIN_EXI_H_
 #define _DOLPHIN_EXI_H_
 
+#include "dolphin/os.h"
+#include "dolphin/types.h"
+
 typedef void (*EXICallback)(s32 chan, OSContext* context);
 
 EXICallback EXISetExiCallback(s32 channel, EXICallback callback);
 
+void EXIInit(void);
 BOOL EXILock(s32 channel, u32 device, EXICallback callback);
 BOOL EXIUnlock(s32 channel);
 BOOL EXISelect(s32 channel, u32 device, u32 frequency);
