@@ -1,7 +1,9 @@
-#ifndef _DOLPHIN_OSSERIAL_H
-#define _DOLPHIN_OSSERIAL_H
+#ifndef _DOLPHIN_SI_H
+#define _DOLPHIN_SI_H
 
 #include "dolphin/hw_regs.h"
+#include "dolphin/os.h"
+#include "dolphin/types.h"
 
 #define CHAN_NONE -1
 
@@ -23,7 +25,7 @@
 #define SI_COMCSR_CHANNEL_MASK (1 << 2) | (1 << 1)
 #define SI_COMCSR_TSTART_MASK (1 << 0)
 
-#define ROUND(n, a) (((u32)(n) + (a)-1) & ~((a)-1))
+typedef void (*SITypeAndStatusCallback)(s32 chan, u32 type);
 
 typedef struct SIControl {
     s32 chan;
@@ -44,6 +46,9 @@ typedef struct SIPacket {
 } SIPacket;
 
 s32 SIBusy(void);
+BOOL SIIsChanBusy(s32 chan);
+BOOL SIRegisterPollingHandler(__OSInterruptHandler handler);
+BOOL SIUnregisterPollingHandler(__OSInterruptHandler handler);
 void SIInit(void);
 u32 SIGetStatus(void);
 void SISetCommand(s32 chan, u32 command);
@@ -54,5 +59,10 @@ u32 SIDisablePolling(u32 poll);
 void SIGetResponse(s32 chan, void* data);
 s32 SITransfer(s32 chan, void* output, u32 outputBytes, void* input, u32 inputBytes,
                void (*callback)(s32, u32, OSContext*), s64 time);
+u32 SIGetType(s32 chan);
+u32 SIGetTypeAsync(s32 chan, SITypeAndStatusCallback callback);
+
+void SISetSamplingRate(u32 msec);
+void SIRefreshSamplingRate(void);
 
 #endif
