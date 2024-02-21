@@ -1,7 +1,7 @@
 #ifndef _XL_OBJECT_H
 #define _XL_OBJECT_H
 
-#include "dolphin/types.h"
+#include "dolphin.h"
 
 typedef struct _XL_OBJECTTYPE _XL_OBJECTTYPE;
 

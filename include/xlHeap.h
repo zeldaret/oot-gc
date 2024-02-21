@@ -1,6 +1,8 @@
 #ifndef _XL_HEAP_H
 #define _XL_HEAP_H
 
+#include "dolphin.h"
+
 s32 xlHeapReset(void);
 s32 xlHeapSetup(void* pHeap, s32 nSizeBytes);
 s32 xlHeapGetFree(s32* pnFreeBytes);

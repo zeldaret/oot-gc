@@ -1,5 +1,5 @@
-#include "xlObject.h"
 #include "system.h"
+#include "xlObject.h"
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 

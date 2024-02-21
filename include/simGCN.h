@@ -1,8 +1,8 @@
 #ifndef _SIMGCN_H
 #define _SIMGCN_H
 
+#include "dolphin.h"
 #include "system.h"
-#include "dolphin/types.h"
 
 extern s32 gDVDResetToggle;
 extern s32 gbDisplayedError;

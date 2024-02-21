@@ -22,4 +22,4 @@ AllowShortFunctionsOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
 AlignEscapedNewlines: Left
 AlignTrailingComments: false
-SortIncludes: false
+SortIncludes: true

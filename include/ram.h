@@ -1,7 +1,7 @@
 #ifndef _RAM_H
 #define _RAM_H
 
-#include "dolphin/types.h"
+#include "dolphin.h"
 
 // __anon_0x4BFE7
 typedef struct Ram {

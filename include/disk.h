@@ -1,7 +1,7 @@
 #ifndef _DISK_H
 #define _DISK_H
 
-#include "dolphin/types.h"
+#include "dolphin.h"
 
 // __anon_0x73B29
 typedef struct Disk {
