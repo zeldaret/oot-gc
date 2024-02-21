@@ -138,6 +138,15 @@ typedef struct SystemRomConfig {
 #define SYSTEM_RSP(pSystem) ((struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP]))
 #define SYSTEM_MIPS(pSystem) ((struct Mips*)(((System*)(pSystem))->apObject[SOT_MIPS]))
 
-extern u32 gnFlagZelda;
+s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback);
+s32 systemSetMode(System* pSystem, SystemMode eMode);
+s32 systemGetMode(System* pSystem, SystemMode* peMode);
+s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
+s32 systemGetStorageDevice(System* pSystem, SystemObjectType* pStorageDevice);
+s32 systemReset(System* pSystem);
+s32 systemExecute(System* pSystem, s32 nCount);
+s32 systemCheckInterrupts(System* pSystem);
+s32 systemExceptionPending(System* pSystem, SystemInterruptType nException);
+s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 
 #endif

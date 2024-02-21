@@ -51,9 +51,6 @@ s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
 s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
               s32* defaultConfiguration, s32 fileSize, s32 gameSize);
 
-s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
-s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
-
 //! TODO: import MSL headers
 extern int atoi(const char* str);
 
@@ -304,7 +301,7 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     return 1;
 }
 
-s32 systemSetupGameALL(System* pSystem) {
+static s32 systemSetupGameALL(System* pSystem) {
     s32 nSizeSound;
     s32 iController;
     s32 nSize;
