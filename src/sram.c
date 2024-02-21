@@ -1,7 +1,8 @@
-#include "types.h"
-#include "xlObject.h"
+#include <dolphin/types.h>
+
 #include "cpu.h"
 #include "system.h"
+#include "xlObject.h"
 
 int simulatorWriteSRAM(unsigned int address, unsigned char* data, int size);
 int simulatorReadSRAM(unsigned int address, unsigned char* data, int size);

@@ -1,7 +1,7 @@
 #ifndef _RAM_H
 #define _RAM_H
 
-#include "types.h"
+#include <dolphin/types.h>
 
 // __anon_0x4BFE7
 typedef struct Ram {
@@ -11,5 +11,7 @@ typedef struct Ram {
 } Ram; // size = 0x0C
 
 s32 ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize);
+s32 ramSetSize(Ram* pRAM, s32 nSize);
+s32 ramGetSize(Ram* pRAM, s32* nSize);
 
 #endif

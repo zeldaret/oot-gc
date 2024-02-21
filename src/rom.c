@@ -1,12 +1,21 @@
+#include <dolphin/ar.h>
+#include <dolphin/gx.h>
+#include <dolphin/mtx.h>
+#include <dolphin/types.h>
+
 #include "cpu.h"
 #include "macros.h"
 #include "ram.h"
 #include "rom.h"
 #include "simGCN.h"
 #include "system.h"
-#include "types.h"
 #include "xlCoreGCN.h"
 #include "xlObject.h"
+
+extern u32 gnFlagZelda;
+
+static s32 romMakeFreeCache(Rom* pROM, s32* piCache, RomCacheType eType);
+static s32 romSetBlockCache(Rom* pROM, s32 iBlock, RomCacheType eType);
 
 _XL_OBJECTTYPE gClassROM = {
     "ROM",
@@ -70,47 +79,6 @@ static void* gpImageBack;
 static s32 iImage;
 
 extern System* gpSystem;
-
-//! TODO: remove these declarations when the SDK files are present
-u32 ARGetDMAStatus(void);
-void ARStartDMA(u32 type, u32 mainmem_addr, u32 aram_addr, u32 length);
-u32 ARGetBaseAddress(void);
-void DCInvalidateRange(void* addr, u32 nBytes);
-
-#define ARAM_DIR_MRAM_TO_ARAM 0x00
-#define ARAM_DIR_ARAM_TO_MRAM 0x01
-
-#define ARStartDMARead(mmem, aram, len) ARStartDMA(ARAM_DIR_ARAM_TO_MRAM, mmem, aram, len)
-#define ARStartDMAWrite(mmem, aram, len) ARStartDMA(ARAM_DIR_MRAM_TO_ARAM, mmem, aram, len)
-
-typedef f32 Mtx44[4][4];
-void GXSetViewport(f32 left, f32 top, f32 width, f32 height, f32 nearZ, f32 farZ);
-void C_MTXOrtho(Mtx44 m, f32 top, f32 bottom, f32 left, f32 right, f32 near, f32 far);
-
-typedef struct _GXTexObj {
-    /* 0x0 */ u32 dummy[8];
-} GXTexObj; // size = 0x20
-
-typedef union {
-    u8 u8;
-    u16 u16;
-    u32 u32;
-    u64 u64;
-    s8 s8;
-    s16 s16;
-    s32 s32;
-    s64 s64;
-    f32 f32;
-    f64 f64;
-} PPCWGPipe;
-
-#define GXFIFO_ADDR 0xCC008000
-
-#ifdef __MWERKS__
-volatile PPCWGPipe GXWGFifo : GXFIFO_ADDR;
-#else
-#define GXWGFifo (*(volatile PPCWGPipe*)GXFIFO_ADDR)
-#endif
 
 static s32 romFindFreeCache(Rom* pROM, s32* piCache, RomCacheType eType) {
     s32 iBlock;
@@ -1149,7 +1117,7 @@ s32 romUpdate(Rom* pROM) {
             }
 
             if ((nStatus == 0xB) || (nStatus == -1)) {
-                DVDCancel(&pROM->fileInfo);
+                DVDCancel(&pROM->fileInfo.cb);
                 if (!simulatorDVDRead(&pROM->fileInfo, pROM->load.anData, pROM->load.nSizeRead,
                                       pROM->offsetToRom + pROM->load.nOffset, &__romLoadBlock_CompleteGCN)) {
                     return 0;

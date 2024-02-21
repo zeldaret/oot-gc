@@ -1,37 +1,8 @@
 #ifndef _CPU_H
 #define _CPU_H
 
-#include "types.h"
-
-//! TODO: Move to Dolphin SDK headers
-typedef struct OSContext {
-    /* 0x000 */ u32 gpr[32];
-    /* 0x080 */ u32 cr;
-    /* 0x084 */ u32 lr;
-    /* 0x088 */ u32 ctr;
-    /* 0x08C */ u32 xer;
-    /* 0x090 */ f64 fpr[32];
-    /* 0x190 */ u32 fpscr_pad;
-    /* 0x194 */ u32 fpscr;
-    /* 0x198 */ u32 srr0;
-    /* 0x19C */ u32 srr1;
-    /* 0x1A0 */ u16 mode;
-    /* 0x1A2 */ u16 state;
-    /* 0x1A4 */ u32 gqr[8];
-    /* 0x1C4 */ u32 psf_pad;
-    /* 0x1C8 */ f64 psf[32];
-} OSContext; // size = 0x2C8
-
-//! TODO: Move to Dolphin SDK headers
-typedef struct OSAlarm {
-    /* 0x00 */ void (*handler)(struct OSAlarm*, struct OSContext*);
-    /* 0x04 */ u32 tag;
-    /* 0x08 */ s64 fire;
-    /* 0x10 */ struct OSAlarm* prev;
-    /* 0x14 */ struct OSAlarm* next;
-    /* 0x18 */ s64 period;
-    /* 0x20 */ s64 start;
-} OSAlarm; // size = 0x28
+#include <dolphin/OSAlarm.h>
+#include <dolphin/types.h>
 
 typedef s32 (*Put8Func)(void* pObject, u32 nAddress, s8* pData);
 typedef s32 (*Put16Func)(void* pObject, u32 nAddress, s16* pData);
@@ -42,6 +13,44 @@ typedef s32 (*Get8Func)(void* pObject, u32 nAddress, s8* pData);
 typedef s32 (*Get16Func)(void* pObject, u32 nAddress, s16* pData);
 typedef s32 (*Get32Func)(void* pObject, u32 nAddress, s32* pData);
 typedef s32 (*Get64Func)(void* pObject, u32 nAddress, s64* pData);
+
+// __anon_0x3994B
+typedef enum CpuExceptionCode {
+    CEC_NONE = -1,
+    CEC_INTERRUPT = 0,
+    CEC_TLB_MODIFICATION = 1,
+    CEC_TLB_LOAD = 2,
+    CEC_TLB_STORE = 3,
+    CEC_ADDRESS_LOAD = 4,
+    CEC_ADDRESS_STORE = 5,
+    CEC_BUS_INSTRUCTION = 6,
+    CEC_BUS_DATA = 7,
+    CEC_SYSCALL = 8,
+    CEC_BREAK = 9,
+    CEC_RESERVED = 10,
+    CEC_COPROCESSOR = 11,
+    CEC_OVERFLOW = 12,
+    CEC_TRAP = 13,
+    CEC_VCE_INSTRUCTION = 14,
+    CEC_FLOAT = 15,
+    CEC_RESERVED_16 = 16,
+    CEC_RESERVED_17 = 17,
+    CEC_RESERVED_18 = 18,
+    CEC_RESERVED_19 = 19,
+    CEC_RESERVED_20 = 20,
+    CEC_RESERVED_21 = 21,
+    CEC_RESERVED_22 = 22,
+    CEC_WATCH = 23,
+    CEC_RESERVED_24 = 24,
+    CEC_RESERVED_25 = 25,
+    CEC_RESERVED_26 = 26,
+    CEC_RESERVED_27 = 27,
+    CEC_RESERVED_28 = 28,
+    CEC_RESERVED_29 = 29,
+    CEC_RESERVED_30 = 30,
+    CEC_VCE_DATA = 31,
+    CEC_COUNT = 32,
+} CpuExceptionCode;
 
 // __anon_0x3DE78
 typedef struct CpuJump {
@@ -264,6 +273,10 @@ struct Cpu {
     /* 0x12060 */ u32 nCompileFlag;
     /* 0x12064 */ CpuOptimize nOptimize;
 }; // size = 0x12090
+
+s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi);
+s32 cpuReset(Cpu* pCPU);
+s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
 
 s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
                     Put64Func pfPut64);

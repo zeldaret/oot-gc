@@ -813,7 +813,9 @@ def parse_source(f, opt, framepointer, input_enc, output_enc, print_source=None)
 
     global_asm = None
     asm_functions = []
-    output_lines = []
+    output_lines = [
+        '#line 1 "' + f.name + '"'
+    ]
 
     is_cutscene_data = False
 
