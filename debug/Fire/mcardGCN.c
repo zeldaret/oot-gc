@@ -5,7 +5,7 @@
     Code range: 0x80013440 -> 0x8001C444
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // size = 0xA000, address = 0x800FD960
 static char gMCardCardWorkArea[40960];

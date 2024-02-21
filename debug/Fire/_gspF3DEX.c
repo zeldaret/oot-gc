@@ -5,7 +5,7 @@
     Code range: 0x80074454 -> 0x80077850
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Erased
 static s32 MulMatrices(f32 (*aOutMatrix)[4], f32 (*aLeftMatrix)[4], f32 (*aRightMatrix)[4]) {

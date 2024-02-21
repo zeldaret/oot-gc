@@ -5,7 +5,7 @@
     Code range: 0x80068368 -> 0x8006BE68
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Range: 0x8006BC80 -> 0x8006BE68
 static s32 cpuCompile_DSLLV(s32* addressGCN) {
