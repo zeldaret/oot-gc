@@ -3,8 +3,8 @@
 
 #include <dolphin/types.h>
 
-s32 xlPostReset(void);
-s32 xlPostSetup(void);
 s32 xlPostText(void);
+s32 xlPostSetup(void);
+s32 xlPostReset(void);
 
 #endif
