@@ -1,7 +1,7 @@
-#ifndef _DOLPHIN_OSERROR_H_
-#define _DOLPHIN_OSERROR_H_
+#ifndef _DOLPHIN_OS_OSERROR_H_
+#define _DOLPHIN_OS_OSERROR_H_
 
-#include "dolphin/OSContext.h"
+#include "dolphin/os/OSContext.h"
 
 typedef u16 OSError;
 typedef void (*OSErrorHandler)(OSError error, OSContext* context, ...);

@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSMODULE_H_
-#define _DOLPHIN_OSMODULE_H_
+#ifndef _DOLPHIN_OS_OSMODULE_H_
+#define _DOLPHIN_OS_OSMODULE_H_
 
 #include "dolphin/types.h"
 

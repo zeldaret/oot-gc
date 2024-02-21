@@ -1,7 +1,7 @@
-#ifndef _DOLPHIN_OSTHREAD_H_
-#define _DOLPHIN_OSTHREAD_H_
+#ifndef _DOLPHIN_OS_OSTHREAD_H_
+#define _DOLPHIN_OS_OSTHREAD_H_
 
-#include "dolphin/OSContext.h"
+#include "dolphin/os/OSContext.h"
 
 typedef s32 OSPriority;
 

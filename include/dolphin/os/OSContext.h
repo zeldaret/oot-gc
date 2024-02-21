@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSCONTEXT_H_
-#define _DOLPHIN_OSCONTEXT_H_
+#ifndef _DOLPHIN_OS_OSCONTEXT_H_
+#define _DOLPHIN_OS_OSCONTEXT_H_
 
 #include "dolphin/types.h"
 

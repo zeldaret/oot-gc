@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSTIME_H_
-#define _DOLPHIN_OSTIME_H_
+#ifndef _DOLPHIN_OS_OSTIME_H_
+#define _DOLPHIN_OS_OSTIME_H_
 
 #include "dolphin/types.h"
 
@@ -33,4 +33,4 @@
 
 long long __OSGetSystemTime();
 
-#endif // _DOLPHIN_OSTIME_H_
+#endif

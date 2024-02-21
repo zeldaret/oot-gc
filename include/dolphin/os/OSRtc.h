@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSRTC_H_
-#define _DOLPHIN_OSRTC_H_
+#ifndef _DOLPHIN_OS_OSRTC_H_
+#define _DOLPHIN_OS_OSRTC_H_
 
 // make the assert happy
 #define OS_SOUND_MODE_MONO 0
@@ -58,4 +58,4 @@ void OSSetLanguage(unsigned char language);
 unsigned char __OSGetBootMode();
 void __OSSetBootMode(unsigned char ntd);
 
-#endif // _DOLPHIN_OSRTC_H_
+#endif

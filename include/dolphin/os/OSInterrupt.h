@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSINTERRUPT_H_
-#define _DOLPHIN_OSINTERRUPT_H_
+#ifndef _DOLPHIN_OS_OSINTERRUPT_H_
+#define _DOLPHIN_OS_OSINTERRUPT_H_
 
 #include "dolphin/types.h"
 
