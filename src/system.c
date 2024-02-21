@@ -10,6 +10,7 @@
 #include "rsp.h"
 #include "simGCN.h"
 #include "xlObject.h"
+#include "audio.h"
 
 //! TODO: move these declarations to the proper headers
 extern _XL_OBJECTTYPE gClassRdb;

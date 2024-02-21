@@ -1,9 +1,9 @@
 #include "audio.h"
-#include "xlObject.h"
+#include "dolphin.h"
 #include "ram.h"
 #include "system.h"
-
-s32 audioEvent(Audio* pAudio, s32 nEvent, void* pArgument);
+#include "xlObject.h"
+#include "xlPostGCN.h"
 
 _XL_OBJECTTYPE gClassAudio = {
     "AUDIO",
@@ -12,79 +12,16 @@ _XL_OBJECTTYPE gClassAudio = {
     (EventFunc)audioEvent,
 };
 
-char D_800EE788[] = "Get: DRAM Address: WRITE-ONLY?";
-char D_800EE7A8[] = "Get: CONTROL: WRITE-ONLY?";
+s32 audioPut8(Audio* pAudio, u32 nAddress, s8* pData) { return 0; }
 
-void* jtbl_800EE7C4[] = {
-    (void*)0x8008E668,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E68C,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E6B0,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E6D4,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E6F4,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E70C,
-    (void*)0x8008E700,
-};
+s32 audioPut16(Audio* pAudio, u32 nAddress, s16* pData) { return 0; }
 
-void* jtbl_800EE818[] = {
-    (void*)0x8008E780,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E7D8,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E810,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E820,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E834,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E870,
-    (void*)0x8008E860,
-};
-
-char D_80135310[8] = "audio.c";
-
-static s32 audioPut8(Audio* pAudio, u32 nAddress, s8* pData) { return 0; }
-
-static s32 audioPut16(Audio* pAudio, u32 nAddress, s16* pData) { return 0; }
-
-#ifdef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/audio/audioPut32.s")
-#else
 s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData) {
-    // Parameters
-    // struct __anon_0x753E7* pAudio; // r31
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r1+0x10
-
-    // Local variables
-    void* pBuffer; // r1+0x14
+    void* pBuffer;
 
     switch (nAddress & 0x1F) {
         case 0x0:
-            pAudio->nAddress = nAddress;
-            if (*pData & 0xFFFFFF != 0) {
+            if (pAudio->nAddress = (*pData & 0xFFFFFF)) {
                 if (!ramGetBuffer(((System*)pAudio->pHost)->apObject[SOT_RAM], &pBuffer, pAudio->nAddress, NULL)) {
                     return 0;
                 }
@@ -121,18 +58,85 @@ s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData) {
 
     return 1;
 }
-#endif
 
-static s32 audioPut64(Audio* pAudio, u32 nAddress, s64* pData) { return 0; }
+s32 audioPut64(Audio* pAudio, u32 nAddress, s64* pData) { return 0; }
 
-static s32 audioGet8(Audio* pAudio, u32 nAddress, s8* pData) { return 0; }
+s32 audioGet8(Audio* pAudio, u32 nAddress, s8* pData) { return 0; }
 
-static s32 audioGet16(Audio* pAudio, u32 nAddress, s16* pData) { return 0; }
+s32 audioGet16(Audio* pAudio, u32 nAddress, s16* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/audio/audioGet32.s")
+s32 audioGet32(Audio* pAudio, u32 nAddress, s32* pData) {
+    switch (nAddress & 0x1F) {
+        case 0:
+            *pData = pAudio->nAddress;
+            xlPostText("Get: DRAM Address: WRITE-ONLY?", "audio.c", 0xDA);
+            break;
+        case 4:
+            if (!soundGetDMABuffer(((System*)pAudio->pHost)->pSound, pData)) {
+                *pData = pAudio->nSize;
+            }
+            break;
+        case 8:
+            *pData = pAudio->nControl;
+            xlPostText("Get: CONTROL: WRITE-ONLY?", "audio.c", 0xE4);
+            break;
+        case 12:
+            *pData = AIGetDMABytesLeft() ? 0x40000000 : 0;
+            break;
+        case 16:
+            *pData = pAudio->nRateDAC;
+            break;
+        case 20:
+            *pData = pAudio->nRateBit;
+            break;
+        default:
+            return 0;
+    }
 
-static s32 audioGet64(Audio* pAudio, u32 nAddress, s64* pData) { return 0; }
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/audio/audioEnable.s")
+s32 audioGet64(Audio* pAudio, u32 nAddress, s64* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/audio/audioEvent.s")
+s32 audioEnable(Audio* pAudio, s32 bEnable) {
+    pAudio->bEnable = bEnable ? 1 : 0;
+
+    if (!rspEnableABI(((System*)pAudio->pHost)->apObject[SOT_RSP], pAudio->bEnable)) {
+        return 0;
+    }
+
+    return 1;
+}
+
+s32 audioEvent(Audio* pAudio, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pAudio->nSize = 0;
+            pAudio->nControl = 1;
+            pAudio->nAddress = 0;
+            pAudio->nRateBit = 0;
+            pAudio->nRateDAC = 0;
+            pAudio->pHost = pArgument;
+            pAudio->bEnable = 1;
+            break;
+        case 0x1002:
+            if (!cpuSetDevicePut(((System*)pAudio->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)audioPut8,
+                                 (Put16Func)audioPut16, (Put32Func)audioPut32, (Put64Func)audioPut64)) {
+                return 0;
+            }
+            if (!cpuSetDeviceGet(((System*)pAudio->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)audioGet8,
+                                 (Put16Func)audioGet16, (Put32Func)audioGet32, (Put64Func)audioGet64)) {
+                return 0;
+            }
+            break;
+        case 0:
+        case 1:
+        case 3:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}

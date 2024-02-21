@@ -1,7 +1,7 @@
 #ifndef _AUDIO_H
 #define _AUDIO_H
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // __anon_0x753E7
 typedef struct Audio {
@@ -14,5 +14,18 @@ typedef struct Audio {
     /* 0x18 */ s32 nRateDAC;
     /* 0x1C */ s32 nStatus;
 } Audio; // size = 0x20
+
+s32 audioPut8(Audio* pAudio, u32 nAddress, s8* pData);
+s32 audioPut16(Audio* pAudio, u32 nAddress, s16* pData);
+s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData);
+s32 audioPut64(Audio* pAudio, u32 nAddress, s64* pData);
+
+s32 audioGet8(Audio* pAudio, u32 nAddress, s8* pData);
+s32 audioGet16(Audio* pAudio, u32 nAddress, s16* pData);
+s32 audioGet32(Audio* pAudio, u32 nAddress, s32* pData);
+s32 audioGet64(Audio* pAudio, u32 nAddress, s64* pData);
+
+s32 audioEnable(Audio* pAudio, s32 bEnable);
+s32 audioEvent(Audio* pAudio, s32 nEvent, void* pArgument);
 
 #endif
