@@ -1,4 +1,5 @@
 #include "system.h"
+#include "audio.h"
 #include "cpu.h"
 #include "dolphin.h"
 #include "macros.h"
