@@ -23,6 +23,6 @@ s32 xlListTestItem(tXL_LIST* pList, void* pItem);
 s32 xlListFreeItem(tXL_LIST* pList, void** ppItem);
 s32 xlListMakeItem(tXL_LIST* pList, void** ppItem);
 s32 xlListFree(tXL_LIST** ppList);
-s32 xlListMake(tXL_LIST** ppList);
+s32 xlListMake(tXL_LIST** ppList, s32 nItemSize);
 
 #endif

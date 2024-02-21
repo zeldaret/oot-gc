@@ -8,7 +8,7 @@ _XL_OBJECTTYPE gTypeFile = {
     "FILE",
     sizeof(tXL_FILE),
     NULL,
-    (EventFunc)xlFileEvent
+    (EventFunc)xlFileEvent,
 };
 
 static FileGcnOpenCallback gpfOpen;
@@ -102,7 +102,7 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
         return 0;
     }
 
-    for (; nSizeBytes != 0; ) {
+    for (; nSizeBytes != 0;) {
         nSizeUsed = nSizeBytes;
 
         if (nSizeUsed > 0x1000) {
@@ -124,7 +124,7 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
 
         *(s32*)(pTarget) += nSizeUsed;
         nSizeBytes -= nSizeUsed;
-        pFile->nOffset += nSizeUsed; 
+        pFile->nOffset += nSizeUsed;
     }
 
     return 1;

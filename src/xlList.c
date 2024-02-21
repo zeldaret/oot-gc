@@ -1,11 +1,26 @@
 #include <dolphin/types.h>
 
+#include "macros.h"
 #include "xlList.h"
 #include "xlHeap.h"
 
 static tXL_LIST gListList;
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/xlList/xlListMake.s")
+#else
+s32 xlListMake(tXL_LIST** ppList, s32 nItemSize) {
+    if (xlListMakeItem(&gListList, ppList)) {
+        (*ppList)->nItemCount = 0;
+        (*ppList)->nItemSize = nItemSize;
+        (*ppList)->pNodeNext = NULL;
+        (*ppList)->pNodeHead = NULL;
+        return 1;
+    }
+
+    return 0;
+}
+#endif
 
 static inline s32 xlListWipe(tXL_LIST* pList) {
     tXL_NODE* pNode;
@@ -26,9 +41,6 @@ static inline s32 xlListWipe(tXL_LIST* pList) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlList/xlListFree.s")
-#else
 s32 xlListFree(tXL_LIST** ppList) {
     if (!xlListWipe(*ppList)) {
         return 0;
@@ -40,7 +52,6 @@ s32 xlListFree(tXL_LIST** ppList) {
 
     return 1;
 }
-#endif
 
 s32 xlListMakeItem(tXL_LIST* pList, void** ppItem) {
     s32 nSize;
@@ -92,6 +103,7 @@ s32 xlListFreeItem(tXL_LIST* pList, void** ppItem) {
         pNode = pNodeNext;
     }
 
+    NO_INLINE;
     return 0;
 }
 
