@@ -3,6 +3,12 @@
 
 #include "dolphin/os.h"
 
+#ifdef __MWERKS__
+volatile u16 __DSPRegs[] : 0xCC005000;
+#else
+#define __DSPRegs ((volatile u16*)0xCC005000)
+#endif
+
 typedef void (*DSPCallback)(void* task);
 
 typedef struct DSPTaskInfo DSPTaskInfo;

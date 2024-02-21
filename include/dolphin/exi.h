@@ -4,6 +4,12 @@
 #include "dolphin/os.h"
 #include "dolphin/types.h"
 
+#ifdef __MWERKS__
+u32 OS_EXI[0x40] : 0xCC006800;
+#else
+#define OS_EXI ((u32*)0xCC006800)
+#endif
+
 typedef void (*EXICallback)(s32 chan, OSContext* context);
 
 EXICallback EXISetExiCallback(s32 channel, EXICallback callback);

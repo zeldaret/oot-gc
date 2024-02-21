@@ -1,9 +1,14 @@
 #ifndef _DOLPHIN_SI_H
 #define _DOLPHIN_SI_H
 
-#include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "dolphin/types.h"
+
+#ifdef __MWERKS__
+u32 __SIRegs[0x100] : 0xCC006400;
+#else
+#define __SIRegs ((u32*)0xCC006400)
+#endif
 
 #define CHAN_NONE -1
 
