@@ -77,14 +77,14 @@ glabel lbl_8000EEEC
 /* 00997C 8000EF1C 2C1A000A */  cmpwi   r26, 0xa
 /* 009980 8000EF20 41820010 */  beq     lbl_8000EF30
 /* 009984 8000EF24 38000001 */  li      r0, 1
-/* 009988 8000EF28 900D88FC */  stw     r0, toggle$192@sda21(r13)
+/* 009988 8000EF28 900D88FC */  stw     r0, toggle@sda21(r13)
 /* 00998C 8000EF2C 4800001C */  b       lbl_8000EF48
 lbl_8000EF30:
-/* 009990 8000EF30 800D88FC */  lwz     r0, toggle$192@sda21(r13)
+/* 009990 8000EF30 800D88FC */  lwz     r0, toggle@sda21(r13)
 /* 009994 8000EF34 2C000001 */  cmpwi   r0, 1
 /* 009998 8000EF38 40820010 */  bne     lbl_8000EF48
 /* 00999C 8000EF3C 38000000 */  li      r0, 0
-/* 0099A0 8000EF40 900D88FC */  stw     r0, toggle$192@sda21(r13)
+/* 0099A0 8000EF40 900D88FC */  stw     r0, toggle@sda21(r13)
 /* 0099A4 8000EF44 3B600002 */  li      r27, 2
 lbl_8000EF48:
 /* 0099A8 8000EF48 800D88F8 */  lwz     r0, gDVDResetToggle@sda21(r13)

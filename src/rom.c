@@ -69,6 +69,8 @@ static s32 gbProgress;
 static void* gpImageBack;
 static s32 iImage;
 
+extern System* gpSystem;
+
 //! TODO: remove these declarations when the SDK files are present
 u32 ARGetDMAStatus(void);
 void ARStartDMA(u32 type, u32 mainmem_addr, u32 aram_addr, u32 length);

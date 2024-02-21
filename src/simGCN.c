@@ -1,80 +1,79 @@
 #include "simGCN.h"
 
-f32 D_800D2FE0[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+// needed?
+u8 pad[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-f32 D_800D3010[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+f32 D_800D2FE0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3040[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+f32 D_800D3010[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3070[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+f32 D_800D3040[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D30A0[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+f32 D_800D3070[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D30D0[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+f32 D_800D30A0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3100[] = {
-    1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0
-};
+f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+
+f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
 u8 gcoverOpen[] = {
-#pragma GLOBAL_ASM("src/TPL/gcoverOpen.s")
+// #pragma GLOBAL_ASM("src/TPL/gcoverOpen.s")
+0x00
 };
 
 u8 gnoDisk[] = {
-#pragma GLOBAL_ASM("src/TPL/gnoDisk.s")
+// #pragma GLOBAL_ASM("src/TPL/gnoDisk.s")
+0x00
 };
 
 u8 gretryErr[] = {
-#pragma GLOBAL_ASM("src/TPL/gretryErr.s")
+// #pragma GLOBAL_ASM("src/TPL/gretryErr.s")
+0x00
 };
 
 u8 gfatalErr[] = {
-#pragma GLOBAL_ASM("src/TPL/gfatalErr.s")
+// #pragma GLOBAL_ASM("src/TPL/gfatalErr.s")
+0x00
 };
 
 u8 gwrongDisk[] = {
-#pragma GLOBAL_ASM("src/TPL/gwrongDisk.s")
+// #pragma GLOBAL_ASM("src/TPL/gwrongDisk.s")
+0x00
 };
 
 u8 greadingDisk[] = {
-#pragma GLOBAL_ASM("src/TPL/greadingDisk.s")
+// #pragma GLOBAL_ASM("src/TPL/greadingDisk.s")
+0x00
 };
 
 u8 gbar[] = {
-#pragma GLOBAL_ASM("src/TPL/gbar.s")
+// #pragma GLOBAL_ASM("src/TPL/gbar.s")
+0x00
 };
 
 u8 gyes[] = {
-#pragma GLOBAL_ASM("src/TPL/gyes.s")
+// #pragma GLOBAL_ASM("src/TPL/gyes.s")
+0x00
 };
 
 u8 gno[] = {
-#pragma GLOBAL_ASM("src/TPL/gno.s")
+// #pragma GLOBAL_ASM("src/TPL/gno.s")
+0x00
 };
 
 u8 gmesgOK[] = {
-#pragma GLOBAL_ASM("src/TPL/gmesgOK.s")
+// #pragma GLOBAL_ASM("src/TPL/gmesgOK.s")
+0x00
 };
 
-s32 Vert_s16[] = { 0x00000000, 0xFFFF00C8, 0x0000FFFF, 0x00C800C8, 0xFFFF0000, 0x00C8FFFF };
-s32 VertTitle_s16[] = { 0x00000000, 0xFFFF00C8, 0x0000FFFF, 0x00C800C8, 0xFFFF0000, 0x00C8FFFF };
-s32 VertYes_s16[] = { 0x00000000, 0xFFFF00C8, 0x0000FFFF, 0x00C800C8, 0xFFFF0000, 0x00C8FFFF };
-s32 VertNo_s16[] = { 0x00000000, 0xFFFF00C8, 0x0000FFFF, 0x00C800C8, 0xFFFF0000, 0x00C8FFFF };
-s32 Vert_s16Bar[] = { 0x00000000, 0xFFFF00C8, 0x0000FFFF, 0x00C800C8, 0xFFFF0000, 0x00C8FFFF };
-s32 Colors_u32[] = { 0x000000FF, 0x000000FF, 0x000000FF };
-s32 TexCoords_u8[] = { 0x00000100, 0x01010001 };
+s16 Vert_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 VertTitle_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 VertYes_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 VertNo_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 Vert_s16Bar[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+u32 Colors_u32[3] = {0x000000FF, 0x000000FF, 0x000000FF};
+u8 TexCoords_u8[8] = {0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01};
 
 char D_800E9A28[] = "Play Delay";
 char D_800E9A34[] = "Silence Count";
@@ -88,70 +87,20 @@ char D_800E9BD0[] = "zlj_f.n64";
 char D_800E9BDC[] = "cursor.raw";
 
 void* jtbl_800E9BE8[] = {
-    (void*)0x80008684,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008678,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008690,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x8000866C,
-    (void*)0x800086B8,
-    (void*)0x8000869C,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008660,
-    (void*)0x800086B8,
-    (void*)0x800086A8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008684,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008678,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008690,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x8000866C,
-    (void*)0x800086B8,
-    (void*)0x8000869C,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x800086B8,
-    (void*)0x80008660,
-    (void*)0x800086B8,
-    (void*)0x800086A8,
+    (void*)0x80008684, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008678, (void*)0x800086B8,
+    (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008690, (void*)0x800086B8,
+    (void*)0x800086B8, (void*)0x8000866C, (void*)0x800086B8, (void*)0x8000869C, (void*)0x800086B8, (void*)0x800086B8,
+    (void*)0x800086B8, (void*)0x80008660, (void*)0x800086B8, (void*)0x800086A8, (void*)0x800086B8, (void*)0x800086B8,
+    (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8,
+    (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008684, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8,
+    (void*)0x80008678, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8,
+    (void*)0x80008690, (void*)0x800086B8, (void*)0x800086B8, (void*)0x8000866C, (void*)0x800086B8, (void*)0x8000869C,
+    (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008660, (void*)0x800086B8, (void*)0x800086A8,
 };
 
 void* jtbl_800E9CC0[] = {
-    (void*)0x8000882C,
-    (void*)0x80008834,
-    (void*)0x8000883C,
-    (void*)0x80008844,
-    (void*)0x80008850,
-    (void*)0x8000885C,
-    (void*)0x80008868,
+    (void*)0x8000882C, (void*)0x80008834, (void*)0x8000883C, (void*)0x80008844,
+    (void*)0x80008850, (void*)0x8000885C, (void*)0x80008868,
 };
 
 char D_800E9CDC[] = "Invalid Message Image Data - Assuming SV09";
@@ -187,46 +136,13 @@ char D_800E9F30[] = "TPL/msg_sv12.tpl";
 char D_800E9F44[] = "TPL/msg_sv_share.tpl";
 
 void* jtbl_800E9F5C[] = {
-    (void*)0x80009A74,
-    (void*)0x80009C24,
-    (void*)0x80009DD4,
-    (void*)0x80009F84,
-    (void*)0x8000A134,
-    (void*)0x8000CB64,
-    (void*)0x8000A2E4,
-    (void*)0x8000A494,
-    (void*)0x8000A644,
-    (void*)0x8000CB64,
-    (void*)0x8000CB64,
-    (void*)0x8000CB64,
-    (void*)0x8000CB64,
-    (void*)0x8000A7F4,
-    (void*)0x8000A9A4,
-    (void*)0x8000AB54,
-    (void*)0x8000AD04,
-    (void*)0x8000CB64,
-    (void*)0x8000CB64,
-    (void*)0x8000AEB4,
-    (void*)0x8000B064,
-    (void*)0x8000B214,
-    (void*)0x8000B3C4,
-    (void*)0x8000B574,
-    (void*)0x8000B724,
-    (void*)0x8000B8D4,
-    (void*)0x8000BA84,
-    (void*)0x8000BC34,
-    (void*)0x8000BDE4,
-    (void*)0x8000BF94,
-    (void*)0x8000C144,
-    (void*)0x8000CB64,
-    (void*)0x8000CB64,
-    (void*)0x8000C2F4,
-    (void*)0x8000CB64,
-    (void*)0x8000CB64,
-    (void*)0x8000C4A4,
-    (void*)0x8000C654,
-    (void*)0x8000C804,
-    (void*)0x8000C9B4,
+    (void*)0x80009A74, (void*)0x80009C24, (void*)0x80009DD4, (void*)0x80009F84, (void*)0x8000A134, (void*)0x8000CB64,
+    (void*)0x8000A2E4, (void*)0x8000A494, (void*)0x8000A644, (void*)0x8000CB64, (void*)0x8000CB64, (void*)0x8000CB64,
+    (void*)0x8000CB64, (void*)0x8000A7F4, (void*)0x8000A9A4, (void*)0x8000AB54, (void*)0x8000AD04, (void*)0x8000CB64,
+    (void*)0x8000CB64, (void*)0x8000AEB4, (void*)0x8000B064, (void*)0x8000B214, (void*)0x8000B3C4, (void*)0x8000B574,
+    (void*)0x8000B724, (void*)0x8000B8D4, (void*)0x8000BA84, (void*)0x8000BC34, (void*)0x8000BDE4, (void*)0x8000BF94,
+    (void*)0x8000C144, (void*)0x8000CB64, (void*)0x8000CB64, (void*)0x8000C2F4, (void*)0x8000CB64, (void*)0x8000CB64,
+    (void*)0x8000C4A4, (void*)0x8000C654, (void*)0x8000C804, (void*)0x8000C9B4,
 };
 
 char D_800E9FFC[] = "TPL/msg_ld05_2.tpl";
@@ -237,39 +153,13 @@ char D_800EA04C[] = "TPL/msg_in01.tpl";
 char D_800EA060[] = "TPL/msg_sv06_4.tpl";
 char D_800EA074[] = "TPL/msg_sv06_5.tpl";
 char D_800EA088[] = "TPL/msg_sv08.tpl";
-    
 
 void* jtbl_800EA09C[] = {
-    (void*)0x8000CBC8,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CC30,
-    (void*)0x8000CC98,
-    (void*)0x8000CD00,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CD68,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CF08,
-    (void*)0x8000CDD0,
-    (void*)0x8000CE38,
-    (void*)0x8000CF08,
-    (void*)0x8000CEA0,
+    (void*)0x8000CBC8, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CC30, (void*)0x8000CC98,
+    (void*)0x8000CD00, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
+    (void*)0x8000CD68, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
+    (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
+    (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CDD0, (void*)0x8000CE38, (void*)0x8000CF08, (void*)0x8000CEA0,
 };
 
 char D_800EA114[] = "TPL/msg_in02.tpl";
@@ -277,94 +167,81 @@ char D_800EA128[] = "TPL/msg_sv09.tpl";
 char D_800EA13C[] = "TPL/msg_gf02.tpl";
 
 void* jtbl_800EA150[] = {
-    (void*)0x8000D3B8,
-    (void*)0x8000D3F4,
-    (void*)0x8000D434,
-    (void*)0x8000D4B0,
-    (void*)0x8000D474,
-    (void*)0x8000D4EC,
-    (void*)0x8000D528,
+    (void*)0x8000D3B8, (void*)0x8000D3F4, (void*)0x8000D434, (void*)0x8000D4B0,
+    (void*)0x8000D474, (void*)0x8000D4EC, (void*)0x8000D528,
 };
 
 char D_800EA16C[] = "ShowError: Unknown FileInfoStatus: %d";
 
 void* jtbl_800EA194[] = {
-    (void*)0x8000EEA8,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEB0,
-    (void*)0x8000EEB8,
-    (void*)0x8000EEC0,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEEC,
-    (void*)0x8000EEC8,
+    (void*)0x8000EEA8, (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEEC,
+    (void*)0x8000EEB0, (void*)0x8000EEB8, (void*)0x8000EEC0, (void*)0x8000EEEC, (void*)0x8000EEEC,
+    (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEC8,
 };
 
 static f32 gOrthoMtx[4][4];
 static u32 gContMap[4][20];
-static char** gaszArgument;
+static char* gaszArgument[8];
 
-s32 gmsg_ld01Size = 0x00003E20;
-s32 gmsg_ld02Size = 0x00003E20;
-s32 gmsg_ld03Size = 0x00003E20;
-s32 gmsg_ld04Size = 0x00003E20;
-s32 gmsg_ld05_1Size = 0x00003E20;
-s32 gmsg_ld05_2Size = 0x00003E20;
-s32 gmsg_ld06_1Size = 0x00003E20;
-s32 gmsg_ld06_2Size = 0x00003E20;
-s32 gmsg_ld06_3Size = 0x00003E20;
-s32 gmsg_ld06_4Size = 0x00003E20;
-s32 gmsg_ld07Size = 0x00003E20;
-s32 gmsg_gf01Size = 0x00003E20;
-s32 gmsg_gf02Size = 0x00003E20;
-s32 gmsg_gf03Size = 0x00003E20;
-s32 gmsg_gf04Size = 0x00003E20;
-s32 gmsg_gf05Size = 0x00003E20;
-s32 gmsg_gf06Size = 0x00003E20;
-s32 gmsg_in01Size = 0x00003E20;
-s32 gmsg_in02Size = 0x00003E20;
-s32 gmsg_in03Size = 0x00003E20;
-s32 gmsg_in04Size = 0x00003E20;
-s32 gmsg_in05Size = 0x00003E20;
-s32 gmsg_sv01Size = 0x00003E20;
-s32 gmsg_sv01_2Size = 0x00003E20;
-s32 gmsg_sv02Size = 0x00003E20;
-s32 gmsg_sv03Size = 0x00003E20;
-s32 gmsg_sv04Size = 0x00003E20;
-s32 gmsg_sv05_1Size = 0x00003E20;
-s32 gmsg_sv06_1Size = 0x00003E20;
-s32 gmsg_sv06_2Size = 0x00003E20;
-s32 gmsg_sv06_3Size = 0x00003E20;
-s32 gmsg_sv06_4Size = 0x00003E20;
-s32 gmsg_sv06_5Size = 0x00003E20;
-s32 gmsg_sv07Size = 0x00003E20;
-s32 gmsg_sv08Size = 0x00003E20;
-s32 gmsg_sv09Size = 0x00003E20;
-s32 gmsg_sv10Size = 0x00003E20;
-s32 gmsg_sv11Size = 0x00003E20;
-s32 gmsg_sv12Size = 0x00003E20;
-s32 gmsg_sv_shareSize = 0x00003E20;
-s32 gz_bnrSize = 0x00001840;
-s32 gz_iconSize = 0x00001840;
+u32 gmsg_ld01Size = 0x00003E20;
+u32 gmsg_ld02Size = 0x00003E20;
+u32 gmsg_ld03Size = 0x00003E20;
+u32 gmsg_ld04Size = 0x00003E20;
+u32 gmsg_ld05_1Size = 0x00003E20;
+u32 gmsg_ld05_2Size = 0x00003E20;
+u32 gmsg_ld06_1Size = 0x00003E20;
+u32 gmsg_ld06_2Size = 0x00003E20;
+u32 gmsg_ld06_3Size = 0x00003E20;
+u32 gmsg_ld06_4Size = 0x00003E20;
+u32 gmsg_ld07Size = 0x00003E20;
+u32 gmsg_gf01Size = 0x00003E20;
+u32 gmsg_gf02Size = 0x00003E20;
+u32 gmsg_gf03Size = 0x00003E20;
+u32 gmsg_gf04Size = 0x00003E20;
+u32 gmsg_gf05Size = 0x00003E20;
+u32 gmsg_gf06Size = 0x00003E20;
+u32 gmsg_in01Size = 0x00003E20;
+u32 gmsg_in02Size = 0x00003E20;
+u32 gmsg_in03Size = 0x00003E20;
+u32 gmsg_in04Size = 0x00003E20;
+u32 gmsg_in05Size = 0x00003E20;
+u32 gmsg_sv01Size = 0x00003E20;
+u32 gmsg_sv01_2Size = 0x00003E20;
+u32 gmsg_sv02Size = 0x00003E20;
+u32 gmsg_sv03Size = 0x00003E20;
+u32 gmsg_sv04Size = 0x00003E20;
+u32 gmsg_sv05_1Size = 0x00003E20;
+u32 gmsg_sv06_1Size = 0x00003E20;
+u32 gmsg_sv06_2Size = 0x00003E20;
+u32 gmsg_sv06_3Size = 0x00003E20;
+u32 gmsg_sv06_4Size = 0x00003E20;
+u32 gmsg_sv06_5Size = 0x00003E20;
+u32 gmsg_sv07Size = 0x00003E20;
+u32 gmsg_sv08Size = 0x00003E20;
+u32 gmsg_sv09Size = 0x00003E20;
+u32 gmsg_sv10Size = 0x00003E20;
+u32 gmsg_sv11Size = 0x00003E20;
+u32 gmsg_sv12Size = 0x00003E20;
+u32 gmsg_sv_shareSize = 0x00003E20;
+u32 gz_bnrSize = 0x00001840;
+u32 gz_iconSize = 0x00001840;
+
 s32 gHighlightChoice = 0x00000001;
-s32 simulatorMessageCurrent = 0xFFFFFFFF;
+__anon_0x61D7 simulatorMessageCurrent = S_M_NONE;
 s32 gResetBeginFlag = 0x00000001;
 
-char D_80134D9C[] = "yes.raw";
-char D_80134DA4[] = "no.raw";
+char D_80134D9C[8] = "yes.raw";
+char D_80134DA4[7] = "no.raw";
 
 s32 gpCode;
 s32 gButtonDownToggle;
 s32 gDVDResetToggle;
-s32 toggle;
-s32 nPrevButton;
-s32 nCurrButton;
-s32 gbReset;
-s32 gnTickReset;
+
+static s32 toggle;
+static u32 nPrevButton;
+static u32 nCurrButton;
+static s32 gbReset;
+static u32 gnTickReset;
 
 s32 gPreviousIPLSetting;
 s32 gPreviousForceMenuSetting;
