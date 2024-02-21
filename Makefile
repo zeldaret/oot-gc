@@ -51,7 +51,6 @@ MWCC_DIR := tools/mwcc_compiler/$(MWCC_VERSION)
 CC := $(WINE) $(MWCC_DIR)/mwcceppc.exe
 LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 
-CPP := cpp
 SHA1SUM := sha1sum
 PYTHON := python3
 ELF2DOL := tools/elf2dol/elf2dol
@@ -92,9 +91,7 @@ SBSS_PDHR 	:= 10
 default: all
 
 # Compare to the checksum of a stripped original
-all: $(ELF) compare
-
-compare:
+all: $(ELF)
 ifneq ($(NON_MATCHING),1)
 	@md5sum $(COMPARE_TO)
 	@md5sum -c checksum.md5
@@ -122,7 +119,7 @@ format:
 	find include src -name '*.h' -o -name '*.c' | xargs clang-format -i
 
 # Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
-dol: $(DOL) compare
+dol: all $(DOL)
 
 .PHONY: all setup clean format dol distclean
 
@@ -131,12 +128,9 @@ ALL_DIRS := build $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS)
 # Make sure build directory exists before compiling anything
 DUMMY != mkdir -p $(ALL_DIRS)
 
-$(LDSCRIPT): ldscript.lcf
-	$(CPP) -P -MMD -MP -MT $@ -MF $@.d -I include/ -I . -DBUILD_DIR=$(BUILD_DIR) -o $@ $<
-
-$(ELF): $(O_FILES) $(LDSCRIPT)
+$(ELF): $(O_FILES) ldscript.lcf
 	$(RM) -rf $(ASM_PROCESSOR_DIR)/tmp
-	$(LD) $(LDFLAGS) -o $@ -lcf $(LDSCRIPT) $(O_FILES)
+	$(LD) $(LDFLAGS) -o $@ -lcf ldscript.lcf $(O_FILES)
 	$(OBJCOPY) $(ELF) $(COMPARE_TO) -S
 
 $(DOL): $(ELF)
