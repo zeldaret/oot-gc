@@ -1,6 +1,8 @@
 #include "xlPostGCN.h"
 
-#pragma GLOBAL_ASM("asm/non_matchings/xlPostGCN/xlPostText.s")
+s32 xlPostText(const char* fmt, const char* file, s32 line, ...) {
+    return 1;
+}
 
 s32 xlPostSetup(void) {
     return 1;
