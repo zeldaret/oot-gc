@@ -1,69 +1,69 @@
 #include "simGCN.h"
 
-// needed?
-u8 pad[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+// TODO: move to macros.h
+#define ALIGNAS(N) __attribute__((aligned(N)))
 
-f32 D_800D2FE0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D2FE0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3010[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D3010[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3040[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D3040[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3070[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D3070[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D30A0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D30A0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+const f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-u8 gcoverOpen[] = {
+u8 gcoverOpen[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000D8880, 0x000028C1)
 };
 
-u8 gnoDisk[] = {
+u8 gnoDisk[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000DB160, 0x00001F01)
 };
 
-u8 gretryErr[] = {
+u8 gretryErr[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000DD080, 0x00002441)
 };
 
-u8 gfatalErr[] = {
+u8 gfatalErr[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x000032E1)
 };
 
-u8 gwrongDisk[] = {
+u8 gwrongDisk[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x00001F01)
 };
 
-u8 greadingDisk[] = {
+u8 greadingDisk[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E4700, 0x00000C41)
 };
 
-u8 gbar[] = {
+u8 gbar[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E5360, 0x00000741)
 };
 
-u8 gyes[] = {
+u8 gyes[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x000005C1)
 };
 
-u8 gno[] = {
+u8 gno[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x000005C1)
 };
 
-u8 gmesgOK[] = {
+u8 gmesgOK[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E6680, 0x00000341)
 };
 
-s16 Vert_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 VertTitle_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 VertYes_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 VertNo_s16[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 Vert_s16Bar[12] = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-u32 Colors_u32[3] = {0x000000FF, 0x000000FF, 0x000000FF};
-u8 TexCoords_u8[8] = {0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01};
+s16 Vert_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 VertTitle_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 VertYes_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 VertNo_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+s16 Vert_s16Bar[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
+u32 Colors_u32[3] ALIGNAS(32) = {0x000000FF, 0x000000FF, 0x000000FF};
+u8 TexCoords_u8[] ALIGNAS(32) = {0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01};
 
 char D_800E9A28[] = "Play Delay";
 char D_800E9A34[] = "Silence Count";
@@ -169,7 +169,7 @@ void* jtbl_800EA194[] = {
     (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEC8,
 };
 
-static f32 gOrthoMtx[4][4];
+static f32 gOrthoMtx[4][4] ALIGNAS(32);
 static u32 gContMap[4][20];
 static char* gaszArgument[8];
 
@@ -223,44 +223,49 @@ s32 gResetBeginFlag = 0x00000001;
 char D_80134D9C[8] = "yes.raw";
 char D_80134DA4[7] = "no.raw";
 
-s32 gpCode;
-s32 gButtonDownToggle;
-s32 gDVDResetToggle;
+// TODO: struct
+static s32 gpCode;
 
-static s32 toggle;
-static u32 nPrevButton;
-static u32 nCurrButton;
-static s32 gbReset;
-static u32 gnTickReset;
-
-s32 gPreviousIPLSetting;
-s32 gPreviousForceMenuSetting;
-s32 gPreviousAllowResetSetting;
-s32 gbDisplayedError;
-
-System* gpSystem;
-void* gpSound;
 void* gpFrame;
+void* gpSound;
+System* gpSystem;
 
-s32 D_80135D18 = 0;
-s32 D_80135D1C = 0;
-s32 D_80135D20 = 0;
+s32 gbDisplayedError;
+s32 gPreviousAllowResetSetting;
+s32 gPreviousForceMenuSetting;
+s32 gPreviousIPLSetting;
 
-f32 D_80135D24 = 0.0;
-f32 D_80135D28 = 1.0;
-f32 D_80135D2C = 0.10000000149011612;
-f32 D_80135D30 = 100.0;
-f64 D_80135D38 = 4503601774854144.0;
-f32 D_80135D40 = 0.5;
-f64 D_80135D48 = 4503599627370496.0;
-f32 D_80135D50 = -1.0;
-f32 D_80135D54 = 1.100000023841858;
-f32 D_80135D58 = 0.9090908765792847;
-f32 D_80135D5C = 240.0;
-f32 D_80135D60 = 320.0;
-f32 D_80135D64 = 10000.0;
-f32 D_80135D68 = 160.0;
-f32 D_80135D6C = 120.0;
+// TODO: make static (doesn't match .sbss currently)
+u32 gnTickReset;
+s32 gbReset;
+
+// TODO: make in-function static (doesn't match .sbss currently)
+u32 nCurrButton;
+u32 nPrevButton;
+s32 toggle;
+
+s32 gDVDResetToggle;
+s32 gButtonDownToggle;
+
+const s32 D_80135D18 = 0;
+const s32 D_80135D1C = 0;
+const s32 D_80135D20 = 0;
+
+const f32 D_80135D24 = 0.0;
+const f32 D_80135D28 = 1.0;
+const f32 D_80135D2C = 0.10000000149011612;
+const f32 D_80135D30 = 100.0;
+const f64 D_80135D38 = 4503601774854144.0;
+const f32 D_80135D40 = 0.5;
+const f64 D_80135D48 = 4503599627370496.0;
+const f32 D_80135D50 = -1.0;
+const f32 D_80135D54 = 1.100000023841858;
+const f32 D_80135D58 = 0.9090908765792847;
+const f32 D_80135D5C = 240.0;
+const f32 D_80135D60 = 320.0;
+const f32 D_80135D64 = 10000.0;
+const f32 D_80135D68 = 160.0;
+const f32 D_80135D6C = 120.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorGXInit.s")
 
