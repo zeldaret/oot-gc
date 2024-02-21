@@ -1,0 +1,80 @@
+glabel audioEvent
+/* 088F08 8008E4A8 7C0802A6 */  mflr    r0
+/* 088F0C 8008E4AC 2C040003 */  cmpwi   r4, 3
+/* 088F10 8008E4B0 90010004 */  stw     r0, 4(r1)
+/* 088F14 8008E4B4 9421FFE0 */  stwu    r1, -0x20(r1)
+/* 088F18 8008E4B8 93E1001C */  stw     r31, 0x1c(r1)
+/* 088F1C 8008E4BC 3BE50000 */  addi    r31, r5, 0
+/* 088F20 8008E4C0 93C10018 */  stw     r30, 0x18(r1)
+/* 088F24 8008E4C4 3BC30000 */  addi    r30, r3, 0
+/* 088F28 8008E4C8 418200E4 */  beq     lbl_8008E5AC
+/* 088F2C 8008E4CC 40800018 */  bge     lbl_8008E4E4
+/* 088F30 8008E4D0 2C040002 */  cmpwi   r4, 2
+/* 088F34 8008E4D4 40800028 */  bge     lbl_8008E4FC
+/* 088F38 8008E4D8 2C040000 */  cmpwi   r4, 0
+/* 088F3C 8008E4DC 408000D0 */  bge     lbl_8008E5AC
+/* 088F40 8008E4E0 480000C4 */  b       lbl_8008E5A4
+lbl_8008E4E4:
+/* 088F44 8008E4E4 2C041003 */  cmpwi   r4, 0x1003
+/* 088F48 8008E4E8 418200C4 */  beq     lbl_8008E5AC
+/* 088F4C 8008E4EC 408000B8 */  bge     lbl_8008E5A4
+/* 088F50 8008E4F0 2C041002 */  cmpwi   r4, 0x1002
+/* 088F54 8008E4F4 40800030 */  bge     lbl_8008E524
+/* 088F58 8008E4F8 480000AC */  b       lbl_8008E5A4
+lbl_8008E4FC:
+/* 088F5C 8008E4FC 38600000 */  li      r3, 0
+/* 088F60 8008E500 907E0000 */  stw     r3, 0(r30)
+/* 088F64 8008E504 38000001 */  li      r0, 1
+/* 088F68 8008E508 901E000C */  stw     r0, 0xc(r30)
+/* 088F6C 8008E50C 907E0010 */  stw     r3, 0x10(r30)
+/* 088F70 8008E510 907E0014 */  stw     r3, 0x14(r30)
+/* 088F74 8008E514 907E0018 */  stw     r3, 0x18(r30)
+/* 088F78 8008E518 93FE0008 */  stw     r31, 8(r30)
+/* 088F7C 8008E51C 901E0004 */  stw     r0, 4(r30)
+/* 088F80 8008E520 4800008C */  b       lbl_8008E5AC
+lbl_8008E524:
+/* 088F84 8008E524 807E0008 */  lwz     r3, 8(r30)
+/* 088F88 8008E528 3CA08009 */  lis     r5, audioPut8@ha
+/* 088F8C 8008E52C 3CC08009 */  lis     r6, audioPut16@ha
+/* 088F90 8008E530 3CE08009 */  lis     r7, audioPut32@ha
+/* 088F94 8008E534 80630024 */  lwz     r3, 0x24(r3)
+/* 088F98 8008E538 3C808009 */  lis     r4, audioPut64@ha
+/* 088F9C 8008E53C 3904E740 */  addi    r8, r4, audioPut64@l
+/* 088FA0 8008E540 38A5E898 */  addi    r5, r5, audioPut8@l
+/* 088FA4 8008E544 38C6E890 */  addi    r6, r6, audioPut16@l
+/* 088FA8 8008E548 38E7E748 */  addi    r7, r7, audioPut32@l
+/* 088FAC 8008E54C 389F0000 */  addi    r4, r31, 0
+/* 088FB0 8008E550 4BFA6AE9 */  bl      cpuSetDevicePut
+/* 088FB4 8008E554 2C030000 */  cmpwi   r3, 0
+/* 088FB8 8008E558 4082000C */  bne     lbl_8008E564
+/* 088FBC 8008E55C 38600000 */  li      r3, 0
+/* 088FC0 8008E560 48000050 */  b       lbl_8008E5B0
+lbl_8008E564:
+/* 088FC4 8008E564 807E0008 */  lwz     r3, 8(r30)
+/* 088FC8 8008E568 3CA08009 */  lis     r5, audioGet8@ha
+/* 088FCC 8008E56C 3CC08009 */  lis     r6, audioGet16@ha
+/* 088FD0 8008E570 3CE08009 */  lis     r7, audioGet32@ha
+/* 088FD4 8008E574 80630024 */  lwz     r3, 0x24(r3)
+/* 088FD8 8008E578 3C808009 */  lis     r4, audioGet64@ha
+/* 088FDC 8008E57C 3904E620 */  addi    r8, r4, audioGet64@l
+/* 088FE0 8008E580 38A5E738 */  addi    r5, r5, audioGet8@l
+/* 088FE4 8008E584 38C6E730 */  addi    r6, r6, audioGet16@l
+/* 088FE8 8008E588 38E7E628 */  addi    r7, r7, audioGet32@l
+/* 088FEC 8008E58C 389F0000 */  addi    r4, r31, 0
+/* 088FF0 8008E590 4BFA6AC1 */  bl      cpuSetDeviceGet
+/* 088FF4 8008E594 2C030000 */  cmpwi   r3, 0
+/* 088FF8 8008E598 40820014 */  bne     lbl_8008E5AC
+/* 088FFC 8008E59C 38600000 */  li      r3, 0
+/* 089000 8008E5A0 48000010 */  b       lbl_8008E5B0
+lbl_8008E5A4:
+/* 089004 8008E5A4 38600000 */  li      r3, 0
+/* 089008 8008E5A8 48000008 */  b       lbl_8008E5B0
+lbl_8008E5AC:
+/* 08900C 8008E5AC 38600001 */  li      r3, 1
+lbl_8008E5B0:
+/* 089010 8008E5B0 80010024 */  lwz     r0, 0x24(r1)
+/* 089014 8008E5B4 83E1001C */  lwz     r31, 0x1c(r1)
+/* 089018 8008E5B8 83C10018 */  lwz     r30, 0x18(r1)
+/* 08901C 8008E5BC 7C0803A6 */  mtlr    r0
+/* 089020 8008E5C0 38210020 */  addi    r1, r1, 0x20
+/* 089024 8008E5C4 4E800020 */  blr     
