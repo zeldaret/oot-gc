@@ -1,7 +1,7 @@
 #ifndef _DOLPHIN_DVD_H_
 #define _DOLPHIN_DVD_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef struct {
     char gameName[4];
@@ -14,55 +14,63 @@ typedef struct {
 } DVDDiskID;
 
 typedef struct DVDCommandBlock DVDCommandBlock;
+
 typedef void (*DVDCBCallback)(s32 result, DVDCommandBlock* block);
+
 struct DVDCommandBlock {
-    /*0x00*/ DVDCommandBlock* next;
-    /*0x04*/ DVDCommandBlock* prev;
-    /*0x08*/ u32 command;
-    /*0x0C*/ s32 state;
-    /*0x10*/ u32 offset;
-    /*0x14*/ u32 length;
-    /*0x18*/ void* addr;
-    /*0x1C*/ u32 currTransferSize;
-    /*0x20*/ u32 transferredSize;
-    /*0x24*/ DVDDiskID* id;
-    /*0x28*/ DVDCBCallback callback;
-    /*0x2C*/ void* userData;
+    /* 0x00 */ DVDCommandBlock* next;
+    /* 0x04 */ DVDCommandBlock* prev;
+    /* 0x08 */ u32 command;
+    /* 0x0C */ s32 state;
+    /* 0x10 */ u32 offset;
+    /* 0x14 */ u32 length;
+    /* 0x18 */ void* addr;
+    /* 0x1C */ u32 currTransferSize;
+    /* 0x20 */ u32 transferredSize;
+    /* 0x24 */ DVDDiskID* id;
+    /* 0x28 */ DVDCBCallback callback;
+    /* 0x2C */ void* userData;
 };
 
 typedef struct DVDFileInfo DVDFileInfo;
+
 typedef void (*DVDCallback)(s32 result, DVDFileInfo* fileInfo);
+
 struct DVDFileInfo {
-    /*0x00*/ DVDCommandBlock cb;
-    /*0x30*/ u32 startAddr;
-    /*0x34*/ u32 length;
-    /*0x38*/ DVDCallback callback;
+    /* 0x00 */ DVDCommandBlock cb;
+    /* 0x30 */ u32 startAddr;
+    /* 0x34 */ u32 length;
+    /* 0x38 */ DVDCallback callback;
 };
 
-typedef struct {
+typedef struct DVDDir {
     u32 entryNum;
     u32 location;
     u32 next;
 } DVDDir;
 
-typedef struct {
+typedef struct DVDDirEntry {
     u32 entryNum;
     BOOL isDir;
     char* name;
 } DVDDirEntry;
 
 void DVDInit(void);
-BOOL DVDOpen(char*, DVDFileInfo*);
+BOOL DVDOpen(const char* fileName, DVDFileInfo* fileInfo);
 BOOL DVDClose(DVDFileInfo*);
-BOOL DVDChangeDir(char*);
-BOOL DVDFastOpen(s32 entrynum, DVDFileInfo* fileInfo);
 BOOL DVDReadAsyncPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, DVDCallback callback, s32 prio);
-s32 DVDConvertPathToEntrynum(char* pathPtr);
+s32 DVDReadPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, s32 prio);
+s32 DVDConvertPathToEntrynum(const char* pathPtr);
+BOOL DVDGetCurrentDir(char* path, u32 maxlen);
+s32 DVDGetCommandBlockStatus(const DVDCommandBlock* block);
+s32 DVDGetDriveStatus(void);
+BOOL DVDSetAutoInvalidation(BOOL autoInval);
+void DVDResume(void);
+BOOL DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback);
 s32 DVDCancel(DVDCommandBlock* block);
 s32 DVDGetDriveStatus(void);
-BOOL DVDOpenDir(char* dirName, DVDDir* dir);
-BOOL DVDCloseDir(DVDDir* dir);
-BOOL DVDReadDir(DVDDir* dir, DVDDirEntry* dirent);
+DVDDiskID* DVDGetCurrentDiskID(void);
+BOOL DVDCompareDiskID(const DVDDiskID* id1, const DVDDiskID* id2);
 
 #define DVDReadAsync(fileInfo, addr, length, offset, callback) \
     DVDReadAsyncPrio((fileInfo), (addr), (length), (offset), (callback), 2)

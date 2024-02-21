@@ -1,7 +1,7 @@
 #ifndef _MIPS_H
 #define _MIPS_H
 
-#include <dolphin/types.h>
+#include "dolphin.h"
 
 // __anon_0x39384
 typedef enum MipsInterruptType {

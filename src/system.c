@@ -1,15 +1,15 @@
-#include <dolphin/dvd.h>
-#include "macros.h"
-#include "xlObject.h"
 #include "system.h"
-#include "rom.h"
-#include "ram.h"
 #include "cpu.h"
+#include "dolphin.h"
+#include "macros.h"
 #include "mcard.h"
-#include "pif.h"
-#include "simGCN.h"
-#include "rsp.h"
 #include "mips.h"
+#include "pif.h"
+#include "ram.h"
+#include "rom.h"
+#include "rsp.h"
+#include "simGCN.h"
+#include "xlObject.h"
 
 //! TODO: move these declarations to the proper headers
 extern _XL_OBJECTTYPE gClassRdb;

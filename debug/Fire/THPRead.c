@@ -5,7 +5,7 @@
     Code range: 0x80011938 -> 0x80012F20
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // size = 0x4, address = 0x80135640
 static s32 ReadThreadCreated;

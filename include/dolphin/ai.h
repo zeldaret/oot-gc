@@ -1,17 +1,18 @@
 #ifndef _DOLPHIN_AI_H_
 #define _DOLPHIN_AI_H_
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
-typedef void (*AISCallback)(u32 count);
-typedef void (*AIDCallback)();
+typedef void (*AIDCallback)(void);
 
 AIDCallback AIRegisterDMACallback(AIDCallback);
 void AIInitDMA(u32 start_addr, u32 length);
+BOOL AIGetDMAEnableFlag(void);
 void AIStartDMA(void);
-AIDCallback AIRegisterStreamCallback(AIDCallback);
-u32 AIGetStreamSampleCount(void);
-void AIResetStreamSampleCount(void);
+void AIStopDMA(void);
+u32 AIGetDMABytesLeft(void);
+u32 AIGetDMAStartAddr(void);
+
 void AISetStreamPlayState(u32 state);
 u32 AIGetStreamPlayState(void);
 
@@ -20,7 +21,7 @@ u32 AIGetStreamPlayState(void);
 
 void AISetDSPSampleRate(u32 rate);
 u32 AIGetDSPSampleRate(void);
-void AISetStreamSampleRate(u32 rate);
+
 u32 AIGetStreamSampleRate(void);
 
 void AISetStreamVolLeft(u8 volume);

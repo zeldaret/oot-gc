@@ -40,7 +40,3 @@ lbl_80005E3C:
 .section .bss, "wa"
 
 .balign 4
-
-/* 000F0F9C 800F3F1C 0080 */
-glabel g_texMap
-    .skip 128

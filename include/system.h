@@ -1,9 +1,9 @@
 #ifndef _SYSTEM_H
 #define _SYSTEM_H
 
-#include <dolphin/types.h>
-#include "mips.h"
 #include "cpu.h"
+#include "dolphin.h"
+#include "mips.h"
 
 typedef s32 (*SystemCopyCallbackFunc)(void);
 

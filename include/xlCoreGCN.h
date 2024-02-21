@@ -1,7 +1,7 @@
 #ifndef _XL_CORE_GCN_H
 #define _XL_CORE_GCN_H
 
-#include <dolphin/types.h>
+#include "dolphin.h"
 
 void xlCoreBeforeRender(void);
 s32 xlCoreHiResolution(void);

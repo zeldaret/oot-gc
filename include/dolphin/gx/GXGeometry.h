@@ -1,11 +1,7 @@
 #ifndef _DOLPHIN_GX_GXGEOMETRY_H_
 #define _DOLPHIN_GX_GXGEOMETRY_H_
 
-#include <dolphin/gx/GXEnum.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "dolphin/gx/GXEnum.h"
 
 void GXSetVtxDesc(GXAttr attr, GXAttrType type);
 void GXClearVtxDesc(void);
@@ -22,9 +18,5 @@ void GXEnableTexOffsets(GXTexCoordID coord, GXBool line_enable, GXBool point_ena
 static inline void GXSetTexCoordGen(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc src_param, u32 mtx) {
     GXSetTexCoordGen2(dst_coord, func, src_param, mtx, GX_FALSE, GX_PTIDENTITY);
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

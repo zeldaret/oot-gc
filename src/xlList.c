@@ -1,6 +1,5 @@
-#include <dolphin/types.h>
-
 #include "xlList.h"
+#include "dolphin.h"
 #include "xlHeap.h"
 
 static tXL_LIST gListList;

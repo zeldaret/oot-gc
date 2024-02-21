@@ -5,7 +5,7 @@
     Code range: 0x80010D9C -> 0x80011138
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // size = 0x4, address = 0x80135638
 static s32 AudioDecodeThreadCreated;

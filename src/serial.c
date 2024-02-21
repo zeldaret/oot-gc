@@ -1,8 +1,8 @@
-#include "xlObject.h"
 #include "serial.h"
-#include "system.h"
-#include "ram.h"
 #include "cpu.h"
+#include "ram.h"
+#include "system.h"
+#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassSerial = {
     "SERIAL",

@@ -1,27 +1,20 @@
 #ifndef _DOLPHIN_OS_H_
 #define _DOLPHIN_OS_H_
 
-#include <dolphin/OSAlloc.h>
-#include <dolphin/OSCache.h>
-#include <dolphin/OSContext.h>
-#include <dolphin/OSInterrupt.h>
-#include <dolphin/OSModule.h>
-#include <dolphin/OSThread.h>
-#include <dolphin/OSMutex.h>
-#include <dolphin/OSFont.h>
-#include <dolphin/OSReset.h>
-#include <dolphin/OSResetSW.h>
-#include <dolphin/OSError.h>
-#include <dolphin/OSTime.h>
-#include <dolphin/OSStopwatch.h>
-#include <dolphin/OSSerial.h>
-#include <dolphin/OSRtc.h>
-
-// private macro, maybe shouldn't be defined here?
-#define OFFSET(addr, align) (((u32)(addr) & ((align)-1)))
-
-typedef s64 OSTime;
-typedef u32 OSTick;
+#include "dolphin/os/OSAlarm.h"
+#include "dolphin/os/OSAlloc.h"
+#include "dolphin/os/OSCache.h"
+#include "dolphin/os/OSContext.h"
+#include "dolphin/os/OSError.h"
+#include "dolphin/os/OSFont.h"
+#include "dolphin/os/OSInterrupt.h"
+#include "dolphin/os/OSModule.h"
+#include "dolphin/os/OSMutex.h"
+#include "dolphin/os/OSReset.h"
+#include "dolphin/os/OSResetSW.h"
+#include "dolphin/os/OSRtc.h"
+#include "dolphin/os/OSThread.h"
+#include "dolphin/os/OSTime.h"
 
 #define OS_BASE_CACHED 0x80000000
 #define OS_BASE_UNCACHED 0xC0000000
@@ -54,21 +47,28 @@ void* OSGetArenaLo(void);
 void OSSetArenaHi(void*);
 void OSSetArenaLo(void*);
 
-u32 OSGetPhysicalMemSize(void);
+typedef u8 __OSException;
+typedef void (*__OSExceptionHandler)(__OSException exception, OSContext* context);
 
-void __OSPSInit();
+__OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExceptionHandler handler);
+__OSExceptionHandler __OSGetExceptionHandler(__OSException exception);
+
+u32 OSGetConsoleType(void);
+void __OSPSInit(void);
+void __OSFPRInit(void);
+void OSRegisterVersion(const char* id);
 
 typedef struct OSCalendarTime {
-    /*0x00*/ int sec;
-    /*0x04*/ int min;
-    /*0x08*/ int hour;
-    /*0x0C*/ int mday;
-    /*0x10*/ int mon;
-    /*0x14*/ int year;
-    /*0x18*/ int wday;
-    /*0x1C*/ int yday;
-    /*0x20*/ int msec;
-    /*0x24*/ int usec;
+    /* 0x00 */ s32 sec;
+    /* 0x04 */ s32 min;
+    /* 0x08 */ s32 hour;
+    /* 0x0C */ s32 mday;
+    /* 0x10 */ s32 mon;
+    /* 0x14 */ s32 year;
+    /* 0x18 */ s32 wday;
+    /* 0x1C */ s32 yday;
+    /* 0x20 */ s32 msec;
+    /* 0x24 */ s32 usec;
 } OSCalendarTime;
 
 OSTick OSGetTick(void);
@@ -85,7 +85,7 @@ u32 OSGetSoundMode(void);
 void OSSetSoundMode(u32 mode);
 
 void OSReport(char*, ...);
-void OSPanic(char* file, int line, char* msg, ...);
+void OSPanic(char* file, s32 line, char* msg, ...);
 
 #define OSRoundUp32B(x) (((u32)(x) + 32 - 1) & ~(32 - 1))
 #define OSRoundDown32B(x) (((u32)(x)) & ~(32 - 1))
