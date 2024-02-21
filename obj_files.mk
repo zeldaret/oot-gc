@@ -8,31 +8,31 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/xlHeap.o               \
     $(BUILD_DIR)/asm/xlObject.o             \
     $(BUILD_DIR)/asm/simGCN.o               \
-    $(BUILD_DIR)/asm/movie.o                \
+    $(BUILD_DIR)/src/movie.o                \
     $(BUILD_DIR)/asm/THPPlayer.o            \
     $(BUILD_DIR)/asm/THPAudioDecode.o       \
     $(BUILD_DIR)/asm/THPDraw.o              \
     $(BUILD_DIR)/asm/THPRead.o              \
     $(BUILD_DIR)/asm/THPVideoDecode.o       \
     $(BUILD_DIR)/asm/mcardGCN.o             \
-    $(BUILD_DIR)/asm/codeGCN.o              \
+    $(BUILD_DIR)/src/codeGCN.o              \
     $(BUILD_DIR)/asm/soundGCN.o             \
     $(BUILD_DIR)/asm/frame.o                \
     $(BUILD_DIR)/src/system.o               \
     $(BUILD_DIR)/asm/cpu.o                  \
     $(BUILD_DIR)/asm/pif.o                  \
-    $(BUILD_DIR)/asm/ram.o                  \
+    $(BUILD_DIR)/src/ram.o                  \
     $(BUILD_DIR)/src/rom.o                  \
     $(BUILD_DIR)/asm/rdp.o                  \
     $(BUILD_DIR)/asm/rdb.o                  \
     $(BUILD_DIR)/asm/rsp.o                  \
     $(BUILD_DIR)/asm/mips.o                 \
-    $(BUILD_DIR)/asm/disk.o                 \
+    $(BUILD_DIR)/src/disk.o                 \
     $(BUILD_DIR)/asm/flash.o                \
-    $(BUILD_DIR)/asm/sram.o                 \
+    $(BUILD_DIR)/src/sram.o                 \
     $(BUILD_DIR)/asm/audio.o                \
     $(BUILD_DIR)/asm/video.o                \
-    $(BUILD_DIR)/asm/serial.o               \
+    $(BUILD_DIR)/src/serial.o               \
     $(BUILD_DIR)/asm/library.o              \
     $(BUILD_DIR)/asm/peripheral.o           \
     $(BUILD_DIR)/asm/_frameGCNcc.o          \

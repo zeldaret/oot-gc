@@ -1,76 +1,100 @@
-﻿// Location: 0x0
-long float _half$localstatic0$sqrtf__Ff;
+/*
+    Compile unit: C:\HOMEBOY\STEPHEN\Japanese Ocarina\Fire\mips.c
+    Producer: MW EABI PPC C-Compiler
+    Language: C++
+    Code range: 0x8008D248 -> 0x8008D788
+*/
 
-// Location: 0x0
-long float _three$localstatic1$sqrtf__Ff;
+#include <dolphin/types.h>
 
-// Location: 0x0
-long float _half$localstatic0$sqrt__Ff;
+typedef struct _XL_OBJECTTYPE {
+    /* 0x0 */ char* szName;
+    /* 0x4 */ s32 nSizeObject;
+    /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
+    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+} __anon_0x7322B; // size = 0x10
 
-// Location: 0x0
-long float _three$localstatic1$sqrt__Ff;
+// size = 0x10, address = 0x800EE6D0
+struct _XL_OBJECTTYPE gClassMips;
 
-// size: 0x10
-struct _XL_OBJECTTYPE
-{
-	char *szName; // 0x0
-	int nSizeObject; // 0x4
-	_XL_OBJECTTYPE *pClassBase; // 0x8
-	int (*pfEvent)(void */* unknown0 */, int /* unknown1 */, void */* unknown2 */); // 0xC
-};
+typedef struct __anon_0x7331D {
+    /* 0x0 */ s32 nMask;
+    /* 0x4 */ s32 nMode;
+    /* 0x8 */ void* pHost;
+    /* 0xC */ s32 nInterrupt;
+} __anon_0x7331D; // size = 0x10
 
-// Location: 0x800EE6D0
-_XL_OBJECTTYPE gClassMips;
+typedef enum __anon_0x736C0 {
+    MIT_NONE = -1,
+    MIT_SP = 0,
+    MIT_SI = 1,
+    MIT_AI = 2,
+    MIT_VI = 3,
+    MIT_PI = 4,
+    MIT_DP = 5,
+} __anon_0x736C0;
 
-// size: 0x10
-struct __anon_0x7331D
-{
-	int nMask; // 0x0
-	int nMode; // 0x4
-	void *pHost; // 0x8
-	int nInterrupt; // 0xC
-};
+// Range: 0x8008D69C -> 0x8008D788
+s32 mipsSetInterrupt(struct __anon_0x7331D* pMips, enum __anon_0x736C0 eType) {
+    // Parameters
+    // struct __anon_0x7331D* pMips; // r1+0x0
+    // enum __anon_0x736C0 eType; // r1+0x4
 
-int mipsEvent(__anon_0x7331D *pMips, int nEvent, void *pArgument);
-
-int mipsGet64();
-
-int mipsGet32(__anon_0x7331D *pMips, unsigned int nAddress, int *pData);
-
-int mipsGet16();
-
-int mipsGet8();
-
-int mipsPut64();
-
-int mipsPut32(__anon_0x7331D *pMips, unsigned int nAddress, int *pData)
-{
-	int nData;
+    // Local variables
+    s32 nInterrupt; // r5
 }
 
-int mipsPut16();
+// Range: 0x8008D5F8 -> 0x8008D69C
+s32 mipsResetInterrupt(struct __anon_0x7331D* pMips, enum __anon_0x736C0 eType) {
+    // Parameters
+    // struct __anon_0x7331D* pMips; // r1+0x0
+    // enum __anon_0x736C0 eType; // r1+0x4
 
-int mipsPut8();
-
-// size: 0x4
-enum __anon_0x736C0
-{
-	MIT_NONE = 4294967295,
-	MIT_SP = 0,
-	MIT_SI = 1,
-	MIT_AI = 2,
-	MIT_VI = 3,
-	MIT_PI = 4,
-	MIT_DP = 5
-};
-
-int mipsResetInterrupt(__anon_0x7331D *pMips, __anon_0x736C0 eType)
-{
-	int nInterrupt;
+    // Local variables
+    s32 nInterrupt; // r5
 }
 
-int mipsSetInterrupt(__anon_0x7331D *pMips, __anon_0x736C0 eType)
-{
-	int nInterrupt;
+// Range: 0x8008D5F0 -> 0x8008D5F8
+s32 mipsPut8() {}
+
+// Range: 0x8008D5E8 -> 0x8008D5F0
+s32 mipsPut16() {}
+
+// Range: 0x8008D3E0 -> 0x8008D5E8
+s32 mipsPut32(struct __anon_0x7331D* pMips, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x7331D* pMips; // r30
+    // u32 nAddress; // r1+0xC
+    // s32* pData; // r1+0x10
+
+    // Local variables
+    s32 nData; // r31
 }
 
+// Range: 0x8008D3D8 -> 0x8008D3E0
+s32 mipsPut64() {}
+
+// Range: 0x8008D3D0 -> 0x8008D3D8
+s32 mipsGet8() {}
+
+// Range: 0x8008D3C8 -> 0x8008D3D0
+s32 mipsGet16() {}
+
+// Range: 0x8008D360 -> 0x8008D3C8
+s32 mipsGet32(struct __anon_0x7331D* pMips, u32 nAddress, s32* pData) {
+    // Parameters
+    // struct __anon_0x7331D* pMips; // r1+0x0
+    // u32 nAddress; // r1+0x4
+    // s32* pData; // r1+0x8
+}
+
+// Range: 0x8008D358 -> 0x8008D360
+s32 mipsGet64() {}
+
+// Range: 0x8008D248 -> 0x8008D358
+s32 mipsEvent(struct __anon_0x7331D* pMips, s32 nEvent, void* pArgument) {
+    // Parameters
+    // struct __anon_0x7331D* pMips; // r30
+    // s32 nEvent; // r1+0xC
+    // void* pArgument; // r31
+}

@@ -1,10 +1,12 @@
 #ifndef _XL_CORE_GCN_H
 #define _XL_CORE_GCN_H
 
+#include <dolphin/types.h>
+
 void xlCoreBeforeRender(void);
-int xlCoreHiResolution(void);
-int xlCoreGetArgument(int iArgument, char** pszArgument);
-int xlCoreGetArgumentCount(void);
-int xlCoreReset(void);
+s32 xlCoreHiResolution(void);
+s32 xlCoreGetArgument(s32 iArgument, char** pszArgument);
+s32 xlCoreGetArgumentCount(void);
+s32 xlCoreReset(void);
 
 #endif
