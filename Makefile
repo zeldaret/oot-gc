@@ -119,7 +119,7 @@ format:
 	find include src -name '*.h' -o -name '*.c' | xargs clang-format -i
 
 # Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
-dol: $(DOL) compare
+dol: all $(DOL)
 
 .PHONY: all setup clean format dol distclean
 
