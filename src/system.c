@@ -8,20 +8,44 @@
 #include "pif.h"
 #include "simGCN.h"
 
+extern _XL_OBJECTTYPE gClassRdb;
+extern _XL_OBJECTTYPE gClassPeripheral;
+extern _XL_OBJECTTYPE gClassLibrary;
+extern _XL_OBJECTTYPE gClassSerial;
+extern _XL_OBJECTTYPE gClassVideo;
+extern _XL_OBJECTTYPE gClassAudio;
+extern _XL_OBJECTTYPE gClassDisk;
+extern _XL_OBJECTTYPE gClassMips;
+extern _XL_OBJECTTYPE gClassRDP;
+extern _XL_OBJECTTYPE gClassRSP;
+extern _XL_OBJECTTYPE gClassROM;
+extern _XL_OBJECTTYPE gClassRAM;
+extern _XL_OBJECTTYPE gClassPIF;
+extern _XL_OBJECTTYPE gClassCPU;
 extern _XL_OBJECTTYPE gClassFlash;
 extern _XL_OBJECTTYPE gClassSram;
-extern System* gpSystem;
+
+extern void* gpFrame;
+extern void* gpSound;
 
 extern s32 gz_bnrSize;
 extern s32 gz_iconSize;
+
 extern MemCard mCard;
 
-//! TODO: import sdk headers
-extern int atoi(const char* str);
+//! TODO: remove when these functions are matched
+static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData);
+static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData);
+static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData);
+static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData);
+static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData);
+static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
+static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
+static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
 
+s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
 s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
 s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
-
 s32 simulatorSetControllerMap(u32* mapData, s32 channel);
 s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
 s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
@@ -29,6 +53,9 @@ s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* 
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
+
+//! TODO: import MSL headers
+extern int atoi(const char* str);
 
 _XL_OBJECTTYPE gClassSystem = {
     "SYSTEM (N64)",
@@ -56,12 +83,6 @@ static u32 contMap[4][20] = {
     0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
 }; // size = 0x140
 // clang-format on
-
-void* jtbl_800EB460[] = {
-    (void*)0x8002CC70, (void*)0x8002CCBC, (void*)0x8002CD04, (void*)0x8002CD9C, (void*)0x8002CE0C, (void*)0x8002CE54,
-    (void*)0x8002CEC4, (void*)0x8002CF0C, (void*)0x8002CF7C, (void*)0x8002CF88, (void*)0x8002CF94, (void*)0x8002CFDC,
-    (void*)0x8002D024, (void*)0x8002D070, (void*)0x8002D090, (void*)0x8002D0DC,
-};
 
 SystemRomConfig gSystemRomConfigurationList[1];
 u32 nTickMultiplier = 2;
@@ -1490,43 +1511,8 @@ s32 systemExceptionPending(System* pSystem, SystemInterruptType nException) {
     return 0;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemEvent.s")
-#else
-extern _XL_OBJECTTYPE gClassRdb;
-extern _XL_OBJECTTYPE gClassPeripheral;
-extern _XL_OBJECTTYPE gClassLibrary;
-extern _XL_OBJECTTYPE gClassSerial;
-extern _XL_OBJECTTYPE gClassVideo;
-extern _XL_OBJECTTYPE gClassAudio;
-extern _XL_OBJECTTYPE gClassDisk;
-extern _XL_OBJECTTYPE gClassMips;
-extern _XL_OBJECTTYPE gClassRDP;
-extern _XL_OBJECTTYPE gClassRSP;
-extern _XL_OBJECTTYPE gClassROM;
-extern _XL_OBJECTTYPE gClassRAM;
-extern _XL_OBJECTTYPE gClassPIF;
-extern _XL_OBJECTTYPE gClassCPU;
-extern void* gpFrame;
-extern void* gpSound;
-
-static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData);
-static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData);
-static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData);
-static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData);
-static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData);
-static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
-static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
-static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
-
-s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
-
 inline s32 systemClearExceptions(System* pSystem) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r1+0x0
-
-    // Local variables
-    s32 iException; // r1+0x0
+    int iException;
 
     pSystem->bException = 0;
     for (iException = 0; iException < 16; iException++) {
@@ -1536,16 +1522,10 @@ inline s32 systemClearExceptions(System* pSystem) {
 }
 
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
-    // Parameters
-    // struct __anon_0x37240* pSystem; // r31
-    // s32 nEvent; // r1+0xC
-    // void* pArgument; // r26
-
-    // Local variables
-    Cpu* pCPU; // r30
-    SystemException exception; // r1+0x1C
-    SystemObjectType eObject; // r1+0x8
-    SystemObjectType storageDevice; // r1+0x8
+    Cpu* pCPU;
+    SystemException exception;
+    SystemObjectType eObject;
+    SystemObjectType storageDevice;
 
     switch (nEvent) {
         case 2:
@@ -1755,4 +1735,3 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
 
     return 1;
 }
-#endif
