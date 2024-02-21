@@ -78,8 +78,6 @@ static s32 gbProgress;
 static void* gpImageBack;
 static s32 iImage;
 
-extern System* gpSystem;
-
 static s32 romFindFreeCache(Rom* pROM, s32* piCache, RomCacheType eType) {
     s32 iBlock;
 

@@ -101,8 +101,17 @@ typedef enum __anon_0x61D7 {
     S_M_CARD_DEFAULT_ERROR = 47,
 } __anon_0x61D7;
 
+// __anon_0x57A1
+typedef struct Code {
+    /* 0x0 */ s32 nMode;
+} Code; // size = 0x4
+
 extern s32 gDVDResetToggle;
 extern s32 gbDisplayedError;
+
+extern void* gpFrame;
+extern void* gpSound;
+extern System* gpSystem;
 
 void simulatorUnpackTexPalette(__anon_0xDB69* pal);
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);

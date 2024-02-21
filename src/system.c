@@ -37,8 +37,6 @@ extern s32 gz_iconSize;
 
 extern MemCard mCard;
 
-extern System* gpSystem;
-
 //! TODO: remove when these functions are matched
 static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData);
 static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData);
