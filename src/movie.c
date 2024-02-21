@@ -3,11 +3,10 @@
 #include <dolphin/types.h>
 #include <dolphin/vi.h>
 #include "system.h"
+#include "simGCN.h"
 
 extern GXRenderModeObj* rmode;
 void* gBufferP;
-
-s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
 
 void MovieInit(void) {
     char* szText;

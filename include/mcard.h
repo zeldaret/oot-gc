@@ -101,4 +101,7 @@ typedef struct _MCARD {
     /* 0x7B4 */ s32 saveConfiguration;
 } MemCard; // size = 0x7B8
 
+s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
+              s32* defaultConfiguration, s32 fileSize, s32 gameSize);
+
 #endif

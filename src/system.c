@@ -1,3 +1,4 @@
+#include <dolphin/dvd.h>
 #include "macros.h"
 #include "xlObject.h"
 #include "system.h"
@@ -7,7 +8,10 @@
 #include "mcard.h"
 #include "pif.h"
 #include "simGCN.h"
+#include "rsp.h"
+#include "mips.h"
 
+//! TODO: move these declarations to the proper headers
 extern _XL_OBJECTTYPE gClassRdb;
 extern _XL_OBJECTTYPE gClassPeripheral;
 extern _XL_OBJECTTYPE gClassLibrary;
@@ -43,14 +47,6 @@ static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
 static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
 static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
 
-s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
-s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
-s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
-s32 simulatorSetControllerMap(u32* mapData, s32 channel);
-s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
-s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
-              s32* defaultConfiguration, s32 fileSize, s32 gameSize);
-
 //! TODO: import MSL headers
 extern int atoi(const char* str);
 
@@ -61,25 +57,36 @@ _XL_OBJECTTYPE gClassSystem = {
     (EventFunc)systemEvent,
 }; // size = 0x10
 
-// clang-format off
 static u32 contMap[4][20] = {
     // Controller 1
-    0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x00200000, 0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 
-    0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
- 
+    {
+        0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x00200000, 0x00100000, 0x20000000,
+        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000,
+        0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+
+    },
     // Controller 2
-    0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x20000000, 0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 
-    0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+    {
+        0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x20000000, 0x00100000, 0x20000000,
+        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000,
+        0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
 
+    },
     // Controller 3
-    0x80000000, 0x40000000, 0x00010000, 0x00020000, 0x20000000, 0x00100000, 0x00040000, 0x10000000, 0x08000000, 0x04000000, 
-    0x02000000, 0x01000000, 0x00200000, 0x00200000, 0x00200000, 0x00200000, 0x00080000, 0x00040000, 0x00020000, 0x00010000, 
+    {
+        0x80000000, 0x40000000, 0x00010000, 0x00020000, 0x20000000, 0x00100000, 0x00040000,
+        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00200000, 0x00200000,
+        0x00200000, 0x00200000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
 
+    },
     // Controller 4
-    0x80000000, 0x40000000, 0x00200000, 0x00000000, 0x20000000, 0x00100000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 
-    0x02000000, 0x01000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+    {
+        0x80000000, 0x40000000, 0x00200000, 0x00000000, 0x20000000, 0x00100000, 0x20000000,
+        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000,
+        0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+    },
+
 }; // size = 0x140
-// clang-format on
 
 SystemRomConfig gSystemRomConfigurationList[1];
 u32 nTickMultiplier = 2;
@@ -155,7 +162,7 @@ static s32 systemSetupGameRAM(System* pSystem) {
     }
 
     if (simulatorGetArgument(SAT_XTRA, &szExtra)) {
-        nSizeExtra = atoi((char*)szExtra) << 0x14;
+        nSizeExtra = atoi(szExtra) << 0x14;
 
         if (nSizeExtra > (s32)(nSizeCacheROM + 0xFFF00000)) {
             nSizeExtra = nSizeCacheROM + 0xFFF00000;
@@ -165,7 +172,7 @@ static s32 systemSetupGameRAM(System* pSystem) {
         nSizeCacheROM -= nSizeExtra;
     }
 
-    if (!ramSetSize(pSystem->apObject[SOT_RAM], nSizeRAM)) {
+    if (!ramSetSize(SYSTEM_RAM(pSystem), nSizeRAM)) {
         return 0;
     }
 
@@ -217,32 +224,36 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         // Ocarina of Time
         gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
 
-        if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == 49)) {
-            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
+        if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
+            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 1);
             } else {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 1);
             }
-        } else if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 1);
         } else {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 1);
+            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 1);
+            } else {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 1);
+            }
         }
 
     } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
         // Majora's Mask
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
 
-        if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == 49)) {
-            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
+        if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
+            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, 1);
             } else {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, 1);
             }
-        } else if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == 48)) {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 1);
         } else {
-            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 1);
+            if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, 1);
+            } else {
+                systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, 1);
+            }
         }
 
     } else if (romTestCode(pROM, "NPWE")) {
@@ -356,24 +367,32 @@ static s32 systemSetupGameALL(System* pSystem) {
         if (!systemSetStorageDevice(pSystem, SOT_SRAM)) {
             return 0;
         }
-    } else if (gSystemRomConfigurationList[i].storageDevice & 2) {
-        if (!systemSetStorageDevice(pSystem, SOT_FLASH)) {
-            return 0;
+    } else {
+        if (gSystemRomConfigurationList[i].storageDevice & 2) {
+            if (!systemSetStorageDevice(pSystem, SOT_FLASH)) {
+                return 0;
+            }
+        } else {
+            if (!systemSetStorageDevice(pSystem, SOT_NONE)) {
+                return 0;
+            }
         }
-    } else if (!systemSetStorageDevice(pSystem, SOT_NONE)) {
-        return 0;
     }
 
     if (gSystemRomConfigurationList[i].storageDevice & 4) {
         if (!pifSetEEPROMType(pPIF, CT_4K)) {
             return 0;
         }
-    } else if (gSystemRomConfigurationList[i].storageDevice & 8) {
-        if (!pifSetEEPROMType(pPIF, CT_16K)) {
-            return 0;
+    } else {
+        if (gSystemRomConfigurationList[i].storageDevice & 8) {
+            if (!pifSetEEPROMType(pPIF, CT_16K)) {
+                return 0;
+            }
+        } else {
+            if (!pifSetEEPROMType(pPIF, CT_NONE)) {
+                return 0;
+            }
         }
-    } else if (!pifSetEEPROMType(pPIF, CT_NONE)) {
-        return 0;
     }
 
     if (romTestCode(pROM, "NSME") || romTestCode(pROM, "NSMJ")) {
@@ -598,11 +617,13 @@ static s32 systemSetupGameALL(System* pSystem) {
             if (!cpuSetCodeHack(pCPU, 0x800BDC34, 0x860B000A, 0x5825)) {
                 return 0;
             }
-        } else if (!cpuSetCodeHack(pCPU, 0x80178A80, 0x95630000, -1)) {
-            return 0;
+        } else {
+            if (!cpuSetCodeHack(pCPU, 0x80178A80, 0x95630000, -1)) {
+                return 0;
+            }
         }
 
-        pCPU->nCompileFlag = (s32)(pCPU->nCompileFlag | 0x1010);
+        pCPU->nCompileFlag |= 0x1010;
     } else if (romTestCode(pROM, "NPWE")) {
         // Pilotwings 64
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
@@ -1268,7 +1289,7 @@ static s32 __systemCopyROM_Complete(void) {
     return 1;
 }
 
-s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback) {
+s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback) {
     void* pTarget;
 
     pSystem->romCopy.nSize = nSize;
@@ -1388,8 +1409,7 @@ s32 systemReset(System* pSystem) {
             return 0;
         }
 
-        eObject = SOT_CPU;
-        for (; eObject < SOT_COUNT; eObject++) {
+        for (eObject = 0; eObject < SOT_COUNT; eObject++) {
             if (pSystem->apObject[eObject] != NULL && !xlObjectEvent(pSystem->apObject[eObject], 0x1003, NULL)) {
                 return 0;
             }
@@ -1534,20 +1554,20 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             pSystem->pFrame = gpFrame;
             pSystem->pSound = gpSound;
 
-            for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
+            for (eObject = 0; eObject < SOT_COUNT; eObject++) {
                 pSystem->apObject[eObject] = NULL;
             }
 
             systemClearExceptions(pSystem);
 
-            for (eObject = SOT_CPU; eObject < SOT_COUNT; eObject++) {
+            for (eObject = 0; eObject < SOT_COUNT; eObject++) {
                 switch (eObject) {
                     case SOT_CPU:
                         if (!xlObjectMake(&pSystem->apObject[SOT_CPU], pSystem, &gClassCPU)) {
                             return 0;
                         }
                         pCPU = (Cpu*)pSystem->apObject[SOT_CPU];
-                        if (!cpuMapObject(pCPU, pSystem, 0, -1, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem, 0, 0xFFFFFFFF, 0)) {
                             return 0;
                         }
                         break;
@@ -1648,7 +1668,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         if (!xlObjectMake(&pSystem->apObject[SOT_SERIAL], pSystem, &gClassSerial)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_SERIAL], 0x04800000, 0x04900000 - 1, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_SERIAL], 0x04800000, 0x048FFFFF, 0)) {
                             return 0;
                         }
                         break;
@@ -1661,7 +1681,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         if (!xlObjectMake(&pSystem->apObject[SOT_PERIPHERAL], pSystem, &gClassPeripheral)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PERIPHERAL], 0x04600000, 0x04700000 - 1, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_PERIPHERAL], 0x04600000, 0x046FFFFF, 0)) {
                             return 0;
                         }
                         break;
@@ -1669,7 +1689,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
                         if (!xlObjectMake(&pSystem->apObject[SOT_RDB], pSystem, &gClassRdb)) {
                             return 0;
                         }
-                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDB], 0x04900000, 0x04910000 - 1, 0)) {
+                        if (!cpuMapObject(pCPU, pSystem->apObject[SOT_RDB], 0x04900000, 0x0490FFFF, 0)) {
                             return 0;
                         }
                         break;
@@ -1679,7 +1699,7 @@ s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             }
             break;
         case 3:
-            for (storageDevice = SOT_CPU; storageDevice < SOT_COUNT; storageDevice++) {
+            for (storageDevice = 0; storageDevice < SOT_COUNT; storageDevice++) {
                 if ((storageDevice != SOT_FLASH) && (storageDevice != SOT_SRAM)) {
                     if (!xlObjectFree(&pSystem->apObject[storageDevice])) {
                         return 0;

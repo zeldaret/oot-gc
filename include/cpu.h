@@ -276,6 +276,7 @@ struct Cpu {
 
 s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi);
 s32 cpuReset(Cpu* pCPU);
+s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
 
 s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
                     Put64Func pfPut64);

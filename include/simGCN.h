@@ -5,7 +5,7 @@
 #include <dolphin/gx.h>
 #include "system.h"
 
-// missing from the sdk?
+//! TODO: missing from the sdk?
 // __anon_0xBEA
 typedef enum _GXTlutFmt {
     GX_TL_IA8 = 0,
@@ -54,7 +54,10 @@ extern s32 gbDisplayedError;
 
 extern System* gpSystem;
 
-s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
 void simulatorUnpackTexPalette(__anon_0xDB69* pal);
+s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
+s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
+s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
+s32 simulatorSetControllerMap(u32* mapData, s32 channel);
 
 #endif

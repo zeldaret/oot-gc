@@ -5,7 +5,7 @@
 #include "mips.h"
 #include "cpu.h"
 
-typedef s32 SystemCopyCallbackFunc(void);
+typedef s32 (*SystemCopyCallbackFunc)(void);
 
 // __anon_0x394CD
 typedef enum SystemMode {
@@ -54,17 +54,18 @@ typedef enum SystemObjectType {
     SOT_COUNT = 16,
 } SystemObjectType;
 
+// __anon_0xA982
 typedef enum SystemArgumentType {
-    /* -1 */ SAT_NONE = -1,
-    /*  0 */ SAT_NAME,
-    /*  1 */ SAT_PROGRESSIVE,
-    /*  2 */ SAT_VIBRATION,
-    /*  3 */ SAT_CONTROLLER,
-    /*  4 */ SAT_XTRA,
-    /*  5 */ SAT_MEMORYCARD,
-    /*  6 */ SAT_MOVIE,
-    /*  7 */ SAT_RESET,
-    /*  8 */ SAT_COUNT
+    SAT_NONE = -1,
+    SAT_NAME = 0,
+    SAT_PROGRESSIVE = 1,
+    SAT_VIBRATION = 2,
+    SAT_CONTROLLER = 3,
+    SAT_XTRA = 4,
+    SAT_MEMORYCARD = 5,
+    SAT_MOVIE = 6,
+    SAT_RESET = 7,
+    SAT_COUNT = 8
 } SystemArgumentType;
 
 // __anon_0x3979C
@@ -103,7 +104,7 @@ typedef struct SystemRomCopy {
     /* 0x00 */ s32 nSize;
     /* 0x04 */ s32 nOffsetRAM;
     /* 0x08 */ s32 nOffsetROM;
-    /* 0x0C */ SystemCopyCallbackFunc* pCallback;
+    /* 0x0C */ SystemCopyCallbackFunc pCallback;
 } SystemRomCopy; // size = 0x10
 
 // __anon_0x37240
@@ -131,14 +132,7 @@ typedef struct SystemRomConfig {
     /* 0x0170 */ s32 currentControllerConfig;
 } SystemRomConfig; // size = 0x174
 
-#define SYSTEM_CPU(pSystem) ((struct Cpu*)(((System*)(pSystem))->apObject[SOT_CPU]))
-#define SYSTEM_PIF(pSystem) ((struct Pif*)(((System*)(pSystem))->apObject[SOT_PIF]))
-#define SYSTEM_RAM(pSystem) ((struct Ram*)(((System*)(pSystem))->apObject[SOT_RAM]))
-#define SYSTEM_ROM(pSystem) ((struct Rom*)(((System*)(pSystem))->apObject[SOT_ROM]))
-#define SYSTEM_RSP(pSystem) ((struct Rsp*)(((System*)(pSystem))->apObject[SOT_RSP]))
-#define SYSTEM_MIPS(pSystem) ((struct Mips*)(((System*)(pSystem))->apObject[SOT_MIPS]))
-
-s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc* pCallback);
+s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback);
 s32 systemSetMode(System* pSystem, SystemMode eMode);
 s32 systemGetMode(System* pSystem, SystemMode* peMode);
 s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
