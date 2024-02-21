@@ -13,10 +13,36 @@
 #define GQR6 0x396
 #define GQR7 0x397
 
-void PPCHalt(void);
+u32 PPCMfmsr(void);
+void PPCMtmsr(u32 newMsr);
+
+u32 PPCMfhid0(void);
+void PPCMthid0(u32 newHid0);
+
+u32 PPCMfl2cr(void);
+void PPCMtl2cr(u32 newL2cr);
+
+u32 PPCMtdec(u32 newDec);
+
 void PPCSync(void);
-void PPCMthid2(u32 newhid2);
+void PPCHalt(void);
+
+void PPCMtmmcr0(u32 newMmcr0);
+void PPCMtmmcr1(u32 newMmcr1);
+void PPCMtpmc1(u32 newPmc1);
+void PPCMtpmc2(u32 newPmc2);
+void PPCMtpmc3(u32 newPmc3);
+void PPCMtpmc4(u32 newPmc4);
+
+u32 PPCMffpscr(void);
+void PPCMtfpscr(u32 newFpscr);
+
 u32 PPCMfhid2(void);
-void PPCMtwpar(u32 newwpar);
+void PPCMthid2(u32 newHid2);
+
+void PPCMtwpar(u32 newWpar);
+
+void PPCDisableSpeculation(void);
+void PPCSetFpNonIEEEMode(void);
 
 #endif
