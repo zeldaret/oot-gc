@@ -852,6 +852,18 @@ def parse_source(f, opt, framepointer, input_enc, output_enc, print_source=None)
                 output_lines[-1] = ''.join(src)
                 asm_functions.append(fn)
                 global_asm = None
+            elif line.startswith('#pragma INCBIN(') and line.endswith(')'):
+                args = line[line.index('(') + 1 : -1]
+                parts = args.split(',')
+                if len(parts) != 3:
+                    self.fail("expected 3 arguments to INCBIN", line)
+                filename = parts[0].strip()[1:-1]
+                start = int(parts[1].strip(), 0)
+                size = int(parts[2].strip(), 0)
+                with open(filename, 'rb') as f:
+                    f.seek(start)
+                    data = f.read(size)
+                output_lines[-1] = ', '.join(f'0x{b:02X}' for b in data)
             elif ((line.startswith('#include "')) and line.endswith('" EARLY')):
                 # C includes qualified with EARLY (i.e. #include "file.c" EARLY) will be
                 # processed recursively when encountered
