@@ -7,6 +7,7 @@
 #define GX_MAX_Z24 0x00ffffff
 
 extern GXRenderModeObj GXNtsc480IntDf;
+extern GXRenderModeObj GXNtsc480Prog;
 extern GXRenderModeObj GXMpal480IntDf;
 extern GXRenderModeObj GXPal528IntDf;
 extern GXRenderModeObj GXEurgb60Hz480IntDf;

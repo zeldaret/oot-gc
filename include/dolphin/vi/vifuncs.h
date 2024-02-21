@@ -2,8 +2,8 @@
 #define _DOLPHIN_VIFUNCS_H_
 
 #include "dolphin/gx/GXStruct.h"
-#include "dolphin/vi/vitypes.h"
 #include "dolphin/types.h"
+#include "dolphin/vi/vitypes.h"
 
 void VIInit(void);
 void VIConfigure(GXRenderModeObj* rm);
