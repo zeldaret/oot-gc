@@ -9,6 +9,8 @@ static tXL_LIST gListList;
 #pragma GLOBAL_ASM("asm/non_matchings/xlList/xlListMake.s")
 #else
 s32 xlListMake(tXL_LIST** ppList, s32 nItemSize) {
+    nItemSize = (nItemSize + 3) & ~3;
+
     if (xlListMakeItem(&gListList, ppList)) {
         (*ppList)->nItemCount = 0;
         (*ppList)->nItemSize = nItemSize;

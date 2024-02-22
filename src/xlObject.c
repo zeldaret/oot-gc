@@ -8,39 +8,29 @@ static struct tXL_LIST* gpListData;
 #else
 #endif
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlObject/xlObjectFree.s")
-#else
 s32 xlObjectFree(void** ppObject) {
-    __anon_0x5062* pData;
+    if (ppObject != NULL && *ppObject != NULL) {
+        __anon_0x5062* pData = *(__anon_0x5062**)((u8*)*ppObject - 4);
 
-    if (ppObject != NULL) {
-        if (*ppObject != NULL) {
-            pData = (__anon_0x5062*)((__anon_0x5062*)*ppObject)->pList;
-            pData->pType->pfEvent(pData->pType, 3, NULL);
-            *ppObject = (void*)((s32)ppObject - 4);
+        pData->pType->pfEvent(*ppObject, 3, NULL);
+        *ppObject = (void*)((u8*)*ppObject - 4);
 
-            if (xlListFreeItem(pData->pList, ppObject) == 0) {
-                return 0;
-            }
-
-            *ppObject = NULL;
-            return 1;
+        if (xlListFreeItem(pData->pList, ppObject) == 0) {
+            return 0;
         }
+
+        *ppObject = NULL;
+        return 1;
     }
 
     return 0;
 }
-#endif
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlObject/xlObjectTest.s")
-#else
 s32 xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType) {
     __anon_0x5062* pData;
 
     if (pObject != NULL) {
-        pData = (__anon_0x5062*)((__anon_0x5062*)pObject)->pType;
+        pData = *(__anon_0x5062**)((u8*)pObject - 4);
 
         if (xlListTestItem(gpListData, pData) && pData->pType == pType) {
             return 1;
@@ -50,30 +40,33 @@ s32 xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType) {
     return 0;
 }
 
-#endif
-
+// regalloc
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/xlObject/xlObjectEvent.s")
 #else
-s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
-    s32 var_r0;
-    void* temp_r29;
-    void* temp_r30;
-    void* temp_r31;
+inline s32 xlObjectTestClass(void* pObject, __anon_0x5062* pData2) {
+    __anon_0x5062* pData;
+    tXL_LIST* pList = pData2->pList;
 
     if (pObject != NULL) {
-        temp_r29 = pObject->unk-4;
-        if (xlListTestItem(gpListData, temp_r29)) {
-            temp_r30 = temp_r29->unk4;
-
-            if ((pObject != NULL) && (temp_r31 = *(pObject - 4), ((xlListTestItem(gpListData, temp_r31) == 0) == 0)) && ((u32) temp_r31->unk4 == temp_r30)) {
-                var_r0 = 1;
-            } else {
-                var_r0 = 0;
+        pData = *(__anon_0x5062**)((u8*)pObject - 4);
+        if (xlListTestItem(gpListData, pData)) {
+            if (pData->pList == pList) {
+                return 1;
             }
+        }
+    }
 
-            if (var_r0 != 0) {
-                return temp_r29->unk4->unkC(pObject, nEvent, pArgument);
+    return 0;
+}
+
+s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
+    if (pObject != NULL) {
+        __anon_0x5062* pData = *(__anon_0x5062**)((u8*)pObject - 4);
+
+        if (xlListTestItem(gpListData, pData)) {
+            if (xlObjectTestClass(pObject, pData)) {
+                return pData->pType->pfEvent(pObject, nEvent, pArgument);
             }
         }
     }
