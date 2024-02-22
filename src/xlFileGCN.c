@@ -1,8 +1,8 @@
+#include "dolphin.h"
 #include "xlFileGCN.h"
 #include "xlObject.h"
+#include "xlHeap.h"
 
-//! TODO: missing from the sdk?
-s32 DVDReadPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, s32 prio);
 
 _XL_OBJECTTYPE gTypeFile = {
     "FILE",
@@ -84,45 +84,50 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
     // void* pTarget; // r28
     // s32 nSizeBytes; // r29
 
-    s32 nOffset; // r6
-    s32 nOffsetExtra; // r1+0x8
+    // Local variables
+    // s32 nOffset; // r6
+    // s32 nOffsetExtra; // r1+0x8
+
+    s32 temp_r31;
+    s32 temp_r3;
     s32 nSize; // r5
     s32 nSizeUsed; // r30
 
-    nSizeBytes = nSizeBytes;
-    nOffsetExtra = pFile->nOffset;
+    // References
+    // -> static s32 (* gpfRead)(struct DVDFileInfo*, void*, s32, s32, void (*)(s32, struct DVDFileInfo*));
+
+    pTarget = pTarget;
+    temp_r3 = pFile->nOffset;
     nSize = pFile->nSize;
 
-    if ((nOffsetExtra + nSizeBytes) > nSize) {
-        nSizeBytes = nSize - nOffsetExtra;
+    if ((temp_r3 + nSizeBytes) > nSize) {
+        nSizeBytes = nSize - temp_r3;
     }
 
     if (nSizeBytes == 0) {
-        *(s8*)(pTarget) = -1;
+        *(s8*)pTarget = 0xFFFFFFFF;
         return 0;
     }
 
-    for (; nSizeBytes != 0;) {
+    for (nSizeBytes; nSizeBytes != 0; ) {
         nSizeUsed = nSizeBytes;
-
         if (nSizeUsed > 0x1000) {
             nSizeUsed = 0x1000;
         }
 
-        nOffset = pFile->nOffset & 0xFFFFFFFC;
-        // nSizeBytes = nSizeBytes & 0xFFFFFFFC;
+        temp_r31 = pFile->nOffset & 0xFFFFFFFC;
 
         if (gpfRead != NULL) {
-            gpfRead(&pFile->info, pFile->pData, nSizeBytes, ((s32)pFile->pBuffer + nOffset), NULL);
+            gpfRead(&pFile->info, pFile->pData, nSizeUsed, (s32)pFile->pBuffer, NULL);
         } else {
-            DVDReadPrio(&pFile->info, pFile->pData, nSizeBytes, ((s32)pFile->pBuffer + nOffset), 2);
+            DVDReadPrio(&pFile->info, pFile->pData, nSizeUsed, (s32)pFile->pBuffer, 2);
         }
 
-        if (!xlHeapCopy(pTarget, (void*)((s32)pFile->pBuffer + nOffset), nSizeUsed)) {
+        if (!xlHeapCopy(pTarget, (void*)((s32)pFile->pBuffer + temp_r31), nSizeUsed)) {
             return 0;
         }
 
-        *(s32*)(pTarget) += nSizeUsed;
+        pTarget = (void*)((s32)pTarget + nSizeUsed);
         nSizeBytes -= nSizeUsed;
         pFile->nOffset += nSizeUsed;
     }
