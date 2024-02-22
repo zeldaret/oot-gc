@@ -532,11 +532,6 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     NO_INLINE;
 }
 
-// stack issues
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorResetAndPlayMovie.s")
-#else
-s32 movieTestReset(s32 IPL, s32 forceMenu);
 inline void simulatorUnknownInline() {
     if (DemoStatEnable != 0) {
         GXDrawDone();
@@ -562,8 +557,10 @@ inline void simulatorUnknownInline() {
 }
 
 void simulatorResetAndPlayMovie(void) {
+    int pad1;
     GXColor color; // r1+0x14
     GXRenderModeObj* simrmode; // r31
+    int pad2;
 
     simrmode = rmode;
     simulatorResetInit();
@@ -594,7 +591,6 @@ void simulatorResetAndPlayMovie(void) {
         movieTestReset(0, 0);
     }
 }
-#endif
 
 s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
     s32 i;
