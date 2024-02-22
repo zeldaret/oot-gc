@@ -708,18 +708,11 @@ inline s32 simulatorTestResetUnknownInline(u32 nTick) {
 }
 
 s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
-    // Parameters
-    // s32 IPL; // r24
-    // s32 forceMenu; // r25
-    // s32 allowReset; // r26
-    // s32 usePreviousSettings; // r27
-
-    // Local variables
-    u32 bFlag; // r1+0x8
-    u32 nTick; // r1+0x8
-    s32 prevIPLSetting; // r28
-    s32 prevForceMenuSetting; // r27
-    s32 prevAllowResetSetting; // r1+0x8
+    u32 bFlag;
+    u32 nTick;
+    s32 prevIPLSetting;
+    s32 prevForceMenuSetting;
+    s32 prevAllowResetSetting;
 
     nTick = OSGetTick();
     prevAllowResetSetting = gPreviousAllowResetSetting;
