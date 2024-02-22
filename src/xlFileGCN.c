@@ -75,66 +75,43 @@ s32 xlFileClose(tXL_FILE** ppFile) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlFileGCN/xlFileGet.s")
-#else
 s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
-    // Parameters
-    // struct tXL_FILE* pFile; // r27
-    // void* pTarget; // r28
-    // s32 nSizeBytes; // r29
+    s32 nOffset;
+    s32 nOffsetExtra;
+    s32 nSize;
+    s32 nSizeUsed; 
 
-    // Local variables
-    // s32 nOffset; // r6
-    // s32 nOffsetExtra; // r1+0x8
-
-    s32 temp_r31;
-    s32 temp_r3;
-    s32 nSize; // r5
-    s32 nSizeUsed; // r30
-
-    // References
-    // -> static s32 (* gpfRead)(struct DVDFileInfo*, void*, s32, s32, void (*)(s32, struct DVDFileInfo*));
-
-    pTarget = pTarget;
-    temp_r3 = pFile->nOffset;
+    nOffset = pFile->nOffset;
     nSize = pFile->nSize;
-
-    if ((temp_r3 + nSizeBytes) > nSize) {
-        nSizeBytes = nSize - temp_r3;
+    if (nOffset + nSizeBytes > nSize) {
+        nSizeBytes = nSize - nOffset;
     }
-
     if (nSizeBytes == 0) {
-        *(s8*)pTarget = 0xFFFFFFFF;
+        *(s8*)pTarget = 0xFF;
         return 0;
     }
-
     for (nSizeBytes; nSizeBytes != 0; ) {
         nSizeUsed = nSizeBytes;
         if (nSizeUsed > 0x1000) {
             nSizeUsed = 0x1000;
         }
-
-        temp_r31 = pFile->nOffset & 0xFFFFFFFC;
-
-        if (gpfRead != NULL) {
-            gpfRead(&pFile->info, pFile->pData, nSizeUsed, (s32)pFile->pBuffer, NULL);
+        nOffset = pFile->nOffset & 0xFFFFFFFC;
+        nOffsetExtra = pFile->nOffset & 0x3;
+        nSize = (nSizeUsed + nOffsetExtra + 0x1F) & 0xFFFFFFE0;
+        if (gpfRead != (void*)0) {
+            gpfRead(pFile->pData, pFile->pBuffer, nSize, nOffset, (void*)0);
         } else {
-            DVDReadPrio(&pFile->info, pFile->pData, nSizeUsed, (s32)pFile->pBuffer, 2);
+            DVDReadPrio(pFile->pData, pFile->pBuffer, nSize, nOffset, 2);
         }
-
-        if (!xlHeapCopy(pTarget, (void*)((s32)pFile->pBuffer + temp_r31), nSizeUsed)) {
+        if (!xlHeapCopy(pTarget, (void*)((u8*)pFile->pBuffer + nOffsetExtra), nSizeUsed)) {
             return 0;
         }
-
         pTarget = (void*)((s32)pTarget + nSizeUsed);
         nSizeBytes -= nSizeUsed;
         pFile->nOffset += nSizeUsed;
     }
-
     return 1;
 }
-#endif
 
 s32 xlFileSetPosition(tXL_FILE* pFile, s32 nOffset) {
     if ((nOffset >= 0) && (nOffset < pFile->nSize)) {
