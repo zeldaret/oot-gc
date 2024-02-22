@@ -305,7 +305,7 @@ const f32 D_80135D64 = 10000.0;
 const f32 D_80135D68 = 160.0;
 const f32 D_80135D6C = 120.0;
 
-// match but data don't
+// matches but data doesn't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorGXInit.s")
 #else
@@ -392,47 +392,47 @@ s32 simulatorGXInit(void) {
         GXSetTevSwapMode(i, GX_TEV_SWAP0, GX_TEV_SWAP0);
     }
 
-    GXSetTevSwapModeTable(0, 0, 1, 2, 3);
-    GXSetTevSwapModeTable(1, 0, 0, 0, 3);
-    GXSetTevSwapModeTable(2, 1, 1, 1, 3);
-    GXSetTevSwapModeTable(3, 2, 2, 2, 3);
+    GXSetTevSwapModeTable(GX_TEV_SWAP0, GX_CH_RED, GX_CH_GREEN, GX_CH_BLUE, GX_CH_ALPHA);
+    GXSetTevSwapModeTable(GX_TEV_SWAP1, GX_CH_RED, GX_CH_RED, GX_CH_RED, GX_CH_ALPHA);
+    GXSetTevSwapModeTable(GX_TEV_SWAP2, GX_CH_GREEN, GX_CH_GREEN, GX_CH_GREEN, GX_CH_ALPHA);
+    GXSetTevSwapModeTable(GX_TEV_SWAP3, GX_CH_BLUE, GX_CH_BLUE, GX_CH_BLUE, GX_CH_ALPHA);
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < GX_MAX_TEVSTAGE; i++) {
         GXSetTevDirect(i);
     }
 
     GXSetNumIndStages(0);
-    GXSetIndTexCoordScale(0, 0, 0);
-    GXSetIndTexCoordScale(1, 0, 0);
-    GXSetIndTexCoordScale(2, 0, 0);
-    GXSetIndTexCoordScale(3, 0, 0);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE0, GX_ITS_1, GX_ITS_1);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE1, GX_ITS_1, GX_ITS_1);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE2, GX_ITS_1, GX_ITS_1);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE3, GX_ITS_1, GX_ITS_1);
 
-    GXSetFog(0, 0.0f, 1.0f, 0.10000000149011612f, 1.0f, BLACK);
-    GXSetFogRangeAdj(0, 0, 0);
-    GXSetBlendMode(0, 4, 5, 0);
-    GXSetColorUpdate(1);
-    GXSetAlphaUpdate(1);
-    GXSetZMode(1, 3, 1);
-    GXSetZCompLoc(1);
-    GXSetDither(1);
-    GXSetDstAlpha(0, 0);
-    GXSetPixelFmt(0, 0);
-    GXSetFieldMask(1, 1);
+    GXSetFog(GX_FOG_NONE, 0.0f, 1.0f, 0.10000000149011612f, 1.0f, BLACK);
+    GXSetFogRangeAdj(GX_DISABLE, 0, NULL);
+    GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
+    GXSetColorUpdate(GX_ENABLE);
+    GXSetAlphaUpdate(GX_ENABLE);
+    GXSetZMode(GX_ENABLE, GX_LEQUAL, GX_ENABLE);
+    GXSetZCompLoc(GX_ENABLE);
+    GXSetDither(GX_ENABLE);
+    GXSetDstAlpha(GX_DISABLE, 0);
+    GXSetPixelFmt(GX_DISABLE, GX_ZC_LINEAR);
+    GXSetFieldMask(GX_ENABLE, GX_ENABLE);
 
     GXSetCopyClear(GX_DEFAULT_BG, 0xFFFFFF);
-    GXSetCopyClamp(3);
-    GXSetDispCopyGamma(0);
-    GXSetDispCopyFrame2Field(0);
+    GXSetCopyClamp(3); // missing enum?
+    GXSetDispCopyGamma(GX_GM_1_0);
+    GXSetDispCopyFrame2Field(GX_COPY_PROGRESSIVE);
     GXClearBoundingBox();
-    GXPokeColorUpdate(1);
-    GXPokeAlphaUpdate(1);
-    GXPokeDither(0);
-    GXPokeBlendMode(0, 0, 1, 0xF);
-    GXPokeAlphaMode(7, 0);
-    GXPokeAlphaRead(1);
-    GXPokeDstAlpha(0, 0);
-    GXPokeZMode(1, 7, 1);
-    GXSetGPMetric(0x23, 0x16);
+    GXPokeColorUpdate(GX_ENABLE);
+    GXPokeAlphaUpdate(GX_ENABLE);
+    GXPokeDither(GX_DISABLE);
+    GXPokeBlendMode(GX_BM_NONE, GX_BL_ZERO, GX_BL_ONE, GX_LO_SET);
+    GXPokeAlphaMode(GX_ALWAYS, 0);
+    GXPokeAlphaRead(GX_READ_FF);
+    GXPokeDstAlpha(GX_DISABLE, 0);
+    GXPokeZMode(GX_ENABLE, GX_ALWAYS, GX_ENABLE);
+    GXSetGPMetric(GX_PERF0_NONE, GX_PERF0_TRIANGLES_7TEX);
     GXClearGPMetric();
 
     return 1;
@@ -558,8 +558,8 @@ inline void simulatorUnknownInline() {
 
 void simulatorResetAndPlayMovie(void) {
     int pad1;
-    GXColor color; // r1+0x14
-    GXRenderModeObj* simrmode; // r31
+    GXColor color;
+    GXRenderModeObj* simrmode;
     int pad2;
 
     simrmode = rmode;
@@ -704,7 +704,7 @@ s32 simulatorRumbleStop(s32 channel) {
     return 1;
 }
 
-// function match but data don't
+// matches but data doesn't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorTestReset.s")
 #else
