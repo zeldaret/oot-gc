@@ -113,9 +113,9 @@ extern void* gpSound;
 extern System* gpSystem;
 
 void simulatorUnpackTexPalette(__anon_0xDB69* pal);
-s32 simulatorDVDOpen(char* szNameFile, struct DVDFileInfo* pFileInfo);
-s32 simulatorDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset,
-                     void (*callback)(s32, struct DVDFileInfo*));
+s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
+s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset,
+                     void (*callback)(s32, DVDFileInfo*));
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
 s32 simulatorReadSRAM(u32 address, u8* data, s32 size);
 s32 simulatorWriteSRAM(u32 address, u8* data, s32 size);
