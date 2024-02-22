@@ -521,9 +521,11 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     OSResetSystem(0, 0, 0);
 }
 
+// stack/regalloc
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorResetAndPlayMovie.s")
 #else
+s32 movieTestReset(s32 IPL, s32 forceMenu);
 inline void simulatorUnknownInline() {
     if (DemoStatEnable != 0) {
         GXDrawDone();
@@ -562,7 +564,7 @@ void simulatorResetAndPlayMovie(void) {
     DEMOInit(NULL);
     rmode = simrmode;
     VISetBlack(1);
-    AIInit(0);
+    AIInit(NULL);
     GXSetCopyClear(color, 0);
     MovieInit();
 
@@ -603,23 +605,29 @@ s32 simulatorDetectController(s32 channel) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadPak.s")
-#else
 s32 simulatorReadPak(s32 channel, u16 address, u8* data) {
     ControllerType type;
 
-    pifGetEControllerType(channel, channel, &type);
+    pifGetEControllerType(SYSTEM_PIF(gpSystem), channel, &type);
 
     if (type == CT_CONTROLLER_W_RPAK) {
-        pifReadRumble(SYSTEM_PIF(gpSystem), address, (u8*)channel);
+        pifReadRumble(SYSTEM_PIF(gpSystem), channel, address, data);
     }
 
     return 1;
 }
-#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorWritePak.s")
+s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
+    ControllerType type;
+
+    pifGetEControllerType(SYSTEM_PIF(gpSystem), channel, &type);
+
+    if (type == CT_CONTROLLER_W_RPAK) {
+        pifWriteRumble(SYSTEM_PIF(gpSystem), channel, address, data);
+    }
+
+    return 1;
+}
 
 s32 simulatorReadEEPROM(u8 address, u8* data) {
     s32 size;
