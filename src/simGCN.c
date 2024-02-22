@@ -465,7 +465,7 @@ s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nO
             DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
 
             while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
-                if (!simulatorDVDShowError(nStatus, (u32*)anData, nSizeRead, nOffset)) {
+                if (!simulatorDVDShowError(nStatus, (u8*)anData, nSizeRead, nOffset)) {
                     return 0;
                 }
 
