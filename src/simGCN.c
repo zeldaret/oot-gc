@@ -596,11 +596,8 @@ s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorCopyControllerMap.s")
-#else
 s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
-    s32 i;
+    int i;
 
     for (i = 0; i < 20; i++) {
         mapDataOutput[i] = mapDataInput[i];
@@ -608,7 +605,6 @@ s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
 
     return 1;
 }
-#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadController.s")
 
@@ -702,7 +698,7 @@ s32 simulatorRumbleStop(s32 channel) {
     return 1;
 }
 
-// regalloc
+// function match but data don't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorTestReset.s")
 #else
@@ -733,7 +729,7 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
     if (usePreviousSettings == 1) {
         IPL = gPreviousIPLSetting;
         forceMenu = gPreviousForceMenuSetting;
-        allowReset = prevAllowResetSetting;
+        allowReset = gPreviousAllowResetSetting;
     } else {
         gPreviousIPLSetting = IPL;
         gPreviousForceMenuSetting = forceMenu;
