@@ -1105,7 +1105,7 @@ s32 romUpdate(Rom* pROM) {
 
         nStatus = DVDGetCommandBlockStatus(&pROM->fileInfo.cb);
         if (nStatus != 1) {
-            if (!simulatorDVDShowError(nStatus, pROM->load.anData, pROM->load.nSizeRead,
+            if (!simulatorDVDShowError(nStatus, (s32)pROM->load.anData, pROM->load.nSizeRead,
                                        pROM->offsetToRom + pROM->load.nOffset)) {
                 return 0;
             }
