@@ -1,11 +1,7 @@
 #ifndef _DOLPHIN_GX_GXVERT_H_
 #define _DOLPHIN_GX_GXVERT_H_
 
-#include <dolphin/types.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "dolphin/types.h"
 
 #define GXFIFO_ADDR 0xCC008000
 
@@ -69,9 +65,5 @@ static inline void GXTexCoord2f32(const f32 u, const f32 v) {
 }
 
 static inline void GXEnd(void) {}
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -5,7 +5,7 @@
     Code range: 0x80097D9C -> 0x800986A4
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 typedef enum _GXTevColorArg {
     GX_CC_CPREV = 0,

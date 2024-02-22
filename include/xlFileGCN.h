@@ -1,9 +1,9 @@
 #ifndef _XL_FILE_GCN_H
 #define _XL_FILE_GCN_H
 
-#include <dolphin/dvd.h>
-#include <dolphin/types.h>
+#include "dolphin.h"
 
+// DVDCallback?
 typedef s32 (*FileGcnOpenCallback)(char*, DVDFileInfo*);
 typedef s32 (*FileGcnReadCallback)(DVDFileInfo*, void*, s32, s32, FileGcnOpenCallback);
 

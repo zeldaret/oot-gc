@@ -5,7 +5,7 @@
     Code range: 0x8002CA14 -> 0x80030E70
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // size = 0x4, address = 0x80134E60
 u32 nTickMultiplier;

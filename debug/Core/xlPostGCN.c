@@ -5,7 +5,7 @@
     Code range: 0x80005E04 -> 0x80005E68
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Range: 0x80005E14 -> 0x80005E68
 s32 xlPostText() {}

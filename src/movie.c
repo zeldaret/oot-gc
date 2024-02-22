@@ -1,7 +1,6 @@
-#include <dolphin/gx.h>
-#include <dolphin/os.h>
-#include <dolphin/types.h>
-#include <dolphin/vi.h>
+#include "dolphin.h"
+#include "simGCN.h"
+#include "system.h"
 
 extern GXRenderModeObj* rmode;
 void* gBufferP;
@@ -12,7 +11,7 @@ void MovieInit(void) {
 
     THPPlayerInit(0);
 
-    if (!simulatorGetArgument(6, &szText)) {
+    if (!simulatorGetArgument(SAT_MOVIE, &szText)) {
         THPPlayerOpen("final_zelda_credits_sound.thp", 0);
     } else {
         THPPlayerOpen(szText, 0);

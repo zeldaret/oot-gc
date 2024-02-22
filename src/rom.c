@@ -1,16 +1,14 @@
-#include <dolphin/ar.h>
-#include <dolphin/gx.h>
-#include <dolphin/mtx.h>
-#include <dolphin/types.h>
-
+#include "rom.h"
 #include "cpu.h"
+#include "dolphin.h"
 #include "macros.h"
 #include "ram.h"
-#include "rom.h"
 #include "simGCN.h"
 #include "system.h"
 #include "xlCoreGCN.h"
 #include "xlObject.h"
+
+extern u32 gnFlagZelda;
 
 static s32 romMakeFreeCache(Rom* pROM, s32* piCache, RomCacheType eType);
 static s32 romSetBlockCache(Rom* pROM, s32 iBlock, RomCacheType eType);
@@ -1105,7 +1103,7 @@ s32 romUpdate(Rom* pROM) {
             }
         }
 
-        nStatus = DVDGetCommandBlockStatus(&pROM->fileInfo);
+        nStatus = DVDGetCommandBlockStatus(&pROM->fileInfo.cb);
         if (nStatus != 1) {
             if (!simulatorDVDShowError(nStatus, pROM->load.anData, pROM->load.nSizeRead,
                                        pROM->offsetToRom + pROM->load.nOffset)) {

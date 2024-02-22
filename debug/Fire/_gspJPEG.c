@@ -5,7 +5,7 @@
     Code range: 0x8007AC6C -> 0x80080AA4
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Range: 0x800801C0 -> 0x80080AA4
 static s32 rspCreateJPEGArrays(struct __anon_0x5845E* pRSP) {

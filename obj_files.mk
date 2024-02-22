@@ -2,12 +2,12 @@
 
 O_FILES :=                                  \
     $(BUILD_DIR)/asm/xlCoreGCN.o            \
-    $(BUILD_DIR)/asm/xlPostGCN.o            \
+    $(BUILD_DIR)/src/xlPostGCN.o            \
     $(BUILD_DIR)/src/xlFileGCN.o            \
     $(BUILD_DIR)/src/xlList.o               \
-    $(BUILD_DIR)/asm/xlHeap.o               \
+    $(BUILD_DIR)/src/xlHeap.o               \
     $(BUILD_DIR)/src/xlObject.o             \
-    $(BUILD_DIR)/asm/simGCN.o               \
+    $(BUILD_DIR)/src/simGCN.o               \
     $(BUILD_DIR)/src/movie.o                \
     $(BUILD_DIR)/asm/THPPlayer.o            \
     $(BUILD_DIR)/asm/THPAudioDecode.o       \
@@ -30,7 +30,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/disk.o                 \
     $(BUILD_DIR)/asm/flash.o                \
     $(BUILD_DIR)/src/sram.o                 \
-    $(BUILD_DIR)/asm/audio.o                \
+    $(BUILD_DIR)/src/audio.o                \
     $(BUILD_DIR)/asm/video.o                \
     $(BUILD_DIR)/src/serial.o               \
     $(BUILD_DIR)/asm/library.o              \

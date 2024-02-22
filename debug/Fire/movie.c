@@ -5,7 +5,7 @@
     Code range: 0x8000F7CC -> 0x8000F890
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // size = 0x4, address = 0x80135610
 u8* gBufferP;

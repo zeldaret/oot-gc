@@ -5,7 +5,7 @@
     Code range: 0x80036870 -> 0x80068368
 */
 
-#include <dolphin/types.h>
+#include "dolphin/types.h"
 
 // Erased
 static s32 cpuFindBranchOffset(struct cpu_function* pFunction, s32* pnOffset, s32 nAddress, s32* anCode) {

@@ -1,6 +1,7 @@
 #ifndef _ROM_H
 #define _ROM_H
 
+#include "dolphin.h"
 #include "xlFileGCN.h"
 
 typedef s32 UnknownCallbackFunc(void);
