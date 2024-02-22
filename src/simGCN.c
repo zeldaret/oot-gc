@@ -708,17 +708,13 @@ s32 simulatorRumbleStop(s32 channel) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorTestReset.s")
 #else
-inline s32 simulatorTestResetUnknownInline(u32 nTick) {
-    s32 result = (f32)(nTick - gnTickReset) >= (0.5f * (f32)(*(u32*)0x800000F8 >> 2));
-    return result;
-}
-
 s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
     u32 bFlag;
     u32 nTick;
     s32 prevIPLSetting;
     s32 prevForceMenuSetting;
     s32 prevAllowResetSetting;
+    s32 pad;
 
     nTick = OSGetTick();
     prevAllowResetSetting = gPreviousAllowResetSetting;
@@ -770,7 +766,7 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
             }
         }
     } else {
-        if (simulatorTestResetUnknownInline(nTick) && (allowReset == 1)) {
+        if (((nTick - gnTickReset) >= OSSecondsToTicks(0.5f)) && (allowReset == 1)) {
             if (prevAllowResetSetting == 1) {
                 simulatorReset(IPL, forceMenu);
             } else {
