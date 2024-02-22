@@ -377,16 +377,15 @@ inline s32 simulatorRun(SystemMode* peMode) {
     return 1;
 }
 
-s32 xlMain() {
-    // Local variables
-    GXColor color; // r1+0x3C
-    SystemMode eMode; // r1+0x38
-    s32 nSize0; // r1+0x34
-    s32 nSize1; // r1+0x30
-    s32 iName; // r5
-    char* szNameROM; // r1+0x2C
-    char acNameROM[32]; // r1+0xC
-    // s32 rumbleYes; // r1+0x8
+s32 xlMain(void) {
+    GXColor color;
+    SystemMode eMode;
+    s32 nSize0;
+    s32 nSize1;
+    s32 iName;
+    char* szNameROM;
+    char acNameROM[32];
+    // s32 rumbleYes;
 
     simulatorParseArguments();
     gDVDResetToggle = 0;
