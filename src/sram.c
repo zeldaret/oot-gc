@@ -1,18 +1,9 @@
+#include "sram.h"
 #include "cpu.h"
-#include "dolphin.h"
 #include "ram.h"
 #include "simGCN.h"
 #include "system.h"
 #include "xlObject.h"
-
-//! TODO: move these to sram.h
-
-// __anon_0x74AB9
-typedef struct Sram {
-    void* pHost; // 0x0
-} Sram;
-
-s32 sramEvent(Sram* pSram, s32 nEvent, void* pArgument);
 
 _XL_OBJECTTYPE gClassSram = {
     "SRAM",
@@ -24,7 +15,7 @@ _XL_OBJECTTYPE gClassSram = {
 s32 sramCopySRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
     void* pTarget;
 
-    if (!ramGetBuffer(((System*)pSRAM->pHost)->apObject[SOT_RAM], &pTarget, nOffsetRAM, &nSize)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pSRAM->pHost), &pTarget, nOffsetRAM, &nSize)) {
         return 0;
     }
     if (!simulatorReadSRAM(nOffsetSRAM & 0x7FFF, (u8*)pTarget, nSize)) {
@@ -36,7 +27,7 @@ s32 sramCopySRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
 s32 sramTransferSRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
     void* pTarget;
 
-    if (!ramGetBuffer(((System*)pSRAM->pHost)->apObject[SOT_RAM], &pTarget, nOffsetRAM, &nSize)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pSRAM->pHost), &pTarget, nOffsetRAM, &nSize)) {
         return 0;
     }
     if (!simulatorWriteSRAM(nOffsetSRAM & 0x7FFF, (u8*)pTarget, nSize)) {
@@ -97,12 +88,12 @@ s32 sramEvent(Sram* pObject, s32 nEvent, void* pArgument) {
             break;
 
         case 0x1002:
-            if (!cpuSetDevicePut(((System*)pSram->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)sramPut8,
-                                 (Put16Func)sramPut16, (Put32Func)sramPut32, (Put64Func)sramPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pSram->pHost), pArgument, (Put8Func)sramPut8, (Put16Func)sramPut16,
+                                 (Put32Func)sramPut32, (Put64Func)sramPut64)) {
                 return 0;
             }
-            if (!cpuSetDeviceGet(((System*)pSram->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)sramGet8,
-                                 (Get16Func)sramGet16, (Get32Func)sramGet32, (Get64Func)sramGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pSram->pHost), pArgument, (Get8Func)sramGet8, (Get16Func)sramGet16,
+                                 (Get32Func)sramGet32, (Get64Func)sramGet64)) {
                 return 0;
             }
         case 0x1003:

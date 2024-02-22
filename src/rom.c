@@ -1,6 +1,7 @@
 #include "rom.h"
 #include "cpu.h"
 #include "dolphin.h"
+#include "frame.h"
 #include "macros.h"
 #include "ram.h"
 #include "simGCN.h"
@@ -277,7 +278,7 @@ static s32 __romLoadBlock_Complete(Rom* pROM) {
 }
 
 static void __romLoadBlock_CompleteGCN(long nResult, DVDFileInfo* fileInfo) {
-    Rom* pROM = gpSystem->apObject[SOT_ROM];
+    Rom* pROM = SYSTEM_ROM(gpSystem);
 
     pROM->load.nResult = nResult;
     pROM->load.bDone = 1;
@@ -416,11 +417,11 @@ static s32 romCacheGame_ZELDA(f32 rProgress) {
         }
         temp_r31 = (s32)(400.0f * var_f1);
 
-        if (!_frameDrawRectangle(gpSystem->pFrame, 0x4083407D, 120, 430, 400, 8)) {
+        if (!_frameDrawRectangle(SYSTEM_FRAME(gpSystem), 0x4083407D, 120, 430, 400, 8)) {
             return 0;
         }
 
-        if (!_frameDrawRectangle(gpSystem->pFrame, 0x8F9B8F7C, 120, 430, temp_r31, 8)) {
+        if (!_frameDrawRectangle(SYSTEM_FRAME(gpSystem), 0x8F9B8F7C, 120, 430, temp_r31, 8)) {
             return 0;
         }
     }
@@ -465,7 +466,7 @@ static s32 romCacheGame(Rom* pROM) {
         }
         if (xlFileOpen(&pFile, 1, szName) != 0) {
             nSize = pFile->nSize;
-            gpImageBack = (u8*)((Ram*)((System*)pROM->pHost)->apObject[SOT_RAM])->pBuffer + 0x300000;
+            gpImageBack = (u8*)SYSTEM_RAM(pROM->pHost)->pBuffer + 0x300000;
             if (xlFileGet(pFile, gpImageBack, nSize) == 0) {
                 return 0;
             }
@@ -509,7 +510,7 @@ static s32 romCacheGame(Rom* pROM) {
 }
 
 s32 __romLoadUpdate_Complete(void) {
-    Rom* pROM = gpSystem->apObject[SOT_ROM];
+    Rom* pROM = SYSTEM_ROM(gpSystem);
 
     pROM->load.bWait = 0;
     return 1;
@@ -522,7 +523,7 @@ static s32 romLoadUpdate(Rom* pROM) {
     u32 iBlock1;
     Cpu* pCPU;
 
-    pCPU = ((System*)pROM->pHost)->apObject[SOT_CPU];
+    pCPU = SYSTEM_CPU(pROM->pHost);
     if ((pROM->load.nOffset0 == 0 && pROM->load.nOffset1 == 0) || pROM->load.bWait) {
         return 1;
     }
@@ -563,7 +564,7 @@ static s32 romLoadUpdate(Rom* pROM) {
 }
 
 static s32 __romCopyUpdate_Complete(void) {
-    Rom* pROM = gpSystem->apObject[SOT_ROM];
+    Rom* pROM = SYSTEM_ROM(gpSystem);
 
     pROM->copy.bWait = 0;
     return 1;
@@ -583,7 +584,7 @@ static s32 romCopyUpdate(Rom* pROM) {
     s32 var_r0;
     s32 var_r5;
 
-    pCPU = ((System*)pROM->pHost)->apObject[SOT_CPU];
+    pCPU = SYSTEM_CPU(pROM->pHost);
 
     //! TODO: inline function?
     var_r5 = 0;
@@ -1256,22 +1257,22 @@ s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
         case 0x1002:
             switch (((CpuDevice*)pArgument)->nType) {
                 case 0:
-                    if (!cpuSetDevicePut(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)romPut8,
-                                         (Put16Func)romPut16, (Put32Func)romPut32, (Put64Func)romPut64)) {
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pROM->pHost), pArgument, (Put8Func)romPut8, (Put16Func)romPut16,
+                                         (Put32Func)romPut32, (Put64Func)romPut64)) {
                         return 0;
                     }
-                    if (!cpuSetDeviceGet(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)romGet8,
-                                         (Get16Func)romGet16, (Get32Func)romGet32, (Get64Func)romGet64)) {
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pROM->pHost), pArgument, (Get8Func)romGet8, (Get16Func)romGet16,
+                                         (Get32Func)romGet32, (Get64Func)romGet64)) {
                         return 0;
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)romPutDebug8,
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pROM->pHost), pArgument, (Put8Func)romPutDebug8,
                                          (Put16Func)romPutDebug16, (Put32Func)romPutDebug32,
                                          (Put64Func)romPutDebug64)) {
                         return 0;
                     }
-                    if (!cpuSetDeviceGet(((System*)pROM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)romGetDebug8,
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pROM->pHost), pArgument, (Get8Func)romGetDebug8,
                                          (Get16Func)romGetDebug16, (Get32Func)romGetDebug32,
                                          (Get64Func)romGetDebug64)) {
                         return 0;
