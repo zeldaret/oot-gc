@@ -590,9 +590,7 @@ void simulatorResetAndPlayMovie(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadController.s")
 
-s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress) {
-    return 1;
-}
+s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress) { return 1; }
 
 s32 simulatorDetectController(s32 channel) {
     PADStatus status[4];

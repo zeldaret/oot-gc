@@ -1,9 +1,9 @@
 #include "cpu.h"
 #include "dolphin.h"
-#include "system.h"
-#include "xlObject.h"
 #include "ram.h"
 #include "simGCN.h"
+#include "system.h"
+#include "xlObject.h"
 
 //! TODO: move these to sram.h
 

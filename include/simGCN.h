@@ -103,7 +103,6 @@ extern void* gpFrame;
 extern void* gpSound;
 extern System* gpSystem;
 
-
 void simulatorUnpackTexPalette(__anon_0xDB69* pal);
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
 s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);

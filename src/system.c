@@ -1031,7 +1031,8 @@ static s32 systemSetupGameALL(System* pSystem) {
                             }
 
                             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
-                                !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+                                !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0,
+                                                  NULL)) {
                                 return 0;
                             }
 
@@ -1068,7 +1069,8 @@ static s32 systemSetupGameALL(System* pSystem) {
                             pCPU->nCompileFlag = (s32)(pCPU->nCompileFlag | 0x10);
                         } else if (romTestCode(pROM, "NYSE")) {
                             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
-                                !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+                                !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0,
+                                                  NULL)) {
                                 return 0;
                             }
 
