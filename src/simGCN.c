@@ -1,7 +1,7 @@
 #include "simGCN.h"
 #include "dolphin.h"
 #include "macros.h"
-#include "mcard.h"
+#include "mcardGCN.h"
 #include "movie.h"
 #include "pif.h"
 #include "xlPostGCN.h"
