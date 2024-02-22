@@ -3,7 +3,6 @@
 
 #include "dolphin.h"
 
-// DVDCallback?
 typedef s32 (*FileGcnOpenCallback)(char*, DVDFileInfo*);
 typedef s32 (*FileGcnReadCallback)(DVDFileInfo*, void*, s32, s32, FileGcnOpenCallback);
 

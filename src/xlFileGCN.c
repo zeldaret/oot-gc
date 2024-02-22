@@ -1,8 +1,7 @@
-#include "dolphin.h"
 #include "xlFileGCN.h"
-#include "xlObject.h"
+#include "dolphin.h"
 #include "xlHeap.h"
-
+#include "xlObject.h"
 
 _XL_OBJECTTYPE gTypeFile = {
     "FILE",
@@ -79,7 +78,7 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
     s32 nOffset;
     s32 nOffsetExtra;
     s32 nSize;
-    s32 nSizeUsed; 
+    s32 nSizeUsed;
 
     nOffset = pFile->nOffset;
     nSize = pFile->nSize;
@@ -90,7 +89,7 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
         *(s8*)pTarget = 0xFF;
         return 0;
     }
-    for (nSizeBytes; nSizeBytes != 0; ) {
+    for (nSizeBytes; nSizeBytes != 0;) {
         nSizeUsed = nSizeBytes;
         if (nSizeUsed > 0x1000) {
             nSizeUsed = 0x1000;
