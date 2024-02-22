@@ -541,9 +541,9 @@ inline void simulatorUnknownInline() {
         DEMOUpdateStats(0);
     }
 
-    GXSetZMode(1, 3, 1);
-    GXSetColorUpdate(1);
-    GXCopyDisp(DemoCurrentBuffer, 1);
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+    GXSetColorUpdate(GX_TRUE);
+    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
     GXDrawDone();
     VISetNextFrameBuffer(DemoCurrentBuffer);
     VIFlush();
@@ -861,50 +861,10 @@ s32 xlMain(void) {
     VIWaitForRetrace();
 
     xlCoreBeforeRender();
-    if (DemoStatEnable) {
-        GXDrawDone();
-        DEMOUpdateStats(1);
-        DEMOPrintStats();
-        GXDrawDone();
-        DEMOUpdateStats(0);
-    }
-
-    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
-    GXSetColorUpdate(GX_TRUE);
-    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
-    GXDrawDone();
-    VISetNextFrameBuffer(DemoCurrentBuffer);
-    VIFlush();
-    VIWaitForRetrace();
-
-    if (DemoCurrentBuffer == DemoFrameBuffer1) {
-        DemoCurrentBuffer = DemoFrameBuffer2;
-    } else {
-        DemoCurrentBuffer = DemoFrameBuffer1;
-    }
+    simulatorUnknownInline();
 
     xlCoreBeforeRender();
-    if (DemoStatEnable) {
-        GXDrawDone();
-        DEMOUpdateStats(1);
-        DEMOPrintStats();
-        GXDrawDone();
-        DEMOUpdateStats(0);
-    }
-
-    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
-    GXSetColorUpdate(GX_TRUE);
-    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
-    GXDrawDone();
-    VISetNextFrameBuffer(DemoCurrentBuffer);
-    VIFlush();
-    VIWaitForRetrace();
-
-    if (DemoCurrentBuffer == DemoFrameBuffer1) {
-        DemoCurrentBuffer = DemoFrameBuffer2;
-    } else {
-        DemoCurrentBuffer = DemoFrameBuffer1;
-    }
+    simulatorUnknownInline();
 
     VIWaitForRetrace();
     VISetBlack(0);
