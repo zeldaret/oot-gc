@@ -1,11 +1,15 @@
 #include "simGCN.h"
 #include "codeGCN.h"
+#include "dolphin.h"
 #include "macros.h"
 #include "mcardGCN.h"
+#include "movie.h"
+#include "pif.h"
 #include "rom.h"
 #include "soundGCN.h"
 #include "system.h"
 #include "xlObject.h"
+#include "xlPostGCN.h"
 
 //! TODO: Move these to proper headers
 extern _XL_OBJECTTYPE gClassCode;
@@ -13,18 +17,21 @@ extern _XL_OBJECTTYPE gClassFrame;
 extern _XL_OBJECTTYPE gClassSound;
 extern _XL_OBJECTTYPE gClassSystem;
 
-const f32 D_800D2FE0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+extern GXRenderModeObj* rmode;
+extern s32 gMovieErrorToggle;
+extern char gpErrorMessageBuffer[20480];
+
+const f32 D_800D2FE0[3][4] = {
+    {1.0, 0.0, 0.0, 0.0},
+    {0.0, 1.0, 0.0, 0.0},
+    {0.0, 0.0, 1.0, -1.0},
+};
 
 const f32 D_800D3010[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
 const f32 D_800D3040[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
 const f32 D_800D3070[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
 const f32 D_800D30A0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
 const f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
 const f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
 u8 gcoverOpen[] ALIGNAS(32) = {
@@ -67,18 +74,35 @@ u8 gmesgOK[] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000E6680, 0x00000341)
 };
 
-s16 Vert_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF,
-                                0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 VertTitle_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF,
-                                     0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 VertYes_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF,
-                                   0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 VertNo_s16[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF,
-                                  0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-s16 Vert_s16Bar[12] ALIGNAS(32) = {0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF,
-                                   0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF};
-u32 Colors_u32[3] ALIGNAS(32) = {0x000000FF, 0x000000FF, 0x000000FF};
-u8 TexCoords_u8[] ALIGNAS(32) = {0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01};
+s16 Vert_s16[12] ALIGNAS(32) = {
+    0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
+};
+
+s16 VertTitle_s16[12] ALIGNAS(32) = {
+    0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
+};
+
+s16 VertYes_s16[12] ALIGNAS(32) = {
+    0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
+};
+
+s16 VertNo_s16[12] ALIGNAS(32) = {
+    0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
+};
+
+s16 Vert_s16Bar[12] ALIGNAS(32) = {
+    0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
+};
+
+u32 Colors_u32[3] ALIGNAS(32) = {
+    0x000000FF,
+    0x000000FF,
+    0x000000FF,
+};
+
+u8 TexCoords_u8[] ALIGNAS(32) = {
+    0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01,
+};
 
 char D_800E9A28[] = "Play Delay";
 char D_800E9A34[] = "Silence Count";
@@ -281,17 +305,189 @@ const f32 D_80135D64 = 10000.0;
 const f32 D_80135D68 = 160.0;
 const f32 D_80135D6C = 120.0;
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorGXInit.s")
+#else
+s32 simulatorGXInit(void) {
+    s32 i;
+    GXColor GX_DEFAULT_BG = {0};
+    GXColor BLACK = {0};
+    GXColor WHITE = {0};
+    f32 identity_mtx[3][4] = {
+        {1.0, 0.0, 0.0, 0.0},
+        {0.0, 1.0, 0.0, 0.0},
+        {0.0, 0.0, 1.0, -1.0},
+    };
+
+    // possible bug? GX_TG_MTX3x4 vs GX_TG_MTX2x4 (see identity_mtx)
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_TEX2, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD3, GX_TG_MTX2x4, GX_TG_TEX3, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD4, GX_TG_MTX2x4, GX_TG_TEX4, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD5, GX_TG_MTX2x4, GX_TG_TEX5, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD6, GX_TG_MTX2x4, GX_TG_TEX6, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD7, GX_TG_MTX2x4, GX_TG_TEX7, 0x3C, GX_FALSE, 0x7D);
+
+    GXSetNumTexGens(1);
+    GXClearVtxDesc();
+    GXInvalidateVtxCache();
+    GXSetLineWidth(6, GX_TO_ZERO);
+    GXSetPointSize(6, GX_TO_ZERO);
+
+    GXEnableTexOffsets(GX_TEXCOORD0, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD1, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD2, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD3, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD4, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD5, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD6, GX_DISABLE, GX_DISABLE);
+    GXEnableTexOffsets(GX_TEXCOORD7, GX_DISABLE, GX_DISABLE);
+
+    GXLoadPosMtxImm(identity_mtx, 0);
+    GXLoadNrmMtxImm(identity_mtx, 0);
+    GXSetCurrentMtx(0);
+    GXLoadTexMtxImm(identity_mtx, 0x3C, 0);
+
+    GXSetCoPlanar(GX_DISABLE);
+    GXSetCullMode(GX_CULL_BACK);
+    GXSetClipMode(GX_CLIP_ENABLE);
+    GXSetScissorBoxOffset(0, 0);
+
+    GXSetNumChans(0);
+    GXSetChanCtrl(GX_COLOR0A0, GX_DISABLE, GX_SRC_REG, GX_SRC_VTX, 0, GX_DF_NONE, GX_AF_NONE);
+    GXSetChanAmbColor(GX_COLOR0A0, BLACK);
+    GXSetChanMatColor(GX_COLOR0A0, WHITE);
+    GXSetChanCtrl(GX_COLOR1A1, GX_DISABLE, GX_SRC_REG, GX_SRC_VTX, 0, GX_DF_NONE, GX_AF_NONE);
+    GXSetChanAmbColor(GX_COLOR1A1, BLACK);
+    GXSetChanMatColor(GX_COLOR1A1, WHITE);
+    GXInvalidateTexAll();
+
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE2, GX_TEXCOORD2, GX_TEXMAP2, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE3, GX_TEXCOORD3, GX_TEXMAP3, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE4, GX_TEXCOORD4, GX_TEXMAP4, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE5, GX_TEXCOORD5, GX_TEXMAP5, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE6, GX_TEXCOORD6, GX_TEXMAP6, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE7, GX_TEXCOORD7, GX_TEXMAP7, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE8, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE9, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE10, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE11, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE12, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE13, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE14, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE15, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+
+    GXSetNumTevStages(1);
+    GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZTexture(GX_ZT_DISABLE, GX_TF_Z8, 0);
+
+    for (i = 0; i < 0x10; i++) {
+        GXSetTevKColorSel(i, GX_TEV_KCSEL_1_4);
+        GXSetTevKAlphaSel(i, GX_TEV_KASEL_1);
+        GXSetTevSwapMode(i, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    }
+
+    GXSetTevSwapModeTable(GX_TEV_SWAP0, GX_CH_RED, GX_CH_GREEN, GX_CH_BLUE, GX_CH_ALPHA);
+    GXSetTevSwapModeTable(GX_TEV_SWAP1, GX_CH_RED, GX_CH_RED, GX_CH_RED, GX_CH_ALPHA);
+    GXSetTevSwapModeTable(GX_TEV_SWAP2, GX_CH_GREEN, GX_CH_GREEN, GX_CH_GREEN, GX_CH_ALPHA);
+    GXSetTevSwapModeTable(GX_TEV_SWAP3, GX_CH_BLUE, GX_CH_BLUE, GX_CH_BLUE, GX_CH_ALPHA);
+
+    for (i = 0; i < GX_MAX_TEVSTAGE; i++) {
+        GXSetTevDirect(i);
+    }
+
+    GXSetNumIndStages(0);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE0, GX_ITS_1, GX_ITS_1);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE1, GX_ITS_1, GX_ITS_1);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE2, GX_ITS_1, GX_ITS_1);
+    GXSetIndTexCoordScale(GX_INDTEXSTAGE3, GX_ITS_1, GX_ITS_1);
+
+    GXSetFog(GX_FOG_NONE, 0.0f, 1.0f, 0.10000000149011612f, 1.0f, BLACK);
+    GXSetFogRangeAdj(GX_DISABLE, 0, NULL);
+    GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
+    GXSetColorUpdate(GX_ENABLE);
+    GXSetAlphaUpdate(GX_ENABLE);
+    GXSetZMode(GX_ENABLE, GX_LEQUAL, GX_ENABLE);
+    GXSetZCompLoc(GX_ENABLE);
+    GXSetDither(GX_ENABLE);
+    GXSetDstAlpha(GX_DISABLE, 0);
+    GXSetPixelFmt(GX_DISABLE, GX_ZC_LINEAR);
+    GXSetFieldMask(GX_ENABLE, GX_ENABLE);
+
+    GXSetCopyClear(GX_DEFAULT_BG, 0xFFFFFF);
+    GXSetCopyClamp(3); // missing enum?
+    GXSetDispCopyGamma(GX_GM_1_0);
+    GXSetDispCopyFrame2Field(GX_COPY_PROGRESSIVE);
+    GXClearBoundingBox();
+    GXPokeColorUpdate(GX_ENABLE);
+    GXPokeAlphaUpdate(GX_ENABLE);
+    GXPokeDither(GX_DISABLE);
+    GXPokeBlendMode(GX_BM_NONE, GX_BL_ZERO, GX_BL_ONE, GX_LO_SET);
+    GXPokeAlphaMode(GX_ALWAYS, 0);
+    GXPokeAlphaRead(GX_READ_FF);
+    GXPokeDstAlpha(GX_DISABLE, 0);
+    GXPokeZMode(GX_ENABLE, GX_ALWAYS, GX_ENABLE);
+    GXSetGPMetric(GX_PERF0_NONE, GX_PERF0_TRIANGLES_7TEX);
+    GXClearGPMetric();
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorUnpackTexPalette.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDVDShowError.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDVDOpen.s")
+s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
+    s32 nStatus;
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDVDRead.s")
+    while ((nStatus = DVDGetDriveStatus()) != 0) {
+        if (!simulatorDVDShowError(nStatus, NULL, 0, 0)) {
+            return 0;
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorPlayMovie.s")
+    return DVDOpen(szNameFile, pFileInfo);
+}
+
+s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback) {
+    s32 nStatus;
+    s32 bRetry;
+
+    if (callback == NULL) {
+        do {
+            bRetry = 0;
+            DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
+
+            while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
+                if (!simulatorDVDShowError(nStatus, anData, nSizeRead, nOffset)) {
+                    return 0;
+                }
+
+                if ((nStatus == 11) || (nStatus == -1)) {
+                    DVDCancel(&pFileInfo->cb);
+                    bRetry = 1;
+                    break;
+                }
+            }
+        } while (bRetry);
+    } else {
+        DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, callback, 2);
+        return 1;
+    }
+
+    return 1;
+}
+
+s32 simulatorPlayMovie(void) {
+    simulatorResetAndPlayMovie();
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawImage.s")
 
@@ -309,41 +505,279 @@ const f32 D_80135D6C = 120.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawErrorMessageWait.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReset.s")
+inline void simulatorResetInit() {
+    mcardWriteGameDataReset(&mCard);
+    VISetBlack(1);
+    VIFlush();
+    VIWaitForRetrace();
+    PADRecalibrate(0xF0000000);
+    GXAbortFrame();
+    LCDisable();
+    VIWaitForRetrace();
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorResetAndPlayMovie.s")
+void simulatorReset(s32 IPL, s32 forceMenu) {
+    simulatorResetInit();
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorSetControllerMap.s")
+    if (IPL == 1) {
+        if (forceMenu == 1) {
+            OSResetSystem(1, 0, 1);
+        } else {
+            OSResetSystem(1, 0, 0);
+        }
+        return;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorCopyControllerMap.s")
+    OSResetSystem(0, 0, 0);
+    NO_INLINE;
+}
+
+inline void simulatorUnknownInline() {
+    if (DemoStatEnable != 0) {
+        GXDrawDone();
+        DEMOUpdateStats(1);
+        DEMOPrintStats();
+        GXDrawDone();
+        DEMOUpdateStats(0);
+    }
+
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+    GXSetColorUpdate(GX_TRUE);
+    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
+    GXDrawDone();
+    VISetNextFrameBuffer(DemoCurrentBuffer);
+    VIFlush();
+    VIWaitForRetrace();
+
+    if (DemoCurrentBuffer == DemoFrameBuffer1) {
+        DemoCurrentBuffer = DemoFrameBuffer2;
+    } else {
+        DemoCurrentBuffer = DemoFrameBuffer1;
+    }
+}
+
+void simulatorResetAndPlayMovie(void) {
+    int pad1;
+    GXColor color;
+    GXRenderModeObj* simrmode;
+    int pad2;
+
+    simrmode = rmode;
+    simulatorResetInit();
+    xlCoreReset();
+    color.r = 0;
+    color.g = 0;
+    color.b = 0;
+    color.a = 1;
+    DEMOInit(NULL);
+    rmode = simrmode;
+    VISetBlack(1);
+    AIInit(NULL);
+    GXSetCopyClear(color, 0);
+    MovieInit();
+
+    while (TRUE) {
+        OSGetTick();
+
+        if (gMovieErrorToggle == 1) {
+            continue;
+        }
+
+        DEMOBeforeRender();
+        MovieDraw();
+        simulatorUnknownInline();
+        VISetBlack(0);
+        GXSetCopyClear(color, 0);
+        movieTestReset(0, 0);
+    }
+}
+
+s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
+    s32 i;
+
+    for (i = 0; i < ARRAY_COUNT(gContMap[channel]); i++) {
+        gContMap[channel][i] = mapData[i];
+    }
+
+    return 1;
+}
+
+s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
+    int i;
+
+    for (i = 0; i < 20; i++) {
+        mapDataOutput[i] = mapDataInput[i];
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadController.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorShowLoad.s")
+s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDetectController.s")
+s32 simulatorDetectController(s32 channel) {
+    PADStatus status[4];
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadPak.s")
+    PADRead(status);
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorWritePak.s")
+    if (status[channel].err == -1) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadEEPROM.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorWriteEEPROM.s")
+s32 simulatorReadPak(s32 channel, u16 address, u8* data) {
+    ControllerType type;
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadSRAM.s")
+    pifGetEControllerType(SYSTEM_PIF(gpSystem), channel, &type);
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorWriteSRAM.s")
+    if (type == CT_CONTROLLER_W_RPAK) {
+        pifReadRumble(SYSTEM_PIF(gpSystem), channel, address, data);
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadFLASH.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorWriteFLASH.s")
+s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
+    ControllerType type;
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorRumbleStart.s")
+    pifGetEControllerType(SYSTEM_PIF(gpSystem), channel, &type);
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorRumbleStop.s")
+    if (type == CT_CONTROLLER_W_RPAK) {
+        pifWriteRumble(SYSTEM_PIF(gpSystem), channel, address, data);
+    }
 
+    return 1;
+}
+
+s32 simulatorReadEEPROM(u8 address, u8* data) {
+    s32 size;
+
+    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
+        return 0;
+    }
+
+    mcardRead(&mCard, (address * 8) & 0x7F8, 8, (char*)data);
+    return 1;
+}
+
+s32 simulatorWriteEEPROM(u8 address, u8* data) {
+    s32 size;
+
+    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
+        return 0;
+    }
+
+    mcardWrite(&mCard, (address * 8) & 0x7F8, 8, (char*)data);
+    return 1;
+}
+
+s32 simulatorReadSRAM(u32 address, u8* data, s32 size) {
+    mcardRead(&mCard, address, size, (char*)data);
+    return 1;
+}
+
+s32 simulatorWriteSRAM(u32 address, u8* data, s32 size) {
+    mcardWrite(&mCard, address, size, (char*)data);
+    return 1;
+}
+
+s32 simulatorReadFLASH(u32 address, u8* data, s32 size) {
+    mcardRead(&mCard, address, size, (char*)data);
+    return 1;
+}
+
+s32 simulatorWriteFLASH(u32 address, u8* data, s32 size) {
+    mcardWrite(&mCard, address, size, (char*)data);
+    return 1;
+}
+
+s32 simulatorRumbleStart(s32 channel) {
+    PADControlMotor(channel, 1);
+    return 1;
+}
+
+s32 simulatorRumbleStop(s32 channel) {
+    PADControlMotor(channel, 0);
+    return 1;
+}
+
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorTestReset.s")
+#else
+s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
+    u32 bFlag;
+    u32 nTick;
+    s32 prevIPLSetting;
+    s32 prevForceMenuSetting;
+    s32 prevAllowResetSetting;
+    s32 pad;
+
+    nTick = OSGetTick();
+    prevAllowResetSetting = gPreviousAllowResetSetting;
+    prevIPLSetting = gPreviousIPLSetting;
+    prevForceMenuSetting = gPreviousForceMenuSetting;
+
+    if (usePreviousSettings == 1) {
+        IPL = gPreviousIPLSetting;
+        forceMenu = gPreviousForceMenuSetting;
+        allowReset = gPreviousAllowResetSetting;
+    } else {
+        gPreviousIPLSetting = IPL;
+        gPreviousForceMenuSetting = forceMenu;
+        gPreviousAllowResetSetting = allowReset;
+    }
+
+    DEMOPadRead();
+    bFlag = OSGetResetButtonState();
+
+    if ((gResetBeginFlag == 1) && ((DemoPad[0].pst.button & 0x1600) == 0x1600)) {
+        if ((gbReset == 0) || bFlag) {
+            gbReset = bFlag;
+            return 1;
+        }
+
+        if (allowReset == 1) {
+            if (prevAllowResetSetting == 1) {
+                simulatorReset(IPL, forceMenu);
+            } else {
+                simulatorReset(prevIPLSetting, prevForceMenuSetting);
+            }
+        }
+    } else {
+        gResetBeginFlag = 0;
+    }
+
+    if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
+        gnTickReset = nTick;
+        if ((gbReset == 0) || (bFlag != 0)) {
+            gbReset = bFlag;
+            return 1;
+        }
+
+        if (allowReset == 1) {
+            if (prevAllowResetSetting == 1) {
+                simulatorReset(IPL, forceMenu);
+            } else {
+                simulatorReset(prevIPLSetting, prevForceMenuSetting);
+            }
+        }
+    } else {
+        if (((nTick - gnTickReset) >= OSSecondsToTicks(0.5f)) && (allowReset == 1)) {
+            if (prevAllowResetSetting == 1) {
+                simulatorReset(IPL, forceMenu);
+            } else {
+                simulatorReset(prevIPLSetting, prevForceMenuSetting);
+            }
+        }
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawMCardText.s")
 
@@ -423,50 +857,10 @@ s32 xlMain(void) {
     VIWaitForRetrace();
 
     xlCoreBeforeRender();
-    if (DemoStatEnable) {
-        GXDrawDone();
-        DEMOUpdateStats(1);
-        DEMOPrintStats();
-        GXDrawDone();
-        DEMOUpdateStats(0);
-    }
-
-    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
-    GXSetColorUpdate(GX_TRUE);
-    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
-    GXDrawDone();
-    VISetNextFrameBuffer(DemoCurrentBuffer);
-    VIFlush();
-    VIWaitForRetrace();
-
-    if (DemoCurrentBuffer == DemoFrameBuffer1) {
-        DemoCurrentBuffer = DemoFrameBuffer2;
-    } else {
-        DemoCurrentBuffer = DemoFrameBuffer1;
-    }
+    simulatorUnknownInline();
 
     xlCoreBeforeRender();
-    if (DemoStatEnable) {
-        GXDrawDone();
-        DEMOUpdateStats(1);
-        DEMOPrintStats();
-        GXDrawDone();
-        DEMOUpdateStats(0);
-    }
-
-    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
-    GXSetColorUpdate(GX_TRUE);
-    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
-    GXDrawDone();
-    VISetNextFrameBuffer(DemoCurrentBuffer);
-    VIFlush();
-    VIWaitForRetrace();
-
-    if (DemoCurrentBuffer == DemoFrameBuffer1) {
-        DemoCurrentBuffer = DemoFrameBuffer2;
-    } else {
-        DemoCurrentBuffer = DemoFrameBuffer1;
-    }
+    simulatorUnknownInline();
 
     VIWaitForRetrace();
     VISetBlack(0);

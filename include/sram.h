@@ -8,4 +8,6 @@ typedef struct Sram {
     void* pHost; // 0x0
 } Sram;
 
+s32 sramEvent(Sram* pSram, s32 nEvent, void* pArgument);
+
 #endif

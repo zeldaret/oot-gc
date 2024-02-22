@@ -93,6 +93,8 @@ typedef struct _MCARD {
 
 extern MemCard mCard;
 
+s32 mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);
+s32 mcardRead(MemCard* pMCard, s32 address, s32 size, char* data);
 s32 mcardInit(MemCard* pMCard);
 s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
               s32* defaultConfiguration, s32 fileSize, s32 gameSize);

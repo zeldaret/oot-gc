@@ -1,13 +1,16 @@
 #include "sram.h"
 #include "cpu.h"
-#include "dolphin.h"
 #include "ram.h"
+#include "simGCN.h"
 #include "system.h"
 #include "xlObject.h"
 
-int sramEvent(Sram* pSram, s32 nEvent, void* pArgument);
-
-_XL_OBJECTTYPE gClassSram = {"SRAM", sizeof(Sram), NULL, (EventFunc)sramEvent};
+_XL_OBJECTTYPE gClassSram = {
+    "SRAM",
+    sizeof(Sram),
+    NULL,
+    (EventFunc)sramEvent,
+};
 
 s32 sramCopySRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
     void* pTarget;
@@ -15,7 +18,7 @@ s32 sramCopySRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
     if (!ramGetBuffer(SYSTEM_RAM(pSRAM->pHost), &pTarget, nOffsetRAM, &nSize)) {
         return 0;
     }
-    if (!simulatorReadSRAM(nOffsetSRAM & 0x7FFF, pTarget, nSize)) {
+    if (!simulatorReadSRAM(nOffsetSRAM & 0x7FFF, (u8*)pTarget, nSize)) {
         return 0;
     }
     return 1;
@@ -27,53 +30,53 @@ s32 sramTransferSRAM(Sram* pSRAM, u32 nOffsetRAM, u32 nOffsetSRAM, u32 nSize) {
     if (!ramGetBuffer(SYSTEM_RAM(pSRAM->pHost), &pTarget, nOffsetRAM, &nSize)) {
         return 0;
     }
-    if (!simulatorWriteSRAM(nOffsetSRAM & 0x7FFF, pTarget, nSize)) {
+    if (!simulatorWriteSRAM(nOffsetSRAM & 0x7FFF, (u8*)pTarget, nSize)) {
         return 0;
     }
     return 1;
 }
 
-static int sramPut8(Sram* pObject, u32 nAddress, s8* pData) {
+static s32 sramPut8(Sram* pObject, u32 nAddress, s8* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s8));
     return 1;
 }
 
-static int sramPut16(Sram* pObject, u32 nAddress, s16* pData) {
+static s32 sramPut16(Sram* pObject, u32 nAddress, s16* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s16));
     return 1;
 }
 
-static int sramPut32(Sram* pObject, u32 nAddress, s32* pData) {
+static s32 sramPut32(Sram* pObject, u32 nAddress, s32* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s32));
     return 1;
 }
 
-static int sramPut64(Sram* pObject, u32 nAddress, s64* pData) {
+static s32 sramPut64(Sram* pObject, u32 nAddress, s64* pData) {
     simulatorWriteSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s64));
     return 1;
 }
 
-static int sramGet8(Sram* pObject, u32 nAddress, s8* pData) {
+static s32 sramGet8(Sram* pObject, u32 nAddress, s8* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s8));
     return 1;
 }
 
-static int sramGet16(Sram* pObject, u32 nAddress, s16* pData) {
+static s32 sramGet16(Sram* pObject, u32 nAddress, s16* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s16));
     return 1;
 }
 
-static int sramGet32(Sram* pObject, u32 nAddress, s32* pData) {
+static s32 sramGet32(Sram* pObject, u32 nAddress, s32* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s32));
     return 1;
 }
 
-static int sramGet64(Sram* pObject, u32 nAddress, s64* pData) {
+static s32 sramGet64(Sram* pObject, u32 nAddress, s64* pData) {
     simulatorReadSRAM(nAddress & 0x7FFF, (u8*)pData, sizeof(s64));
     return 1;
 }
 
-int sramEvent(Sram* pObject, s32 nEvent, void* pArgument) {
+s32 sramEvent(Sram* pObject, s32 nEvent, void* pArgument) {
     Sram* pSram = (Sram*)pObject;
 
     switch (nEvent) {

@@ -26,4 +26,8 @@ typedef struct Pif {
     /* 0x1C */ ControllerType eControllerType[5];
 } Pif; // size = 0x30
 
+s32 pifReadRumble(Pif* pPIF, s32 channel, u16 address, u8* data);
+s32 pifWriteRumble(Pif* pPIF, s32 channel, u16 address, u8* data);
+s32 pifGetEControllerType(Pif* pPIF, s32 channel, ControllerType* type);
+
 #endif
