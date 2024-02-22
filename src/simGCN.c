@@ -1,15 +1,15 @@
 #include "simGCN.h"
-#include "dolphin.h"
-#include "xlPostGCN.h"
-#include "movie.h"
-#include "pif.h"
 #include "codeGCN.h"
+#include "dolphin.h"
 #include "macros.h"
 #include "mcardGCN.h"
+#include "movie.h"
+#include "pif.h"
 #include "rom.h"
 #include "soundGCN.h"
 #include "system.h"
 #include "xlObject.h"
+#include "xlPostGCN.h"
 
 //! TODO: Move these to proper headers
 extern _XL_OBJECTTYPE gClassCode;
