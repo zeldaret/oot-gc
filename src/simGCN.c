@@ -465,11 +465,11 @@ s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nO
             DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
 
             while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
-                if (!simulatorDVDShowError(nStatus, (s32)anData, nSizeRead, nOffset)) {
+                if (!simulatorDVDShowError(nStatus, (u32*)anData, nSizeRead, nOffset)) {
                     return 0;
                 }
 
-                if ((nStatus == 0xB) || (nStatus == -1)) {
+                if ((nStatus == 11) || (nStatus == -1)) {
                     DVDCancel(&pFileInfo->cb);
                     bRetry = 1;
                     break;
@@ -522,9 +522,9 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     if (IPL == 1) {
         if (forceMenu == 1) {
             OSResetSystem(1, 0, 1);
-            return;
+        } else {
+            OSResetSystem(1, 0, 0);
         }
-        OSResetSystem(1, 0, 0);
         return;
     }
 
@@ -655,7 +655,7 @@ s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
 s32 simulatorReadEEPROM(u8 address, u8* data) {
     s32 size;
 
-    if (pifGetEEPROMSize(gpSystem->apObject[1], &size, gpSystem) == 0) {
+    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
         return 0;
     }
 
@@ -666,7 +666,7 @@ s32 simulatorReadEEPROM(u8 address, u8* data) {
 s32 simulatorWriteEEPROM(u8 address, u8* data) {
     s32 size;
 
-    if (pifGetEEPROMSize(gpSystem->apObject[1], &size, gpSystem) == 0) {
+    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
         return 0;
     }
 
