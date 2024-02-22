@@ -1,5 +1,17 @@
-#include "simGCN.h"
+#include "codeGCN.h"
 #include "macros.h"
+#include "mcardGCN.h"
+#include "rom.h"
+#include "simGCN.h"
+#include "soundGCN.h"
+#include "system.h"
+#include "xlObject.h"
+
+//! TODO: Move these to proper headers
+extern _XL_OBJECTTYPE gClassCode;
+extern _XL_OBJECTTYPE gClassFrame;
+extern _XL_OBJECTTYPE gClassSound;
+extern _XL_OBJECTTYPE gClassSystem;
 
 const f32 D_800D2FE0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
@@ -343,6 +355,222 @@ const f32 D_80135D6C = 120.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorParseArguments.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorGetArgument.s")
+s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument) {
+    if (eType != SAT_NONE && pszArgument != NULL && gaszArgument[eType] != NULL) {
+        *pszArgument = gaszArgument[eType];
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/xlMain.s")
+    return 0;
+}
+
+inline s32 simulatorRun(SystemMode* peMode) {
+    int nResult;
+
+    while (systemGetMode(gpSystem, peMode) && *peMode == SM_RUNNING) {
+        nResult = systemExecute(gpSystem, 100000);
+        if (!nResult) {
+            return nResult;
+        }
+    }
+
+    return 1;
+}
+
+s32 xlMain() {
+    // Local variables
+    GXColor color; // r1+0x3C
+    SystemMode eMode; // r1+0x38
+    s32 nSize0; // r1+0x34
+    s32 nSize1; // r1+0x30
+    s32 iName; // r5
+    char* szNameROM; // r1+0x2C
+    char acNameROM[32]; // r1+0xC
+    // s32 rumbleYes; // r1+0x8
+
+    simulatorParseArguments();
+    gDVDResetToggle = 0;
+
+    if (!xlHeapGetFree(&nSize0)) {
+        return 0;
+    }
+    if (nSize0 > 0x01800000) {
+        OSReport(D_800E9B34);
+        OSReport(D_800E9B80);
+        while (1) {}
+    }
+
+#ifdef __MWERKS__
+    asm {
+        li      r3, 0x706
+        oris    r3, r3, 0x706
+        mtspr   GQR6, r3
+        li      r3, 0x507
+        oris    r3, r3, 0x507
+        mtspr   GQR7, r3
+    }
+#endif
+
+    color.r = color.g = color.b = 0;
+    color.a = 0xFF;
+
+    gbDisplayedError = 0;
+    gButtonDownToggle = 0;
+    gResetBeginFlag = 1;
+
+    GXSetCopyClear(color, 0xFFFFFF);
+    VISetBlack(1);
+    VIFlush();
+    VIWaitForRetrace();
+
+    xlCoreBeforeRender();
+    if (DemoStatEnable) {
+        GXDrawDone();
+        DEMOUpdateStats(1);
+        DEMOPrintStats();
+        GXDrawDone();
+        DEMOUpdateStats(0);
+    }
+
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+    GXSetColorUpdate(GX_TRUE);
+    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
+    GXDrawDone();
+    VISetNextFrameBuffer(DemoCurrentBuffer);
+    VIFlush();
+    VIWaitForRetrace();
+
+    if (DemoCurrentBuffer == DemoFrameBuffer1) {
+        DemoCurrentBuffer = DemoFrameBuffer2;
+    } else {
+        DemoCurrentBuffer = DemoFrameBuffer1;
+    }
+
+    xlCoreBeforeRender();
+    if (DemoStatEnable) {
+        GXDrawDone();
+        DEMOUpdateStats(1);
+        DEMOPrintStats();
+        GXDrawDone();
+        DEMOUpdateStats(0);
+    }
+
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+    GXSetColorUpdate(GX_TRUE);
+    GXCopyDisp(DemoCurrentBuffer, GX_TRUE);
+    GXDrawDone();
+    VISetNextFrameBuffer(DemoCurrentBuffer);
+    VIFlush();
+    VIWaitForRetrace();
+
+    if (DemoCurrentBuffer == DemoFrameBuffer1) {
+        DemoCurrentBuffer = DemoFrameBuffer2;
+    } else {
+        DemoCurrentBuffer = DemoFrameBuffer1;
+    }
+
+    VIWaitForRetrace();
+    VISetBlack(0);
+    VIFlush();
+
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gcoverOpen);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gnoDisk);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gretryErr);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gfatalErr);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gwrongDisk);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&greadingDisk);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gbar);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gyes);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gno);
+    simulatorUnpackTexPalette((__anon_0xDB69*)&gmesgOK);
+
+    gbReset = 0;
+    gnTickReset = OSGetTick();
+
+    if (!xlHeapGetFree(&nSize0)) {
+        return 0;
+    }
+
+    mCard.bufferCreated = 0;
+    mCard.isBroken = 0;
+    mcardInit(&mCard);
+
+    if (simulatorGetArgument(SAT_NAME, &szNameROM)) {
+        strcpy(acNameROM, szNameROM);
+    } else {
+        strcpy(acNameROM, D_800E9BD0);
+    }
+
+    iName = strlen(acNameROM) - 1;
+    while (iName >= 0 && acNameROM[iName] != '.') {
+        iName--;
+    }
+
+    if (iName < 0) {
+        iName = strlen(acNameROM);
+        acNameROM[iName + 0] = '.';
+        acNameROM[iName + 1] = 'N';
+        acNameROM[iName + 2] = '6';
+        acNameROM[iName + 3] = '4';
+        acNameROM[iName + 4] = '\0';
+    }
+
+    gpSystem = NULL;
+
+    if (!xlObjectMake(&gpCode, NULL, &gClassCode)) {
+        return 0;
+    }
+    if (!xlObjectMake(&gpFrame, NULL, &gClassFrame)) {
+        return 0;
+    }
+    if (!xlObjectMake(&gpSound, NULL, &gClassSound)) {
+        return 0;
+    }
+    if (!xlObjectMake(&gpSystem, NULL, &gClassSystem)) {
+        return 0;
+    }
+
+    if (!xlFileSetOpen(&simulatorDVDOpen)) {
+        return 0;
+    }
+    if (!xlFileSetRead(&simulatorDVDRead)) {
+        return 0;
+    }
+
+    soundLoadBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_ACCEPT, D_80134D9C);
+    soundLoadBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_DECLINE, D_80134DA4);
+    soundLoadBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_SELECT, D_800E9BDC);
+
+    if (!romSetImage(SYSTEM_ROM(gpSystem), acNameROM)) {
+        return 0;
+    }
+    if (!systemReset(gpSystem)) {
+        return 0;
+    }
+    if (!frameShow(gpFrame)) {
+        return 0;
+    }
+    if (!xlHeapGetFree(&nSize1)) {
+        return 0;
+    }
+    if (!systemSetMode(gpSystem, SM_RUNNING)) {
+        return 0;
+    }
+
+    simulatorRun(&eMode);
+
+    if (!xlObjectFree(&gpSystem)) {
+        return 0;
+    }
+    if (!xlObjectFree(&gpSound)) {
+        return 0;
+    }
+    if (!xlObjectFree(&gpFrame)) {
+        return 0;
+    }
+    if (!xlObjectFree(&gpCode)) {
+        return 0;
+    }
+
+    return 1;
+}

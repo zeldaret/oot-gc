@@ -91,10 +91,19 @@ typedef enum __anon_0x61D7 {
     S_M_CARD_DEFAULT_ERROR = 47,
 } __anon_0x61D7;
 
-// __anon_0x57A1
-typedef struct Code {
-    /* 0x0 */ s32 nMode;
-} Code; // size = 0x4
+// __anon_0xA982
+typedef enum SimArgumentType {
+    SAT_NONE = -1,
+    SAT_NAME = 0,
+    SAT_PROGRESSIVE = 1,
+    SAT_VIBRATION = 2,
+    SAT_CONTROLLER = 3,
+    SAT_XTRA = 4,
+    SAT_MEMORYCARD = 5,
+    SAT_MOVIE = 6,
+    SAT_RESET = 7,
+    SAT_COUNT = 8
+} SimArgumentType;
 
 extern s32 gDVDResetToggle;
 extern s32 gbDisplayedError;
@@ -104,11 +113,14 @@ extern void* gpSound;
 extern System* gpSystem;
 
 void simulatorUnpackTexPalette(__anon_0xDB69* pal);
+s32 simulatorDVDOpen(char* szNameFile, struct DVDFileInfo* pFileInfo);
+s32 simulatorDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset,
+                     void (*callback)(s32, struct DVDFileInfo*));
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
 s32 simulatorReadSRAM(u32 address, u8* data, s32 size);
 s32 simulatorWriteSRAM(u32 address, u8* data, s32 size);
-s32 simulatorGetArgument(SystemArgumentType eType, char** pszArgument);
 s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
 s32 simulatorSetControllerMap(u32* mapData, s32 channel);
+s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument);
 
 #endif

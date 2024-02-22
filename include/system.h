@@ -54,20 +54,6 @@ typedef enum SystemObjectType {
     SOT_COUNT = 16,
 } SystemObjectType;
 
-// __anon_0xA982
-typedef enum SystemArgumentType {
-    SAT_NONE = -1,
-    SAT_NAME = 0,
-    SAT_PROGRESSIVE = 1,
-    SAT_VIBRATION = 2,
-    SAT_CONTROLLER = 3,
-    SAT_XTRA = 4,
-    SAT_MEMORYCARD = 5,
-    SAT_MOVIE = 6,
-    SAT_RESET = 7,
-    SAT_COUNT = 8
-} SystemArgumentType;
-
 // __anon_0x3979C
 typedef enum SystemInterruptType {
     SIT_NONE = -1,
