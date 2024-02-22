@@ -522,7 +522,7 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     NO_INLINE;
 }
 
-// stack/regalloc
+// stack issues
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorResetAndPlayMovie.s")
 #else
