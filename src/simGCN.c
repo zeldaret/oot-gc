@@ -445,16 +445,13 @@ s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
     return DVDOpen(szNameFile, pFileInfo);
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDVDRead.s")
-#else
 s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback) {
-    s32 nStatus; // r31
-    s32 bRetry; // r30
+    s32 nStatus;
+    s32 bRetry;
 
     if (callback == NULL) {
-        // bRetry = 0;
-        while (!bRetry) {
+        do {
+            bRetry = 0;
             DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
 
             while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
@@ -465,15 +462,17 @@ s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nO
                 if ((nStatus == 0xB) || (nStatus == -1)) {
                     DVDCancel(&pFileInfo->cb);
                     bRetry = 1;
+                    break;
                 }
             }
-        }
+        } while (bRetry);
+    } else {
+        DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, callback, 2);
+        return 1;
     }
 
-    DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, callback, 2);
     return 1;
 }
-#endif
 
 s32 simulatorPlayMovie(void) {
     simulatorResetAndPlayMovie();
