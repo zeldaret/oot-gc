@@ -447,7 +447,7 @@ s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
     s32 nStatus;
 
     while ((nStatus = DVDGetDriveStatus()) != 0) {
-        if (!simulatorDVDShowError(nStatus, 0, 0, 0)) {
+        if (!simulatorDVDShowError(nStatus, NULL, 0, 0)) {
             return 0;
         }
     }
@@ -465,7 +465,7 @@ s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nO
             DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
 
             while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
-                if (!simulatorDVDShowError(nStatus, (u8*)anData, nSizeRead, nOffset)) {
+                if (!simulatorDVDShowError(nStatus, anData, nSizeRead, nOffset)) {
                     return 0;
                 }
 
