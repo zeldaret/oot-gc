@@ -519,6 +519,7 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     }
 
     OSResetSystem(0, 0, 0);
+    NO_INLINE;
 }
 
 // stack/regalloc
@@ -585,9 +586,29 @@ void simulatorResetAndPlayMovie(void) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorSetControllerMap.s")
+s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
+    s32 i;
 
+    for (i = 0; i < ARRAY_COUNT(gContMap[channel]); i++) {
+        gContMap[channel][i] = mapData[i];
+    }
+
+    return 1;
+}
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorCopyControllerMap.s")
+#else
+s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
+    s32 i;
+
+    for (i = 0; i < 20; i++) {
+        mapDataOutput[i] = mapDataInput[i];
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadController.s")
 
@@ -681,7 +702,91 @@ s32 simulatorRumbleStop(s32 channel) {
     return 1;
 }
 
+// regalloc
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorTestReset.s")
+#else
+inline s32 simulatorTestResetUnknownInline(u32 nTick) {
+    s32 result = (f32)(nTick - gnTickReset) >= (0.5f * (f32)(*(u32*)0x800000F8 >> 2));
+    return result;
+}
+
+s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
+    // Parameters
+    // s32 IPL; // r24
+    // s32 forceMenu; // r25
+    // s32 allowReset; // r26
+    // s32 usePreviousSettings; // r27
+
+    // Local variables
+    u32 bFlag; // r1+0x8
+    u32 nTick; // r1+0x8
+    s32 prevIPLSetting; // r28
+    s32 prevForceMenuSetting; // r27
+    s32 prevAllowResetSetting; // r1+0x8
+
+    nTick = OSGetTick();
+    prevAllowResetSetting = gPreviousAllowResetSetting;
+    prevIPLSetting = gPreviousIPLSetting;
+    prevForceMenuSetting = gPreviousForceMenuSetting;
+
+    if (usePreviousSettings == 1) {
+        IPL = gPreviousIPLSetting;
+        forceMenu = gPreviousForceMenuSetting;
+        allowReset = prevAllowResetSetting;
+    } else {
+        gPreviousIPLSetting = IPL;
+        gPreviousForceMenuSetting = forceMenu;
+        gPreviousAllowResetSetting = allowReset;
+    }
+
+    DEMOPadRead();
+    bFlag = OSGetResetButtonState();
+
+    if ((gResetBeginFlag == 1) && ((DemoPad[0].pst.button & 0x1600) == 0x1600)) {
+        if ((gbReset == 0) || bFlag) {
+            gbReset = bFlag;
+            return 1;
+        }
+
+        if (allowReset == 1) {
+            if (prevAllowResetSetting == 1) {
+                simulatorReset(IPL, forceMenu);
+            } else {
+                simulatorReset(prevIPLSetting, prevForceMenuSetting);
+            }
+        }
+    } else {
+        gResetBeginFlag = 0;
+    }
+
+    if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
+        gnTickReset = nTick;
+        if ((gbReset == 0) || (bFlag != 0)) {
+            gbReset = bFlag;
+            return 1;
+        }
+
+        if (allowReset == 1) {
+            if (prevAllowResetSetting == 1) {
+                simulatorReset(IPL, forceMenu);
+            } else {
+                simulatorReset(prevIPLSetting, prevForceMenuSetting);
+            }
+        }
+    } else {
+        if (simulatorTestResetUnknownInline(nTick) && (allowReset == 1)) {
+            if (prevAllowResetSetting == 1) {
+                simulatorReset(IPL, forceMenu);
+            } else {
+                simulatorReset(prevIPLSetting, prevForceMenuSetting);
+            }
+        }
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawMCardText.s")
 
