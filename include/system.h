@@ -132,6 +132,25 @@ typedef struct SystemRomConfig {
     /* 0x0170 */ s32 currentControllerConfig;
 } SystemRomConfig; // size = 0x174
 
+#define SYSTEM_FRAME(pSystem) ((Frame*)(((System*)(pSystem))->pFrame))
+#define SYSTEM_SOUND(pSystem) ((Sound*)(((System*)(pSystem))->pSound))
+#define SYSTEM_CPU(pSystem) ((Cpu*)(((System*)(pSystem))->apObject[SOT_CPU]))
+#define SYSTEM_PIF(pSystem) ((Pif*)(((System*)(pSystem))->apObject[SOT_PIF]))
+#define SYSTEM_RAM(pSystem) ((Ram*)(((System*)(pSystem))->apObject[SOT_RAM]))
+#define SYSTEM_ROM(pSystem) ((Rom*)(((System*)(pSystem))->apObject[SOT_ROM]))
+#define SYSTEM_RSP(pSystem) ((Rsp*)(((System*)(pSystem))->apObject[SOT_RSP]))
+#define SYSTEM_RDP(pSystem) ((Rsp*)(((System*)(pSystem))->apObject[SOT_RDP]))
+#define SYSTEM_MIPS(pSystem) ((Mips*)(((System*)(pSystem))->apObject[SOT_MIPS]))
+#define SYSTEM_DISK(pSystem) ((Disk*)(((System*)(pSystem))->apObject[SOT_DISK]))
+#define SYSTEM_FLASH(pSystem) ((Flash*)(((System*)(pSystem))->apObject[SOT_FLASH]))
+#define SYSTEM_SRAM(pSystem) ((Sram*)(((System*)(pSystem))->apObject[SOT_SRAM]))
+#define SYSTEM_AUDIO(pSystem) ((Audio*)(((System*)(pSystem))->apObject[SOT_AUDIO]))
+#define SYSTEM_VIDEO(pSystem) ((Video*)(((System*)(pSystem))->apObject[SOT_VIDEO]))
+#define SYSTEM_SERIAL(pSystem) ((Disk*)(((System*)(pSystem))->apObject[SOT_SERIAL]))
+#define SYSTEM_LIBRARY(pSystem) ((Library*)(((System*)(pSystem))->apObject[SOT_LIBRARY]))
+#define SYSTEM_PERIPHERAL(pSystem) ((Peripheral*)(((System*)(pSystem))->apObject[SOT_PERIPHERAL]))
+#define SYSTEM_RDB(pSystem) ((Rdb*)(((System*)(pSystem))->apObject[SOT_RDB]))
+
 s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback);
 s32 systemSetMode(System* pSystem, SystemMode eMode);
 s32 systemGetMode(System* pSystem, SystemMode* peMode);

@@ -266,35 +266,35 @@ s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument) {
         case 0x1002:
             switch (((CpuDevice*)pArgument)->nType & 0xFF) {
                 case 0:
-                    if (!cpuSetDevicePut(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)ramPut8,
-                                         (Put16Func)ramPut16, (Put32Func)ramPut32, (Put64Func)ramPut64)) {
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRAM->pHost), pArgument, (Put8Func)ramPut8, (Put16Func)ramPut16,
+                                         (Put32Func)ramPut32, (Put64Func)ramPut64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)ramGet8,
-                                         (Get16Func)ramGet16, (Get32Func)ramGet32, (Get64Func)ramGet64)) {
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pRAM->pHost), pArgument, (Get8Func)ramGet8, (Get16Func)ramGet16,
+                                         (Get32Func)ramGet32, (Get64Func)ramGet64)) {
                         return 0;
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)ramPutRI8,
-                                         (Put16Func)ramPutRI16, (Put32Func)ramPutRI32, (Put64Func)ramPutRI64)) {
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRAM->pHost), pArgument, (Put8Func)ramPutRI8, (Put16Func)ramPutRI16,
+                                         (Put32Func)ramPutRI32, (Put64Func)ramPutRI64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)ramGetRI8,
-                                         (Get16Func)ramGetRI16, (Get32Func)ramGetRI32, (Get64Func)ramGetRI64)) {
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pRAM->pHost), pArgument, (Get8Func)ramGetRI8, (Get16Func)ramGetRI16,
+                                         (Get32Func)ramGetRI32, (Get64Func)ramGetRI64)) {
                         return 0;
                     }
                     break;
                 case 2:
-                    if (!cpuSetDevicePut(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)ramPutControl8,
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRAM->pHost), pArgument, (Put8Func)ramPutControl8,
                                          (Put16Func)ramPutControl16, (Put32Func)ramPutControl32,
                                          (Put64Func)ramPutControl64)) {
                         return 0;
                     }
 
-                    if (!cpuSetDeviceGet(((System*)pRAM->pHost)->apObject[SOT_CPU], pArgument, (Get8Func)ramGetControl8,
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pRAM->pHost), pArgument, (Get8Func)ramGetControl8,
                                          (Get16Func)ramGetControl16, (Get32Func)ramGetControl32,
                                          (Get64Func)ramGetControl64)) {
                         return 0;
