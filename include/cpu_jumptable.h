@@ -1,3 +1,8 @@
+#ifndef _CPU_JUMPTABLE
+#define _CPU_JUMPTABLE
+
+// temporary file
+
 extern void* lbl_80030EFC;
 extern void* lbl_80030F7C;
 extern void* lbl_80030F7C;
@@ -1177,3 +1182,5 @@ extern void* lbl_800356F4;
 extern void* lbl_800356F4;
 extern void* lbl_800356F4;
 extern void* lbl_800356F8;
+
+#endif
