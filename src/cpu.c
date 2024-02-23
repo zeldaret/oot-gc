@@ -524,55 +524,1118 @@ const f32 D_80135FB8 = 0.5;
 const f64 D_80135FC0 = 4503601774854144.0;
 const f64 D_80135FC8 = 4503599627370496.0;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DSLLV.s")
+static s32 cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 16;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DSRLV.s")
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DSRAV.s")
+    compile[count++] = 0x9421FFE8; // stwu   r1,-0x18(r1)
+    compile[count++] = 0x70E7003F; // stwu   r1,-0x18(r1)
+    compile[count++] = 0x91210010; // stw    r9,0x10(r1)
+    compile[count++] = 0x21270020; // subfic r9,r7,0x20
+    compile[count++] = 0x91010008; // stw    r8,8(r1)
+    compile[count++] = 0x7CA53830; // slw    r5,r5,r7
+    compile[count++] = 0x7CC84C30; // srw    r8,r6,r9
+    compile[count++] = 0x7CA54378; // or     r5,r5,r8
+    compile[count++] = 0x3927FFE0; // addi   r9,r7,-0x20
+    compile[count++] = 0x7CC84830; // slw    r8,r6,r9
+    compile[count++] = 0x7CA54378; // or     r5,r5,r8
+    compile[count++] = 0x7CC63830; // slw    r6,r6,r7
+    compile[count++] = 0x81010008; // lwz    r8,8(r1)
+    compile[count++] = 0x81210010; // lwz    r9,0x10(r1)
+    compile[count++] = 0x38210018; // addi   r1,r1,0x18
+    compile[count++] = 0x4E800020; // blr
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DMULT.s")
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DMULTU.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DDIV.s")
+static s32 cpuCompile_DSRLV(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 16;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DDIVU.s")
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_S_SQRT.s")
+    compile[count++] = 0x9421FFE8; // stwu   r1,-0x18(r1)
+    compile[count++] = 0x70E7003F; // andi.  r7,r7,0x3f
+    compile[count++] = 0x91210010; // stw    r9,0x10(r1)
+    compile[count++] = 0x21270020; // subfic r9,r7,0x20
+    compile[count++] = 0x91010008; // stw    r8,8(r1)
+    compile[count++] = 0x7CC63C30; // srw    r6,r6,r7
+    compile[count++] = 0x7CA84830; // slw    r8,r5,r9
+    compile[count++] = 0x7CC64378; // or     r6,r6,r8
+    compile[count++] = 0x3927FFE0; // addi   r9,r7,-0x20
+    compile[count++] = 0x7CA84C30; // srw    r8,r5,r9
+    compile[count++] = 0x7CC64378; // or     r6,r6,r8
+    compile[count++] = 0x7CA53C30; // srw    r5,r5,r7
+    compile[count++] = 0x81010008; // lwz    r8,8(r1)
+    compile[count++] = 0x81210010; // lwz    r9,0x10(r1)
+    compile[count++] = 0x38210018; // addi   r1,r1,0x18
+    compile[count++] = 0x4E800020; // blr
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_D_SQRT.s")
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_W_CVT_SD.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_L_CVT_SD.s")
+static s32 cpuCompile_DSRAV(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 17;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_CEIL_W.s")
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_FLOOR_W.s")
+    compile[count++] = 0x9421FFE8; // stwu   r1,-0x18(r1)
+    compile[count++] = 0x70E7003F; // andi.  r7,r7,0x3f
+    compile[count++] = 0x91210010; // stw    r9,0x10(r1)
+    compile[count++] = 0x21270020; // subfic r9,r7,0x20
+    compile[count++] = 0x91010008; // stw    r8,8(r1)
+    compile[count++] = 0x7CC63C30; // srw    r6,r6,r7
+    compile[count++] = 0x7CA84830; // slw    r8,r5,r9
+    compile[count++] = 0x7CC64378; // or     r6,r6,r8
+    compile[count++] = 0x3527FFE0; // addic. r9,r7,-0x20
+    compile[count++] = 0x7CA84E30; // sraw   r8,r5,r9
+    compile[count++] = 0x40810008; // ble    0x30
+    compile[count++] = 0x61060000; // ori    r6,r8,0
+    compile[count++] = 0x7CA53E30; // sraw   r5,r5,r7
+    compile[count++] = 0x81010008; // lwz    r8,8(r1)
+    compile[count++] = 0x81210010; // lwz    r9,0x10(r1)
+    compile[count++] = 0x38210018; // addi   r1,r1,0x18
+    compile[count++] = 0x4E800020; // blr
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LB.s")
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LH.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LW.s")
+static s32 cpuCompile_DMULT(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 53;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LBU.s")
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LHU.s")
+    compile[count++] = 0x39200000; // li     r9,0
+    compile[count++] = 0x39400000; // li     r10,0
+    compile[count++] = 0x39800040; // li     r12,0x40
+    compile[count++] = 0x39600001; // li     r11,1
+    compile[count++] = 0x2C050000; // cmpwi  r5,0
+    compile[count++] = 0x40800014; // bge    0x28
+    compile[count++] = 0x7CC630F8; // nor    r6,r6,r6
+    compile[count++] = 0x7CA528F8; // nor    r5,r5,r5
+    compile[count++] = 0x7CC65814; // addc   r6,r6,r11
+    compile[count++] = 0x7CA54914; // adde   r5,r5,r9
+    compile[count++] = 0x2C070000; // cmpwi  r7,0
+    compile[count++] = 0x40800014; // bge    0x40
+    compile[count++] = 0x7D0840F8; // nor    r8,r8,r8
+    compile[count++] = 0x7CE738F8; // nor    r7,r7,r7
+    compile[count++] = 0x7D085814; // addc   r8,r8,r11
+    compile[count++] = 0x7CE74914; // adde   r7,r7,r9
+    compile[count++] = 0x710B0001; // andi.  r11,r8,1
+    compile[count++] = 0x41820018; // beq    0x5c
+    compile[count++] = 0x39600000; // li     r11,0
+    compile[count++] = 0x7D4A3014; // addc   r10,r10,r6
+    compile[count++] = 0x7D292914; // adde   r9,r9,r5
+    compile[count++] = 0x7D6B5914; // adde   r11,r11,r11
+    compile[count++] = 0x42800008; // bdnz   0x60
+    compile[count++] = 0x39600000; // li     r11,0
+    compile[count++] = 0x5508F87E; // srwi   r8,r8,1
+    compile[count++] = 0x50E8F800; // rlwimi r8,r7,0x1f,0,0
+    compile[count++] = 0x54E7F87E; // srwi   r7,r7,1
+    compile[count++] = 0x5147F800; // rlwimi r7,r10,0x1f,0,0
+    compile[count++] = 0x554AF87E; // srwi   r10,r10,1
+    compile[count++] = 0x512AF800; // rlwimi r10,r9,0x1f,0,0
+    compile[count++] = 0x5529F87E; // srwi   r9,r9,1
+    compile[count++] = 0x5169F800; // rlwimi r9,r11,0x1f,0,0
+    compile[count++] = 0x556BF87E; // srwi   r11,r11,1
+    compile[count++] = 0x398CFFFF; // addi   r12,r12,-1
+    compile[count++] = 0x2C0C0000; // cmpwi  r12,0
+    compile[count++] = 0x4082FFB4; // bne    0x40
+    compile[count++] = 0x39600001; // li     r11,1
+    compile[count++] = 0x7DCE7A78; // xor    r14,r14,r15
+    compile[count++] = 0x2C0E0000; // cmpwi  r14,0
+    compile[count++] = 0x40800024; // bge    0xc0
+    compile[count++] = 0x7D0840F8; // nor    r8,r8,r8
+    compile[count++] = 0x7CE738F8; // nor    r7,r7,r7
+    compile[count++] = 0x7D4A50F8; // nor    r10,r10,r10
+    compile[count++] = 0x7D2948F8; // nor    r9,r9,r9
+    compile[count++] = 0x7D085814; // addc   r8,r8,r11
+    compile[count++] = 0x7CE76114; // adde   r7,r7,r12
+    compile[count++] = 0x7D4A6114; // adde   r10,r10,r12
+    compile[count++] = 0x7D296114; // adde   r9,r9,r12
+    compile[count++] = 0x91030004 + OFFSETOF(pCPU, nLo); // stw    r8,(nLo + 4)(r3)
+    compile[count++] = 0x90E30000 + OFFSETOF(pCPU, nLo); // stw    r7,(nLo + 0)(r3)
+    compile[count++] = 0x91430004 + OFFSETOF(pCPU, nHi); // stw    r10,(nHi + 4)(r3)
+    compile[count++] = 0x91230000 + OFFSETOF(pCPU, nHi); // stw    r9,(nHi + 0)(r3)
+    compile[count++] = 0x4E800020; // blr
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_SB.s")
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_SH.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_SW.s")
+static s32 cpuCompile_DMULTU(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 28;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LDC.s")
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_SDC.s")
+    compile[count++] = 0x39200000; // li     r9,0
+    compile[count++] = 0x39400000; // li     r10,0
+    compile[count++] = 0x39800040; // li     r12,0x40
+    compile[count++] = 0x710B0001; // andi.  r11,r8,1
+    compile[count++] = 0x41820018; // beq    0x28
+    compile[count++] = 0x39600000; // li     r11,0
+    compile[count++] = 0x7D4A3014; // addc   r10,r10,r6
+    compile[count++] = 0x7D292914; // adde   r9,r9,r5
+    compile[count++] = 0x7D6B5914; // adde   r11,r11,r11
+    compile[count++] = 0x42800008; // bdnz   0x2c
+    compile[count++] = 0x39600000; // li     r11,0
+    compile[count++] = 0x5508F87E; // srwi   r8,r8,1
+    compile[count++] = 0x50E8F800; // rlwimi r8,r7,0x1f,0,0
+    compile[count++] = 0x54E7F87E; // srwi   r7,r7,1
+    compile[count++] = 0x5147F800; // rlwimi r7,r10,0x1f,0,0
+    compile[count++] = 0x554AF87E; // srwi   r10,r10,1
+    compile[count++] = 0x512AF800; // rlwimi r10,r9,0x1f,0,0
+    compile[count++] = 0x5529F87E; // srwi   r9,r9,1
+    compile[count++] = 0x5169F800; // rlwimi r9,r11,0x1f,0,0
+    compile[count++] = 0x556BF87E; // srwi   r11,r11,1
+    compile[count++] = 0x398CFFFF; // addi   r12,r12,-1
+    compile[count++] = 0x2C0C0000; // cmpwi  r12,0
+    compile[count++] = 0x4082FFB4; // bne    0xc
+    compile[count++] = 0x91030004 + OFFSETOF(pCPU, nLo); // stw    r8,(nLo + 4)(r3)
+    compile[count++] = 0x90E30000 + OFFSETOF(pCPU, nLo); // stw    r7,(nLo + 0)(r3)
+    compile[count++] = 0x91430004 + OFFSETOF(pCPU, nHi); // stw    r10,(nHi + 4)(r3)
+    compile[count++] = 0x91230000 + OFFSETOF(pCPU, nHi); // stw    r9,(nHi + 0)(r3)
+    compile[count++] = 0x4E800020; // blr
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LWL.s")
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_LWR.s")
+    return 1;
+}
+
+static s32 cpuCompile_DDIV(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 64;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x38A00040; // li     r5,0x40
+    compile[count++] = 0x38C00000; // li     r6,0
+    compile[count++] = 0x38E00000; // li     r7,0
+    compile[count++] = 0x39800001; // li     r12,1
+    compile[count++] = 0x2C080000; // cmpwi  r8,0
+    compile[count++] = 0x40800014; // bge    0x28
+    compile[count++] = 0x7D2948F8; // nor    r9,r9,r9
+    compile[count++] = 0x7D0840F8; // nor    r8,r8,r8
+    compile[count++] = 0x7D296014; // addc   r9,r9,r12
+    compile[count++] = 0x7D083114; // adde   r8,r8,r6
+    compile[count++] = 0x2C0A0000; // cmpwi  r10,0
+    compile[count++] = 0x40800014; // bge    0x40
+    compile[count++] = 0x7D6B58F8; // nor    r11,r11,r11
+    compile[count++] = 0x7D4A50F8; // nor    r10,r10,r10
+    compile[count++] = 0x7D6B6014; // addc   r11,r11,r12
+    compile[count++] = 0x7D4A3114; // adde   r10,r10,r6
+    compile[count++] = 0x3D80FFFF; // lis    r12,-1
+    compile[count++] = 0x618CFFFE; // ori    r12,r12,-2
+    compile[count++] = 0x2C060000; // cmpwi  r6,0
+    compile[count++] = 0x4180002C; // blt    0x78
+    compile[count++] = 0x54C6083C; // slwi   r6,r6,1
+    compile[count++] = 0x50E60FFE; // rlwimi r6,r7,1,0x1f,0x1f
+    compile[count++] = 0x54E7083C; // slwi   r7,r7,1
+    compile[count++] = 0x51070FFE; // rlwimi r7,r8,1,0x1f,0x1f
+    compile[count++] = 0x5508083C; // slwi   r8,r8,1
+    compile[count++] = 0x51280FFE; // rlwimi r8,r9,1,0x1f,0x1f
+    compile[count++] = 0x5529083C; // slwi   r9,r9,1
+    compile[count++] = 0x7CEB3810; // subfc  r7,r11,r7
+    compile[count++] = 0x7CCA3110; // subfe  r6,r10,r6
+    compile[count++] = 0x42800028; // bdnz   0x9c
+    compile[count++] = 0x54C6083C; // slwi   r6,r6,1
+    compile[count++] = 0x50E60FFE; // rlwimi r6,r7,1,0x1f,0x1f
+    compile[count++] = 0x54E7083C; // slwi   r7,r7,1
+    compile[count++] = 0x51070FFE; // rlwimi r7,r8,1,0x1f,0x1f
+    compile[count++] = 0x5508083C; // slwi   r8,r8,1
+    compile[count++] = 0x51280FFE; // rlwimi r8,r9,1,0x1f,0x1f
+    compile[count++] = 0x5529083C; // slwi   r9,r9,1
+    compile[count++] = 0x7CE75814; // addc   r7,r7,r11
+    compile[count++] = 0x7CC65114; // adde   r6,r6,r10
+    compile[count++] = 0x2C060000; // cmpwi  r6,0
+    compile[count++] = 0x4180000C; // blt    0xac
+    compile[count++] = 0x61290001; // ori    r9,r9,1
+    compile[count++] = 0x42800008; // bdnz   0xb0
+    compile[count++] = 0x7D296038; // and    r9,r9,r12
+    compile[count++] = 0x38A5FFFF; // addi   r5,r5,-1
+    compile[count++] = 0x2C050000; // cmpwi  r5,0
+    compile[count++] = 0x4082FF90; // bne    0x48
+    compile[count++] = 0x2C060000; // cmpwi  r6,0
+    compile[count++] = 0x4080000C; // bge    0xcc
+    compile[count++] = 0x7CE75814; // addc   r7,r7,r11
+    compile[count++] = 0x7CC65114; // adde   r6,r6,r10
+    compile[count++] = 0x39800001; // li     r12,1
+    compile[count++] = 0x7DCE7A78; // xor    r14,r14,r15
+    compile[count++] = 0x2C0E0000; // cmpwi  r14,0
+    compile[count++] = 0x40800014; // bge    0xec
+    compile[count++] = 0x7D2948F8; // nor    r9,r9,r9
+    compile[count++] = 0x7D0840F8; // nor    r8,r8,r8
+    compile[count++] = 0x7D296014; // addc   r9,r9,r12
+    compile[count++] = 0x7D082914; // adde   r8,r8,r5
+    compile[count++] = 0x91030000 + OFFSETOF(pCPU, nLo); // stw    r8,(nLo + 0)(r3)
+    compile[count++] = 0x91230004 + OFFSETOF(pCPU, nLo); // stw    r9,(nLo + 4)(r3)
+    compile[count++] = 0x90C30000 + OFFSETOF(pCPU, nHi); // stw    r6,(nHi + 0)(r3)
+    compile[count++] = 0x90E30004 + OFFSETOF(pCPU, nHi); // stw    r7,(nHi + 4)(r3)
+    compile[count++] = 0x4E800020; // blr
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_DDIVU(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 43;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x38A00040; // li     r5,0x40
+    compile[count++] = 0x38C00000; // li     r6,0
+    compile[count++] = 0x38E00000; // li     r7,0
+    compile[count++] = 0x3D80FFFF; // lis    r12,-1
+    compile[count++] = 0x618CFFFE; // ori    r12,r12,-2
+    compile[count++] = 0x2C060000; // cmpwi  r6,0
+    compile[count++] = 0x4180002C; // blt    0x44
+    compile[count++] = 0x54C6083C; // slwi   r6,r6,1
+    compile[count++] = 0x50E60FFE; // rlwimi r6,r7,1,0x1f,0x1f
+    compile[count++] = 0x54E7083C; // slwi   r7,r7,1
+    compile[count++] = 0x51070FFE; // rlwimi r7,r8,1,0x1f,0x1f
+    compile[count++] = 0x5508083C; // slwi   r8,r8,1
+    compile[count++] = 0x51280FFE; // rlwimi r8,r9,1,0x1f,0x1f
+    compile[count++] = 0x5529083C; // slwi   r9,r9,1
+    compile[count++] = 0x7CEB3810; // subfc  r7,r11,r7
+    compile[count++] = 0x7CCA3110; // subfe  r6,r10,r6
+    compile[count++] = 0x42800028; // bdnz   0x68
+    compile[count++] = 0x54C6083C; // slwi   r6,r6,1
+    compile[count++] = 0x50E60FFE; // rlwimi r6,r7,1,0x1f,0x1f
+    compile[count++] = 0x54E7083C; // slwi   r7,r7,1
+    compile[count++] = 0x51070FFE; // rlwimi r7,r8,1,0x1f,0x1f
+    compile[count++] = 0x5508083C; // slwi   r8,r8,1
+    compile[count++] = 0x51280FFE; // rlwimi r8,r9,1,0x1f,0x1f
+    compile[count++] = 0x5529083C; // slwi   r9,r9,1
+    compile[count++] = 0x7CE75814; // addc   r7,r7,r11
+    compile[count++] = 0x7CC65114; // adde   r6,r6,r10
+    compile[count++] = 0x2C060000; // cmpwi  r6,0
+    compile[count++] = 0x4180000C; // blt    0x78
+    compile[count++] = 0x61290001; // ori    r9,r9,1
+    compile[count++] = 0x42800008; // bdnz   0x7c
+    compile[count++] = 0x7D296038; // and    r9,r9,r12
+    compile[count++] = 0x38A5FFFF; // addi   r5,r5,-1
+    compile[count++] = 0x2C050000; // cmpwi  r5,0
+    compile[count++] = 0x4082FF90; // bne    0x14
+    compile[count++] = 0x2C060000; // cmpwi  r6,0
+    compile[count++] = 0x4080000C; // bge    0x98
+    compile[count++] = 0x7CE75814; // addc   r7,r7,r11
+    compile[count++] = 0x7CC65114; // adde   r6,r6,r10
+    compile[count++] = 0x91030000 + OFFSETOF(pCPU, nLo); // stw    r8,(nLo + 0)(r3)
+    compile[count++] = 0x91230004 + OFFSETOF(pCPU, nLo); // stw    r9,(nLo + 4)(r3)
+    compile[count++] = 0x90C30000 + OFFSETOF(pCPU, nHi); // stw    r6,(nHi + 0)(r3)
+    compile[count++] = 0x90E30004 + OFFSETOF(pCPU, nHi); // stw    r7,(nHi + 4)(r3)
+    compile[count++] = 0x4E800020; // blr
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+inline s32 cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 3;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x7CA53814; // addc r5,r5,r7
+    compile[count++] = 0x7CC64114; // adde r6,r6,r8
+    compile[count++] = 0x4E800020; // blr
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+inline s32 cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 3;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x7CA53814; // addc r5,r5,r7
+    compile[count++] = 0x7CC64114; // adde r6,r6,r8
+    compile[count++] = 0x4E800020; // blr
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+inline s32 cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 3;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x7CA72914; // adde r5,r7,r5
+    compile[count++] = 0x7CC83014; // addc r6,r8,r6
+    compile[count++] = 0x4E800020; // blr
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+inline s32 cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 3;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x7CA72914; // adde r5,r7,r5
+    compile[count++] = 0x7CC83014; // addc r6,r8,r6
+    compile[count++] = 0x4E800020; // blr
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_S_SQRT(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 36;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0xC0030000 + (OFFSETOF(pCPU, aGPR) + 4);
+    compile[count++] = 0xFC010040;
+    compile[count++] = 0x40810078;
+    compile[count++] = 0xFC400834;
+    compile[count++] = 0x3CA03FE0;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC8830000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x3CA04008;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC8630000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xFCA400B2;
+    compile[count++] = 0xFCC200B2;
+    compile[count++] = 0xFCC101B2;
+    compile[count++] = 0xFCC33028;
+    compile[count++] = 0xFC4501B2;
+    compile[count++] = 0xFCA400B2;
+    compile[count++] = 0xFCC200B2;
+    compile[count++] = 0xFCC101B2;
+    compile[count++] = 0xFCC33028;
+    compile[count++] = 0xFC4501B2;
+    compile[count++] = 0xFCA400B2;
+    compile[count++] = 0xFCC200B2;
+    compile[count++] = 0xFCC101B2;
+    compile[count++] = 0xFCC33028;
+    compile[count++] = 0xFC4501B2;
+    compile[count++] = 0xFCA400B2;
+    compile[count++] = 0xFCC200B2;
+    compile[count++] = 0xFCC101B2;
+    compile[count++] = 0xFCC33028;
+    compile[count++] = 0xFC4501B2;
+    compile[count++] = 0xFCC100B2;
+    compile[count++] = 0xFC203018;
+    compile[count++] = 0x38A00000;
+    compile[count++] = 0x90A30000 + (OFFSETOF(pCPU, aGPR) + 4);
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_D_SQRT(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 48;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0xC8030000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xFC010040;
+    compile[count++] = 0x40810068;
+    compile[count++] = 0xFC400834;
+    compile[count++] = 0x3CA03FE0;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC8830000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x3CA04008;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC8630000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xFC0200B2;
+    compile[count++] = 0xFC4400B2;
+    compile[count++] = 0xFC01183C;
+    compile[count++] = 0xFC420032;
+    compile[count++] = 0xFC0200B2;
+    compile[count++] = 0xFC4400B2;
+    compile[count++] = 0xFC01183C;
+    compile[count++] = 0xFC420032;
+    compile[count++] = 0xFC0200B2;
+    compile[count++] = 0xFC4400B2;
+    compile[count++] = 0xFC01183C;
+    compile[count++] = 0xFC420032;
+    compile[count++] = 0xFC0200B2;
+    compile[count++] = 0xFC4400B2;
+    compile[count++] = 0xFC01183C;
+    compile[count++] = 0xFC020032;
+    compile[count++] = 0xFC210032;
+    compile[count++] = 0x42800044;
+    compile[count++] = 0xFC010000;
+    compile[count++] = 0x4082000C;
+    compile[count++] = 0xFC200090;
+    compile[count++] = 0x42800034;
+    compile[count++] = 0xFC010000;
+    compile[count++] = 0x41820020;
+    compile[count++] = 0x3CA07FFF;
+    compile[count++] = 0x60A5FFFF;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x3CA0E000;
+    compile[count++] = 0x90A30004 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC0230000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x42800010;
+    compile[count++] = 0x3CA07FF0;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC0230000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x38A00000;
+    compile[count++] = 0x90A30004 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_W_CVT_SD(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 14;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x6CA58000;
+    compile[count++] = 0x3CC04330;
+    compile[count++] = 0x90A30004 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x90C30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC8030000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x90C30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x3CA08000;
+    compile[count++] = 0x90A30004 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xC8230000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0xFC200828;
+    compile[count++] = 0x38A00000;
+    compile[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x90A30004 + OFFSETOF(pCPU, aGPR);
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_L_CVT_SD(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 56;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x9421FFD0;
+    compile[count++] = 0x91010008;
+    compile[count++] = 0x91210010;
+    compile[count++] = 0x91410018;
+    compile[count++] = 0x91610020;
+    compile[count++] = 0x91810028;
+    compile[count++] = 0x9421FFF0;
+    compile[count++] = 0x54A70001;
+    compile[count++] = 0x4182000C;
+    compile[count++] = 0x20C60000;
+    compile[count++] = 0x7CA50190;
+    compile[count++] = 0x7CA93379;
+    compile[count++] = 0x39000000;
+    compile[count++] = 0x41820080;
+    compile[count++] = 0x7CA90034;
+    compile[count++] = 0x7CCA0034;
+    compile[count++] = 0x552BD008;
+    compile[count++] = 0x7D6BFE70;
+    compile[count++] = 0x7D6B5038;
+    compile[count++] = 0x7D295A14;
+    compile[count++] = 0x21490020;
+    compile[count++] = 0x3169FFE0;
+    compile[count++] = 0x7CA54830;
+    compile[count++] = 0x7CCC5430;
+    compile[count++] = 0x7CA56378;
+    compile[count++] = 0x7CCC5830;
+    compile[count++] = 0x7CA56378;
+    compile[count++] = 0x7CC64830;
+    compile[count++] = 0x7D094050;
+    compile[count++] = 0x54C9057E;
+    compile[count++] = 0x2C090400;
+    compile[count++] = 0x3908043E;
+    compile[count++] = 0x4180001C;
+    compile[count++] = 0x4181000C;
+    compile[count++] = 0x54C90529;
+    compile[count++] = 0x41820010;
+    compile[count++] = 0x30C60800;
+    compile[count++] = 0x7CA50194;
+    compile[count++] = 0x7D080194;
+    compile[count++] = 0x54C6A83E;
+    compile[count++] = 0x50A6A814;
+    compile[count++] = 0x54A5AB3E;
+    compile[count++] = 0x5508A016;
+    compile[count++] = 0x7D052B78;
+    compile[count++] = 0x7CE52B78;
+    compile[count++] = 0x90A10008;
+    compile[count++] = 0x90C1000C;
+    compile[count++] = 0xC8210008;
+    compile[count++] = 0x38210010;
+    compile[count++] = 0x81010008;
+    compile[count++] = 0x81210010;
+    compile[count++] = 0x81410018;
+    compile[count++] = 0x81610020;
+    compile[count++] = 0x81810028;
+    compile[count++] = 0x38210030;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_CEIL_W(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 13;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x9421FFE0;
+    compile[count++] = 0xC8030000 + (OFFSETOF(pCPU, aFPR) & 0xFFFF);
+    compile[count++] = 0xFC010040;
+    compile[count++] = 0x4081000C;
+    compile[count++] = 0x38C00001;
+    compile[count++] = 0x42800008;
+    compile[count++] = 0x38C00000;
+    compile[count++] = 0xFC20081E;
+    compile[count++] = 0xD8210010;
+    compile[count++] = 0x80A10014;
+    compile[count++] = 0x7CA62A14;
+    compile[count++] = 0x38210020;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 13;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x9421FFE0;
+    compile[count++] = 0xC8030000 + (OFFSETOF(pCPU, aFPR) & 0xFFFF);
+    compile[count++] = 0xFC010040;
+    compile[count++] = 0x4180000C;
+    compile[count++] = 0x38C00000;
+    compile[count++] = 0x42800008;
+    compile[count++] = 0x38C00001;
+    compile[count++] = 0xFC20081E;
+    compile[count++] = 0xD8210010;
+    compile[count++] = 0x80A10014;
+    compile[count++] = 0x7CA62850;
+    compile[count++] = 0x38210020;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+inline s32 cpuCompile_ROUND_W(s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 3;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0xFC00081C;
+    compile[count++] = 0x7C051FAE;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+inline s32 cpuCompile_TRUNC_W(s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 3;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0xFC00081E;
+    compile[count++] = 0x7C051FAE;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LB(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 11;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CA538AE;
+    compile[count++] = 0x7CA50774;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LH(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 11;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CA53A2E;
+    compile[count++] = 0x7CA50734;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LW(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 10;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CA5382E;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LBU(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 10;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CA538AE;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LHU(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 10;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CA53A2E;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_SB(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 10;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7D0539AE;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_SH(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 10;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7D053B2E;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_SW(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 10;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7D05392E;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LDC(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 12;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CE53A14;
+    compile[count++] = 0x80A70000;
+    compile[count++] = 0x80C70004;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_SDC(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 12;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x54C6103A;
+    compile[count++] = 0x38E30000 + OFFSETOF(pCPU, apDevice);
+    compile[count++] = 0x7CC6382E;
+    compile[count++] = 0x80E60008;
+    compile[count++] = 0x7CA53A14;
+    compile[count++] = 0x80E60004;
+    compile[count++] = 0x80E70004;
+    compile[count++] = 0x7CE53A14;
+    compile[count++] = 0x91070000;
+    compile[count++] = 0x91270004;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LWL(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 12;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x38C00018;
+    compile[count++] = 0x88A70000;
+    compile[count++] = 0x7CA53030;
+    compile[count++] = 0x394000FF;
+    compile[count++] = 0x7D4A3030;
+    compile[count++] = 0x7D295078;
+    compile[count++] = 0x7D292B78;
+    compile[count++] = 0x38C6FFF8;
+    compile[count++] = 0x54E507BF;
+    compile[count++] = 0x38E70001;
+    compile[count++] = 0x4082FFDC;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
+
+static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
+    s32* compile;
+    s32 count = 0;
+    s32 nSize = 12;
+
+    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+        return 0;
+    }
+    *addressGCN = (s32)compile;
+
+    compile[count++] = 0x38C00000;
+    compile[count++] = 0x88A70000;
+    compile[count++] = 0x7CA53030;
+    compile[count++] = 0x394000FF;
+    compile[count++] = 0x7D4A3030;
+    compile[count++] = 0x7D295078;
+    compile[count++] = 0x7D292B78;
+    compile[count++] = 0x38C60008;
+    compile[count++] = 0x54E507BF;
+    compile[count++] = 0x38E7FFFF;
+    compile[count++] = 0x4082FFDC;
+    compile[count++] = 0x4E800020;
+
+    nSize = count;
+    DCStoreRange(compile, nSize * sizeof(s32));
+    ICInvalidateRange(compile, nSize * sizeof(s32));
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCheckDelaySlot.s")
 
