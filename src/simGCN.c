@@ -115,21 +115,30 @@ char D_800E9B80[] = "       Please reduce memory-size to 24MB (using 'setsmemsiz
 char D_800E9BD0[] = "zlj_f.n64";
 char D_800E9BDC[] = "cursor.raw";
 
+extern void *lbl_80008684, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_80008678, *lbl_800086B8, *lbl_800086B8,
+    *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_80008690, *lbl_800086B8, *lbl_800086B8, *lbl_8000866C,
+    *lbl_800086B8, *lbl_8000869C, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_80008660, *lbl_800086B8,
+    *lbl_800086A8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8,
+    *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_80008684, *lbl_800086B8, *lbl_800086B8,
+    *lbl_800086B8, *lbl_80008678, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8,
+    *lbl_80008690, *lbl_800086B8, *lbl_800086B8, *lbl_8000866C, *lbl_800086B8, *lbl_8000869C, *lbl_800086B8,
+    *lbl_800086B8, *lbl_800086B8, *lbl_80008660, *lbl_800086B8, *lbl_800086A8;
+
 void* jtbl_800E9BE8[] = {
-    (void*)0x80008684, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008678, (void*)0x800086B8,
-    (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008690, (void*)0x800086B8,
-    (void*)0x800086B8, (void*)0x8000866C, (void*)0x800086B8, (void*)0x8000869C, (void*)0x800086B8, (void*)0x800086B8,
-    (void*)0x800086B8, (void*)0x80008660, (void*)0x800086B8, (void*)0x800086A8, (void*)0x800086B8, (void*)0x800086B8,
-    (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8,
-    (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008684, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8,
-    (void*)0x80008678, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8,
-    (void*)0x80008690, (void*)0x800086B8, (void*)0x800086B8, (void*)0x8000866C, (void*)0x800086B8, (void*)0x8000869C,
-    (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008660, (void*)0x800086B8, (void*)0x800086A8,
+    &lbl_80008684, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008678, &lbl_800086B8, &lbl_800086B8,
+    &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008690, &lbl_800086B8, &lbl_800086B8, &lbl_8000866C,
+    &lbl_800086B8, &lbl_8000869C, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008660, &lbl_800086B8,
+    &lbl_800086A8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8,
+    &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008684, &lbl_800086B8, &lbl_800086B8,
+    &lbl_800086B8, &lbl_80008678, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8,
+    &lbl_80008690, &lbl_800086B8, &lbl_800086B8, &lbl_8000866C, &lbl_800086B8, &lbl_8000869C, &lbl_800086B8,
+    &lbl_800086B8, &lbl_800086B8, &lbl_80008660, &lbl_800086B8, &lbl_800086A8,
 };
 
+extern void *lbl_8000882C, *lbl_80008834, *lbl_8000883C, *lbl_80008844, *lbl_80008850, *lbl_8000885C, *lbl_80008868;
+
 void* jtbl_800E9CC0[] = {
-    (void*)0x8000882C, (void*)0x80008834, (void*)0x8000883C, (void*)0x80008844,
-    (void*)0x80008850, (void*)0x8000885C, (void*)0x80008868,
+    &lbl_8000882C, &lbl_80008834, &lbl_8000883C, &lbl_80008844, &lbl_80008850, &lbl_8000885C, &lbl_80008868,
 };
 
 char D_800E9CDC[] = "Invalid Message Image Data - Assuming SV09";
@@ -164,14 +173,20 @@ char D_800E9F1C[] = "TPL/msg_sv11.tpl";
 char D_800E9F30[] = "TPL/msg_sv12.tpl";
 char D_800E9F44[] = "TPL/msg_sv_share.tpl";
 
+extern void *lbl_80009A74, *lbl_80009C24, *lbl_80009DD4, *lbl_80009F84, *lbl_8000A134, *lbl_8000CB64, *lbl_8000A2E4,
+    *lbl_8000A494, *lbl_8000A644, *lbl_8000CB64, *lbl_8000CB64, *lbl_8000CB64, *lbl_8000CB64, *lbl_8000A7F4,
+    *lbl_8000A9A4, *lbl_8000AB54, *lbl_8000AD04, *lbl_8000CB64, *lbl_8000CB64, *lbl_8000AEB4, *lbl_8000B064,
+    *lbl_8000B214, *lbl_8000B3C4, *lbl_8000B574, *lbl_8000B724, *lbl_8000B8D4, *lbl_8000BA84, *lbl_8000BC34,
+    *lbl_8000BDE4, *lbl_8000BF94, *lbl_8000C144, *lbl_8000CB64, *lbl_8000CB64, *lbl_8000C2F4, *lbl_8000CB64,
+    *lbl_8000CB64, *lbl_8000C4A4, *lbl_8000C654, *lbl_8000C804, *lbl_8000C9B4;
+
 void* jtbl_800E9F5C[] = {
-    (void*)0x80009A74, (void*)0x80009C24, (void*)0x80009DD4, (void*)0x80009F84, (void*)0x8000A134, (void*)0x8000CB64,
-    (void*)0x8000A2E4, (void*)0x8000A494, (void*)0x8000A644, (void*)0x8000CB64, (void*)0x8000CB64, (void*)0x8000CB64,
-    (void*)0x8000CB64, (void*)0x8000A7F4, (void*)0x8000A9A4, (void*)0x8000AB54, (void*)0x8000AD04, (void*)0x8000CB64,
-    (void*)0x8000CB64, (void*)0x8000AEB4, (void*)0x8000B064, (void*)0x8000B214, (void*)0x8000B3C4, (void*)0x8000B574,
-    (void*)0x8000B724, (void*)0x8000B8D4, (void*)0x8000BA84, (void*)0x8000BC34, (void*)0x8000BDE4, (void*)0x8000BF94,
-    (void*)0x8000C144, (void*)0x8000CB64, (void*)0x8000CB64, (void*)0x8000C2F4, (void*)0x8000CB64, (void*)0x8000CB64,
-    (void*)0x8000C4A4, (void*)0x8000C654, (void*)0x8000C804, (void*)0x8000C9B4,
+    &lbl_80009A74, &lbl_80009C24, &lbl_80009DD4, &lbl_80009F84, &lbl_8000A134, &lbl_8000CB64, &lbl_8000A2E4,
+    &lbl_8000A494, &lbl_8000A644, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000A7F4,
+    &lbl_8000A9A4, &lbl_8000AB54, &lbl_8000AD04, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000AEB4, &lbl_8000B064,
+    &lbl_8000B214, &lbl_8000B3C4, &lbl_8000B574, &lbl_8000B724, &lbl_8000B8D4, &lbl_8000BA84, &lbl_8000BC34,
+    &lbl_8000BDE4, &lbl_8000BF94, &lbl_8000C144, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000C2F4, &lbl_8000CB64,
+    &lbl_8000CB64, &lbl_8000C4A4, &lbl_8000C654, &lbl_8000C804, &lbl_8000C9B4,
 };
 
 char D_800E9FFC[] = "TPL/msg_ld05_2.tpl";
@@ -183,29 +198,38 @@ char D_800EA060[] = "TPL/msg_sv06_4.tpl";
 char D_800EA074[] = "TPL/msg_sv06_5.tpl";
 char D_800EA088[] = "TPL/msg_sv08.tpl";
 
+extern void *lbl_8000CBC8, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CC30, *lbl_8000CC98, *lbl_8000CD00,
+    *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CD68, *lbl_8000CF08,
+    *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08,
+    *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CDD0, *lbl_8000CE38,
+    *lbl_8000CF08, *lbl_8000CEA0;
+
 void* jtbl_800EA09C[] = {
-    (void*)0x8000CBC8, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CC30, (void*)0x8000CC98,
-    (void*)0x8000CD00, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
-    (void*)0x8000CD68, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
-    (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
-    (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CDD0, (void*)0x8000CE38, (void*)0x8000CF08, (void*)0x8000CEA0,
+    &lbl_8000CBC8, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CC30, &lbl_8000CC98,
+    &lbl_8000CD00, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08,
+    &lbl_8000CD68, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08,
+    &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08,
+    &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CDD0, &lbl_8000CE38, &lbl_8000CF08, &lbl_8000CEA0,
 };
 
 char D_800EA114[] = "TPL/msg_in02.tpl";
 char D_800EA128[] = "TPL/msg_sv09.tpl";
 char D_800EA13C[] = "TPL/msg_gf02.tpl";
 
+extern void *lbl_8000D3B8, *lbl_8000D3F4, *lbl_8000D434, *lbl_8000D4B0, *lbl_8000D474, *lbl_8000D4EC, *lbl_8000D528;
+
 void* jtbl_800EA150[] = {
-    (void*)0x8000D3B8, (void*)0x8000D3F4, (void*)0x8000D434, (void*)0x8000D4B0,
-    (void*)0x8000D474, (void*)0x8000D4EC, (void*)0x8000D528,
+    &lbl_8000D3B8, &lbl_8000D3F4, &lbl_8000D434, &lbl_8000D4B0, &lbl_8000D474, &lbl_8000D4EC, &lbl_8000D528,
 };
 
 char D_800EA16C[] = "ShowError: Unknown FileInfoStatus: %d";
 
+extern void *lbl_8000EEA8, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEB0, *lbl_8000EEB8,
+    *lbl_8000EEC0, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEC8;
+
 void* jtbl_800EA194[] = {
-    (void*)0x8000EEA8, (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEEC,
-    (void*)0x8000EEB0, (void*)0x8000EEB8, (void*)0x8000EEC0, (void*)0x8000EEEC, (void*)0x8000EEEC,
-    (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEC8,
+    &lbl_8000EEA8, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEB0, &lbl_8000EEB8,
+    &lbl_8000EEC0, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEC8,
 };
 
 static f32 gOrthoMtx[4][4] ALIGNAS(32);
