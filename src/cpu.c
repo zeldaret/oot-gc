@@ -2,6 +2,7 @@
 #include "cpu_jumptable.h"
 #include "dolphin.h"
 #include "macros.h"
+#include "ram.h"
 #include "simGCN.h"
 #include "system.h"
 #include "xlObject.h"
@@ -588,14 +589,14 @@ const f64 D_80135FC8 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuRetraceCallback.s")
 
+#ifndef NON_MATCHING
+static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteUpdate.s")
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteOpcode.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteIdle.s")
-
-//! TODO: remove when the function is matched
-static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount);
 
 s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     nCount = OSGetTick();
@@ -641,7 +642,10 @@ s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
 
+#ifndef NON_MATCHING
+static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1, s32 nType);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
+#endif
 
 s32 cpuFreeDevice(Cpu* pCPU, s32 i) {
     s32 ret;
@@ -666,9 +670,6 @@ s32 cpuFreeDevice(Cpu* pCPU, s32 i) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapAddress.s")
 #else
-//! TODO: remove when the function is matched
-static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1, s32 nType);
-
 static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
     // Parameters
     // struct _CPU* pCPU; // r30
@@ -884,7 +885,6 @@ s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
 s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
     s32 iDevice;
 
-    //! TODO: find a better match
     if (0x80000000 <= nAddress && nAddress < 0xC0000000) {
         *pnOffset = nAddress & 0x7FFFFF;
     } else {
@@ -900,13 +900,117 @@ s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetAddressBuffer.s")
+s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress) {
+    CpuDevice* pDevice = pCPU->apDevice[pCPU->aiDevice[nAddress >> 0x10]];
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetOffsetAddress.s")
+    if ((Ram*)pDevice->pObject == SYSTEM_RAM(pCPU->pHost)) {
+        if (!ramGetBuffer(SYSTEM_RAM(pCPU->pHost), ppBuffer, nAddress + pDevice->nOffsetAddress, NULL)) {
+            return 0;
+        }
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuInvalidateCache.s")
+    return 0;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetFunctionChecksum.s")
+s32 cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u32 nSize) {
+    s32 iEntry;
+    s32 iAddress = 0;
+    u32 nAddress;
+    u32 nMask;
+    u32 nSizeMapped;
+
+    anAddress[iAddress++] = nOffset | 0x80000000;
+    anAddress[iAddress++] = nOffset | 0xA0000000;
+
+    for (iEntry = 0; iEntry < ARRAY_COUNT(pCPU->aTLB); iEntry++) {
+        if (pCPU->aTLB[iEntry][0] & 2) {
+            nMask = pCPU->aTLB[iEntry][3] | 0x1FFF;
+
+            switch (nMask) {
+                case 0x1FFF:
+                    nSizeMapped = 4 * 1024;
+                    break;
+                case 0x7FFF:
+                    nSizeMapped = 16 * 1024;
+                    break;
+                case 0x1FFFF:
+                    nSizeMapped = 64 * 1024;
+                    break;
+                case 0x7FFFF:
+                    nSizeMapped = 256 * 1024;
+                    break;
+                case 0x1FFFFF:
+                    nSizeMapped = 1 * 1024 * 1024;
+                    break;
+                case 0x7FFFFF:
+                    nSizeMapped = 4 * 1024 * 1024;
+                    break;
+                case 0x1FFFFFF:
+                    nSizeMapped = 16 * 1024 * 1024;
+                    break;
+                default:
+                    return 0;
+            }
+
+            nAddress = ((u32)(pCPU->aTLB[iEntry][0] & ~0x3F) << 6) + (nOffset & nMask);
+            if (nAddress < (nOffset + nSize - 1) && (nAddress + nSizeMapped - 1) >= nOffset) {
+                nAddress = pCPU->aTLB[iEntry][2] & 0xFFFFE000;
+                anAddress[iAddress++] = ((nAddress) & ~nMask) | (nOffset & nMask);
+            }
+        }
+    }
+
+    *pnCount = iAddress;
+    return 1;
+}
+
+s32 cpuInvalidateCache(Cpu* pCPU, s32 nAddress0, s32 nAddress1) {
+    if ((nAddress0 & 0xF0000000) == 0xA0000000) {
+        return 1;
+    }
+
+    if (!cpuFreeCachedAddress(pCPU, nAddress0, nAddress1)) {
+        return 0;
+    }
+
+    cpuDMAUpdateFunction(pCPU, nAddress0, nAddress1);
+    return 1;
+}
+
+s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
+    s32 nSize;
+    u32* pnBuffer;
+    u32 nChecksum;
+    u32 nData;
+    u32 pad;
+
+    if (pFunction->nChecksum != 0) {
+        *pnChecksum = pFunction->nChecksum;
+        return 1;
+    }
+
+    if (!cpuGetAddressBuffer(pCPU, (void**)&pnBuffer, pFunction->nAddress0)) {
+        return 0;
+    }
+
+    nChecksum = 0;
+    nSize = ((pFunction->nAddress1 - pFunction->nAddress0) >> 2) + 1;
+
+    while (nSize > 0) {
+        nSize--;
+        nData = *pnBuffer;
+        nData = nData >> 0x1A;
+        nData = nData << ((nSize % 5) * 6);
+        nChecksum += nData;
+        pnBuffer++;
+    }
+
+    *pnChecksum = nChecksum;
+    pFunction->nChecksum = nChecksum;
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapReset.s")
 
