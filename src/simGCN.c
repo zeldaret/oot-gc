@@ -115,6 +115,8 @@ char D_800E9B80[] = "       Please reduce memory-size to 24MB (using 'setsmemsiz
 char D_800E9BD0[] = "zlj_f.n64";
 char D_800E9BDC[] = "cursor.raw";
 
+#ifndef NON_MATCHING
+// simulatorParseArguments
 void* jtbl_800E9BE8[] = {
     (void*)0x80008684, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008678, (void*)0x800086B8,
     (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008690, (void*)0x800086B8,
@@ -126,7 +128,9 @@ void* jtbl_800E9BE8[] = {
     (void*)0x80008690, (void*)0x800086B8, (void*)0x800086B8, (void*)0x8000866C, (void*)0x800086B8, (void*)0x8000869C,
     (void*)0x800086B8, (void*)0x800086B8, (void*)0x800086B8, (void*)0x80008660, (void*)0x800086B8, (void*)0x800086A8,
 };
+#endif
 
+// simulatorDrawCursor
 void* jtbl_800E9CC0[] = {
     (void*)0x8000882C, (void*)0x80008834, (void*)0x8000883C, (void*)0x80008844,
     (void*)0x80008850, (void*)0x8000885C, (void*)0x80008868,
@@ -164,6 +168,7 @@ char D_800E9F1C[] = "TPL/msg_sv11.tpl";
 char D_800E9F30[] = "TPL/msg_sv12.tpl";
 char D_800E9F44[] = "TPL/msg_sv_share.tpl";
 
+// simulatorDrawErrorMessageWait
 void* jtbl_800E9F5C[] = {
     (void*)0x80009A74, (void*)0x80009C24, (void*)0x80009DD4, (void*)0x80009F84, (void*)0x8000A134, (void*)0x8000CB64,
     (void*)0x8000A2E4, (void*)0x8000A494, (void*)0x8000A644, (void*)0x8000CB64, (void*)0x8000CB64, (void*)0x8000CB64,
@@ -183,6 +188,7 @@ char D_800EA060[] = "TPL/msg_sv06_4.tpl";
 char D_800EA074[] = "TPL/msg_sv06_5.tpl";
 char D_800EA088[] = "TPL/msg_sv08.tpl";
 
+// simulatorDrawYesNoMessage
 void* jtbl_800EA09C[] = {
     (void*)0x8000CBC8, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CC30, (void*)0x8000CC98,
     (void*)0x8000CD00, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08, (void*)0x8000CF08,
@@ -195,6 +201,7 @@ char D_800EA114[] = "TPL/msg_in02.tpl";
 char D_800EA128[] = "TPL/msg_sv09.tpl";
 char D_800EA13C[] = "TPL/msg_gf02.tpl";
 
+// simulatorDrawErrorMessage
 void* jtbl_800EA150[] = {
     (void*)0x8000D3B8, (void*)0x8000D3F4, (void*)0x8000D434, (void*)0x8000D4B0,
     (void*)0x8000D474, (void*)0x8000D4EC, (void*)0x8000D528,
@@ -202,6 +209,7 @@ void* jtbl_800EA150[] = {
 
 char D_800EA16C[] = "ShowError: Unknown FileInfoStatus: %d";
 
+// simulatorDVDShowError
 void* jtbl_800EA194[] = {
     (void*)0x8000EEA8, (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEEC, (void*)0x8000EEEC,
     (void*)0x8000EEB0, (void*)0x8000EEB8, (void*)0x8000EEC0, (void*)0x8000EEEC, (void*)0x8000EEEC,
@@ -787,7 +795,75 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawCursor.s")
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorParseArguments.s")
+#else
+static s32 simulatorParseArguments(void) {
+    s32 iArgument;
+    char* szText;
+    char* szValue;
+    s32 pad1;
+    s32 pad2;
+
+    gaszArgument[SAT_NAME] = NULL;
+    gaszArgument[SAT_PROGRESSIVE] = NULL;
+    gaszArgument[SAT_VIBRATION] = NULL;
+    gaszArgument[SAT_CONTROLLER] = NULL;
+    gaszArgument[SAT_XTRA] = NULL;
+    gaszArgument[SAT_MEMORYCARD] = NULL;
+    gaszArgument[SAT_MOVIE] = NULL;
+    gaszArgument[SAT_RESET] = NULL;
+
+    iArgument = 0;
+    while (iArgument < xlCoreGetArgumentCount()) {
+        xlCoreGetArgument(iArgument, &szText);
+        iArgument += 1;
+        if (szText[0] == '-' || szText[0] == '/' || szText[0] == '\\') {
+            if (szText[2] == '\0') {
+                xlCoreGetArgument(iArgument, &szValue);
+                iArgument += 1;
+            } else {
+                szValue = &szText[2];
+            }
+
+            switch (szText[1]) {
+            case 'V':
+            case 'v':
+                gaszArgument[SAT_VIBRATION] = szValue;
+                break;
+            case 'P':
+            case 'p':
+                gaszArgument[SAT_PROGRESSIVE] = szValue;
+                break;
+            case 'G':
+            case 'g':
+                gaszArgument[SAT_CONTROLLER] = szValue;
+                break;
+            case 'C':
+            case 'c':
+                gaszArgument[SAT_MEMORYCARD] = szValue;
+                break;
+            case 'M':
+            case 'm':
+                gaszArgument[SAT_MOVIE] = szValue;
+                break;
+            case 'R':
+            case 'r':
+                gaszArgument[SAT_RESET] = szValue;
+                break;
+            case 'X':
+            case 'x':
+                gaszArgument[SAT_XTRA] = szValue;
+                break;
+            }
+        } else {
+            gaszArgument[SAT_NAME] = szText;
+        }
+    }
+    return 1;
+}
+#endif
 
 s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument) {
     if (eType != SAT_NONE && pszArgument != NULL && gaszArgument[eType] != NULL) {
