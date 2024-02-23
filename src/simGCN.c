@@ -829,32 +829,32 @@ static s32 simulatorDrawCursor(s32 nX, s32 nY) {
     color.r = 0;
 
     switch ((nTick >> 9) % 7) {
-    case 0:
-        color.r = var_r5;
-        break;
-    case 1:
-        color.g = var_r5;
-        break;
-    case 2:
-        color.b = var_r5;
-        break;
-    case 3:
-        color.g = var_r5;
-        color.r = var_r5;
-        break;
-    case 4:
-        color.b = var_r5;
-        color.r = var_r5;
-        break;
-    case 5:
-        color.b = var_r5;
-        color.g = var_r5;
-        break;
-    case 6:
-        color.b = var_r5;
-        color.g = var_r5;
-        color.r = var_r5;
-        break;
+        case 0:
+            color.r = var_r5;
+            break;
+        case 1:
+            color.g = var_r5;
+            break;
+        case 2:
+            color.b = var_r5;
+            break;
+        case 3:
+            color.g = var_r5;
+            color.r = var_r5;
+            break;
+        case 4:
+            color.b = var_r5;
+            color.r = var_r5;
+            break;
+        case 5:
+            color.b = var_r5;
+            color.g = var_r5;
+            break;
+        case 6:
+            color.b = var_r5;
+            color.g = var_r5;
+            color.r = var_r5;
+            break;
     }
 
     GXSetTevColor(GX_TEVREG0, color);
@@ -904,34 +904,34 @@ static s32 simulatorParseArguments(void) {
             }
 
             switch (szText[1]) {
-            case 'V':
-            case 'v':
-                gaszArgument[SAT_VIBRATION] = szValue;
-                break;
-            case 'P':
-            case 'p':
-                gaszArgument[SAT_PROGRESSIVE] = szValue;
-                break;
-            case 'G':
-            case 'g':
-                gaszArgument[SAT_CONTROLLER] = szValue;
-                break;
-            case 'C':
-            case 'c':
-                gaszArgument[SAT_MEMORYCARD] = szValue;
-                break;
-            case 'M':
-            case 'm':
-                gaszArgument[SAT_MOVIE] = szValue;
-                break;
-            case 'R':
-            case 'r':
-                gaszArgument[SAT_RESET] = szValue;
-                break;
-            case 'X':
-            case 'x':
-                gaszArgument[SAT_XTRA] = szValue;
-                break;
+                case 'V':
+                case 'v':
+                    gaszArgument[SAT_VIBRATION] = szValue;
+                    break;
+                case 'P':
+                case 'p':
+                    gaszArgument[SAT_PROGRESSIVE] = szValue;
+                    break;
+                case 'G':
+                case 'g':
+                    gaszArgument[SAT_CONTROLLER] = szValue;
+                    break;
+                case 'C':
+                case 'c':
+                    gaszArgument[SAT_MEMORYCARD] = szValue;
+                    break;
+                case 'M':
+                case 'm':
+                    gaszArgument[SAT_MOVIE] = szValue;
+                    break;
+                case 'R':
+                case 'r':
+                    gaszArgument[SAT_RESET] = szValue;
+                    break;
+                case 'X':
+                case 'x':
+                    gaszArgument[SAT_XTRA] = szValue;
+                    break;
             }
         } else {
             gaszArgument[SAT_NAME] = szText;
