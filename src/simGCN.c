@@ -130,11 +130,13 @@ void* jtbl_800E9BE8[] = {
 };
 #endif
 
+#ifndef NON_MATCHING
 // simulatorDrawCursor
 void* jtbl_800E9CC0[] = {
     (void*)0x8000882C, (void*)0x80008834, (void*)0x8000883C, (void*)0x80008844,
     (void*)0x80008850, (void*)0x8000885C, (void*)0x80008868,
 };
+#endif
 
 char D_800E9CDC[] = "Invalid Message Image Data - Assuming SV09";
 char D_800E9D08[] = "simGCN.c";
@@ -793,7 +795,81 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorMCardPollDrawFormatBar.s")
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawCursor.s")
+#else
+static s32 simulatorDrawCursor(s32 nX, s32 nY) {
+    GXColor color;
+    s32 nTick;
+    u8 var_r5;
+    s32 pad;
+
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT7, GX_VA_POS, GX_POS_XY, GX_S16, 0);
+    GXSetNumChans(1);
+    GXSetNumTexGens(0);
+    GXSetNumTevStages(1);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_C0);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXCOORD_NULL, GX_TEXCOORD_NULL);
+
+    nTick = OSGetTick() >> 14;
+    if (nTick & 0x100) {
+        var_r5 = (u8)nTick ^ 0xFF;
+    } else {
+        var_r5 = (u8)nTick;
+    }
+
+    color.b = 0;
+    color.g = 0;
+    color.r = 0;
+
+    switch ((nTick >> 9) % 7) {
+    case 0:
+        color.r = var_r5;
+        break;
+    case 1:
+        color.g = var_r5;
+        break;
+    case 2:
+        color.b = var_r5;
+        break;
+    case 3:
+        color.g = var_r5;
+        color.r = var_r5;
+        break;
+    case 4:
+        color.b = var_r5;
+        color.r = var_r5;
+        break;
+    case 5:
+        color.b = var_r5;
+        color.g = var_r5;
+        break;
+    case 6:
+        color.b = var_r5;
+        color.g = var_r5;
+        color.r = var_r5;
+        break;
+    }
+
+    GXSetTevColor(GX_TEVREG0, color);
+    GXBegin(GX_TRIANGLES, GX_VTXFMT7, 3);
+
+    GXWGFifo.s16 = nX;
+    GXWGFifo.s16 = nY;
+    GXWGFifo.s16 = nX + 8;
+    GXWGFifo.s16 = nY + 4;
+    GXWGFifo.s16 = nX;
+    GXWGFifo.s16 = nY + 8;
+
+    return 1;
+}
+#endif
 
 // matches but data doesn't
 #ifndef NON_MATCHING
