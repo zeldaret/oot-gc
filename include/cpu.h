@@ -51,6 +51,22 @@ typedef enum CpuExceptionCode {
     CEC_COUNT = 32,
 } CpuExceptionCode;
 
+// __anon_0x44AE9
+typedef enum CpuMode {
+    CM_NONE = -1,
+    CM_USER = 0,
+    CM_SUPER = 1,
+    CM_KERNEL = 2,
+} CpuMode;
+
+//! TODO: better name?
+// __anon_0x42F73
+typedef enum CpuSize {
+    CS_NONE = -1,
+    CS_32BIT = 0,
+    CS_64BIT = 1,
+} CpuSize;
+
 // __anon_0x3DE78
 typedef struct CpuJump {
     /* 0x0 */ s32 nOffsetHost;
@@ -283,5 +299,6 @@ s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pf
 s32 cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
                     Get64Func pfGet64);
 s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
+static s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice);
 
 #endif

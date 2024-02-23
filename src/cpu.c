@@ -2,6 +2,8 @@
 #include "cpu_jumptable.h"
 #include "dolphin.h"
 #include "macros.h"
+#include "simGCN.h"
+#include "system.h"
 #include "xlObject.h"
 
 _XL_OBJECTTYPE gClassCPU = {
@@ -592,7 +594,32 @@ const f64 D_80135FC8 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteIdle.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteJump.s")
+//! TODO: remove when the function is matched
+static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount);
+
+s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+    nCount = OSGetTick();
+
+    if (pCPU->nWaitPC != 0) {
+        pCPU->nMode |= 8;
+    } else {
+        pCPU->nMode &= ~8;
+    }
+
+    pCPU->nMode |= 4;
+    pCPU->nPC = nAddressN64;
+
+    if (gpSystem->eTypeROM == SRT_ZELDA1 && pCPU->nPC == 0x81000000) {
+        simulatorPlayMovie();
+    }
+
+    if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
+        return 0;
+    }
+
+    pCPU->nTickLast = OSGetTick();
+    return nAddressGCN;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteCall.s")
 
@@ -616,15 +643,141 @@ const f64 D_80135FC8 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFreeDevice.s")
+s32 cpuFreeDevice(Cpu* pCPU, s32 i) {
+    s32 ret;
 
+    if (!xlHeapFree((void**)&pCPU->apDevice[i])) {
+        ret = 0;
+    } else {
+        s32 j;
+
+        pCPU->apDevice[i] = NULL;
+        for (j = 0; j < ARRAY_COUNT(pCPU->aiDevice); j++) {
+            if (pCPU->aiDevice[j] == i) {
+                pCPU->aiDevice[j] = pCPU->iDeviceDefault;
+            }
+        }
+        ret = 1;
+    }
+
+    return ret;
+}
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapAddress.s")
+#else
+//! TODO: remove when the function is matched
+static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1, s32 nType);
+
+static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
+    // Parameters
+    // struct _CPU* pCPU; // r30
+    // s32* piDevice; // r31
+    // u32 nVirtual; // r28
+    // u32 nPhysical; // r6
+    // s32 nSize; // r29
+
+    // Local variables
+    s32 iDeviceTarget; // r1+0x1C
+    s32 iDeviceSource; // r5
+    u32 nAddressVirtual0; // r5
+    u32 nAddressVirtual1; // r6
+
+    for (iDeviceSource = 0; iDeviceSource < ARRAY_COUNT(pCPU->apDevice); iDeviceSource++) {
+        if (pCPU->apDevice[iDeviceSource] != NULL) {
+            if (iDeviceSource == pCPU->apDevice[iDeviceSource]->nType ||
+                pCPU->apDevice[iDeviceSource]->nAddressPhysical0 > nPhysical ||
+                nPhysical <= pCPU->apDevice[iDeviceSource]->nAddressPhysical1) {
+                break;
+            }
+        }
+    }
+
+    if (iDeviceSource == ARRAY_COUNT(pCPU->apDevice)) {
+        iDeviceSource = pCPU->iDeviceDefault;
+    }
+
+    if (!cpuMakeDevice(pCPU, &iDeviceTarget, pCPU->apDevice[iDeviceSource]->pObject, nPhysical - nVirtual,
+                       pCPU->apDevice[iDeviceSource]->nAddressPhysical0,
+                       pCPU->apDevice[iDeviceSource]->nAddressPhysical1, pCPU->apDevice[iDeviceSource]->nType)) {
+        return 0;
+    }
+
+    for (nAddressVirtual0 = 0; nAddressVirtual0 < ARRAY_COUNT(pCPU->aiDevice); nAddressVirtual0++) {
+        if (nAddressVirtual0 < (nVirtual + (nSize - 1))) {
+            pCPU->aiDevice[nVirtual >> 16] = (u8)iDeviceTarget;
+        }
+    }
+
+    if (piDevice != NULL) {
+        *piDevice = iDeviceTarget;
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetMode.s")
+static s32 cpuGetMode(u64 nStatus, CpuMode* peMode) {
+    if (nStatus & (1 << 1)) {
+        *peMode = CM_KERNEL;
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetSize.s")
+    if (!(nStatus & (1 << 2))) {
+        switch (nStatus & 0x18) {
+            case 0x10:
+                *peMode = CM_USER;
+                break;
+            case 8:
+                *peMode = CM_SUPER;
+                break;
+            case 0:
+                *peMode = CM_KERNEL;
+                break;
+            default:
+                return 0;
+        }
+        return 1;
+    }
+
+    NO_INLINE;
+    return 0;
+}
+
+static s32 cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
+    CpuMode eMode;
+
+    *peSize = CS_NONE;
+    if (peMode != NULL) {
+        *peMode = CS_NONE;
+    }
+
+    if (cpuGetMode(nStatus, &eMode)) {
+        switch (eMode) {
+            case CM_USER:
+                *peSize = nStatus & 0x20 ? CS_64BIT : CS_32BIT;
+                break;
+            case CM_SUPER:
+                *peSize = nStatus & 0x40 ? CS_64BIT : CS_32BIT;
+                break;
+            case CM_KERNEL:
+                *peSize = nStatus & 0x80 ? CS_64BIT : CS_32BIT;
+                break;
+            default:
+                return 0;
+        }
+
+        if (peMode != NULL) {
+            *peMode = eMode;
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetCP0_Status.s")
 
@@ -632,9 +785,25 @@ const f64 D_80135FC8 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetRegisterCP0.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/__cpuERET.s")
+s32 __cpuERET(Cpu* pCPU) {
+    if (pCPU->anCP0[12] & 4) {
+        pCPU->nPC = pCPU->anCP0[30];
+        pCPU->anCP0[12] &= ~4;
+    } else {
+        pCPU->nPC = pCPU->anCP0[14];
+        pCPU->anCP0[12] &= ~2;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/__cpuBreak.s")
+    pCPU->nMode |= 4;
+    pCPU->nMode |= 0x20;
+
+    return 1;
+}
+
+s32 __cpuBreak(Cpu* pCPU) {
+    pCPU->nMode |= 2;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapObject.s")
 
@@ -646,11 +815,90 @@ const f64 D_80135FC8 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuReset.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetXPC.s")
+s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
+    if (!xlObjectTest(pCPU, &gClassCPU)) {
+        return 0;
+    }
 
+    pCPU->nMode |= 4;
+    pCPU->nPC = nPC;
+    pCPU->nLo = nLo;
+    pCPU->nHi = nHi;
+
+    return 1;
+}
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuEvent.s")
+#else
+inline s32 cpuInitAllDevices(Cpu* pCPU) {
+    s32 i;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetAddressOffset.s")
+    for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
+        pCPU->apDevice[i] = NULL;
+    }
+
+    return 1;
+}
+
+inline s32 cpuFreeAllDevices(Cpu* pCPU) {
+    s32 i;
+
+    for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
+        if (pCPU->apDevice[i] != NULL) {
+            if (!cpuFreeDevice(pCPU, i)) {
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
+
+s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pCPU->pHost = pArgument;
+            cpuInitAllDevices(pCPU);
+            if (!cpuReset(pCPU)) {
+                return 0;
+            }
+            break;
+        case 3:
+            if (!cpuFreeAllDevices(pCPU)) {
+                return 0;
+            }
+            break;
+        case 0:
+        case 1:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+#endif
+
+s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
+    s32 iDevice;
+
+    //! TODO: find a better match
+    if (0x80000000 <= nAddress && nAddress < 0xC0000000) {
+        *pnOffset = nAddress & 0x7FFFFF;
+    } else {
+        iDevice = pCPU->aiDevice[nAddress >> 0x10];
+
+        if (pCPU->apDevice[iDevice]->nType & 0x100) {
+            *pnOffset = nAddress + pCPU->apDevice[iDevice]->nOffsetAddress & 0x7FFFFF;
+        } else {
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetAddressBuffer.s")
 

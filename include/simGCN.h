@@ -123,5 +123,6 @@ s32 simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie();
 s32 simulatorDVDShowError(s32 nStatus, void*, s32, u32);
 s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument);
+s32 simulatorPlayMovie(void);
 
 #endif
