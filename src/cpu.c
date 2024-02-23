@@ -4,7 +4,7 @@
 #include "macros.h"
 #include "cpu_jumptable.h"
 
-_XL_OBJECTTYPE gClassCPU ALIGNAS(64) = {
+_XL_OBJECTTYPE gClassCPU = {
     "CPU",
     sizeof(Cpu),
     NULL,
@@ -18,7 +18,7 @@ char* gaszNameGPR[] = {
 
 char* gaszNameFPR[] = {
     "F0",  "F1",  "F2",  "F3",  "F4",  "F5",  "F6",  "F7",  "F8",  "F9",  "F10", "F11", "F12", "F13", "F14", "F15",
-    "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24", "F25", "F26", "F27", "F28", "F29", "F30",
+    "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24", "F25", "F26", "F27", "F28", "F29", "F30", "F21", // bug, should be "F31"
 };
 
 char* gaszNameCP0[] = {
@@ -64,40 +64,40 @@ char* gaszNameCP1[] = {
     "FCR31",
 };
 
-s32 ganMaskGetCP0[] = {
-    0x00000000, 0x8000003F, 0x00000000, 0x0000003F, 0x00000000, 0x3FFFFFFF, 0x00000000, 0x3FFFFFFF,
-    0xFFFFFFFF, 0xFFFFFFF0, 0x00000000, 0x01FFE000, 0x00000000, 0x0000001F, 0x00000000, 0x00000000,
-    0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFE0FF, 0x00000000, 0xFFFFFFFF,
-    0x00000000, 0xFFFFFFFF, 0x00000000, 0xF000FF7C, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x0000FFFF,
-    0x00000000, 0xFFFFEFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFB, 0x00000000, 0x0000000F,
-    0x00000000, 0xFFFFFFF0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x000000FF, 0x00000000, 0xFFBFFFFF,
-    0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000,
+s64 ganMaskGetCP0[] = {
+    0x000000008000003F, 0x000000000000003F, 0x000000003FFFFFFF, 0x000000003FFFFFFF,
+    0xFFFFFFFFFFFFFFF0, 0x0000000001FFE000, 0x000000000000001F, 0x0000000000000000,
+    0xFFFFFFFFFFFFFFFF, 0x00000000FFFFFFFF, 0x00000000FFFFE0FF, 0x00000000FFFFFFFF,
+    0x00000000FFFFFFFF, 0x00000000F000FF7C, 0xFFFFFFFFFFFFFFFF, 0x000000000000FFFF,
+    0x00000000FFFFEFFF, 0x00000000FFFFFFFF, 0x00000000FFFFFFFB, 0x000000000000000F,
+    0x00000000FFFFFFF0, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+    0x0000000000000000, 0x0000000000000000, 0x00000000000000FF, 0x00000000FFBFFFFF,
+    0x00000000FFFFFFFF, 0x0000000000000000, 0xFFFFFFFFFFFFFFFF, 0x0000000000000000,
 };
 
-s32 ganMaskSetCP0[] = {
-    0x00000000, 0x0000003F, 0x00000000, 0x0000003F, 0x00000000, 0x3FFFFFFF, 0x00000000, 0x3FFFFFFF,
-    0xFFFFFFFF, 0xFFFFFFF0, 0x00000000, 0x01FFE000, 0x00000000, 0x0000001F, 0x00000000, 0x00000000,
-    0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFE0FF, 0x00000000, 0xFFFFFFFF,
-    0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000300, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x0000FFFF,
-    0x00000000, 0xFFFFEFFF, 0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFB, 0x00000000, 0x0000000F,
-    0x00000000, 0xFFFFFFF0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x000000FF, 0x00000000, 0xFFBFFFFF,
-    0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000,
+s64 ganMaskSetCP0[] = {
+    0x000000000000003F, 0x000000000000003F, 0x000000003FFFFFFF, 0x000000003FFFFFFF,
+    0xFFFFFFFFFFFFFFF0, 0x0000000001FFE000, 0x000000000000001F, 0x0000000000000000,
+    0xFFFFFFFFFFFFFFFF, 0x00000000FFFFFFFF, 0x00000000FFFFE0FF, 0x00000000FFFFFFFF,
+    0x00000000FFFFFFFF, 0x0000000000000300, 0xFFFFFFFFFFFFFFFF, 0x000000000000FFFF,
+    0x00000000FFFFEFFF, 0x00000000FFFFFFFF, 0x00000000FFFFFFFB, 0x000000000000000F,
+    0x00000000FFFFFFF0, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+    0x0000000000000000, 0x0000000000000000, 0x00000000000000FF, 0x00000000FFBFFFFF,
+    0x00000000FFFFFFFF, 0x0000000000000000, 0xFFFFFFFFFFFFFFFF, 0x0000000000000000,
 };
 
-s32 Opcode[] = {
-    0x01010101, 0x01010101, 0x01010101, 0x01010101, 0x01010100, 0x01010101, 0x01010101, 0x00000001,
-    0x01010101, 0x01010101, 0x01010101, 0x01010101, 0x01010100, 0x01010101, 0x01010100, 0x01010101,
+u8 Opcode[] = {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
 };
 
-s32 SpecialOpcode[] = {
-    0x01000101, 0x01000101, 0x01010000, 0x01010001, 0x01010101, 0x01000101, 0x01010101, 0x01010101,
-    0x01010101, 0x01010101, 0x00000101, 0x01010101, 0x01010101, 0x01000100, 0x01000101, 0x01000101,
+u8 SpecialOpcode[] = {
+    1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1,
 };
 
-s32 RegimmOpcode[] = {
-    0x01010101, 0x00000000, 0x01010101, 0x01000100, 0x01010101, 0x00000000, 0x00000000, 0x00000000,
+u8 RegimmOpcode[] = {
+    1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
 s32 ganOpcodeSaveFP1[] = {
@@ -498,7 +498,7 @@ void* jtbl_800ED5F4[] = {
 
 char D_800ED674[] = "Exception: #### INTERNAL ERROR #### Cannot match exception-handler!";
 
-u8 aHeapTreeFlag[500]; // .skip
+u32 aHeapTreeFlag[125];
 
 static char D_8013522C[] = "CFZE";
 static char D_80135234[] = "NYLJ";
@@ -509,45 +509,46 @@ static char D_80135254[] = "NN6E";
 static char D_8013525C[] = "";
 static char D_80135260[] = "cpu.c";
 
-u8 gHeapTree[4]; // .skip
-u8 cpuCompile_DSLLV_function[4]; // .skip
-u8 cpuCompile_DSRLV_function[4]; // .skip
-u8 cpuCompile_DSRAV_function[4]; // .skip
-u8 cpuCompile_DMULT_function[4]; // .skip
-u8 cpuCompile_DMULTU_function[4]; // .skip
-u8 cpuCompile_DDIV_function[4]; // .skip
-u8 cpuCompile_DDIVU_function[4]; // .skip
-u8 cpuCompile_DADD_function[4]; // .skip
-u8 cpuCompile_DADDU_function[4]; // .skip
-u8 cpuCompile_DSUB_function[4]; // .skip
-u8 cpuCompile_DSUBU_function[4]; // .skip
-u8 cpuCompile_S_SQRT_function[4]; // .skip
-u8 cpuCompile_D_SQRT_function[4]; // .skip
-u8 cpuCompile_W_CVT_SD_function[4]; // .skip
-u8 cpuCompile_L_CVT_SD_function[4]; // .skip
-u8 cpuCompile_CEIL_W_function[4]; // .skip
-u8 cpuCompile_FLOOR_W_function[4]; // .skip
-u8 cpuCompile_ROUND_W_function[4]; // .skip
-u8 cpuCompile_TRUNC_W_function[4]; // .skip
-u8 cpuCompile_LB_function[4]; // .skip
-u8 cpuCompile_LH_function[4]; // .skip
-u8 cpuCompile_LW_function[4]; // .skip
-u8 cpuCompile_LBU_function[4]; // .skip
-u8 cpuCompile_LHU_function[4]; // .skip
-u8 cpuCompile_SB_function[4]; // .skip
-u8 cpuCompile_SH_function[4]; // .skip
-u8 cpuCompile_SW_function[4]; // .skip
-u8 cpuCompile_LDC_function[4]; // .skip
-u8 cpuCompile_SDC_function[4]; // .skip
-u8 cpuCompile_LWL_function[4]; // .skip
-u8 cpuCompile_LWR_function[4]; // .skip
+static void* gHeapTree;
 
-f64 D_80135FA0 = 0.0;
-f64 D_80135FA8 = 0.5;
-f64 D_80135FB0 = 3.0;
-f32 D_80135FB8 = 0.5;
-f64 D_80135FC0 = 4503601774854144.0;
-f64 D_80135FC8 = 4503599627370496.0;
+static s32 cpuCompile_DSLLV_function;
+static s32 cpuCompile_DSRLV_function;
+static s32 cpuCompile_DSRAV_function;
+static s32 cpuCompile_DMULT_function;
+static s32 cpuCompile_DMULTU_function;
+static s32 cpuCompile_DDIV_function;
+static s32 cpuCompile_DDIVU_function;
+static s32 cpuCompile_DADD_function;
+static s32 cpuCompile_DADDU_function;
+static s32 cpuCompile_DSUB_function;
+static s32 cpuCompile_DSUBU_function;
+static s32 cpuCompile_S_SQRT_function;
+static s32 cpuCompile_D_SQRT_function;
+static s32 cpuCompile_W_CVT_SD_function;
+static s32 cpuCompile_L_CVT_SD_function;
+static s32 cpuCompile_CEIL_W_function;
+static s32 cpuCompile_FLOOR_W_function;
+static s32 cpuCompile_ROUND_W_function;
+static s32 cpuCompile_TRUNC_W_function;
+static s32 cpuCompile_LB_function;
+static s32 cpuCompile_LH_function;
+static s32 cpuCompile_LW_function;
+static s32 cpuCompile_LBU_function;
+static s32 cpuCompile_LHU_function;
+static s32 cpuCompile_SB_function;
+static s32 cpuCompile_SH_function;
+static s32 cpuCompile_SW_function;
+static s32 cpuCompile_LDC_function;
+static s32 cpuCompile_SDC_function;
+static s32 cpuCompile_LWL_function;
+static s32 cpuCompile_LWR_function;
+
+const f64 D_80135FA0 = 0.0;
+const f64 D_80135FA8 = 0.5;
+const f64 D_80135FB0 = 3.0;
+const f32 D_80135FB8 = 0.5;
+const f64 D_80135FC0 = 4503601774854144.0;
+const f64 D_80135FC8 = 4503599627370496.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCompile_DSLLV.s")
 
