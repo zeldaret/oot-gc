@@ -11,14 +11,35 @@ SIM_S is a version of the build with stripped symbols which when diffed against 
 
 ## Building
 
-### Required tools
+### Requirements
 
-* [devkitPro](https://devkitpro.org/wiki/Getting_Started)
+You will need the following dependencies:
+* gcc or clang
+* make
+* git
 * python3
+* 32-bits wine
+* wget
+* unzip
+* clang-format (optional)
+
+#### Ubuntu/Debian
+
+In order to install the 32-bits version of Wine, you will need to run:
+
+```
+sudo dpkg --add-architecture i386
+sudo apt-get update
+```
+
+Under a Debian/Ubuntu, you can install them with the following commands:
+
+```
+sudo apt-get update
+sudo apt-get install build-essential git python3 wine32:i386 wget unzip
+```
 
 ### Instructions
 
 1. Obtain the original ELF executable found in the `120903_zelda.tgc` file on the Japanese Collector's Edition disk and place it in the base working directory and name it `SIM_original.elf`
-2. Obtain a copy of the MWCC for embedded PowerPC and place it in the `tools/mwcc_compiler/1.1/` folder.
-(NOTE: This compiler's executables [mwcceppc.exe mwasmeppc.exe and mwldeppc.exe] can be installed with Codewarrior 1.1 for Gamecube, but no license or crack is provided with this project. Please obtain access to the compiler on your own.)
-3. Run `make setup` and `make`
+2. Run `make setup` and `make`
