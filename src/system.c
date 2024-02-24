@@ -1322,7 +1322,7 @@ s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, Sy
         }
     }
 
-    NO_INLINE;
+    NO_INLINE();
     return 1;
 }
 
@@ -1372,7 +1372,7 @@ s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice) {
         }
     }
 
-    NO_INLINE;
+    NO_INLINE();
     return 1;
 }
 
