@@ -33,7 +33,7 @@ include obj_files.mk
 # Tools
 #-------------------------------------------------------------------------------
 
-MWCC_VERSION := 1.1
+MWCC_VERSION := GC/1.1
 
 # Programs
 ifeq ($(WINDOWS),1)
@@ -42,7 +42,7 @@ else
 	WINE := wine
 endif
 
-PPC_BIN_PREFIX := $(DEVKITPPC)/bin/powerpc-eabi-
+PPC_BIN_PREFIX := tools/binutils/powerpc-eabi-
 AS := $(PPC_BIN_PREFIX)as
 OBJCOPY := $(PPC_BIN_PREFIX)objcopy
 OBJDUMP := $(PPC_BIN_PREFIX)objdump
@@ -75,9 +75,6 @@ ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
 endif
 
-# postprocess
-PROCFLAGS := -fprologue-fixup=old_stack
-
 # elf2dol needs to know these in order to calculate sbss correctly.
 SDATA_PDHR 	:= 9
 SBSS_PDHR 	:= 10
@@ -98,22 +95,22 @@ ifneq ($(NON_MATCHING),1)
 endif
 
 setup:
+# Build/download tools
+	$(MAKE) -C tools
+# Patch linker
+	tools/patch_linker.sh $(MWCC_DIR)/mwldeppc.exe
 # Strip debugging sections and .mwcats.text section so only the important sections remain
 # Tested to ensure it doesn't crash at least on Dolphin
 	$(OBJCOPY) SIM_original.elf SIM.elf -R .mwcats.text -g
 # Copy again to strip symbols since we don't want to diff those
 	$(OBJCOPY) SIM.elf SIM_S.elf -S
-# Patch linker executable
-	tools/patch_linker.sh $(MWCC_DIR)/mwldeppc.exe
-# Build tools
-	$(MAKE) -C tools/elf2dol
 
 clean:
 	rm -f -d -r build
 
 distclean:
 	rm -f -r SIM.elf SIM_S.elf
-	$(MAKE) -C tools/elf2dol clean
+	$(MAKE) -C tools clean
 
 format:
 	find include src -name '*.h' -o -name '*.c' | xargs clang-format -i

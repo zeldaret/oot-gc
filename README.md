@@ -13,12 +13,9 @@ SIM_S is a version of the build with stripped symbols which when diffed against 
 
 ### Required tools
 
-* [devkitPro](https://devkitpro.org/wiki/Getting_Started)
 * python3
 
 ### Instructions
 
 1. Obtain the original ELF executable found in the `120903_zelda.tgc` file on the Japanese Collector's Edition disk and place it in the base working directory and name it `SIM_original.elf`
-2. Obtain a copy of the MWCC for embedded PowerPC and place it in the `tools/mwcc_compiler/1.1/` folder.
-(NOTE: This compiler's executables [mwcceppc.exe mwasmeppc.exe and mwldeppc.exe] can be installed with Codewarrior 1.1 for Gamecube, but no license or crack is provided with this project. Please obtain access to the compiler on your own.)
-3. Run `make setup` and `make`
+2. Run `make setup` and `make`

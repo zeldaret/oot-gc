@@ -12,7 +12,7 @@ from typing import BinaryIO
 
 MAP_FILE = "expected/build/SIM/SIM.map"
 ORIGINAL_ELF_FILE = "SIM_original.elf"
-OBJDUMP_EXECUTABLE = "powerpc-eabi-objdump"
+OBJDUMP_EXECUTABLE = "tools/binutils/powerpc-eabi-objdump"
 
 
 def find_start_address_from_map_file(object_name: str) -> int | None:
