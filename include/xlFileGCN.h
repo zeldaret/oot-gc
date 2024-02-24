@@ -3,8 +3,8 @@
 
 #include "dolphin.h"
 
-typedef s32 (*FileGcnOpenCallback)(char*, DVDFileInfo*);
-typedef s32 (*FileGcnReadCallback)(DVDFileInfo*, void*, s32, s32, FileGcnOpenCallback);
+typedef s32 (*DVDOpenCallback)(char*, DVDFileInfo*);
+typedef s32 (*DVDReadCallback)(DVDFileInfo*, void*, s32, s32, DVDCallback);
 
 // XlFileType
 typedef enum XlFileType {
@@ -24,8 +24,8 @@ typedef struct tXL_FILE {
     /* 0x1C */ DVDFileInfo info;
 } tXL_FILE; // size = 0x58
 
-s32 xlFileSetOpen(FileGcnOpenCallback pfOpen);
-s32 xlFileSetRead(FileGcnReadCallback pfRead);
+s32 xlFileSetOpen(DVDOpenCallback pfOpen);
+s32 xlFileSetRead(DVDReadCallback pfRead);
 s32 xlFileGetSize(s32* pnSize, char* szFileName);
 s32 xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName);
 s32 xlFileClose(tXL_FILE** ppFile);

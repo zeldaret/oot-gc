@@ -10,15 +10,15 @@ _XL_OBJECTTYPE gTypeFile = {
     (EventFunc)xlFileEvent,
 };
 
-static FileGcnOpenCallback gpfOpen;
-static FileGcnReadCallback gpfRead;
+static DVDOpenCallback gpfOpen;
+static DVDReadCallback gpfRead;
 
-s32 xlFileSetOpen(FileGcnOpenCallback pfOpen) {
+s32 xlFileSetOpen(DVDOpenCallback pfOpen) {
     gpfOpen = pfOpen;
     return 1;
 }
 
-s32 xlFileSetRead(FileGcnReadCallback pfRead) {
+s32 xlFileSetRead(DVDReadCallback pfRead) {
     gpfRead = pfRead;
     return 1;
 }

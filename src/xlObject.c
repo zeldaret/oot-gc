@@ -3,9 +3,60 @@
 
 static struct tXL_LIST* gpListData;
 
-#ifndef NON_MATCHING
+#ifdef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/xlObject/xlObjectMake.s")
 #else
+inline s32 xlObjectFindClass(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
+    tXL_NODE* pNode;
+    for (pNode = (tXL_NODE*)gpListData->pNodeHead; pNode != NULL; pNode = pNode->next) {
+        *ppData = (__anon_0x5062*)pNode->data;
+        if ((*ppData)->pType == pType) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+inline s32 xlObjectNewClass(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
+    if (!xlListMakeItem(gpListData, ppData)) {
+        return 0;
+    }
+
+    (*ppData)->pType = pType;
+
+    if (!xlListMake((tXL_LIST**)*ppData, pType->nSizeObject + 4)) {
+        return 0;
+    }
+
+    return 1;
+}
+
+s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
+    s32 bFlag;
+    __anon_0x5062* pData;
+
+    if (!xlObjectFindClass(&pData, pType)) {
+        if (!xlObjectNewClass(&pData, pType)) {
+            return 0;
+        }
+        bFlag = 1;
+    } else {
+        bFlag = 0;
+    }
+
+    if (!xlListMakeItem(pData->pList, ppObject)) {
+        return 0;
+    }
+
+    ((tXL_NODE*)ppObject)->next = (tXL_NODE*)pData;
+    *ppObject = (*((tXL_NODE**)ppObject))->data;
+
+    if (bFlag != 0) {
+        pType->pfEvent(*ppObject, 0, NULL);
+    }
+
+    return pType->pfEvent(*ppObject, 2, pArgument);
+}
 #endif
 
 s32 xlObjectFree(void** ppObject) {
@@ -41,7 +92,7 @@ s32 xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType) {
 }
 
 // regalloc
-#ifndef NON_MATCHING
+#ifdef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/xlObject/xlObjectEvent.s")
 #else
 inline s32 xlObjectTestClass(void* pObject, __anon_0x5062* pData2) {
