@@ -814,9 +814,7 @@ static s32 simulatorDrawCursor(s32 nX, s32 nY) {
         var_r5 = (u8)nTick;
     }
 
-    color.b = 0;
-    color.g = 0;
-    color.r = 0;
+    color.r = color.g = color.b = 0;
 
     switch ((nTick >> 9) % 7) {
         case 0:
