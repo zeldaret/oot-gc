@@ -298,6 +298,5 @@ s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pf
 s32 cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
                     Get64Func pfGet64);
 s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
-static s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice);
 
 #endif
