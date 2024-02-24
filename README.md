@@ -13,11 +13,18 @@ SIM_S is a version of the build with stripped symbols which when diffed against 
 
 ### Requirements
 
-You will need the following packages:
+You will need the following dependencies:
 * build-essential
 * git
 * python3
-* wine32
+* 32-bits wine
+* clang-format (optional)
+
+If not installed by default, you will also need:
+* wget
+* unzip
+
+### Ubuntu/Debian
 
 In order to install the 32-bits version of Wine, you will need to run:
 
@@ -30,10 +37,8 @@ Under a Debian/Ubuntu, you can install them with the following commands:
 
 ```
 sudo apt-get update
-sudo apt-get install build-essential git python3 wine32:i386
+sudo apt-get install build-essential git python3 wine32:i386 wget unzip
 ```
-
-Note: some Linux distributions may not have ``wget`` and ``unzip``, which are required too.
 
 ### Instructions
 

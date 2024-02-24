@@ -36,4 +36,4 @@ mwcc_compiler:
 	wget https://files.decomp.dev/compilers_$(COMPILERS_TAG).zip -O mwcc_compiler/compilers_$(COMPILERS_TAG).zip
 	unzip mwcc_compiler/compilers_$(COMPILERS_TAG).zip -d mwcc_compiler
 	rm mwcc_compiler/compilers_$(COMPILERS_TAG).zip
-	chmod -R +x mwcc_compiler/
+	find mwcc_compiler/ -name '*.exe' -exec chmod +x {} \;
