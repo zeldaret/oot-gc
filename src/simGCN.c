@@ -553,7 +553,7 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     }
 
     OSResetSystem(0, 0, 0);
-    NO_INLINE;
+    NO_INLINE();
 }
 
 inline void simulatorUnknownInline() {
