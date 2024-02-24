@@ -3,10 +3,10 @@
 
 #include "dolphin.h"
 
-// based on how other "gClass" works, we can assume this was the struct used for Code
+// __anon_0x57A1
 typedef struct Code {
-    /* 0x00 */ void* pHost;
-} Code; // size = 0x04
+    /* 0x0 */ s32 nMode;
+} Code; // size = 0x4
 
 s32 codeEvent(Code* pCode, s32 nEvent, void* pArgument);
 

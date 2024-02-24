@@ -1,6 +1,8 @@
 #include "audio.h"
 #include "dolphin.h"
 #include "ram.h"
+#include "rsp.h"
+#include "soundGCN.h"
 #include "system.h"
 #include "xlObject.h"
 #include "xlPostGCN.h"
@@ -22,11 +24,11 @@ s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData) {
     switch (nAddress & 0x1F) {
         case 0x0:
             if (pAudio->nAddress = (*pData & 0xFFFFFF)) {
-                if (!ramGetBuffer(((System*)pAudio->pHost)->apObject[SOT_RAM], &pBuffer, pAudio->nAddress, NULL)) {
+                if (!ramGetBuffer(SYSTEM_RAM(pAudio->pHost), &pBuffer, pAudio->nAddress, NULL)) {
                     return 0;
                 }
                 if (pAudio->bEnable) {
-                    soundSetAddress(((System*)pAudio->pHost)->pSound, pBuffer);
+                    soundSetAddress(SYSTEM_SOUND(pAudio->pHost), pBuffer);
                 }
                 break;
             }
@@ -34,7 +36,7 @@ s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData) {
         case 0x4:
             pAudio->nSize = *pData & 0x3FFF8;
             if ((pAudio->nControl != 0) && pAudio->bEnable) {
-                soundSetLength(((System*)pAudio->pHost)->pSound, pAudio->nSize);
+                soundSetLength(SYSTEM_SOUND(pAudio->pHost), pAudio->nSize);
             }
             break;
         case 0x8:
@@ -46,7 +48,7 @@ s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData) {
         case 0x10:
             pAudio->nRateDAC = *pData & 0x3FFF;
             if (pAudio->bEnable) {
-                soundSetDACRate(((System*)pAudio->pHost)->pSound, pAudio->nRateDAC);
+                soundSetDACRate(SYSTEM_SOUND(pAudio->pHost), pAudio->nRateDAC);
             }
             break;
         case 0x14:
@@ -72,7 +74,7 @@ s32 audioGet32(Audio* pAudio, u32 nAddress, s32* pData) {
             xlPostText("Get: DRAM Address: WRITE-ONLY?", "audio.c", 0xDA);
             break;
         case 4:
-            if (!soundGetDMABuffer(((System*)pAudio->pHost)->pSound, pData)) {
+            if (!soundGetDMABuffer(SYSTEM_SOUND(pAudio->pHost), pData)) {
                 *pData = pAudio->nSize;
             }
             break;
@@ -101,7 +103,7 @@ s32 audioGet64(Audio* pAudio, u32 nAddress, s64* pData) { return 0; }
 s32 audioEnable(Audio* pAudio, s32 bEnable) {
     pAudio->bEnable = bEnable ? 1 : 0;
 
-    if (!rspEnableABI(((System*)pAudio->pHost)->apObject[SOT_RSP], pAudio->bEnable)) {
+    if (!rspEnableABI(SYSTEM_RSP(pAudio->pHost), pAudio->bEnable)) {
         return 0;
     }
 
@@ -120,12 +122,12 @@ s32 audioEvent(Audio* pAudio, s32 nEvent, void* pArgument) {
             pAudio->bEnable = 1;
             break;
         case 0x1002:
-            if (!cpuSetDevicePut(((System*)pAudio->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)audioPut8,
-                                 (Put16Func)audioPut16, (Put32Func)audioPut32, (Put64Func)audioPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pAudio->pHost), pArgument, (Put8Func)audioPut8, (Put16Func)audioPut16,
+                                 (Put32Func)audioPut32, (Put64Func)audioPut64)) {
                 return 0;
             }
-            if (!cpuSetDeviceGet(((System*)pAudio->pHost)->apObject[SOT_CPU], pArgument, (Put8Func)audioGet8,
-                                 (Put16Func)audioGet16, (Put32Func)audioGet32, (Put64Func)audioGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pAudio->pHost), pArgument, (Put8Func)audioGet8, (Put16Func)audioGet16,
+                                 (Put32Func)audioGet32, (Put64Func)audioGet64)) {
                 return 0;
             }
             break;
