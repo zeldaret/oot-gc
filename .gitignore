@@ -1,10 +1,11 @@
-# Compiler binaries
-mwcc_compiler/
+# Tools
+tools/binutils/**
+tools/mwcc_compiler/**
+tools/asm_processor/tmp/
+tools/elf2dol/elf2dol
 
 # Build artifacts
 build/
-tools/asm_processor/tmp/
-tools/elf2dol/elf2dol
 *.o
 *.obj
 *.elf
