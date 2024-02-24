@@ -18,25 +18,33 @@ You will need the following dependencies:
 * make
 * git
 * python3
-* 32-bits wine
+* 32-bit wine
 * wget
 * unzip
 * clang-format (optional)
 
 #### Ubuntu/Debian
 
-In order to install the 32-bits version of Wine, you will need to run:
+In order to install the 32-bit version of Wine, you will need to run:
 
 ```
 sudo dpkg --add-architecture i386
 sudo apt-get update
 ```
 
-Under a Debian/Ubuntu, you can install them with the following commands:
+You can install the dependencies with the following commands:
 
 ```
 sudo apt-get update
 sudo apt-get install build-essential git python3 wine32:i386 wget unzip
+```
+
+### macOS
+
+You can install dependencies via Homebrew with the following command:
+
+```
+brew install coreutils python3 wget wine
 ```
 
 ### Instructions
