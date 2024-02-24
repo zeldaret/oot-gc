@@ -59,7 +59,6 @@ typedef enum CpuMode {
     CM_KERNEL = 2,
 } CpuMode;
 
-//! TODO: better name?
 // __anon_0x42F73
 typedef enum CpuSize {
     CS_NONE = -1,

@@ -6,6 +6,7 @@
 #include "simGCN.h"
 #include "system.h"
 #include "xlObject.h"
+#include "xlHeap.h"
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -1012,11 +1013,178 @@ s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapReset.s")
+static s32 cpuHeapReset(u32* array, s32 count) {
+    s32 i;
 
+    for (i = 0; i < count; i++) {
+        array[i] = 0;
+    }
+
+    return 1;
+}
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapTake.s")
+#else
+s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, s32 memory_size) {
+    // Parameters
+    // void* heap; // r3
+    // struct _CPU* pCPU; // r1+0xC
+    // struct cpu_function* pFunction; // r1+0x10
+    // s32 memory_size; // r6
 
+    // Local variables
+    s32 done; // r12
+    s32 second; // r7
+    u32* anPack; // r8
+    s32 nPackCount; // r9
+    s32 nBlockCount; // r10
+    s32 nOffset; // r27
+    s32 nCount; // r26
+    s32 iPack; // r1+0x8
+    u32 nPack; // r25
+    u32 nMask; // r24
+    u32 nMask0; // r23
+
+    // done = 0;
+    // second = 0;
+    do {
+        if (pFunction->heapID == -1) {
+            if (memory_size > 0x3200) {
+                pFunction->heapID = 2;
+            } else {
+                pFunction->heapID = 1;
+            }
+        } else if (pFunction->heapID == 1) {
+            pFunction->heapID = 2;
+            second = 1;
+        } else if (pFunction->heapID == 2) {
+            pFunction->heapID = 1;
+            second = 1;
+        }
+
+        if (pFunction->heapID == 1) {
+            pFunction->heapID = 1;
+            nBlockCount = (memory_size + 0x1FF) / 512;
+            nPackCount = ARRAY_COUNT(pCPU->aHeap1Flag);
+            anPack = pCPU->aHeap1Flag;
+
+            if (second && (nBlockCount >= 32)) {
+                pFunction->heapID = 3;
+                pFunction->heapWhere = -1;
+                if (!xlHeapTake(&heap, memory_size)) {
+                    return 0;
+                }
+                return 1;
+            }
+        } else {
+            if (pFunction->heapID == 2) {
+                pFunction->heapID = 2;
+                nBlockCount = (memory_size + 0x9FF) / 2560;
+                nPackCount = ARRAY_COUNT(pCPU->aHeap2Flag);
+                anPack = pCPU->aHeap2Flag;
+            }
+
+            if (nBlockCount >= 32) {
+                pFunction->heapID = 3;
+                pFunction->heapWhere = -1;
+                if (!xlHeapTake(&heap, memory_size)) {
+                    return 0;
+                }
+                return 1;
+            }
+        }
+
+        nCount = 0x21 - nBlockCount;
+        for (iPack = 0; iPack < nPackCount; iPack++) {
+            nPack = *anPack;
+            if ((u32) (nPack + 0x10000) != -1U) {
+                nMask = (1 << nBlockCount) - 1;
+                nOffset = nCount;
+                do {
+                    if (!(nPack & nMask)) {
+                        *anPack |= nMask;
+                        done = 1;
+                        pFunction->heapWhere = ((nBlockCount << 0x10) | (nCount - nOffset));
+                        break;
+                    }
+                    nMask *= 2;
+                    nOffset--;
+                } while (nOffset != 0);
+            }
+
+            anPack += 4;
+            if (done) {
+                break;
+            }
+        }
+
+        if (second != 0) {
+            pFunction->heapID = -1;
+            pFunction->heapWhere = -1;
+            return 0;
+        }
+    } while(!done);
+
+    if (pFunction->heapID == 1) {
+        // heap = (void*)((s32)pCPU->gHeap1 + (pFunction->heapWhere * 0x200));
+        heap = (void*)((s32)pCPU->gHeap1 + ((pFunction->heapWhere << 9) & 0x01FFFE00));
+    } else {
+        heap = (void*)((s32)pCPU->gHeap2 + (pFunction->heapWhere * 0xA00));
+    }
+
+    return 1;
+}
+#endif
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapFree.s")
+#else
+s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
+    // Parameters
+    // struct _CPU* pCPU; // r1+0x8
+    // struct cpu_function* pFunction; // r4
+
+    // Local variables
+    u32* anPack; // r8
+    s32 iPack; // r1+0x8
+    u32 nMask; // r6
+
+    if (pFunction->heapID == 1) {
+        anPack = pCPU->aHeap1Flag;
+    } else if (pFunction->heapID == 2) {
+        anPack = pCPU->aHeap2Flag;
+    } else {
+        if (pFunction->pnBase != NULL) {
+            if (!xlHeapFree(&pFunction->pnBase)) {
+                return 0;
+            }
+        } else {
+            if (!xlHeapFree(&pFunction->pfCode)) {
+                return 0;
+            }
+        }
+
+        return 1;
+    }
+
+    if (pFunction->heapWhere == -1) {
+        return 0;
+    }
+
+    nMask = ((1 << (pFunction->heapWhere >> 0x10)) - 1) << (pFunction->heapWhere & 0x1F);
+    iPack = (pFunction->heapWhere >> 5) & 0x7FF;
+
+    if ((anPack[iPack] & nMask) == nMask) {
+        anPack[iPack] &= ~nMask;
+        pFunction->heapID = -1;
+        pFunction->heapWhere = -1;
+        return 1;
+    }
+
+    return 0;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuTreeTake.s")
 
