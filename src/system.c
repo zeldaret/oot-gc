@@ -62,36 +62,102 @@ _XL_OBJECTTYPE gClassSystem = {
     (EventFunc)systemEvent,
 }; // size = 0x10
 
-static u32 contMap[4][20] = {
-    // Controller 1
+// clang-format off
+static u32 contMap[4][GCN_BTN_COUNT] = {
+    // Controller Configuration No. 1
     {
-        0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x00200000, 0x00100000, 0x20000000,
-        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000,
-        0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
-
+        N64_BTN_A,      // GCN_BTN_A
+        N64_BTN_B,      // GCN_BTN_B
+        N64_BTN_UNSET,  // GCN_BTN_X
+        N64_BTN_UNSET,  // GCN_BTN_Y
+        N64_BTN_L,      // GCN_BTN_L
+        N64_BTN_R,      // GCN_BTN_R
+        N64_BTN_Z,      // GCN_BTN_Z
+        N64_BTN_START,  // GCN_BTN_START
+        0x08000000,     // GCN_BTN_UNK8
+        0x04000000,     // GCN_BTN_UNK9
+        0x02000000,     // GCN_BTN_UNK10
+        0x01000000,     // GCN_BTN_UNK11
+        N64_BTN_DUP,    // GCN_BTN_DPAD_UP
+        N64_BTN_DDOWN,  // GCN_BTN_DPAD_DOWN
+        N64_BTN_DLEFT,  // GCN_BTN_DPAD_LEFT
+        N64_BTN_DRIGHT, // GCN_BTN_DPAD_RIGHT
+        N64_BTN_CUP,    // GCN_BTN_CSTICK_UP
+        N64_BTN_CDOWN,  // GCN_BTN_CSTICK_DOWN
+        N64_BTN_CLEFT,  // GCN_BTN_CSTICK_LEFT
+        N64_BTN_CRIGHT, // GCN_BTN_CSTICK_RIGHT
     },
-    // Controller 2
+    // Controller Configuration No. 2
     {
-        0x80000000, 0x40000000, 0x00000000, 0x00000000, 0x20000000, 0x00100000, 0x20000000,
-        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000,
-        0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
-
+        N64_BTN_A,      // GCN_BTN_A
+        N64_BTN_B,      // GCN_BTN_B
+        N64_BTN_UNSET,  // GCN_BTN_X
+        N64_BTN_UNSET,  // GCN_BTN_Y
+        N64_BTN_Z,      // GCN_BTN_L
+        N64_BTN_R,      // GCN_BTN_R
+        N64_BTN_Z,      // GCN_BTN_Z
+        N64_BTN_START,  // GCN_BTN_START
+        0x08000000,     // GCN_BTN_UNK8
+        0x04000000,     // GCN_BTN_UNK9
+        0x02000000,     // GCN_BTN_UNK10
+        0x01000000,     // GCN_BTN_UNK11
+        N64_BTN_DUP,    // GCN_BTN_DPAD_UP
+        N64_BTN_DDOWN,  // GCN_BTN_DPAD_DOWN
+        N64_BTN_DLEFT,  // GCN_BTN_DPAD_LEFT
+        N64_BTN_DRIGHT, // GCN_BTN_DPAD_RIGHT
+        N64_BTN_CUP,    // GCN_BTN_CSTICK_UP
+        N64_BTN_CDOWN,  // GCN_BTN_CSTICK_DOWN
+        N64_BTN_CLEFT,  // GCN_BTN_CSTICK_LEFT
+        N64_BTN_CRIGHT, // GCN_BTN_CSTICK_RIGHT
     },
-    // Controller 3
+    // Controller Configuration No. 3
     {
-        0x80000000, 0x40000000, 0x00010000, 0x00020000, 0x20000000, 0x00100000, 0x00040000,
-        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x00200000, 0x00200000,
-        0x00200000, 0x00200000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
-
+        N64_BTN_A,      // GCN_BTN_A
+        N64_BTN_B,      // GCN_BTN_B
+        N64_BTN_CRIGHT, // GCN_BTN_X
+        N64_BTN_CLEFT,  // GCN_BTN_Y
+        N64_BTN_Z,      // GCN_BTN_L
+        N64_BTN_R,      // GCN_BTN_R
+        N64_BTN_CDOWN,  // GCN_BTN_Z
+        N64_BTN_START,  // GCN_BTN_START
+        0x08000000,     // GCN_BTN_UNK8
+        0x04000000,     // GCN_BTN_UNK9
+        0x02000000,     // GCN_BTN_UNK10
+        0x01000000,     // GCN_BTN_UNK11
+        N64_BTN_L,      // GCN_BTN_DPAD_UP
+        N64_BTN_L,      // GCN_BTN_DPAD_DOWN
+        N64_BTN_L,      // GCN_BTN_DPAD_LEFT
+        N64_BTN_L,      // GCN_BTN_DPAD_RIGHT
+        N64_BTN_CUP,    // GCN_BTN_CSTICK_UP
+        N64_BTN_CDOWN,  // GCN_BTN_CSTICK_DOWN
+        N64_BTN_CLEFT,  // GCN_BTN_CSTICK_LEFT
+        N64_BTN_CRIGHT, // GCN_BTN_CSTICK_RIGHT
     },
-    // Controller 4
+    // Controller Configuration No. 4
     {
-        0x80000000, 0x40000000, 0x00200000, 0x00000000, 0x20000000, 0x00100000, 0x20000000,
-        0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000, 0x08000000, 0x04000000,
-        0x02000000, 0x01000000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
+        N64_BTN_A,      // GCN_BTN_A
+        N64_BTN_B,      // GCN_BTN_B
+        N64_BTN_L,      // GCN_BTN_X
+        N64_BTN_UNSET,  // GCN_BTN_Y
+        N64_BTN_Z,      // GCN_BTN_L
+        N64_BTN_R,      // GCN_BTN_R
+        N64_BTN_Z,      // GCN_BTN_Z
+        N64_BTN_START,  // GCN_BTN_START
+        0x08000000,     // GCN_BTN_UNK8
+        0x04000000,     // GCN_BTN_UNK9
+        0x02000000,     // GCN_BTN_UNK10
+        0x01000000,     // GCN_BTN_UNK11
+        N64_BTN_DUP,    // GCN_BTN_DPAD_UP
+        N64_BTN_DDOWN,  // GCN_BTN_DPAD_DOWN
+        N64_BTN_DLEFT,  // GCN_BTN_DPAD_LEFT
+        N64_BTN_DRIGHT, // GCN_BTN_DPAD_RIGHT
+        N64_BTN_CUP,    // GCN_BTN_CSTICK_UP
+        N64_BTN_CDOWN,  // GCN_BTN_CSTICK_DOWN
+        N64_BTN_CLEFT,  // GCN_BTN_CSTICK_LEFT
+        N64_BTN_CRIGHT, // GCN_BTN_CSTICK_RIGHT
     },
-
 }; // size = 0x140
+// clang-format on
 
 SystemRomConfig gSystemRomConfigurationList[1];
 u32 nTickMultiplier = 2;

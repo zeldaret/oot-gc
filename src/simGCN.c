@@ -233,7 +233,7 @@ void* jtbl_800EA194[] = {
 };
 
 static f32 gOrthoMtx[4][4] ALIGNAS(32);
-static u32 gContMap[4][20];
+static u32 gContMap[4][GCN_BTN_COUNT];
 static char* gaszArgument[8];
 
 u32 gmsg_ld01Size = 0x00003E20;
