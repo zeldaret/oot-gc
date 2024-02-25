@@ -24,7 +24,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/ram.o                  \
     $(BUILD_DIR)/src/rom.o                  \
     $(BUILD_DIR)/src/rdp.o                  \
-    $(BUILD_DIR)/asm/rdb.o                  \
+    $(BUILD_DIR)/src/rdb.o                  \
     $(BUILD_DIR)/asm/rsp.o                  \
     $(BUILD_DIR)/asm/mips.o                 \
     $(BUILD_DIR)/src/disk.o                 \

@@ -5,7 +5,7 @@
 _XL_OBJECTTYPE gClassRDP[] = {
     "RDP",
     sizeof(Rdp),
-    0x00000000,
+    NULL,
     (EventFunc)rdpEvent,
 };
 
