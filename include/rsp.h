@@ -203,5 +203,6 @@ typedef struct Rsp {
 } Rsp; // size = 0x39CC
 
 s32 rspEnableABI(Rsp* pRSP, s32 bFlag);
+s32 rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
 
 #endif

@@ -2,7 +2,7 @@
 #include "rdb_jumptables.h"
 #include "xlObject.h"
 
-_XL_OBJECTTYPE gClassRdb[] = {
+_XL_OBJECTTYPE gClassRdb = {
     "RDB",
     sizeof(Rdb),
     NULL,
