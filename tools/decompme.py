@@ -17,8 +17,11 @@ import urllib.parse
 import urllib.request
 
 COMPILER_NAME = "mwcc_233_159"
+# We don't set -inline deferred because otherwise the reversed function order
+# would require manually deleting all previous function definitions from the
+# context.
 COMPILER_FLAGS = (
-    "-Cpp_exceptions off -proc gekko -fp hard -enum int -O4,p -nodefaults -msgstyle gcc"
+    "-Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto -nodefaults -msgstyle gcc"
 )
 INCLUDE_PATTERN = re.compile(r'^#include\s*[<"](.+?)[>"]$')
 GUARD_PATTERN = re.compile(r'^#ifndef\s+(.*)$')
