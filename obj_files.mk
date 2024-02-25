@@ -31,7 +31,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/flash.o                \
     $(BUILD_DIR)/src/sram.o                 \
     $(BUILD_DIR)/src/audio.o                \
-    $(BUILD_DIR)/asm/video.o                \
+    $(BUILD_DIR)/src/video.o                \
     $(BUILD_DIR)/src/serial.o               \
     $(BUILD_DIR)/asm/library.o              \
     $(BUILD_DIR)/src/peripheral.o           \
