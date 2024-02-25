@@ -21,16 +21,14 @@ COMPILER_NAME = "mwcc_233_159"
 # We don't set -inline deferred because otherwise the reversed function order
 # would require manually deleting all previous function definitions from the
 # context.
-COMPILER_FLAGS = (
-    "-Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto -nodefaults -msgstyle gcc"
-)
+COMPILER_FLAGS = "-Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto -nodefaults -msgstyle gcc"
 
 INCLUDE_PATTERN = re.compile(r'^#include\s*[<"](.+?)[>"]$')
-DEFINE_PATTERN = re.compile(r'^#define\s+(\w+)(?:\s+(.*))?$')
-IF_PATTERN = re.compile(r'^#if(n)?(?:def)?\s+(.*)$')
-ELSE_PATTERN = re.compile(r'^#else$')
-ENDIF_PATTERN = re.compile(r'^#endif$')
-INCBIN_PATTERN = re.compile(r'^#pragma INCBIN\(.*\)$')
+DEFINE_PATTERN = re.compile(r"^#define\s+(\w+)(?:\s+(.*))?$")
+IF_PATTERN = re.compile(r"^#if(n)?(?:def)?\s+(.*)$")
+ELSE_PATTERN = re.compile(r"^#else$")
+ENDIF_PATTERN = re.compile(r"^#endif$")
+INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)$")
 
 # Defined preprocessor macros
 defines = {"__MWERKS__"}
@@ -42,7 +40,7 @@ def process_file(path: Path) -> str:
     lines = path.read_text().splitlines()
     out_text = ""
     for i, line in enumerate(lines):
-        if (match := IF_PATTERN.match(line.strip())):
+        if match := IF_PATTERN.match(line.strip()):
             condition = match[2] in defines
             if match[1] == "n":
                 condition = not condition
@@ -55,11 +53,11 @@ def process_file(path: Path) -> str:
             if not all(condition_stack):
                 continue
 
-            if (match := DEFINE_PATTERN.match(line.strip())):
+            if match := DEFINE_PATTERN.match(line.strip()):
                 defines.add(match[1])
                 out_text += line
                 out_text += "\n"
-            elif (match := INCLUDE_PATTERN.match(line.strip())):
+            elif match := INCLUDE_PATTERN.match(line.strip()):
                 out_text += f'/* "{path}" line {i + 1} "{match[1]}" */\n'
                 out_text += process_file(INCLUDE_DIR / match[1])
                 out_text += f'/* end "{match[1]}" */\n'
@@ -77,7 +75,9 @@ def main():
     parser = argparse.ArgumentParser(description="Create a decomp.me scratch")
     parser.add_argument("c_file", metavar="C_FILE", type=Path, help="Input .c file")
     parser.add_argument("asm_file", metavar="ASM_FILE", type=Path, help="Input .s file")
-    parser.add_argument("--print-context", action="store_true", help="Print the context and exit")
+    parser.add_argument(
+        "--print-context", action="store_true", help="Print the context and exit"
+    )
 
     args = parser.parse_args()
 
