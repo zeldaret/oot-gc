@@ -3,39 +3,20 @@
 #include "xlObject.h"
 
 _XL_OBJECTTYPE gClassMips = {
-    "MIPS", sizeof(Mips), NULL, (EventFunc)mipsEvent,
+    "MIPS",
+    sizeof(Mips),
+    NULL,
+    (EventFunc)mipsEvent,
 };
 
 void* jtbl_800EE6E0[] = {
-    &lbl_8008D384,
-    &lbl_8008D3B8,
-    &lbl_8008D3B8,
-    &lbl_8008D3B8,
-    &lbl_8008D390,
-    &lbl_8008D3B8,
-    &lbl_8008D3B8,
-    &lbl_8008D3B8,
-    &lbl_8008D3A0,
-    &lbl_8008D3B8,
-    &lbl_8008D3B8,
-    &lbl_8008D3B8,
-    &lbl_8008D3AC,
+    &lbl_8008D384, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D390, &lbl_8008D3B8, &lbl_8008D3B8,
+    &lbl_8008D3B8, &lbl_8008D3A0, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D3AC,
 };
 
 void* jtbl_800EE714[] = {
-    &lbl_8008D41C,
-    &lbl_8008D5C4,
-    &lbl_8008D5C4,
-    &lbl_8008D5C4,
-    &lbl_8008D5CC,
-    &lbl_8008D5C4,
-    &lbl_8008D5C4,
-    &lbl_8008D5C4,
-    &lbl_8008D5CC,
-    &lbl_8008D5C4,
-    &lbl_8008D5C4,
-    &lbl_8008D5C4,
-    &lbl_8008D4C8,
+    &lbl_8008D41C, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D5CC, &lbl_8008D5C4, &lbl_8008D5C4,
+    &lbl_8008D5C4, &lbl_8008D5CC, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D4C8,
 };
 
 #pragma GLOBAL_ASM("asm/non_matchings/mips/mipsSetInterrupt.s")

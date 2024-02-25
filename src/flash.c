@@ -2,7 +2,10 @@
 #include "xlObject.h"
 
 _XL_OBJECTTYPE gClassFlash = {
-    "FLASH", sizeof(Flash), NULL, (EventFunc)flashEvent,
+    "FLASH",
+    sizeof(Flash),
+    NULL,
+    (EventFunc)flashEvent,
 };
 
 #pragma GLOBAL_ASM("asm/non_matchings/flash/flashCopyFLASH.s")
