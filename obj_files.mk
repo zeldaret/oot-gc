@@ -20,7 +20,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/frame.o                \
     $(BUILD_DIR)/src/system.o               \
     $(BUILD_DIR)/src/cpu.o                  \
-    $(BUILD_DIR)/asm/pif.o                  \
+    $(BUILD_DIR)/src/pif.o                  \
     $(BUILD_DIR)/src/ram.o                  \
     $(BUILD_DIR)/src/rom.o                  \
     $(BUILD_DIR)/src/rdp.o                  \
