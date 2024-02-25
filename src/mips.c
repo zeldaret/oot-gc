@@ -3,7 +3,7 @@
 #include "xlObject.h"
 
 _XL_OBJECTTYPE gClassMips = {
-    "MIPS", sizeof(Mips), 0x00000000, (EventFunc)mipsEvent,
+    "MIPS", sizeof(Mips), NULL, (EventFunc)mipsEvent,
 };
 
 void* jtbl_800EE6E0[] = {

@@ -11,4 +11,6 @@ typedef struct Flash {
     /* 0xC */ s32 flashStatus;
 } Flash; // size = 0x10
 
+s32 flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument);
+
 #endif
