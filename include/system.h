@@ -24,7 +24,7 @@
 typedef s32 (*SystemCopyCallbackFunc)(void);
 
 // note: each stick direction count as an input
-typedef enum GcnButtons {
+typedef enum GcnButton {
     GCN_BTN_A = 0,
     GCN_BTN_B = 1,
     GCN_BTN_X = 2,
@@ -46,7 +46,7 @@ typedef enum GcnButtons {
     GCN_BTN_CSTICK_LEFT = 18,
     GCN_BTN_CSTICK_RIGHT = 19,
     GCN_BTN_COUNT = 20,
-} GcnButtons;
+} GcnButton;
 
 // __anon_0x394CD
 typedef enum SystemMode {
