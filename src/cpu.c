@@ -833,9 +833,6 @@ s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuEvent.s")
-#else
 inline s32 cpuInitAllDevices(Cpu* pCPU) {
     s32 i;
 
@@ -854,6 +851,7 @@ inline s32 cpuFreeAllDevices(Cpu* pCPU) {
             if (!cpuFreeDevice(pCPU, i)) {
                 return 0;
             }
+        } else {
             pCPU->apDevice[i] = NULL;
         }
     }
@@ -885,7 +883,6 @@ s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
 
     return 1;
 }
-#endif
 
 s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
     s32 iDevice;
