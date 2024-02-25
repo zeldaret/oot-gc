@@ -6,6 +6,8 @@
 #define ARRAY_COUNT(arr) (s32)(sizeof(arr) / sizeof(arr[0]))
 #define ARRAY_COUNTU(arr) (u32)(sizeof(arr) / sizeof(arr[0]))
 
+#define OFFSETOF(p, field) ((u8*)&(p)->field - (u8*)(p))
+
 // Adds no-ops to increase a function's size, preventing automatic inlining
 #define NO_INLINE() \
     (void)0;        \
