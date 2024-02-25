@@ -23,5 +23,6 @@ typedef struct Mips {
 } Mips; // size = 0x10
 
 s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
+s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument);
 
 #endif
