@@ -1,5 +1,6 @@
 #include "rdb.h"
 #include "rdb_jumptables.h"
+#include "system.h"
 
 _XL_OBJECTTYPE gClassRdb = {
     "RDB",
@@ -15,20 +16,57 @@ void* jtbl_800EE1C0[] = {
     &lbl_80071B50, &lbl_80071B58, &lbl_80071B60, &lbl_80071B68, &lbl_80071B20,
 };
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbPut8.s")
+//! TODO: remove when the function is decompiled
+static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData);
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbPut16.s")
+static s32 rdbPut8(Rdb* pRDB, u32 nAddress, s8* pData) { return 0; }
+
+static s32 rdbPut16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbPut32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbPut64.s")
+static s32 rdbPut64(Rdb* pRDB, u32 nAddress, s64* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbGet8.s")
+static s32 rdbGet8(Rdb* pRDB, u32 nAddress, s8* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbGet16.s")
+static s32 rdbGet16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbGet32.s")
+static s32 rdbGet32(Rdb* pRDB, u32 nAddress, s32* pData) {
+    switch (nAddress & 0xF) {
+        case 0:
+        case 8:
+        case 12:
+            break;
+        default:
+            return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbGet64.s")
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbEvent.s")
+static s32 rdbGet64(Rdb* pRDB, u32 nAddress, s64* pData) { return 0; }
+
+s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pRDB->pHost = pArgument;
+            pRDB->nIndexString = 0;
+            break;
+        case 0x1002:
+            if (!cpuSetDevicePut(SYSTEM_CPU(pRDB->pHost), pArgument, (Put8Func)rdbPut8, (Put16Func)rdbPut16, (Put32Func)rdbPut32, (Put64Func)rdbPut64)) {
+                return 0;
+            }
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pRDB->pHost), pArgument, (Get8Func)rdbGet8, (Get16Func)rdbGet16, (Get32Func)rdbGet32, (Get64Func)rdbGet64)) {
+                return 0;
+            }
+        case 0:
+        case 1:
+        case 3:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
