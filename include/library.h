@@ -4,14 +4,14 @@
 #include "cpu.h"
 #include "dolphin.h"
 
-typedef void (*LibraryFunc)(Cpu*);
+typedef void (*LibraryFuncImpl)(Cpu*);
 
 // __anon_0x7AD10
-typedef struct LibraryFunction {
+typedef struct LibraryFunc {
     /* 0x0 */ char* szName;
-    /* 0x4 */ LibraryFunc pfLibrary;
+    /* 0x4 */ LibraryFuncImpl pfLibrary;
     /* 0x8 */ u32 anData[17];
-} LibraryFunction; // size = 0x4C
+} LibraryFunc; // size = 0x4C
 
 // __anon_0x7AE26
 typedef struct Library {
@@ -20,7 +20,7 @@ typedef struct Library {
     /* 0x08 */ s32 nAddStackSwap;
     /* 0x0C */ s32 nCountFunction;
     /* 0x10 */ s32 nAddressException;
-    /* 0x14 */ LibraryFunction* aFunction;
+    /* 0x14 */ LibraryFunc* aFunction;
     /* 0x18 */ void* apData[10];
     /* 0x40 */ s32 anAddress[10];
 } Library; // size = 0x68

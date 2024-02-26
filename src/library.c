@@ -26,7 +26,7 @@ static f32 dtor_466 = 0.01745329238474369;
 static f32 dtor_480 = 0.01745329238474369;
 static u32 nAddress = 0xFFFFFFFF;
 
-LibraryFunction gaFunction[54] = {
+LibraryFunc gaFunction[54] = {
     {
         "send_mesg",
         send_mesg,
