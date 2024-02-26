@@ -1,7 +1,7 @@
 # Linker order for every file, passed to the Metrowerks linker.
 
 O_FILES :=                                  \
-    $(BUILD_DIR)/asm/xlCoreGCN.o            \
+    $(BUILD_DIR)/src/xlCoreGCN.o            \
     $(BUILD_DIR)/src/xlPostGCN.o            \
     $(BUILD_DIR)/asm/xlFileGCN.o            \
     $(BUILD_DIR)/src/xlList.o               \
