@@ -2,7 +2,10 @@
 #include "xlObject.h"
 
 _XL_OBJECTTYPE gClassPIF = {
-    "PIF", sizeof(Pif), NULL, (EventFunc)pifEvent,
+    "PIF",
+    sizeof(Pif),
+    NULL,
+    (EventFunc)pifEvent,
 };
 
 #pragma GLOBAL_ASM("asm/non_matchings/pif/pifReadRumble.s")

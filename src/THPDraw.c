@@ -1,7 +1,8 @@
 #include "dolphin.h"
 
 const s32 D_80135D78[2] = {
-    0xFFA60000, 0xFF8E0087,
+    0xFFA60000,
+    0xFF8E0087,
 };
 
 const s32 D_80135D80 = 0x0000E258;

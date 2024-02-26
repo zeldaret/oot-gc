@@ -1,9 +1,12 @@
 #include "soundGCN.h"
-#include "xlObject.h"
 #include "macros.h"
+#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassSound = {
-    "SOUND", sizeof(Sound), NULL, (EventFunc)soundEvent,
+    "SOUND",
+    sizeof(Sound),
+    NULL,
+    (EventFunc)soundEvent,
 };
 
 char D_800EA7E8[62] = "SetBufferSize: ERROR: 'nSize' must be a multiple of 32! (%d)\n";

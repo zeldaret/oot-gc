@@ -55,7 +55,6 @@ typedef struct __anon_0x10A84 {
     /* 0x8 */ s32 isValid;
 } __anon_0x10A84; // size = 0xC
 
-
 typedef struct __anon_0x10B6F {
     /* 0x000 */ struct DVDFileInfo fileInfo;
     /* 0x03C */ __anon_0x10576 header;
