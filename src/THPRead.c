@@ -29,7 +29,8 @@ static OSThread ReadThread;
 static u8 ReadThreadStack[4096];
 f32 gOrthoMtx[4][4];
 
-//! TODO: remove the suffix
+//! TODO: make static (data ordering issues)
+// and remove prefix (there's other global variables sharing the same name)
 u32 gnTickReset_thpread;
 s32 gbReset_thpread;
 s32 toggle_184;
