@@ -985,6 +985,7 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
             asm.extend(conts)
         asm.append('glabel {}'.format(late_rodata_source_name_end))
 
+    os.makedirs(f'{os.path.dirname(os.path.realpath(__file__))}/tmp/', exist_ok=True)
     o_file = tempfile.NamedTemporaryFile(prefix='asm-processor', dir=f'{os.path.dirname(os.path.realpath(__file__))}/tmp/', suffix='.o', delete=False)
     o_name = o_file.name
     o_file.close()

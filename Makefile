@@ -51,14 +51,8 @@ MWCC_DIR := tools/mwcc_compiler/$(MWCC_VERSION)
 CC := $(WINE) $(MWCC_DIR)/mwcceppc.exe
 LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 
-SHA1SUM := sha1sum
-PYTHON := python3
+ASM_PROCESSOR := tools/asm_processor/asm_processor.py
 ELF2DOL := tools/elf2dol/elf2dol
-
-ASM_PROCESSOR_DIR := tools/asm_processor
-ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
-
-POSTPROC := tools/postprocess.py
 
 # Options
 INCLUDES := -Iinclude
@@ -126,7 +120,6 @@ ALL_DIRS := build $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(ASM_DIRS)
 DUMMY != mkdir -p $(ALL_DIRS)
 
 $(ELF): $(O_FILES) ldscript.lcf
-	$(RM) -rf $(ASM_PROCESSOR_DIR)/tmp
 	$(LD) $(LDFLAGS) -o $@ -lcf ldscript.lcf $(O_FILES)
 	$(OBJCOPY) $(ELF) $(COMPARE_TO) -S
 
@@ -137,7 +130,10 @@ $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" $< > $(@:.o=.asm_processor.c)
+	$(CC) $(CFLAGS) -c $(@:.o=.asm_processor.c) -o $(@:.o=.asm_processor.o)
+	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $(@:.o=.asm_processor.o) $@
+	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" --asm-prelude include/macros.inc $< --post-process $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
