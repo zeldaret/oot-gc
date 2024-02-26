@@ -130,10 +130,7 @@ $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/%.o: %.c
-# Backslash and tilde technically don't exist in Shift-JIS, so we encode them as
-# yen and overline which have the same byte values in Shift-JIS as backslash and tilde in UTF-8.
-	cat $< | tr '\\' '¥' | tr '~' '‾' | iconv -f UTF-8 -t SHIFT-JIS > $(@:.o=.env.c)
-	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" $(@:.o=.env.c) > $(@:.o=.asm_processor.c)
+	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" $< > $(@:.o=.asm_processor.c)
 	$(CC) $(CFLAGS) -c $(@:.o=.asm_processor.c) -o $(@:.o=.asm_processor.o)
 	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" --asm-prelude include/macros.inc $< --post-process $(@:.o=.asm_processor.o)
 	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $(@:.o=.asm_processor.o) $@
