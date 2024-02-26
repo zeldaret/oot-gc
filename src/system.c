@@ -1,38 +1,26 @@
 #include "system.h"
 #include "audio.h"
 #include "cpu.h"
+#include "disk.h"
 #include "dolphin.h"
 #include "flash.h"
 #include "frame.h"
+#include "library.h"
 #include "macros.h"
 #include "mcardGCN.h"
 #include "mips.h"
+#include "peripheral.h"
 #include "pif.h"
 #include "ram.h"
+#include "rdb.h"
+#include "rdp.h"
 #include "rom.h"
 #include "rsp.h"
+#include "serial.h"
 #include "simGCN.h"
 #include "soundGCN.h"
 #include "sram.h"
-#include "xlObject.h"
-
-//! TODO: move these declarations to the proper headers
-extern _XL_OBJECTTYPE gClassRdb;
-extern _XL_OBJECTTYPE gClassPeripheral;
-extern _XL_OBJECTTYPE gClassLibrary;
-extern _XL_OBJECTTYPE gClassSerial;
-extern _XL_OBJECTTYPE gClassVideo;
-extern _XL_OBJECTTYPE gClassAudio;
-extern _XL_OBJECTTYPE gClassDisk;
-extern _XL_OBJECTTYPE gClassMips;
-extern _XL_OBJECTTYPE gClassRDP;
-extern _XL_OBJECTTYPE gClassRSP;
-extern _XL_OBJECTTYPE gClassROM;
-extern _XL_OBJECTTYPE gClassRAM;
-extern _XL_OBJECTTYPE gClassPIF;
-extern _XL_OBJECTTYPE gClassCPU;
-extern _XL_OBJECTTYPE gClassFlash;
-extern _XL_OBJECTTYPE gClassSram;
+#include "video.h"
 
 extern void* gpFrame;
 extern void* gpSound;

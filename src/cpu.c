@@ -2,7 +2,6 @@
 #include "cpu_jumptable.h"
 #include "dolphin.h"
 #include "macros.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",

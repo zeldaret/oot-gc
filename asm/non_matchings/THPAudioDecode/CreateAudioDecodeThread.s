@@ -1,0 +1,60 @@
+glabel CreateAudioDecodeThread
+/* 00B7FC 80010D9C 7C0802A6 */  mflr    r0
+/* 00B800 80010DA0 7C852379 */  or.     r5, r4, r4
+/* 00B804 80010DA4 90010004 */  stw     r0, 4(r1)
+/* 00B808 80010DA8 3C808010 */  lis     r4, AudioDecodeThread@ha
+/* 00B80C 80010DAC 39030000 */  addi    r8, r3, 0
+/* 00B810 80010DB0 9421FFE8 */  stwu    r1, -0x18(r1)
+/* 00B814 80010DB4 93E10014 */  stw     r31, 0x14(r1)
+/* 00B818 80010DB8 3BE49E50 */  addi    r31, r4, AudioDecodeThread@l
+/* 00B81C 80010DBC 41820040 */  beq     lbl_80010DFC
+/* 00B820 80010DC0 3C608001 */  lis     r3, AudioDecoderForOnMemory@ha
+/* 00B824 80010DC4 38830ED8 */  addi    r4, r3, AudioDecoderForOnMemory@l
+/* 00B828 80010DC8 387F0000 */  addi    r3, r31, 0
+/* 00B82C 80010DCC 38DF1318 */  addi    r6, r31, 0x1318
+/* 00B830 80010DD0 38E01000 */  li      r7, 0x1000
+/* 00B834 80010DD4 39200001 */  li      r9, 1
+/* 00B838 80010DD8 480909B5 */  bl      OSCreateThread
+/* 00B83C 80010DDC 2C030000 */  cmpwi   r3, 0
+/* 00B840 80010DE0 4082005C */  bne     lbl_80010E3C
+/* 00B844 80010DE4 3C60800F */  lis     r3, D_800EA488@ha
+/* 00B848 80010DE8 4CC63182 */  crclr   6
+/* 00B84C 80010DEC 3863A488 */  addi    r3, r3, D_800EA488@l
+/* 00B850 80010DF0 4808D809 */  bl      OSReport
+/* 00B854 80010DF4 38600000 */  li      r3, 0
+/* 00B858 80010DF8 48000070 */  b       lbl_80010E68
+lbl_80010DFC:
+/* 00B85C 80010DFC 3C608001 */  lis     r3, AudioDecoder@ha
+/* 00B860 80010E00 38830EB0 */  addi    r4, r3, AudioDecoder@l
+/* 00B864 80010E04 387F0000 */  addi    r3, r31, 0
+/* 00B868 80010E08 38DF1318 */  addi    r6, r31, 0x1318
+/* 00B86C 80010E0C 38A00000 */  li      r5, 0
+/* 00B870 80010E10 38E01000 */  li      r7, 0x1000
+/* 00B874 80010E14 39200001 */  li      r9, 1
+/* 00B878 80010E18 48090975 */  bl      OSCreateThread
+/* 00B87C 80010E1C 2C030000 */  cmpwi   r3, 0
+/* 00B880 80010E20 4082001C */  bne     lbl_80010E3C
+/* 00B884 80010E24 3C60800F */  lis     r3, D_800EA488@ha
+/* 00B888 80010E28 4CC63182 */  crclr   6
+/* 00B88C 80010E2C 3863A488 */  addi    r3, r3, D_800EA488@l
+/* 00B890 80010E30 4808D7C9 */  bl      OSReport
+/* 00B894 80010E34 38600000 */  li      r3, 0
+/* 00B898 80010E38 48000030 */  b       lbl_80010E68
+lbl_80010E3C:
+/* 00B89C 80010E3C 387F1318 */  addi    r3, r31, 0x1318
+/* 00B8A0 80010E40 389F1358 */  addi    r4, r31, 0x1358
+/* 00B8A4 80010E44 38A00003 */  li      r5, 3
+/* 00B8A8 80010E48 4808E739 */  bl      OSInitMessageQueue
+/* 00B8AC 80010E4C 387F1338 */  addi    r3, r31, 0x1338
+/* 00B8B0 80010E50 389F1364 */  addi    r4, r31, 0x1364
+/* 00B8B4 80010E54 38A00003 */  li      r5, 3
+/* 00B8B8 80010E58 4808E729 */  bl      OSInitMessageQueue
+/* 00B8BC 80010E5C 38000001 */  li      r0, 1
+/* 00B8C0 80010E60 900D8958 */  stw     r0, AudioDecodeThreadCreated@sda21(r13)
+/* 00B8C4 80010E64 38600001 */  li      r3, 1
+lbl_80010E68:
+/* 00B8C8 80010E68 8001001C */  lwz     r0, 0x1c(r1)
+/* 00B8CC 80010E6C 83E10014 */  lwz     r31, 0x14(r1)
+/* 00B8D0 80010E70 38210018 */  addi    r1, r1, 0x18
+/* 00B8D4 80010E74 7C0803A6 */  mtlr    r0
+/* 00B8D8 80010E78 4E800020 */  blr     

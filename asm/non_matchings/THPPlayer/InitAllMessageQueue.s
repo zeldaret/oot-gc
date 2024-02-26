@@ -1,0 +1,57 @@
+glabel InitAllMessageQueue
+/* 00A984 8000FF24 7C0802A6 */  mflr    r0
+/* 00A988 8000FF28 3C608010 */  lis     r3, WorkBuffer@ha
+/* 00A98C 8000FF2C 90010004 */  stw     r0, 4(r1)
+/* 00A990 8000FF30 9421FFE8 */  stwu    r1, -0x18(r1)
+/* 00A994 8000FF34 93E10014 */  stw     r31, 0x14(r1)
+/* 00A998 8000FF38 3BE396E0 */  addi    r31, r3, WorkBuffer@l
+/* 00A99C 8000FF3C 93C10010 */  stw     r30, 0x10(r1)
+/* 00A9A0 8000FF40 93A1000C */  stw     r29, 0xc(r1)
+/* 00A9A4 8000FF44 93810008 */  stw     r28, 8(r1)
+/* 00A9A8 8000FF48 801F0650 */  lwz     r0, 0x650(r31)
+/* 00A9AC 8000FF4C 2C000000 */  cmpwi   r0, 0
+/* 00A9B0 8000FF50 40820024 */  bne     lbl_8000FF74
+/* 00A9B4 8000FF54 3B800000 */  li      r28, 0
+/* 00A9B8 8000FF58 3BDF05A0 */  addi    r30, r31, 0x5a0
+lbl_8000FF5C:
+/* 00A9BC 8000FF5C 387E0100 */  addi    r3, r30, 0x100
+/* 00A9C0 8000FF60 48001A3D */  bl      PushFreeReadBuffer
+/* 00A9C4 8000FF64 3B9C0001 */  addi    r28, r28, 1
+/* 00A9C8 8000FF68 2C1C000A */  cmpwi   r28, 0xa
+/* 00A9CC 8000FF6C 3BDE000C */  addi    r30, r30, 0xc
+/* 00A9D0 8000FF70 4180FFEC */  blt     lbl_8000FF5C
+lbl_8000FF74:
+/* 00A9D4 8000FF74 3BBF05A0 */  addi    r29, r31, 0x5a0
+/* 00A9D8 8000FF78 3BDD0000 */  addi    r30, r29, 0
+/* 00A9DC 8000FF7C 3B800000 */  li      r28, 0
+lbl_8000FF80:
+/* 00A9E0 8000FF80 387E0178 */  addi    r3, r30, 0x178
+/* 00A9E4 8000FF84 48003419 */  bl      PushFreeTextureSet
+/* 00A9E8 8000FF88 3B9C0001 */  addi    r28, r28, 1
+/* 00A9EC 8000FF8C 2C1C0003 */  cmpwi   r28, 3
+/* 00A9F0 8000FF90 3BDE0010 */  addi    r30, r30, 0x10
+/* 00A9F4 8000FF94 4180FFEC */  blt     lbl_8000FF80
+/* 00A9F8 8000FF98 881F0647 */  lbz     r0, 0x647(r31)
+/* 00A9FC 8000FF9C 28000000 */  cmplwi  r0, 0
+/* 00AA00 8000FFA0 41820020 */  beq     lbl_8000FFC0
+/* 00AA04 8000FFA4 3BC00000 */  li      r30, 0
+lbl_8000FFA8:
+/* 00AA08 8000FFA8 387D01A8 */  addi    r3, r29, 0x1a8
+/* 00AA0C 8000FFAC 480010E9 */  bl      PushFreeAudioBuffer
+/* 00AA10 8000FFB0 3BDE0001 */  addi    r30, r30, 1
+/* 00AA14 8000FFB4 2C1E0003 */  cmpwi   r30, 3
+/* 00AA18 8000FFB8 3BBD000C */  addi    r29, r29, 0xc
+/* 00AA1C 8000FFBC 4180FFEC */  blt     lbl_8000FFA8
+lbl_8000FFC0:
+/* 00AA20 8000FFC0 387F0040 */  addi    r3, r31, 0x40
+/* 00AA24 8000FFC4 388D893C */  addi    r4, r13, PrepareReadyMessage@sda21
+/* 00AA28 8000FFC8 38A00001 */  li      r5, 1
+/* 00AA2C 8000FFCC 4808F5B5 */  bl      OSInitMessageQueue
+/* 00AA30 8000FFD0 8001001C */  lwz     r0, 0x1c(r1)
+/* 00AA34 8000FFD4 83E10014 */  lwz     r31, 0x14(r1)
+/* 00AA38 8000FFD8 83C10010 */  lwz     r30, 0x10(r1)
+/* 00AA3C 8000FFDC 7C0803A6 */  mtlr    r0
+/* 00AA40 8000FFE0 83A1000C */  lwz     r29, 0xc(r1)
+/* 00AA44 8000FFE4 83810008 */  lwz     r28, 8(r1)
+/* 00AA48 8000FFE8 38210018 */  addi    r1, r1, 0x18
+/* 00AA4C 8000FFEC 4E800020 */  blr     

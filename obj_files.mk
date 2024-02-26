@@ -1,7 +1,7 @@
 # Linker order for every file, passed to the Metrowerks linker.
 
 O_FILES :=                                  \
-    $(BUILD_DIR)/asm/xlCoreGCN.o            \
+    $(BUILD_DIR)/src/xlCoreGCN.o            \
     $(BUILD_DIR)/src/xlPostGCN.o            \
     $(BUILD_DIR)/asm/xlFileGCN.o            \
     $(BUILD_DIR)/src/xlList.o               \
@@ -9,34 +9,34 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/xlObject.o             \
     $(BUILD_DIR)/src/simGCN.o               \
     $(BUILD_DIR)/src/movie.o                \
-    $(BUILD_DIR)/asm/THPPlayer.o            \
-    $(BUILD_DIR)/asm/THPAudioDecode.o       \
-    $(BUILD_DIR)/asm/THPDraw.o              \
-    $(BUILD_DIR)/asm/THPRead.o              \
-    $(BUILD_DIR)/asm/THPVideoDecode.o       \
-    $(BUILD_DIR)/asm/mcardGCN.o             \
+    $(BUILD_DIR)/src/THPPlayer.o            \
+    $(BUILD_DIR)/src/THPAudioDecode.o       \
+    $(BUILD_DIR)/src/THPDraw.o              \
+    $(BUILD_DIR)/src/THPRead.o              \
+    $(BUILD_DIR)/src/THPVideoDecode.o       \
+    $(BUILD_DIR)/src/mcardGCN.o             \
     $(BUILD_DIR)/src/codeGCN.o              \
-    $(BUILD_DIR)/asm/soundGCN.o             \
+    $(BUILD_DIR)/src/soundGCN.o             \
     $(BUILD_DIR)/asm/frame.o                \
     $(BUILD_DIR)/src/system.o               \
     $(BUILD_DIR)/src/cpu.o                  \
-    $(BUILD_DIR)/asm/pif.o                  \
+    $(BUILD_DIR)/src/pif.o                  \
     $(BUILD_DIR)/src/ram.o                  \
     $(BUILD_DIR)/src/rom.o                  \
-    $(BUILD_DIR)/asm/rdp.o                  \
-    $(BUILD_DIR)/asm/rdb.o                  \
-    $(BUILD_DIR)/asm/rsp.o                  \
-    $(BUILD_DIR)/asm/mips.o                 \
+    $(BUILD_DIR)/src/rdp.o                  \
+    $(BUILD_DIR)/src/rdb.o                  \
+    $(BUILD_DIR)/src/rsp.o                  \
+    $(BUILD_DIR)/src/mips.o                 \
     $(BUILD_DIR)/src/disk.o                 \
-    $(BUILD_DIR)/asm/flash.o                \
+    $(BUILD_DIR)/src/flash.o                \
     $(BUILD_DIR)/src/sram.o                 \
     $(BUILD_DIR)/src/audio.o                \
-    $(BUILD_DIR)/asm/video.o                \
+    $(BUILD_DIR)/src/video.o                \
     $(BUILD_DIR)/src/serial.o               \
-    $(BUILD_DIR)/asm/library.o              \
+    $(BUILD_DIR)/src/library.o              \
     $(BUILD_DIR)/src/peripheral.o           \
-    $(BUILD_DIR)/asm/_frameGCNcc.o          \
-    $(BUILD_DIR)/asm/_buildtev.o            \
+    $(BUILD_DIR)/src/_frameGCNcc.o          \
+    $(BUILD_DIR)/src/_buildtev.o            \
     $(BUILD_DIR)/asm/PPCArch.o              \
     $(BUILD_DIR)/asm/OS.o                   \
     $(BUILD_DIR)/asm/OSAlarm.o              \

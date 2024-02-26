@@ -3,6 +3,7 @@
 
 #include "dolphin.h"
 #include "xlFileGCN.h"
+#include "xlObject.h"
 
 typedef s32 UnknownCallbackFunc(void);
 typedef s32 ProgressCallbackFunc(f32 progressPercent);
@@ -94,5 +95,7 @@ s32 romSetCacheSize(Rom* pROM, s32 nSize);
 s32 romSetImage(Rom* pROM, char* szNameFile);
 s32 romGetImage(Rom* pROM, char* acNameFile);
 s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassROM;
 
 #endif

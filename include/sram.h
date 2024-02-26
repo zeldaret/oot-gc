@@ -2,6 +2,7 @@
 #define _SRAM_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x74AB9
 typedef struct Sram {
@@ -9,5 +10,7 @@ typedef struct Sram {
 } Sram;
 
 s32 sramEvent(Sram* pSram, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassSram;
 
 #endif

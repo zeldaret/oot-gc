@@ -4,7 +4,6 @@
 #include "simGCN.h"
 #include "sram.h"
 #include "system.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassPeripheral = {
     "PERIPHERAL",

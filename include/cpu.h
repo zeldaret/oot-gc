@@ -2,6 +2,7 @@
 #define _CPU_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 typedef s32 (*Put8Func)(void* pObject, u32 nAddress, s8* pData);
 typedef s32 (*Put16Func)(void* pObject, u32 nAddress, s16* pData);
@@ -283,5 +284,7 @@ s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pf
 s32 cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
                     Get64Func pfGet64);
 s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassCPU;
 
 #endif

@@ -7,7 +7,6 @@
 #include "simGCN.h"
 #include "system.h"
 #include "xlCoreGCN.h"
-#include "xlObject.h"
 
 extern u32 gnFlagZelda;
 

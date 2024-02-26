@@ -3,6 +3,8 @@
 
 #include "dolphin/os/OSContext.h"
 
+#define OS_THREAD_SPECIFIC_MAX 2
+
 typedef s32 OSPriority;
 
 struct OSMutex;
@@ -54,6 +56,8 @@ struct OSThread {
     /* 0x2FC */ OSThreadLink linkActive;
     /* 0x304 */ u8* stackBase;
     /* 0x308 */ u32* stackEnd;
+    /* 0x30C */ s32 error;
+    /* 0x310 */ void* specific[OS_THREAD_SPECIFIC_MAX];
 };
 
 enum OS_THREAD_STATE {
