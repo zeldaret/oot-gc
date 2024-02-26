@@ -13,7 +13,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/THPAudioDecode.o       \
     $(BUILD_DIR)/src/THPDraw.o              \
     $(BUILD_DIR)/src/THPRead.o              \
-    $(BUILD_DIR)/asm/THPVideoDecode.o       \
+    $(BUILD_DIR)/src/THPVideoDecode.o       \
     $(BUILD_DIR)/src/mcardGCN.o             \
     $(BUILD_DIR)/src/codeGCN.o              \
     $(BUILD_DIR)/src/soundGCN.o             \
