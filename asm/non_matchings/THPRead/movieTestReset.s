@@ -1,0 +1,119 @@
+glabel movieTestReset
+/* 00C70C 80011CAC 7C0802A6 */  mflr    r0
+/* 00C710 80011CB0 90010004 */  stw     r0, 4(r1)
+/* 00C714 80011CB4 9421FFC8 */  stwu    r1, -0x38(r1)
+/* 00C718 80011CB8 93E10034 */  stw     r31, 0x34(r1)
+/* 00C71C 80011CBC 93C10030 */  stw     r30, 0x30(r1)
+/* 00C720 80011CC0 3BC40000 */  addi    r30, r4, 0
+/* 00C724 80011CC4 93A1002C */  stw     r29, 0x2c(r1)
+/* 00C728 80011CC8 3BA30000 */  addi    r29, r3, 0
+/* 00C72C 80011CCC 480905F5 */  bl      OSGetTick
+/* 00C730 80011CD0 7C7F1B78 */  mr      r31, r3
+/* 00C734 80011CD4 480A53B9 */  bl      DEMOPadRead
+/* 00C738 80011CD8 4808E669 */  bl      OSGetResetButtonState
+/* 00C73C 80011CDC 3C808013 */  lis     r4, DemoPad@ha
+/* 00C740 80011CE0 A0042758 */  lhz     r0, DemoPad@l(r4)
+/* 00C744 80011CE4 70001600 */  andi.   r0, r0, 0x1600
+/* 00C748 80011CE8 2C001600 */  cmpwi   r0, 0x1600
+/* 00C74C 80011CEC 41820098 */  beq     lbl_80011D84
+/* 00C750 80011CF0 800D896C */  lwz     r0, gbReset_thpread@sda21(r13)
+/* 00C754 80011CF4 93ED8970 */  stw     r31, gnTickReset_thpread@sda21(r13)
+/* 00C758 80011CF8 2C000000 */  cmpwi   r0, 0
+/* 00C75C 80011CFC 4182000C */  beq     lbl_80011D08
+/* 00C760 80011D00 28030000 */  cmplwi  r3, 0
+/* 00C764 80011D04 41820010 */  beq     lbl_80011D14
+lbl_80011D08:
+/* 00C768 80011D08 906D896C */  stw     r3, gbReset_thpread@sda21(r13)
+/* 00C76C 80011D0C 38600001 */  li      r3, 1
+/* 00C770 80011D10 48000134 */  b       lbl_80011E44
+lbl_80011D14:
+/* 00C774 80011D14 38600001 */  li      r3, 1
+/* 00C778 80011D18 48095A91 */  bl      VISetBlack
+/* 00C77C 80011D1C 480958F1 */  bl      VIFlush
+/* 00C780 80011D20 48094BFD */  bl      VIWaitForRetrace
+/* 00C784 80011D24 3C60F000 */  lis     r3, 0xf000
+/* 00C788 80011D28 4809EBA5 */  bl      PADRecalibrate
+/* 00C78C 80011D2C 48099021 */  bl      GXAbortFrame
+/* 00C790 80011D30 4808BC61 */  bl      LCDisable
+/* 00C794 80011D34 48094BE9 */  bl      VIWaitForRetrace
+/* 00C798 80011D38 2C1D0001 */  cmpwi   r29, 1
+/* 00C79C 80011D3C 40820034 */  bne     lbl_80011D70
+/* 00C7A0 80011D40 2C1E0001 */  cmpwi   r30, 1
+/* 00C7A4 80011D44 40820018 */  bne     lbl_80011D5C
+/* 00C7A8 80011D48 38600001 */  li      r3, 1
+/* 00C7AC 80011D4C 38800000 */  li      r4, 0
+/* 00C7B0 80011D50 38A00001 */  li      r5, 1
+/* 00C7B4 80011D54 4808E211 */  bl      OSResetSystem
+/* 00C7B8 80011D58 480000E8 */  b       lbl_80011E40
+lbl_80011D5C:
+/* 00C7BC 80011D5C 38600001 */  li      r3, 1
+/* 00C7C0 80011D60 38800000 */  li      r4, 0
+/* 00C7C4 80011D64 38A00000 */  li      r5, 0
+/* 00C7C8 80011D68 4808E1FD */  bl      OSResetSystem
+/* 00C7CC 80011D6C 480000D4 */  b       lbl_80011E40
+lbl_80011D70:
+/* 00C7D0 80011D70 38600000 */  li      r3, 0
+/* 00C7D4 80011D74 38800000 */  li      r4, 0
+/* 00C7D8 80011D78 38A00000 */  li      r5, 0
+/* 00C7DC 80011D7C 4808E1E9 */  bl      OSResetSystem
+/* 00C7E0 80011D80 480000C0 */  b       lbl_80011E40
+lbl_80011D84:
+/* 00C7E4 80011D84 3C608000 */  lis     r3, 0x8000
+/* 00C7E8 80011D88 808D8970 */  lwz     r4, gnTickReset_thpread@sda21(r13)
+/* 00C7EC 80011D8C 800300F8 */  lwz     r0, 0xf8(r3)
+/* 00C7F0 80011D90 3C604330 */  lis     r3, 0x4330
+/* 00C7F4 80011D94 7C84F850 */  subf    r4, r4, r31
+/* 00C7F8 80011D98 C86280B0 */  lfd     f3, D_80135DB0@sda21(r2)
+/* 00C7FC 80011D9C 5400F0BE */  srwi    r0, r0, 2
+/* 00C800 80011DA0 9001001C */  stw     r0, 0x1c(r1)
+/* 00C804 80011DA4 C02280AC */  lfs     f1, D_80135DAC@sda21(r2)
+/* 00C808 80011DA8 90610018 */  stw     r3, 0x18(r1)
+/* 00C80C 80011DAC 90810024 */  stw     r4, 0x24(r1)
+/* 00C810 80011DB0 C8010018 */  lfd     f0, 0x18(r1)
+/* 00C814 80011DB4 90610020 */  stw     r3, 0x20(r1)
+/* 00C818 80011DB8 EC001828 */  fsubs   f0, f0, f3
+/* 00C81C 80011DBC C8410020 */  lfd     f2, 0x20(r1)
+/* 00C820 80011DC0 EC421828 */  fsubs   f2, f2, f3
+/* 00C824 80011DC4 EC010032 */  fmuls   f0, f1, f0
+/* 00C828 80011DC8 FC020040 */  fcmpo   cr0, f2, f0
+/* 00C82C 80011DCC 4C411382 */  cror    2, 1, 2
+/* 00C830 80011DD0 40820070 */  bne     lbl_80011E40
+/* 00C834 80011DD4 38600001 */  li      r3, 1
+/* 00C838 80011DD8 480959D1 */  bl      VISetBlack
+/* 00C83C 80011DDC 48095831 */  bl      VIFlush
+/* 00C840 80011DE0 48094B3D */  bl      VIWaitForRetrace
+/* 00C844 80011DE4 3C60F000 */  lis     r3, 0xf000
+/* 00C848 80011DE8 4809EAE5 */  bl      PADRecalibrate
+/* 00C84C 80011DEC 48098F61 */  bl      GXAbortFrame
+/* 00C850 80011DF0 4808BBA1 */  bl      LCDisable
+/* 00C854 80011DF4 48094B29 */  bl      VIWaitForRetrace
+/* 00C858 80011DF8 2C1D0001 */  cmpwi   r29, 1
+/* 00C85C 80011DFC 40820034 */  bne     lbl_80011E30
+/* 00C860 80011E00 2C1E0001 */  cmpwi   r30, 1
+/* 00C864 80011E04 40820018 */  bne     lbl_80011E1C
+/* 00C868 80011E08 38600001 */  li      r3, 1
+/* 00C86C 80011E0C 38800000 */  li      r4, 0
+/* 00C870 80011E10 38A00001 */  li      r5, 1
+/* 00C874 80011E14 4808E151 */  bl      OSResetSystem
+/* 00C878 80011E18 48000028 */  b       lbl_80011E40
+lbl_80011E1C:
+/* 00C87C 80011E1C 38600001 */  li      r3, 1
+/* 00C880 80011E20 38800000 */  li      r4, 0
+/* 00C884 80011E24 38A00000 */  li      r5, 0
+/* 00C888 80011E28 4808E13D */  bl      OSResetSystem
+/* 00C88C 80011E2C 48000014 */  b       lbl_80011E40
+lbl_80011E30:
+/* 00C890 80011E30 38600000 */  li      r3, 0
+/* 00C894 80011E34 38800000 */  li      r4, 0
+/* 00C898 80011E38 38A00000 */  li      r5, 0
+/* 00C89C 80011E3C 4808E129 */  bl      OSResetSystem
+lbl_80011E40:
+/* 00C8A0 80011E40 38600001 */  li      r3, 1
+lbl_80011E44:
+/* 00C8A4 80011E44 8001003C */  lwz     r0, 0x3c(r1)
+/* 00C8A8 80011E48 83E10034 */  lwz     r31, 0x34(r1)
+/* 00C8AC 80011E4C 83C10030 */  lwz     r30, 0x30(r1)
+/* 00C8B0 80011E50 7C0803A6 */  mtlr    r0
+/* 00C8B4 80011E54 83A1002C */  lwz     r29, 0x2c(r1)
+/* 00C8B8 80011E58 38210038 */  addi    r1, r1, 0x38
+/* 00C8BC 80011E5C 4E800020 */  blr     
