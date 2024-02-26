@@ -900,7 +900,7 @@ def parse_source(f, opt, framepointer, input_enc, output_enc, print_source=None)
     return asm_functions
 
 def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
-    SECTIONS = ['.data', '.text', '.rodata', '.bss', '.sdata', '.sdata2', '.sbss']
+    SECTIONS = ['.data', '.text', '.rodata', '.bss', '.sdata', '.sdata2', '.sbss', '.debug']
 
     with open(objfile_name, 'rb') as f:
         objfile = ElfFile(f.read())
@@ -914,6 +914,7 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
         '.sdata2': 0,
         '.sbss': 0,
         #'.sbss2': 0,
+        '.debug': 0,
     }
     to_copy = {
         '.text': [],
@@ -924,6 +925,7 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
         '.sdata2': [],
         '.sbss': [],
         #'.sbss2': [],
+        '.debug': [],
     }
     asm = []
     all_late_rodata_dummy_bytes = []
@@ -1152,9 +1154,14 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
                             sectype == '.rodata' and rel.r_offset in jtbl_rodata_positions) or sectype == ".sbss2":
                             # don't include relocations for late_rodata dummy code
                             continue
-                        # hopefully we don't have relocations for local or
-                        # temporary symbols, so new_index exists
-                        rel.sym_index = objfile.symtab.symbol_entries[rel.sym_index].new_index
+                        rel_name = objfile.symtab.symbol_entries[rel.sym_index].name
+                        if is_temp_name(rel_name):
+                            # arbitrarily relocate temp names to symbol 0. This should only happen for .debug,
+                            # which we don't care about.
+                            rel.sym_index = 0
+                        else:
+                            # hopefully we don't have relocations for local symbols, so new_index exists
+                            rel.sym_index = objfile.symtab.symbol_entries[rel.sym_index].new_index
                         nrels.append(rel)
                     reltab.relocations = nrels
                     reltab.data = b''.join(rel.to_bin() for rel in nrels)
