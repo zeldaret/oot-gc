@@ -132,8 +132,8 @@ $(BUILD_DIR)/%.o: %.s
 $(BUILD_DIR)/%.o: %.c
 	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" $< > $(@:.o=.asm_processor.c)
 	$(CC) $(CFLAGS) -c $(@:.o=.asm_processor.c) -o $(@:.o=.asm_processor.o)
+	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" --asm-prelude include/macros.inc $< --post-process $(@:.o=.asm_processor.o)
 	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $(@:.o=.asm_processor.o) $@
-	$(ASM_PROCESSOR) --assembler "$(AS) $(ASFLAGS)" --asm-prelude include/macros.inc $< --post-process $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
