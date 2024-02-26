@@ -2,6 +2,7 @@
 #define _THPPLAYER_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 typedef struct __anon_0x10576 {
     /* 0x00 */ char magic[4];
@@ -91,5 +92,7 @@ typedef struct __anon_0x10B6F {
     /* 0x178 */ __anon_0x10944 textureSet[3];
     /* 0x1A8 */ __anon_0x109FA audioBuffer[3];
 } __anon_0x10B6F; // size = 0x1D0
+
+extern char gpErrorMessageBuffer[20480];
 
 #endif

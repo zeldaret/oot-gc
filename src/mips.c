@@ -1,6 +1,5 @@
 #include "mips.h"
 #include "mips_jumptables.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassMips = {
     "MIPS",

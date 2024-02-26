@@ -1,6 +1,5 @@
 #include "rdp.h"
 #include "rdp_jumptables.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassRDP = {
     "RDP",

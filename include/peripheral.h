@@ -2,6 +2,7 @@
 #define _PERIPHERAL_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x83D15
 typedef struct Peripheral {
@@ -22,5 +23,7 @@ typedef struct Peripheral {
 } Peripheral; // size = 0x38
 
 s32 peripheralEvent(Peripheral* pPeripheral, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassPeripheral;
 
 #endif

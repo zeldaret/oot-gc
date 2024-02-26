@@ -1,6 +1,5 @@
 #include "rsp.h"
 #include "rsp_jumptables.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassRSP = {
     "RSP",

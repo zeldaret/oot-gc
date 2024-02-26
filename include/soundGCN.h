@@ -2,6 +2,7 @@
 #define _SOUNDGCN_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x20C8D
 typedef enum SoundBeep {
@@ -18,6 +19,7 @@ typedef enum SoundPlayMode {
     SPM_RAMPPLAYED = 2,
 } SoundPlayMode;
 
+// __anon_0x208BA
 typedef struct Sound {
     /* 0x00 */ void* pSrcData;
     /* 0x04 */ s32 nFrequency;
@@ -41,11 +43,9 @@ typedef struct Sound {
     /* 0xD4 */ s32 nSizeRamp;
 } Sound; // size = 0xD8
 
-//! TODO: Define this struct
-// __anon_0x208BA
-typedef struct Sound Sound;
-
 s32 soundLoadBeep(Sound* pSound, SoundBeep iBeep, char* szNameFile);
-s32 soundEvent(Sound* pSound, s32 nEvent);
+s32 soundEvent(Sound* pSound, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassSound;
 
 #endif

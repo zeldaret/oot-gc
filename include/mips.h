@@ -2,6 +2,7 @@
 #define _MIPS_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x39384
 typedef enum MipsInterruptType {
@@ -24,5 +25,7 @@ typedef struct Mips {
 
 s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
 s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassMips;
 
 #endif

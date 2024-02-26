@@ -1,6 +1,5 @@
 #include "soundGCN.h"
 #include "macros.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassSound = {
     "SOUND",

@@ -3,7 +3,6 @@
 #include "ram.h"
 #include "simGCN.h"
 #include "system.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassSram = {
     "SRAM",

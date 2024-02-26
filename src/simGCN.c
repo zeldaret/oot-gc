@@ -1,6 +1,9 @@
 #include "simGCN.h"
+#include "THPPlayer.h"
+#include "THPRead.h"
 #include "codeGCN.h"
 #include "dolphin.h"
+#include "frame.h"
 #include "macros.h"
 #include "mcardGCN.h"
 #include "movie.h"
@@ -8,18 +11,8 @@
 #include "rom.h"
 #include "soundGCN.h"
 #include "system.h"
-#include "xlObject.h"
+#include "xlCoreGCN.h"
 #include "xlPostGCN.h"
-
-//! TODO: Move these to proper headers
-extern _XL_OBJECTTYPE gClassCode;
-extern _XL_OBJECTTYPE gClassFrame;
-extern _XL_OBJECTTYPE gClassSound;
-extern _XL_OBJECTTYPE gClassSystem;
-
-extern GXRenderModeObj* rmode;
-extern s32 gMovieErrorToggle;
-extern char gpErrorMessageBuffer[20480];
 
 const f32 D_800D2FE0[3][4] = {
     {1.0, 0.0, 0.0, 0.0},

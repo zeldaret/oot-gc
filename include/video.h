@@ -2,6 +2,7 @@
 #define _VIDEO_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x75B37
 typedef struct Video {
@@ -24,5 +25,7 @@ typedef struct Video {
 } Video; // size = 0x40
 
 s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassVideo;
 
 #endif

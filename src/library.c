@@ -1,6 +1,5 @@
 #include "library.h"
 #include "library_jumptables.h"
-#include "xlObject.h"
 
 char D_800EEB00[] = "OS-LIBRARY";
 

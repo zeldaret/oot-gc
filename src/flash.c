@@ -1,5 +1,4 @@
 #include "flash.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassFlash = {
     "FLASH",

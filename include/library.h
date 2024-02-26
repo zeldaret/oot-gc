@@ -3,6 +3,7 @@
 
 #include "cpu.h"
 #include "dolphin.h"
+#include "xlObject.h"
 
 typedef void (*LibraryFuncImpl)(Cpu*);
 
@@ -81,5 +82,7 @@ void zeldaLoadSZS_Entry(Cpu* pCPU);
 void zeldaLoadSZS_Exit(Cpu* pCPU);
 
 s32 libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassLibrary;
 
 #endif

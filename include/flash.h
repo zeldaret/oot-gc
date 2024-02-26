@@ -2,6 +2,7 @@
 #define _FLASH_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x7428F
 typedef struct Flash {
@@ -12,5 +13,7 @@ typedef struct Flash {
 } Flash; // size = 0x10
 
 s32 flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassFlash;
 
 #endif

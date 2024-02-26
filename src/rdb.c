@@ -1,6 +1,5 @@
 #include "rdb.h"
 #include "rdb_jumptables.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassRdb = {
     "RDB",

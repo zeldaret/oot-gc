@@ -2,6 +2,7 @@
 #define _RDB_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x56A0F
 typedef struct Rdb {
@@ -13,5 +14,7 @@ typedef struct Rdb {
 } Rdb; // size = 0x110
 
 s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassRdb;
 
 #endif

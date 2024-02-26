@@ -4,6 +4,7 @@
 #include "cpu.h"
 #include "dolphin.h"
 #include "mips.h"
+#include "xlObject.h"
 
 #define N64_BTN_A (1 << 31)
 #define N64_BTN_B (1 << 30)
@@ -188,5 +189,7 @@ s32 systemExecute(System* pSystem, s32 nCount);
 s32 systemCheckInterrupts(System* pSystem);
 s32 systemExceptionPending(System* pSystem, SystemInterruptType nException);
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassSystem;
 
 #endif

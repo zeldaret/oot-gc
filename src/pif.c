@@ -1,5 +1,4 @@
 #include "pif.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassPIF = {
     "PIF",

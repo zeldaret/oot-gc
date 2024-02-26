@@ -3,4 +3,6 @@
 
 #include "dolphin.h"
 
+extern s32 gMovieErrorToggle;
+
 #endif

@@ -2,6 +2,7 @@
 #define _RDP_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x52CD0
 typedef struct Rdp {
@@ -20,5 +21,7 @@ typedef struct Rdp {
 } Rdp; // size = 0x30
 
 s32 rdpEvent(Rdp* pRDP, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassRDP;
 
 #endif

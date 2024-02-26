@@ -13,4 +13,6 @@ s32 xlCoreGetArgument(s32 iArgument, char** pszArgument);
 s32 xlCoreGetArgumentCount(void);
 s32 xlCoreReset(void);
 
+extern GXRenderModeObj* rmode;
+
 #endif
