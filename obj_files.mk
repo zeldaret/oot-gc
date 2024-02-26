@@ -14,7 +14,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/asm/THPDraw.o              \
     $(BUILD_DIR)/asm/THPRead.o              \
     $(BUILD_DIR)/asm/THPVideoDecode.o       \
-    $(BUILD_DIR)/asm/mcardGCN.o             \
+    $(BUILD_DIR)/src/mcardGCN.o             \
     $(BUILD_DIR)/src/codeGCN.o              \
     $(BUILD_DIR)/src/soundGCN.o             \
     $(BUILD_DIR)/asm/frame.o                \
