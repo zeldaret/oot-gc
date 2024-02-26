@@ -35,7 +35,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/serial.o               \
     $(BUILD_DIR)/src/library.o              \
     $(BUILD_DIR)/src/peripheral.o           \
-    $(BUILD_DIR)/asm/_frameGCNcc.o          \
+    $(BUILD_DIR)/src/_frameGCNcc.o          \
     $(BUILD_DIR)/src/_buildtev.o            \
     $(BUILD_DIR)/asm/PPCArch.o              \
     $(BUILD_DIR)/asm/OS.o                   \
