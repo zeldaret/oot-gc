@@ -11,7 +11,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/movie.o                \
     $(BUILD_DIR)/src/THPPlayer.o            \
     $(BUILD_DIR)/src/THPAudioDecode.o       \
-    $(BUILD_DIR)/asm/THPDraw.o              \
+    $(BUILD_DIR)/src/THPDraw.o              \
     $(BUILD_DIR)/asm/THPRead.o              \
     $(BUILD_DIR)/asm/THPVideoDecode.o       \
     $(BUILD_DIR)/src/mcardGCN.o             \
