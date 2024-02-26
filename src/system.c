@@ -364,7 +364,7 @@ s32 systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
 
     } else if (romTestCode(pROM, "NPOE")) {
-        // Pokémon Stadium
+        // Pokemon Stadium
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
 
     } else if (romTestCode(pROM, "NYLJ")) {
@@ -551,9 +551,7 @@ static s32 systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
-                // "ゼルダコレクション"
-                mcardOpen(&mCard, "ZELDA1", "\x83\x5b\x83\x8b\x83\x5f\x83\x52\x83\x8c\x83\x4e\x83\x56\x83\x87\x83\x93",
-                          mCard.saveIcon, mCard.saveBanner, "ZELDAX",
+                mcardOpen(&mCard, "ZELDA1", "ゼルダコレクション", mCard.saveIcon, mCard.saveBanner, "ZELDAX",
                           &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
             } else {
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
@@ -571,9 +569,7 @@ static s32 systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((__anon_0xDB69*)mCard.saveBanner);
-                // "ゼルダコレクション"
-                mcardOpen(&mCard, "ZELDA1", "\x83\x5b\x83\x8b\x83\x5f\x83\x52\x83\x8c\x83\x4e\x83\x56\x83\x87\x83\x93",
-                          mCard.saveIcon, mCard.saveBanner, "ZELDA",
+                mcardOpen(&mCard, "ZELDA1", "ゼルダコレクション", mCard.saveIcon, mCard.saveBanner, "ZELDA",
                           &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
             }
         } else {
