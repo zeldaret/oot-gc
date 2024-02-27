@@ -1,5 +1,5 @@
 #include "mips.h"
-#include "mips_jumptables.h"
+#include "system.h"
 
 _XL_OBJECTTYPE gClassMips = {
     "MIPS",
@@ -8,34 +8,220 @@ _XL_OBJECTTYPE gClassMips = {
     (EventFunc)mipsEvent,
 };
 
-void* jtbl_800EE6E0[] = {
-    &lbl_8008D384, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D390, &lbl_8008D3B8, &lbl_8008D3B8,
-    &lbl_8008D3B8, &lbl_8008D3A0, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D3B8, &lbl_8008D3AC,
-};
+s32 mipsSetInterrupt(Mips* pMips, MipsInterruptType eType) {
+    s32 nInterrupt = pMips->nInterrupt;
 
-void* jtbl_800EE714[] = {
-    &lbl_8008D41C, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D5CC, &lbl_8008D5C4, &lbl_8008D5C4,
-    &lbl_8008D5C4, &lbl_8008D5CC, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D5C4, &lbl_8008D4C8,
-};
+    switch (eType) {
+        case MIT_SP:
+            if (pMips->nMask & 0x01) {
+                pMips->nInterrupt = nInterrupt | 0x01;
+            }
+            break;
+        case MIT_SI:
+            if (pMips->nMask & 0x02) {
+                pMips->nInterrupt = nInterrupt | 0x02;
+            }
+            break;
+        case MIT_AI:
+            if (pMips->nMask & 0x04) {
+                pMips->nInterrupt = nInterrupt | 0x04;
+            }
+            break;
+        case MIT_VI:
+            if (pMips->nMask & 0x08) {
+                pMips->nInterrupt = nInterrupt | 0x08;
+            }
+            break;
+        case MIT_PI:
+            if (pMips->nMask & 0x10) {
+                pMips->nInterrupt = nInterrupt | 0x10;
+            }
+            break;
+        case MIT_DP:
+            if (pMips->nMask & 0x20) {
+                pMips->nInterrupt = nInterrupt | 0x20;
+            }
+            break;
+        default:
+            return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsSetInterrupt.s")
+    if (nInterrupt != pMips->nInterrupt) {
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsResetInterrupt.s")
+    return 0;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsPut8.s")
+s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType) {
+    s32 nInterrupt = pMips->nInterrupt;
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsPut16.s")
+    switch (eType) {
+        case MIT_SP:
+            pMips->nInterrupt = nInterrupt & ~0x01;
+            break;
+        case MIT_SI:
+            pMips->nInterrupt = nInterrupt & ~0x02;
+            break;
+        case MIT_AI:
+            pMips->nInterrupt = nInterrupt & ~0x04;
+            break;
+        case MIT_VI:
+            pMips->nInterrupt = nInterrupt & ~0x08;
+            break;
+        case MIT_PI:
+            pMips->nInterrupt = nInterrupt & ~0x10;
+            break;
+        case MIT_DP:
+            pMips->nInterrupt = nInterrupt & ~0x20;
+            break;
+        default:
+            return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsPut32.s")
+    if (nInterrupt != pMips->nInterrupt) {
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsPut64.s")
+    return 0;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsGet8.s")
+s32 mipsPut8(Mips* pMips, u32 nAddress, s8* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsGet16.s")
+s32 mipsPut16(Mips* pMips, u32 nAddress, s16* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsGet32.s")
+s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
+    s32 nData;
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsGet64.s")
+    switch (nAddress & 0xF) {
+        case 0:
+            nData = *pData & 0xFFF;
+            pMips->nMode = (pMips->nMode & ~0x7F) | (*pData & 0x7F);
 
-#pragma GLOBAL_ASM("asm/non_matchings/mips/mipsEvent.s")
+            if (nData & 0x80) {
+                pMips->nMode &= ~0x80;
+            }
+            if (nData & 0x100) {
+                pMips->nMode |= 0x80;
+            }
+            if (nData & 0x200) {
+                pMips->nMode &= ~0x100;
+            }
+            if (nData & 0x400) {
+                pMips->nMode |= 0x100;
+            }
+            if (nData & 0x800) {
+                xlObjectEvent(pMips->pHost, 0x1001, (void*)0xA);
+            }
+            if (nData & 0x1000) {
+                pMips->nMode &= ~0x200;
+            }
+            if (nData & 0x2000) {
+                pMips->nMode |= 0x200;
+            }
+            break;
+        case 12:
+            nData = *pData & 0xFFF;
+
+            if (*pData & 1) {
+                pMips->nMask &= ~1;
+            }
+            if (nData & 2) {
+                pMips->nMask |= 1;
+            }
+            if (nData & 4) {
+                pMips->nMask &= ~2;
+            }
+            if (nData & 8) {
+                pMips->nMask |= 2;
+            }
+            if (nData & 0x10) {
+                pMips->nMask &= ~4;
+            }
+            if (nData & 0x20) {
+                pMips->nMask |= 4;
+            }
+            if (nData & 0x40) {
+                pMips->nMask &= ~8;
+            }
+            if (nData & 0x80) {
+                pMips->nMask |= 8;
+            }
+            if (nData & 0x100) {
+                pMips->nMask &= ~0x10;
+            }
+            if (nData & 0x200) {
+                pMips->nMask |= 0x10;
+            }
+            if (nData & 0x400) {
+                pMips->nMask &= ~0x20;
+            }
+            if (nData & 0x800) {
+                pMips->nMask |= 0x20;
+            }
+            break;
+        case 4:
+        case 8:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+
+s32 mipsPut64(Mips* pMips, u32 nAddress, s64* pData) { return 0; }
+
+s32 mipsGet8(Mips* pMips, u32 nAddress, s8* pData) { return 0; }
+
+s32 mipsGet16(Mips* pMips, u32 nAddress, s16* pData) { return 0; }
+
+s32 mipsGet32(Mips* pMips, u32 nAddress, s32* pData) {
+    switch (nAddress & 0xF) {
+        case 0:
+            *pData = pMips->nMode;
+            break;
+        case 4:
+            *pData = 0x02020102;
+            break;
+        case 8:
+            *pData = pMips->nInterrupt;
+            break;
+        case 12:
+            *pData = pMips->nMask;
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+
+s32 mipsGet64(Mips* pMips, u32 nAddress, s64* pData) { return 0; }
+
+s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pMips->nMode = 0;
+            pMips->nMask = 0;
+            pMips->nInterrupt = 0;
+            pMips->pHost = pArgument;
+            break;
+        case 0x1002:
+            if (!cpuSetDevicePut(SYSTEM_CPU(pMips->pHost), pArgument, (Put8Func)mipsPut8, (Put16Func)mipsPut16, (Put32Func)mipsPut32, (Put64Func)mipsPut64)) {
+                return 0;
+            }
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pMips->pHost), pArgument, (Get8Func)mipsGet8, (Get16Func)mipsGet16, (Get32Func)mipsGet32, (Get64Func)mipsGet64)) {
+                return 0;
+            }
+        case 0:
+        case 1:
+        case 3:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
