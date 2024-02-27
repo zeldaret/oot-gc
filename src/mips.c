@@ -208,10 +208,12 @@ s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument) {
             pMips->pHost = pArgument;
             break;
         case 0x1002:
-            if (!cpuSetDevicePut(SYSTEM_CPU(pMips->pHost), pArgument, (Put8Func)mipsPut8, (Put16Func)mipsPut16, (Put32Func)mipsPut32, (Put64Func)mipsPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pMips->pHost), pArgument, (Put8Func)mipsPut8, (Put16Func)mipsPut16,
+                                 (Put32Func)mipsPut32, (Put64Func)mipsPut64)) {
                 return 0;
             }
-            if (!cpuSetDeviceGet(SYSTEM_CPU(pMips->pHost), pArgument, (Get8Func)mipsGet8, (Get16Func)mipsGet16, (Get32Func)mipsGet32, (Get64Func)mipsGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pMips->pHost), pArgument, (Get8Func)mipsGet8, (Get16Func)mipsGet16,
+                                 (Get32Func)mipsGet32, (Get64Func)mipsGet64)) {
                 return 0;
             }
         case 0:

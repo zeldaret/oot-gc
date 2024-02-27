@@ -53,10 +53,12 @@ s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
             pRDB->nIndexString = 0;
             break;
         case 0x1002:
-            if (!cpuSetDevicePut(SYSTEM_CPU(pRDB->pHost), pArgument, (Put8Func)rdbPut8, (Put16Func)rdbPut16, (Put32Func)rdbPut32, (Put64Func)rdbPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pRDB->pHost), pArgument, (Put8Func)rdbPut8, (Put16Func)rdbPut16,
+                                 (Put32Func)rdbPut32, (Put64Func)rdbPut64)) {
                 return 0;
             }
-            if (!cpuSetDeviceGet(SYSTEM_CPU(pRDB->pHost), pArgument, (Get8Func)rdbGet8, (Get16Func)rdbGet16, (Get32Func)rdbGet32, (Get64Func)rdbGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pRDB->pHost), pArgument, (Get8Func)rdbGet8, (Get16Func)rdbGet16,
+                                 (Get32Func)rdbGet32, (Get64Func)rdbGet64)) {
                 return 0;
             }
         case 0:

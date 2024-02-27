@@ -1,8 +1,8 @@
 #include "flash.h"
-#include "simGCN.h"
-#include "ram.h"
-#include "system.h"
 #include "macros.h"
+#include "ram.h"
+#include "simGCN.h"
+#include "system.h"
 #include "xlHeap.h"
 
 _XL_OBJECTTYPE gClassFlash = {
@@ -106,8 +106,8 @@ static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
                     }
                 }
             } else {
-                if (((pFLASH->flashCommand & 0xFF000000) + 0xB5000000 == 0) 
-                        && !simulatorWriteFLASH((pFLASH->flashCommand << 7) & 0x7FFFFF80, (u8*)buffer, ARRAY_COUNT(buffer))) {
+                if (((pFLASH->flashCommand & 0xFF000000) + 0xB5000000 == 0) &&
+                    !simulatorWriteFLASH((pFLASH->flashCommand << 7) & 0x7FFFFF80, (u8*)buffer, ARRAY_COUNT(buffer))) {
                     return 0;
                 }
             }
@@ -166,10 +166,12 @@ s32 flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument) {
             xlHeapFree(&pFLASH->flashBuffer);
             break;
         case 0x1002:
-            if (!cpuSetDevicePut(SYSTEM_CPU(pFLASH->pHost), pArgument, (Put8Func)flashPut8, (Put16Func)flashPut16, (Put32Func)flashPut32, (Put64Func)flashPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pFLASH->pHost), pArgument, (Put8Func)flashPut8, (Put16Func)flashPut16,
+                                 (Put32Func)flashPut32, (Put64Func)flashPut64)) {
                 return 0;
             }
-            if (!cpuSetDeviceGet(SYSTEM_CPU(pFLASH->pHost), pArgument, (Get8Func)flashGet8, (Get16Func)flashGet16, (Get32Func)flashGet32, (Get64Func)flashGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pFLASH->pHost), pArgument, (Get8Func)flashGet8, (Get16Func)flashGet16,
+                                 (Get32Func)flashGet32, (Get64Func)flashGet64)) {
                 return 0;
             }
         case 0:
