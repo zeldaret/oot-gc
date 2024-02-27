@@ -1,7 +1,7 @@
 #include "video.h"
-#include "system.h"
 #include "frame.h"
 #include "ram.h"
+#include "system.h"
 
 _XL_OBJECTTYPE gClassVideo = {
     "VIDEO",
@@ -82,13 +82,13 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
             break;
         case 0x30:
             pVideo->nScaleX = *pData & 0xFFF;
-            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32) (pVideo->nScaleY * 0xF0) / 1024)) {
+            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 0xF0) / 1024)) {
                 return 0;
             }
             break;
         case 0x34:
             pVideo->nScaleY = *pData & 0xFFF;
-            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32) (pVideo->nScaleY * 0xF0) / 1024)) {
+            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 0xF0) / 1024)) {
                 return 0;
             }
             break;
@@ -197,10 +197,12 @@ s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
         case 0x1003:
             break;
         case 0x1002:
-            if (!cpuSetDevicePut(SYSTEM_CPU(pVideo->pHost), pArgument, (Put8Func)videoPut8, (Put16Func)videoPut16, (Put32Func)videoPut32, (Put64Func)videoPut64)) {
+            if (!cpuSetDevicePut(SYSTEM_CPU(pVideo->pHost), pArgument, (Put8Func)videoPut8, (Put16Func)videoPut16,
+                                 (Put32Func)videoPut32, (Put64Func)videoPut64)) {
                 return 0;
             }
-            if (!cpuSetDeviceGet(SYSTEM_CPU(pVideo->pHost), pArgument, (Get8Func)videoGet8, (Get16Func)videoGet16, (Get32Func)videoGet32, (Get64Func)videoGet64)) {
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pVideo->pHost), pArgument, (Get8Func)videoGet8, (Get16Func)videoGet16,
+                                 (Get32Func)videoGet32, (Get64Func)videoGet64)) {
                 return 0;
             }
             break;
