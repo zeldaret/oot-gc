@@ -118,6 +118,8 @@ s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nO
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
 s32 simulatorReadSRAM(u32 address, u8* data, s32 size);
 s32 simulatorWriteSRAM(u32 address, u8* data, s32 size);
+s32 simulatorReadFLASH(u32 address, u8* data, s32 size);
+s32 simulatorWriteFLASH(u32 address, u8* data, s32 size);
 s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
 s32 simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie();
