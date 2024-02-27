@@ -105,7 +105,7 @@ def main():
         ).encode("ascii")
         with urllib.request.urlopen("https://decomp.me/api/scratch", post_data) as f:
             resp = f.read()
-            json_data: Dict[str, str] = json.loads(resp)
+            json_data: dict[str, str] = json.loads(resp)
             if "slug" in json_data:
                 slug = json_data["slug"]
                 token = json_data.get("claim_token")
