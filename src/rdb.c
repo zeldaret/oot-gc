@@ -16,13 +16,12 @@ void* jtbl_800EE1C0[] = {
     &lbl_80071B50, &lbl_80071B58, &lbl_80071B60, &lbl_80071B68, &lbl_80071B20,
 };
 
-//! TODO: remove when the function is decompiled
-static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData);
-
 static s32 rdbPut8(Rdb* pRDB, u32 nAddress, s8* pData) { return 0; }
 
 static s32 rdbPut16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
 
+//! TODO: remove when the function is decompiled
+static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData);
 #pragma GLOBAL_ASM("asm/non_matchings/rdb/rdbPut32.s")
 
 static s32 rdbPut64(Rdb* pRDB, u32 nAddress, s64* pData) { return 0; }

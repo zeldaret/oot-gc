@@ -169,8 +169,6 @@ s32 videoForceRetrace(Video* pVideo) {
     return 0;
 }
 
-// #pragma GLOBAL_ASM("asm/non_matchings/video/videoEvent.s")
-
 s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
