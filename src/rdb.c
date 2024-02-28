@@ -32,9 +32,9 @@ static s32 rdbGet16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
 
 static s32 rdbGet32(Rdb* pRDB, u32 nAddress, s32* pData) {
     switch (nAddress & 0xF) {
-        case 0:
-        case 8:
-        case 12:
+        case 0x0:
+        case 0x8:
+        case 0xC:
             break;
         default:
             return 0;

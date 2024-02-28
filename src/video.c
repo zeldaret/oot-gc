@@ -70,8 +70,10 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
                 if (pVideo->bBlack != 1) {
                     pVideo->bBlack = 1;
                 }
-            } else if (pVideo->bBlack) {
-                pVideo->bBlack = 0;
+            } else {
+                if (pVideo->bBlack != 0) {
+                    pVideo->bBlack = 0;
+                }
             }
             break;
         case 0x28:
@@ -82,13 +84,13 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
             break;
         case 0x30:
             pVideo->nScaleX = *pData & 0xFFF;
-            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 0xF0) / 1024)) {
+            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 240) / 1024)) {
                 return 0;
             }
             break;
         case 0x34:
             pVideo->nScaleY = *pData & 0xFFF;
-            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 0xF0) / 1024)) {
+            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 240) / 1024)) {
                 return 0;
             }
             break;

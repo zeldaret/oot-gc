@@ -123,7 +123,7 @@ s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
         case 12:
             nData = *pData & 0xFFF;
 
-            if (*pData & 1) {
+            if (nData & 1) {
                 pMips->nMask &= ~1;
             }
             if (nData & 2) {

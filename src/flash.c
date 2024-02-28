@@ -57,7 +57,7 @@ s32 flashTransferFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSiz
     switch (pFLASH->flashCommand & 0xFF000000) {
         case 0xB4000000:
             for (i = 0; i < nSize; i++) {
-                pFLASH->flashBuffer[i] = ((char*)(pTarget))[i];
+                pFLASH->flashBuffer[i] = ((char*)pTarget)[i];
             }
             break;
         case 0x0:
@@ -106,9 +106,11 @@ static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
                     }
                 }
             } else {
-                if (((pFLASH->flashCommand & 0xFF000000) + 0xB5000000 == 0) &&
-                    !simulatorWriteFLASH((pFLASH->flashCommand << 7) & 0x7FFFFF80, (u8*)buffer, ARRAY_COUNT(buffer))) {
-                    return 0;
+                if ((pFLASH->flashCommand & 0xFF000000) + 0xB5000000 == 0) {
+                    if (!simulatorWriteFLASH((pFLASH->flashCommand << 7) & 0x7FFFFF80, (u8*)buffer,
+                                             ARRAY_COUNT(buffer))) {
+                        return 0;
+                    }
                 }
             }
             break;
