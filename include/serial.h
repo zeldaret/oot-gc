@@ -2,6 +2,7 @@
 #define _SERIAL_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x78791
 typedef struct Serial {
@@ -10,5 +11,7 @@ typedef struct Serial {
 } Serial; // size = 0x08
 
 s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassSerial;
 
 #endif

@@ -1,0 +1,35 @@
+glabel osEepromRead
+/* 08BA10 80090FB0 7C0802A6 */  mflr    r0
+/* 08BA14 80090FB4 90010004 */  stw     r0, 4(r1)
+/* 08BA18 80090FB8 9421FFE0 */  stwu    r1, -0x20(r1)
+/* 08BA1C 80090FBC 93E1001C */  stw     r31, 0x1c(r1)
+/* 08BA20 80090FC0 3881000C */  addi    r4, r1, 0xc
+/* 08BA24 80090FC4 93C10018 */  stw     r30, 0x18(r1)
+/* 08BA28 80090FC8 7C7E1B78 */  mr      r30, r3
+/* 08BA2C 80090FCC 8BE3006F */  lbz     r31, 0x6f(r3)
+/* 08BA30 80090FD0 80BE0074 */  lwz     r5, 0x74(r30)
+/* 08BA34 80090FD4 4BFA37AD */  bl      cpuGetAddressBuffer
+/* 08BA38 80090FD8 2C030000 */  cmpwi   r3, 0
+/* 08BA3C 80090FDC 4082000C */  bne     lbl_80090FE8
+/* 08BA40 80090FE0 38600000 */  li      r3, 0
+/* 08BA44 80090FE4 4800002C */  b       lbl_80091010
+lbl_80090FE8:
+/* 08BA48 80090FE8 7FE3FB78 */  mr      r3, r31
+/* 08BA4C 80090FEC 8081000C */  lwz     r4, 0xc(r1)
+/* 08BA50 80090FF0 4BF77F5D */  bl      simulatorReadEEPROM
+/* 08BA54 80090FF4 2C030000 */  cmpwi   r3, 0
+/* 08BA58 80090FF8 4182000C */  beq     lbl_80091004
+/* 08BA5C 80090FFC 38000000 */  li      r0, 0
+/* 08BA60 80091000 48000008 */  b       lbl_80091008
+lbl_80091004:
+/* 08BA64 80091004 3800FFFF */  li      r0, -1
+lbl_80091008:
+/* 08BA68 80091008 901E0054 */  stw     r0, 0x54(r30)
+/* 08BA6C 8009100C 38600001 */  li      r3, 1
+lbl_80091010:
+/* 08BA70 80091010 80010024 */  lwz     r0, 0x24(r1)
+/* 08BA74 80091014 83E1001C */  lwz     r31, 0x1c(r1)
+/* 08BA78 80091018 83C10018 */  lwz     r30, 0x18(r1)
+/* 08BA7C 8009101C 7C0803A6 */  mtlr    r0
+/* 08BA80 80091020 38210020 */  addi    r1, r1, 0x20
+/* 08BA84 80091024 4E800020 */  blr     

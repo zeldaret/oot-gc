@@ -3,7 +3,6 @@
 #include "pif.h"
 #include "ram.h"
 #include "system.h"
-#include "xlObject.h"
 
 _XL_OBJECTTYPE gClassSerial = {
     "SERIAL",

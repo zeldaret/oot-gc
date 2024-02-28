@@ -1,7 +1,6 @@
 #include "ram.h"
 #include "cpu.h"
 #include "system.h"
-#include "xlObject.h"
 
 s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument);
 

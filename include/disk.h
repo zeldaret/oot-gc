@@ -2,6 +2,7 @@
 #define _DISK_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x73B29
 typedef struct Disk {
@@ -9,5 +10,7 @@ typedef struct Disk {
 } Disk; // size = 0x04
 
 s32 diskEvent(Disk* pDisk, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassDisk;
 
 #endif

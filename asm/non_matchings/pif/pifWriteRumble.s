@@ -1,0 +1,26 @@
+glabel pifWriteRumble
+/* 06767C 8006CC1C 7C0802A6 */  mflr    r0
+/* 067680 8006CC20 90010004 */  stw     r0, 4(r1)
+/* 067684 8006CC24 54A0043E */  clrlwi  r0, r5, 0x10
+/* 067688 8006CC28 2C000600 */  cmpwi   r0, 0x600
+/* 06768C 8006CC2C 9421FFF8 */  stwu    r1, -8(r1)
+/* 067690 8006CC30 41820008 */  beq     lbl_8006CC38
+/* 067694 8006CC34 4800002C */  b       lbl_8006CC60
+lbl_8006CC38:
+/* 067698 8006CC38 88060000 */  lbz     r0, 0(r6)
+/* 06769C 8006CC3C 28000001 */  cmplwi  r0, 1
+/* 0676A0 8006CC40 40820010 */  bne     lbl_8006CC50
+/* 0676A4 8006CC44 7C832378 */  mr      r3, r4
+/* 0676A8 8006CC48 4BF9C19D */  bl      simulatorRumbleStart
+/* 0676AC 8006CC4C 48000014 */  b       lbl_8006CC60
+lbl_8006CC50:
+/* 0676B0 8006CC50 28000000 */  cmplwi  r0, 0
+/* 0676B4 8006CC54 4082000C */  bne     lbl_8006CC60
+/* 0676B8 8006CC58 7C832378 */  mr      r3, r4
+/* 0676BC 8006CC5C 4BF9C161 */  bl      simulatorRumbleStop
+lbl_8006CC60:
+/* 0676C0 8006CC60 8001000C */  lwz     r0, 0xc(r1)
+/* 0676C4 8006CC64 38600001 */  li      r3, 1
+/* 0676C8 8006CC68 38210008 */  addi    r1, r1, 8
+/* 0676CC 8006CC6C 7C0803A6 */  mtlr    r0
+/* 0676D0 8006CC70 4E800020 */  blr     

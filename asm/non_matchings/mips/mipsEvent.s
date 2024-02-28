@@ -1,0 +1,76 @@
+glabel mipsEvent
+/* 087CA8 8008D248 7C0802A6 */  mflr    r0
+/* 087CAC 8008D24C 2C040003 */  cmpwi   r4, 3
+/* 087CB0 8008D250 90010004 */  stw     r0, 4(r1)
+/* 087CB4 8008D254 9421FFE0 */  stwu    r1, -0x20(r1)
+/* 087CB8 8008D258 93E1001C */  stw     r31, 0x1c(r1)
+/* 087CBC 8008D25C 3BE50000 */  addi    r31, r5, 0
+/* 087CC0 8008D260 93C10018 */  stw     r30, 0x18(r1)
+/* 087CC4 8008D264 3BC30000 */  addi    r30, r3, 0
+/* 087CC8 8008D268 418200D4 */  beq     lbl_8008D33C
+/* 087CCC 8008D26C 40800018 */  bge     lbl_8008D284
+/* 087CD0 8008D270 2C040002 */  cmpwi   r4, 2
+/* 087CD4 8008D274 40800028 */  bge     lbl_8008D29C
+/* 087CD8 8008D278 2C040000 */  cmpwi   r4, 0
+/* 087CDC 8008D27C 408000C0 */  bge     lbl_8008D33C
+/* 087CE0 8008D280 480000B4 */  b       lbl_8008D334
+lbl_8008D284:
+/* 087CE4 8008D284 2C041003 */  cmpwi   r4, 0x1003
+/* 087CE8 8008D288 418200B4 */  beq     lbl_8008D33C
+/* 087CEC 8008D28C 408000A8 */  bge     lbl_8008D334
+/* 087CF0 8008D290 2C041002 */  cmpwi   r4, 0x1002
+/* 087CF4 8008D294 40800020 */  bge     lbl_8008D2B4
+/* 087CF8 8008D298 4800009C */  b       lbl_8008D334
+lbl_8008D29C:
+/* 087CFC 8008D29C 38000000 */  li      r0, 0
+/* 087D00 8008D2A0 901E0004 */  stw     r0, 4(r30)
+/* 087D04 8008D2A4 901E0000 */  stw     r0, 0(r30)
+/* 087D08 8008D2A8 901E000C */  stw     r0, 0xc(r30)
+/* 087D0C 8008D2AC 93FE0008 */  stw     r31, 8(r30)
+/* 087D10 8008D2B0 4800008C */  b       lbl_8008D33C
+lbl_8008D2B4:
+/* 087D14 8008D2B4 807E0008 */  lwz     r3, 8(r30)
+/* 087D18 8008D2B8 3CA08009 */  lis     r5, mipsPut8@ha
+/* 087D1C 8008D2BC 3CC08009 */  lis     r6, mipsPut16@ha
+/* 087D20 8008D2C0 3CE08009 */  lis     r7, mipsPut32@ha
+/* 087D24 8008D2C4 80630024 */  lwz     r3, 0x24(r3)
+/* 087D28 8008D2C8 3C808009 */  lis     r4, mipsPut64@ha
+/* 087D2C 8008D2CC 3904D3D8 */  addi    r8, r4, mipsPut64@l
+/* 087D30 8008D2D0 38A5D5F0 */  addi    r5, r5, mipsPut8@l
+/* 087D34 8008D2D4 38C6D5E8 */  addi    r6, r6, mipsPut16@l
+/* 087D38 8008D2D8 38E7D3E0 */  addi    r7, r7, mipsPut32@l
+/* 087D3C 8008D2DC 389F0000 */  addi    r4, r31, 0
+/* 087D40 8008D2E0 4BFA7D59 */  bl      cpuSetDevicePut
+/* 087D44 8008D2E4 2C030000 */  cmpwi   r3, 0
+/* 087D48 8008D2E8 4082000C */  bne     lbl_8008D2F4
+/* 087D4C 8008D2EC 38600000 */  li      r3, 0
+/* 087D50 8008D2F0 48000050 */  b       lbl_8008D340
+lbl_8008D2F4:
+/* 087D54 8008D2F4 807E0008 */  lwz     r3, 8(r30)
+/* 087D58 8008D2F8 3CA08009 */  lis     r5, mipsGet8@ha
+/* 087D5C 8008D2FC 3CC08009 */  lis     r6, mipsGet16@ha
+/* 087D60 8008D300 3CE08009 */  lis     r7, mipsGet32@ha
+/* 087D64 8008D304 80630024 */  lwz     r3, 0x24(r3)
+/* 087D68 8008D308 3C808009 */  lis     r4, mipsGet64@ha
+/* 087D6C 8008D30C 3904D358 */  addi    r8, r4, mipsGet64@l
+/* 087D70 8008D310 38A5D3D0 */  addi    r5, r5, mipsGet8@l
+/* 087D74 8008D314 38C6D3C8 */  addi    r6, r6, mipsGet16@l
+/* 087D78 8008D318 38E7D360 */  addi    r7, r7, mipsGet32@l
+/* 087D7C 8008D31C 389F0000 */  addi    r4, r31, 0
+/* 087D80 8008D320 4BFA7D31 */  bl      cpuSetDeviceGet
+/* 087D84 8008D324 2C030000 */  cmpwi   r3, 0
+/* 087D88 8008D328 40820014 */  bne     lbl_8008D33C
+/* 087D8C 8008D32C 38600000 */  li      r3, 0
+/* 087D90 8008D330 48000010 */  b       lbl_8008D340
+lbl_8008D334:
+/* 087D94 8008D334 38600000 */  li      r3, 0
+/* 087D98 8008D338 48000008 */  b       lbl_8008D340
+lbl_8008D33C:
+/* 087D9C 8008D33C 38600001 */  li      r3, 1
+lbl_8008D340:
+/* 087DA0 8008D340 80010024 */  lwz     r0, 0x24(r1)
+/* 087DA4 8008D344 83E1001C */  lwz     r31, 0x1c(r1)
+/* 087DA8 8008D348 83C10018 */  lwz     r30, 0x18(r1)
+/* 087DAC 8008D34C 7C0803A6 */  mtlr    r0
+/* 087DB0 8008D350 38210020 */  addi    r1, r1, 0x20
+/* 087DB4 8008D354 4E800020 */  blr     

@@ -4,8 +4,50 @@
 #include "cpu.h"
 #include "dolphin.h"
 #include "mips.h"
+#include "xlObject.h"
+
+#define N64_BTN_A (1 << 31)
+#define N64_BTN_B (1 << 30)
+#define N64_BTN_Z (1 << 29)
+#define N64_BTN_START (1 << 28)
+#define N64_BTN_DUP (1 << 27)
+#define N64_BTN_DDOWN (1 << 26)
+#define N64_BTN_DLEFT (1 << 25)
+#define N64_BTN_DRIGHT (1 << 24)
+#define N64_BTN_L (1 << 21)
+#define N64_BTN_R (1 << 20)
+#define N64_BTN_CUP (1 << 19)
+#define N64_BTN_CDOWN (1 << 18)
+#define N64_BTN_CLEFT (1 << 17)
+#define N64_BTN_CRIGHT (1 << 16)
+#define N64_BTN_UNSET 0
 
 typedef s32 (*SystemCopyCallbackFunc)(void);
+
+// note: each stick direction count as an input
+typedef enum GcnButton {
+    GCN_BTN_A = 0,
+    GCN_BTN_B = 1,
+    GCN_BTN_X = 2,
+    GCN_BTN_Y = 3,
+    GCN_BTN_L = 4,
+    GCN_BTN_R = 5,
+    GCN_BTN_Z = 6,
+    GCN_BTN_START = 7,
+    GCN_BTN_UNK8 = 8,
+    GCN_BTN_UNK9 = 9,
+    GCN_BTN_UNK10 = 10,
+    GCN_BTN_UNK11 = 11,
+    GCN_BTN_DPAD_UP = 12,
+    GCN_BTN_DPAD_DOWN = 13,
+    GCN_BTN_DPAD_LEFT = 14,
+    GCN_BTN_DPAD_RIGHT = 15,
+    GCN_BTN_CSTICK_UP = 16,
+    GCN_BTN_CSTICK_DOWN = 17,
+    GCN_BTN_CSTICK_LEFT = 18,
+    GCN_BTN_CSTICK_RIGHT = 19,
+    GCN_BTN_COUNT = 20,
+} GcnButton;
 
 // __anon_0x394CD
 typedef enum SystemMode {
@@ -111,7 +153,7 @@ typedef struct System {
 // __anon_0x3459E
 typedef struct SystemRomConfig {
     /* 0x0000 */ char rom[36];
-    /* 0x0024 */ s32 controllerConfiguration[4][20];
+    /* 0x0024 */ s32 controllerConfiguration[4][GCN_BTN_COUNT];
     /* 0x0164 */ s32 rumbleConfiguration;
     /* 0x0168 */ SystemObjectType storageDevice;
     /* 0x016C */ s32 normalControllerConfig;
@@ -147,5 +189,7 @@ s32 systemExecute(System* pSystem, s32 nCount);
 s32 systemCheckInterrupts(System* pSystem);
 s32 systemExceptionPending(System* pSystem, SystemInterruptType nException);
 s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassSystem;
 
 #endif

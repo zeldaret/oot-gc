@@ -1,7 +1,8 @@
 #ifndef _AUDIO_H
 #define _AUDIO_H
 
-#include "dolphin/types.h"
+#include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x753E7
 typedef struct Audio {
@@ -27,5 +28,7 @@ s32 audioGet64(Audio* pAudio, u32 nAddress, s64* pData);
 
 s32 audioEnable(Audio* pAudio, s32 bEnable);
 s32 audioEvent(Audio* pAudio, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassAudio;
 
 #endif
