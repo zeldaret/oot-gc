@@ -2,6 +2,7 @@
 #define _FRAME_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x27B8C
 typedef enum ViewType {
@@ -314,5 +315,7 @@ s32 frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
 s32 frameSetBuffer(Frame* pFrame, FBTType eType);
 s32 frameSetSize(Frame* pFrame, ESize eSize, s32 nSizeX, s32 nSizeY);
+
+extern _XL_OBJECTTYPE gClassFrame;
 
 #endif
