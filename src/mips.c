@@ -94,7 +94,7 @@ s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
     s32 nData;
 
     switch (nAddress & 0xF) {
-        case 0:
+        case 0x0:
             nData = *pData & 0xFFF;
             pMips->nMode = (pMips->nMode & ~0x7F) | (*pData & 0x7F);
 
@@ -120,7 +120,7 @@ s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
                 pMips->nMode |= 0x200;
             }
             break;
-        case 12:
+        case 0xC:
             nData = *pData & 0xFFF;
 
             if (nData & 1) {
@@ -160,8 +160,8 @@ s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
                 pMips->nMask |= 0x20;
             }
             break;
-        case 4:
-        case 8:
+        case 0x4:
+        case 0x8:
             break;
         default:
             return 0;
@@ -178,16 +178,16 @@ s32 mipsGet16(Mips* pMips, u32 nAddress, s16* pData) { return 0; }
 
 s32 mipsGet32(Mips* pMips, u32 nAddress, s32* pData) {
     switch (nAddress & 0xF) {
-        case 0:
+        case 0x0:
             *pData = pMips->nMode;
             break;
-        case 4:
+        case 0x4:
             *pData = 0x02020102;
             break;
-        case 8:
+        case 0x8:
             *pData = pMips->nInterrupt;
             break;
-        case 12:
+        case 0xC:
             *pData = pMips->nMask;
             break;
         default:
