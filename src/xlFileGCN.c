@@ -89,7 +89,8 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
         *(s8*)pTarget = 0xFF;
         return 0;
     }
-    for (nSizeBytes; nSizeBytes != 0;) {
+
+    while (nSizeBytes != 0) {
         nSizeUsed = nSizeBytes;
         if (nSizeUsed > 0x1000) {
             nSizeUsed = 0x1000;
@@ -97,8 +98,8 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
         nOffset = pFile->nOffset & 0xFFFFFFFC;
         nOffsetExtra = pFile->nOffset & 0x3;
         nSize = (nSizeUsed + nOffsetExtra + 0x1F) & 0xFFFFFFE0;
-        if (gpfRead != (void*)0) {
-            gpfRead(pFile->pData, pFile->pBuffer, nSize, nOffset, (void*)0);
+        if (gpfRead != NULL) {
+            gpfRead(pFile->pData, pFile->pBuffer, nSize, nOffset, NULL);
         } else {
             DVDReadPrio(pFile->pData, pFile->pBuffer, nSize, nOffset, 2);
         }

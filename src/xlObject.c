@@ -3,9 +3,6 @@
 
 static tXL_LIST* gpListData;
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlObject/xlObjectMake.s")
-#else
 inline s32 xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
     tXL_NODE* pListNode;
 
@@ -15,6 +12,7 @@ inline s32 xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
             return 1;
         }
     }
+
     return 0;
 }
 
@@ -35,6 +33,8 @@ inline s32 xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
 s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
     s32 bFlag;
     __anon_0x5062* pData;
+    tXL_NODE* temp1;
+    tXL_NODE* temp2;
 
     if (!xlObjectFindData(&pData, pType)) {
         if (!xlObjectMakeData(&pData, pType)) {
@@ -49,7 +49,10 @@ s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
         return 0;
     }
 
-    ((tXL_NODE*)(*ppObject = (void*)((s32)*ppObject + 4)))->next = (tXL_NODE*)pData;
+    temp1 = (tXL_NODE*)*ppObject;
+    temp2 = (tXL_NODE*)pData;
+    *ppObject = &temp1->data;
+    temp1->next = temp2;
 
     if (bFlag != 0) {
         pType->pfEvent(*ppObject, 0, NULL);
@@ -57,7 +60,6 @@ s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
 
     return pType->pfEvent(*ppObject, 2, pArgument);
 }
-#endif
 
 s32 xlObjectFree(void** ppObject) {
     if (ppObject != NULL && *ppObject != NULL) {
