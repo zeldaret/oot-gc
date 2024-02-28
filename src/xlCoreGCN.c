@@ -5,7 +5,9 @@ u8 gTgPcTPL[] = {
 #pragma INCBIN("SIM_original.elf", 0x000D07A0, 0x00008081)
 };
 
+char D_800DB7A4[] = "xlCoreGCN.c";
 char D_800DB7B0[] = "CORE DONE!";
+char D_800DB7BC[] = "DEMOInit: invalid TV format\n";
 
 static GXRenderModeObj rmodeobj;
 GXTexObj g_texMap[4];
@@ -30,7 +32,49 @@ s32 xlCoreReset(void) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/xlCoreGCN/xlCoreInitRenderMode.s")
+static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
+    char* szText;
+    s32 iArgument;
+
+    if (mode != NULL) {
+        rmode = mode;
+        return;
+    }
+
+    switch (VIGetTvFormat()) {
+        case 0:
+            rmode = &GXNtsc480IntDf;
+
+            for (iArgument = 0; iArgument < gnCountArgument; iArgument++) {
+                if (iArgument >= 0 && iArgument < gnCountArgument) {
+                    szText = gaszArgument[iArgument];
+                }
+                    
+                if ((szText[0] == '-' || szText[0] == '/' || szText[0] == '\\') 
+                    && (szText[1] == 'p' || szText[1] == 'P') 
+                    && szText[2] == '1') {
+                    rmode = &GXNtsc480Prog;
+                    break;
+                }
+            }
+
+            rmode->viXOrigin -= 0x20;
+            rmode->viWidth += 0x40;
+            break;
+        case 1:
+            rmode = &GXPal528IntDf;
+            break;
+        case 2:
+            rmode = &GXMpal480IntDf;
+            break;
+        default:
+            OSPanic(D_800DB7A4, 182, D_800DB7BC);
+            break;
+    }
+
+    GXAdjustForOverscan(rmode, &rmodeobj, 0, 0);
+    rmode = &rmodeobj;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/xlCoreGCN/xlCoreInitMem.s")
 
