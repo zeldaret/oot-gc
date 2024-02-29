@@ -3,10 +3,10 @@
 O_FILES :=                                  \
     $(BUILD_DIR)/src/xlCoreGCN.o            \
     $(BUILD_DIR)/src/xlPostGCN.o            \
-    $(BUILD_DIR)/asm/xlFileGCN.o            \
+    $(BUILD_DIR)/src/xlFileGCN.o            \
     $(BUILD_DIR)/src/xlList.o               \
     $(BUILD_DIR)/src/xlHeap.o               \
-    $(BUILD_DIR)/asm/xlObject.o             \
+    $(BUILD_DIR)/src/xlObject.o             \
     $(BUILD_DIR)/src/simGCN.o               \
     $(BUILD_DIR)/src/movie.o                \
     $(BUILD_DIR)/src/THPPlayer.o            \
