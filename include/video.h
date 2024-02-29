@@ -24,6 +24,7 @@ typedef struct Video {
     /* 0x3C */ s32 nSyncLeap;
 } Video; // size = 0x40
 
+s32 videoForceRetrace(Video* pVideo, s32);
 s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassVideo;
