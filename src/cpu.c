@@ -1,7 +1,20 @@
 #include "cpu.h"
 #include "cpu_jumptable.h"
 #include "dolphin.h"
+#include "library.h"
 #include "macros.h"
+#include "ram.h"
+#include "rom.h"
+#include "rsp.h"
+#include "simGCN.h"
+#include "system.h"
+#include "video.h"
+#include "xlHeap.h"
+
+inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
+static void treeCallerInit(CpuCallerID* block, s32 total);
+static s32 treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -521,7 +534,6 @@ const f64 D_80135FA8 = 0.5;
 const f64 D_80135FB0 = 3.0;
 const f32 D_80135FB8 = 0.5;
 const f64 D_80135FC0 = 4503601774854144.0;
-const f64 D_80135FC8 = 4503599627370496.0;
 
 static s32 cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
@@ -1638,35 +1650,712 @@ static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCheckDelaySlot.s")
 
+inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
+    while (*iCode != number) {
+        anCode[(*iCode)++] = 0x60000000;
+    }
+}
+
+static s32 cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* anCode, s32* piCode, s32 bSlot);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetPPC.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeFunction.s")
+s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
+    s32 iCode;
+    s32 iCode0;
+    s32 pad;
+    s32 iJump;
+    s32 iCheck;
+    s32 firstTime;
+    s32 kill_value;
+    s32 memory_used;
+    s32 codeMemory;
+    s32 blockMemory;
+    s32* chunkMemory;
+    s32* anCode;
+    s32 nAddress;
+    CpuFunction* pFunction;
+    CpuJump aJump[1024];
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindAddress.s")
+    firstTime = 1;
+    if (!cpuFindFunction(pCPU, nAddressN64, &pFunction)) {
+        return 0;
+    }
+
+    if (pFunction->pfCode == NULL) {
+        libraryTestFunction(SYSTEM_LIBRARY(pCPU->pHost), pFunction);
+        pFunction->nCountJump = 0;
+        pFunction->aJump = aJump;
+        pCPU->nFlagRAM = 0x20000000;
+        pCPU->nFlagCODE = 0;
+        pFunction->callerID_total = 0;
+        pFunction->callerID_flag = 0xB;
+        pCPU->nOptimize.validCheck = 1;
+        pCPU->nOptimize.checkNext = 0;
+
+        iCode = 0;
+        nAddress = pFunction->nAddress0;
+        while (nAddress <= pFunction->nAddress1) {
+            if (!cpuGetPPC(pCPU, &nAddress, pFunction, NULL, &iCode, 0)) {
+                return 0;
+            }
+        }
+
+        iCode0 = iCode;
+        codeMemory = iCode * sizeof(s32);
+        memory_used = codeMemory;
+
+        iCheck = pFunction->callerID_total;
+        if (iCheck != 0) {
+            blockMemory = iCheck * sizeof(CpuCallerID);
+            memory_used += blockMemory;
+        } else {
+            blockMemory = 0;
+        }
+
+        if (pFunction->nCountJump > 0) {
+            memory_used += pFunction->nCountJump * sizeof(CpuJump);
+        }
+
+        while (TRUE) {
+            if (cpuHeapTake(&chunkMemory, pCPU, pFunction, memory_used)) {
+                break;
+            }
+
+            if (firstTime) {
+                firstTime = 0;
+                kill_value = pCPU->survivalTimer - 300;
+            } else {
+                kill_value += 95;
+                if (kill_value > pCPU->survivalTimer - 10) {
+                    kill_value = pCPU->survivalTimer - 10;
+                }
+            }
+
+            treeForceCleanUp(pCPU, pFunction, kill_value);
+        }
+
+        anCode = chunkMemory;
+        if (blockMemory != 0) {
+            pFunction->block = (CpuCallerID*)((u8*)chunkMemory + codeMemory);
+            treeCallerInit(pFunction->block, iCheck);
+        }
+
+        pCPU->nFlagRAM = 0x20000000;
+        pCPU->nFlagCODE = 0;
+        pFunction->callerID_total = 0;
+        pFunction->callerID_flag = 0x16;
+        pCPU->nOptimize.checkNext = 0;
+        pCPU->nOptimize.destGPR_check = 0;
+        pCPU->nOptimize.destFPR_check = 0;
+
+        iCode = 0;
+        nAddress = pFunction->nAddress0;
+        while (nAddress <= pFunction->nAddress1) {
+            if (!cpuGetPPC(pCPU, &nAddress, pFunction, anCode, &iCode, 0)) {
+                return 0;
+            }
+        }
+        cpuCompileNOP(anCode, &iCode, iCode0);
+
+        pFunction->callerID_flag = 0x21;
+        pFunction->pfCode = anCode;
+        DCStoreRange(pFunction->pfCode, iCode * 4);
+        ICInvalidateRange(pFunction->pfCode, iCode * 4);
+
+        if (pFunction->nCountJump > 0) {
+            if (pFunction->nCountJump >= 0x400) {
+                return 0;
+            }
+
+            pFunction->aJump = (CpuJump*)((u8*)chunkMemory + codeMemory + blockMemory);
+            for (iJump = 0; iJump < pFunction->nCountJump; iJump++) {
+                pFunction->aJump[iJump].nOffsetHost = aJump[iJump].nOffsetHost;
+                pFunction->aJump[iJump].nAddressN64 = aJump[iJump].nAddressN64;
+            }
+        } else {
+            pFunction->aJump = NULL;
+        }
+
+        pFunction->memory_size = memory_used;
+        pCPU->gTree->total_memory += memory_used;
+    }
+
+    if (ppFunction != NULL) {
+        *ppFunction = pFunction;
+    }
+
+    return 1;
+}
+
+static s32 cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
+    s32 iJump;
+    s32 iCode;
+    s32 nAddress;
+    CpuFunction* pFunction;
+    s32 pad;
+
+    if (pCPU->nMode & 0x20) {
+        pCPU->nMode &= ~0x20;
+    }
+
+    if (cpuFindCachedAddress(pCPU, nAddressN64, pnAddressGCN)) {
+        return 1;
+    }
+
+    if ((pFunction = pCPU->pFunctionLast) == NULL || nAddressN64 < pFunction->nAddress0 ||
+        pFunction->nAddress1 < nAddressN64) {
+        if (!cpuMakeFunction(pCPU, &pFunction, nAddressN64)) {
+            return 0;
+        }
+    }
+
+    for (iJump = 0; iJump < pFunction->nCountJump; iJump++) {
+        if (pFunction->aJump[iJump].nAddressN64 == nAddressN64) {
+            *pnAddressGCN = (s32)((s32*)pFunction->pfCode + pFunction->aJump[iJump].nOffsetHost);
+            if (pFunction->timeToLive > 0) {
+                pFunction->timeToLive = pCPU->survivalTimer;
+            }
+            cpuMakeCachedAddress(pCPU, nAddressN64, *pnAddressGCN, pFunction);
+            return 1;
+        }
+    }
+
+    pCPU->nFlagRAM = 0x20000000;
+    pCPU->nFlagCODE = 0;
+    pFunction->callerID_flag = 0x21;
+    iCode = 0;
+    if (pFunction->nAddress0 != nAddressN64) {
+        pFunction->timeToLive = 0;
+    }
+
+    nAddress = pFunction->nAddress0;
+    while (nAddress <= pFunction->nAddress1) {
+        if (nAddress == nAddressN64) {
+            *pnAddressGCN = (s32)((s32*)pFunction->pfCode + iCode);
+            if (pFunction->timeToLive > 0) {
+                pFunction->timeToLive = pCPU->survivalTimer;
+            }
+            cpuMakeCachedAddress(pCPU, nAddressN64, *pnAddressGCN, pFunction);
+            return 1;
+        }
+        if (!cpuGetPPC(pCPU, &nAddress, pFunction, NULL, &iCode, 0)) {
+            return 0;
+        }
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuNextInstruction.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuRetraceCallback.s")
+void cpuRetraceCallback(u32 nCount) { SYSTEM_CPU(gpSystem)->nRetrace = nCount; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteUpdate.s")
+static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
+    RspUpdateMode eModeUpdate;
+    System* pSystem;
+    s32 nDelta;
+    u32 nCounter;
+    u32 nCompare;
 
+    u32 nCounterDelta;
+    CpuTreeRoot* root;
+
+    pSystem = (System*)pCPU->pHost;
+
+    if (!romUpdate(SYSTEM_ROM(pSystem))) {
+        return 0;
+    }
+
+    if (pSystem->eTypeROM == SRT_DRMARIO) {
+        eModeUpdate = pSystem->bException ? RUM_NONE : RUM_IDLE;
+    } else {
+        eModeUpdate = ((pCPU->nMode & 0x80) && !pSystem->bException) ? RUM_IDLE : RUM_NONE;
+    }
+    if (!rspUpdate(SYSTEM_RSP(pSystem), eModeUpdate)) {
+        return 0;
+    }
+
+    root = pCPU->gTree;
+    treeTimerCheck(pCPU);
+    if (pCPU->nRetrace == pCPU->nRetraceUsed && root->kill_number < 12) {
+        if (treeKillReason(pCPU, &root->kill_limit)) {
+            pCPU->survivalTimer++;
+        }
+        if (root->kill_limit != 0) {
+            treeCleanUp(pCPU, root);
+        }
+    }
+
+    if (nCount > pCPU->nTickLast) {
+        nCounterDelta = fTickScale * ((nCount - pCPU->nTickLast) << nTickMultiplier);
+    } else {
+        nCounterDelta = fTickScale * ((-1 - pCPU->nTickLast + nCount) << nTickMultiplier);
+    }
+    if ((pCPU->nMode & 0x40) && pCPU->nRetraceUsed != pCPU->nRetrace) {
+        if (videoForceRetrace(SYSTEM_VIDEO(pSystem), 1)) {
+            nDelta = pCPU->nRetrace - pCPU->nRetraceUsed;
+            if (nDelta < 0) {
+                nDelta = -nDelta;
+            }
+
+            if (nDelta < 4) {
+                pCPU->nRetraceUsed++;
+            } else {
+                pCPU->nRetraceUsed = ((Cpu*)pCPU)->nRetrace;
+            }
+        }
+    }
+
+    if (pCPU->nMode & 1) {
+        nCounter = pCPU->anCP0[9];
+        nCompare = pCPU->anCP0[11];
+        if ((nCounter <= nCompare && nCounter + nCounterDelta >= nCompare) ||
+            (nCounter >= nCompare && nCounter + nCounterDelta >= nCompare && nCounter + nCounterDelta < nCounter)) {
+            pCPU->nMode &= ~1;
+            xlObjectEvent(pCPU->pHost, 0x1000, (void*)3);
+        }
+    }
+    pCPU->anCP0[9] += nCounterDelta;
+
+    if ((pCPU->nMode & 8) && !(pCPU->nMode & 4) && gpSystem->bException) {
+        if (!systemCheckInterrupts(gpSystem)) {
+            return 0;
+        }
+    }
+
+    if (pCPU->nMode & 4) {
+        pCPU->nMode &= ~0x84;
+        if (!cpuFindAddress(pCPU, pCPU->nPC, pnAddressGCN)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteOpcode.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteIdle.s")
+static s32 cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+    Rom* pROM;
 
+    pROM = SYSTEM_ROM(pCPU->pHost);
+    if (!simulatorTestReset(0, 0, 0, 1)) {
+        return 0;
+    }
+
+    nCount = OSGetTick();
+    if (pCPU->nWaitPC != 0) {
+        pCPU->nMode |= 8;
+    } else {
+        pCPU->nMode &= ~8;
+    }
+
+    pCPU->nMode |= 0x80;
+    pCPU->nPC = nAddressN64;
+    if (!(pCPU->nMode & 0x40) && pROM->copy.nSize == 0) {
+        videoForceRetrace(SYSTEM_VIDEO(pCPU->pHost), 0);
+    }
+
+    if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
+        return 0;
+    }
+
+    pCPU->nTickLast = OSGetTick();
+    return nAddressGCN;
+}
+
+static s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteJump.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteCall.s")
+static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+    s32 pad;
+    s32 nReg;
+    s32 count;
+    s32* anCode;
+    s32 saveGCN;
+    CpuFunction* node;
+    CpuCallerID* block;
+    s32 nDeltaAddress;
 
+    nCount = OSGetTick();
+    if (pCPU->nWaitPC != 0) {
+        pCPU->nMode |= 8;
+    } else {
+        pCPU->nMode &= ~8;
+    }
+
+    pCPU->nMode |= 4;
+    pCPU->nPC = nAddressN64;
+
+    pCPU->aGPR[31].s32 = nAddressGCN;
+    saveGCN = nAddressGCN - 4;
+
+    pCPU->survivalTimer++;
+
+    cpuFindFunction(pCPU, pCPU->nReturnAddrLast - 8, &node);
+
+    block = node->block;
+    for (count = 0; count < node->callerID_total; count++) {
+        if (block[count].N64address == nAddressN64 && block[count].GCNaddress == 0) {
+            block[count].GCNaddress = saveGCN;
+            break;
+        }
+    }
+
+    saveGCN = (ganMapGPR[31] & 0x100) ? 1 : 0;
+    anCode = (s32*)nAddressGCN - (saveGCN ? 4 : 3);
+    if (saveGCN) {
+        anCode[0] = 0x3CA00000 | ((u32)nAddressGCN >> 16); // lis r5,nAddressGCN@h
+        anCode[1] = 0x60A50000 | ((u32)nAddressGCN & 0xFFFF); // ori r5,r5,nAddressGCN@l
+        DCStoreRange(anCode, 8);
+        ICInvalidateRange(anCode, 8);
+    } else {
+        nReg = ganMapGPR[31];
+        anCode[0] = 0x3C000000 | ((u32)nAddressGCN >> 16) | (nReg << 21); // lis ri,nAddressGCN@h
+        anCode[1] = 0x60000000 | ((u32)nAddressGCN & 0xFFFF) | (nReg << 21) | (nReg << 16); // ori ri,ri,nAddressGCN@l
+        DCStoreRange(anCode, 8);
+        ICInvalidateRange(anCode, 8);
+    }
+    if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
+        return 0;
+    }
+
+    nDeltaAddress = (u8*)nAddressGCN - (u8*)&anCode[3];
+    if (saveGCN) {
+        anCode[3] = 0x48000000 | (nDeltaAddress & 0x03FFFFFC); // b nDeltaAddress
+        DCStoreRange(anCode, 16);
+        ICInvalidateRange(anCode, 16);
+    } else {
+        anCode[2] = 0x48000000 | (nDeltaAddress & 0x03FFFFFC); // b nDeltaAddress
+        DCStoreRange(anCode, 12);
+        ICInvalidateRange(anCode, 12);
+    }
+
+    pCPU->nTickLast = OSGetTick();
+
+    return nAddressGCN;
+}
+
+static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStore.s")
 
+static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStoreF.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeLink.s")
+static s32 cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFunction) {
+    s32 iGPR;
+    s32* pnCode;
+    s32 nData;
+    s32 pad;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecute.s")
+    if (!xlHeapTake(&pnCode, 0x200 | 0x30000000)) {
+        return 0;
+    }
+    *ppfLink = (CpuExecuteFunc)pnCode;
+
+    *pnCode++ = 0x7CC802A6;
+
+    for (iGPR = 1; iGPR < 32; iGPR++) {
+        if (!(ganMapGPR[iGPR] & 0x100)) {
+            nData = OFFSETOF(pCPU, aGPR[iGPR]) + 4;
+            *pnCode++ = 0x90030000 | (ganMapGPR[iGPR] << 21) | nData; // lwz ri,(aGPR[i] + 4)(r3)
+        }
+    }
+
+    *pnCode++ = 0x48000000 | (((u8*)pfFunction - (u8*)pnCode) & 0x03FFFFFC) | 1; // bl pfFunction
+    *pnCode++ = 0x7C6803A6; // mtlr r3
+    *pnCode++ = 0x3C600000 | ((u32)pCPU >> 16); // lis r3,pCPU@h
+    *pnCode++ = 0x60630000 | ((u32)pCPU & 0xFFFF); // ori r3,r3,pCPU@l
+    *pnCode++ = 0x80830000 + OFFSETOF(pCPU, survivalTimer); // lwz r4,survivalTimer(r3)
+
+    nData = (u32)(SYSTEM_RAM(pCPU->pHost)->pBuffer) - 0x80000000;
+    *pnCode++ = 0x3D000000 | ((u32)nData >> 16); // lis r8,ramOffset@h
+    if (pCPU->nCompileFlag & 0x100) {
+        *pnCode++ = 0x3D20DFFF; // lis r9,0xDFFF
+        *pnCode++ = 0x61080000 | ((u32)nData & 0xFFFF); // ori r8,r8,ramOffset@l
+        *pnCode++ = 0x6129FFFF; // ori r9,r9,0xFFFF
+    } else if (pCPU->nCompileFlag & 1) {
+        *pnCode++ = 0x39230000 + OFFSETOF(pCPU, aiDevice); // addi r9,r3,aiDevice
+        *pnCode++ = 0x61080000 | ((u32)nData & 0xFFFF); // ori r8,r8,ramOffset@l
+    }
+
+    *pnCode++ = 0x38000000 | (ganMapGPR[0] << 21); // li r0,0
+    for (iGPR = 1; iGPR < 32; iGPR++) {
+        if (!(ganMapGPR[iGPR] & 0x100)) {
+            nData = OFFSETOF(pCPU, aGPR[iGPR]) + 4;
+            *pnCode++ = 0x80030000 | (ganMapGPR[iGPR] << 21) | nData; // stw ri,(aGPR[i] + 4)(r3)
+        }
+    }
+
+    *pnCode++ = 0x4E800020; // blr
+
+    DCStoreRange(*ppfLink, 0x200);
+    ICInvalidateRange(*ppfLink, 0x200);
+    return 1;
+}
+
+inline s32 cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
+    if (!xlHeapFree(&ppfLink)) {
+        return 0;
+    } else {
+        *ppfLink = NULL;
+        return 1;
+    }
+}
+
+s32 cpuExecute(Cpu* pCPU) {
+    s32 pad1;
+    s32 iGPR;
+    s32* pnCode;
+    s32 nData;
+    s32 pad2;
+    CpuFunction* pFunction;
+    void (*pfCode)(void);
+
+    if (pCPU->nCompileFlag & 0x1000) {
+        pCPU->nCompileFlag |= 0x100;
+    }
+
+    if (!cpuMakeLink(pCPU, &pCPU->pfStep, &cpuExecuteOpcode)) {
+        return 0;
+    }
+    if (!cpuMakeLink(pCPU, &pCPU->pfJump, &cpuExecuteJump)) {
+        return 0;
+    }
+    if (!cpuMakeLink(pCPU, &pCPU->pfCall, &cpuExecuteCall)) {
+        return 0;
+    }
+    if (!cpuMakeLink(pCPU, &pCPU->pfIdle, &cpuExecuteIdle)) {
+        return 0;
+    }
+    if (!cpuMakeLink(pCPU, &pCPU->pfRam, &cpuExecuteLoadStore)) {
+        return 0;
+    }
+    if (!cpuMakeLink(pCPU, &pCPU->pfRamF, &cpuExecuteLoadStoreF)) {
+        return 0;
+    }
+
+    cpuCompile_DSLLV(pCPU, &cpuCompile_DSLLV_function);
+    cpuCompile_DSRLV(pCPU, &cpuCompile_DSRLV_function);
+    cpuCompile_DSRAV(pCPU, &cpuCompile_DSRAV_function);
+    cpuCompile_DMULT(pCPU, &cpuCompile_DMULT_function);
+    cpuCompile_DMULTU(pCPU, &cpuCompile_DMULTU_function);
+    cpuCompile_DDIV(pCPU, &cpuCompile_DDIV_function);
+    cpuCompile_DDIVU(pCPU, &cpuCompile_DDIVU_function);
+    cpuCompile_DADD(pCPU, &cpuCompile_DADD_function);
+    cpuCompile_DADDU(pCPU, &cpuCompile_DADDU_function);
+    cpuCompile_DSUB(pCPU, &cpuCompile_DSUB_function);
+    cpuCompile_DSUBU(pCPU, &cpuCompile_DSUBU_function);
+    cpuCompile_S_SQRT(pCPU, &cpuCompile_S_SQRT_function);
+    cpuCompile_D_SQRT(pCPU, &cpuCompile_D_SQRT_function);
+    cpuCompile_W_CVT_SD(pCPU, &cpuCompile_W_CVT_SD_function);
+    cpuCompile_L_CVT_SD(pCPU, &cpuCompile_L_CVT_SD_function);
+    cpuCompile_CEIL_W(pCPU, &cpuCompile_CEIL_W_function);
+    cpuCompile_FLOOR_W(pCPU, &cpuCompile_FLOOR_W_function);
+    cpuCompile_ROUND_W(&cpuCompile_ROUND_W_function);
+    cpuCompile_TRUNC_W(&cpuCompile_TRUNC_W_function);
+    cpuCompile_LB(pCPU, &cpuCompile_LB_function);
+    cpuCompile_LH(pCPU, &cpuCompile_LH_function);
+    cpuCompile_LW(pCPU, &cpuCompile_LW_function);
+    cpuCompile_LBU(pCPU, &cpuCompile_LBU_function);
+    cpuCompile_LHU(pCPU, &cpuCompile_LHU_function);
+    cpuCompile_SB(pCPU, &cpuCompile_SB_function);
+    cpuCompile_SH(pCPU, &cpuCompile_SH_function);
+    cpuCompile_SW(pCPU, &cpuCompile_SW_function);
+    cpuCompile_LDC(pCPU, &cpuCompile_LDC_function);
+    cpuCompile_SDC(pCPU, &cpuCompile_SDC_function);
+    cpuCompile_LWL(pCPU, &cpuCompile_LWL_function);
+    cpuCompile_LWR(pCPU, &cpuCompile_LWR_function);
+
+    if (cpuMakeFunction(pCPU, &pFunction, pCPU->nPC)) {
+        if (!xlHeapTake(&pnCode, 0x100 | 0x30000000)) {
+            return 0;
+        }
+
+        pfCode = (void (*)(void))pnCode;
+
+        *pnCode++ = 0x3C600000 | ((u32)pCPU >> 0x10); // lis r3,pCPU@h
+        *pnCode++ = 0x60630000 | ((u32)pCPU & 0xFFFF); // ori r3,r3,pCPU@l
+
+        *pnCode++ = 0x80830000 + OFFSETOF(pCPU, survivalTimer); // lwz r4,survivalTimer(r3)
+
+        nData = (u32)(SYSTEM_RAM(pCPU->pHost)->pBuffer) - 0x80000000;
+        *pnCode++ = 0x3D000000 | ((u32)nData >> 16); // lis r8,ramOffset@h
+        *pnCode++ = 0x61080000 | ((u32)nData & 0xFFFF); // ori r8,r8,ramOffset@l
+
+        if (pCPU->nCompileFlag & 0x100) {
+            *pnCode++ = 0x3D20DFFF; // lis r9,0xDFFF
+            *pnCode++ = 0x6129FFFF; // ori r9,r9,0xFFFF
+        } else if (pCPU->nCompileFlag & 1) {
+            *pnCode++ = 0x39230000 + OFFSETOF(pCPU, aiDevice); // addi r9,r3,aiDevice
+        }
+
+        for (iGPR = 0; iGPR < ARRAY_COUNT(ganMapGPR); iGPR++) {
+            if (!(ganMapGPR[iGPR] & 0x100)) {
+                nData = OFFSETOF(pCPU, aGPR[iGPR]) + 4;
+                *pnCode++ = 0x80030000 | (ganMapGPR[iGPR] << 21) | nData; // lwz ri,(aGPR[i] + 4)(r3)
+            }
+        }
+
+        *pnCode++ = 0x48000000 | (((u32)pFunction->pfCode - (u32)pnCode) & 0x03FFFFFC); // b pFunction->pfCode
+
+        DCStoreRange(pfCode, 0x100);
+        ICInvalidateRange(pfCode, 0x100);
+
+        pCPU->nRetrace = pCPU->nRetraceUsed = 0;
+
+        VIWaitForRetrace();
+        VISetPostRetraceCallback(&cpuRetraceCallback);
+
+        pfCode();
+
+        if (!xlHeapFree(&pfCode)) {
+            return 0;
+        }
+
+        if (!cpuFreeLink(pCPU, &pCPU->pfIdle)) {
+            return 0;
+        }
+        if (!cpuFreeLink(pCPU, &pCPU->pfCall)) {
+            return 0;
+        }
+        if (!cpuFreeLink(pCPU, &pCPU->pfJump)) {
+            return 0;
+        }
+        if (!cpuFreeLink(pCPU, &pCPU->pfStep)) {
+            return 0;
+        }
+        if (!cpuFreeLink(pCPU, &pCPU->pfRam)) {
+            return 0;
+        }
+        if (!cpuFreeLink(pCPU, &pCPU->pfRamF)) {
+            return 0;
+        }
+
+        if (!xlHeapFree((void**)&cpuCompile_DSLLV_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DSRLV_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DSRAV_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DMULT_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DMULTU_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DDIV_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DDIVU_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DADD_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DADDU_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DSUB_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_DSUBU_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_S_SQRT_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_D_SQRT_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_W_CVT_SD_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_L_CVT_SD_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_CEIL_W_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_FLOOR_W_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_TRUNC_W_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_ROUND_W_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LB_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LH_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LW_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LBU_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LHU_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_SB_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_SH_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_SW_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LDC_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_SDC_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LWL_function)) {
+            return 0;
+        }
+        if (!xlHeapFree((void**)&cpuCompile_LWR_function)) {
+            return 0;
+        }
+
+        PAD_STACK();
+        PAD_STACK();
+        PAD_STACK();
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHackHandler.s")
+
+inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction) {
+    s32 iAddress;
+    CpuAddress* aAddressCache;
+
+    aAddressCache = pCPU->aAddressCache;
+    if ((iAddress = pCPU->nCountAddress) == ARRAY_COUNT(pCPU->aAddressCache)) {
+        iAddress -= 1;
+    } else {
+        pCPU->nCountAddress++;
+    }
+
+    for (; iAddress > 0; iAddress--) {
+        aAddressCache[iAddress] = aAddressCache[iAddress - 1];
+    }
+
+    aAddressCache[0].nN64 = nAddressN64;
+    aAddressCache[0].nHost = nAddressHost;
+    aAddressCache[0].pFunction = pFunction;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFreeCachedAddress.s")
 
@@ -1704,7 +2393,21 @@ static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetDevicePut.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetCodeHack.s")
+s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
+    s32 iHack;
+
+    for (iHack = 0; iHack < pCPU->nCountCodeHack; iHack++) {
+        if (pCPU->aCodeHack[iHack].nAddress == nAddress) {
+            return 0;
+        }
+    }
+
+    pCPU->aCodeHack[iHack].nAddress = nAddress;
+    pCPU->aCodeHack[iHack].nOpcodeOld = nOpcodeOld;
+    pCPU->aCodeHack[iHack].nOpcodeNew = nOpcodeNew;
+    pCPU->nCountCodeHack++;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuReset.s")
 
@@ -1733,6 +2436,15 @@ static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuDMAUpdateFunction.s")
+
+inline void treeCallerInit(CpuCallerID* block, s32 total) {
+    s32 count;
+
+    for (count = 0; count < total; count++) {
+        block[count].N64address = 0;
+        block[count].GCNaddress = 0;
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCallerCheck.s")
 
@@ -1765,6 +2477,28 @@ static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCleanUp.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCleanNodes.s")
+
+inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
+    CpuTreeRoot* root = pCPU->gTree;
+
+    root->kill_limit = 0;
+    root->restore = NULL;
+    root->restore_side = 0;
+    if (tree != NULL && tree->timeToLive > 0) {
+        tree->timeToLive = pCPU->survivalTimer;
+    }
+    if (root->side == 0) {
+        if (root->left != NULL) {
+            treeForceCleanNodes(pCPU, root->left, kill_limit);
+        }
+    } else {
+        if (root->right != NULL) {
+            treeForceCleanNodes(pCPU, root->right, kill_limit);
+        }
+    }
+    root->side ^= 1;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeForceCleanNodes.s")
 

@@ -161,7 +161,7 @@ s32 videoGet32(Video* pVideo, u32 nAddress, s32* pData) {
 
 s32 videoGet64(Video* pVideo, u32 nAddress, s64* pData) { return 0; }
 
-s32 videoForceRetrace(Video* pVideo) {
+s32 videoForceRetrace(Video* pVideo, s32 unknown) {
     if (!systemExceptionPending(pVideo->pHost, SIT_VI) && (pVideo->nStatus & 3)) {
         pVideo->nScan = pVideo->nScanInterrupt;
         xlObjectEvent(pVideo->pHost, 0x1000, (void*)8);

@@ -34,7 +34,7 @@ s32 videoGet16(Video* pVideo, u32 nAddress, s16* pData);
 s32 videoGet32(Video* pVideo, u32 nAddress, s32* pData);
 s32 videoGet64(Video* pVideo, u32 nAddress, s64* pData);
 
-s32 videoForceRetrace(Video* pVideo);
+s32 videoForceRetrace(Video* pVideo, s32);
 s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassVideo;
