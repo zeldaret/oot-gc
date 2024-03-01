@@ -27,44 +27,44 @@ const f32 D_800D30A0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
 const f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 const f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-u8 gcoverOpen[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000D8880, 0x000028C1)
+u8 gcoverOpen[0x28C1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000D8880, 0x28C1)
 };
 
-u8 gnoDisk[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DB160, 0x00001F01)
+u8 gnoDisk[0x1F01] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000DB160, 0x1F01)
 };
 
-u8 gretryErr[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DD080, 0x00002441)
+u8 gretryErr[0x2441] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000DD080, 0x2441)
 };
 
-u8 gfatalErr[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x000032E1)
+u8 gfatalErr[0x32E1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x32E1)
 };
 
-u8 gwrongDisk[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x00001F01)
+u8 gwrongDisk[0x1F01] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x1F01)
 };
 
-u8 greadingDisk[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E4700, 0x00000C41)
+u8 greadingDisk[0x0C41] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E4700, 0x0C41)
 };
 
-u8 gbar[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E5360, 0x00000741)
+u8 gbar[0x0741] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E5360, 0x0741)
 };
 
-u8 gyes[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x000005C1)
+u8 gyes[0x05C1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x05C1)
 };
 
-u8 gno[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x000005C1)
+u8 gno[0x05C1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x05C1)
 };
 
-u8 gmesgOK[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E6680, 0x00000341)
+u8 gmesgOK[0x0341] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E6680, 0x0341)
 };
 
 s16 Vert_s16[12] ALIGNAS(32) = {
