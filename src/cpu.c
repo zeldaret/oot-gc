@@ -2002,12 +2002,7 @@ static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
         }
     }
 
-    if (ganMapGPR[31] & 0x100) {
-        saveGCN = 1;
-    } else {
-        saveGCN = 0;
-    }
-
+    saveGCN = (ganMapGPR[31] & 0x100) ? 1 : 0;
     anCode = (s32*)nAddressGCN - (saveGCN ? 4 : 3);
     if (saveGCN) {
         anCode[0] = 0x3CA00000 | ((u32)nAddressGCN >> 16); // lis r5,nAddressGCN@h
