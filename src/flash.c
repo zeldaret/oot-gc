@@ -99,14 +99,14 @@ static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
             for (i = 0; i < ARRAY_COUNT(buffer); i++) {
                 buffer[i] = 0;
             }
-            if ((pFLASH->flashCommand & 0xFF000000) + 0xC4000000 == 0) {
+            if ((pFLASH->flashCommand & 0xFF000000) == 0x3C000000) {
                 for (i = 0; i < 1024; i++) {
                     if (!simulatorWriteFLASH(i << 7, (u8*)buffer, ARRAY_COUNT(buffer))) {
                         return 0;
                     }
                 }
             } else {
-                if ((pFLASH->flashCommand & 0xFF000000) + 0xB5000000 == 0) {
+                if ((pFLASH->flashCommand & 0xFF000000) == 0x4B000000) {
                     if (!simulatorWriteFLASH((pFLASH->flashCommand << 7) & 0x7FFFFF80, (u8*)buffer,
                                              ARRAY_COUNT(buffer))) {
                         return 0;
