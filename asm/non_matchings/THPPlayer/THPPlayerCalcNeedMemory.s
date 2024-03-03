@@ -1,0 +1,47 @@
+glabel THPPlayerCalcNeedMemory
+/* 00A6A0 8000FC40 3C608010 */  lis     r3, WorkBuffer@ha
+/* 00A6A4 8000FC44 38A396E0 */  addi    r5, r3, WorkBuffer@l
+/* 00A6A8 8000FC48 80050640 */  lwz     r0, 0x640(r5)
+/* 00A6AC 8000FC4C 2C000000 */  cmpwi   r0, 0
+/* 00A6B0 8000FC50 41820090 */  beq     lbl_8000FCE0
+/* 00A6B4 8000FC54 80050650 */  lwz     r0, 0x650(r5)
+/* 00A6B8 8000FC58 2C000000 */  cmpwi   r0, 0
+/* 00A6BC 8000FC5C 41820014 */  beq     lbl_8000FC70
+/* 00A6C0 8000FC60 806505F8 */  lwz     r3, 0x5f8(r5)
+/* 00A6C4 8000FC64 3803001F */  addi    r0, r3, 0x1f
+/* 00A6C8 8000FC68 54060034 */  rlwinm  r6, r0, 0, 0, 0x1a
+/* 00A6CC 8000FC6C 48000014 */  b       lbl_8000FC80
+lbl_8000FC70:
+/* 00A6D0 8000FC70 806505E4 */  lwz     r3, 0x5e4(r5)
+/* 00A6D4 8000FC74 3803001F */  addi    r0, r3, 0x1f
+/* 00A6D8 8000FC78 54000034 */  rlwinm  r0, r0, 0, 0, 0x1a
+/* 00A6DC 8000FC7C 1CC0000A */  mulli   r6, r0, 0xa
+lbl_8000FC80:
+/* 00A6E0 8000FC80 80850620 */  lwz     r4, 0x620(r5)
+/* 00A6E4 8000FC84 80650624 */  lwz     r3, 0x624(r5)
+/* 00A6E8 8000FC88 88050647 */  lbz     r0, 0x647(r5)
+/* 00A6EC 8000FC8C 7C6419D6 */  mullw   r3, r4, r3
+/* 00A6F0 8000FC90 3883001F */  addi    r4, r3, 0x1f
+/* 00A6F4 8000FC94 5463F0BE */  srwi    r3, r3, 2
+/* 00A6F8 8000FC98 54840034 */  rlwinm  r4, r4, 0, 0, 0x1a
+/* 00A6FC 8000FC9C 3863001F */  addi    r3, r3, 0x1f
+/* 00A700 8000FCA0 1C840003 */  mulli   r4, r4, 3
+/* 00A704 8000FCA4 54630034 */  rlwinm  r3, r3, 0, 0, 0x1a
+/* 00A708 8000FCA8 1C630003 */  mulli   r3, r3, 3
+/* 00A70C 8000FCAC 7CC62214 */  add     r6, r6, r4
+/* 00A710 8000FCB0 7CC61A14 */  add     r6, r6, r3
+/* 00A714 8000FCB4 28000000 */  cmplwi  r0, 0
+/* 00A718 8000FCB8 7CC61A14 */  add     r6, r6, r3
+/* 00A71C 8000FCBC 4182001C */  beq     lbl_8000FCD8
+/* 00A720 8000FCC0 800505E8 */  lwz     r0, 0x5e8(r5)
+/* 00A724 8000FCC4 5403103A */  slwi    r3, r0, 2
+/* 00A728 8000FCC8 3803001F */  addi    r0, r3, 0x1f
+/* 00A72C 8000FCCC 54000034 */  rlwinm  r0, r0, 0, 0, 0x1a
+/* 00A730 8000FCD0 1C000003 */  mulli   r0, r0, 3
+/* 00A734 8000FCD4 7CC60214 */  add     r6, r6, r0
+lbl_8000FCD8:
+/* 00A738 8000FCD8 38661000 */  addi    r3, r6, 0x1000
+/* 00A73C 8000FCDC 4E800020 */  blr     
+lbl_8000FCE0:
+/* 00A740 8000FCE0 38600000 */  li      r3, 0
+/* 00A744 8000FCE4 4E800020 */  blr     

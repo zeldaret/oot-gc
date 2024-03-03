@@ -18,15 +18,6 @@ typedef int BOOL;
 #define FALSE 0
 #define TRUE 1
 
-#if defined(__MWERKS__)
-#define AT_ADDRESS(addr) : (addr)
-#elif defined(__GNUC__)
-// #define AT_ADDRESS(addr) __attribute__((address((addr))))
-#define AT_ADDRESS(addr) // was removed in GCC. define in linker script instead.
-#else
-#error unknown compiler
-#endif
-
 #define ATTRIBUTE_ALIGN(num) __attribute__((aligned(num)))
 
 #define INT_MAX 2147483647

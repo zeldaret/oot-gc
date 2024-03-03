@@ -1,6 +1,9 @@
 #include "simGCN.h"
+#include "THPPlayer.h"
+#include "THPRead.h"
 #include "codeGCN.h"
 #include "dolphin.h"
+#include "frame.h"
 #include "macros.h"
 #include "mcardGCN.h"
 #include "movie.h"
@@ -8,18 +11,8 @@
 #include "rom.h"
 #include "soundGCN.h"
 #include "system.h"
-#include "xlObject.h"
+#include "xlCoreGCN.h"
 #include "xlPostGCN.h"
-
-//! TODO: Move these to proper headers
-extern _XL_OBJECTTYPE gClassCode;
-extern _XL_OBJECTTYPE gClassFrame;
-extern _XL_OBJECTTYPE gClassSound;
-extern _XL_OBJECTTYPE gClassSystem;
-
-extern GXRenderModeObj* rmode;
-extern s32 gMovieErrorToggle;
-extern char gpErrorMessageBuffer[20480];
 
 const f32 D_800D2FE0[3][4] = {
     {1.0, 0.0, 0.0, 0.0},
@@ -34,44 +27,44 @@ const f32 D_800D30A0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
 const f32 D_800D30D0[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 const f32 D_800D3100[] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
-u8 gcoverOpen[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000D8880, 0x000028C1)
+u8 gcoverOpen[0x28C1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000D8880, 0x28C1)
 };
 
-u8 gnoDisk[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DB160, 0x00001F01)
+u8 gnoDisk[0x1F01] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000DB160, 0x1F01)
 };
 
-u8 gretryErr[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DD080, 0x00002441)
+u8 gretryErr[0x2441] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000DD080, 0x2441)
 };
 
-u8 gfatalErr[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x000032E1)
+u8 gfatalErr[0x32E1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x32E1)
 };
 
-u8 gwrongDisk[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x00001F01)
+u8 gwrongDisk[0x1F01] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x1F01)
 };
 
-u8 greadingDisk[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E4700, 0x00000C41)
+u8 greadingDisk[0x0C41] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E4700, 0x0C41)
 };
 
-u8 gbar[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E5360, 0x00000741)
+u8 gbar[0x0741] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E5360, 0x0741)
 };
 
-u8 gyes[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x000005C1)
+u8 gyes[0x05C1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x05C1)
 };
 
-u8 gno[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x000005C1)
+u8 gno[0x05C1] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x05C1)
 };
 
-u8 gmesgOK[] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E6680, 0x00000341)
+u8 gmesgOK[0x0341] ALIGNAS(32) = {
+#pragma INCBIN("SIM_original.elf", 0x000E6680, 0x0341)
 };
 
 s16 Vert_s16[12] ALIGNAS(32) = {
@@ -233,7 +226,7 @@ void* jtbl_800EA194[] = {
 };
 
 static f32 gOrthoMtx[4][4] ALIGNAS(32);
-static u32 gContMap[4][20];
+static u32 gContMap[4][GCN_BTN_COUNT];
 static char* gaszArgument[8];
 
 u32 gmsg_ld01Size = 0x00003E20;
@@ -553,7 +546,7 @@ void simulatorReset(s32 IPL, s32 forceMenu) {
     }
 
     OSResetSystem(0, 0, 0);
-    NO_INLINE;
+    NO_INLINE();
 }
 
 inline void simulatorUnknownInline() {
@@ -809,9 +802,149 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorMCardPollDrawFormatBar.s")
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawCursor.s")
+#else
+static s32 simulatorDrawCursor(s32 nX, s32 nY) {
+    GXColor color;
+    s32 nTick;
+    u8 var_r5;
+    s32 pad;
 
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT7, GX_VA_POS, GX_POS_XY, GX_S16, 0);
+    GXSetNumChans(1);
+    GXSetNumTexGens(0);
+    GXSetNumTevStages(1);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_C0);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXCOORD_NULL, GX_TEXCOORD_NULL);
+
+    nTick = OSGetTick() >> 14;
+    if (nTick & 0x100) {
+        var_r5 = (u8)nTick ^ 0xFF;
+    } else {
+        var_r5 = (u8)nTick;
+    }
+
+    color.r = color.g = color.b = 0;
+
+    switch ((nTick >> 9) % 7) {
+        case 0:
+            color.r = var_r5;
+            break;
+        case 1:
+            color.g = var_r5;
+            break;
+        case 2:
+            color.b = var_r5;
+            break;
+        case 3:
+            color.g = var_r5;
+            color.r = var_r5;
+            break;
+        case 4:
+            color.b = var_r5;
+            color.r = var_r5;
+            break;
+        case 5:
+            color.b = var_r5;
+            color.g = var_r5;
+            break;
+        case 6:
+            color.b = var_r5;
+            color.g = var_r5;
+            color.r = var_r5;
+            break;
+    }
+
+    GXSetTevColor(GX_TEVREG0, color);
+    GXBegin(GX_TRIANGLES, GX_VTXFMT7, 3);
+
+    GXWGFifo.s16 = nX;
+    GXWGFifo.s16 = nY;
+    GXWGFifo.s16 = nX + 8;
+    GXWGFifo.s16 = nY + 4;
+    GXWGFifo.s16 = nX;
+    GXWGFifo.s16 = nY + 8;
+
+    return 1;
+}
+#endif
+
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorParseArguments.s")
+#else
+static s32 simulatorParseArguments(void) {
+    s32 iArgument;
+    char* szText;
+    char* szValue;
+    s32 pad1;
+    s32 pad2;
+
+    gaszArgument[SAT_NAME] = NULL;
+    gaszArgument[SAT_PROGRESSIVE] = NULL;
+    gaszArgument[SAT_VIBRATION] = NULL;
+    gaszArgument[SAT_CONTROLLER] = NULL;
+    gaszArgument[SAT_XTRA] = NULL;
+    gaszArgument[SAT_MEMORYCARD] = NULL;
+    gaszArgument[SAT_MOVIE] = NULL;
+    gaszArgument[SAT_RESET] = NULL;
+
+    iArgument = 0;
+    while (iArgument < xlCoreGetArgumentCount()) {
+        xlCoreGetArgument(iArgument, &szText);
+        iArgument += 1;
+        if (szText[0] == '-' || szText[0] == '/' || szText[0] == '\\') {
+            if (szText[2] == '\0') {
+                xlCoreGetArgument(iArgument, &szValue);
+                iArgument += 1;
+            } else {
+                szValue = &szText[2];
+            }
+
+            switch (szText[1]) {
+                case 'V':
+                case 'v':
+                    gaszArgument[SAT_VIBRATION] = szValue;
+                    break;
+                case 'P':
+                case 'p':
+                    gaszArgument[SAT_PROGRESSIVE] = szValue;
+                    break;
+                case 'G':
+                case 'g':
+                    gaszArgument[SAT_CONTROLLER] = szValue;
+                    break;
+                case 'C':
+                case 'c':
+                    gaszArgument[SAT_MEMORYCARD] = szValue;
+                    break;
+                case 'M':
+                case 'm':
+                    gaszArgument[SAT_MOVIE] = szValue;
+                    break;
+                case 'R':
+                case 'r':
+                    gaszArgument[SAT_RESET] = szValue;
+                    break;
+                case 'X':
+                case 'x':
+                    gaszArgument[SAT_XTRA] = szValue;
+                    break;
+            }
+        } else {
+            gaszArgument[SAT_NAME] = szText;
+        }
+    }
+    return 1;
+}
+#endif
 
 s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument) {
     if (eType != SAT_NONE && pszArgument != NULL && gaszArgument[eType] != NULL) {

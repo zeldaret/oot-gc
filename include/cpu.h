@@ -2,6 +2,7 @@
 #define _CPU_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 typedef s32 (*Put8Func)(void* pObject, u32 nAddress, s8* pData);
 typedef s32 (*Put16Func)(void* pObject, u32 nAddress, s16* pData);
@@ -85,7 +86,7 @@ struct CpuFunction {
     /* 0x00 */ void* pnBase;
     /* 0x04 */ void* pfCode;
     /* 0x08 */ s32 nCountJump;
-    /* 0x0C */ struct CpuJump* aJump;
+    /* 0x0C */ CpuJump* aJump;
     /* 0x10 */ s32 nAddress0;
     /* 0x14 */ s32 nAddress1;
     /* 0x18 */ CpuCallerID* block;
@@ -219,11 +220,12 @@ typedef struct CpuAddress {
     /* 0x8 */ CpuFunction* pFunction;
 } CpuAddress; // size = 0xC
 
-typedef struct __anon_0x3F080 {
+// __anon_0x3F080
+typedef struct CpuCodeHack {
     /* 0x0 */ u32 nAddress;
     /* 0x4 */ u32 nOpcodeOld;
     /* 0x8 */ u32 nOpcodeNew;
-} __anon_0x3F080; // size = 0xC
+} CpuCodeHack; // size = 0xC
 
 // cpu_optimize
 typedef struct CpuOptimize {
@@ -240,6 +242,7 @@ typedef struct CpuOptimize {
 } CpuOptimize; // size = 0x28
 
 typedef struct Cpu Cpu;
+typedef s32 (*CpuExecuteFunc)(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 
 // _CPU
 struct Cpu {
@@ -261,12 +264,12 @@ struct Cpu {
     /* 0x00240 */ u64 aTLB[48][5];
     /* 0x009C0 */ s32 anFCR[32];
     /* 0x00A40 */ s64 anCP0[32];
-    /* 0x00B40 */ s32 (*pfStep)(Cpu*);
-    /* 0x00B44 */ s32 (*pfJump)(Cpu*);
-    /* 0x00B48 */ s32 (*pfCall)(Cpu*);
-    /* 0x00B4C */ s32 (*pfIdle)(Cpu*);
-    /* 0x00B50 */ s32 (*pfRam)(Cpu*);
-    /* 0x00B54 */ s32 (*pfRamF)(Cpu*);
+    /* 0x00B40 */ CpuExecuteFunc pfStep;
+    /* 0x00B44 */ CpuExecuteFunc pfJump;
+    /* 0x00B48 */ CpuExecuteFunc pfCall;
+    /* 0x00B4C */ CpuExecuteFunc pfIdle;
+    /* 0x00B50 */ CpuExecuteFunc pfRam;
+    /* 0x00B54 */ CpuExecuteFunc pfRamF;
     /* 0x00B58 */ u32 nTickLast;
     /* 0x00B5C */ u32 nRetrace;
     /* 0x00B60 */ u32 nRetraceUsed;
@@ -279,7 +282,7 @@ struct Cpu {
     /* 0x112A0 */ CpuTreeRoot* gTree;
     /* 0x112A4 */ CpuAddress aAddressCache[256];
     /* 0x11EA4 */ s32 nCountCodeHack;
-    /* 0x11EA8 */ __anon_0x3F080 aCodeHack[32];
+    /* 0x11EA8 */ CpuCodeHack aCodeHack[32];
     /* 0x12028 */ s64 nTimeRetrace;
     /* 0x12030 */ OSAlarm alarmRetrace;
     /* 0x12058 */ u32 nFlagRAM;
@@ -298,5 +301,8 @@ s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pf
 s32 cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
                     Get64Func pfGet64);
 s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
+s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, s32 memory_size);
+
+extern _XL_OBJECTTYPE gClassCPU;
 
 #endif

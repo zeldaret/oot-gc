@@ -2,6 +2,7 @@
 #define _RAM_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x4BFE7
 typedef struct Ram {
@@ -13,5 +14,7 @@ typedef struct Ram {
 s32 ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize);
 s32 ramSetSize(Ram* pRAM, s32 nSize);
 s32 ramGetSize(Ram* pRAM, s32* nSize);
+
+extern _XL_OBJECTTYPE gClassRAM;
 
 #endif

@@ -2,6 +2,7 @@
 #define _PIF_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x3C277
 typedef enum ControllerType {
@@ -29,5 +30,8 @@ typedef struct Pif {
 s32 pifReadRumble(Pif* pPIF, s32 channel, u16 address, u8* data);
 s32 pifWriteRumble(Pif* pPIF, s32 channel, u16 address, u8* data);
 s32 pifGetEControllerType(Pif* pPIF, s32 channel, ControllerType* type);
+s32 pifEvent(Pif* pPIF, s32 nEvent, void* pArgument);
+
+extern _XL_OBJECTTYPE gClassPIF;
 
 #endif

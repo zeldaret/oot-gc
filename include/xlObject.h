@@ -14,6 +14,11 @@ struct _XL_OBJECTTYPE {
     /* 0xC */ EventFunc pfEvent;
 }; // size: 0x10
 
+typedef struct __anon_0x5062 {
+    /* 0x0 */ struct tXL_LIST* pList;
+    /* 0x4 */ _XL_OBJECTTYPE* pType;
+} __anon_0x5062; // size = 0x8
+
 s32 xlObjectReset(void);
 s32 xlObjectSetup(void);
 s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument);

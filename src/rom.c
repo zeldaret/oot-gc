@@ -7,9 +7,6 @@
 #include "simGCN.h"
 #include "system.h"
 #include "xlCoreGCN.h"
-#include "xlObject.h"
-
-extern u32 gnFlagZelda;
 
 static s32 romMakeFreeCache(Rom* pROM, s32* piCache, RomCacheType eType);
 static s32 romSetBlockCache(Rom* pROM, s32 iBlock, RomCacheType eType);

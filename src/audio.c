@@ -4,7 +4,6 @@
 #include "rsp.h"
 #include "soundGCN.h"
 #include "system.h"
-#include "xlObject.h"
 #include "xlPostGCN.h"
 
 _XL_OBJECTTYPE gClassAudio = {

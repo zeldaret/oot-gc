@@ -1,0 +1,84 @@
+glabel Reader
+/* 00C460 80011A00 7C0802A6 */  mflr    r0
+/* 00C464 80011A04 3C608010 */  lis     r3, ActivePlayer@ha
+/* 00C468 80011A08 90010004 */  stw     r0, 4(r1)
+/* 00C46C 80011A0C 9421FFB8 */  stwu    r1, -0x48(r1)
+/* 00C470 80011A10 BEA1001C */  stmw    r21, 0x1c(r1)
+/* 00C474 80011A14 3BA39C80 */  addi    r29, r3, ActivePlayer@l
+/* 00C478 80011A18 3C608010 */  lis     r3, FreeReadBufferQueue@ha
+/* 00C47C 80011A1C 3B83B1C0 */  addi    r28, r3, FreeReadBufferQueue@l
+/* 00C480 80011A20 3BFD0000 */  addi    r31, r29, 0
+/* 00C484 80011A24 3BDD0000 */  addi    r30, r29, 0
+/* 00C488 80011A28 3B000000 */  li      r24, 0
+/* 00C48C 80011A2C 835D00B8 */  lwz     r26, 0xb8(r29)
+/* 00C490 80011A30 833D00BC */  lwz     r25, 0xbc(r29)
+lbl_80011A34:
+/* 00C494 80011A34 387C0000 */  addi    r3, r28, 0
+/* 00C498 80011A38 38810010 */  addi    r4, r1, 0x10
+/* 00C49C 80011A3C 38A00001 */  li      r5, 1
+/* 00C4A0 80011A40 4808DC69 */  bl      OSReceiveMessage
+/* 00C4A4 80011A44 83610010 */  lwz     r27, 0x10(r1)
+/* 00C4A8 80011A48 82BB0000 */  lwz     r21, 0(r27)
+lbl_80011A4C:
+/* 00C4AC 80011A4C 387E0000 */  addi    r3, r30, 0
+/* 00C4B0 80011A50 38950000 */  addi    r4, r21, 0
+/* 00C4B4 80011A54 38B90000 */  addi    r5, r25, 0
+/* 00C4B8 80011A58 38DA0000 */  addi    r6, r26, 0
+/* 00C4BC 80011A5C 3AE00000 */  li      r23, 0
+/* 00C4C0 80011A60 38E00000 */  li      r7, 0
+/* 00C4C4 80011A64 39000002 */  li      r8, 2
+/* 00C4C8 80011A68 480A12DD */  bl      DVDReadAsyncPrio
+/* 00C4CC 80011A6C 48000038 */  b       lbl_80011AA4
+lbl_80011A70:
+/* 00C4D0 80011A70 38760000 */  addi    r3, r22, 0
+/* 00C4D4 80011A74 38950000 */  addi    r4, r21, 0
+/* 00C4D8 80011A78 38B90000 */  addi    r5, r25, 0
+/* 00C4DC 80011A7C 38DA0000 */  addi    r6, r26, 0
+/* 00C4E0 80011A80 48000491 */  bl      movieDVDShowError
+/* 00C4E4 80011A84 2C16000B */  cmpwi   r22, 0xb
+/* 00C4E8 80011A88 4182000C */  beq     lbl_80011A94
+/* 00C4EC 80011A8C 2C16FFFF */  cmpwi   r22, -1
+/* 00C4F0 80011A90 40820014 */  bne     lbl_80011AA4
+lbl_80011A94:
+/* 00C4F4 80011A94 7FE3FB78 */  mr      r3, r31
+/* 00C4F8 80011A98 480A38E9 */  bl      DVDCancel
+/* 00C4FC 80011A9C 3AE00001 */  li      r23, 1
+/* 00C500 80011AA0 48000014 */  b       lbl_80011AB4
+lbl_80011AA4:
+/* 00C504 80011AA4 7FA3EB78 */  mr      r3, r29
+/* 00C508 80011AA8 480A3505 */  bl      DVDGetCommandBlockStatus
+/* 00C50C 80011AAC 7C761B79 */  or.     r22, r3, r3
+/* 00C510 80011AB0 4082FFC0 */  bne     lbl_80011A70
+lbl_80011AB4:
+/* 00C514 80011AB4 2C170000 */  cmpwi   r23, 0
+/* 00C518 80011AB8 4082FF94 */  bne     lbl_80011A4C
+/* 00C51C 80011ABC 38000000 */  li      r0, 0
+/* 00C520 80011AC0 900D8964 */  stw     r0, gMovieErrorToggle@sda21(r13)
+/* 00C524 80011AC4 389B0000 */  addi    r4, r27, 0
+/* 00C528 80011AC8 387C0020 */  addi    r3, r28, 0x20
+/* 00C52C 80011ACC 931B0004 */  stw     r24, 4(r27)
+/* 00C530 80011AD0 38A00001 */  li      r5, 1
+/* 00C534 80011AD4 4808DB0D */  bl      OSSendMessage
+/* 00C538 80011AD8 801D00C0 */  lwz     r0, 0xc0(r29)
+/* 00C53C 80011ADC 7F5ACA14 */  add     r26, r26, r25
+/* 00C540 80011AE0 80BD0050 */  lwz     r5, 0x50(r29)
+/* 00C544 80011AE4 7C780214 */  add     r3, r24, r0
+/* 00C548 80011AE8 809B0000 */  lwz     r4, 0(r27)
+/* 00C54C 80011AEC 7C032B96 */  divwu   r0, r3, r5
+/* 00C550 80011AF0 83240000 */  lwz     r25, 0(r4)
+/* 00C554 80011AF4 7C0029D6 */  mullw   r0, r0, r5
+/* 00C558 80011AF8 7C601850 */  subf    r3, r0, r3
+/* 00C55C 80011AFC 3805FFFF */  addi    r0, r5, -1
+/* 00C560 80011B00 7C030040 */  cmplw   r3, r0
+/* 00C564 80011B04 40820020 */  bne     lbl_80011B24
+/* 00C568 80011B08 881D00A6 */  lbz     r0, 0xa6(r29)
+/* 00C56C 80011B0C 540007FF */  clrlwi. r0, r0, 0x1f
+/* 00C570 80011B10 4182000C */  beq     lbl_80011B1C
+/* 00C574 80011B14 835D0064 */  lwz     r26, 0x64(r29)
+/* 00C578 80011B18 4800000C */  b       lbl_80011B24
+lbl_80011B1C:
+/* 00C57C 80011B1C 387C00D8 */  addi    r3, r28, 0xd8
+/* 00C580 80011B20 4809037D */  bl      OSSuspendThread
+lbl_80011B24:
+/* 00C584 80011B24 3B180001 */  addi    r24, r24, 1
+/* 00C588 80011B28 4BFFFF0C */  b       lbl_80011A34
