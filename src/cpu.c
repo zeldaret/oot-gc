@@ -3616,11 +3616,11 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             nAddress = pCPU->aGPR[MIPS_RS(nOpcode)].s32 + MIPS_IMM_S16(nOpcode);
             if (CPU_DEVICE(nAddress)->pfGet32(CPU_DEVICE(nAddress)->pObject,
                                               nAddress + CPU_DEVICE(nAddress)->nOffsetAddress, &nData32)) {
-                if (MIPS_FT(nOpcode) & 1) {
-                    pCPU->aFPR[MIPS_FT(nOpcode) - 1].u64 &= 0xFFFFFFFF;
-                    pCPU->aFPR[MIPS_FT(nOpcode) - 1].u64 |= (s64)nData32 << 32;
+                if (MIPS_RT(nOpcode) & 1) {
+                    pCPU->aFPR[MIPS_RT(nOpcode) - 1].u64 &= 0xFFFFFFFF;
+                    pCPU->aFPR[MIPS_RT(nOpcode) - 1].u64 |= (s64)nData32 << 32;
                 } else {
-                    pCPU->aFPR[MIPS_FT(nOpcode)].s32 = nData32;
+                    pCPU->aFPR[MIPS_RT(nOpcode)].s32 = nData32;
                 }
             }
             break;
@@ -3635,7 +3635,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             nAddress = pCPU->aGPR[MIPS_RS(nOpcode)].s32 + MIPS_IMM_S16(nOpcode);
             if (CPU_DEVICE(nAddress)->pfGet64(CPU_DEVICE(nAddress)->pObject,
                                               nAddress + CPU_DEVICE(nAddress)->nOffsetAddress, &nData64)) {
-                pCPU->aFPR[MIPS_FT(nOpcode)].s64 = nData64;
+                pCPU->aFPR[MIPS_RT(nOpcode)].s64 = nData64;
             }
             break;
         case 0x37: // ld
