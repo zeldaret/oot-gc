@@ -11,8 +11,8 @@
 #include "simGCN.h"
 #include "system.h"
 #include "video.h"
-#include "xlObject.h"
 #include "xlHeap.h"
+#include "xlObject.h"
 
 // MIPS instruction encoding:
 // R-type: opcode (6 bits) | rs (5 bits) | rt (5 bits) | rd (5 bits) | sa (5 bits) | funct (6 bits)
@@ -4578,7 +4578,7 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
             pFunction->heapID = 1;
             second = 1;
         }
-    
+
         if (pFunction->heapID == 1) {
             pFunction->heapID = 1;
             nBlockCount = (memory_size + 0x1FF) / 512;
@@ -4599,7 +4599,7 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
             nPackCount = ARRAY_COUNT(pCPU->aHeap2Flag);
             anPack = pCPU->aHeap2Flag;
         }
-    
+
         if (nBlockCount >= 32) {
             pFunction->heapID = 3;
             pFunction->heapWhere = -1;
@@ -4726,7 +4726,8 @@ static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
                     cancel = 1;
                 }
             } else {
-                if ((end >= root->restore->nAddress1) && ((start <= root->restore->nAddress0) || (start <= root->restore->nAddress1))) {
+                if ((end >= root->restore->nAddress1) &&
+                    ((start <= root->restore->nAddress0) || (start <= root->restore->nAddress1))) {
                     cancel = 1;
                 }
             }
