@@ -2782,32 +2782,22 @@ static s32 cpuHeapReset(u32* array, s32 count) {
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapTake.s")
-#else
-s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, s32 memory_size) {
-    // Parameters
-    // void* heap; // r3
-    // struct _CPU* pCPU; // r1+0xC
-    // struct cpu_function* pFunction; // r1+0x10
-    // s32 memory_size; // r6
-
-    // Local variables
-    s32 done; // r12
-    s32 second; // r7
-    u32* anPack; // r8
-    s32 nPackCount; // r9
-    s32 nBlockCount; // r10
-    s32 nOffset; // r27
-    s32 nCount; // r26
-    s32 iPack; // r1+0x8
-    u32 nPack; // r25
-    u32 nMask; // r24
-    u32 nMask0; // r23
+s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) {
+    s32 done;
+    s32 second;
+    u32* anPack;
+    s32 nPackCount;
+    int nBlockCount;
+    s32 nOffset;
+    s32 nCount;
+    s32 iPack;
+    u32 nPack;
+    u32 nMask;
+    u32 nMask0;
 
     done = 0;
     second = 0;
-    do {
+    for (;;) {
         if (pFunction->heapID == -1) {
             if (memory_size > 0x3200) {
                 pFunction->heapID = 2;
@@ -2821,50 +2811,48 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, s32 memory_size) 
             pFunction->heapID = 1;
             second = 1;
         }
-
+    
         if (pFunction->heapID == 1) {
             pFunction->heapID = 1;
             nBlockCount = (memory_size + 0x1FF) / 512;
             nPackCount = ARRAY_COUNT(pCPU->aHeap1Flag);
             anPack = pCPU->aHeap1Flag;
 
-            if (second && (nBlockCount >= 32)) {
+            if (second && nBlockCount >= 32) {
                 pFunction->heapID = 3;
                 pFunction->heapWhere = -1;
-                if (!xlHeapTake(&heap, memory_size)) {
+                if (!xlHeapTake(heap, memory_size)) {
                     return 0;
                 }
                 return 1;
             }
-        } else {
-            if (pFunction->heapID == 2) {
-                pFunction->heapID = 2;
-                nBlockCount = (memory_size + 0x9FF) / 2560;
-                nPackCount = ARRAY_COUNT(pCPU->aHeap2Flag);
-                anPack = pCPU->aHeap2Flag;
+        } else if (pFunction->heapID == 2) {
+            pFunction->heapID = 2;
+            nBlockCount = (memory_size + 0x9FF) / 2560;
+            nPackCount = ARRAY_COUNT(pCPU->aHeap2Flag);
+            anPack = pCPU->aHeap2Flag;
+        }
+    
+        if (nBlockCount >= 32) {
+            pFunction->heapID = 3;
+            pFunction->heapWhere = -1;
+            if (!xlHeapTake(heap, memory_size)) {
+                return 0;
             }
-
-            if (nBlockCount >= 32) {
-                pFunction->heapID = 3;
-                pFunction->heapWhere = -1;
-                if (!xlHeapTake(&heap, memory_size)) {
-                    return 0;
-                }
-                return 1;
-            }
+            return 1;
         }
 
         nCount = 33 - nBlockCount;
+        nMask0 = (1 << nBlockCount) - 1;
         for (iPack = 0; iPack < nPackCount; iPack++) {
-            nPack = anPack[iPack];
-            if ((nPack + 0x10000) != -1) {
-                nMask = (1 << nBlockCount) - 1;
+            if ((nPack = anPack[iPack]) != -1) {
+                nMask = nMask0;
                 nOffset = nCount;
                 do {
                     if (!(nPack & nMask)) {
                         anPack[iPack] |= nMask;
+                        pFunction->heapWhere = (nBlockCount << 16) | ((iPack << 5) + (nCount - nOffset));
                         done = 1;
-                        pFunction->heapWhere = ((nBlockCount << 0x10) | (nCount - nOffset));
                         break;
                     }
                     nMask = nMask << 1;
@@ -2877,23 +2865,25 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, s32 memory_size) 
             }
         }
 
-        if (!second) {
+        if (done) {
+            break;
+        }
+
+        if (second) {
             pFunction->heapID = -1;
             pFunction->heapWhere = -1;
             return 0;
         }
-    } while(!done);
+    }
 
     if (pFunction->heapID == 1) {
-        // heap = (void*)((s32)pCPU->gHeap1 + (pFunction->heapWhere * 0x200));
-        heap = (void*)((s32)pCPU->gHeap1 + ((pFunction->heapWhere << 9) & 0x01FFFE00));
+        *((s32*)heap) = (s32)pCPU->gHeap1 + (pFunction->heapWhere & 0xFFFF) * 0x200;
     } else {
-        heap = (void*)((s32)pCPU->gHeap2 + (pFunction->heapWhere * 0xA00));
+        *((s32*)heap) = (s32)pCPU->gHeap2 + (pFunction->heapWhere & 0xFFFF) * 0xA00;
     }
 
     return 1;
 }
-#endif
 
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapFree.s")
@@ -3004,47 +2994,7 @@ inline void treeCallerInit(CpuCallerID* block, s32 total) {
     }
 }
 
-#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCallerCheck.s")
-#else
-static s32 treeCallerCheck(Cpu* pCPU, CpuFunction* tree, s32 flag, s32 nAddress0, s32 nAddress1) {
-    // Parameters
-    // struct _CPU* pCPU; // r24
-    // struct cpu_function* tree; // r25
-    // s32 flag; // r26
-    // s32 nAddress0; // r27
-    // s32 nAddress1; // r28
-
-    // Local variables
-    s32 count; // r30
-    s32 saveGCN; // r6
-    s32 saveN64; // r1+0x8
-    s32* addr_function; // r1+0x8
-    s32* addr_call; // r29
-
-    if (tree->callerID_total == 0) {
-        return 0;
-    }
-
-    if (tree->block != NULL) {
-        for (count = 0; count < tree->callerID_total;  count++) {
-            saveN64 = tree->block->N64address;
-            saveGCN = tree->block->GCNaddress;
-            if ((saveN64 >= nAddress0) && (saveN64 <= nAddress1) && (saveGCN != 0)) {
-                addr_call = (s32*)(saveGCN - ((flag ? 3 : 2) * 4));
-                addr_call[0] = (s32) (((u32) saveN64 >> 0x10U) | 0x3CA00000);
-                addr_call[4] = (s32) ((s16) saveN64 | 0x60A50000);
-                saveGCN = ((pCPU->pfCall(pCPU) - saveGCN) & 0x03FFFFFC) | 0x48000000 | 1;
-                tree->block->GCNaddress = 0;
-                DCStoreRange(addr_call, 0x10);
-                ICInvalidateRange(addr_call, 0x10);
-            }
-        }
-    }
-
-    return 1;
-}
-#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeInit.s")
 
