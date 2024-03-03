@@ -4652,18 +4652,10 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
     return 1;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapFree.s")
-#else
 s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
-    // Parameters
-    // struct _CPU* pCPU; // r1+0x8
-    // struct cpu_function* pFunction; // r4
-
-    // Local variables
-    u32* anPack; // r8
-    s32 iPack; // r1+0x8
-    u32 nMask; // r6
+    u32* anPack;
+    s32 iPack;
+    u32 nMask;
 
     if (pFunction->heapID == 1) {
         anPack = pCPU->aHeap1Flag;
@@ -4688,7 +4680,7 @@ s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
     }
 
     nMask = ((1 << (pFunction->heapWhere >> 0x10)) - 1) << (pFunction->heapWhere & 0x1F);
-    iPack = (pFunction->heapWhere >> 5) & 0x7FF;
+    iPack = ((pFunction->heapWhere & 0xFFFF) >> 5);
 
     if ((anPack[iPack] & nMask) == nMask) {
         anPack[iPack] &= ~nMask;
@@ -4699,7 +4691,6 @@ s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
 
     return 0;
 }
-#endif
 
 static s32 cpuTreeTake(void* heap, s32* where) {
     s32 done;
