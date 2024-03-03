@@ -578,7 +578,6 @@ const f64 D_80135FB0 = 3.0;
 const f32 D_80135FB8 = 0.5f;
 const f64 D_80135FC0 = 4503601774854144.0;
 
-static s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice);
 static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 
 static s32 cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
@@ -4182,30 +4181,17 @@ s32 cpuFreeDevice(Cpu* pCPU, s32 i) {
     return ret;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapAddress.s")
-#else
 static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
-    // Parameters
-    // struct _CPU* pCPU; // r30
-    // s32* piDevice; // r31
-    // u32 nVirtual; // r28
-    // u32 nPhysical; // r6
-    // s32 nSize; // r29
-
-    // Local variables
-    s32 iDeviceTarget; // r1+0x1C
-    s32 iDeviceSource; // r5
-    u32 nAddressVirtual0; // r5
-    u32 nAddressVirtual1; // r6
+    s32 iDeviceTarget;
+    s32 iDeviceSource;
+    u32 nAddressVirtual0;
+    u32 nAddressVirtual1;
 
     for (iDeviceSource = 0; iDeviceSource < ARRAY_COUNT(pCPU->apDevice); iDeviceSource++) {
-        if (pCPU->apDevice[iDeviceSource] != NULL) {
-            if (iDeviceSource == pCPU->apDevice[iDeviceSource]->nType ||
-                pCPU->apDevice[iDeviceSource]->nAddressPhysical0 > nPhysical ||
-                nPhysical <= pCPU->apDevice[iDeviceSource]->nAddressPhysical1) {
-                break;
-            }
+        if (iDeviceSource != pCPU->iDeviceDefault && pCPU->apDevice[iDeviceSource] != NULL &&
+            pCPU->apDevice[iDeviceSource]->nAddressPhysical0 <= nPhysical &&
+            nPhysical <= pCPU->apDevice[iDeviceSource]->nAddressPhysical1) {
+            break;
         }
     }
 
@@ -4219,10 +4205,11 @@ static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, 
         return 0;
     }
 
-    for (nAddressVirtual0 = 0; nAddressVirtual0 < ARRAY_COUNT(pCPU->aiDevice); nAddressVirtual0++) {
-        if (nAddressVirtual0 < (nVirtual + (nSize - 1))) {
-            pCPU->aiDevice[nVirtual >> 16] = (u8)iDeviceTarget;
-        }
+    nAddressVirtual0 = nVirtual;
+    nAddressVirtual1 = nVirtual + nSize - 1;
+    while (nAddressVirtual0 < nAddressVirtual1) {
+        pCPU->aiDevice[nAddressVirtual0 >> 16] = iDeviceTarget;
+        nAddressVirtual0 += 0x10000;
     }
 
     if (piDevice != NULL) {
@@ -4231,7 +4218,6 @@ static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, 
 
     return 1;
 }
-#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
 
