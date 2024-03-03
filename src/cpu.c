@@ -4701,7 +4701,46 @@ s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuTreeTake.s")
+static s32 cpuTreeTake(void* heap, s32* where) {
+    s32 done;
+    s32 nOffset;
+    s32 nCount;
+    s32 iPack;
+    u32 nPack;
+    u32 nMask;
+    u32 nMask0;
+
+    done = 0;
+    for (iPack = 0; iPack < 125; iPack++) {
+        if ((nPack = aHeapTreeFlag[iPack]) != -1) {
+            nMask = 1;
+            nOffset = 1 << 5;
+            do {
+                if (!(nPack & nMask)) {
+                    aHeapTreeFlag[iPack] |= nMask;
+                    *where = (1 << 16) | ((iPack << 5) + ((1 << 5) - nOffset));
+                    done = 1;
+                    break;
+                }
+                nMask = nMask << 1;
+                nOffset--;
+            } while (nOffset != 0);
+        }
+
+        if (done) {
+            break;
+        }
+    }
+
+    if (done == 0) {
+        *where = -1;
+        return 0;
+    }
+
+    *((s32*)heap) = (s32)gHeapTree + ((*where & 0xFFFF) * 0x48);
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
 
