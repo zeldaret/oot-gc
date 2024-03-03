@@ -30,16 +30,6 @@ extern s32 gz_iconSize;
 
 extern MemCard mCard;
 
-//! TODO: remove when these functions are matched
-static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData);
-static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData);
-static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData);
-static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData);
-static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData);
-static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
-static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
-static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
-
 //! TODO: import MSL headers
 extern int atoi(const char* str);
 
@@ -1294,21 +1284,33 @@ static s32 systemGetException(System* pSystem, SystemInterruptType eType, System
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
+static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet16.s")
+static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet32.s")
+static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet64.s")
+static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut8.s")
+static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut16.s")
+static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut32.s")
+static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
+static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData) { return 1; }
 
 static s32 __systemCopyROM_Complete(void) {
     s32 iAddress;
