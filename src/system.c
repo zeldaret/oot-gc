@@ -1304,21 +1304,13 @@ static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData) {
     return 1;
 }
 
-static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData) {
-    return 1;
-}
+static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData) { return 1; }
 
-static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData) {
-    return 1;
-}
+static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData) { return 1; }
 
-static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData) {
-    return 1;
-}
+static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData) { return 1; }
 
-static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData) {
-    return 1;
-}
+static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData) { return 1; }
 
 static s32 __systemCopyROM_Complete(void) {
     s32 iAddress;
