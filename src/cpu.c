@@ -208,16 +208,22 @@ void* jtbl_800EC130[] = {
 
 char D_800EC1E0[] = "_cpuGCN.c";
 
+#ifndef NON_MATCHING
+// cpuExecuteLoadStoreF
 void* jtbl_800EC1EC[] = {
     &lbl_8003789C, &lbl_80038010, &lbl_80038010, &lbl_80038010, &lbl_80037AF0,
     &lbl_80038010, &lbl_80037D08, &lbl_80038010, &lbl_800379D8, &lbl_80038010,
     &lbl_80038010, &lbl_80038010, &lbl_80037BF8, &lbl_80038010, &lbl_80037E90,
 };
+#endif
 
+#ifndef NON_MATCHING
+// cpuExecuteLoadStore
 void* jtbl_800EC228[] = {
     &lbl_800383F4, &lbl_800386AC, &lbl_80038E70, &lbl_80038964, &lbl_80038560, &lbl_80038818,
     &lbl_80038E70, &lbl_80038E70, &lbl_80038AB0, &lbl_80038BF0, &lbl_80038E70, &lbl_80038D30,
 };
+#endif
 
 #ifndef NON_MATCHING
 // cpuExecuteOpcode
@@ -3826,11 +3832,499 @@ static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
     return nAddressGCN;
 }
 
+#ifndef NON_MATCHING
 static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStore.s")
+#else
+static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+    u32* opcode;
+    s32 address;
+    s32 iRegisterA;
+    s32 iRegisterB;
+    u8 device;
+    s32 total;
+    s32 count;
+    s32 save;
+    s32 interpret;
+    s32* before;
+    s32* after;
+    s32 check2;
+    s32* anCode;
+    s32 pad;
 
+    count = 0;
+    save = 0;
+    interpret = 0;
+    check2 = 0x90C30000 + OFFSETOF(pCPU, nWaitPC);
+
+    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &opcode, nAddressN64, NULL);
+
+    address = pCPU->aGPR[MIPS_RS(*opcode)].s32 + MIPS_IMM_S16(*opcode);
+    device = pCPU->aiDevice[(u32)(address) >> 16];
+
+    if (pCPU->nCompileFlag & 0x100) {
+        anCode = (s32*)nAddressGCN - 3;
+        before = anCode - 2;
+        after = (s32*)nAddressGCN + 3;
+    } else {
+        anCode = (s32*)nAddressGCN - 3;
+        before = anCode - 2;
+        after = (s32*)nAddressGCN + 2;
+    }
+
+    if (((u32)address >> 28) < 0x08) {
+        interpret = 1;
+    }
+
+    if (!interpret && device >= 0x80) {
+        switch (MIPS_OP(*opcode)) {
+            case 0x20: // lb
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 5;
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x88070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                anCode[count++] = 0x7C000774 | (iRegisterA << 21) | (iRegisterA << 16);
+                if (ganMapGPR[MIPS_RT(*opcode)] & 0x100) {
+                    anCode[count++] = 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                break;
+            case 0x24: // lbu
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 5;
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
+                anCode[count++] = 0x88070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                if (ganMapGPR[MIPS_RT(*opcode)] & 0x100) {
+                    anCode[count++] = 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                break;
+            case 0x21: // lh
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 5;
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
+                anCode[count++] = 0xA0070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                anCode[count++] = 0x7C000734 | (iRegisterA << 21) | (iRegisterA << 16);
+                if (ganMapGPR[MIPS_RT(*opcode)] & 0x100) {
+                    anCode[count++] = 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                break;
+            case 0x25: // lhu
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 5;
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
+                anCode[count++] = 0xA0070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                if (ganMapGPR[MIPS_RT(*opcode)] & 0x100) {
+                    anCode[count++] = 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                break;
+            case 0x23: // lw
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 5;
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
+                anCode[count++] = 0x80070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                if (ganMapGPR[MIPS_RT(*opcode)] & 0x100) {
+                    anCode[count++] = 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                break;
+            case 0x28: // sb
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 7;
+                    anCode[count++] = 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+                anCode[count++] = 0x7CE00000 | (iRegisterB << 16) | 0x4214;
+                anCode[count++] = 0x98070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                break;
+            case 0x29: // sh
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 7;
+                    anCode[count++] = 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+                anCode[count++] = 0x7CE00000 | (iRegisterB << 16) | 0x4214;
+                anCode[count++] = 0xB0070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                break;
+            case 0x2B: // sw
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4) & 0xFFFF);
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 7;
+                    anCode[count++] = 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+                anCode[count++] = 0x7CE00000 | (iRegisterB << 16) | 0x4214;
+                anCode[count++] = 0x90070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
+                break;
+            default:
+                OSPanic(D_800EC1E0, 4725, D_8013525C);
+                break;
+        }
+    } else {
+        interpret = 1;
+        anCode[count++] = 0x3CA00000 | ((u32)nAddressN64 >> 16);
+        anCode[count++] = 0x60A50000 | ((u32)nAddressN64 & 0xFFFF);
+        anCode[count++] = 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[count]) & 0x03FFFFFC) | 1;
+    }
+
+    if (pCPU->nCompileFlag & 0x100) {
+        if (6 - count >= 2) {
+            save = count;
+            anCode[count++] = 0x48000000 | (((u32)&anCode[6] - (u32)&anCode[count]) & 0xFFFF);
+        }
+        while (count <= 5) {
+            anCode[count++] = 0x60000000;
+        }
+        total = 6;
+    } else {
+        if (5 - count >= 2) {
+            save = count;
+            anCode[count++] = 0x48000000 | (((u32)&anCode[5] - (u32)&anCode[count]) & 0xFFFF);
+        }
+        while (count <= 4) {
+            anCode[count++] = 0x60000000;
+        }
+        total = 5;
+    }
+
+    if (!interpret && before[0] == 0x38C00000 && before[1] == check2) {
+        before[0] = 0x48000000 | (((u32)&before[2] - (u32)&before[0]) & 0xFFFF);
+        before[1] = 0x60000000;
+        DCStoreRange(before, 8);
+        ICInvalidateRange(before, 8);
+
+        if (save != 0) {
+            anCode[save] = 0x48000000 | (((u32)&after[2] - (u32)&anCode[save]) & 0xFFFF);
+        }
+        after[0] = 0x60000000;
+        after[1] = 0x60000000;
+
+        total += 2;
+        pCPU->nWaitPC = -1;
+    }
+
+    DCStoreRange(anCode, total * 4);
+    ICInvalidateRange(anCode, total * 4);
+    return (s32)anCode;
+}
+#endif
+
+#ifndef NON_MATCHING
 static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStoreF.s")
+#else
+static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+    u32* opcode;
+    s32 address;
+    s32 iRegisterA;
+    s32 iRegisterB;
+    u8 device;
+    s32 total;
+    s32 count;
+    s32 save;
+    s32 interpret;
+    s32* before;
+    s32* after;
+    s32 check2;
+    s32* anCode;
+    s32 rt;
+    s32 pad;
+
+    count = 0;
+    save = 0;
+    interpret = 0;
+    check2 = 0x90C30000 + OFFSETOF(pCPU, nWaitPC);
+
+    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &opcode, nAddressN64, NULL);
+
+    address = pCPU->aGPR[MIPS_RS(*opcode)].s32 + MIPS_IMM_S16(*opcode);
+    device = pCPU->aiDevice[(u32)(address) >> 16];
+
+    if (pCPU->nCompileFlag & 0x100) {
+        anCode = (s32*)nAddressGCN - 3;
+        before = anCode - 2;
+        after = (s32*)nAddressGCN + 4;
+    } else {
+        anCode = (s32*)nAddressGCN - 3;
+        before = anCode - 2;
+        after = (s32*)nAddressGCN + 3;
+    }
+
+    if (((u32)address >> 28) < 0x08) {
+        interpret = 1;
+    }
+
+    if (!interpret && device >= 0x80) {
+        rt = MIPS_RT(*opcode);
+        switch (MIPS_OP(*opcode)) {
+            case 0x31: // lwc1
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if ((pCPU->nCompileFlag & 0x100) && ((u32)address >> 28) >= 10) {
+                    anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+
+                if (rt % 2 == 1) {
+                    anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
+                    anCode[count++] = 0x90A30000 + OFFSETOF(pCPU, aFPR[rt - 1]);
+                } else {
+                    anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
+                    anCode[count++] = 0x90A30000 + (OFFSETOF(pCPU, aFPR[rt]) + 4);
+                }
+                break;
+            case 0x39: // swc1
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if ((pCPU->nCompileFlag & 0x100) && ((u32)address >> 28) >= 10) {
+                    anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                if (rt % 2 == 1) {
+                    anCode[count++] = 0x80A30000 + OFFSETOF(pCPU, aFPR[rt - 1]);
+                } else {
+                    anCode[count++] = 0x80A30000 + OFFSETOF(pCPU, aFPR[rt]) + 4;
+                }
+                anCode[count++] = 0x90A70000 | MIPS_IMM_U16(*opcode);
+                break;
+            case 0x35: // ldc1
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if ((pCPU->nCompileFlag & 0x100) && ((u32)address >> 28) >= 10) {
+                    anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
+                anCode[count++] = 0x90A30000 + OFFSETOF(pCPU, aFPR[rt]);
+                anCode[count++] = 0x80A70000 | (MIPS_IMM_U16(*opcode) + 4);
+                anCode[count++] = 0x90A30000 + (OFFSETOF(pCPU, aFPR[rt]) + 4);
+                break;
+            case 0x3D: // sdc1
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if ((pCPU->nCompileFlag & 0x100) && ((u32)address >> 28) >= 10) {
+                    anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x80A30000 + OFFSETOF(pCPU, aFPR[rt]);
+                anCode[count++] = 0x90A70000 | MIPS_IMM_U16(*opcode);
+                anCode[count++] = 0x80A30000 + (OFFSETOF(pCPU, aFPR[rt]) + 4);
+                anCode[count++] = 0x90A70000 | (MIPS_IMM_U16(*opcode) + 4);
+                break;
+            case 0x37: // ld
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 5;
+                }
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 6;
+                    anCode[count++] = 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
+                anCode[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]);
+                anCode[count++] = 0x80070000 | (iRegisterA << 21) | (MIPS_IMM_U16(*opcode) + 4);
+                anCode[count++] = (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4);
+                break;
+            case 0x3F: // sd
+                if ((iRegisterB = ganMapGPR[MIPS_RS(*opcode)]) & 0x100) {
+                    iRegisterB = 7;
+                    anCode[count++] = 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(*opcode)]) + 4) & 0xFFFF);
+                }
+
+                if (pCPU->nCompileFlag & 0x100) {
+                    if (pCPU->nCompileFlag & 0x1000) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    } else if (((u32)address >> 28) >= 10) {
+                        anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
+                    }
+                }
+
+                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]);
+                anCode[count++] = 0x90C70000 | MIPS_IMM_U16(*opcode);
+
+                if ((iRegisterA = ganMapGPR[MIPS_RT(*opcode)]) & 0x100) {
+                    iRegisterA = 6;
+                    anCode[count++] = 0x80C30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]) + 4);
+                }
+                anCode[count++] = 0x90070000 | (iRegisterA << 21) | (MIPS_IMM_U16(*opcode) + 4);
+                break;
+            default:
+                OSPanic(D_800EC1E0, 5181, D_8013525C);
+                break;
+        }
+    } else {
+        interpret = 1;
+        anCode[count++] = 0x3CA00000 | ((u32)nAddressN64 >> 16);
+        anCode[count++] = 0x60A50000 | ((u32)nAddressN64 & 0xFFFF);
+        anCode[count++] = 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[count]) & 0x03FFFFFC) | 1;
+    }
+
+    if (pCPU->nCompileFlag & 0x100) {
+        if (7 - count >= 2) {
+            save = count;
+            anCode[count++] = 0x48000000 | (((u32)&anCode[7] - (u32)&anCode[count]) & 0xFFFF);
+        }
+        while (count <= 6) {
+            anCode[count++] = 0x60000000;
+        }
+        total = 7;
+    } else {
+        if (6 - count >= 2) {
+            save = count;
+            anCode[count++] = 0x48000000 | (((u32)&anCode[6] - (u32)&anCode[count]) & 0xFFFF);
+        }
+        while (count <= 5) {
+            anCode[count++] = 0x60000000;
+        }
+        total = 6;
+    }
+
+    if (!interpret && before[0] == 0x38C00000 && before[1] == check2) {
+        before[0] = 0x48000000 | (((u32)&before[2] - (u32)&before[0]) & 0xFFFF);
+        before[1] = 0x60000000;
+        DCStoreRange(before, 8);
+        ICInvalidateRange(before, 8);
+
+        if (save != 0) {
+            anCode[save] = 0x48000000 | (((u32)&after[2] - (u32)&anCode[save]) & 0xFFFF);
+        }
+        after[0] = 0x60000000;
+        after[1] = 0x60000000;
+
+        total += 2;
+        pCPU->nWaitPC = -1;
+    }
+
+    DCStoreRange(anCode, total * 4);
+    ICInvalidateRange(anCode, total * 4);
+    return (s32)anCode;
+}
+#endif
 
 static s32 cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFunction) {
     s32 iGPR;
