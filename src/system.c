@@ -22,14 +22,6 @@
 #include "sram.h"
 #include "video.h"
 
-extern void* gpFrame;
-extern void* gpSound;
-
-extern s32 gz_bnrSize;
-extern s32 gz_iconSize;
-
-extern MemCard mCard;
-
 //! TODO: import MSL headers
 extern int atoi(const char* str);
 
