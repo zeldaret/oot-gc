@@ -112,8 +112,8 @@ extern void* gpFrame;
 extern void* gpSound;
 extern System* gpSystem;
 
-extern s32 gz_bnrSize;
-extern s32 gz_iconSize;
+extern u32 gz_bnrSize;
+extern u32 gz_iconSize;
 
 void simulatorUnpackTexPalette(__anon_0xDB69* pal);
 s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
