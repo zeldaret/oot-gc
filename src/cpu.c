@@ -42,6 +42,7 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
 static void treeCallerInit(CpuCallerID* block, s32 total);
 static s32 treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
 inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -577,8 +578,6 @@ const f64 D_80135FA8 = 0.5;
 const f64 D_80135FB0 = 3.0;
 const f32 D_80135FB8 = 0.5f;
 const f64 D_80135FC0 = 4503601774854144.0;
-
-static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 
 static s32 cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
@@ -4161,24 +4160,20 @@ static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
 #endif
 
-s32 cpuFreeDevice(Cpu* pCPU, s32 i) {
-    s32 ret;
-
-    if (!xlHeapFree((void**)&pCPU->apDevice[i])) {
-        ret = 0;
+s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
+    if (!xlHeapFree((void**)&pCPU->apDevice[iDevice])) {
+        return 0;
     } else {
-        s32 j;
+        s32 iAddress;
 
-        pCPU->apDevice[i] = NULL;
-        for (j = 0; j < ARRAY_COUNT(pCPU->aiDevice); j++) {
-            if (pCPU->aiDevice[j] == i) {
-                pCPU->aiDevice[j] = pCPU->iDeviceDefault;
+        pCPU->apDevice[iDevice] = NULL;
+        for (iAddress = 0; iAddress < ARRAY_COUNT(pCPU->aiDevice); iAddress++) {
+            if (pCPU->aiDevice[iAddress] == iDevice) {
+                pCPU->aiDevice[iAddress] = pCPU->iDeviceDefault;
             }
         }
-        ret = 1;
+        return 1;
     }
-
-    return ret;
 }
 
 static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
@@ -4222,12 +4217,12 @@ static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
 
 static s32 cpuGetMode(u64 nStatus, CpuMode* peMode) {
-    if (nStatus & (1 << 1)) {
+    if (nStatus & 2) {
         *peMode = CM_KERNEL;
         return 1;
     }
 
-    if (!(nStatus & (1 << 2))) {
+    if (!(nStatus & 4)) {
         switch (nStatus & 0x18) {
             case 0x10:
                 *peMode = CM_USER;
@@ -4355,7 +4350,7 @@ inline s32 cpuInitAllDevices(Cpu* pCPU) {
 }
 
 inline s32 cpuFreeAllDevices(Cpu* pCPU) {
-    s32 i = 0;
+    s32 i;
 
     for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
         if (pCPU->apDevice[i] != NULL) {
@@ -4567,7 +4562,7 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
 
         if (pFunction->heapID == 1) {
             pFunction->heapID = 1;
-            nBlockCount = (memory_size + 0x1FF) / 512;
+            nBlockCount = (memory_size + 0x1FF) / 0x200;
             nPackCount = ARRAY_COUNT(pCPU->aHeap1Flag);
             anPack = pCPU->aHeap1Flag;
 
@@ -4581,7 +4576,7 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
             }
         } else if (pFunction->heapID == 2) {
             pFunction->heapID = 2;
-            nBlockCount = (memory_size + 0x9FF) / 2560;
+            nBlockCount = (memory_size + 0x9FF) / 0xA00;
             nPackCount = ARRAY_COUNT(pCPU->aHeap2Flag);
             anPack = pCPU->aHeap2Flag;
         }
@@ -4665,7 +4660,7 @@ s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
         return 0;
     }
 
-    nMask = ((1 << (pFunction->heapWhere >> 0x10)) - 1) << (pFunction->heapWhere & 0x1F);
+    nMask = ((1 << (pFunction->heapWhere >> 16)) - 1) << (pFunction->heapWhere & 0x1F);
     iPack = ((pFunction->heapWhere & 0xFFFF) >> 5);
 
     if ((anPack[iPack] & nMask) == nMask) {
@@ -4691,11 +4686,11 @@ static s32 cpuTreeTake(void* heap, s32* where) {
     for (iPack = 0; iPack < 125; iPack++) {
         if ((nPack = aHeapTreeFlag[iPack]) != -1) {
             nMask = 1;
-            nOffset = 1 << 5;
+            nOffset = 32;
             do {
                 if (!(nPack & nMask)) {
                     aHeapTreeFlag[iPack] |= nMask;
-                    *where = (1 << 16) | ((iPack << 5) + ((1 << 5) - nOffset));
+                    *where = (1 << 16) | ((iPack << 5) + (32 - nOffset));
                     done = 1;
                     break;
                 }
