@@ -12,6 +12,7 @@
 #include "system.h"
 #include "video.h"
 #include "xlHeap.h"
+#include "xlObject.h"
 
 // MIPS instruction encoding:
 // R-type: opcode (6 bits) | rs (5 bits) | rt (5 bits) | rd (5 bits) | sa (5 bits) | funct (6 bits)
@@ -41,6 +42,7 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
 static void treeCallerInit(CpuCallerID* block, s32 total);
 static s32 treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
 inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -3731,8 +3733,29 @@ static s32 cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
     return nAddressGCN;
 }
 
-static s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteJump.s")
+static s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+    nCount = OSGetTick();
+
+    if (pCPU->nWaitPC != 0) {
+        pCPU->nMode |= 8;
+    } else {
+        pCPU->nMode &= ~8;
+    }
+
+    pCPU->nMode |= 4;
+    pCPU->nPC = nAddressN64;
+
+    if (gpSystem->eTypeROM == SRT_ZELDA1 && pCPU->nPC == 0x81000000) {
+        simulatorPlayMovie();
+    }
+
+    if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
+        return 0;
+    }
+
+    pCPU->nTickLast = OSGetTick();
+    return nAddressGCN;
+}
 
 static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     s32 pad;
@@ -4132,17 +4155,126 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
 
+#ifndef NON_MATCHING
+static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1, s32 nType);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
+#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFreeDevice.s")
+s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
+    if (!xlHeapFree((void**)&pCPU->apDevice[iDevice])) {
+        return 0;
+    } else {
+        s32 iAddress;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapAddress.s")
+        pCPU->apDevice[iDevice] = NULL;
+        for (iAddress = 0; iAddress < ARRAY_COUNT(pCPU->aiDevice); iAddress++) {
+            if (pCPU->aiDevice[iAddress] == iDevice) {
+                pCPU->aiDevice[iAddress] = pCPU->iDeviceDefault;
+            }
+        }
+        return 1;
+    }
+}
+
+static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
+    s32 iDeviceTarget;
+    s32 iDeviceSource;
+    u32 nAddressVirtual0;
+    u32 nAddressVirtual1;
+
+    for (iDeviceSource = 0; iDeviceSource < ARRAY_COUNT(pCPU->apDevice); iDeviceSource++) {
+        if (iDeviceSource != pCPU->iDeviceDefault && pCPU->apDevice[iDeviceSource] != NULL &&
+            pCPU->apDevice[iDeviceSource]->nAddressPhysical0 <= nPhysical &&
+            nPhysical <= pCPU->apDevice[iDeviceSource]->nAddressPhysical1) {
+            break;
+        }
+    }
+
+    if (iDeviceSource == ARRAY_COUNT(pCPU->apDevice)) {
+        iDeviceSource = pCPU->iDeviceDefault;
+    }
+
+    if (!cpuMakeDevice(pCPU, &iDeviceTarget, pCPU->apDevice[iDeviceSource]->pObject, nPhysical - nVirtual,
+                       pCPU->apDevice[iDeviceSource]->nAddressPhysical0,
+                       pCPU->apDevice[iDeviceSource]->nAddressPhysical1, pCPU->apDevice[iDeviceSource]->nType)) {
+        return 0;
+    }
+
+    nAddressVirtual0 = nVirtual;
+    nAddressVirtual1 = nVirtual + nSize - 1;
+    while (nAddressVirtual0 < nAddressVirtual1) {
+        pCPU->aiDevice[nAddressVirtual0 >> 16] = iDeviceTarget;
+        nAddressVirtual0 += 0x10000;
+    }
+
+    if (piDevice != NULL) {
+        *piDevice = iDeviceTarget;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetMode.s")
+static s32 cpuGetMode(u64 nStatus, CpuMode* peMode) {
+    if (nStatus & 2) {
+        *peMode = CM_KERNEL;
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetSize.s")
+    if (!(nStatus & 4)) {
+        switch (nStatus & 0x18) {
+            case 0x10:
+                *peMode = CM_USER;
+                break;
+            case 8:
+                *peMode = CM_SUPER;
+                break;
+            case 0:
+                *peMode = CM_KERNEL;
+                break;
+            default:
+                return 0;
+        }
+        return 1;
+    }
+
+    NO_INLINE();
+    return 0;
+}
+
+static s32 cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
+    CpuMode eMode;
+
+    *peSize = CS_NONE;
+    if (peMode != NULL) {
+        *peMode = CS_NONE;
+    }
+
+    if (cpuGetMode(nStatus, &eMode)) {
+        switch (eMode) {
+            case CM_USER:
+                *peSize = nStatus & 0x20 ? CS_64BIT : CS_32BIT;
+                break;
+            case CM_SUPER:
+                *peSize = nStatus & 0x40 ? CS_64BIT : CS_32BIT;
+                break;
+            case CM_KERNEL:
+                *peSize = nStatus & 0x80 ? CS_64BIT : CS_32BIT;
+                break;
+            default:
+                return 0;
+        }
+
+        if (peMode != NULL) {
+            *peMode = eMode;
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetCP0_Status.s")
 
@@ -4150,9 +4282,25 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetRegisterCP0.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/__cpuERET.s")
+s32 __cpuERET(Cpu* pCPU) {
+    if (pCPU->anCP0[12] & 4) {
+        pCPU->nPC = pCPU->anCP0[30];
+        pCPU->anCP0[12] &= ~4;
+    } else {
+        pCPU->nPC = pCPU->anCP0[14];
+        pCPU->anCP0[12] &= ~2;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/__cpuBreak.s")
+    pCPU->nMode |= 4;
+    pCPU->nMode |= 0x20;
+
+    return 1;
+}
+
+s32 __cpuBreak(Cpu* pCPU) {
+    pCPU->nMode |= 2;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapObject.s")
 
@@ -4178,11 +4326,87 @@ s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuReset.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetXPC.s")
+s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
+    if (!xlObjectTest(pCPU, &gClassCPU)) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuEvent.s")
+    pCPU->nMode |= 4;
+    pCPU->nPC = nPC;
+    pCPU->nLo = nLo;
+    pCPU->nHi = nHi;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetAddressOffset.s")
+    return 1;
+}
+
+inline s32 cpuInitAllDevices(Cpu* pCPU) {
+    s32 i;
+
+    for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
+        pCPU->apDevice[i] = NULL;
+    }
+
+    return 1;
+}
+
+inline s32 cpuFreeAllDevices(Cpu* pCPU) {
+    s32 i;
+
+    for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
+        if (pCPU->apDevice[i] != NULL) {
+            if (!cpuFreeDevice(pCPU, i)) {
+                return 0;
+            }
+        } else {
+            pCPU->apDevice[i] = NULL;
+        }
+    }
+
+    return 1;
+}
+
+s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pCPU->pHost = pArgument;
+            cpuInitAllDevices(pCPU);
+            if (!cpuReset(pCPU)) {
+                return 0;
+            }
+            break;
+        case 3:
+            if (!cpuFreeAllDevices(pCPU)) {
+                return 0;
+            }
+            break;
+        case 0:
+        case 1:
+        case 0x1003:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+
+s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
+    s32 iDevice;
+
+    if (0x80000000 <= nAddress && nAddress < 0xC0000000) {
+        *pnOffset = nAddress & 0x7FFFFF;
+    } else {
+        iDevice = pCPU->aiDevice[nAddress >> 0x10];
+
+        if (pCPU->apDevice[iDevice]->nType & 0x100) {
+            *pnOffset = nAddress + pCPU->apDevice[iDevice]->nOffsetAddress & 0x7FFFFF;
+        } else {
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress) {
     CpuDevice* pDevice = pCPU->apDevice[pCPU->aiDevice[nAddress >> 0x10]];
@@ -4197,23 +4421,348 @@ s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress) {
     return 0;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetOffsetAddress.s")
+s32 cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u32 nSize) {
+    s32 iEntry;
+    s32 iAddress = 0;
+    u32 nAddress;
+    u32 nMask;
+    u32 nSizeMapped;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuInvalidateCache.s")
+    anAddress[iAddress++] = nOffset | 0x80000000;
+    anAddress[iAddress++] = nOffset | 0xA0000000;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetFunctionChecksum.s")
+    for (iEntry = 0; iEntry < ARRAY_COUNT(pCPU->aTLB); iEntry++) {
+        if (pCPU->aTLB[iEntry][0] & 2) {
+            nMask = pCPU->aTLB[iEntry][3] | 0x1FFF;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapReset.s")
+            switch (nMask) {
+                case 0x1FFF:
+                    nSizeMapped = 4 * 1024;
+                    break;
+                case 0x7FFF:
+                    nSizeMapped = 16 * 1024;
+                    break;
+                case 0x1FFFF:
+                    nSizeMapped = 64 * 1024;
+                    break;
+                case 0x7FFFF:
+                    nSizeMapped = 256 * 1024;
+                    break;
+                case 0x1FFFFF:
+                    nSizeMapped = 1 * 1024 * 1024;
+                    break;
+                case 0x7FFFFF:
+                    nSizeMapped = 4 * 1024 * 1024;
+                    break;
+                case 0x1FFFFFF:
+                    nSizeMapped = 16 * 1024 * 1024;
+                    break;
+                default:
+                    return 0;
+            }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapTake.s")
+            nAddress = ((u32)(pCPU->aTLB[iEntry][0] & ~0x3F) << 6) + (nOffset & nMask);
+            if (nAddress < (nOffset + nSize - 1) && (nAddress + nSizeMapped - 1) >= nOffset) {
+                nAddress = pCPU->aTLB[iEntry][2] & 0xFFFFE000;
+                anAddress[iAddress++] = ((nAddress) & ~nMask) | (nOffset & nMask);
+            }
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHeapFree.s")
+    *pnCount = iAddress;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuTreeTake.s")
+s32 cpuInvalidateCache(Cpu* pCPU, s32 nAddress0, s32 nAddress1) {
+    if ((nAddress0 & 0xF0000000) == 0xA0000000) {
+        return 1;
+    }
+
+    if (!cpuFreeCachedAddress(pCPU, nAddress0, nAddress1)) {
+        return 0;
+    }
+
+    cpuDMAUpdateFunction(pCPU, nAddress0, nAddress1);
+    return 1;
+}
+
+s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
+    s32 nSize;
+    u32* pnBuffer;
+    u32 nChecksum;
+    u32 nData;
+    u32 pad;
+
+    if (pFunction->nChecksum != 0) {
+        *pnChecksum = pFunction->nChecksum;
+        return 1;
+    }
+
+    if (!cpuGetAddressBuffer(pCPU, (void**)&pnBuffer, pFunction->nAddress0)) {
+        return 0;
+    }
+
+    nChecksum = 0;
+    nSize = ((pFunction->nAddress1 - pFunction->nAddress0) >> 2) + 1;
+
+    while (nSize > 0) {
+        nSize--;
+        nData = *pnBuffer;
+        nData = nData >> 0x1A;
+        nData = nData << ((nSize % 5) * 6);
+        nChecksum += nData;
+        pnBuffer++;
+    }
+
+    *pnChecksum = nChecksum;
+    pFunction->nChecksum = nChecksum;
+
+    return 1;
+}
+
+static s32 cpuHeapReset(u32* array, s32 count) {
+    s32 i;
+
+    for (i = 0; i < count; i++) {
+        array[i] = 0;
+    }
+
+    return 1;
+}
+
+s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) {
+    s32 done;
+    s32 second;
+    u32* anPack;
+    s32 nPackCount;
+    int nBlockCount;
+    s32 nOffset;
+    s32 nCount;
+    s32 iPack;
+    u32 nPack;
+    u32 nMask;
+    u32 nMask0;
+
+    done = 0;
+    second = 0;
+    for (;;) {
+        if (pFunction->heapID == -1) {
+            if (memory_size > 0x3200) {
+                pFunction->heapID = 2;
+            } else {
+                pFunction->heapID = 1;
+            }
+        } else if (pFunction->heapID == 1) {
+            pFunction->heapID = 2;
+            second = 1;
+        } else if (pFunction->heapID == 2) {
+            pFunction->heapID = 1;
+            second = 1;
+        }
+
+        if (pFunction->heapID == 1) {
+            pFunction->heapID = 1;
+            nBlockCount = (memory_size + 0x1FF) / 0x200;
+            nPackCount = ARRAY_COUNT(pCPU->aHeap1Flag);
+            anPack = pCPU->aHeap1Flag;
+
+            if (second && nBlockCount >= 32) {
+                pFunction->heapID = 3;
+                pFunction->heapWhere = -1;
+                if (!xlHeapTake(heap, memory_size)) {
+                    return 0;
+                }
+                return 1;
+            }
+        } else if (pFunction->heapID == 2) {
+            pFunction->heapID = 2;
+            nBlockCount = (memory_size + 0x9FF) / 0xA00;
+            nPackCount = ARRAY_COUNT(pCPU->aHeap2Flag);
+            anPack = pCPU->aHeap2Flag;
+        }
+
+        if (nBlockCount >= 32) {
+            pFunction->heapID = 3;
+            pFunction->heapWhere = -1;
+            if (!xlHeapTake(heap, memory_size)) {
+                return 0;
+            }
+            return 1;
+        }
+
+        nCount = 33 - nBlockCount;
+        nMask0 = (1 << nBlockCount) - 1;
+        for (iPack = 0; iPack < nPackCount; iPack++) {
+            if ((nPack = anPack[iPack]) != -1) {
+                nMask = nMask0;
+                nOffset = nCount;
+                do {
+                    if (!(nPack & nMask)) {
+                        anPack[iPack] |= nMask;
+                        pFunction->heapWhere = (nBlockCount << 16) | ((iPack << 5) + (nCount - nOffset));
+                        done = 1;
+                        break;
+                    }
+                    nMask = nMask << 1;
+                    nOffset--;
+                } while (nOffset != 0);
+            }
+
+            if (done) {
+                break;
+            }
+        }
+
+        if (done) {
+            break;
+        }
+
+        if (second) {
+            pFunction->heapID = -1;
+            pFunction->heapWhere = -1;
+            return 0;
+        }
+    }
+
+    if (pFunction->heapID == 1) {
+        *((s32*)heap) = (s32)pCPU->gHeap1 + (pFunction->heapWhere & 0xFFFF) * 0x200;
+    } else {
+        *((s32*)heap) = (s32)pCPU->gHeap2 + (pFunction->heapWhere & 0xFFFF) * 0xA00;
+    }
+
+    return 1;
+}
+
+s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
+    u32* anPack;
+    s32 iPack;
+    u32 nMask;
+
+    if (pFunction->heapID == 1) {
+        anPack = pCPU->aHeap1Flag;
+    } else if (pFunction->heapID == 2) {
+        anPack = pCPU->aHeap2Flag;
+    } else {
+        if (pFunction->pnBase != NULL) {
+            if (!xlHeapFree(&pFunction->pnBase)) {
+                return 0;
+            }
+        } else {
+            if (!xlHeapFree(&pFunction->pfCode)) {
+                return 0;
+            }
+        }
+
+        return 1;
+    }
+
+    if (pFunction->heapWhere == -1) {
+        return 0;
+    }
+
+    nMask = ((1 << (pFunction->heapWhere >> 16)) - 1) << (pFunction->heapWhere & 0x1F);
+    iPack = ((pFunction->heapWhere & 0xFFFF) >> 5);
+
+    if ((anPack[iPack] & nMask) == nMask) {
+        anPack[iPack] &= ~nMask;
+        pFunction->heapID = -1;
+        pFunction->heapWhere = -1;
+        return 1;
+    }
+
+    return 0;
+}
+
+static s32 cpuTreeTake(void* heap, s32* where) {
+    s32 done;
+    s32 nOffset;
+    s32 nCount;
+    s32 iPack;
+    u32 nPack;
+    u32 nMask;
+    u32 nMask0;
+
+    done = 0;
+    for (iPack = 0; iPack < 125; iPack++) {
+        if ((nPack = aHeapTreeFlag[iPack]) != -1) {
+            nMask = 1;
+            nOffset = 32;
+            do {
+                if (!(nPack & nMask)) {
+                    aHeapTreeFlag[iPack] |= nMask;
+                    *where = (1 << 16) | ((iPack << 5) + (32 - nOffset));
+                    done = 1;
+                    break;
+                }
+                nMask = nMask << 1;
+                nOffset--;
+            } while (nOffset != 0);
+        }
+
+        if (done) {
+            break;
+        }
+    }
+
+    if (done == 0) {
+        *where = -1;
+        return 0;
+    }
+
+    *((s32*)heap) = (s32)gHeapTree + ((*where & 0xFFFF) * 0x48);
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuDMAUpdateFunction.s")
+static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
+    CpuTreeRoot* root = pCPU->gTree;
+    s32 count;
+    s32 cancel;
+
+    if (root == NULL) {
+        return 1;
+    }
+
+    if ((start < root->root_address) && (end > root->root_address)) {
+        treeAdjustRoot(pCPU, start, end);
+    }
+
+    if (root->kill_limit != 0) {
+        if (root->restore != NULL) {
+            cancel = 0;
+            if (start <= root->restore->nAddress0) {
+                if ((end >= root->restore->nAddress1) || (end >= root->restore->nAddress0)) {
+                    cancel = 1;
+                }
+            } else {
+                if ((end >= root->restore->nAddress1) &&
+                    ((start <= root->restore->nAddress0) || (start <= root->restore->nAddress1))) {
+                    cancel = 1;
+                }
+            }
+            if (cancel != 0) {
+                root->restore = NULL;
+                root->restore_side = 0;
+            }
+        }
+    }
+
+    if (start < root->root_address) {
+        do {
+            count = treeKillRange(pCPU, root->left, start, end);
+            root->total = root->total - count;
+        } while (count != 0);
+    } else {
+        do {
+            count = treeKillRange(pCPU, root->right, start, end);
+            root->total = root->total - count;
+        } while (count != 0);
+    }
+
+    return 1;
+}
 
 inline void treeCallerInit(CpuCallerID* block, s32 total) {
     s32 count;
