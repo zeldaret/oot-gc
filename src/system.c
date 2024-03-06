@@ -22,24 +22,6 @@
 #include "sram.h"
 #include "video.h"
 
-extern void* gpFrame;
-extern void* gpSound;
-
-extern s32 gz_bnrSize;
-extern s32 gz_iconSize;
-
-extern MemCard mCard;
-
-//! TODO: remove when these functions are matched
-static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData);
-static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData);
-static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData);
-static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData);
-static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData);
-static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData);
-static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData);
-static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData);
-
 //! TODO: import MSL headers
 extern int atoi(const char* str);
 
@@ -503,21 +485,23 @@ static s32 systemSetupGameALL(System* pSystem) {
                     return 0;
                 }
             }
-        } else if (romTestCode(pROM, "CZLE")) {
-            if (!cpuSetCodeHack(pCPU, 0x8005BB14, ((gnFlagZelda & 2) ? 0x9463D040 : 0x9463D000), -1)) {
-                return 0;
-            }
-
-            if (!cpuSetCodeHack(pCPU, 0x80066638, 0x97040000, -1)) {
-                return 0;
-            }
         } else {
-            if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
-                return 0;
-            }
+            if (romTestCode(pROM, "CZLE")) {
+                if (!cpuSetCodeHack(pCPU, 0x8005BB14, ((gnFlagZelda & 2) ? 0x9463D040 : 0x9463D000), -1)) {
+                    return 0;
+                }
 
-            if (!cpuSetCodeHack(pCPU, 0x80066658, 0x97040000, -1)) {
-                return 0;
+                if (!cpuSetCodeHack(pCPU, 0x80066638, 0x97040000, -1)) {
+                    return 0;
+                }
+            } else {
+                if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
+                    return 0;
+                }
+
+                if (!cpuSetCodeHack(pCPU, 0x80066658, 0x97040000, -1)) {
+                    return 0;
+                }
             }
         }
 
@@ -1294,21 +1278,33 @@ static s32 systemGetException(System* pSystem, SystemInterruptType eType, System
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet8.s")
+static s32 systemGet8(System* pSystem, u32 nAddress, s8* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet16.s")
+static s32 systemGet16(System* pSystem, u32 nAddress, s16* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet32.s")
+static s32 systemGet32(System* pSystem, u32 nAddress, s32* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemGet64.s")
+static s32 systemGet64(System* pSystem, u32 nAddress, s64* pData) {
+    *pData = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut8.s")
+static s32 systemPut8(System* pSystem, u32 nAddress, s8* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut16.s")
+static s32 systemPut16(System* pSystem, u32 nAddress, s16* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut32.s")
+static s32 systemPut32(System* pSystem, u32 nAddress, s32* pData) { return 1; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/system/systemPut64.s")
+static s32 systemPut64(System* pSystem, u32 nAddress, s64* pData) { return 1; }
 
 static s32 __systemCopyROM_Complete(void) {
     s32 iAddress;

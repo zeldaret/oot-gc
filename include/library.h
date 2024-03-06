@@ -81,6 +81,7 @@ void osViSwapBuffer_Entry(Cpu* pCPU);
 void zeldaLoadSZS_Entry(Cpu* pCPU);
 void zeldaLoadSZS_Exit(Cpu* pCPU);
 
+s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction);
 s32 libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassLibrary;

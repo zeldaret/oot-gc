@@ -31,6 +31,12 @@ typedef enum __anon_0x60B3F {
     RUT_JPEG = 13,
 } __anon_0x60B3F;
 
+// __anon_0x44829
+typedef enum RspUpdateMode {
+    RUM_NONE = 0,
+    RUM_IDLE = 1,
+} RspUpdateMode;
+
 typedef struct __anon_0x575BD {
     /* 0x00 */ s32 nType;
     /* 0x04 */ s32 nFlag;
@@ -204,6 +210,7 @@ typedef struct Rsp {
 } Rsp; // size = 0x39CC
 
 s32 rspEnableABI(Rsp* pRSP, s32 bFlag);
+s32 rspUpdate(Rsp* pRSP, RspUpdateMode eMode);
 s32 rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassRSP;

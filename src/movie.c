@@ -1,8 +1,8 @@
 #include "dolphin.h"
 #include "simGCN.h"
 #include "system.h"
+#include "xlCoreGCN.h"
 
-extern GXRenderModeObj* rmode;
 void* gBufferP;
 
 void MovieInit(void) {

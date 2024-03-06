@@ -179,6 +179,10 @@ typedef struct SystemRomConfig {
 #define SYSTEM_PERIPHERAL(pSystem) ((Peripheral*)(((System*)(pSystem))->apObject[SOT_PERIPHERAL]))
 #define SYSTEM_RDB(pSystem) ((Rdb*)(((System*)(pSystem))->apObject[SOT_RDB]))
 
+extern u32 nTickMultiplier;
+extern f32 fTickScale;
+extern u32 gnFlagZelda;
+
 s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback);
 s32 systemSetMode(System* pSystem, SystemMode eMode);
 s32 systemGetMode(System* pSystem, SystemMode* peMode);
