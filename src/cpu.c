@@ -4651,10 +4651,8 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
 
-#ifndef NON_MATCHING
 static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1, s32 nType);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
-#endif
 
 s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
     if (!xlHeapFree((void**)&pCPU->apDevice[iDevice])) {
