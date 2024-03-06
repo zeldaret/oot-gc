@@ -485,21 +485,23 @@ static s32 systemSetupGameALL(System* pSystem) {
                     return 0;
                 }
             }
-        } else if (romTestCode(pROM, "CZLE")) {
-            if (!cpuSetCodeHack(pCPU, 0x8005BB14, ((gnFlagZelda & 2) ? 0x9463D040 : 0x9463D000), -1)) {
-                return 0;
-            }
-
-            if (!cpuSetCodeHack(pCPU, 0x80066638, 0x97040000, -1)) {
-                return 0;
-            }
         } else {
-            if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
-                return 0;
-            }
+            if (romTestCode(pROM, "CZLE")) {
+                if (!cpuSetCodeHack(pCPU, 0x8005BB14, ((gnFlagZelda & 2) ? 0x9463D040 : 0x9463D000), -1)) {
+                    return 0;
+                }
 
-            if (!cpuSetCodeHack(pCPU, 0x80066658, 0x97040000, -1)) {
-                return 0;
+                if (!cpuSetCodeHack(pCPU, 0x80066638, 0x97040000, -1)) {
+                    return 0;
+                }
+            } else {
+                if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
+                    return 0;
+                }
+
+                if (!cpuSetCodeHack(pCPU, 0x80066658, 0x97040000, -1)) {
+                    return 0;
+                }
             }
         }
 
