@@ -210,24 +210,28 @@ char D_800EC1E0[] = "_cpuGCN.c";
 
 #ifndef NON_MATCHING
 // cpuExecuteLoadStoreF
-void* jtbl_800EC1EC[] = {
+void* jtbl_800EC1EC[15] = {
     &lbl_8003789C, &lbl_80038010, &lbl_80038010, &lbl_80038010, &lbl_80037AF0,
     &lbl_80038010, &lbl_80037D08, &lbl_80038010, &lbl_800379D8, &lbl_80038010,
     &lbl_80038010, &lbl_80038010, &lbl_80037BF8, &lbl_80038010, &lbl_80037E90,
 };
+#else
+void* jtbl_800EC1EC[15] = {0};
 #endif
 
 #ifndef NON_MATCHING
 // cpuExecuteLoadStore
-void* jtbl_800EC228[] = {
+void* jtbl_800EC228[12] = {
     &lbl_800383F4, &lbl_800386AC, &lbl_80038E70, &lbl_80038964, &lbl_80038560, &lbl_80038818,
     &lbl_80038E70, &lbl_80038E70, &lbl_80038AB0, &lbl_80038BF0, &lbl_80038E70, &lbl_80038D30,
 };
+#else
+void* jtbl_800EC228[12] = {0};
 #endif
 
 #ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC258[] = {
+void* jtbl_800EC258[64] = {
     &lbl_8003C690, &lbl_8003C6CC, &lbl_8003C708, &lbl_8003C754, &lbl_8003C78C, &lbl_8003C85C, &lbl_8003C88C,
     &lbl_8003C8B0, &lbl_8003C8DC, &lbl_8003C900, &lbl_8003C924, &lbl_8003C954, &lbl_8003C984, &lbl_8003C9A0,
     &lbl_8003C9BC, &lbl_8003C9F0, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
@@ -239,9 +243,13 @@ void* jtbl_800EC258[] = {
     &lbl_8003CCDC, &lbl_8003CCEC, &lbl_8003CD48, &lbl_8003CD98, &lbl_8003CDE8, &lbl_8003CE44, &lbl_8003CEA0,
     &lbl_8003CEFC,
 };
+#else
+void* jtbl_800EC258[64] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC358[] = {
+void* jtbl_800EC358[64] = {
     &lbl_8003BEA4, &lbl_8003BED0, &lbl_8003BEFC, &lbl_8003BF28, &lbl_8003BF54, &lbl_8003C030, &lbl_8003C078,
     &lbl_8003C094, &lbl_8003C0B4, &lbl_8003C0D8, &lbl_8003C0FC, &lbl_8003C140, &lbl_8003C184, &lbl_8003C1A0,
     &lbl_8003C1BC, &lbl_8003C204, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
@@ -253,9 +261,13 @@ void* jtbl_800EC358[] = {
     &lbl_8003C49C, &lbl_8003C4AC, &lbl_8003C4EC, &lbl_8003C52C, &lbl_8003C56C, &lbl_8003C5AC, &lbl_8003C5EC,
     &lbl_8003C62C,
 };
+#else
+void* jtbl_800EC358[64] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC458[] = {
+void* jtbl_800EC458[64] = {
     &lbl_8003B774, &lbl_8003B7A0, &lbl_8003B7CC, &lbl_8003B7F8, &lbl_8003B824, &lbl_8003B8C8, &lbl_8003B8E8,
     &lbl_8003B904, &lbl_8003B924, &lbl_8003B950, &lbl_8003B974, &lbl_8003B99C, &lbl_8003B9C4, &lbl_8003B9F4,
     &lbl_8003BA1C, &lbl_8003BA48, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
@@ -267,9 +279,13 @@ void* jtbl_800EC458[] = {
     &lbl_8003BCA4, &lbl_8003BCB4, &lbl_8003BCF8, &lbl_8003BD38, &lbl_8003BD78, &lbl_8003BDB8, &lbl_8003BDF8,
     &lbl_8003BE3C,
 };
+#else
+void* jtbl_800EC458[64] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC558[] = {
+void* jtbl_800EC558[64] = {
     &lbl_8003B040, &lbl_8003B06C, &lbl_8003B098, &lbl_8003B0C4, &lbl_8003B0F0, &lbl_8003B198, &lbl_8003B1BC,
     &lbl_8003B1D8, &lbl_8003B1F8, &lbl_8003B224, &lbl_8003B248, &lbl_8003B270, &lbl_8003B298, &lbl_8003B2C8,
     &lbl_8003B2F0, &lbl_8003B31C, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
@@ -281,35 +297,55 @@ void* jtbl_800EC558[] = {
     &lbl_8003B574, &lbl_8003B584, &lbl_8003B5C8, &lbl_8003B608, &lbl_8003B648, &lbl_8003B688, &lbl_8003B6C8,
     &lbl_8003B70C,
 };
+#else
+void* jtbl_800EC558[64] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC658[] = {
+void* jtbl_800EC658[7] = {
     &lbl_8003AD84, &lbl_8003ADD4, &lbl_8003ADF8, &lbl_8003DEAC, &lbl_8003AE14, &lbl_8003AE98, &lbl_8003AEBC,
 };
+#else
+void* jtbl_800EC658[7] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC674[] = {
+void* jtbl_800EC674[9] = {
     &lbl_8003AC94, &lbl_8003ACD8, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003AD0C,
     &lbl_8003AD2C, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
 };
+#else
+void* jtbl_800EC674[9] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC698[] = {
+void* jtbl_800EC698[25] = {
     &lbl_8003AC70, &lbl_8003A824, &lbl_8003A87C, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003A894, &lbl_8003AC70,
     &lbl_8003AC70, &lbl_8003AA30, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70,
     &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70,
     &lbl_8003AC70, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003ABD8,
 };
+#else
+void* jtbl_800EC698[25] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC6FC[] = {
+void* jtbl_800EC6FC[20] = {
     &lbl_8003A1A8, &lbl_8003A1D8, &lbl_8003A208, &lbl_8003A254, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
     &lbl_8003DEAC, &lbl_8003A2A0, &lbl_8003A2D0, &lbl_8003A300, &lbl_8003A330, &lbl_8003A360, &lbl_8003DEAC,
     &lbl_8003A390, &lbl_8003DEAC, &lbl_8003A3C0, &lbl_8003A400, &lbl_8003A440, &lbl_8003A498,
 };
+#else
+void* jtbl_800EC6FC[20] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC74C[] = {
+void* jtbl_800EC74C[64] = {
     &lbl_80039680, &lbl_8003DEAC, &lbl_800396A4, &lbl_800396C8, &lbl_800396EC, &lbl_8003DEAC, &lbl_8003971C,
     &lbl_8003974C, &lbl_8003977C, &lbl_80039790, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_800397C0, &lbl_800397D4,
     &lbl_8003DEAC, &lbl_8003DEAC, &lbl_800397E8, &lbl_80039804, &lbl_80039820, &lbl_8003983C, &lbl_80039858,
@@ -321,9 +357,13 @@ void* jtbl_800EC74C[] = {
     &lbl_8003A070, &lbl_8003DEAC, &lbl_8003A09C, &lbl_8003A0C8, &lbl_8003A0F4, &lbl_8003DEAC, &lbl_8003A124,
     &lbl_8003A154,
 };
+#else
+void* jtbl_800EC74C[64] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuExecuteOpcode
-void* jtbl_800EC84C[] = {
+void* jtbl_800EC84C[64] = {
     &lbl_8003965C, &lbl_8003A184, &lbl_8003A4F0, &lbl_8003A558, &lbl_8003A58C, &lbl_8003A61C, &lbl_8003A658,
     &lbl_8003A688, &lbl_8003A6B8, &lbl_8003A6E0, &lbl_8003A708, &lbl_8003A740, &lbl_8003A778, &lbl_8003A79C,
     &lbl_8003A7C0, &lbl_8003A7E4, &lbl_8003A800, &lbl_8003AD4C, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003CF58,
@@ -335,6 +375,8 @@ void* jtbl_800EC84C[] = {
     &lbl_8003DC78, &lbl_8003DCE8, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DD6C, &lbl_8003DDF0, &lbl_8003DEAC,
     &lbl_8003DE50,
 };
+#else
+void* jtbl_800EC84C[64] = {0};
 #endif
 
 char D_800EC94C[] = "ERROR in cpuNextInstruction() with opcode %p at %p\n";
@@ -500,20 +542,26 @@ void* jtbl_800ED3B0[] = {
 
 #ifndef NON_MATCHING
 // cpuCheckDelaySlot
-void* jtbl_800ED4B0[] = {
+void* jtbl_800ED4B0[25] = {
     &lbl_800682F0, &lbl_80068360, &lbl_80068360, &lbl_800682F0, &lbl_800682F0, &lbl_80068360, &lbl_800682F0,
     &lbl_800682F0, &lbl_80068360, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0,
     &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_800682F0,
     &lbl_800682F0, &lbl_800682F0, &lbl_800682F0, &lbl_80068360,
 };
+#else
+void* jtbl_800ED4B0[25] = {0};
+#endif
 
+#ifndef NON_MATCHING
 // cpuCheckDelaySlot
-void* jtbl_800ED514[] = {
+void* jtbl_800ED514[24] = {
     &lbl_80068270, &lbl_8006829C, &lbl_8006834C, &lbl_80068354, &lbl_8006835C, &lbl_8006835C,
     &lbl_8006835C, &lbl_8006835C, &lbl_80068360, &lbl_80068360, &lbl_80068360, &lbl_80068360,
     &lbl_80068360, &lbl_80068360, &lbl_80068360, &lbl_80068360, &lbl_800682CC, &lbl_80068320,
     &lbl_80068360, &lbl_80068360, &lbl_8006835C, &lbl_8006835C, &lbl_8006835C, &lbl_8006835C,
 };
+#else
+void* jtbl_800ED514[24] = {0};
 #endif
 
 void* jtbl_800ED574[] = {
