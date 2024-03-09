@@ -119,7 +119,7 @@ extern void *lbl_80008684, *lbl_800086B8, *lbl_800086B8, *lbl_800086B8, *lbl_800
     *lbl_800086B8, *lbl_800086B8, *lbl_80008660, *lbl_800086B8, *lbl_800086A8;
 
 // simulatorParseArguments
-void* jtbl_800E9BE8[] = {
+void* jtbl_800E9BE8[54] = {
     &lbl_80008684, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008678, &lbl_800086B8, &lbl_800086B8,
     &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008690, &lbl_800086B8, &lbl_800086B8, &lbl_8000866C,
     &lbl_800086B8, &lbl_8000869C, &lbl_800086B8, &lbl_800086B8, &lbl_800086B8, &lbl_80008660, &lbl_800086B8,
@@ -129,13 +129,19 @@ void* jtbl_800E9BE8[] = {
     &lbl_80008690, &lbl_800086B8, &lbl_800086B8, &lbl_8000866C, &lbl_800086B8, &lbl_8000869C, &lbl_800086B8,
     &lbl_800086B8, &lbl_800086B8, &lbl_80008660, &lbl_800086B8, &lbl_800086A8,
 };
+#else
+void* jtbl_800E9BE8[54] = {0};
+#endif
 
+#ifndef NON_MATCHING
 extern void *lbl_8000882C, *lbl_80008834, *lbl_8000883C, *lbl_80008844, *lbl_80008850, *lbl_8000885C, *lbl_80008868;
 
 // simulatorDrawCursor
-void* jtbl_800E9CC0[] = {
+void* jtbl_800E9CC0[7] = {
     &lbl_8000882C, &lbl_80008834, &lbl_8000883C, &lbl_80008844, &lbl_80008850, &lbl_8000885C, &lbl_80008868,
 };
+#else
+void* jtbl_800E9CC0[7] = {0};
 #endif
 
 char D_800E9CDC[] = "Invalid Message Image Data - Assuming SV09";
