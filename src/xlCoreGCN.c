@@ -50,10 +50,9 @@ static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
                 if (iArgument >= 0 && iArgument < gnCountArgument) {
                     szText = gaszArgument[iArgument];
                 }
-                    
-                if ((szText[0] == '-' || szText[0] == '/' || szText[0] == '\\') 
-                    && (szText[1] == 'p' || szText[1] == 'P') 
-                    && szText[2] == '1') {
+
+                if ((szText[0] == '-' || szText[0] == '/' || szText[0] == '\\') &&
+                    (szText[1] == 'p' || szText[1] == 'P') && szText[2] == '1') {
                     rmode = &GXNtsc480Prog;
                     break;
                 }
@@ -142,9 +141,7 @@ void xlCoreInitGX(void) {
     NO_INLINE();
 }
 
-s32 xlCoreGetArgumentCount(void) {
-    return gnCountArgument;
-}
+s32 xlCoreGetArgumentCount(void) { return gnCountArgument; }
 
 s32 xlCoreGetArgument(s32 iArgument, char** pszArgument) {
     if ((iArgument >= 0) && (iArgument < gnCountArgument)) {
@@ -155,9 +152,7 @@ s32 xlCoreGetArgument(s32 iArgument, char** pszArgument) {
     return 0;
 }
 
-s32 xlCoreHiResolution(void) {
-    return 1;
-}
+s32 xlCoreHiResolution(void) { return 1; }
 
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/xlCoreGCN/main.s")
@@ -220,20 +215,21 @@ s32 main(s32 nCount, char** aszArgument) {
     if (rmode->viTVmode & 1) {
         VIWaitForRetrace();
     }
- 
+
     simulatorUnpackTexPalette((__anon_0xDB69*)gTgPcTPL);
 
     // t = D_80135D00;
     for (i = 0; i < ARRAY_COUNTU(g_texMap); i++) {
         tdp = TEXGet(gTgPcTPL, i);
-        GXInitTexObj(&g_texMap[i], tdp->textureHeader->data, tdp->textureHeader->width, tdp->textureHeader->height, tdp->textureHeader->format, GX_CLAMP, GX_CLAMP, GX_FALSE);
+        GXInitTexObj(&g_texMap[i], tdp->textureHeader->data, tdp->textureHeader->width, tdp->textureHeader->height,
+                     tdp->textureHeader->format, GX_CLAMP, GX_CLAMP, GX_FALSE);
     }
 
     GXSetDispCopyGamma(GX_GM_1_0);
     nSizeHeap = OSCheckHeap(__OSCurrHeap);
 
     if (nSizeHeap != -1) {
-        nSize = nSizeHeap; 
+        nSize = nSizeHeap;
         if (nSize > 0x04000000) {
             nSize = 0x04000000;
         }
