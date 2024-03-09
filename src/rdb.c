@@ -8,6 +8,17 @@ _XL_OBJECTTYPE gClassRdb = {
     (EventFunc)rdbEvent,
 };
 
+// This function only clears the string buffer, but it may have output the
+// string to the console in debug mode.
+inline void rdbPrintString(Rdb* pRDB) {
+    s32 iCounter;
+
+    for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
+        pRDB->szString[iCounter] = ' ';
+    }
+    pRDB->nIndexString = 0;
+}
+
 static s32 rdbPut8(Rdb* pRDB, u32 nAddress, s8* pData) { return 0; }
 
 static s32 rdbPut16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
@@ -28,72 +39,42 @@ static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
                             break;
                         case 1:
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
-                            for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                pRDB->szString[iCounter] = ' ';
-                            }
-                            pRDB->nIndexString = 0;
+                            rdbPrintString(pRDB);
                             break;
                         case 2:
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 8) & 0xFF);
-                            for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                pRDB->szString[iCounter] = ' ';
-                            }
-                            pRDB->nIndexString = 0;
+                            rdbPrintString(pRDB);
                             break;
                         case 3:
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 8) & 0xFF);
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
                             pRDB->szString[pRDB->nIndexString] = *pData & 0xFF;
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
-                                    pRDB->szString[iCounter] = ' ';
-                                }
-                                pRDB->nIndexString = 0;
+                                rdbPrintString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
