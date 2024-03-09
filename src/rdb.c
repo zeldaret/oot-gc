@@ -38,6 +38,8 @@ static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
                         case 0:
                             break;
                         case 1:
+                            // bug: in all these cases, pRDB->nIndexString may end up being >= 256,
+                            // which will write out of bounds into pRDB->szString.
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
                             rdbPrintString(pRDB);
                             break;
