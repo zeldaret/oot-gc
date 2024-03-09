@@ -8,9 +8,9 @@ _XL_OBJECTTYPE gClassRdb = {
     (EventFunc)rdbEvent,
 };
 
-// This function only clears the string buffer, but it may have output the
-// string to the console in debug mode.
-inline void rdbPrintString(Rdb* pRDB) {
+// This function only clears the string buffer, but it may have done something
+// with the string in debug mode.
+inline void rdbHandleString(Rdb* pRDB) {
     s32 iCounter;
 
     for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {
@@ -41,42 +41,42 @@ static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
                             // bug: in all these cases, pRDB->nIndexString may end up being >= 256,
                             // which will write out of bounds into pRDB->szString.
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
-                            rdbPrintString(pRDB);
+                            rdbHandleString(pRDB);
                             break;
                         case 2:
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 8) & 0xFF);
-                            rdbPrintString(pRDB);
+                            rdbHandleString(pRDB);
                             break;
                         case 3:
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 16) & 0xFF);
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
                             pRDB->szString[pRDB->nIndexString] = (s32)((*pData >> 8) & 0xFF);
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
                             pRDB->szString[pRDB->nIndexString] = *pData & 0xFF;
                             if (pRDB->szString[pRDB->nIndexString] == '\n') {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else if (pRDB->nIndexString > 256) {
-                                rdbPrintString(pRDB);
+                                rdbHandleString(pRDB);
                             } else {
                                 pRDB->nIndexString++;
                             }
