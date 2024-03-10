@@ -19,8 +19,8 @@ GXRenderModeObj* rmode;
 
 const GXColor D_80135D00 = {0};
 
+// TODO: move to dolphin/tex.h as `TEXDescriptor* TEXGet(TEXPalette* pal, u32 id)`
 __anon_0xDAF8* TEXGet(u8* pTexture, u32 i);
-s32 __PADDisableRecalibration(s32 bDisable);
 
 s32 xlCoreReset(void) {
     OSFreeToHeap(__OSCurrHeap, gpHeap);

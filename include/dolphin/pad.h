@@ -57,5 +57,6 @@ BOOL PADReset(u32 mask);
 void PADControlMotor(s32 chan, u32 command);
 void PADSetSpec(u32 spec);
 void PADClamp(PADStatus* status);
+s32 __PADDisableRecalibration(s32 disable);
 
 #endif
