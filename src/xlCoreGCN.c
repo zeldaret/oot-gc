@@ -6,10 +6,6 @@ u8 gTgPcTPL[32897] = {
 #pragma INCBIN("SIM_original.elf", 0x000D07A0, 0x00008081)
 };
 
-char D_800DB7A4[] = "xlCoreGCN.c";
-char D_800DB7B0[] = "CORE DONE!";
-char D_800DB7BC[] = "DEMOInit: invalid TV format\n";
-
 static GXRenderModeObj rmodeobj;
 GXTexObj g_texMap[4];
 static s32 gnCountArgument;
@@ -21,7 +17,7 @@ static void* gArenaHi;
 static void* gArenaLo;
 GXRenderModeObj* rmode;
 
-const s32 D_80135D00 = 0x00000000;
+const GXColor D_80135D00 = {0};
 
 __anon_0xDAF8* TEXGet(u8* pTexture, u32 i);
 s32 __PADDisableRecalibration(s32 bDisable);
@@ -68,7 +64,7 @@ static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
             rmode = &GXMpal480IntDf;
             break;
         default:
-            OSPanic(D_800DB7A4, 182, D_800DB7BC);
+            OSPanic("xlCoreGCN.c", 182, "DEMOInit: invalid TV format\n");
             break;
     }
 
@@ -76,10 +72,6 @@ static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
     rmode = &rmodeobj;
 }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlCoreGCN/xlCoreInitMem.s")
-static void xlCoreInitMem(void);
-#else
 static void xlCoreInitMem(void) {
     void* arenaLo;
     void* arenaHi;
@@ -88,7 +80,7 @@ static void xlCoreInitMem(void) {
     gArenaLo = arenaLo = OSGetArenaLo();
     gArenaHi = arenaHi = OSGetArenaHi();
 
-    fbSize = (((rmode->fbWidth + 0xF) & 0xFFF0) * rmode->xfbHeight * 2);
+    fbSize = (((u16)(rmode->fbWidth + 0xF) & 0xFFF0) * rmode->xfbHeight * 2);
     DemoFrameBuffer1 = (void*)(((u32)arenaLo + 0x1F) & 0xFFFFFFE0);
     DemoFrameBuffer2 = (void*)(((u32)DemoFrameBuffer1 + fbSize + 0x1F) & 0xFFFFFFE0);
     DemoCurrentBuffer = DemoFrameBuffer2;
@@ -105,7 +97,6 @@ static void xlCoreInitMem(void) {
     OSSetCurrentHeap(OSCreateHeap(arenaLo, arenaHi));
     OSSetArenaLo(arenaHi);
 }
-#endif
 
 inline void xlCoreInitFilter(u8* pFilter, s32 size, f32 factor) {
     s32 iFilter;
@@ -154,22 +145,13 @@ s32 xlCoreGetArgument(s32 iArgument, char** pszArgument) {
 
 s32 xlCoreHiResolution(void) { return 1; }
 
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/xlCoreGCN/main.s")
-#else
 s32 main(s32 nCount, char** aszArgument) {
-    // Parameters
-    // s32 nCount; // r1+0x8
-    // char** aszArgument; // r1+0xC
-
-    // Local variables
-    void* pHeap; // r27
-    u32 i; // r26
-    __anon_0xDAF8* tdp; // r1+0x8
-    GXColor black; // r1+0x10
-    s32 nSizeHeap; // r3
-    s32 nSize; // r31
-    volatile int t;
+    void* pHeap;
+    u32 i;
+    __anon_0xDAF8* tdp;
+    GXColor black;
+    s32 nSizeHeap;
+    s32 nSize;
 
     gnCountArgument = nCount;
     gaszArgument = aszArgument;
@@ -218,8 +200,8 @@ s32 main(s32 nCount, char** aszArgument) {
 
     simulatorUnpackTexPalette((__anon_0xDB69*)gTgPcTPL);
 
-    // t = D_80135D00;
-    for (i = 0; i < ARRAY_COUNTU(g_texMap); i++) {
+    black = D_80135D00;
+    for (i = 0; i < 2; i++) {
         tdp = TEXGet(gTgPcTPL, i);
         GXInitTexObj(&g_texMap[i], tdp->textureHeader->data, tdp->textureHeader->width, tdp->textureHeader->height,
                      tdp->textureHeader->format, GX_CLAMP, GX_CLAMP, GX_FALSE);
@@ -272,11 +254,9 @@ s32 main(s32 nCount, char** aszArgument) {
         return 0;
     }
 
-    // this is matching (just regalloc), idk why it's broken on decompme
     OSPanic("xlCoreGCN.c", 577, "CORE DONE!");
     return 0;
 }
-#endif
 
 void xlCoreBeforeRender(void) {
     if (rmode->field_rendering != 0) {
