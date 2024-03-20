@@ -1,10 +1,11 @@
-#ifndef _DOLPHIN_OS_OSERROR_H_
-#define _DOLPHIN_OS_OSERROR_H_
+#ifndef _DOLPHIN_OSERROR
+#define _DOLPHIN_OSERROR
 
-#include "dolphin/os/OSContext.h"
+#include "dolphin/types.h"
 
-typedef u16 OSError;
-typedef void (*OSErrorHandler)(OSError error, OSContext* context, ...);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define OS_ERROR_SYSTEM_RESET 0
 #define OS_ERROR_MACHINE_CHECK 1
@@ -21,8 +22,18 @@ typedef void (*OSErrorHandler)(OSError error, OSContext* context, ...);
 #define OS_ERROR_BREAKPOINT 12
 #define OS_ERROR_SYSTEM_INTERRUPT 13
 #define OS_ERROR_THERMAL_INTERRUPT 14
-#define OS_ERROR_MAX (OS_ERROR_THERMAL_INTERRUPT + 1)
+#define OS_ERROR_PROTECTION 15
+#define OS_ERROR_FPE 16
 
-OSErrorHandler OSSetErrorHandler(OSError error, OSErrorHandler handler);
+#define OS_ERROR_MAX (OS_ERROR_FPE + 1)
 
+typedef u16 OSError;
+typedef void (*OSErrorHandler)(OSError error, OSContext* context, ...);
+
+OSErrorHandler OSSetErrorHandler(OSError code, OSErrorHandler handler);
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif // _DOLPHIN_OSERROR

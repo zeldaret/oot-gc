@@ -1,21 +1,34 @@
-#ifndef _DOLOPHIN_OS_OSMESSAGE_H_
-#define _DOLOPHIN_OS_OSMESSAGE_H_
+#ifndef _DOLPHIN_OSMESSAGE
+#define _DOLPHIN_OSMESSAGE
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "dolphin/os/OSThread.h"
-
+typedef struct OSMessageQueue OSMessageQueue;
 typedef void* OSMessage;
 
-typedef struct OSMessageQueue {
-    /* 0x00 */ OSThreadQueue queueSend;
-    /* 0x08 */ OSThreadQueue queueReceive;
-    /* 0x10 */ OSMessage* msgArray;
-    /* 0x14 */ s32 msgCount;
-    /* 0x18 */ s32 firstIndex;
-    /* 0x1C */ s32 usedCount;
-} OSMessageQueue;
+struct OSMessageQueue {
+    OSThreadQueue queueSend;
+    OSThreadQueue queueReceive;
+    OSMessage* msgArray;
+    s32 msgCount;
+    s32 firstIndex;
+    s32 usedCount;
+};
+
+// Flags to turn blocking on/off when sending/receiving message
+#define OS_MESSAGE_NOBLOCK 0
+#define OS_MESSAGE_BLOCK 1
 
 void OSInitMessageQueue(OSMessageQueue* mq, OSMessage* msgArray, s32 msgCount);
 BOOL OSSendMessage(OSMessageQueue* mq, OSMessage msg, s32 flags);
+BOOL OSJamMessage(OSMessageQueue* mq, OSMessage msg, s32 flags);
 BOOL OSReceiveMessage(OSMessageQueue* mq, OSMessage* msg, s32 flags);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // _DOLPHIN_OSMESSAGE
