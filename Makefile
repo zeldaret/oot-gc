@@ -35,6 +35,9 @@ include obj_files.mk
 
 MWCC_VERSION := GC/1.1
 
+# 58 for MQ, 99 for unknown
+DOLPHIN_REVISION := 99
+
 # Programs
 ifeq ($(WINDOWS),1)
 	WINE := 
@@ -51,6 +54,9 @@ MWCC_DIR := tools/mwcc_compiler/$(MWCC_VERSION)
 CC := $(WINE) $(MWCC_DIR)/mwcceppc.exe
 LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 
+DOLPHIN_SDK_MWCC_DIR := tools/mwcc_compiler/GC/1.2.5n
+DOLPHIN_SDK_CC := $(WINE) $(DOLPHIN_SDK_MWCC_DIR)/mwcceppc.exe
+
 SHA1SUM := sha1sum
 PYTHON := python3
 ELF2DOL := tools/elf2dol/elf2dol
@@ -61,16 +67,18 @@ ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
 POSTPROC := tools/postprocess.py
 
 # Options
-INCLUDES := -Iinclude
+INCLUDES := -Iinclude -i libc
 
 # Assembler Flags
-ASFLAGS := -mgekko -I include
+ASFLAGS := -mgekko -I include -I libc
 
 # Linker Flags
-LDFLAGS := -map $(MAP) -fp hard -nodefaults -w off
+LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
 
 # Compiler Flags
 CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto,deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
+DOLPHIN_SDK_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
 endif
@@ -136,8 +144,14 @@ $(DOL): $(ELF)
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(BUILD_DIR)/%.o: %.c
+$(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
+	$(ASM_PROCESSOR) "$(DOLPHIN_SDK_CC) $(DOLPHIN_SDK_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
 	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
-$(BUILD_DIR)/%.o: %.cpp
+$(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.cpp
+	$(DOLPHIN_SDK_CC) $(DOLPHIN_SDK_CFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/emulator/%.o: src/emulator/%.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
