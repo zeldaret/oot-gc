@@ -432,7 +432,7 @@ void guPerspectiveF(Cpu* pCPU) {
         }
     }
 
-    fovy *= 3.1415926f / 180;
+    fovy *= (f32)M_PI / 180;
     cot = cosf(fovy / 2) / sinf(fovy / 2);
 
     data.f32 = cot / aspect;
@@ -516,7 +516,7 @@ void guPerspective(Cpu* pCPU) {
     mf[3][2] = 0.0f;
     mf[3][3] = 1.0f;
 
-    fovy *= 3.1415926f / 180;
+    fovy *= (f32)M_PI / 180;
     _cot = cosf(fovy / 2) / sinf(fovy / 2);
 
     mf[0][0] = _cot / aspect;
