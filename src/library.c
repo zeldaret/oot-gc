@@ -1,5 +1,11 @@
 #include "library.h"
+#include "frame.h"
 #include "library_jumptables.h"
+#include "macros.h"
+#include "math.h"
+#include "ram.h"
+#include "system.h"
+#include "xlPostGCN.h"
 
 char D_800EEB00[] = "OS-LIBRARY";
 
@@ -428,18 +434,554 @@ const f32 D_801360D4 = -2.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/zeldaLoadSZS_Exit.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryFindException.s")
+#define DEVICE_GET32(nAddress, pValue)                                                          \
+    {                                                                                           \
+        CpuDevice* pDevice = apDevice[aiDevice[(u32)(nAddress) >> 16]];                         \
+        pDevice->pfGet32(pDevice->pObject, (nAddress) + pDevice->nOffsetAddress, (s32*)pValue); \
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryFindVariables.s")
+static s32 libraryFindException(Library* pLibrary, s32 bException) {
+    Cpu* pCPU;
+    CpuDevice** apDevice;
+    u8* aiDevice;
+    u32 anCode[6];
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryFindFunctions.s")
+    pCPU = SYSTEM_CPU(pLibrary->pHost);
+    apDevice = pCPU->apDevice;
+    aiDevice = pCPU->aiDevice;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryTestFunction.s")
+    if (bException) {
+        DEVICE_GET32(pCPU->nPC + 0x00, &anCode[0]);
+        DEVICE_GET32(pCPU->nPC + 0x04, &anCode[1]);
+        DEVICE_GET32(pCPU->nPC + 0x08, &anCode[2]);
+        DEVICE_GET32(pCPU->nPC + 0x0C, &anCode[3]);
+        DEVICE_GET32(pCPU->nPC + 0x10, &anCode[4]);
+        DEVICE_GET32(pCPU->nPC + 0x14, &anCode[5]);
+    } else {
+        DEVICE_GET32(0x80000180, &anCode[0]);
+        DEVICE_GET32(0x80000184, &anCode[1]);
+        DEVICE_GET32(0x80000188, &anCode[2]);
+        DEVICE_GET32(0x8000018C, &anCode[3]);
+        DEVICE_GET32(0x80000190, &anCode[4]);
+        DEVICE_GET32(0x80000194, &anCode[5]);
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/librarySearch.s")
+    if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09 && MIPS_OP(anCode[2]) == 0x00 &&
+        (anCode[2] & 0x1F) == 0x08 && anCode[3] == 0) {
+        pLibrary->nAddressException = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
+        return 1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryFunctionReplaced.s")
+    if (!bException) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryCall.s")
+    __cpuBreak(pCPU);
+    return 0;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/libraryEvent.s")
+static s32 libraryFindVariables(Library* pLibrary) {
+    Cpu* pCPU;
+    CpuDevice** apDevice;
+    u8* aiDevice;
+    u32 nAddress;
+    u32 nAddressLast;
+    u32 nOffset;
+    u32 nOpcode;
+    u32 anCode[6];
+
+    pCPU = SYSTEM_CPU(pLibrary->pHost);
+    apDevice = pCPU->apDevice;
+    aiDevice = pCPU->aiDevice;
+
+    DEVICE_GET32(pLibrary->nAddressException + 0, &anCode[0]);
+    DEVICE_GET32(pLibrary->nAddressException + 4, &anCode[1]);
+    if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09) {
+        nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
+        if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
+            return 0;
+        }
+
+        pLibrary->anAddress[6] = 0x80000000 | nAddress;
+        if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[6], nOffset, NULL)) {
+            return 0;
+        }
+    } else {
+        return 0;
+    }
+
+    nAddress = pLibrary->nAddressException + 8;
+    do {
+        DEVICE_GET32(nAddress, &nOpcode);
+        nAddress += 4;
+    } while (nOpcode != 0x03404021 && nOpcode != 0x03404025);
+
+    DEVICE_GET32(nAddress + 0, &anCode[0]);
+    DEVICE_GET32(nAddress + 4, &anCode[1]);
+    DEVICE_GET32(nAddress + 8, &anCode[2]);
+    nAddressLast = nAddress;
+    if (MIPS_OP(anCode[0]) == 0x0F) {
+        nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
+    } else {
+        nAddress = (MIPS_IMM_U16(anCode[1]) << 16) + MIPS_IMM_S16(anCode[2]);
+    }
+    if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[8] = 0x80000000 | nAddress;
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[8], nOffset, NULL)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[7] = 0x80000000 | (nAddress + 4);
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[7], nOffset + 4, NULL)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[5] = 0x80000000 | (nAddress - 4);
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[5], nOffset - 4, NULL)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[4] = 0x80000000 | (nAddress - 8);
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[4], nOffset - 8, NULL)) {
+        return 0;
+    }
+
+    nAddress = nAddressLast;
+    do {
+        DEVICE_GET32(nAddress, &nOpcode);
+        nAddress += 4;
+    } while (nOpcode != 0x11200013 && nOpcode != 0x11200011 && nOpcode != 0x1120000D && nOpcode != 0x1120000B &&
+             nOpcode != 0x11200009);
+
+    nAddressLast = nAddress;
+    DEVICE_GET32(nAddress + 4, &anCode[0]);
+    DEVICE_GET32(nAddress + 8, &anCode[1]);
+
+    nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
+    if (nAddress == 0xC0000008) {
+        return 0;
+    }
+    if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[3] = 0x80000000 | nAddress;
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[3], nOffset, NULL)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[2] = 0x80000000 | (nAddress - 4);
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[2], nOffset - 4, NULL)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[1] = 0x80000000 | (nAddress - 8);
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[1], nOffset - 8, NULL)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[0] = 0x80000000 | (nAddress - 16);
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[0], nOffset - 16, NULL)) {
+        return 0;
+    }
+
+    nAddress = nAddressLast;
+    do {
+        DEVICE_GET32(nAddress, &nOpcode);
+        nAddress += 4;
+    } while (nOpcode != 0x40895800);
+
+    DEVICE_GET32(nAddress + 0, &anCode[0]);
+    DEVICE_GET32(nAddress + 4, &anCode[1]);
+
+    if (MIPS_OP(anCode[0]) == 0x03) {
+        nAddress = ((nAddress + 0) & 0xF0000000) | (MIPS_TARGET(anCode[0]) << 2);
+    } else {
+        nAddress = ((nAddress + 4) & 0xF0000000) | (MIPS_TARGET(anCode[1]) << 2);
+    }
+
+    DEVICE_GET32(nAddress + 0, &anCode[0]);
+    DEVICE_GET32(nAddress + 4, &anCode[1]);
+    DEVICE_GET32(nAddress + 8, &anCode[2]);
+    if (MIPS_OP(anCode[0]) == 0x0F) {
+        nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
+    } else {
+        nAddress = (MIPS_IMM_U16(anCode[1]) << 16) + MIPS_IMM_S16(anCode[2]);
+    }
+    if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
+        return 0;
+    }
+
+    pLibrary->anAddress[9] = 0x80000000 | nAddress;
+    if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[9], nOffset, NULL)) {
+        return 0;
+    }
+
+    pLibrary->nFlag |= 4;
+    return 1;
+}
+
+static s32 libraryFindFunctions(Library* pLibrary) {
+    Cpu* pCPU;
+    s32 iFunction;
+    CpuDevice** apDevice;
+    u8* aiDevice;
+    u32 nOpcode;
+    u32* pnCode;
+    u32 nAddress;
+    u32 nAddressLast;
+    u32 nAddressEnqueueThread;
+    u32 nAddressDispatchThread;
+
+    nAddressEnqueueThread = -1;
+    nAddressDispatchThread = -1;
+    nAddress = pLibrary->nAddressException;
+
+    pCPU = SYSTEM_CPU(pLibrary->pHost);
+    apDevice = pCPU->apDevice;
+    aiDevice = pCPU->aiDevice;
+
+    do {
+        DEVICE_GET32(nAddress, &nOpcode);
+        if (MIPS_OP(nOpcode) == 0x03) {
+            nAddressLast = (nAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
+            DEVICE_GET32(nAddress + 8, &nOpcode);
+            if (MIPS_OP(nOpcode) == 0x02) {
+                nAddressEnqueueThread = nAddressLast;
+                nAddressDispatchThread = (nAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
+            }
+        }
+        nAddress += 4;
+    } while (nOpcode != 0x400A4000);
+
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &send_mesg;
+         iFunction++) {}
+    if (iFunction < ARRAY_COUNTU(gaFunction)) {
+        nAddress = pLibrary->nAddressException;
+        do {
+            DEVICE_GET32(nAddress, &nOpcode);
+            nAddress += 4;
+        } while (nOpcode != 0x400A4000);
+
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 0x14)) {
+            return 0;
+        }
+
+        *(pnCode++) = 0x7C000000 | iFunction;
+        *(pnCode++) = 0x03E00008;
+        *(pnCode++) = 0;
+    }
+
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osEnqueueAndYield;
+         iFunction++) {}
+    if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread) != -1) {
+        do {
+            nAddress -= 4;
+            DEVICE_GET32(nAddress, &nOpcode);
+        } while (nOpcode != 0x40086000);
+
+        do {
+            nAddress -= 4;
+            DEVICE_GET32(nAddress, &nOpcode);
+        } while (MIPS_OP(nOpcode) != 0x02 && (nOpcode & 0xFFFF0000) != 0x10000000 && MIPS_OP(nOpcode) != 0x00 &&
+                 MIPS_FUNCT(nOpcode) != 0x08);
+
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 8)) {
+            return 0;
+        }
+
+        *(pnCode++) = 0x7C000000 | iFunction;
+    }
+
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osEnqueueThread;
+         iFunction++) {}
+    if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressEnqueueThread != -1) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressEnqueueThread)) {
+            return 0;
+        }
+        *(pnCode++) = 0x7C000000 | iFunction;
+        *(pnCode++) = 0x03E00008;
+        *(pnCode++) = 0;
+    }
+
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osPopThread;
+         iFunction++) {}
+    // bug: Tests if nAddressEnqueueThread + 8 != -1 instead of nAddressEnqueueThread != -1
+    if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread + 8) != -1) {
+        do {
+            DEVICE_GET32(nAddress, &nOpcode);
+            nAddress += 4;
+        } while (nOpcode != 0x03E00008);
+
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 4)) {
+            return 0;
+        }
+
+        *(pnCode++) = 0x7C000000 | iFunction;
+        *(pnCode++) = 0x03E00008;
+        *(pnCode++) = 0;
+    }
+
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osDispatchThread;
+         iFunction++) {}
+    if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressDispatchThread != -1) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressDispatchThread)) {
+            return 0;
+        }
+
+        *(pnCode++) = 0x7C000000 | iFunction;
+    }
+
+    return 1;
+}
+
+s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
+    s32 iFunction;
+    s32 iData;
+    s32 bFlag;
+    s32 bDone;
+    s32 bReturn;
+    u32 iCode;
+    u32* pnCode;
+    u32* pnCodeTemp;
+    u32 nSizeCode;
+    u32 nChecksum;
+    u32 nOpcode;
+    u32 nAddress;
+
+    s32 var_r0;
+
+    if (!cpuGetFunctionChecksum(SYSTEM_CPU(pLibrary->pHost), &nChecksum, pFunction)) {
+        return 0;
+    }
+
+    nSizeCode = ((pFunction->nAddress1 - pFunction->nAddress0) >> 2) + 1;
+
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction); iFunction++) {
+        for (iData = 0; gaFunction[iFunction].anData[iData] != 0; iData += 2) {
+            if (gaFunction[iFunction].anData[iData + 1] != nChecksum ||
+                gaFunction[iFunction].anData[iData] != nSizeCode) {
+                continue;
+            }
+
+            bDone = 0;
+            bReturn = 1;
+
+            if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, pFunction->nAddress0)) {
+                return 0;
+            }
+
+            nOpcode = pnCode[0];
+            var_r0 = MIPS_OP(nOpcode) == 0x1F ? 0 : 1;
+            bFlag = var_r0;
+            if (gaFunction[iFunction].pfLibrary == &osEepromLongRead && nChecksum == 0x5B919EF9) {
+                nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
+                if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
+                    return 0;
+                }
+                if (pnCodeTemp[10] != 0xAFA00030) {
+                    bDone = 1;
+                    iFunction += 1;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &osEepromLongWrite && nChecksum == 0x5B919EF9) {
+                nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
+                if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
+                    return 0;
+                }
+                if (pnCodeTemp[10] == 0xAFA00030) {
+                    bDone = 1;
+                    iFunction -= 1;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &__osSpSetStatus) {
+                nChecksum = 0;
+                for (iCode = 0; iCode < nSizeCode; iCode++) {
+                    nChecksum += pnCode[iCode];
+                }
+                if (nChecksum != 0xC1E27C6E && nChecksum != 0xEDB2A41C && nChecksum != 0x2068A41C) {
+                    bFlag = 0;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &osInvalICache) {
+                if (MIPS_IMM_U16(pnCode[2]) == 0x2000) {
+                    bDone = 1;
+                    iFunction += 1;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == 0 && nChecksum == 0x376979EF) {
+                if (MIPS_IMM_U16(pnCode[2]) == 0x4000) {
+                    bDone = 1;
+                    iFunction -= 1;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &__osDisableInt) {
+                if (pnCode[2] == 0 && pnCode[3] == 0) {
+                    pnCode += 4;
+                    while (pnCode[0] == 0) {
+                        pnCode++;
+                    }
+                    bFlag = MIPS_OP(pnCode[0]) == 0x1F ? 0 : 1;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &osViSwapBuffer_Entry) {
+                if (bFlag) {
+                    bReturn = 0;
+                    if ((nOpcode & 0xFFFF0000) != 0x27BD0000) {
+                        xlPostText(D_800EFF34, D_800EFF7C, 6971, nOpcode);
+                    } else {
+                        pLibrary->nAddStackSwap = MIPS_IMM_S16(nOpcode);
+                    }
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &GenPerspective_1080) {
+                if (((System*)pLibrary->pHost)->eTypeROM != SRT_1080) {
+                    bFlag = 0;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &pictureSnap_Zelda2) {
+                if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA2) {
+                    bFlag = 0;
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &zeldaLoadSZS_Entry) {
+                if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA1) {
+                    bFlag = 0;
+                }
+                if (bFlag) {
+                    pnCodeTemp = pnCode;
+                    bReturn = 0;
+                    while (pnCodeTemp[0] != 0x27BD0040) {
+                        pnCodeTemp++;
+                    }
+                    pnCodeTemp[0] = 0x7C000000 | (iFunction + 1);
+                }
+            } else if (gaFunction[iFunction].pfLibrary == &dmaSoundRomHandler_ZELDA1) {
+                if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA1) {
+                    bFlag = 0;
+                } else {
+                    nOpcode = pnCode[2];
+                    if (iData != 0 && nOpcode != 0x0C000F3C) {
+                        bFlag = 0;
+                    }
+                }
+            }
+
+            if (bFlag) {
+                pFunction->timeToLive = 0;
+                *(pnCode++) = 0x7C000000 | iFunction;
+                if (bReturn != 0) {
+                    *(pnCode++) = 0x03E00008;
+                    *(pnCode++) = 0;
+                }
+                return 1;
+            }
+
+            if (bDone) {
+                return 1;
+            }
+        }
+    }
+
+    return 1;
+}
+
+static s32 librarySearch(Library* pLibrary, CpuFunction* pFunction) {
+    if (pFunction->left != NULL && !librarySearch(pLibrary, pFunction->left)) {
+        return 0;
+    } else if (pFunction->right != NULL && !librarySearch(pLibrary, pFunction->right)) {
+        return 0;
+    } else if (!libraryTestFunction(pLibrary, pFunction)) {
+        return 0;
+    }
+    return 1;
+}
+
+inline s32 libraryUpdate(Library* pLibrary) {
+    Cpu* pCPU;
+    CpuFunction* pFunction;
+
+    pCPU = SYSTEM_CPU(pLibrary->pHost);
+    if (pCPU->gTree == NULL) {
+        cpuFindFunction(pCPU, pCPU->nPC, &pFunction);
+    }
+
+    if (pCPU->gTree != NULL) {
+        if (pCPU->gTree->left != NULL && !librarySearch(pLibrary, pCPU->gTree->left)) {
+            return 0;
+        } else if (pCPU->gTree->right != NULL && !librarySearch(pLibrary, pCPU->gTree->right)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+s32 libraryFunctionReplaced(Library* pLibrary, s32 iFunction) {
+    if (gaFunction[iFunction].pfLibrary == &send_mesg) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &__osEnqueueAndYield) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &__osEnqueueThread) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &__osPopThread) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &__osDispatchThread) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &__sinf) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &osViSwapBuffer_Entry) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &zeldaLoadSZS_Entry) {
+        return 0;
+    } else if (gaFunction[iFunction].pfLibrary == &zeldaLoadSZS_Exit) {
+        return 0;
+    }
+    return 1;
+}
+
+s32 libraryCall(Library* pLibrary, Cpu* pCPU, s32 iFunction) {
+    if (!(pLibrary->nFlag & 1)) {
+        if (libraryFindException(pLibrary, iFunction == -1 ? 1 : 0)) {
+            pLibrary->nFlag |= 1;
+            if (libraryFindVariables(pLibrary)) {
+                pLibrary->nFlag |= 2;
+                libraryFindFunctions(pLibrary);
+            }
+        }
+    }
+
+    if (iFunction == -1) {
+        pLibrary->nFlag |= 1;
+        if (pLibrary->nFlag & 2) {
+            __osException(pCPU);
+        }
+    } else {
+        if (gaFunction[iFunction].pfLibrary != NULL) {
+            gaFunction[iFunction].pfLibrary(pCPU);
+        }
+    }
+
+    return 1;
+}
+
+s32 libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pLibrary->nFlag = 0;
+            pLibrary->pHost = pArgument;
+            pLibrary->nAddressException = -1;
+            pLibrary->nAddStackSwap = 0;
+            pLibrary->aFunction = gaFunction;
+            pLibrary->nCountFunction = ARRAY_COUNT(gaFunction);
+            break;
+        case 0:
+        case 1:
+        case 3:
+        case 0x1002:
+            break;
+        case 0x1003:
+            if (!libraryUpdate(pLibrary)) {
+                return 0;
+            }
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
