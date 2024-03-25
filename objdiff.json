@@ -1,0 +1,522 @@
+{
+    "min_version": "1.0.0",
+    "build_target": false,
+    "watch_patterns": [
+        "*.c",
+        "*.cp",
+        "*.cpp",
+        "*.h",
+        "*.hpp",
+        "*.inc",
+        "*.py",
+        "*.yml",
+        "*.txt",
+        "*.json"
+    ],
+    "units": [
+        {
+            "name": "xlCoreGCN",
+            "target_path": "expected/build/SIM/src/xlCoreGCN.o",
+            "base_path": "build/SIM/src/xlCoreGCN.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/xlCoreGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "xlPostGCN",
+            "target_path": "expected/build/SIM/src/xlPostGCN.o",
+            "base_path": "build/SIM/src/xlPostGCN.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/xlPostGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "xlFileGCN",
+            "target_path": "expected/build/SIM/src/xlFileGCN.o",
+            "base_path": "build/SIM/src/xlFileGCN.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/xlFileGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "xlList",
+            "target_path": "expected/build/SIM/src/xlList.o",
+            "base_path": "build/SIM/src/xlList.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/xlList.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "xlHeap",
+            "target_path": "expected/build/SIM/src/xlHeap.o",
+            "base_path": "build/SIM/src/xlHeap.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/xlHeap.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "xlObject",
+            "target_path": "expected/build/SIM/src/xlObject.o",
+            "base_path": "build/SIM/src/xlObject.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/xlObject.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "simGCN",
+            "target_path": "expected/build/SIM/src/simGCN.o",
+            "base_path": "build/SIM/src/simGCN.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/simGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "movie",
+            "target_path": "expected/build/SIM/src/movie.o",
+            "base_path": "build/SIM/src/movie.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/movie.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "THPPlayer",
+            "target_path": "expected/build/SIM/src/THPPlayer.o",
+            "base_path": "build/SIM/src/THPPlayer.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/THPPlayer.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "THPAudioDecode",
+            "target_path": "expected/build/SIM/src/THPAudioDecode.o",
+            "base_path": "build/SIM/src/THPAudioDecode.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/THPAudioDecode.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "THPDraw",
+            "target_path": "expected/build/SIM/src/THPDraw.o",
+            "base_path": "build/SIM/src/THPDraw.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/THPDraw.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "THPRead",
+            "target_path": "expected/build/SIM/src/THPRead.o",
+            "base_path": "build/SIM/src/THPRead.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/THPRead.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "THPVideoDecode",
+            "target_path": "expected/build/SIM/src/THPVideoDecode.o",
+            "base_path": "build/SIM/src/THPVideoDecode.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/THPVideoDecode.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "mcardGCN",
+            "target_path": "expected/build/SIM/src/mcardGCN.o",
+            "base_path": "build/SIM/src/mcardGCN.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/mcardGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "codeGCN",
+            "target_path": "expected/build/SIM/src/codeGCN.o",
+            "base_path": "build/SIM/src/codeGCN.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/codeGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "soundGCN",
+            "target_path": "expected/build/SIM/src/soundGCN.o",
+            "base_path": "build/SIM/src/soundGCN.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/soundGCN.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "frame",
+            "target_path": "expected/build/SIM/src/frame.o",
+            "base_path": "build/SIM/src/frame.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/frame.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "system",
+            "target_path": "expected/build/SIM/src/system.o",
+            "base_path": "build/SIM/src/system.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/system.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "cpu",
+            "target_path": "expected/build/SIM/src/cpu.o",
+            "base_path": "build/SIM/src/cpu.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/cpu.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "pif",
+            "target_path": "expected/build/SIM/src/pif.o",
+            "base_path": "build/SIM/src/pif.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/pif.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "ram",
+            "target_path": "expected/build/SIM/src/ram.o",
+            "base_path": "build/SIM/src/ram.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/ram.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "rom",
+            "target_path": "expected/build/SIM/src/rom.o",
+            "base_path": "build/SIM/src/rom.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/rom.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "rdp",
+            "target_path": "expected/build/SIM/src/rdp.o",
+            "base_path": "build/SIM/src/rdp.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/rdp.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "rdb",
+            "target_path": "expected/build/SIM/src/rdb.o",
+            "base_path": "build/SIM/src/rdb.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/rdb.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "rsp",
+            "target_path": "expected/build/SIM/src/rsp.o",
+            "base_path": "build/SIM/src/rsp.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/rsp.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "mips",
+            "target_path": "expected/build/SIM/src/mips.o",
+            "base_path": "build/SIM/src/mips.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/mips.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "disk",
+            "target_path": "expected/build/SIM/src/disk.o",
+            "base_path": "build/SIM/src/disk.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/disk.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "flash",
+            "target_path": "expected/build/SIM/src/flash.o",
+            "base_path": "build/SIM/src/flash.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/flash.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "sram",
+            "target_path": "expected/build/SIM/src/sram.o",
+            "base_path": "build/SIM/src/sram.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/sram.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "audio",
+            "target_path": "expected/build/SIM/src/audio.o",
+            "base_path": "build/SIM/src/audio.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/audio.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "video",
+            "target_path": "expected/build/SIM/src/video.o",
+            "base_path": "build/SIM/src/video.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/video.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "serial",
+            "target_path": "expected/build/SIM/src/serial.o",
+            "base_path": "build/SIM/src/serial.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/serial.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "library",
+            "target_path": "expected/build/SIM/src/library.o",
+            "base_path": "build/SIM/src/library.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/library.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "peripheral",
+            "target_path": "expected/build/SIM/src/peripheral.o",
+            "base_path": "build/SIM/src/peripheral.o",
+            "reverse_fn_order": true,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/peripheral.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "_frameGCNcc",
+            "target_path": "expected/build/SIM/src/_frameGCNcc.o",
+            "base_path": "build/SIM/src/_frameGCNcc.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/_frameGCNcc.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "_buildtev",
+            "target_path": "expected/build/SIM/src/_buildtev.o",
+            "base_path": "build/SIM/src/_buildtev.o",
+            "reverse_fn_order": true,
+            "complete": false,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_159",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
+                "ctx_path": "build/SIM/src/_buildtev.ctx",
+                "build_ctx": true
+            }
+        }
+    ]
+}
