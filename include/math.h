@@ -31,4 +31,7 @@ inline f64 sqrt(f64 x) {
     return INFINITY;
 }
 
+f32 cosf(f32);
+f32 sinf(f32);
+
 #endif
