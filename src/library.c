@@ -313,22 +313,22 @@ void* jtbl_800EFF88[] = {
     &lbl_800974A0, &lbl_800974B4, &lbl_800974BC, &lbl_800974C4,
 };
 
-const f32 D_80136078 = 0.5;
-const f32 D_8013607C = 48681812.0;
+const f32 D_80136078 = 0.5f;
+const f32 D_8013607C = 48681812.0f;
 const f64 D_80136080 = 4503599627370496.0;
-const f32 D_80136088 = 0.0;
+const f32 D_80136088 = 0.0f;
 const f64 D_80136090 = 0.5;
 const f64 D_80136098 = 3.0;
-const f32 D_801360A0 = -1.0;
-const f32 D_801360A4 = 1.0;
-const f32 D_801360A8 = 128.0;
-const f32 D_801360AC = 127.0;
-const f32 D_801360B0 = 65536.0;
+const f32 D_801360A0 = -1.0f;
+const f32 D_801360A4 = 1.0f;
+const f32 D_801360A8 = 128.0f;
+const f32 D_801360AC = 127.0f;
+const f32 D_801360B0 = 65536.0f;
 const f64 D_801360B8 = 0.1;
-const f32 D_801360C0 = 2.0;
+const f32 D_801360C0 = 2.0f;
 const f64 D_801360C8 = 4503601774854144.0;
-const f32 D_801360D0 = 0.01745329238474369;
-const f32 D_801360D4 = -2.0;
+const f32 D_801360D0 = 0.01745329238474369f;
+const f32 D_801360D4 = -2.0f;
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/__osException.s")
 
@@ -378,9 +378,166 @@ const f32 D_801360D4 = -2.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/guOrtho.s")
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guPerspectiveF.s")
+#else
+void guPerspectiveF(Cpu* pCPU) {
+    s32 i;
+    s32 j;
+    f32 cot;
+    s16* perspNorm;
+    u32* mf;
+    u32* sp;
+    CpuFpr data0;
+    CpuFpr data1;
+    CpuFpr data;
+    f32 fovy;
+    f32 aspect;
+    f32 rNear;
+    f32 rFar;
+    f32 scale;
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, &perspNorm, pCPU->aGPR[5].u32);
+
+    data.u32 = pCPU->aGPR[6].u32;
+    fovy = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    aspect = data.f32;
+
+    data.u32 = sp[4];
+    rNear = data.f32;
+
+    data.u32 = sp[5];
+    rFar = data.f32;
+
+    data.u32 = sp[6];
+    scale = data.f32;
+
+    data0.f32 = 0.0f;
+    data1.f32 = 1.0f;
+    frameSetMatrixHint(SYSTEM_FRAME(pCPU->pHost), FMP_PERSPECTIVE, pCPU->aGPR[4].u32, 0, rNear, rFar, fovy, aspect,
+                       scale);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            if (i == j) {
+                mf[i * 4 + j] = data1.u32;
+            } else {
+                mf[i * 4 + j] = data0.u32;
+            }
+        }
+    }
+
+    fovy *= (f32)M_PI / 180;
+    cot = cosf(fovy / 2) / sinf(fovy / 2);
+
+    data.f32 = cot / aspect;
+    mf[0 * 4 + 0] = data.u32;
+
+    data.f32 = cot;
+    mf[1 * 4 + 1] = data.u32;
+
+    data.f32 = (rNear + rFar) / (rNear - rFar);
+    mf[2 * 4 + 2] = data.u32;
+
+    data.f32 = -1.0f;
+    mf[2 * 4 + 3] = data.u32;
+
+    data.f32 = 2 * rNear * rFar / (rNear - rFar);
+    mf[3 * 4 + 2] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[3 * 4 + 3] = data.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guPerspective.s")
+#else
+void guPerspective(Cpu* pCPU) {
+    s32* m;
+    f32 fovy;
+    f32 aspect;
+    f32 rNear;
+    f32 rFar;
+    f32 scale;
+    f32 _cot;
+    s32 i;
+    s32 j;
+    CpuFpr data;
+    f32 mf[4][4];
+    s32 e1;
+    s32 e2;
+    u32* sp;
+    s32* ai;
+    s32* af;
+    s32 pad[2];
+
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[6].u32;
+    fovy = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    aspect = data.f32;
+
+    data.u32 = sp[4];
+    rNear = data.f32;
+
+    data.u32 = sp[5];
+    rFar = data.f32;
+
+    data.u32 = sp[6];
+    scale = data.f32;
+
+    frameSetMatrixHint(SYSTEM_FRAME(pCPU->pHost), FMP_PERSPECTIVE, 0, pCPU->aGPR[4].u32, rNear, rFar, fovy, aspect,
+                       scale);
+
+    mf[0][0] = 1.0f;
+    mf[0][1] = 0.0f;
+    mf[0][2] = 0.0f;
+    mf[0][3] = 0.0f;
+    mf[1][0] = 0.0f;
+    mf[1][1] = 1.0f;
+    mf[1][2] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][0] = 0.0f;
+    mf[2][1] = 0.0f;
+    mf[2][2] = 1.0f;
+    mf[2][3] = 0.0f;
+    mf[3][0] = 0.0f;
+    mf[3][1] = 0.0f;
+    mf[3][2] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    fovy *= (f32)M_PI / 180;
+    _cot = cosf(fovy / 2) / sinf(fovy / 2);
+
+    mf[0][0] = _cot / aspect;
+    mf[1][1] = _cot;
+    mf[2][2] = (rNear + rFar) / (rNear - rFar);
+    mf[2][3] = -1.0f;
+    mf[3][2] = 2 * rNear * rFar / (rNear - rFar);
+    mf[3][3] = 0.0f;
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/GenPerspective_1080.s")
 
