@@ -1,6 +1,7 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/os/OSPriv.h"
 #include "dolphin/os/OSReset.h"
+#include "macros.h"
 
 static struct OSAlarmQueue {
     OSAlarm* head;
@@ -171,13 +172,13 @@ static void DecrementerExceptionCallback(register __OSException exception, regis
     OSLoadContext(context);
 }
 
-static asm void DecrementerExceptionHandler(register __OSException exception, register OSContext* context) {
-    // clang-format off
+static ASM void DecrementerExceptionHandler(register __OSException exception, register OSContext* context) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc 
     OS_EXCEPTION_SAVE_GPRS(context)
     stwu r1, -8(r1)
     b DecrementerExceptionCallback
-    // clang-format on
+#endif // clang-format on
 }
 
 #if DOLPHIN_REV > 58

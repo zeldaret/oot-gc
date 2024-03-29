@@ -1,7 +1,8 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
+#include "macros.h"
 
-static asm void ExternalInterruptHandler(register __OSException exception, register OSContext* context);
+static ASM void ExternalInterruptHandler(register __OSException exception, register OSContext* context);
 
 extern void __RAS_OSDisableInterrupts_begin(void);
 extern void __RAS_OSDisableInterrupts_end(void);
@@ -23,8 +24,8 @@ static OSInterruptMask InterruptPrioTable[] = {
     0xFFFFFFFF,
 };
 
-asm BOOL OSDisableInterrupts(void) {
-    // clang-format off
+ASM BOOL OSDisableInterrupts(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 entry    __RAS_OSDisableInterrupts_begin
     mfmsr   r3
@@ -33,10 +34,9 @@ entry    __RAS_OSDisableInterrupts_begin
 entry    __RAS_OSDisableInterrupts_end
     rlwinm  r3, r3, 17, 31, 31
     blr
-    // clang-format on
-}
-asm BOOL OSEnableInterrupts(void) {
-    // clang-format off
+#endif // clang-format on
+} ASM BOOL OSEnableInterrupts(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
     mfmsr   r3
@@ -44,11 +44,11 @@ asm BOOL OSEnableInterrupts(void) {
     mtmsr   r4
     rlwinm  r3, r3, 17, 31, 31
     blr
-    // clang-format on
+#endif // clang-format on
 }
 
-asm BOOL OSRestoreInterrupts(register BOOL level){
-    // clang-format off
+ASM BOOL OSRestoreInterrupts(register BOOL level){
+#ifdef __MWERKS__ // clang-format off
 
     nofralloc
 
@@ -63,7 +63,7 @@ _restore:
     mtmsr   r5
     rlwinm  r3, r4, 17, 31, 31
     blr
-    // clang-format on
+#endif // clang-format on
 }
 
 __OSInterruptHandler __OSSetInterruptHandler(__OSInterrupt interrupt, __OSInterruptHandler handler) {
@@ -389,13 +389,13 @@ void __OSDispatchInterrupt(__OSException exception, OSContext* context) {
     OSLoadContext(context);
 }
 
-static asm void ExternalInterruptHandler(register __OSException exception, register OSContext* context) {
+static ASM void ExternalInterruptHandler(register __OSException exception, register OSContext* context) {
 #pragma unused(exception)
-    // clang-format off
+#ifdef __MWERKS__ // clang-format off
     nofralloc 
     OS_EXCEPTION_SAVE_GPRS(context)
 
     stwu r1, -8(r1)
     b __OSDispatchInterrupt
-    // clang-format on
+#endif // clang-format on
 }

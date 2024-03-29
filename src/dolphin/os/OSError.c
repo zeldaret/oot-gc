@@ -1,8 +1,8 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
-#include "stdio.h"
 #include "macros.h"
+#include "stdio.h"
 
 OSErrorHandler __OSErrorTable[OS_ERROR_MAX];
 

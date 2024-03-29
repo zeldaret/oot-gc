@@ -1,6 +1,7 @@
 #include "dolphin/dvd.h"
 #include "dolphin/os.h"
 #include "dolphin/os/OSBootInfo.h"
+#include "macros.h"
 
 typedef struct ApploaderHeader {
     // total size: 0x20
@@ -27,14 +28,14 @@ extern u32 __OSIsGcam;
 
 static BOOL Prepared = FALSE;
 
-asm void Run() {
-    // clang-format off
+ASM void Run() {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     sync
     isync
     mtlr r3
     blr
-    // clang-format on
+#endif // clang-format on
 }
 
 static void Callback() { Prepared = TRUE; }

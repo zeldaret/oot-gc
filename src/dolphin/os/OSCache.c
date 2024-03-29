@@ -1,23 +1,26 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/os.h"
+#include "macros.h"
 
 // Can't use this due to weird condition register issues
-//#include "asm_types.h"
+// #include "asm_types.h"
 #define HID2 920
 
 #include "dolphin/db.h"
 
-/* clang-format off */
-asm void DCEnable() {
+ASM void DCEnable(){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     sync
     mfspr r3, HID0
     ori   r3, r3, 0x4000
     mtspr HID0, r3
     blr
+#endif // clang-format on
 }
 
-asm void DCInvalidateRange(register void* addr, register u32 nBytes) {
+ASM void DCInvalidateRange(register void* addr, register u32 nBytes) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     cmplwi nBytes, 0
     blelr
@@ -32,10 +35,11 @@ asm void DCInvalidateRange(register void* addr, register u32 nBytes) {
     addi addr, addr, 32
     bdnz @1
     blr
+#endif // clang-format on
 }
 
-
-asm void DCFlushRange(register void* addr, register u32 nBytes) {
+ASM void DCFlushRange(register void* addr, register u32 nBytes) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     cmplwi nBytes, 0
     blelr
@@ -51,9 +55,11 @@ asm void DCFlushRange(register void* addr, register u32 nBytes) {
     bdnz @1
     sc
     blr
+#endif // clang-format on
 }
 
-asm void DCStoreRange(register void* addr, register u32 nBytes) {
+ASM void DCStoreRange(register void* addr, register u32 nBytes) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     cmplwi nBytes, 0
     blelr
@@ -70,9 +76,11 @@ asm void DCStoreRange(register void* addr, register u32 nBytes) {
     sc
 
     blr
+#endif // clang-format on
 }
 
-asm void DCFlushRangeNoSync(register void* addr, register u32 nBytes) {
+ASM void DCFlushRangeNoSync(register void* addr, register u32 nBytes) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     cmplwi nBytes, 0
     blelr
@@ -87,9 +95,11 @@ asm void DCFlushRangeNoSync(register void* addr, register u32 nBytes) {
     addi addr, addr, 32
     bdnz @1
     blr
+#endif // clang-format on
 }
 
-asm void DCZeroRange(register void* addr, register u32 nBytes) {
+ASM void DCZeroRange(register void* addr, register u32 nBytes) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     cmplwi nBytes, 0
     blelr
@@ -105,11 +115,11 @@ asm void DCZeroRange(register void* addr, register u32 nBytes) {
     bdnz @1
 
     blr
+#endif // clang-format on
 }
 
-
-asm void ICInvalidateRange(register void* addr, register u32 nBytes) {
-    nofralloc
+ASM void ICInvalidateRange(register void* addr, register u32 nBytes) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     cmplwi nBytes, 0
     blelr
@@ -127,30 +137,35 @@ asm void ICInvalidateRange(register void* addr, register u32 nBytes) {
     isync
 
     blr
+#endif // clang-format on
 }
 
-
-asm void ICFlashInvalidate() {
+ASM void ICFlashInvalidate(){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID0
     ori r3, r3, 0x800
     mtspr HID0, r3
     blr
+#endif // clang-format on
 }
 
-asm void ICEnable() {
+ASM void ICEnable(){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     isync
     mfspr r3, HID0
     ori r3, r3, 0x8000
     mtspr HID0, r3
     blr
+#endif // clang-format on
 }
 
-#define LC_LINES    512
+#define LC_LINES 512
 #define CACHE_LINES 1024
 
-asm void __LCEnable() {
+ASM void __LCEnable() {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mfmsr   r5
     ori     r5, r5, 0x1000
@@ -210,18 +225,19 @@ _lockloop:
     nop
 
     blr
+#endif // clang-format on
 }
 
 void LCEnable() {
-  BOOL enabled;
+    BOOL enabled;
 
-  enabled = OSDisableInterrupts();
-  __LCEnable();
-  OSRestoreInterrupts(enabled);
+    enabled = OSDisableInterrupts();
+    __LCEnable();
+    OSRestoreInterrupts(enabled);
 }
 
-
-asm void LCDisable() {
+ASM void LCDisable() {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     lis     r3, LC_BASE_PREFIX
     li      r4, LC_LINES
@@ -234,9 +250,11 @@ asm void LCDisable() {
     rlwinm r4, r4, 0, 4, 2
     mtspr HID2, r4
     blr
+#endif // clang-format on
 }
 
-asm void LCStoreBlocks(register void* destAddr, register void* srcTag, register u32 numBlocks) {
+ASM void LCStoreBlocks(register void* destAddr, register void* srcTag, register u32 numBlocks){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     rlwinm  r6, numBlocks, 30, 27, 31
     rlwinm  destAddr, destAddr, 0, 4, 31
@@ -247,9 +265,8 @@ asm void LCStoreBlocks(register void* destAddr, register void* srcTag, register 
     ori     r6, r6, 0x2
     mtspr   DMA_L, r6
     blr
+#endif // clang-format on
 }
-
-/* clang-format on */
 
 u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes) {
     u32 numBlocks = (nBytes + 31) / 32;
@@ -270,9 +287,8 @@ u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes) {
     return numTransactions;
 }
 
-/* clang-format off */
-
-asm void LCQueueWait(register u32 len) {
+ASM void LCQueueWait(register u32 len) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 #if DOLPHIN_REV == 58
     addi len, len, 1
@@ -288,9 +304,9 @@ asm void LCQueueWait(register u32 len) {
     bgt @1
 #endif
     blr
+#endif // clang-format on
 }
 
-/* clang-format on */
 static inline void L2Disable(void) {
     __sync();
     PPCMtl2cr(PPCMfl2cr() & ~0x80000000);

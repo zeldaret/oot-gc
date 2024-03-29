@@ -2,6 +2,7 @@
 #include "dolphin/DVDPriv.h"
 #include "dolphin/db.h"
 #include "dolphin/os/OSBootInfo.h"
+#include "macros.h"
 
 extern OSTime __OSGetSystemTime();
 
@@ -21,14 +22,14 @@ extern char _db_stack_end[];
 
 extern char* __OSResetSWInterruptHandler[];
 
-vu16 __OSDeviceCode : (OS_BASE_CACHED | 0x30E6);
+vu16 __OSDeviceCode AT_ADDRESS(OS_BASE_CACHED | 0x30E6);
 static DVDDriveInfo DriveInfo ATTRIBUTE_ALIGN(32);
 static DVDCommandBlock DriveBlock;
 
 static OSBootInfo* BootInfo;
 static u32* BI2DebugFlag;
 static u32* BI2DebugFlagHolder;
-__declspec(weak) BOOL __OSIsGcam = FALSE;
+WEAK BOOL __OSIsGcam = FALSE;
 static f64 ZeroF;
 static f32 ZeroPS[2];
 static BOOL AreWeInitialized = FALSE;
@@ -59,9 +60,8 @@ void OSDefaultExceptionHandler(__OSException exception, OSContext* context);
 extern BOOL __DBIsExceptionMarked(__OSException);
 static void OSExceptionInit(void);
 
-/* clang-format off */
-asm void __OSFPRInit(void)
-{
+ASM void __OSFPRInit(void) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
     mfmsr   r3
@@ -144,8 +144,8 @@ SkipPairedSingles:
     mtfsf   0xFF, fp0
 
     blr
+#endif // clang-format on
 }
-/* clang-format on */
 
 u32 OSGetConsoleType() {
     if (BootInfo == NULL || BootInfo->consoleType == 0) {
@@ -157,8 +157,8 @@ u32 OSGetConsoleType() {
 void* __OSSavedRegionStart;
 void* __OSSavedRegionEnd;
 
-extern u32 BOOT_REGION_START : 0x812FDFF0; //(*(u32 *)0x812fdff0)
-extern u32 BOOT_REGION_END : 0x812FDFEC; //(*(u32 *)0x812fdfec)
+extern u32 BOOT_REGION_START AT_ADDRESS(0x812FDFF0); //(*(u32 *)0x812fdff0)
+extern u32 BOOT_REGION_END AT_ADDRESS(0x812FDFEC); //(*(u32 *)0x812fdfec)
 
 void ClearArena(void) {
     if ((u32)(OSGetResetCode() + 0x80000000) != 0U) {
@@ -414,11 +414,6 @@ void __OSDBJUMPEND(void);
 
 __OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExceptionHandler handler);
 
-/*
- * --INFO--
- * Address:	800EB654
- * Size:	000280
- */
 static void OSExceptionInit(void) {
     __OSException exception;
     void* destAddr;
@@ -498,8 +493,8 @@ static void OSExceptionInit(void) {
     DBPrintf("Exceptions initialized...\n");
 }
 
-static asm void __OSDBIntegrator(void) {
-    /* clang-format off */
+static ASM void __OSDBIntegrator(void) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 entry __OSDBINTSTART
     li      r5, OS_DBINTERFACE_ADDR
@@ -512,18 +507,16 @@ entry __OSDBINTSTART
     mtmsr   r3
     blr
 entry __OSDBINTEND
-    /* clang-format on */
+#endif // clang-format on
 }
 
-static asm void __OSDBJump(void){
-    /* clang-format off */
-
+static ASM void __OSDBJump(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 entry __OSDBJUMPSTART
     bla     OS_DBJUMPPOINT_ADDR
 entry __OSDBJUMPEND
-    /* clang-format on */
-
+#endif // clang-format on
 }
 
 __OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExceptionHandler handler) {
@@ -535,8 +528,8 @@ __OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExcept
 
 __OSExceptionHandler __OSGetExceptionHandler(__OSException exception) { return OSExceptionTable[exception]; }
 
-static asm void OSExceptionVector(void) {
-    /* clang-format off */
+static ASM void OSExceptionVector(void) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
 entry __OSEVStart
@@ -616,12 +609,12 @@ recoverable:
 
 entry __OSEVEnd
     nop
-    /* clang-format on */
+#endif // clang-format on
 }
 
 void __OSUnhandledException(__OSException exception, OSContext* context, u32 dsisr, u32 dar);
-asm void OSDefaultExceptionHandler(register __OSException exception, register OSContext* context) {
-    /* clang-format off */
+ASM void OSDefaultExceptionHandler(register __OSException exception, register OSContext* context) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     OS_EXCEPTION_SAVE_GPRS(context)
     mfdsisr r5
@@ -629,7 +622,7 @@ asm void OSDefaultExceptionHandler(register __OSException exception, register OS
 
     stwu    r1,-8(r1)
     b       __OSUnhandledException
-    /* clang-foramt on */
+#endif // clang-foramt on
 }
 
 void __OSPSInit(void)
@@ -637,9 +630,9 @@ void __OSPSInit(void)
   PPCMthid2(PPCMfhid2() | 0xA0000000);
   ICFlashInvalidate();
   __sync();
-  // clang-format off
-    asm
-    {
+
+    ASM {
+#ifdef __MWERKS__ // clang-format off
         li      r3, 0
         mtspr   GQR0, r3
     #if DOLPHIN_REV > 58
@@ -651,8 +644,8 @@ void __OSPSInit(void)
         mtspr   GQR6, r3
         mtspr   GQR7, r3
     #endif
+#endif // clang-format on
     }
-    // clang-format on
 }
 
 #define DI_CONFIG_IDX 0x9

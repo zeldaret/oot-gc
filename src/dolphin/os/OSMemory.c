@@ -1,9 +1,10 @@
 #include "dolphin/os.h"
+#include "macros.h"
 
 #define TRUNC(n, a) (((u32)(n)) & ~((a)-1))
 #define ROUND(n, a) (((u32)(n) + (a)-1) & ~((a)-1))
 
-vu16 __MEMRegs[64] : 0xCC004000;
+vu16 __MEMRegs[64] AT_ADDRESS(0xCC004000);
 extern OSErrorHandler __OSErrorTable[16];
 
 static BOOL OnReset(BOOL final);
@@ -41,8 +42,8 @@ static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     __OSUnhandledException(OS_ERROR_PROTECTION, context, cause, addr);
 }
 
-asm void Config24MB() {
-    // clang-format off
+ASM void Config24MB() {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
     addi    r7,r0,0
@@ -86,11 +87,11 @@ asm void Config24MB() {
     mflr    r3
     mtsrr0  r3
     rfi
-    // clang-format on
+#endif // clang-format on
 }
 
-asm void Config48MB() {
-    // clang-format off
+ASM void Config48MB() {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
     addi    r7,r0,0x0000
@@ -134,11 +135,11 @@ asm void Config48MB() {
     mflr    r3
     mtsrr0  r3
     rfi
-    // clang-format on
+#endif // clang-format on
 }
 
-asm void RealMode(register u32 addr) {
-    // clang-format off
+ASM void RealMode(register u32 addr) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     clrlwi r3, r3, 2
     mtsrr0 r3
@@ -146,7 +147,7 @@ asm void RealMode(register u32 addr) {
     rlwinm r3, r3, 0, 28, 25
     mtsrr1 r3
     rfi
-    // clang-format on
+#endif // clang-format on
 }
 
 void __OSInitMemoryProtection() {

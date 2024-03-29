@@ -2,6 +2,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "dolphin/vi.h"
+#include "macros.h"
 
 typedef struct OSResetQueue {
     OSResetFunctionInfo* first;
@@ -64,8 +65,8 @@ inline BOOL __OSCallResetFunctions(u32 arg0) {
     return 1;
 }
 
-asm void Reset(register s32 resetCode) {
-    // clang-format off
+ASM void Reset(register s32 resetCode) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     b lbl_8038315C
 lbl_80383140:
@@ -104,10 +105,10 @@ lbl_803831A0:
     b lbl_803831A0
 lbl_803831A8:
     b lbl_80383140
-    // clang-format on
+#endif // clang-format on
 }
 
-OSThreadQueue __OSActiveThreadQueue : (OS_BASE_CACHED | 0x00DC);
+OSThreadQueue __OSActiveThreadQueue AT_ADDRESS(OS_BASE_CACHED | 0x00DC);
 
 inline void KillThreads(void) {
     OSThread* thread;

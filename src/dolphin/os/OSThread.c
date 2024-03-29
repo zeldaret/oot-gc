@@ -11,10 +11,10 @@ static OSContext IdleContext;
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to);
 static OSSwitchThreadCallback SwitchThreadCallback = DefaultSwitchThreadCallback;
 
-OSThread* __OSCurrentThread : OS_BASE_CACHED + 0x00E4;
-OSThreadQueue __OSActiveThreadQueue : OS_BASE_CACHED + 0x00DC;
-volatile OSContext __OSCurrentContext : OS_BASE_CACHED + 0x00D4;
-volatile OSContext* __OSFPUContext : OS_BASE_CACHED + 0x00D8;
+OSThread* __OSCurrentThread AT_ADDRESS(OS_BASE_CACHED + 0x00E4);
+OSThreadQueue __OSActiveThreadQueue AT_ADDRESS(OS_BASE_CACHED + 0x00DC);
+volatile OSContext __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED + 0x00D4);
+volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED + 0x00D8);
 
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to) {}
 

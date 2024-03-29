@@ -1,4 +1,5 @@
 #include "dolphin/os.h"
+#include "macros.h"
 
 #define OS_TIME_MONTH_MAX 12
 #define OS_TIME_WEEK_DAY_MAX 7
@@ -9,8 +10,8 @@ static s32 YearDays[OS_TIME_MONTH_MAX] = {0, 31, 59, 90, 120, 151, 181, 212, 243
 // End of each month in leap year
 static s32 LeapYearDays[OS_TIME_MONTH_MAX] = {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
-asm OSTime OSGetTime(void) {
-    // clang-format off
+ASM OSTime OSGetTime(void) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 @0
     mftbu r3
@@ -22,16 +23,16 @@ asm OSTime OSGetTime(void) {
     bne @0
 
     blr
-    // clang-format on
+#endif // clang-format on
 }
 
-asm OSTick OSGetTick(void){
-    // clang-format off
+ASM OSTick OSGetTick(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
     mftb r3
     blr
-    // clang-format on
+#endif // clang-format on
 }
 
 #define OS_SYSTEMTIME_BASE 0x30D8

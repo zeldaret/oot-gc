@@ -5,6 +5,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 void __OSPSInit();
 void __OSCacheInit();
 

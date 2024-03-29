@@ -2,9 +2,9 @@
 
 extern OSTime __OSGetSystemTime();
 
-u8 GameChoice : (OS_BASE_CACHED | 0x30E3);
+u8 GameChoice AT_ADDRESS(OS_BASE_CACHED | 0x30E3);
 
-vu32 __PIRegs[12] : 0xCC003000;
+vu32 __PIRegs[12] AT_ADDRESS(0xCC003000);
 
 extern OSTime __OSStartTime;
 

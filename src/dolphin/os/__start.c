@@ -12,9 +12,8 @@ void __check_pad3(void) {
 }
 
 #if DOLPHIN_REV > 58
-__declspec(section ".init") static void __set_debug_bba(void) { Debug_BBA = 1; }
-
-__declspec(section ".init") static u8 __get_debug_bba(void) { return Debug_BBA; }
+INIT static void __set_debug_bba(void) { Debug_BBA = 1; }
+INIT static u8 __get_debug_bba(void) { return Debug_BBA; }
 #endif
 
 WEAK ASM void __start(void) {
@@ -205,7 +204,6 @@ inline static void __init_bss_section(void* dst, unsigned long size) {
     }
 }
 
-#pragma scheduling off
 void __init_data(void) {
     __rom_copy_info* dci;
     __bss_init_info* bii;

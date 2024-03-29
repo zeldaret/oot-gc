@@ -119,11 +119,6 @@ void* OSAllocFromHeap(OSHeapHandle heap, u32 size) {
     return (u8*)cell + ALIGNMENT;
 }
 
-// void OSAllocFixed(void)
-// {
-// 	// UNUSED FUNCTION
-// }
-
 void OSFreeToHeap(OSHeapHandle heap, void* ptr) {
     HeapCell* cell = (void*)((u8*)ptr - ALIGNMENT);
     Heap* hd = &HeapArray[heap];
@@ -193,16 +188,6 @@ OSHeapHandle OSCreateHeap(void* start, void* end) {
     }
     return -1;
 }
-
-// void OSDestroyHeap(void)
-// {
-// 	// UNUSED FUNCTION
-// }
-
-// void OSAddToHeap(void)
-// {
-// 	// UNUSED FUNCTION
-// }
 
 #define ASSERTREPORT(line, cond)                               \
     if (!(cond)) {                                             \

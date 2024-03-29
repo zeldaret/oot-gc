@@ -1,12 +1,13 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/os.h"
+#include "macros.h"
 #include "string.h"
 
 void __OSSystemCallVectorStart();
 void __OSSystemCallVectorEnd();
 
-static asm void SystemCallVector() {
-    // clang-format off
+static ASM void SystemCallVector() {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 entry __OSSystemCallVectorStart
     mfspr r9, HID0
@@ -20,7 +21,7 @@ entry __OSSystemCallVectorStart
 
 entry __OSSystemCallVectorEnd
     nop
-    // clang-format on
+#endif // clang-format on
 }
 
 void __OSInitSystemCall() {
