@@ -26,7 +26,7 @@ ASM OSTime OSGetTime(void) {
 #endif // clang-format on
 }
 
-ASM OSTick OSGetTick(void){
+ASM OSTick OSGetTick(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 

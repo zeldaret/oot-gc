@@ -10,11 +10,9 @@ union FpscrUnion {
     } u;
 };
 
-#define HID0_SPD 0x00000200 // Speculative cache access enable (0 enable)
-
 void PPCMthid0(u32 newHID0);
 
-ASM u32 PPCMfmsr(void){
+ASM u32 PPCMfmsr(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfmsr r3
@@ -22,7 +20,7 @@ ASM u32 PPCMfmsr(void){
 #endif // clang-format on
 }
 
-ASM void PPCMtmsr(register u32 newMSR){
+ASM void PPCMtmsr(register u32 newMSR) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mtmsr newMSR
@@ -30,7 +28,7 @@ ASM void PPCMtmsr(register u32 newMSR){
 #endif // clang-format on
 }
 
-ASM u32 PPCMfhid0(void){
+ASM u32 PPCMfhid0(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID0
@@ -38,7 +36,7 @@ ASM u32 PPCMfhid0(void){
 #endif // clang-format on
 }
 
-ASM void PPCMthid0(register u32 newHID0){
+ASM void PPCMthid0(register u32 newHID0) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr HID0, newHID0
@@ -46,7 +44,7 @@ ASM void PPCMthid0(register u32 newHID0){
 #endif // clang-format on
 }
 
-ASM u32 PPCMfl2cr(void){
+ASM u32 PPCMfl2cr(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, L2CR
@@ -54,7 +52,7 @@ ASM u32 PPCMfl2cr(void){
 #endif // clang-format on
 }
 
-ASM void PPCMtl2cr(register u32 newL2cr){
+ASM void PPCMtl2cr(register u32 newL2cr) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr L2CR, newL2cr
@@ -62,7 +60,7 @@ ASM void PPCMtl2cr(register u32 newL2cr){
 #endif // clang-format on
 }
 
-WEAK ASM void PPCMtdec(register u32 newDec){
+WEAK ASM void PPCMtdec(register u32 newDec) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mtdec newDec
@@ -70,7 +68,7 @@ WEAK ASM void PPCMtdec(register u32 newDec){
 #endif // clang-format on
 }
 
-ASM void PPCSync(void){
+ASM void PPCSync(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     sc
@@ -96,37 +94,37 @@ _spin:
     }
 
 #if DOLPHIN_REV > 58
-ASM void PPCMtmmcr0(register u32 newMmcr0){
+ASM void PPCMtmmcr0(register u32 newMmcr0) {
 #ifdef __MWERKS__ // clang-format off
     mtspr MMCR0, newMmcr0
 #endif // clang-format on
 }
 
-ASM void PPCMtmmcr1(register u32 newMmcr1){
+ASM void PPCMtmmcr1(register u32 newMmcr1) {
 #ifdef __MWERKS__ // clang-format off
     mtspr MMCR1, newMmcr1
 #endif // clang-format on
 }
 
-ASM void PPCMtpmc1(register u32 newPmc1){
+ASM void PPCMtpmc1(register u32 newPmc1) {
 #ifdef __MWERKS__ // clang-format off
     mtspr PMC1, newPmc1
 #endif // clang-format on
 }
 
-ASM void PPCMtpmc2(register u32 newPmc2){
+ASM void PPCMtpmc2(register u32 newPmc2) {
 #ifdef __MWERKS__ // clang-format off
     mtspr PMC2, newPmc2
 #endif // clang-format on
 }
 
-ASM void PPCMtpmc3(register u32 newPmc3){
+ASM void PPCMtpmc3(register u32 newPmc3) {
 #ifdef __MWERKS__ // clang-format off
     mtspr PMC3, newPmc3
 #endif // clang-format on
 }
 
-ASM void PPCMtpmc4(register u32 newPmc4){
+ASM void PPCMtpmc4(register u32 newPmc4) {
 #ifdef __MWERKS__ // clang-format off
     mtspr PMC4, newPmc4
 #endif // clang-format on
@@ -160,7 +158,7 @@ void PPCMtfpscr(register u32 newFPSCR) {
     }
 }
 
-ASM u32 PPCMfhid2(void){
+ASM u32 PPCMfhid2(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID2
@@ -168,7 +166,7 @@ ASM u32 PPCMfhid2(void){
 #endif // clang-format on
 }
 
-ASM void PPCMthid2(register u32 newhid2){
+ASM void PPCMthid2(register u32 newhid2) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr HID2, newhid2

@@ -24,7 +24,7 @@ static OSInterruptMask InterruptPrioTable[] = {
     0xFFFFFFFF,
 };
 
-ASM BOOL OSDisableInterrupts(void){
+ASM BOOL OSDisableInterrupts(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 entry    __RAS_OSDisableInterrupts_begin
@@ -35,7 +35,7 @@ entry    __RAS_OSDisableInterrupts_end
     rlwinm  r3, r3, 17, 31, 31
     blr
 #endif // clang-format on
-} ASM BOOL OSEnableInterrupts(void){
+} ASM BOOL OSEnableInterrupts(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 
@@ -47,7 +47,7 @@ entry    __RAS_OSDisableInterrupts_end
 #endif // clang-format on
 }
 
-ASM BOOL OSRestoreInterrupts(register BOOL level){
+ASM BOOL OSRestoreInterrupts(register BOOL level) {
 #ifdef __MWERKS__ // clang-format off
 
     nofralloc

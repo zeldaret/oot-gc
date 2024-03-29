@@ -54,8 +54,8 @@ MWCC_DIR := tools/mwcc_compiler/$(MWCC_VERSION)
 CC := $(WINE) $(MWCC_DIR)/mwcceppc.exe
 LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 
-DOLPHIN_SDK_MWCC_DIR := tools/mwcc_compiler/GC/1.2.5n
-DOLPHIN_SDK_CC := $(WINE) $(DOLPHIN_SDK_MWCC_DIR)/mwcceppc.exe
+DOLPHIN_MWCC_DIR := tools/mwcc_compiler/GC/1.2.5n
+DOLPHIN_CC := $(WINE) $(DOLPHIN_MWCC_DIR)/mwcceppc.exe
 
 SHA1SUM := sha1sum
 PYTHON := python3
@@ -67,7 +67,7 @@ ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
 POSTPROC := tools/postprocess.py
 
 # Options
-INCLUDES := -Iinclude -i libc
+INCLUDES := -Iinclude -Ilibc
 
 # Assembler Flags
 ASFLAGS := -mgekko -I include -I libc
@@ -76,14 +76,14 @@ ASFLAGS := -mgekko -I include -I libc
 LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
-DOLPHIN_SDK_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -inline auto
-
-CFLAGS += -inline auto,deferred
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
 
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
 endif
+
+DOLPHIN_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -inline auto
+EMULATOR_CFLAGS := $(CFLAGS) -inline auto,deferred
 
 # elf2dol needs to know these in order to calculate sbss correctly.
 SDATA_PDHR 	:= 9
@@ -147,13 +147,7 @@ $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
-	$(ASM_PROCESSOR) "$(DOLPHIN_SDK_CC) $(DOLPHIN_SDK_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
-
-$(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.cpp
-	$(DOLPHIN_SDK_CC) $(DOLPHIN_SDK_CFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/emulator/%.o: src/emulator/%.cpp
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
