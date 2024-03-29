@@ -2,7 +2,7 @@
 #include "frame.h"
 #include "library_jumptables.h"
 #include "macros.h"
-#include "math.h"
+#include "libc/math.h"
 #include "ram.h"
 #include "system.h"
 #include "xlPostGCN.h"

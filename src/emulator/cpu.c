@@ -4,7 +4,7 @@
 #include "frame.h"
 #include "library.h"
 #include "macros.h"
-#include "math.h"
+#include "libc/math.h"
 #include "ram.h"
 #include "rom.h"
 #include "rsp.h"
