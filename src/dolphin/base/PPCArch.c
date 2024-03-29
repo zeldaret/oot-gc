@@ -1,4 +1,4 @@
-#include "asm_types.h"
+#include "dolphin/base/PPCArch.h"
 #include "dolphin/types.h"
 #include "macros.h"
 

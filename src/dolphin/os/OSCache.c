@@ -1,12 +1,7 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/os.h"
-#include "macros.h"
-
-// Can't use this due to weird condition register issues
-// #include "asm_types.h"
-#define HID2 920
-
 #include "dolphin/db.h"
+#include "macros.h"
 
 ASM void DCEnable(){
 #ifdef __MWERKS__ // clang-format off

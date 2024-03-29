@@ -1,8 +1,7 @@
 #include "dolphin/db.h"
 #include "dolphin/os.h"
+#include "dolphin/base/PPCArch.h"
 #include "macros.h"
-
-#define HID2 920
 
 volatile OSContext* __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED | 0x00D4);
 volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED | 0x00D8);
