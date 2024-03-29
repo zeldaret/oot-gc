@@ -35,7 +35,7 @@ include obj_files.mk
 
 MWCC_VERSION := GC/1.1
 
-# 2002 for MQ, 2003 for CE
+# revision build year, 2002 for MQ, 2003 for CE
 DOLPHIN_REVISION := 2003
 
 # Programs
