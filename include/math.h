@@ -9,6 +9,8 @@ extern u32 __float_huge[];
 #define NAN (*(f32*)__float_nan)
 #define INFINITY (*(f32*)__float_huge)
 
+#define M_PI 3.14159265358979323846
+
 f64 floor(f64);
 f64 ceil(f64);
 
@@ -30,5 +32,8 @@ inline f64 sqrt(f64 x) {
 
     return INFINITY;
 }
+
+f32 cosf(f32);
+f32 sinf(f32);
 
 #endif

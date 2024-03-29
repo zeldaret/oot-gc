@@ -83,6 +83,8 @@ void zeldaLoadSZS_Exit(Cpu* pCPU);
 
 s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction);
 s32 libraryUpdate(Library* pLibrary);
+s32 libraryFunctionReplaced(Library* pLibrary, s32 iFunction);
+s32 libraryCall(Library* pLibrary, Cpu* pCPU, s32 iFunction);
 s32 libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassLibrary;

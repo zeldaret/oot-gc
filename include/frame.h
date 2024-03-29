@@ -315,6 +315,8 @@ s32 frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
 s32 frameSetBuffer(Frame* pFrame, FBTType eType);
 s32 frameSetSize(Frame* pFrame, ESize eSize, s32 nSizeX, s32 nSizeY);
+s32 frameSetMatrixHint(Frame* pFrame, TypeProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
+                       f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 
 extern _XL_OBJECTTYPE gClassFrame;
 

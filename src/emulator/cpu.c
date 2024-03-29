@@ -14,30 +14,9 @@
 #include "xlHeap.h"
 #include "xlObject.h"
 
-// MIPS instruction encoding:
-// R-type: opcode (6 bits) | rs (5 bits) | rt (5 bits) | rd (5 bits) | sa (5 bits) | funct (6 bits)
-// I-type: opcode (6 bits) | rs (5 bits) | rt (5 bits) | imm (16 bits)
-// J-type: opcode (6 bits) | target (26 bits)
-//  float: opcode (6 bits) | fmt (5 bits) | ft (5 bits) | fs (5 bits) | fd (5 bits) | funct (6 bits)
-#define MIPS_OP(inst) ((inst) >> 26)
-#define MIPS_RS(inst) (((inst) >> 21) & 0x1F)
-#define MIPS_RT(inst) (((inst) >> 16) & 0x1F)
-#define MIPS_RD(inst) (((inst) >> 11) & 0x1F)
-#define MIPS_SA(inst) (((inst) >> 6) & 0x1F)
-#define MIPS_FUNCT(inst) ((inst)&0x3F)
-#define MIPS_IMM_S16(inst) ((s16)((inst)&0xFFFF))
-#define MIPS_IMM_U16(inst) ((u16)((inst)&0xFFFF))
-#define MIPS_TARGET(inst) ((inst)&0x3FFFFFF)
-
-#define MIPS_FMT(inst) (((inst) >> 21) & 0x1F)
-#define MIPS_FT(inst) (((inst) >> 16) & 0x1F)
-#define MIPS_FS(inst) (((inst) >> 11) & 0x1F)
-#define MIPS_FD(inst) (((inst) >> 6) & 0x1F)
-
 static s32 cpuSetTLB(Cpu* pCPU, s32 iEntry);
 s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
-s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress);
 inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
 static void treeCallerInit(CpuCallerID* block, s32 total);
 static s32 treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);

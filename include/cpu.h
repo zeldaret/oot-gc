@@ -4,6 +4,26 @@
 #include "dolphin.h"
 #include "xlObject.h"
 
+// MIPS instruction encoding:
+// R-type: opcode (6 bits) | rs (5 bits) | rt (5 bits) | rd (5 bits) | sa (5 bits) | funct (6 bits)
+// I-type: opcode (6 bits) | rs (5 bits) | rt (5 bits) | imm (16 bits)
+// J-type: opcode (6 bits) | target (26 bits)
+//  float: opcode (6 bits) | fmt (5 bits) | ft (5 bits) | fs (5 bits) | fd (5 bits) | funct (6 bits)
+#define MIPS_OP(inst) ((inst) >> 26)
+#define MIPS_RS(inst) (((inst) >> 21) & 0x1F)
+#define MIPS_RT(inst) (((inst) >> 16) & 0x1F)
+#define MIPS_RD(inst) (((inst) >> 11) & 0x1F)
+#define MIPS_SA(inst) (((inst) >> 6) & 0x1F)
+#define MIPS_FUNCT(inst) ((inst)&0x3F)
+#define MIPS_IMM_S16(inst) ((s16)((inst)&0xFFFF))
+#define MIPS_IMM_U16(inst) ((u16)((inst)&0xFFFF))
+#define MIPS_TARGET(inst) ((inst)&0x3FFFFFF)
+
+#define MIPS_FMT(inst) (((inst) >> 21) & 0x1F)
+#define MIPS_FT(inst) (((inst) >> 16) & 0x1F)
+#define MIPS_FS(inst) (((inst) >> 11) & 0x1F)
+#define MIPS_FD(inst) (((inst) >> 6) & 0x1F)
+
 typedef s32 (*Put8Func)(void* pObject, u32 nAddress, s8* pData);
 typedef s32 (*Put16Func)(void* pObject, u32 nAddress, s16* pData);
 typedef s32 (*Put32Func)(void* pObject, u32 nAddress, s32* pData);
@@ -291,6 +311,7 @@ struct Cpu {
     /* 0x12064 */ CpuOptimize nOptimize;
 }; // size = 0x12090
 
+s32 __cpuBreak(Cpu* pCPU);
 s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi);
 s32 cpuReset(Cpu* pCPU);
 s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
@@ -301,6 +322,9 @@ s32 cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pf
 s32 cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
                     Get64Func pfGet64);
 s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
+s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress);
+s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress);
+s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction);
 s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size);
 
 extern _XL_OBJECTTYPE gClassCPU;
