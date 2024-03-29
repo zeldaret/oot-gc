@@ -8,7 +8,7 @@ vu32 __PIRegs[12] AT_ADDRESS(0xCC003000);
 
 extern OSTime __OSStartTime;
 
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
 //! TODO: find what's wrong with sbss on mq
 static BOOL bootThisDol;
 #endif
@@ -38,7 +38,7 @@ void __OSResetSWInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
     __PIRegs[0] = 2;
 }
 
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
 #define GAME_CHOICE_MASK 0x3F
 #else
 #define GAME_CHOICE_MASK 0x1F

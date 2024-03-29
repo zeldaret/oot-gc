@@ -35,8 +35,8 @@ include obj_files.mk
 
 MWCC_VERSION := GC/1.1
 
-# 58 for MQ, 99 for unknown
-DOLPHIN_REVISION := 99
+# 2002 for MQ, 2003 for CE
+DOLPHIN_REVISION := 2003
 
 # Programs
 ifeq ($(WINDOWS),1)

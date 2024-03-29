@@ -6,7 +6,7 @@
 
 extern OSTime __OSGetSystemTime();
 
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Sep  5 2002 05:32:39 (0x2301) >>";
 #else
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Jul 23 2003 11:27:16 (0x2301) >>";
@@ -219,7 +219,7 @@ void OSInit(void) {
         OSDisableInterrupts();
 
 // set some PPC things
-#if DOLPHIN_REV > 58
+#if DOLPHIN_REV == 2003
         PPCMtmmcr0(0);
         PPCMtmmcr1(0);
         PPCMtpmc1(0);
@@ -263,7 +263,7 @@ void OSInit(void) {
         // if the input arenaLo is null, and debug flag location exists (and flag is < 2),
         //     set arenaLo to just past the end of the db stack
         if ((BootInfo->arenaLo == NULL) && (BI2DebugFlag != 0) && (*BI2DebugFlag < 2)) {
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
             debugArenaLo = (char*)(((u32)_db_stack_end + 0x1f) & ~0x1f);
 #else
             debugArenaLo = (char*)(((u32)_stack_addr + 0x1f) & ~0x1f);
@@ -296,7 +296,7 @@ void OSInit(void) {
         }
 
 // begin OS reporting
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
         OSReport("\nDolphin OS $Revision: 58 $.\n");
         OSReport("Kernel built : %s %s\n", "Sep  5 2002", "05:32:39");
 #else
@@ -318,7 +318,7 @@ void OSInit(void) {
 
 // work out what console type this corresponds to and report it
 // consoleTypeSwitchHi = inputConsoleType & 0xF0000000;
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
         switch (inputConsoleType & 0xffff0000)
 #else
         switch (inputConsoleType & 0xf0000000)
@@ -327,7 +327,7 @@ void OSInit(void) {
             case OS_CONSOLE_RETAIL:
                 OSReport("Retail %d\n", inputConsoleType);
                 break;
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
             default:
                 switch (inputConsoleType & 0x0000ffff)
 #else
@@ -349,7 +349,7 @@ void OSInit(void) {
                         OSReport("EPPC Minnow\n");
                         break;
                     default:
-#if DOLPHIN_REV == 58
+#if DOLPHIN_REV == 2002
                         tdev = ((u32)inputConsoleType & 0x0000ffff);
 #else
                         tdev = ((u32)inputConsoleType & 0x0fffffff);
@@ -358,7 +358,7 @@ void OSInit(void) {
                         break;
                 }
                 break;
-#if DOLPHIN_REV > 58
+#if DOLPHIN_REV == 2003
             default: // if none of the above, just report the info we have
                 OSReport("%08x\n", inputConsoleType);
                 break;
@@ -635,7 +635,7 @@ void __OSPSInit(void)
 #ifdef __MWERKS__ // clang-format off
         li      r3, 0
         mtspr   GQR0, r3
-    #if DOLPHIN_REV > 58
+    #if DOLPHIN_REV == 2003
         mtspr   GQR1, r3
         mtspr   GQR2, r3
         mtspr   GQR3, r3
