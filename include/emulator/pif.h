@@ -2,7 +2,7 @@
 #define _PIF_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x3C277
 typedef enum ControllerType {

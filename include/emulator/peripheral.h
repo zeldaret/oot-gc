@@ -2,7 +2,7 @@
 #define _PERIPHERAL_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x83D15
 typedef struct Peripheral {

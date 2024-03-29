@@ -2,7 +2,7 @@
 #define _FLASH_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x7428F
 typedef struct Flash {

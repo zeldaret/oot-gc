@@ -2,7 +2,7 @@
 #define _CODEGCN_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x57A1
 typedef struct Code {

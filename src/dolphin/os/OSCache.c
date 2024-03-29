@@ -1,9 +1,9 @@
 #include "dolphin/base/PPCArch.h"
-#include "dolphin/os.h"
 #include "dolphin/db.h"
+#include "dolphin/os.h"
 #include "macros.h"
 
-ASM void DCEnable() {
+ASM void DCEnable(){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     sync
@@ -135,7 +135,7 @@ ASM void ICInvalidateRange(register void* addr, register u32 nBytes) {
 #endif // clang-format on
 }
 
-ASM void ICFlashInvalidate() {
+ASM void ICFlashInvalidate(){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID0
@@ -145,7 +145,7 @@ ASM void ICFlashInvalidate() {
 #endif // clang-format on
 }
 
-ASM void ICEnable() {
+ASM void ICEnable(){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     isync
@@ -248,7 +248,7 @@ ASM void LCDisable() {
 #endif // clang-format on
 }
 
-ASM void LCStoreBlocks(register void* destAddr, register void* srcTag, register u32 numBlocks) {
+ASM void LCStoreBlocks(register void* destAddr, register void* srcTag, register u32 numBlocks){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     rlwinm  r6, numBlocks, 30, 27, 31

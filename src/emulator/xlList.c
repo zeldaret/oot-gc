@@ -1,7 +1,7 @@
-#include "xlList.h"
+#include "emulator/xlList.h"
 #include "dolphin.h"
+#include "emulator/xlHeap.h"
 #include "macros.h"
-#include "xlHeap.h"
 
 static tXL_LIST gListList;
 

@@ -1,6 +1,6 @@
-#include "xlCoreGCN.h"
+#include "emulator/xlCoreGCN.h"
+#include "emulator/simGCN.h"
 #include "macros.h"
-#include "simGCN.h"
 
 u8 gTgPcTPL[32897] = {
 #pragma INCBIN("SIM_original.elf", 0x000D07A0, 0x00008081)

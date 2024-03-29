@@ -1,7 +1,7 @@
-#include "xlFileGCN.h"
+#include "emulator/xlFileGCN.h"
 #include "dolphin.h"
-#include "xlHeap.h"
-#include "xlObject.h"
+#include "emulator/xlHeap.h"
+#include "emulator/xlObject.h"
 
 _XL_OBJECTTYPE gTypeFile = {
     "FILE",

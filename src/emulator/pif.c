@@ -1,4 +1,4 @@
-#include "pif.h"
+#include "emulator/pif.h"
 
 _XL_OBJECTTYPE gClassPIF = {
     "PIF",

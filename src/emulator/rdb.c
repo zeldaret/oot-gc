@@ -1,5 +1,5 @@
-#include "rdb.h"
-#include "system.h"
+#include "emulator/rdb.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassRdb = {
     "RDB",

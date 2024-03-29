@@ -2,7 +2,7 @@
 #define _RSP_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 typedef enum __anon_0x581E7 {
     RUT_NOCODE = -1,

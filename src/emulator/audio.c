@@ -1,10 +1,10 @@
-#include "audio.h"
+#include "emulator/audio.h"
 #include "dolphin.h"
-#include "ram.h"
-#include "rsp.h"
-#include "soundGCN.h"
-#include "system.h"
-#include "xlPostGCN.h"
+#include "emulator/ram.h"
+#include "emulator/rsp.h"
+#include "emulator/soundGCN.h"
+#include "emulator/system.h"
+#include "emulator/xlPostGCN.h"
 
 _XL_OBJECTTYPE gClassAudio = {
     "AUDIO",

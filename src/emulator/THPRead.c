@@ -1,5 +1,5 @@
-#include "THPRead.h"
-#include "THPRead_jumptables.h"
+#include "emulator/THPRead.h"
+#include "emulator/THPRead_jumptables.h"
 #include "macros.h"
 
 const f32 D_800D3130[12] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};

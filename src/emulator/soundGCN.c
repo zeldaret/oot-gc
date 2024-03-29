@@ -1,4 +1,4 @@
-#include "soundGCN.h"
+#include "emulator/soundGCN.h"
 #include "macros.h"
 
 _XL_OBJECTTYPE gClassSound = {

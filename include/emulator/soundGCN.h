@@ -2,7 +2,7 @@
 #define _SOUNDGCN_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x20C8D
 typedef enum SoundBeep {

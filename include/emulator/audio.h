@@ -2,7 +2,7 @@
 #define _AUDIO_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x753E7
 typedef struct Audio {

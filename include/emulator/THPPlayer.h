@@ -2,7 +2,7 @@
 #define _THPPLAYER_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 typedef struct __anon_0x10576 {
     /* 0x00 */ char magic[4];

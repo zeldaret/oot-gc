@@ -2,7 +2,7 @@
 #define _SIMGCN_H
 
 #include "dolphin.h"
-#include "system.h"
+#include "emulator/system.h"
 
 typedef struct __anon_0xD7D1 {
     /* 0x00 */ u16 height;

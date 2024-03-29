@@ -1,9 +1,9 @@
 #ifndef _LIBRARY_H
 #define _LIBRARY_H
 
-#include "cpu.h"
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/cpu.h"
+#include "emulator/xlObject.h"
 
 typedef void (*LibraryFuncImpl)(Cpu*);
 

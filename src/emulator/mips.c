@@ -1,5 +1,5 @@
-#include "mips.h"
-#include "system.h"
+#include "emulator/mips.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassMips = {
     "MIPS",

@@ -1,5 +1,5 @@
-#include "mcardGCN.h"
-#include "mcardGCN_jumptables.h"
+#include "emulator/mcardGCN.h"
+#include "emulator/mcardGCN_jumptables.h"
 
 // ゼルダの伝説：時のオカリナ
 char D_800EA548[] =

@@ -2,7 +2,7 @@
 #define _RAM_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x4BFE7
 typedef struct Ram {

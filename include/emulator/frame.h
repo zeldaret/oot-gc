@@ -2,7 +2,7 @@
 #define _FRAME_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x27B8C
 typedef enum ViewType {

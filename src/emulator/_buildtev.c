@@ -1,4 +1,4 @@
-#include "_buildtev.h"
+#include "emulator/_buildtev.h"
 
 GXTevColorArg gColorArgs[16] = {
     GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXC, GX_CC_C1,   GX_CC_RASC, GX_CC_C2,  GX_CC_ONE, GX_CC_APREV,

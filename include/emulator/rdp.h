@@ -2,7 +2,7 @@
 #define _RDP_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x52CD0
 typedef struct Rdp {

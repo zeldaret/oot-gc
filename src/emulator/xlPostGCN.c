@@ -1,4 +1,4 @@
-#include "xlPostGCN.h"
+#include "emulator/xlPostGCN.h"
 
 s32 xlPostText(const char* fmt, const char* file, s32 line, ...) { return 1; }
 

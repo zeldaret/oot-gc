@@ -2,7 +2,7 @@
 #define _VIDEO_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x75B37
 typedef struct Video {

@@ -1,12 +1,12 @@
-#include "rom.h"
-#include "cpu.h"
+#include "emulator/rom.h"
 #include "dolphin.h"
-#include "frame.h"
+#include "emulator/cpu.h"
+#include "emulator/frame.h"
+#include "emulator/ram.h"
+#include "emulator/simGCN.h"
+#include "emulator/system.h"
+#include "emulator/xlCoreGCN.h"
 #include "macros.h"
-#include "ram.h"
-#include "simGCN.h"
-#include "system.h"
-#include "xlCoreGCN.h"
 
 static s32 romMakeFreeCache(Rom* pROM, s32* piCache, RomCacheType eType);
 static s32 romSetBlockCache(Rom* pROM, s32 iBlock, RomCacheType eType);

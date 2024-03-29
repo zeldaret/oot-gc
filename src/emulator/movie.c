@@ -1,7 +1,7 @@
 #include "dolphin.h"
-#include "simGCN.h"
-#include "system.h"
-#include "xlCoreGCN.h"
+#include "emulator/simGCN.h"
+#include "emulator/system.h"
+#include "emulator/xlCoreGCN.h"
 
 void* gBufferP;
 

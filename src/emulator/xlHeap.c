@@ -1,4 +1,4 @@
-#include "xlHeap.h"
+#include "emulator/xlHeap.h"
 
 static u32* gpHeap;
 static u32* gpHeapBlockFirst;

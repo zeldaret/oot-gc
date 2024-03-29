@@ -1,4 +1,4 @@
-#include "THPPlayer.h"
+#include "emulator/THPPlayer.h"
 #include "macros.h"
 
 u16 VolumeTable[128] = {

@@ -1,5 +1,5 @@
-#include "_buildtev.h"
 #include "dolphin.h"
+#include "emulator/_buildtev.h"
 
 GXTevColorArg gCombinedColor[] = {
     0x00000000, 0x00000008, 0x00000008, 0x00000006, 0x0000000A, 0x0000000E, 0x0000000C, 0x00000001,

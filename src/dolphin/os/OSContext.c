@@ -1,6 +1,6 @@
+#include "dolphin/base/PPCArch.h"
 #include "dolphin/db.h"
 #include "dolphin/os.h"
-#include "dolphin/base/PPCArch.h"
 #include "macros.h"
 
 volatile OSContext* __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED | 0x00D4);
@@ -90,7 +90,7 @@ _return:
 #endif // clang-format on
 }
 
-static ASM void __OSSaveFPUContext(register u32, register u32, register OSContext* fpuContext) {
+static ASM void __OSSaveFPUContext(register u32, register u32, register OSContext* fpuContext){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 
@@ -178,7 +178,7 @@ _return:
 #endif // clang-format on
 }
 
-ASM void OSSaveFPUContext(register OSContext* fpuContext) {
+ASM void OSSaveFPUContext(register OSContext* fpuContext){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     addi    r5, fpuContext, 0
@@ -186,7 +186,7 @@ ASM void OSSaveFPUContext(register OSContext* fpuContext) {
 #endif // clang-format on
 }
 
-ASM void OSSetCurrentContext(register OSContext* context) {
+ASM void OSSetCurrentContext(register OSContext* context){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 

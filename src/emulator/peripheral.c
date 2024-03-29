@@ -1,9 +1,9 @@
-#include "peripheral.h"
-#include "cpu.h"
-#include "flash.h"
-#include "simGCN.h"
-#include "sram.h"
-#include "system.h"
+#include "emulator/peripheral.h"
+#include "emulator/cpu.h"
+#include "emulator/flash.h"
+#include "emulator/simGCN.h"
+#include "emulator/sram.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassPeripheral = {
     "PERIPHERAL",

@@ -1,9 +1,9 @@
-#include "flash.h"
+#include "emulator/flash.h"
+#include "emulator/ram.h"
+#include "emulator/simGCN.h"
+#include "emulator/system.h"
+#include "emulator/xlHeap.h"
 #include "macros.h"
-#include "ram.h"
-#include "simGCN.h"
-#include "system.h"
-#include "xlHeap.h"
 
 _XL_OBJECTTYPE gClassFlash = {
     "FLASH",

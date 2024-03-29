@@ -1,5 +1,5 @@
-#include "rdp.h"
-#include "rdp_jumptables.h"
+#include "emulator/rdp.h"
+#include "emulator/rdp_jumptables.h"
 
 _XL_OBJECTTYPE gClassRDP = {
     "RDP",

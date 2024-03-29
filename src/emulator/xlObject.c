@@ -1,5 +1,5 @@
-#include "xlObject.h"
-#include "xlList.h"
+#include "emulator/xlObject.h"
+#include "emulator/xlList.h"
 
 static tXL_LIST* gpListData;
 

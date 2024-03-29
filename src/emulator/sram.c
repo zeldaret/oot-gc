@@ -1,8 +1,8 @@
-#include "sram.h"
-#include "cpu.h"
-#include "ram.h"
-#include "simGCN.h"
-#include "system.h"
+#include "emulator/sram.h"
+#include "emulator/cpu.h"
+#include "emulator/ram.h"
+#include "emulator/simGCN.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassSram = {
     "SRAM",

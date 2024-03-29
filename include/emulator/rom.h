@@ -2,8 +2,8 @@
 #define _ROM_H
 
 #include "dolphin.h"
-#include "xlFileGCN.h"
-#include "xlObject.h"
+#include "emulator/xlFileGCN.h"
+#include "emulator/xlObject.h"
 
 typedef s32 UnknownCallbackFunc(void);
 typedef s32 ProgressCallbackFunc(f32 progressPercent);

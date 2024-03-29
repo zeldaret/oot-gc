@@ -510,7 +510,7 @@ entry __OSDBINTEND
 #endif // clang-format on
 }
 
-static ASM void __OSDBJump(void) {
+static ASM void __OSDBJump(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 entry __OSDBJUMPSTART

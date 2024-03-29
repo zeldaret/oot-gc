@@ -1,5 +1,5 @@
-#include "rsp.h"
-#include "rsp_jumptables.h"
+#include "emulator/rsp.h"
+#include "emulator/rsp_jumptables.h"
 
 _XL_OBJECTTYPE gClassRSP = {
     "RSP",

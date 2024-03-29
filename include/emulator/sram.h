@@ -2,7 +2,7 @@
 #define _SRAM_H
 
 #include "dolphin.h"
-#include "xlObject.h"
+#include "emulator/xlObject.h"
 
 // __anon_0x74AB9
 typedef struct Sram {

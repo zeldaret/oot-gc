@@ -1,7 +1,7 @@
-#include "video.h"
-#include "frame.h"
-#include "ram.h"
-#include "system.h"
+#include "emulator/video.h"
+#include "emulator/frame.h"
+#include "emulator/ram.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassVideo = {
     "VIDEO",

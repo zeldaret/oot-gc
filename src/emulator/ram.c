@@ -1,6 +1,6 @@
-#include "ram.h"
-#include "cpu.h"
-#include "system.h"
+#include "emulator/ram.h"
+#include "emulator/cpu.h"
+#include "emulator/system.h"
 
 s32 ramEvent(Ram* pRAM, s32 nEvent, void* pArgument);
 

@@ -1,6 +1,6 @@
-#include "disk.h"
-#include "cpu.h"
-#include "system.h"
+#include "emulator/disk.h"
+#include "emulator/cpu.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassDisk = {
     "DISK",

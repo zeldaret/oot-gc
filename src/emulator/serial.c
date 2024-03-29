@@ -1,8 +1,8 @@
-#include "serial.h"
-#include "cpu.h"
-#include "pif.h"
-#include "ram.h"
-#include "system.h"
+#include "emulator/serial.h"
+#include "emulator/cpu.h"
+#include "emulator/pif.h"
+#include "emulator/ram.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassSerial = {
     "SERIAL",

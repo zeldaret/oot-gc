@@ -1,11 +1,11 @@
-#include "library.h"
-#include "frame.h"
-#include "library_jumptables.h"
-#include "macros.h"
+#include "emulator/library.h"
+#include "emulator/frame.h"
+#include "emulator/library_jumptables.h"
+#include "emulator/ram.h"
+#include "emulator/system.h"
+#include "emulator/xlPostGCN.h"
 #include "libc/math.h"
-#include "ram.h"
-#include "system.h"
-#include "xlPostGCN.h"
+#include "macros.h"
 
 char D_800EEB00[] = "OS-LIBRARY";
 
