@@ -34,6 +34,9 @@ typedef u32 OSTick;
 
 #define BIAS 0xB2575
 
-s64 __OSGetSystemTime(void);
+OSTime OSGetTime(void);
+OSTick OSGetTick(void);
+OSTime __OSGetSystemTime(void);
+void OSTicksToCalendarTime(OSTime ticks, struct OSCalendarTime* td);
 
 #endif

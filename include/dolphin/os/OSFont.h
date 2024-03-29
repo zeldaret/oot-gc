@@ -56,19 +56,7 @@ typedef enum {
 #define OS_FONT_PROPORTIONAL FALSE
 #define OS_FONT_FIXED TRUE
 
-// Common functions.
 u16 OSGetFontEncode();
-char* OSGetFontWidth(char* string, s32* width);
-
-// High-level functions.
-BOOL OSInitFont(OSFontHeader* fontInfo);
-char* OSGetFontTexture(char* string, void** image, s32* x, s32* y, s32* width);
-
-// Low-level functions.
-u32 OSLoadFont(OSFontHeader* fontInfo, void* temp);
-
-// Unused/inlined in P2.
-char* OSGetFontTexel(char* string, void* image, s32 pos, s32 stride, s32* width);
 
 #ifdef __cplusplus
 }

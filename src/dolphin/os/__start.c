@@ -1,5 +1,6 @@
 #include "dolphin/__start.h"
 #include "__ppc_eabi_linker.h"
+#include "dolphin/__ppc_eabi_init.h"
 #include "macros.h"
 
 static void __init_registers(void);

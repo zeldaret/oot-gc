@@ -35,8 +35,6 @@ __declspec(section ".init") extern void __check_pad3(void);
 __declspec(section ".init") extern void __start(void);
 __declspec(section ".init") extern void __init_registers(void);
 __declspec(section ".init") extern void __init_data(void);
-__declspec(section ".init") extern void __init_hardware(void);
-__declspec(section ".init") extern void __flush_cache(void* address, unsigned int size);
 
 __declspec(section ".init") extern char _stack_addr[];
 __declspec(section ".init") extern char _SDA_BASE_[];

@@ -17,7 +17,10 @@ extern "C" {
 #define OS_PROTECT_CONTROL_WRITE 0x02
 #define OS_PROTECT_CONTROL_RDWR (OS_PROTECT_CONTROL_READ | OS_PROTECT_CONTROL_WRITE)
 
-void OSProtectRange(u32 chan, void* addr, u32 nBytes, u32 control);
+void Config24MB();
+void Config48MB();
+void RealMode(register u32 addr);
+void __OSInitMemoryProtection();
 
 #ifdef __cplusplus
 }

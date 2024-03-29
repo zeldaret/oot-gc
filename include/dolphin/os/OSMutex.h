@@ -20,13 +20,7 @@ struct OSCond {
     OSThreadQueue queue;
 };
 
-void OSInitMutex(OSMutex* mutex);
-void OSLockMutex(OSMutex* mutex);
-void OSUnlockMutex(OSMutex* mutex);
-BOOL OSTryLockMutex(OSMutex* mutex);
-void OSInitCond(OSCond* cond);
-void OSWaitCond(OSCond* cond, OSMutex* mutex);
-void OSSignalCond(OSCond* cond);
+void __OSUnlockAllMutex(OSThread* thread);
 
 #ifdef __cplusplus
 }

@@ -65,9 +65,6 @@ void* OSGetArenaLo(void);
 void OSSetArenaHi(void* newHi);
 void OSSetArenaLo(void* newLo);
 
-void* OSAllocFromArenaLo(u32 size, u32 align);
-void* OSAllocFromArenaHi(u32 size, u32 align);
-
 void OSInit();
 
 OSTime OSGetTime();
@@ -87,7 +84,6 @@ typedef struct OSCalendarTime {
     int usec; // microseconds after the millisecond [0,999]
 } OSCalendarTime;
 
-OSTime OSCalendarTimeToTicks(OSCalendarTime* td);
 void OSTicksToCalendarTime(OSTime ticks, OSCalendarTime* td);
 
 #define OS_CONSOLE_MASK 0xf0000000
@@ -123,9 +119,6 @@ void OSSetSoundMode(u32 mode);
 #define OS_PROGRESSIVE_MODE_OFF 0u
 #define OS_PROGRESSIVE_MODE_ON 1u
 
-u32 OSGetProgressiveMode(void);
-void OSSetProgressiveMode(u32 on);
-
 #define OS_LANG_ENGLISH 0u
 #define OS_LANG_GERMAN 1u
 #define OS_LANG_FRENCH 2u
@@ -133,14 +126,8 @@ void OSSetProgressiveMode(u32 on);
 #define OS_LANG_ITALIAN 4u
 #define OS_LANG_DUTCH 5u
 
-u8 OSGetLanguage(void);
-void OSSetLanguage(u8 language);
-
 #define OS_EURGB60_OFF 0u
 #define OS_EURGB60_ON 1u
-
-u32 OSGetEuRgb60Mode(void);
-void OSSetEuRgb60Mode(u32 on);
 
 void OSRegisterVersion(const char* id);
 
@@ -216,7 +203,6 @@ volatile int __OSTVMode AT_ADDRESS(OS_BASE_CACHED | 0xCC);
 
 void OSReport(const char* msg, ...);
 void OSPanic(const char* file, int line, const char* msg, ...);
-void OSFatal(GXColor fg, GXColor bg, const char* msg);
 
 #ifdef __cplusplus
 }

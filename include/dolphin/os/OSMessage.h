@@ -24,7 +24,6 @@ struct OSMessageQueue {
 
 void OSInitMessageQueue(OSMessageQueue* mq, OSMessage* msgArray, s32 msgCount);
 BOOL OSSendMessage(OSMessageQueue* mq, OSMessage msg, s32 flags);
-BOOL OSJamMessage(OSMessageQueue* mq, OSMessage msg, s32 flags);
 BOOL OSReceiveMessage(OSMessageQueue* mq, OSMessage* msg, s32 flags);
 
 #ifdef __cplusplus

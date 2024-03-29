@@ -77,38 +77,26 @@ enum OS_THREAD_STATE {
 #define OS_PRIORITY_MAX 31 // lowest
 #define OS_PRIORITY_IDLE OS_PRIORITY_MAX
 
-OSThread* __OSCurrentThread : (OS_BASE_CACHED | 0x00E4);
-OSThreadQueue __OSActiveThreadQueue : (OS_BASE_CACHED | 0x00DC);
-volatile OSContext* __OSFPUContext : (OS_BASE_CACHED | 0x00D8);
+OSThread* __OSCurrentThread AT_ADDRESS(OS_BASE_CACHED | 0x00E4);
+OSThreadQueue __OSActiveThreadQueue AT_ADDRESS(OS_BASE_CACHED | 0x00DC);
+volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED | 0x00D8);
 
+void __OSThreadInit();
 void OSInitThreadQueue(OSThreadQueue* queue);
-OSThread* OSGetCurrentThread(void);
-BOOL OSIsThreadSuspended(OSThread* thread);
-BOOL OSIsThreadTerminated(OSThread* thread);
-s32 OSDisableScheduler(void);
-s32 OSEnableScheduler(void);
-void OSYieldThread(void);
+OSThread* OSGetCurrentThread();
+s32 OSDisableScheduler();
+s32 OSEnableScheduler();
+OSPriority __OSGetEffectivePriority(OSThread* thread);
+void __OSReschedule();
 BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
                     OSPriority priority, u16 attr);
 void OSExitThread(void* val);
 void OSCancelThread(OSThread* thread);
-BOOL OSJoinThread(OSThread* thread, void** val);
-void OSDetachThread(OSThread* thread);
 s32 OSResumeThread(OSThread* thread);
 s32 OSSuspendThread(OSThread* thread);
-BOOL OSSetThreadPriority(OSThread* thread, OSPriority priority);
-OSPriority OSGetThreadPriority(OSThread* thread);
 void OSSleepThread(OSThreadQueue* queue);
 void OSWakeupThread(OSThreadQueue* queue);
-
-void* OSGetThreadSpecific(s32 index);
-void OSSetThreadSpecific(s32 index, void* ptr);
-
-OSThread* OSSetIdleFunction(OSIdleFunction idleFunction, void* param, void* stack, u32 stackSize);
-OSThread* OSGetIdleFunction(void);
 void OSClearStack(u8 val);
-long OSCheckActiveThreads(void);
-void __OSPromoteThread(OSThread* thread, OSPriority priority);
 
 #ifdef __cplusplus
 }

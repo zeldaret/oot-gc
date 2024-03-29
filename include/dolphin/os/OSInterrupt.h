@@ -93,16 +93,15 @@ extern volatile __OSInterrupt __OSLastInterrupt;
 extern volatile u32 __OSLastInterruptSrr0;
 extern volatile OSTime __OSLastInterruptTime;
 
+BOOL OSDisableInterrupts(void);
+BOOL OSRestoreInterrupts(register BOOL level);
 __OSInterruptHandler __OSSetInterruptHandler(__OSInterrupt interrupt, __OSInterruptHandler handler);
-
 __OSInterruptHandler __OSGetInterruptHandler(__OSInterrupt interrupt);
-
+void __OSInterruptInit(void);
+u32 SetInterruptMask(OSInterruptMask mask, OSInterruptMask current);
+OSInterruptMask __OSMaskInterrupts(OSInterruptMask global);
+OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask global);
 void __OSDispatchInterrupt(__OSException exception, OSContext* context);
-
-OSInterruptMask OSGetInterruptMask(void);
-OSInterruptMask OSSetInterruptMask(OSInterruptMask mask);
-OSInterruptMask __OSMaskInterrupts(OSInterruptMask mask);
-OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask mask);
 
 #ifdef __cplusplus
 }

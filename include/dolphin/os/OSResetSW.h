@@ -12,9 +12,6 @@ typedef void (*OSResetCallback)(void);
 
 BOOL OSGetResetButtonState(void);
 
-BOOL OSGetResetSwitchState(void);
-OSResetCallback OSSetResetCallback(OSResetCallback callback);
-
 #ifdef __cplusplus
 }
 #endif
