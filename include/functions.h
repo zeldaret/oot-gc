@@ -1861,7 +1861,8 @@
 /* 800CFC30 local  */ // extern void round_decimal(decimal* dec, int new_length);
 /* 800CFD64 local  */ // extern char* longlong2str(long long num, char* buff, print_format format);
 /* 800D0044 local  */ // extern char* long2str(long num, char* buff, print_format format);
-/* 800D0268 local  */ // extern const char* parse_format(const char* format_string, va_list* arg, print_format* format);
+/* 800D0268 local  */ // extern const char* parse_format(const char* format_string, va_list* arg, print_format*
+                      // format);
 // ======================= scanf.c ====================================================
 /* 800D0740 global */ extern int __StringRead(void* isc, int ch, int Action);
 // ======================= string.c ===================================================

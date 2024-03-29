@@ -35,7 +35,9 @@ entry    __RAS_OSDisableInterrupts_end
     rlwinm  r3, r3, 17, 31, 31
     blr
 #endif // clang-format on
-} ASM BOOL OSEnableInterrupts(void){
+}
+
+ASM BOOL OSEnableInterrupts(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 

@@ -76,8 +76,8 @@ ASM void PPCSync(void){
 #endif // clang-format on
 }
 
-WEAK ASM void PPCHalt(void) // spins infinitely
-    {
+// spins infinitely
+WEAK ASM void PPCHalt(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 
@@ -91,7 +91,7 @@ _spin:
 
     // NEVER REACHED
 #endif // clang-format on
-    }
+}
 
 #if DOLPHIN_REV == 2003
 ASM void PPCMtmmcr0(register u32 newMmcr0){
