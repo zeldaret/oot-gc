@@ -1,183 +1,86 @@
 #include "asm_types.h"
 #include "dolphin/types.h"
-// clang-format off
+#include "macros.h"
 
-union FpscrUnion
-{
+union FpscrUnion {
     f64 f;
-    struct
-    {
+    struct {
         u32 fpscr_pad;
         u32 fpscr;
-    }   u;
+    } u;
 };
 
-#define HID0_SPD 0x00000200  // Speculative cache access enable (0 enable)
+#define HID0_SPD 0x00000200 // Speculative cache access enable (0 enable)
 
-void PPCMthid0 ( u32 newHID0 );
+void PPCMthid0(u32 newHID0);
 
-/*
- * --INFO--
- * Address:	8036F7D4
- * Size:	000008
- */
-asm u32 PPCMfmsr (void)
-{
+ASM u32 PPCMfmsr(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mfmsr r3
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	8036F7DC
- * Size:	000008
- */
-asm void PPCMtmsr (register u32 newMSR)
-{
+ASM void PPCMtmsr(register u32 newMSR){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtmsr newMSR
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	00000C
- */
-void PPCOrMsr(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	00000C
- */
-void PPCAndMsr(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	00000C
- */
-void PPCAndCMsr(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F7E4
- * Size:	000008
- */
-asm u32 PPCMfhid0 (void)
-{
+ASM u32 PPCMfhid0(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID0
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	8036F7EC
- * Size:	000008
- */
-asm void PPCMthid0 (register u32 newHID0)
-{
+ASM void PPCMthid0(register u32 newHID0){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr HID0, newHID0
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfhid1(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F7F4
- * Size:	000008
- */
-asm u32 PPCMfl2cr (void)
-{
+ASM u32 PPCMfl2cr(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, L2CR
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	8036F7FC
- * Size:	000008
- */
-asm void PPCMtl2cr (register u32 newL2cr)
-{
+ASM void PPCMtl2cr(register u32 newL2cr){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr L2CR, newL2cr
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	8036F804
- * Size:	000008
- */
-__declspec ( weak ) asm void PPCMtdec ( register u32 newDec )
-{
+WEAK ASM void PPCMtdec(register u32 newDec){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtdec newDec
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfdec(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F80C
- * Size:	000008
- */
-asm void PPCSync (void)
-{
+ASM void PPCSync(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     sc
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000034
- */
-void PPCEieio(void) {
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F814
- * Size:	000014
- */
-__declspec ( weak ) asm void PPCHalt (void) // spins infinitely
-{
+WEAK ASM void PPCHalt(void) // spins infinitely
+    {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
 
     sync
@@ -189,339 +92,104 @@ _spin:
     b _spin
 
     // NEVER REACHED
-}
+#endif // clang-format on
+    }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfmmcr0(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- * UNUSED
- */
-asm void PPCMtmmcr0 (register u32 newMmcr0)
-{
-    #if DOLPHIN_REV > 58
+#if DOLPHIN_REV > 58
+ASM void PPCMtmmcr0(register u32 newMmcr0){
+#ifdef __MWERKS__ // clang-format off
     mtspr MMCR0, newMmcr0
-    #endif
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfmmcr1(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- * UNUSED
- */
-asm void PPCMtmmcr1 (register u32 newMmcr1)
-{
-    #if DOLPHIN_REV > 58
+ASM void PPCMtmmcr1(register u32 newMmcr1){
+#ifdef __MWERKS__ // clang-format off
     mtspr MMCR1, newMmcr1
-    #endif
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfpmc1(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- * UNUSED
- */
-asm void PPCMtpmc1 (register u32 newPmc1)
-{
-    #if DOLPHIN_REV > 58
+ASM void PPCMtpmc1(register u32 newPmc1){
+#ifdef __MWERKS__ // clang-format off
     mtspr PMC1, newPmc1
-    #endif
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfpmc2(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- * UNUSED
- */
-asm void PPCMtpmc2 (register u32 newPmc2)
-{
-    #if DOLPHIN_REV > 58
+ASM void PPCMtpmc2(register u32 newPmc2){
+#ifdef __MWERKS__ // clang-format off
     mtspr PMC2, newPmc2
-    #endif
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfpmc3(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- * UNUSED
- */
-asm void PPCMtpmc3 (register u32 newPmc3)
-{
-    #if DOLPHIN_REV > 58
+ASM void PPCMtpmc3(register u32 newPmc3){
+#ifdef __MWERKS__ // clang-format off
     mtspr PMC3, newPmc3
-    #endif
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfpmc4(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- * UNUSED
- */
-asm void PPCMtpmc4 (register u32 newPmc4)
-{
-    #if DOLPHIN_REV > 58
+ASM void PPCMtpmc4(register u32 newPmc4){
+#ifdef __MWERKS__ // clang-format off
     mtspr PMC4, newPmc4
-    #endif
+#endif // clang-format on
 }
+#endif
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfsia(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMtsia(register u32 newSia)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F828
- * Size:	000020
- */
-u32 PPCMffpscr(void)
-{
+u32 PPCMffpscr(void) {
     union FpscrUnion m;
 
-
-    asm
-    {
+    ASM {
+#ifdef __MWERKS__ // clang-format off
         mffs fp31
         stfd fp31, m.f;
+#endif // clang-format on
     }
 
     return m.u.fpscr;
 }
 
-/*
- * --INFO--
- * Address:	8036F848
- * Size:	000028
- */
-void PPCMtfpscr(register u32 newFPSCR)
-{
+void PPCMtfpscr(register u32 newFPSCR) {
     union FpscrUnion m;
 
-    asm
-    {
+    ASM {
+#ifdef __MWERKS__ // clang-format off
         li    r4, 0
         stw   r4, m.u.fpscr_pad;
         stw   newFPSCR, m.u.fpscr
         lfd   fp31, m.f
         mtfsf 0xff, fp31
+#endif // clang-format on
     }
 }
 
-/*
- * --INFO--
- * Address:	8036F870
- * Size:	000008
- */
-asm u32 PPCMfhid2 ( void )
-{
+ASM u32 PPCMfhid2(void){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID2
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	8036F878
- * Size:	000008
- */
-asm void PPCMthid2 ( register u32 newhid2 )
-{
+ASM void PPCMthid2(register u32 newhid2){
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr HID2, newhid2
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	8036F880
- * Size:	00000C
- */
-u32 PPCMfwpar(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F88C
- * Size:	000008
- */
-asm void PPCMtwpar ( register u32 newwpar )
-{
+ASM void PPCMtwpar(register u32 newwpar) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtspr WPAR, newwpar
     blr
+#endif // clang-format on
 }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfdmaU(void)
-{
-    // UNUSED FUNCTION
-}
+void PPCDisableSpeculation(void) { PPCMthid0(PPCMfhid0() | HID0_SPD); }
 
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfdmaL(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMtdmaU(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMtdmaL(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000008
- */
-void PPCMfpvr(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	........
- * Size:	000028
- */
-void PPCEnableSpeculation(void)
-{
-	// UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F894
- * Size:	000028
- */
-void PPCDisableSpeculation (void)
-{
-    PPCMthid0(PPCMfhid0() | HID0_SPD);
-}
-
-/*
- * --INFO--
- * Address:	8036F8BC
- * Size:	000008
- */
-void PPCSetFpIEEEMode(void)
-{
-    // UNUSED FUNCTION
-}
-
-/*
- * --INFO--
- * Address:	8036F8C4
- * Size:	000008
- */
-asm void PPCSetFpNonIEEEMode (void)
-{
+ASM void PPCSetFpNonIEEEMode(void) {
+#ifdef __MWERKS__ // clang-format off
     nofralloc
     mtfsb1      4*7+1
     blr
+#endif // clang-format on
 }
-// clang-format on

@@ -24,4 +24,22 @@
 inline void padStack(void) { s32 pad = 0; }
 #define PAD_STACK() padStack()
 
+#ifdef __MWERKS__
+#define ASM asm
+#else
+#define ASM
+#endif
+
+#ifdef __MWERKS__
+#define WEAK __declspec(weak)
+#else
+#define WEAK
+#endif
+
+#ifdef __MWERKS__
+#define INIT __declspec(section ".init")
+#else
+#define INIT
+#endif
+
 #endif

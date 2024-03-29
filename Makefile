@@ -76,8 +76,10 @@ ASFLAGS := -mgekko -I include -I libc
 LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto,deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
-DOLPHIN_SDK_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+DOLPHIN_SDK_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -inline auto
+
+CFLAGS += -inline auto,deferred
 
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
