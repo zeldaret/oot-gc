@@ -48,7 +48,7 @@ OSTime __OSGetSystemTime(void) {
     return result;
 }
 
-OSTime __OSTimeToSystemTime(OSTime time) {
+inline OSTime __OSTimeToSystemTime(OSTime time) {
     BOOL enabled;
     OSTime* timeAdjustAddr = (OSTime*)(OS_BASE_CACHED + OS_SYSTEMTIME_BASE);
     OSTime result;
@@ -60,11 +60,11 @@ OSTime __OSTimeToSystemTime(OSTime time) {
     return result;
 }
 
-static BOOL IsLeapYear(s32 year) { return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0); }
+inline static BOOL IsLeapYear(s32 year) { return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0); }
 
-static s32 GetYearDays(s32 year, s32 mon) { return (IsLeapYear(year) ? LeapYearDays : YearDays)[mon]; }
+inline static s32 GetYearDays(s32 year, s32 mon) { return (IsLeapYear(year) ? LeapYearDays : YearDays)[mon]; }
 
-static s32 GetLeapDays(s32 year) {
+inline static s32 GetLeapDays(s32 year) {
     if (year < 1) {
         return 0;
     }
@@ -126,8 +126,3 @@ void OSTicksToCalendarTime(OSTime ticks, OSCalendarTime* td) {
     td->sec = secs % 60;
 }
 #pragma dont_inline reset
-
-OSTime OSCalendarTimeToTicks(OSCalendarTime* time) {
-    ;
-    ;
-}

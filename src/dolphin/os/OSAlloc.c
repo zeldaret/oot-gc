@@ -33,10 +33,6 @@ static inline void* DLAddFront(struct HeapCell* neighbor, struct HeapCell* cell)
     return cell;
 }
 
-void DLLookup(void) {
-    // UNUSED FUNCTION
-}
-
 static inline HeapCell* DLExtract(struct HeapCell* list, struct HeapCell* cell) {
     if (cell->next != NULL)
         cell->next->prev = cell->prev;
@@ -80,14 +76,6 @@ static HeapCell* DLInsert(HeapCell* list, HeapCell* cell, void* unused /* needed
         return list;
     }
     return cell;
-}
-
-void DLOverlap(void) {
-    // UNUSED FUNCTION
-}
-
-void DLSize(void) {
-    // UNUSED FUNCTION
 }
 
 void* OSAllocFromHeap(OSHeapHandle heap, u32 size) {
@@ -272,53 +260,10 @@ s32 OSCheckHeap(int heap) {
     return free;
 }
 
-// void OSReferentSize(void)
-// {
-// 	// UNUSED FUNCTION
-// }
-
-#define ASSERTMSGLINE(line, cond, msg) \
-    if (!(cond)) {                     \
-        OSReport(msg, line);           \
-        return;                        \
-    }
-
-// unused but the strings are required to match
-void OSDumpHeap(int heap) {
-    struct Heap* hd;
-    struct HeapCell* cell;
-
-    OSReport("\nOSDumpHeap(%d):\n", heap);
-    // ASSERTMSGLINE(0x3DE, HeapArray, "OSDumpHeap(): heap is not initialized.");
-    // ASSERTMSGLINE(0x3DF, (heap >= 0) && (heap < NumHeaps), "OSDumpHeap(): invalid heap handle.");
-    hd = &HeapArray[heap];
-    if (hd->size < 0) {
-        OSReport("--------Inactive\n");
-        return;
-    }
-    // ASSERTMSGLINE(0x3E8, OSCheckHeap(heap) >= 0, "OSDumpHeap(): heap is broken.");
-#ifdef ENABLE_HEAPDESC
-    OSReport("padding %d/(%f%%) header %d/(%f%%) payload %d/(%f%%)\n", hd->paddingBytes,
-             (100.0 * hd->paddingBytes / hd->size), hd->headerBytes, (100.0 * hd->headerBytes / hd->size),
-             hd->payloadBytes, (100.0 * hd->payloadBytes / hd->size));
-#endif
-    OSReport("addr	size		end	prev	next\n");
-    OSReport("--------Allocated\n");
-
-    // ASSERTMSGLINE(0x3F5, hd->allocated == NULL || hd->allocated->prev == NULL, "OSDumpHeap(): heap is broken.");
-
-    for (cell = hd->allocated; cell; cell = cell->next) {
-        OSReport("%x	%d	%x	%x	%x\n", cell, cell->size, (char*)cell + cell->size, cell->prev,
-                 cell->next);
-    }
-    OSReport("--------Free\n");
-    for (cell = hd->free; cell; cell = cell->next) {
-        OSReport("%x	%d	%x	%x	%x\n", cell, cell->size, (char*)cell + cell->size, cell->prev,
-                 cell->next);
-    }
-}
-
-// void OSVisitAllocated(void)
-// {
-// 	// UNUSED FUNCTION
-// }
+// OSDumpHeap is unused but the strings from that function are present
+char D_800F0B4C[] = "\nOSDumpHeap(%d):\n";
+char D_800F0B60[] = "--------Inactive\n";
+char D_800F0B74[] = "addr\tsize\t\tend\tprev\tnext\n";
+char D_800F0B90[] = "--------Allocated\n";
+char D_800F0BA4[] = "%x\t%d\t%x\t%x\t%x\n";
+char D_800F0BB4[] = "--------Free\n";

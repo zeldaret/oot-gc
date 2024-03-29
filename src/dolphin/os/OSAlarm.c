@@ -29,7 +29,7 @@ void OSCreateAlarm(OSAlarm* alarm) {
     alarm->tag = 0;
 }
 
-static void SetTimer(OSAlarm* alarm) {
+static inline void SetTimer(OSAlarm* alarm) {
     OSTime delta;
 
     delta = alarm->fire - __OSGetSystemTime();
@@ -92,15 +92,6 @@ void OSSetAlarm(OSAlarm* alarm, OSTime tick, OSAlarmHandler handler) {
     enabled = OSDisableInterrupts();
     alarm->period = 0;
     InsertAlarm(alarm, __OSGetSystemTime() + tick, handler);
-    OSRestoreInterrupts(enabled);
-}
-
-void OSSetPeriodicAlarm(OSAlarm* alarm, OSTime start, OSTime period, OSAlarmHandler handler) {
-    BOOL enabled;
-    enabled = OSDisableInterrupts();
-    alarm->period = period;
-    alarm->start = __OSTimeToSystemTime(start);
-    InsertAlarm(alarm, 0, handler);
     OSRestoreInterrupts(enabled);
 }
 

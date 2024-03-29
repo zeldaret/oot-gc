@@ -151,12 +151,13 @@ s32 OSEnableScheduler() {
     return count;
 }
 
-static void SetRun(OSThread* thread) {
+static inline void SetRun(OSThread* thread) {
     thread->queue = &RunQueue[thread->priority];
     AddTail(thread->queue, thread, link);
     RunQueueBits |= 1u << (OS_PRIORITY_MAX - thread->priority);
     RunQueueHint = TRUE;
 }
+
 #pragma dont_inline on
 static void UnsetRun(OSThread* thread) {
     OSThreadQueue* queue;
@@ -206,7 +207,7 @@ static OSThread* SetEffectivePriority(OSThread* thread, OSPriority priority) {
     return NULL;
 }
 
-static void UpdatePriority(OSThread* thread) {
+static inline void UpdatePriority(OSThread* thread) {
     OSPriority priority;
 
     do {
@@ -221,7 +222,7 @@ static void UpdatePriority(OSThread* thread) {
     } while (thread);
 }
 
-static void __OSSwitchThread(OSThread* nextThread) {
+static inline void __OSSwitchThread(OSThread* nextThread) {
     OSSetCurrentThread(nextThread);
     OSSetCurrentContext(&nextThread->context);
     OSLoadContext(&nextThread->context);
@@ -381,14 +382,6 @@ void OSExitThread(void* val) {
     }
 
     OSRestoreInterrupts(enable);
-}
-
-void OSYieldThread(void) {
-    BOOL enabled;
-
-    enabled = OSDisableInterrupts();
-    SelectThread(TRUE);
-    OSRestoreInterrupts(enabled);
 }
 
 void OSCancelThread(OSThread* thread) {

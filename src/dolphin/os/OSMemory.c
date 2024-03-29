@@ -21,9 +21,9 @@ static BOOL OnReset(BOOL final) {
     return TRUE;
 }
 
-u32 OSGetPhysicalMemSize() { return *(u32*)(OSPhysicalToCached(0x0028)); }
+inline u32 OSGetPhysicalMemSize() { return *(u32*)(OSPhysicalToCached(0x0028)); }
 
-u32 OSGetConsoleSimulatedMemSize() { return *(u32*)(OSPhysicalToCached(0x00F0)); }
+inline u32 OSGetConsoleSimulatedMemSize() { return *(u32*)(OSPhysicalToCached(0x00F0)); }
 
 static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     u32 addr;
@@ -39,42 +39,6 @@ static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     }
 
     __OSUnhandledException(OS_ERROR_PROTECTION, context, cause, addr);
-}
-
-void OSProtectRange(u32 chan, void* addr, u32 nBytes, u32 control) {
-    BOOL enabled;
-    u32 start;
-    u32 end;
-    u16 reg;
-    if (4 <= chan) {
-        return;
-    }
-
-    control &= OS_PROTECT_CONTROL_RDWR;
-
-    end = (u32)addr + nBytes;
-    start = TRUNC(addr, 1u << 10);
-    end = ROUND(end, 1u << 10);
-
-    DCFlushRange((void*)start, end - start);
-
-    enabled = OSDisableInterrupts();
-
-    __OSMaskInterrupts(OS_INTERRUPTMASK(__OS_INTERRUPT_MEM_0 + chan));
-
-    __MEMRegs[0 + 2 * chan] = (u16)(start >> 10);
-    __MEMRegs[1 + 2 * chan] = (u16)(end >> 10);
-
-    reg = __MEMRegs[8];
-    reg &= ~(OS_PROTECT_CONTROL_RDWR << 2 * chan);
-    reg |= control << 2 * chan;
-    __MEMRegs[8] = reg;
-
-    if (control != OS_PROTECT_CONTROL_RDWR) {
-        __OSUnmaskInterrupts(OS_INTERRUPTMASK(__OS_INTERRUPT_MEM_0 + chan));
-    }
-
-    OSRestoreInterrupts(enabled);
 }
 
 asm void Config24MB() {

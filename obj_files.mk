@@ -51,7 +51,7 @@ O_FILES :=                                              \
     $(BUILD_DIR)/src/dolphin/os/OSLink.o                \
     $(BUILD_DIR)/src/dolphin/os/OSMessage.o             \
     $(BUILD_DIR)/src/dolphin/os/OSMemory.o              \
-    $(BUILD_DIR)/asm/OSMutex.o                          \
+    $(BUILD_DIR)/src/dolphin/os/OSMutex.o               \
     $(BUILD_DIR)/asm/OSReboot.o                         \
     $(BUILD_DIR)/src/dolphin/os/OSReset.o               \
     $(BUILD_DIR)/src/dolphin/os/OSResetSW.o             \

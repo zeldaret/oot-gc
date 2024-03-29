@@ -89,25 +89,6 @@ asm void DCFlushRangeNoSync(register void* addr, register u32 nBytes) {
     blr
 }
 
-
-asm void DCStoreRangeNoSync(register void* addr, register u32 nBytes) {
-    nofralloc
-    cmplwi nBytes, 0
-    blelr
-    clrlwi r5, addr, 27
-    add nBytes, nBytes, r5
-    addi nBytes, nBytes, 31
-    srwi nBytes, nBytes, 5
-    mtctr nBytes
-
-@1
-    dcbst r0, addr
-    addi addr, addr, 32
-    bdnz @1
-
-    blr
-}
-
 asm void DCZeroRange(register void* addr, register u32 nBytes) {
     nofralloc
     cmplwi nBytes, 0
@@ -255,20 +236,6 @@ asm void LCDisable() {
     blr
 }
 
-
-asm void LCLoadBlocks(register void* destTag, register void* srcAddr, register u32 numBlocks) {
-    nofralloc
-    rlwinm  r6, numBlocks, 30, 27, 31
-    rlwinm  srcAddr, srcAddr, 0, 4, 31
-    or      r6, r6, srcAddr
-    mtspr   DMA_U, r6
-    rlwinm  r6, numBlocks, 2, 28, 29
-    or      r6, r6, destTag
-    ori     r6, r6, 0x12
-    mtspr   DMA_L, r6
-    blr
-}
-
 asm void LCStoreBlocks(register void* destAddr, register void* srcTag, register u32 numBlocks) {
     nofralloc
     rlwinm  r6, numBlocks, 30, 27, 31
@@ -284,24 +251,6 @@ asm void LCStoreBlocks(register void* destAddr, register void* srcTag, register 
 
 /* clang-format on */
 
-u32 LCLoadData(register void* destAddr, register void* srcAddr, register u32 nBytes) {
-    u32 numBlocks = (nBytes + 31) / 32;
-    u32 numTransactions = (numBlocks + 128 - 1) / 128;
-
-    while (numBlocks > 0) {
-        if (numBlocks < 128) {
-            LCLoadBlocks(destAddr, srcAddr, numBlocks);
-            numBlocks = 0;
-        } else {
-            LCLoadBlocks(destAddr, srcAddr, 0);
-            numBlocks -= 128;
-            destAddr = (void*)((u32)destAddr + 4096);
-            srcAddr = (void*)((u32)srcAddr + 4096);
-        }
-    }
-
-    return numTransactions;
-}
 u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes) {
     u32 numBlocks = (nBytes + 31) / 32;
     u32 numTransactions = (numBlocks + 128 - 1) / 128;
@@ -322,12 +271,6 @@ u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes) {
 }
 
 /* clang-format off */
-asm u32 LCQueueLength() {
-    nofralloc
-    mfspr   r4, HID2
-    rlwinm  r3, r4, 8, 28, 31
-    blr
-}
 
 asm void LCQueueWait(register u32 len) {
     nofralloc
@@ -348,7 +291,7 @@ asm void LCQueueWait(register u32 len) {
 }
 
 /* clang-format on */
-static void L2Disable(void) {
+static inline void L2Disable(void) {
     __sync();
     PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
     __sync();
@@ -365,7 +308,7 @@ void L2GlobalInvalidate(void) {
     }
 }
 
-static void L2Init(void) {
+static inline void L2Init(void) {
     u32 oldMSR;
     oldMSR = PPCMfmsr();
     __sync();
@@ -376,7 +319,7 @@ static void L2Init(void) {
     PPCMtmsr(oldMSR);
 }
 
-void L2Enable(void) { PPCMtl2cr((PPCMfl2cr() | L2CR_L2E) & ~L2CR_L2I); }
+inline void L2Enable(void) { PPCMtl2cr((PPCMfl2cr() | L2CR_L2E) & ~L2CR_L2I); }
 
 void DMAErrorHandler(OSError error, OSContext* context, ...) {
     u32 hid2 = PPCMfhid2();

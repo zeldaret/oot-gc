@@ -2,20 +2,21 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "stdio.h"
+#include "macros.h"
 
 OSErrorHandler __OSErrorTable[OS_ERROR_MAX];
 
 #define FPSCR_ENABLE (FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE)
 u32 __OSFpscrEnableBits = FPSCR_ENABLE;
 
-__declspec(weak) void OSReport(const char* msg, ...) {
+WEAK void OSReport(const char* msg, ...) {
     va_list args;
     va_start(args, msg);
     vprintf(msg, args);
     va_end(args);
 }
 
-__declspec(weak) void OSPanic(const char* file, int line, const char* msg, ...) {
+WEAK void OSPanic(const char* file, int line, const char* msg, ...) {
     va_list marker;
     u32 i;
     u32* p;
