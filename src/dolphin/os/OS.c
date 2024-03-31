@@ -157,11 +157,11 @@ u32 OSGetConsoleType() {
 void* __OSSavedRegionStart;
 void* __OSSavedRegionEnd;
 
-extern u32 BOOT_REGION_START AT_ADDRESS(0x812FDFF0); //(*(u32 *)0x812fdff0)
-extern u32 BOOT_REGION_END AT_ADDRESS(0x812FDFEC); //(*(u32 *)0x812fdfec)
+extern u32 BOOT_REGION_START AT_ADDRESS(0x812FDFF0);
+extern u32 BOOT_REGION_END AT_ADDRESS(0x812FDFEC);
 
 void ClearArena(void) {
-    if ((u32)(OSGetResetCode() + 0x80000000) != 0U) {
+    if ((u32)(OSGetResetCode()) != 0x80000000) {
         __OSSavedRegionStart = 0U;
         __OSSavedRegionEnd = 0U;
         memset(OSGetArenaLo(), 0U, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
@@ -196,6 +196,14 @@ static void InquiryCallback(s32 result, DVDCommandBlock* block) {
             break;
     }
 }
+
+#if DOLPHIN_REV == 2002
+#define HI_MASK 0xFFFF0000
+#define LO_MASK 0x0000FFFF
+#else
+#define HI_MASK 0xF0000000
+#define LO_MASK 0x0FFFFFFF
+#endif
 
 void OSInit(void) {
     /*
@@ -316,26 +324,19 @@ void OSInit(void) {
             inputConsoleType = BootInfo->consoleType;
         }
 
-// work out what console type this corresponds to and report it
-// consoleTypeSwitchHi = inputConsoleType & 0xF0000000;
-#if DOLPHIN_REV == 2002
-        switch (inputConsoleType & 0xffff0000)
-#else
-        switch (inputConsoleType & 0xf0000000)
-#endif
-        { // check "first" byte
+        // work out what console type this corresponds to and report it
+        // consoleTypeSwitchHi = inputConsoleType & 0xF0000000;
+        switch (inputConsoleType & HI_MASK) { // check "first" byte
             case OS_CONSOLE_RETAIL:
                 OSReport("Retail %d\n", inputConsoleType);
                 break;
 #if DOLPHIN_REV == 2002
             default:
-                switch (inputConsoleType & 0x0000ffff)
 #else
             case OS_CONSOLE_DEVELOPMENT:
             case OS_CONSOLE_TDEV:
-                switch (inputConsoleType & 0x0fffffff)
 #endif
-                { // if "first" byte is 2, check "the rest"
+                switch (inputConsoleType & LO_MASK) { // if "first" byte is 2, check "the rest"
                     case OS_CONSOLE_EMULATOR:
                         OSReport("Mac Emulator\n");
                         break;
@@ -349,11 +350,7 @@ void OSInit(void) {
                         OSReport("EPPC Minnow\n");
                         break;
                     default:
-#if DOLPHIN_REV == 2002
-                        tdev = ((u32)inputConsoleType & 0x0000ffff);
-#else
-                        tdev = ((u32)inputConsoleType & 0x0fffffff);
-#endif
+                        tdev = ((u32)inputConsoleType & LO_MASK);
                         OSReport("Development HW%d (%08x)\n", tdev - 3, inputConsoleType);
                         break;
                 }
