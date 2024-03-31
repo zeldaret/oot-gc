@@ -15,7 +15,7 @@
     ],
     "units": [
         {
-            "name": "xlCoreGCN",
+            "name": "emulator/xlCoreGCN",
             "target_path": "expected/build/SIM/src/emulator/xlCoreGCN.o",
             "base_path": "build/SIM/src/emulator/xlCoreGCN.o",
             "reverse_fn_order": true,
@@ -29,7 +29,7 @@
             }
         },
         {
-            "name": "xlPostGCN",
+            "name": "emulator/xlPostGCN",
             "target_path": "expected/build/SIM/src/emulator/xlPostGCN.o",
             "base_path": "build/SIM/src/emulator/xlPostGCN.o",
             "reverse_fn_order": true,
@@ -43,7 +43,7 @@
             }
         },
         {
-            "name": "xlFileGCN",
+            "name": "emulator/xlFileGCN",
             "target_path": "expected/build/SIM/src/emulator/xlFileGCN.o",
             "base_path": "build/SIM/src/emulator/xlFileGCN.o",
             "reverse_fn_order": true,
@@ -57,7 +57,7 @@
             }
         },
         {
-            "name": "xlList",
+            "name": "emulator/xlList",
             "target_path": "expected/build/SIM/src/emulator/xlList.o",
             "base_path": "build/SIM/src/emulator/xlList.o",
             "reverse_fn_order": true,
@@ -71,7 +71,7 @@
             }
         },
         {
-            "name": "xlHeap",
+            "name": "emulator/xlHeap",
             "target_path": "expected/build/SIM/src/emulator/xlHeap.o",
             "base_path": "build/SIM/src/emulator/xlHeap.o",
             "reverse_fn_order": true,
@@ -85,7 +85,7 @@
             }
         },
         {
-            "name": "xlObject",
+            "name": "emulator/xlObject",
             "target_path": "expected/build/SIM/src/emulator/xlObject.o",
             "base_path": "build/SIM/src/emulator/xlObject.o",
             "reverse_fn_order": true,
@@ -99,7 +99,7 @@
             }
         },
         {
-            "name": "simGCN",
+            "name": "emulator/simGCN",
             "target_path": "expected/build/SIM/src/emulator/simGCN.o",
             "base_path": "build/SIM/src/emulator/simGCN.o",
             "reverse_fn_order": true,
@@ -113,7 +113,7 @@
             }
         },
         {
-            "name": "movie",
+            "name": "emulator/movie",
             "target_path": "expected/build/SIM/src/emulator/movie.o",
             "base_path": "build/SIM/src/emulator/movie.o",
             "reverse_fn_order": true,
@@ -127,7 +127,7 @@
             }
         },
         {
-            "name": "THPPlayer",
+            "name": "emulator/THPPlayer",
             "target_path": "expected/build/SIM/src/emulator/THPPlayer.o",
             "base_path": "build/SIM/src/emulator/THPPlayer.o",
             "reverse_fn_order": true,
@@ -141,7 +141,7 @@
             }
         },
         {
-            "name": "THPAudioDecode",
+            "name": "emulator/THPAudioDecode",
             "target_path": "expected/build/SIM/src/emulator/THPAudioDecode.o",
             "base_path": "build/SIM/src/emulator/THPAudioDecode.o",
             "reverse_fn_order": true,
@@ -155,7 +155,7 @@
             }
         },
         {
-            "name": "THPDraw",
+            "name": "emulator/THPDraw",
             "target_path": "expected/build/SIM/src/emulator/THPDraw.o",
             "base_path": "build/SIM/src/emulator/THPDraw.o",
             "reverse_fn_order": true,
@@ -169,7 +169,7 @@
             }
         },
         {
-            "name": "THPRead",
+            "name": "emulator/THPRead",
             "target_path": "expected/build/SIM/src/emulator/THPRead.o",
             "base_path": "build/SIM/src/emulator/THPRead.o",
             "reverse_fn_order": true,
@@ -183,7 +183,7 @@
             }
         },
         {
-            "name": "THPVideoDecode",
+            "name": "emulator/THPVideoDecode",
             "target_path": "expected/build/SIM/src/emulator/THPVideoDecode.o",
             "base_path": "build/SIM/src/emulator/THPVideoDecode.o",
             "reverse_fn_order": true,
@@ -197,7 +197,7 @@
             }
         },
         {
-            "name": "mcardGCN",
+            "name": "emulator/mcardGCN",
             "target_path": "expected/build/SIM/src/emulator/mcardGCN.o",
             "base_path": "build/SIM/src/emulator/mcardGCN.o",
             "reverse_fn_order": true,
@@ -211,7 +211,7 @@
             }
         },
         {
-            "name": "codeGCN",
+            "name": "emulator/codeGCN",
             "target_path": "expected/build/SIM/src/emulator/codeGCN.o",
             "base_path": "build/SIM/src/emulator/codeGCN.o",
             "reverse_fn_order": true,
@@ -225,7 +225,7 @@
             }
         },
         {
-            "name": "soundGCN",
+            "name": "emulator/soundGCN",
             "target_path": "expected/build/SIM/src/emulator/soundGCN.o",
             "base_path": "build/SIM/src/emulator/soundGCN.o",
             "reverse_fn_order": true,
@@ -239,7 +239,7 @@
             }
         },
         {
-            "name": "frame",
+            "name": "emulator/frame",
             "target_path": "expected/build/SIM/src/emulator/frame.o",
             "base_path": "build/SIM/src/emulator/frame.o",
             "reverse_fn_order": true,
@@ -253,7 +253,7 @@
             }
         },
         {
-            "name": "system",
+            "name": "emulator/system",
             "target_path": "expected/build/SIM/src/emulator/system.o",
             "base_path": "build/SIM/src/emulator/system.o",
             "reverse_fn_order": true,
@@ -267,7 +267,7 @@
             }
         },
         {
-            "name": "cpu",
+            "name": "emulator/cpu",
             "target_path": "expected/build/SIM/src/emulator/cpu.o",
             "base_path": "build/SIM/src/emulator/cpu.o",
             "reverse_fn_order": true,
@@ -281,7 +281,7 @@
             }
         },
         {
-            "name": "pif",
+            "name": "emulator/pif",
             "target_path": "expected/build/SIM/src/emulator/pif.o",
             "base_path": "build/SIM/src/emulator/pif.o",
             "reverse_fn_order": true,
@@ -295,7 +295,7 @@
             }
         },
         {
-            "name": "ram",
+            "name": "emulator/ram",
             "target_path": "expected/build/SIM/src/emulator/ram.o",
             "base_path": "build/SIM/src/emulator/ram.o",
             "reverse_fn_order": true,
@@ -309,7 +309,7 @@
             }
         },
         {
-            "name": "rom",
+            "name": "emulator/rom",
             "target_path": "expected/build/SIM/src/emulator/rom.o",
             "base_path": "build/SIM/src/emulator/rom.o",
             "reverse_fn_order": true,
@@ -323,7 +323,7 @@
             }
         },
         {
-            "name": "rdp",
+            "name": "emulator/rdp",
             "target_path": "expected/build/SIM/src/emulator/rdp.o",
             "base_path": "build/SIM/src/emulator/rdp.o",
             "reverse_fn_order": true,
@@ -337,7 +337,7 @@
             }
         },
         {
-            "name": "rdb",
+            "name": "emulator/rdb",
             "target_path": "expected/build/SIM/src/emulator/rdb.o",
             "base_path": "build/SIM/src/emulator/rdb.o",
             "reverse_fn_order": true,
@@ -351,7 +351,7 @@
             }
         },
         {
-            "name": "rsp",
+            "name": "emulator/rsp",
             "target_path": "expected/build/SIM/src/emulator/rsp.o",
             "base_path": "build/SIM/src/emulator/rsp.o",
             "reverse_fn_order": true,
@@ -365,7 +365,7 @@
             }
         },
         {
-            "name": "mips",
+            "name": "emulator/mips",
             "target_path": "expected/build/SIM/src/emulator/mips.o",
             "base_path": "build/SIM/src/emulator/mips.o",
             "reverse_fn_order": true,
@@ -379,7 +379,7 @@
             }
         },
         {
-            "name": "disk",
+            "name": "emulator/disk",
             "target_path": "expected/build/SIM/src/emulator/disk.o",
             "base_path": "build/SIM/src/emulator/disk.o",
             "reverse_fn_order": true,
@@ -393,7 +393,7 @@
             }
         },
         {
-            "name": "flash",
+            "name": "emulator/flash",
             "target_path": "expected/build/SIM/src/emulator/flash.o",
             "base_path": "build/SIM/src/emulator/flash.o",
             "reverse_fn_order": true,
@@ -407,7 +407,7 @@
             }
         },
         {
-            "name": "sram",
+            "name": "emulator/sram",
             "target_path": "expected/build/SIM/src/emulator/sram.o",
             "base_path": "build/SIM/src/emulator/sram.o",
             "reverse_fn_order": true,
@@ -421,7 +421,7 @@
             }
         },
         {
-            "name": "audio",
+            "name": "emulator/audio",
             "target_path": "expected/build/SIM/src/emulator/audio.o",
             "base_path": "build/SIM/src/emulator/audio.o",
             "reverse_fn_order": true,
@@ -435,7 +435,7 @@
             }
         },
         {
-            "name": "video",
+            "name": "emulator/video",
             "target_path": "expected/build/SIM/src/emulator/video.o",
             "base_path": "build/SIM/src/emulator/video.o",
             "reverse_fn_order": true,
@@ -449,7 +449,7 @@
             }
         },
         {
-            "name": "serial",
+            "name": "emulator/serial",
             "target_path": "expected/build/SIM/src/emulator/serial.o",
             "base_path": "build/SIM/src/emulator/serial.o",
             "reverse_fn_order": true,
@@ -463,7 +463,7 @@
             }
         },
         {
-            "name": "library",
+            "name": "emulator/library",
             "target_path": "expected/build/SIM/src/emulator/library.o",
             "base_path": "build/SIM/src/emulator/library.o",
             "reverse_fn_order": true,
@@ -477,7 +477,7 @@
             }
         },
         {
-            "name": "peripheral",
+            "name": "emulator/peripheral",
             "target_path": "expected/build/SIM/src/emulator/peripheral.o",
             "base_path": "build/SIM/src/emulator/peripheral.o",
             "reverse_fn_order": true,
@@ -491,7 +491,7 @@
             }
         },
         {
-            "name": "_frameGCNcc",
+            "name": "emulator/_frameGCNcc",
             "target_path": "expected/build/SIM/src/emulator/_frameGCNcc.o",
             "base_path": "build/SIM/src/emulator/_frameGCNcc.o",
             "reverse_fn_order": true,
@@ -505,7 +505,7 @@
             }
         },
         {
-            "name": "_buildtev",
+            "name": "emulator/_buildtev",
             "target_path": "expected/build/SIM/src/emulator/_buildtev.o",
             "base_path": "build/SIM/src/emulator/_buildtev.o",
             "reverse_fn_order": true,
@@ -515,6 +515,328 @@
                 "compiler": "mwcc_233_159",
                 "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=0 -DNDEBUG=1 -msgstyle gcc -inline auto,deferred",
                 "ctx_path": "build/SIM/src/emulator/_buildtev.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OS",
+            "target_path": "expected/build/SIM/src/dolphin/os/OS.o",
+            "base_path": "build/SIM/src/dolphin/os/OS.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OS.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSAlarm",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSAlarm.o",
+            "base_path": "build/SIM/src/dolphin/os/OSAlarm.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSAlarm.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSAlloc",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSAlloc.o",
+            "base_path": "build/SIM/src/dolphin/os/OSAlloc.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSAlloc.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSArena",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSArena.o",
+            "base_path": "build/SIM/src/dolphin/os/OSArena.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSArena.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSAudioSystem",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSAudioSystem.o",
+            "base_path": "build/SIM/src/dolphin/os/OSAudioSystem.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSAudioSystem.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSCache",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSCache.o",
+            "base_path": "build/SIM/src/dolphin/os/OSCache.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSCache.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSContext",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSContext.o",
+            "base_path": "build/SIM/src/dolphin/os/OSContext.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSContext.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSError",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSError.o",
+            "base_path": "build/SIM/src/dolphin/os/OSError.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSError.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSFont",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSFont.o",
+            "base_path": "build/SIM/src/dolphin/os/OSFont.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSFont.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSInterrupt",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSInterrupt.o",
+            "base_path": "build/SIM/src/dolphin/os/OSInterrupt.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSInterrupt.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSLink",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSLink.o",
+            "base_path": "build/SIM/src/dolphin/os/OSLink.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSLink.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSMessage",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSMessage.o",
+            "base_path": "build/SIM/src/dolphin/os/OSMessage.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSMessage.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSMemory",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSMemory.o",
+            "base_path": "build/SIM/src/dolphin/os/OSMemory.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSMemory.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSMutex",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSMutex.o",
+            "base_path": "build/SIM/src/dolphin/os/OSMutex.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSMutex.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSReboot",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSReboot.o",
+            "base_path": "build/SIM/src/dolphin/os/OSReboot.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSReboot.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSReset",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSReset.o",
+            "base_path": "build/SIM/src/dolphin/os/OSReset.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSReset.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSResetSW",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSResetSW.o",
+            "base_path": "build/SIM/src/dolphin/os/OSResetSW.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSResetSW.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSRtc",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSRtc.o",
+            "base_path": "build/SIM/src/dolphin/os/OSRtc.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSRtc.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSSync",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSSync.o",
+            "base_path": "build/SIM/src/dolphin/os/OSSync.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSSync.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSThread",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSThread.o",
+            "base_path": "build/SIM/src/dolphin/os/OSThread.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSThread.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/__start",
+            "target_path": "expected/build/SIM/src/dolphin/os/__start.o",
+            "base_path": "build/SIM/src/dolphin/os/__start.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/__start.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/OSTime",
+            "target_path": "expected/build/SIM/src/dolphin/os/OSTime.o",
+            "base_path": "build/SIM/src/dolphin/os/OSTime.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/OSTime.ctx",
+                "build_ctx": true
+            }
+        },
+        {
+            "name": "dolphin/os/__ppc_eabi_init",
+            "target_path": "expected/build/SIM/src/dolphin/os/__ppc_eabi_init.o",
+            "base_path": "build/SIM/src/dolphin/os/__ppc_eabi_init.o",
+            "reverse_fn_order": false,
+            "complete": true,
+            "scratch": {
+                "platform": "gc_wii",
+                "compiler": "mwcc_233_163n",
+                "c_flags": "-lang=c -nodefaults -proc gekko -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -fp_contract on -DVERSION=1 -DDOLPHIN_REV=99 -sym on -DDEBUG=1 -align powerpc -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte",
+                "ctx_path": "build/SIM/src/dolphin/os/__ppc_eabi_init.ctx",
                 "build_ctx": true
             }
         }
