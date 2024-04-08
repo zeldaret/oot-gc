@@ -35,6 +35,9 @@ include obj_files.mk
 
 MWCC_VERSION := GC/1.1
 
+# revision build year, 2002 for MQ, 2003 for CE
+DOLPHIN_REVISION := 2003
+
 # Programs
 ifeq ($(WINDOWS),1)
 	WINE := 
@@ -51,6 +54,9 @@ MWCC_DIR := tools/mwcc_compiler/$(MWCC_VERSION)
 CC := $(WINE) $(MWCC_DIR)/mwcceppc.exe
 LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 
+DOLPHIN_MWCC_DIR := tools/mwcc_compiler/GC/1.2.5n
+DOLPHIN_CC := $(WINE) $(DOLPHIN_MWCC_DIR)/mwcceppc.exe
+
 SHA1SUM := sha1sum
 PYTHON := python3
 ELF2DOL := tools/elf2dol/elf2dol
@@ -61,19 +67,23 @@ ASM_PROCESSOR := $(ASM_PROCESSOR_DIR)/compile.sh
 POSTPROC := tools/postprocess.py
 
 # Options
-INCLUDES := -Iinclude
+INCLUDES := -Iinclude -Ilibc
 
 # Assembler Flags
-ASFLAGS := -mgekko -I include
+ASFLAGS := -mgekko -I include -I libc
 
 # Linker Flags
-LDFLAGS := -map $(MAP) -fp hard -nodefaults -w off
+LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto,deferred -sym on -nodefaults -msgstyle gcc $(INCLUDES)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
 endif
+
+DOLPHIN_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -inline auto
+EMULATOR_CFLAGS := $(CFLAGS) -inline auto,deferred
 
 # elf2dol needs to know these in order to calculate sbss correctly.
 SDATA_PDHR 	:= 9
@@ -136,8 +146,8 @@ $(DOL): $(ELF)
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(BUILD_DIR)/%.o: %.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+$(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
+	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
-$(BUILD_DIR)/%.o: %.cpp
-	$(CC) $(CFLAGS) -c -o $@ $<
+$(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
+	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<

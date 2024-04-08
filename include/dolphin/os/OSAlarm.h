@@ -1,8 +1,12 @@
-#ifndef _DOLPHIN_OS_OSALARM_H_
-#define _DOLPHIN_OS_OSALARM_H_
+#ifndef _DOLPHIN_OSALARM
+#define _DOLPHIN_OSALARM
 
 #include "dolphin/os/OSContext.h"
-#include "dolphin/os/OSTime.h"
+#include "dolphin/types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct OSAlarm OSAlarm;
 typedef void (*OSAlarmHandler)(OSAlarm* alarm, OSContext* context);
@@ -22,4 +26,10 @@ void OSCreateAlarm(OSAlarm* alarm);
 void OSSetAlarm(OSAlarm* alarm, OSTime tick, OSAlarmHandler handler);
 void OSCancelAlarm(OSAlarm* alarm);
 
+BOOL OSCheckAlarmQueue(void);
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif // _DOLPHIN_OSALARM
