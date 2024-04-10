@@ -43,12 +43,11 @@ ifeq ($(WINDOWS),1)
 	WINE := 
 else
 	UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
-        WINE := wibo
-    endif
-    ifeq ($(UNAME_S),Darwin)
-        WINE := wine
-    endif
+	ifeq ($(UNAME_S),Linux)
+    	WINE := wibo
+    else ifeq ($(UNAME_S),Darwin)
+    		WINE := wine
+    	endif
 endif
 
 PPC_BIN_PREFIX := tools/binutils/powerpc-eabi-
