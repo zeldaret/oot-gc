@@ -42,7 +42,13 @@ DOLPHIN_REVISION := 2003
 ifeq ($(WINDOWS),1)
 	WINE := 
 else
-	WINE := wine
+	UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        WINE := wibo
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        WINE := wine
+    endif
 endif
 
 PPC_BIN_PREFIX := tools/binutils/powerpc-eabi-
