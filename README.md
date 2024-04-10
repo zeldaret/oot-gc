@@ -18,25 +18,25 @@ You will need the following dependencies:
 * make
 * git
 * python3
-* 32-bit wine
+* WiBo (Linux)
+* 32-bit wine (macOS)
 * wget
 * unzip
 * clang-format (optional)
 
 #### Ubuntu/Debian
 
-In order to install the 32-bit version of Wine, you will need to run:
+In order to install WiBo, you will need to [download it](https://github.com/decompals/wibo/releases) and run:
 
 ```
-sudo dpkg --add-architecture i386
-sudo apt-get update
+sudo install wibo /usr/bin
 ```
 
 You can install the dependencies with the following commands:
 
 ```
 sudo apt-get update
-sudo apt-get install build-essential git python3 wine32:i386 wget unzip
+sudo apt-get install build-essential git python3 wget unzip
 ```
 
 ### macOS
