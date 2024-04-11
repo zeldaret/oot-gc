@@ -27,12 +27,12 @@ COMPILER_NAME = "mwcc_233_159"
 # context.
 COMPILER_FLAGS = "-Cpp_exceptions off -proc gekko -fp hard -fp_contract on -enum int -O4,p -inline auto -nodefaults -msgstyle gcc"
 
-INCLUDE_PATTERN = re.compile(r'^#include\s*[<"](.+?)[>"]$')
-DEFINE_PATTERN = re.compile(r"^#define\s+(\w+)(?:\s+(.*))?$")
-IF_PATTERN = re.compile(r"^#if(n)?(?:def)?\s+(.*)$")
-ELSE_PATTERN = re.compile(r"^#else$")
-ENDIF_PATTERN = re.compile(r"^#endif$")
-INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)$")
+INCLUDE_PATTERN = re.compile(r'^#include\s*[<"](.+?)[>"]')
+DEFINE_PATTERN = re.compile(r"^#define\s+(\w+)(?:\s+(.*))?")
+IF_PATTERN = re.compile(r"^#if(n)?(?:def)?\s+(.*)")
+ELSE_PATTERN = re.compile(r"^#else")
+ENDIF_PATTERN = re.compile(r"^#endif")
+INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)")
 
 # Defined preprocessor macros
 defines = {"__MWERKS__"}
