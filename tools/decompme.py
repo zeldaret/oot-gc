@@ -16,7 +16,11 @@ import re
 import urllib.parse
 import urllib.request
 
-INCLUDE_DIR = Path("include")
+INCLUDE_DIRS = [
+    Path("."),
+    Path("include"),
+    Path("libc"),
+]
 COMPILER_NAME = "mwcc_233_159"
 # We don't set -inline deferred because otherwise the reversed function order
 # would require manually deleting all previous function definitions from the
@@ -34,6 +38,14 @@ INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)$")
 defines = {"__MWERKS__"}
 # Stack of preprocessor conditions
 condition_stack = [True]
+
+
+def find_include_file(filename: str) -> Path:
+    for include_dir in INCLUDE_DIRS:
+        path = include_dir / filename
+        if path.exists():
+            return path
+    raise FileNotFoundError(f"Could not find include file {filename}")
 
 
 def process_file(path: Path) -> str:
@@ -58,9 +70,10 @@ def process_file(path: Path) -> str:
                 out_text += line
                 out_text += "\n"
             elif match := INCLUDE_PATTERN.match(line.strip()):
-                out_text += f'/* "{path}" line {i + 1} "{match[1]}" */\n'
-                out_text += process_file(INCLUDE_DIR / match[1])
-                out_text += f'/* end "{match[1]}" */\n'
+                include_file = find_include_file(match[1])
+                out_text += f'/* "{path}" line {i + 1} "{include_file}" */\n'
+                out_text += process_file(include_file)
+                out_text += f'/* end "{include_file}" */\n'
             elif INCBIN_PATTERN.match(line.strip()):
                 out_text += "    0"
                 out_text += "\n"
