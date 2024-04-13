@@ -1484,35 +1484,35 @@ void guLookAt(Cpu* pCPU) {
 }
 #endif
 
-typedef struct GuLight_t {
+typedef struct Light_t_s {
     /* 0x0 */ u8 col[3];
     /* 0x3 */ char pad1;
     /* 0x4 */ u8 colc[3];
     /* 0x7 */ char pad2;
     /* 0x8 */ s8 dir[3];
     /* 0xB */ char pad3;
-} GuLight_t; // size = 0xC
+} Light_t_s; // size = 0xC
 
-typedef union GuLight {
-    /* 0x0 */ GuLight_t l;
+typedef union Light_s {
+    /* 0x0 */ Light_t_s l;
     /* 0x0 */ s64 force_structure_alignment[2];
-} GuLight;
+} Light_s;
 
-typedef struct GuLookAt {
-    /* 0x0 */ GuLight l[2];
-} GuLookAt; // size = 0x20
+typedef struct LookAt_s {
+    /* 0x0 */ Light_s l[2];
+} LookAt_s; // size = 0x20
 
-typedef struct GuHilite_t {
+typedef struct Hilite_t_s {
     /* 0x0 */ s32 x1;
     /* 0x4 */ s32 y1;
     /* 0x8 */ s32 x2;
     /* 0xC */ s32 y2;
-} GuHilite_t; // size = 0x10
+} Hilite_t_s; // size = 0x10
 
-typedef union GuHilite {
-    /* 0x0 */ GuHilite_t h;
+typedef union Hilite_s {
+    /* 0x0 */ Hilite_t_s h;
     /* 0x0 */ s32 force_structure_alignment[4];
-} GuHilite;
+} Hilite_s;
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FTOFRAC8(x) ((s32)MIN(((x) * (128.0f)), 127.0f) & 0xFF)
@@ -1522,8 +1522,8 @@ typedef union GuHilite {
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtHiliteF.s")
 #else
 void guLookAtHiliteF(Cpu* pCPU) {
-    GuLookAt* l;
-    GuHilite* h;
+    LookAt_s* l;
+    Hilite_s* h;
     CpuFpr data;
     u32* mf;
     u32* sp;
@@ -1756,8 +1756,8 @@ void guLookAtHiliteF(Cpu* pCPU) {
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtHilite.s")
 #else
 void guLookAtHilite(Cpu* pCPU) {
-    GuLookAt* l;
-    GuHilite* h;
+    LookAt_s* l;
+    Hilite_s* h;
     s32 i;
     s32 j;
     s32 e1;
@@ -1981,7 +1981,7 @@ void guLookAtHilite(Cpu* pCPU) {
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtReflectF.s")
 #else
 void guLookAtReflectF(Cpu* pCPU) {
-    GuLookAt* l;
+    LookAt_s* l;
     CpuFpr data;
     u32* mf;
     u32* sp;
@@ -2135,7 +2135,7 @@ void guLookAtReflectF(Cpu* pCPU) {
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtReflect.s")
 #else
 void guLookAtReflect(Cpu* pCPU) {
-    GuLookAt* l;
+    LookAt_s* l;
     s32 i;
     s32 j;
     s32 e1;
