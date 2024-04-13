@@ -543,21 +543,31 @@ void* jtbl_800ED514[24] = {
 void* jtbl_800ED514[24] = {0};
 #endif
 
-void* jtbl_800ED574[] = {
+#ifndef NON_MATCHING
+// cpuGetRegisterCP0
+void* jtbl_800ED574[32] = {
     &lbl_8003551C, &lbl_800352F8, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C,
     &lbl_800354A4, &lbl_800354B4, &lbl_8003548C, &lbl_8003551C, &lbl_80035494, &lbl_8003551C, &lbl_8003551C,
     &lbl_8003549C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C,
     &lbl_800354BC, &lbl_800354CC, &lbl_800354DC, &lbl_800354EC, &lbl_800354FC, &lbl_8003551C, &lbl_8003551C,
     &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003550C,
 };
+#else
+void* jtbl_800ED574[32] = {0};
+#endif
 
-void* jtbl_800ED5F4[] = {
+#ifndef NON_MATCHING
+// cpuSetRegisterCP0
+void* jtbl_800ED5F4[32] = {
     &lbl_800356F4, &lbl_800356F8, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4,
     &lbl_800356F8, &lbl_800356F8, &lbl_800355BC, &lbl_800356F4, &lbl_800355C4, &lbl_8003562C, &lbl_80035654,
     &lbl_800356CC, &lbl_800356F8, &lbl_800356D4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4,
     &lbl_800356F8, &lbl_800356F8, &lbl_800356F8, &lbl_800356F8, &lbl_800356F8, &lbl_800356F4, &lbl_800356F8,
     &lbl_800356F4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F8,
 };
+#else
+void* jtbl_800ED5F4[32] = {0};
+#endif
 
 char D_800ED674[] = "Exception: #### INTERNAL ERROR #### Cannot match exception-handler!";
 
@@ -2208,7 +2218,7 @@ inline s32 cpuCheckInterrupts(Cpu* pCPU) {
     return 1;
 }
 
-inline void cpuSetTLBRandom(Cpu* pCPU) {
+inline s32 cpuTLBRandom(Cpu* pCPU) {
     s32 iEntry;
     s32 nCount;
 
@@ -2219,7 +2229,7 @@ inline void cpuSetTLBRandom(Cpu* pCPU) {
         }
     }
 
-    cpuSetTLB(pCPU, pCPU->anCP0[1] = nCount);
+    return nCount;
 }
 
 inline s32 cpuExecuteCacheInstruction(Cpu* pCPU) {
@@ -2654,7 +2664,9 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
                     cpuSetTLB(pCPU, iEntry);
                     break;
                 case 0x05: // tlbwr
-                    cpuSetTLBRandom(pCPU);
+                    iEntry = cpuTLBRandom(pCPU);
+                    pCPU->anCP0[1] = iEntry;
+                    cpuSetTLB(pCPU, iEntry);
                     break;
                 case 0x08: // tlbp
                     pCPU->anCP0[0] |= 0x80000000;
@@ -4797,11 +4809,141 @@ static s32 cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
     return 0;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetCP0_Status.s")
+static s32 cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32) {
+    CpuMode eMode;
+    CpuMode eModeLast;
+    CpuSize eSize;
+    CpuSize eSizeLast;
 
+    if (!cpuGetSize(nStatus, &eSize, &eMode)) {
+        return 0;
+    }
+    if (!cpuGetSize(pCPU->anCP0[12], &eSizeLast, &eModeLast)) {
+        return 0;
+    }
+
+    pCPU->anCP0[12] = nStatus;
+    return 1;
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetRegisterCP0.s")
+#else
+s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
+    s32 pad;
+    s32 bFlag = 0;
 
+    switch (iRegister) {
+        case 1:
+        case 7:
+        case 8:
+            break;
+        case 9:
+            bFlag = 1;
+            break;
+        case 11:
+            bFlag = 1;
+            xlObjectEvent(pCPU->pHost, 0x1001, (void*)3);
+            if (pCPU->nMode & 1 || (nData & ganMaskSetCP0[iRegister]) == 0) {
+                pCPU->nMode &= ~1;
+            } else {
+                pCPU->nMode |= 1;
+            }
+            break;
+        case 12:
+            cpuSetCP0_Status(pCPU, nData & ganMaskSetCP0[iRegister], 0);
+            break;
+        case 13:
+            xlObjectEvent(pCPU->pHost, (nData & 0x100) ? 0x1000 : 0x1001, (void*)0);
+            xlObjectEvent(pCPU->pHost, (nData & 0x200) ? 0x1000 : 0x1001, (void*)1);
+            bFlag = 1;
+            break;
+        case 14:
+            bFlag = 1;
+            break;
+        case 16:
+            pCPU->anCP0[16] = (u32)(nData & ganMaskSetCP0[iRegister]);
+            break;
+        case 21:
+        case 22:
+        case 23:
+        case 24:
+        case 25:
+        case 27:
+        case 31:
+            break;
+        default:
+            bFlag = 1;
+            break;
+    }
+
+    if (bFlag) {
+        pCPU->anCP0[iRegister] = nData & ganMaskSetCP0[iRegister];
+    }
+
+    return 1;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetRegisterCP0.s")
+#else
+s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData) {
+    s32 bFlag = 0;
+
+    switch (iRegister) {
+        case 1:
+            *pnData = cpuTLBRandom(pCPU);
+            break;
+        case 9:
+            bFlag = 1;
+            break;
+        case 11:
+            bFlag = 1;
+            break;
+        case 14:
+            bFlag = 1;
+            break;
+        case 7:
+            *pnData = 0;
+            break;
+        case 8:
+            bFlag = 1;
+            break;
+        case 21:
+            *pnData = 0;
+            break;
+        case 22:
+            *pnData = 0;
+            break;
+        case 23:
+            *pnData = 0;
+            break;
+        case 24:
+            *pnData = 0;
+            break;
+        case 25:
+            *pnData = 0;
+            break;
+        case 31:
+            *pnData = 0;
+            break;
+        default:
+            bFlag = 1;
+            break;
+    }
+
+    if (bFlag) {
+        *pnData = pCPU->anCP0[iRegister] & ganMaskGetCP0[iRegister];
+    }
+
+    return 1;
+}
+#endif
 
 s32 __cpuERET(Cpu* pCPU) {
     if (pCPU->anCP0[12] & 4) {
