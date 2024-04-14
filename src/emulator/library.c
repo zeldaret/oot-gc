@@ -34,32 +34,32 @@ static u32 nAddress = 0xFFFFFFFF;
 LibraryFunc gaFunction[54] = {
     {
         "send_mesg",
-        send_mesg,
+        (LibraryFuncImpl)send_mesg,
         {0},
     },
     {
         "__osEnqueueAndYield",
-        __osEnqueueAndYield,
+        (LibraryFuncImpl)__osEnqueueAndYield,
         {0},
     },
     {
         "__osEnqueueThread",
-        __osEnqueueThread,
+        (LibraryFuncImpl)__osEnqueueThread,
         {0},
     },
     {
         "__osPopThread",
-        __osPopThread,
+        (LibraryFuncImpl)__osPopThread,
         {0},
     },
     {
         "__osDispatchThread",
-        __osDispatchThread,
+        (LibraryFuncImpl)__osDispatchThread,
         {0},
     },
     {
         "osGetMemSize",
-        osGetMemSize,
+        (LibraryFuncImpl)osGetMemSize,
         {0x00000045, 0xE82F9DC4},
     },
     {
@@ -69,7 +69,7 @@ LibraryFunc gaFunction[54] = {
     },
     {
         "osInvalICache",
-        osInvalICache,
+        (LibraryFuncImpl)osInvalICache,
         {0x0000001D, 0x376979EF, 0x0000001D, 0x3769A92F},
     },
     {
@@ -84,223 +84,223 @@ LibraryFunc gaFunction[54] = {
     },
     {
         "__osDisableInt",
-        __osDisableInt,
+        (LibraryFuncImpl)__osDisableInt,
         {0x00000020, 0x3F5B05D4, 0x00000022, 0x3F5B35D1, 0x00000008, 0x10310240, 0x0000000C, 0x10310300},
     },
     {
         "__osRestoreInt",
-        __osRestoreInt,
+        (LibraryFuncImpl)__osRestoreInt,
         {0x00000007, 0x10000400},
     },
     {
         "__osSpSetStatus",
-        __osSpSetStatus,
+        (LibraryFuncImpl)__osSpSetStatus,
         {0x00000003, 0x0000F02B, 0x00000004, 0x003CD02B, 0x0000000B, 0x5604E8E1},
     },
     {
         "__cosf",
-        __cosf,
+        (LibraryFuncImpl)__cosf,
         {0x0000007E, 0x0EA800A6, 0x0000005A, 0xA7BF8A16, 0x0000008E, 0x417938C2, 0x000002B5, 0x82283827},
     },
     {
         "__sinf",
-        __sinf,
+        (LibraryFuncImpl)__sinf,
         {0x0000007D, 0x9DDC3AD1, 0x00000070, 0x972CC1AA, 0x000000AB, 0x537273BE, 0x00000090, 0xA23718AB},
     },
     {
         "bzero",
-        _bzero,
+        (LibraryFuncImpl)_bzero,
         {0x00000028, 0x6A68DD7D, 0x00000027, 0x6A68E5DB},
     },
     {
         "bcopy",
-        _bcopy,
+        (LibraryFuncImpl)_bcopy,
         {0x000000CE, 0xFF1D6C61, 0x000000F0, 0x082F2020, 0x000000C7, 0xB1771900, 0x000000C7, 0xC732F943},
     },
     {
         "memcpy",
-        _memcpy,
+        (LibraryFuncImpl)_memcpy,
         {0x00000026, 0xC912B3A8},
     },
     {
         "osVirtualToPhysical",
-        osVirtualToPhysical,
+        (LibraryFuncImpl)osVirtualToPhysical,
         {0x00000037, 0x5F70CFD6, 0x00000015, 0x17E44014},
     },
     {
         "osPhysicalToVirtual",
-        osPhysicalToVirtual,
+        (LibraryFuncImpl)osPhysicalToVirtual,
         {0x0000000D, 0x2B8FBACB, 0x00000003, 0x0000F000},
     },
     {
         "guMtxF2L",
-        guMtxF2L,
+        (LibraryFuncImpl)guMtxF2L,
         {0x00000026, 0x686C0856, 0x00000019, 0x7CC68902, 0x00000040, 0x4425DE45, 0x0000005C, 0x220BB2B0, 0x00000027,
          0x60FF87FD},
     },
     {
         "guMtxCatF",
-        guMtxCatF,
+        (LibraryFuncImpl)guMtxCatF,
         {0x00000037, 0x91255B90},
     },
     {
         "guMtxIdentF",
-        guMtxIdentF,
+        (LibraryFuncImpl)guMtxIdentF,
         {0x00000014, 0x14BCF092, 0x00000022, 0x69E2607E, 0x0000003B, 0x03585A21},
     },
     {
         "guMtxIdent",
-        guMtxIdent,
+        (LibraryFuncImpl)guMtxIdent,
         {0x0000003C, 0xA20CBF46},
     },
     {
         "guOrthoF",
-        guOrthoF,
+        (LibraryFuncImpl)guOrthoF,
         {0x00000055, 0x7F37D860, 0x00000080, 0x7C65E2F4},
     },
     {
         "guOrtho",
-        guOrtho,
+        (LibraryFuncImpl)guOrtho,
         {0x0000001A, 0xB0EC9807, 0x00000053, 0xA76A660F},
     },
     {
         "guPerspectiveF",
-        guPerspectiveF,
+        (LibraryFuncImpl)guPerspectiveF,
         {0x0000008C, 0x9EC5FEAB},
     },
     {
         "guPerspective",
-        guPerspective,
+        (LibraryFuncImpl)guPerspective,
         {0x00000072, 0x2B0214E7, 0x00000016, 0x99A85378, 0x0000001B, 0x8CC9B39E},
     },
     {
         "guScaleF",
-        guScaleF,
+        (LibraryFuncImpl)guScaleF,
         {0x00000015, 0xCA91FB16, 0x00000018, 0x8497864D, 0x00000020, 0xBC8FF165},
     },
     {
         "guScale",
-        guScale,
+        (LibraryFuncImpl)guScale,
         {0x0000001F, 0xA2C19EFB, 0x00000012, 0x3E48EAE5},
     },
     {
         "guRotateF",
-        guRotateF,
+        (LibraryFuncImpl)guRotateF,
         {0x00000065, 0xD5CF8FAE, 0x00000057, 0xFA3518F4, 0x00000093, 0x9AA6B979},
     },
     {
         "guRotate",
-        guRotate,
+        (LibraryFuncImpl)guRotate,
         {0x0000005E, 0x06A7BCE6, 0x00000014, 0x698E4905, 0x00000017, 0x36AEAFA5},
     },
     {
         "guTranslateF",
-        guTranslateF,
+        (LibraryFuncImpl)guTranslateF,
         {0x0000001B, 0xC211F512},
     },
     {
         "guTranslate",
-        guTranslate,
+        (LibraryFuncImpl)guTranslate,
         {0x0000001C, 0x80FA01A4, 0x00000015, 0x71F205A8},
     },
     {
         "guLookAtF",
-        guLookAtF,
+        (LibraryFuncImpl)guLookAtF,
         {0x00000107, 0xB11E3841},
     },
     {
         "guLookAt",
-        guLookAt,
+        (LibraryFuncImpl)guLookAt,
         {0x000000E1, 0xE544558C},
     },
     {
         "guLookAtHiliteF",
-        guLookAtHiliteF,
+        (LibraryFuncImpl)guLookAtHiliteF,
         {0x000002E9, 0xCA0CCB5F},
     },
     {
         "guLookAtHilite",
-        guLookAtHilite,
+        (LibraryFuncImpl)guLookAtHilite,
         {0x00000035, 0xC2E98EC2, 0x00000035, 0x6B82DCD5},
     },
     {
         "guLookAtReflectF",
-        guLookAtReflectF,
+        (LibraryFuncImpl)guLookAtReflectF,
         {0x0000015E, 0x55ACFC31, 0x000001BF, 0xBFD63279},
     },
     {
         "guLookAtReflect",
-        guLookAtReflect,
+        (LibraryFuncImpl)guLookAtReflect,
         {0x0000001B, 0xD6F88212, 0x00000023, 0xD70B815D},
     },
     {
         "osAiSetFrequency",
-        osAiSetFrequency,
+        (LibraryFuncImpl)osAiSetFrequency,
         {0x00000046, 0x88F8FC90, 0x00000058, 0xA177D03D, 0x00000051, 0xD3B85DEF},
     },
     {
         "osAiSetNextBuffer",
-        osAiSetNextBuffer,
+        (LibraryFuncImpl)osAiSetNextBuffer,
         {0x00000025, 0x5ACF0804, 0x0000002A, 0x978F50F1, 0x0000001D, 0x47200DC9},
     },
     {
         "__osEepStatus",
-        __osEepStatus,
+        (LibraryFuncImpl)__osEepStatus,
         {0x000000A8, 0x8FBCE3BC, 0x00000067, 0x9870CAC4, 0x00000089, 0x807A196A},
     },
     {
         "osEepromRead",
-        osEepromRead,
+        (LibraryFuncImpl)osEepromRead,
         {0x00000066, 0x380B07CA, 0x000000A5, 0x947050BF, 0x0000007C, 0x66EC38E8},
     },
     {
         "osEepromWrite",
-        osEepromWrite,
+        (LibraryFuncImpl)osEepromWrite,
         {0x0000005A, 0x5FCCA978, 0x00000080, 0xF6971795, 0x0000006C, 0x07B6DF06},
     },
     {
         "osEepromLongRead",
-        osEepromLongRead,
+        (LibraryFuncImpl)osEepromLongRead,
         {0x0000001C, 0x63BA7FE0, 0x0000002E, 0xF25B283A, 0x0000004F, 0x5B919EF9},
     },
     {
         "osEepromLongWrite",
-        osEepromLongWrite,
+        (LibraryFuncImpl)osEepromLongWrite,
         {0x00000039, 0xED7A2E0B, 0x00000044, 0xF6B9E6BD, 0x0000004F, 0x5B919EF9},
     },
     {
         "starfoxCopy",
-        starfoxCopy,
+        (LibraryFuncImpl)starfoxCopy,
         {0x00000026, 0x158C0203},
     },
     {
         "GenPerspective",
-        GenPerspective_1080,
+        (LibraryFuncImpl)GenPerspective_1080,
         {0x0000002F, 0x3879CA27},
     },
     {
         "pictureSnap_Zelda2",
-        pictureSnap_Zelda2,
+        (LibraryFuncImpl)pictureSnap_Zelda2,
         {0x000001F0, 0xC2739708},
     },
     {
         "dmaSoundRomHandler_ZELDA1",
-        dmaSoundRomHandler_ZELDA1,
+        (LibraryFuncImpl)dmaSoundRomHandler_ZELDA1,
         {0x0000001D, 0x7C4D46F6, 0x00000008, 0x008D2AC3},
     },
     {
         "osViSwapBuffer_Entry",
-        osViSwapBuffer_Entry,
+        (LibraryFuncImpl)osViSwapBuffer_Entry,
         {0x00000011, 0x5147109A, 0x00000038, 0xBF405C09, 0x00000014, 0x745C58FD, 0x00000013, 0x6467CCEE},
     },
     {
         "zeldaLoadSZS_Entry",
-        zeldaLoadSZS_Entry,
+        (LibraryFuncImpl)zeldaLoadSZS_Entry,
         {0x0000005A, 0x8EA707A2},
     },
     {
         "zeldaLoadSZS_Exit",
-        zeldaLoadSZS_Exit,
+        (LibraryFuncImpl)zeldaLoadSZS_Exit,
         {0},
     },
 };
@@ -2520,7 +2520,8 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         nAddress += 4;
     } while (nOpcode != 0x400A4000);
 
-    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &send_mesg;
+    for (iFunction = 0;
+         iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)send_mesg;
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction)) {
         nAddress = pLibrary->nAddressException;
@@ -2538,7 +2539,8 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         *(pnCode++) = 0;
     }
 
-    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osEnqueueAndYield;
+    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) &&
+                        gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osEnqueueAndYield;
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread) != -1) {
         do {
@@ -2559,7 +2561,8 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         *(pnCode++) = 0x7C000000 | iFunction;
     }
 
-    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osEnqueueThread;
+    for (iFunction = 0;
+         iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osEnqueueThread;
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressEnqueueThread != -1) {
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressEnqueueThread)) {
@@ -2570,7 +2573,8 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         *(pnCode++) = 0;
     }
 
-    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osPopThread;
+    for (iFunction = 0;
+         iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osPopThread;
          iFunction++) {}
     // bug: Tests if nAddressEnqueueThread + 8 != -1 instead of nAddressEnqueueThread != -1
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread + 8) != -1) {
@@ -2588,7 +2592,8 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         *(pnCode++) = 0;
     }
 
-    for (iFunction = 0; iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != &__osDispatchThread;
+    for (iFunction = 0;
+         iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osDispatchThread;
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressDispatchThread != -1) {
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressDispatchThread)) {
@@ -2640,7 +2645,7 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
             nOpcode = pnCode[0];
             var_r0 = MIPS_OP(nOpcode) == 0x1F ? 0 : 1;
             bFlag = var_r0;
-            if (gaFunction[iFunction].pfLibrary == &osEepromLongRead && nChecksum == 0x5B919EF9) {
+            if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osEepromLongRead && nChecksum == 0x5B919EF9) {
                 nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
                 if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
                     return 0;
@@ -2649,7 +2654,8 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     bDone = 1;
                     iFunction += 1;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &osEepromLongWrite && nChecksum == 0x5B919EF9) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osEepromLongWrite &&
+                       nChecksum == 0x5B919EF9) {
                 nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
                 if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
                     return 0;
@@ -2658,7 +2664,7 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     bDone = 1;
                     iFunction -= 1;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &__osSpSetStatus) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osSpSetStatus) {
                 nChecksum = 0;
                 for (iCode = 0; iCode < nSizeCode; iCode++) {
                     nChecksum += pnCode[iCode];
@@ -2666,17 +2672,17 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                 if (nChecksum != 0xC1E27C6E && nChecksum != 0xEDB2A41C && nChecksum != 0x2068A41C) {
                     bFlag = 0;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &osInvalICache) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osInvalICache) {
                 if (MIPS_IMM_U16(pnCode[2]) == 0x2000) {
                     bDone = 1;
                     iFunction += 1;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == 0 && nChecksum == 0x376979EF) {
+            } else if (gaFunction[iFunction].pfLibrary == NULL && nChecksum == 0x376979EF) {
                 if (MIPS_IMM_U16(pnCode[2]) == 0x4000) {
                     bDone = 1;
                     iFunction -= 1;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &__osDisableInt) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osDisableInt) {
                 if (pnCode[2] == 0 && pnCode[3] == 0) {
                     pnCode += 4;
                     while (pnCode[0] == 0) {
@@ -2684,7 +2690,7 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     }
                     bFlag = MIPS_OP(pnCode[0]) == 0x1F ? 0 : 1;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &osViSwapBuffer_Entry) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osViSwapBuffer_Entry) {
                 if (bFlag) {
                     bReturn = 0;
                     if ((nOpcode & 0xFFFF0000) != 0x27BD0000) {
@@ -2693,15 +2699,15 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                         pLibrary->nAddStackSwap = MIPS_IMM_S16(nOpcode);
                     }
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &GenPerspective_1080) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)GenPerspective_1080) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_1080) {
                     bFlag = 0;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &pictureSnap_Zelda2) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)pictureSnap_Zelda2) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA2) {
                     bFlag = 0;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &zeldaLoadSZS_Entry) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Entry) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA1) {
                     bFlag = 0;
                 }
@@ -2713,7 +2719,7 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     }
                     pnCodeTemp[0] = 0x7C000000 | (iFunction + 1);
                 }
-            } else if (gaFunction[iFunction].pfLibrary == &dmaSoundRomHandler_ZELDA1) {
+            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)dmaSoundRomHandler_ZELDA1) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA1) {
                     bFlag = 0;
                 } else {
@@ -2775,23 +2781,23 @@ inline s32 libraryUpdate(Library* pLibrary) {
 }
 
 s32 libraryFunctionReplaced(Library* pLibrary, s32 iFunction) {
-    if (gaFunction[iFunction].pfLibrary == &send_mesg) {
+    if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)send_mesg) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &__osEnqueueAndYield) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osEnqueueAndYield) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &__osEnqueueThread) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osEnqueueThread) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &__osPopThread) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osPopThread) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &__osDispatchThread) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osDispatchThread) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &__sinf) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__sinf) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &osViSwapBuffer_Entry) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osViSwapBuffer_Entry) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &zeldaLoadSZS_Entry) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Entry) {
         return 0;
-    } else if (gaFunction[iFunction].pfLibrary == &zeldaLoadSZS_Exit) {
+    } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Exit) {
         return 0;
     }
     return 1;
