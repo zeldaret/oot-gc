@@ -366,17 +366,301 @@ const f32 D_801360D4 = -2.0f;
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/osVirtualToPhysical.s")
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guMtxCatF.s")
+#else
+void guMtxCatF(Cpu* pCPU) {
+    s32 i;
+    s32 j;
+    s32 k;
+    f32 temp[4][4];
+    CpuFpr data1;
+    CpuFpr data2;
+    u32* mf;
+    u32* nf;
+    u32* res;
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &nf, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, &res, pCPU->aGPR[6].u32);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            temp[i][j] = 0.0f;
+            for (k = 0; k < 4; k++) {
+                data1.u32 = mf[i * 4 + k];
+                data2.u32 = nf[k * 4 + j];
+                temp[i][j] += data1.f32 * data2.f32;
+            }
+        }
+    }
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            data1.f32 = temp[i][j];
+            res[i * 4 + j] = data1.u32;
+        }
+    }
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guMtxF2L.s")
+#else
+void guMtxF2L(Cpu* pCPU) {
+    f32* mf;
+    s32 e1;
+    s32 e2;
+    s32 i;
+    s32 j;
+    s32* m;
+    volatile CpuFpr data;
+    s32* ai;
+    s32* af;
+    s32 pad[2];
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[5].u32);
+    frameFixMatrixHint(SYSTEM_FRAME(pCPU->pHost), pCPU->aGPR[4].u32, pCPU->aGPR[5].u32);
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            data.f32 = mf[i * 4 + j];
+            e1 = 0x10000 * data.f32;
+            data.f32 = mf[i * 4 + j + 1];
+            e2 = 0x10000 * data.f32;
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guMtxIdentF.s")
+#else
+void guMtxIdentF(Cpu* pCPU) {
+    f32* mf;
+    s32 i;
+    s32 j;
+    CpuFpr data1;
+    CpuFpr data0;
+    f32 float1;
+    f32 float0;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/guMtxIdent.s")
+    *((volatile f32*)&data0.f32) = 0.0f;
+    *((volatile f32*)&data1.f32) = 1.0f;
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
 
+    float1 = data1.f32;
+    float0 = data0.f32;
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            if (i == j) {
+                mf[i * 4 + j] = float1;
+            } else {
+                mf[i * 4 + j] = float0;
+            }
+        }
+    }
+}
+#endif
+
+void guMtxIdent(Cpu* pCPU) {
+    s32* m;
+
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    m[0] = 0x10000;
+    m[1] = 0;
+    m[2] = 1;
+    m[3] = 0;
+    m[4] = 0;
+    m[5] = 0x10000;
+    m[6] = 0;
+    m[7] = 1;
+    m[8] = 0;
+    m[9] = 0;
+    m[10] = 0;
+    m[11] = 0;
+    m[12] = 0;
+    m[13] = 0;
+    m[14] = 0;
+    m[15] = 0;
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guOrthoF.s")
+#else
+void guOrthoF(Cpu* pCPU) {
+    s32 i;
+    s32 j;
+    u32* mf;
+    u32* sp;
+    f32 l;
+    f32 r;
+    f32 b;
+    f32 t;
+    f32 n;
+    f32 f;
+    f32 scale;
+    CpuFpr data0;
+    CpuFpr data1;
+    CpuFpr data;
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    l = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    r = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    b = data.f32;
+
+    data.u32 = sp[4];
+    t = data.f32;
+
+    data.u32 = sp[5];
+    n = data.f32;
+
+    data.u32 = sp[6];
+    f = data.f32;
+
+    data.u32 = sp[7];
+    scale = data.f32;
+
+    data0.f32 = 0.0f;
+    data1.f32 = 1.0f;
+    frameSetMatrixHint(SYSTEM_FRAME(pCPU->pHost), FMP_ORTHOGRAPHIC, pCPU->aGPR[4].u32, 0, n, f, 0.0f, 0.0f, scale);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            if (i == j) {
+                mf[i * 4 + j] = data1.u32;
+            } else {
+                mf[i * 4 + j] = data0.u32;
+            }
+        }
+    }
+
+    data.f32 = 2 / (r - l);
+    mf[0 * 4 + 0] = data.u32;
+
+    data.f32 = 2 / (t - b);
+    mf[1 * 4 + 1] = data.u32;
+
+    data.f32 = -2 / (f - n);
+    mf[2 * 4 + 2] = data.u32;
+
+    data.f32 = -(r + l) / (r - l);
+    mf[3 * 4 + 0] = data.u32;
+
+    data.f32 = -(t + b) / (t - b);
+    mf[3 * 4 + 1] = data.u32;
+
+    data.f32 = -(f + n) / (f - n);
+    mf[3 * 4 + 2] = data.u32;
+
+    data.f32 = 1.0f;
+    mf[3 * 4 + 3] = data.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guOrtho.s")
+#else
+void guOrtho(Cpu* pCPU) {
+    s32* m;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    CpuFpr data;
+    f32 mf[4][4];
+    u32* sp;
+    s32* ai;
+    s32* af;
+    f32 l;
+    f32 r;
+    f32 b;
+    f32 t;
+    f32 n;
+    f32 f;
+    f32 scale;
+    s32 pad[2];
+
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    l = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    r = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    b = data.f32;
+
+    data.u32 = sp[4];
+    t = data.f32;
+
+    data.u32 = sp[5];
+    n = data.f32;
+
+    data.u32 = sp[6];
+    f = data.f32;
+
+    data.u32 = sp[7];
+    scale = data.f32;
+
+    frameSetMatrixHint(SYSTEM_FRAME(pCPU->pHost), FMP_ORTHOGRAPHIC, 0, pCPU->aGPR[4].u32, n, f, 0.0f, 0.0f, scale);
+
+    mf[0][0] = 1.0f;
+    mf[0][1] = 0.0f;
+    mf[0][2] = 0.0f;
+    mf[0][3] = 0.0f;
+    mf[1][0] = 0.0f;
+    mf[1][1] = 1.0f;
+    mf[1][2] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][0] = 0.0f;
+    mf[2][1] = 0.0f;
+    mf[2][2] = 1.0f;
+    mf[2][3] = 0.0f;
+    mf[3][0] = 0.0f;
+    mf[3][1] = 0.0f;
+    mf[3][2] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    mf[0][0] = 2 / (r - l);
+    mf[1][1] = 2 / (t - b);
+    mf[2][2] = -2 / (f - n);
+    mf[3][0] = -(r + l) / (r - l);
+    mf[3][1] = -(t + b) / (t - b);
+    mf[3][2] = -(f + n) / (f - n);
+    mf[3][3] = 1.0f;
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
@@ -539,31 +823,1453 @@ void guPerspective(Cpu* pCPU) {
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/GenPerspective_1080.s")
+#else
+void GenPerspective_1080(Cpu* pCPU) {
+    CpuFpr data;
+    u32* mf;
+    u32* sp;
+    f32 fovy;
+    f32 aspect;
+    f32 rNear;
+    f32 rFar;
+    Frame* pFrame = SYSTEM_FRAME(pCPU->pHost);
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    fovy = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    aspect = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    rNear = data.f32;
+
+    data.u32 = sp[4];
+    rFar = data.f32;
+
+    frameSetMatrixHint(SYSTEM_FRAME(pCPU->pHost), 0, pCPU->aGPR[4].u32, 0, rNear, rFar, fovy, aspect, 1.0f);
+    pFrame->iHintHack = pFrame->iHintLast;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guScaleF.s")
+#else
+void guScaleF(Cpu* pCPU) {
+    s32 i;
+    s32 j;
+    u32* mf;
+    CpuFpr data0;
+    CpuFpr data1;
 
+    data0.f32 = 0.0f;
+    data1.f32 = 1.0f;
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            if (i == j) {
+                mf[i * 4 + j] = data1.u32;
+            } else {
+                mf[i * 4 + j] = data0.u32;
+            }
+        }
+    }
+
+    mf[0 * 4 + 0] = pCPU->aGPR[5].s32;
+    mf[1 * 4 + 1] = pCPU->aGPR[6].s32;
+    mf[2 * 4 + 2] = pCPU->aGPR[7].s32;
+    mf[3 * 4 + 3] = data1.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guScale.s")
+#else
+void guScale(Cpu* pCPU) {
+    f32 mf[4][4];
+    s32* m;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    CpuFpr data;
+    s32* ai;
+    s32* af;
+    s32 pad[2];
 
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+
+    mf[0][0] = 1.0f;
+    mf[0][1] = 0.0f;
+    mf[0][2] = 0.0f;
+    mf[0][3] = 0.0f;
+    mf[1][0] = 0.0f;
+    mf[1][1] = 1.0f;
+    mf[1][2] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][0] = 0.0f;
+    mf[2][1] = 0.0f;
+    mf[2][2] = 1.0f;
+    mf[2][3] = 0.0f;
+    mf[3][0] = 0.0f;
+    mf[3][1] = 0.0f;
+    mf[3][2] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    data.s32 = pCPU->aGPR[5].s32;
+    mf[0][0] = data.f32;
+
+    data.s32 = pCPU->aGPR[6].s32;
+    mf[1][1] = data.f32;
+
+    data.s32 = pCPU->aGPR[7].s32;
+    mf[2][2] = data.f32;
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guTranslateF.s")
+#else
+void guTranslateF(Cpu* pCPU) {
+    s32 i;
+    s32 j;
+    u32* mf;
+    CpuFpr data0;
+    CpuFpr data1;
 
+    data0.f32 = 0.0f;
+    data1.f32 = 1.0f;
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            if (i == j) {
+                mf[i * 4 + j] = data1.u32;
+            } else {
+                mf[i * 4 + j] = data0.u32;
+            }
+        }
+    }
+
+    mf[3 * 4 + 0] = pCPU->aGPR[5].s32;
+    mf[3 * 4 + 1] = pCPU->aGPR[6].s32;
+    mf[3 * 4 + 2] = pCPU->aGPR[7].s32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guTranslate.s")
+#else
+void guTranslate(Cpu* pCPU) {
+    s32* m;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    CpuFpr data;
+    f32 mf[4][4];
+    s32* ai;
+    s32* af;
+    s32 pad[2];
 
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+
+    mf[0][0] = 1.0f;
+    mf[0][1] = 0.0f;
+    mf[0][2] = 0.0f;
+    mf[0][3] = 0.0f;
+    mf[1][0] = 0.0f;
+    mf[1][1] = 1.0f;
+    mf[1][2] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][0] = 0.0f;
+    mf[2][1] = 0.0f;
+    mf[2][2] = 1.0f;
+    mf[2][3] = 0.0f;
+    mf[3][0] = 0.0f;
+    mf[3][1] = 0.0f;
+    mf[3][2] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    data.s32 = pCPU->aGPR[5].s32;
+    mf[3][0] = data.f32;
+
+    data.s32 = pCPU->aGPR[6].s32;
+    mf[3][1] = data.f32;
+
+    data.s32 = pCPU->aGPR[7].s32;
+    mf[3][2] = data.f32;
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guRotateF.s")
+#else
+void guRotateF(Cpu* pCPU) {
+    f32 m;
+    s32 i;
+    s32 j;
+    f32 a;
+    f32 x;
+    f32 y;
+    f32 z;
+    u32* mf;
+    u32* sp;
+    CpuFpr data;
+    CpuFpr data0;
+    CpuFpr data1;
+    f32 sine;
+    f32 cosine;
+    f32 ab;
+    f32 bc;
+    f32 ca;
+    f32 t;
 
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    a = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    x = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    y = data.f32;
+
+    data.u32 = sp[4];
+    z = data.f32;
+
+    m = 1.0f / sqrtf(x * x + y * y + z * z);
+
+    a *= (f32)M_PI / 180;
+    x *= m;
+    y *= m;
+    z *= m;
+
+    sine = sinf(a);
+    cosine = cosf(a);
+
+    t = 1.0f - cosine;
+    ab = x * y * t;
+    bc = y * z * t;
+    ca = z * x * t;
+
+    data0.f32 = 0.0f;
+    data1.f32 = 1.0f;
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            if (i == j) {
+                mf[i * 4 + j] = data1.u32;
+            } else {
+                mf[i * 4 + j] = data0.u32;
+            }
+        }
+    }
+
+    t = x * x;
+    data.f32 = t + cosine * (1.0f - t);
+    mf[0 * 4 + 0] = data.u32;
+
+    data.f32 = bc - x * sine;
+    mf[2 * 4 + 1] = data.u32;
+
+    data.f32 = bc + x * sine;
+    mf[1 * 4 + 2] = data.u32;
+
+    t = y * y;
+    data.f32 = t + cosine * (1.0f - t);
+    mf[1 * 4 + 1] = data.u32;
+
+    data.f32 = ca + y * sine;
+    mf[2 * 4 + 0] = data.u32;
+
+    data.f32 = ca - y * sine;
+    mf[0 * 4 + 2] = data.u32;
+
+    t = z * z;
+    data.f32 = t + cosine * (1.0f - t);
+    mf[2 * 4 + 2] = data.u32;
+
+    data.f32 = ab - z * sine;
+    mf[1 * 4 + 0] = data.u32;
+
+    data.f32 = ab + z * sine;
+    mf[0 * 4 + 1] = data.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guRotate.s")
+#else
+void guRotate(Cpu* pCPU) {
+    s32* m;
+    u32* sp;
+    CpuFpr data;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    f32 mf[4][4];
+    f32 sine;
+    f32 cosine;
+    f32 a;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 ab;
+    f32 bc;
+    f32 ca;
+    f32 t;
+    f32 magnitude;
+    s32* ai;
+    s32* af;
+    s32 pad[2];
 
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    a = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    x = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    y = data.f32;
+
+    data.u32 = sp[4];
+    z = data.f32;
+
+    magnitude = 1.0f / sqrtf(x * x + y * y + z * z);
+
+    a *= (f32)M_PI / 180;
+    x *= magnitude;
+    y *= magnitude;
+    z *= magnitude;
+
+    sine = sinf(a);
+    cosine = cosf(a);
+
+    t = 1.0f - cosine;
+    ab = x * y * t;
+    bc = y * z * t;
+    ca = z * x * t;
+
+    mf[0][0] = 1.0f;
+    mf[0][1] = 0.0f;
+    mf[0][2] = 0.0f;
+    mf[0][3] = 0.0f;
+    mf[1][0] = 0.0f;
+    mf[1][1] = 1.0f;
+    mf[1][2] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][0] = 0.0f;
+    mf[2][1] = 0.0f;
+    mf[2][2] = 1.0f;
+    mf[2][3] = 0.0f;
+    mf[3][0] = 0.0f;
+    mf[3][1] = 0.0f;
+    mf[3][2] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    t = x * x;
+    mf[0][0] = t + cosine * (1.0f - t);
+    mf[2][1] = bc - x * sine;
+    mf[1][2] = bc + x * sine;
+    t = y * y;
+    mf[1][1] = t + cosine * (1.0f - t);
+    mf[2][0] = ca + y * sine;
+    mf[0][2] = ca - y * sine;
+    t = z * z;
+    mf[2][2] = t + cosine * (1.0f - t);
+    mf[1][0] = ab - z * sine;
+    mf[0][1] = ab + z * sine;
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtF.s")
+#else
+void guLookAtF(Cpu* pCPU) {
+    f32 len;
+    f32 xAt;
+    f32 yAt;
+    f32 zAt;
+    f32 xUp;
+    f32 yUp;
+    f32 zUp;
+    f32 xEye;
+    f32 yEye;
+    f32 zEye;
+    u32* mf;
+    u32* sp;
+    f32 xLook;
+    f32 yLook;
+    f32 zLook;
+    f32 xRight;
+    f32 yRight;
+    f32 zRight;
+    CpuFpr data;
+    CpuFpr data0;
+    CpuFpr data1;
 
+    data0.f32 = 0.0f;
+    data1.f32 = 1.0f;
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    xEye = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    yEye = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    zEye = data.f32;
+
+    data.u32 = sp[4];
+    xAt = data.f32;
+
+    data.u32 = sp[5];
+    yAt = data.f32;
+
+    data.u32 = sp[6];
+    zAt = data.f32;
+
+    data.u32 = sp[7];
+    xUp = data.f32;
+
+    data.u32 = sp[8];
+    yUp = data.f32;
+
+    data.u32 = sp[9];
+    zUp = data.f32;
+
+    xLook = xAt - xEye;
+    yLook = yAt - yEye;
+    zLook = zAt - zEye;
+    len = -1.0f / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    xLook *= len;
+    yLook *= len;
+    zLook *= len;
+
+    xRight = yUp * zLook - zUp * yLook;
+    yRight = zUp * xLook - xUp * zLook;
+    zRight = xUp * yLook - yUp * xLook;
+    len = 1.0f / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    xRight *= len;
+    yRight *= len;
+    zRight *= len;
+
+    xUp = yLook * zRight - zLook * yRight;
+    yUp = zLook * xRight - xLook * zRight;
+    zUp = xLook * yRight - yLook * xRight;
+    len = 1.0f / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    xUp *= len;
+    yUp *= len;
+    zUp *= len;
+
+    data.f32 = xRight;
+    mf[0 * 4 + 0] = data.u32;
+
+    data.f32 = yRight;
+    mf[1 * 4 + 0] = data.u32;
+
+    data.f32 = zRight;
+    mf[2 * 4 + 0] = data.u32;
+
+    data.f32 = -(xEye * xRight + yEye * yRight + zEye * zRight);
+    mf[3 * 4 + 0] = data.u32;
+
+    data.f32 = xUp;
+    mf[0 * 4 + 1] = data.u32;
+
+    data.f32 = yUp;
+    mf[1 * 4 + 1] = data.u32;
+
+    data.f32 = zUp;
+    mf[2 * 4 + 1] = data.u32;
+
+    data.f32 = -(xEye * xUp + yEye * yUp + zEye * zUp);
+    mf[3 * 4 + 1] = data.u32;
+
+    data.f32 = xLook;
+    mf[0 * 4 + 2] = data.u32;
+
+    data.f32 = yLook;
+    mf[1 * 4 + 2] = data.u32;
+
+    data.f32 = zLook;
+    mf[2 * 4 + 2] = data.u32;
+
+    data.f32 = -(xEye * xLook + yEye * yLook + zEye * zLook);
+    mf[3 * 4 + 2] = data.u32;
+
+    mf[0 * 4 + 3] = data0.u32;
+    mf[1 * 4 + 3] = data0.u32;
+    mf[2 * 4 + 3] = data0.u32;
+    mf[3 * 4 + 3] = data1.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAt.s")
+#else
+void guLookAt(Cpu* pCPU) {
+    f32 mf[4][4];
+    s32* m;
+    u32* sp;
+    CpuFpr data;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    s32* ai;
+    s32* af;
+    f32 len;
+    f32 xLook;
+    f32 yLook;
+    f32 zLook;
+    f32 xRight;
+    f32 yRight;
+    f32 zRight;
+    f32 xEye;
+    f32 yEye;
+    f32 zEye;
+    f32 xAt;
+    f32 yAt;
+    f32 zAt;
+    f32 xUp;
+    f32 yUp;
+    f32 zUp;
+    s32 pad[2];
 
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[5].u32;
+    xEye = data.f32;
+
+    data.u32 = pCPU->aGPR[6].u32;
+    yEye = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    zEye = data.f32;
+
+    data.u32 = sp[4];
+    xAt = data.f32;
+
+    data.u32 = sp[5];
+    yAt = data.f32;
+
+    data.u32 = sp[6];
+    zAt = data.f32;
+
+    data.u32 = sp[7];
+    xUp = data.f32;
+
+    data.u32 = sp[8];
+    yUp = data.f32;
+
+    data.u32 = sp[9];
+    zUp = data.f32;
+
+    xLook = xAt - xEye;
+    yLook = yAt - yEye;
+    zLook = zAt - zEye;
+    len = -1.0f / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    xLook *= len;
+    yLook *= len;
+    zLook *= len;
+
+    xRight = yUp * zLook - zUp * yLook;
+    yRight = zUp * xLook - xUp * zLook;
+    zRight = xUp * yLook - yUp * xLook;
+    len = 1.0f / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    xRight *= len;
+    yRight *= len;
+    zRight *= len;
+
+    xUp = yLook * zRight - zLook * yRight;
+    yUp = zLook * xRight - xLook * zRight;
+    zUp = xLook * yRight - yLook * xRight;
+    len = 1.0f / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    xUp *= len;
+    yUp *= len;
+    zUp *= len;
+
+    mf[0][0] = xRight;
+    mf[1][0] = yRight;
+    mf[2][0] = zRight;
+    mf[3][0] = -(xEye * xRight + yEye * yRight + zEye * zRight);
+
+    mf[0][1] = xUp;
+    mf[1][1] = yUp;
+    mf[2][1] = zUp;
+    mf[3][1] = -(xEye * xUp + yEye * yUp + zEye * zUp);
+
+    mf[0][2] = xLook;
+    mf[1][2] = yLook;
+    mf[2][2] = zLook;
+    mf[3][2] = -(xEye * xLook + yEye * yLook + zEye * zLook);
+
+    mf[0][3] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][3] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    ai = &m[0];
+    af = &m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
+
+typedef struct Light_t_s {
+    /* 0x0 */ u8 col[3];
+    /* 0x3 */ char pad1;
+    /* 0x4 */ u8 colc[3];
+    /* 0x7 */ char pad2;
+    /* 0x8 */ s8 dir[3];
+    /* 0xB */ char pad3;
+} Light_t_s; // size = 0xC
+
+typedef union Light_s {
+    /* 0x0 */ Light_t_s l;
+    /* 0x0 */ s64 force_structure_alignment[2];
+} Light_s;
+
+typedef struct LookAt_s {
+    /* 0x0 */ Light_s l[2];
+} LookAt_s; // size = 0x20
+
+typedef struct Hilite_t_s {
+    /* 0x0 */ s32 x1;
+    /* 0x4 */ s32 y1;
+    /* 0x8 */ s32 x2;
+    /* 0xC */ s32 y2;
+} Hilite_t_s; // size = 0x10
+
+typedef union Hilite_s {
+    /* 0x0 */ Hilite_t_s h;
+    /* 0x0 */ s32 force_structure_alignment[4];
+} Hilite_s;
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define FTOFRAC8(x) ((s32)MIN(((x) * (128.0f)), 127.0f) & 0xFF)
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtHiliteF.s")
+#else
+void guLookAtHiliteF(Cpu* pCPU) {
+    LookAt_s* l;
+    Hilite_s* h;
+    CpuFpr data;
+    u32* mf;
+    u32* sp;
+    f32 len;
+    f32 xLook;
+    f32 yLook;
+    f32 zLook;
+    f32 xRight;
+    f32 yRight;
+    f32 zRight;
+    f32 xHilite;
+    f32 yHilite;
+    f32 zHilite;
+    f32 xEye;
+    f32 yEye;
+    f32 zEye;
+    f32 xAt;
+    f32 yAt;
+    f32 zAt;
+    f32 xUp;
+    f32 yUp;
+    f32 zUp;
+    f32 xl1;
+    f32 yl1;
+    f32 zl1;
+    f32 xl2;
+    f32 yl2;
+    f32 zl2;
+    s32 twidth;
+    s32 theight;
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, &h, pCPU->aGPR[6].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[7].u32;
+    xEye = data.f32;
+
+    data.u32 = sp[4];
+    yEye = data.f32;
+
+    data.u32 = sp[5];
+    zEye = data.f32;
+
+    data.u32 = sp[6];
+    xAt = data.f32;
+
+    data.u32 = sp[7];
+    yAt = data.f32;
+
+    data.u32 = sp[8];
+    zAt = data.f32;
+
+    data.u32 = sp[9];
+    xUp = data.f32;
+
+    data.u32 = sp[10];
+    yUp = data.f32;
+
+    data.u32 = sp[11];
+    zUp = data.f32;
+
+    data.u32 = sp[12];
+    xl1 = data.f32;
+
+    data.u32 = sp[13];
+    yl1 = data.f32;
+
+    data.u32 = sp[14];
+    zl1 = data.f32;
+
+    data.u32 = sp[15];
+    xl2 = data.f32;
+
+    data.u32 = sp[16];
+    yl2 = data.f32;
+
+    data.u32 = sp[17];
+    zl2 = data.f32;
+
+    twidth = sp[18];
+    theight = sp[19];
+
+    xLook = xAt - xEye;
+    yLook = yAt - yEye;
+    zLook = zAt - zEye;
+    len = -1.0f / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    xLook *= len;
+    yLook *= len;
+    zLook *= len;
+
+    xRight = yUp * zLook - zUp * yLook;
+    yRight = zUp * xLook - xUp * zLook;
+    zRight = xUp * yLook - yUp * xLook;
+    len = 1.0f / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    xRight *= len;
+    yRight *= len;
+    zRight *= len;
+
+    xUp = yLook * zRight - zLook * yRight;
+    yUp = zLook * xRight - xLook * zRight;
+    zUp = xLook * yRight - yLook * xRight;
+    len = 1.0f / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    xUp *= len;
+    yUp *= len;
+    zUp *= len;
+
+    len = 1.0f / sqrtf(xl1 * xl1 + yl1 * yl1 + zl1 * zl1);
+    xl1 *= len;
+    yl1 *= len;
+    zl1 *= len;
+
+    xHilite = xl1 + xLook;
+    yHilite = yl1 + yLook;
+    zHilite = zl1 + zLook;
+
+    len = sqrtf(xHilite * xHilite + yHilite * yHilite + zHilite * zHilite);
+    if (len > 0.1) {
+        len = 1.0f / len;
+        xHilite *= len;
+        yHilite *= len;
+        zHilite *= len;
+
+        h->h.x1 = twidth * 4 + (s32)((xHilite * xRight + yHilite * yRight + zHilite * zRight) * twidth * 2);
+        h->h.y1 = theight * 4 + (s32)((xHilite * xUp + yHilite * yUp + zHilite * zUp) * theight * 2);
+    } else {
+        h->h.x1 = twidth * 2;
+        h->h.y1 = theight * 2;
+    }
+
+    len = 1.0f / sqrtf(xl2 * xl2 + yl2 * yl2 + zl2 * zl2);
+    xl2 *= len;
+    yl2 *= len;
+    zl2 *= len;
+
+    xHilite = xl2 + xLook;
+    yHilite = yl2 + yLook;
+    zHilite = zl2 + zLook;
+
+    len = sqrtf(xHilite * xHilite + yHilite * yHilite + zHilite * zHilite);
+    if (len > 0.1) {
+        len = 1.0f / len;
+        xHilite *= len;
+        yHilite *= len;
+        zHilite *= len;
+
+        h->h.x2 = twidth * 4 + (s32)((xHilite * xRight + yHilite * yRight + zHilite * zRight) * twidth * 2);
+        h->h.y2 = theight * 4 + (s32)((xHilite * xUp + yHilite * yUp + zHilite * zUp) * theight * 2);
+    } else {
+        h->h.x2 = twidth * 2;
+        h->h.y2 = theight * 2;
+    }
+
+    l->l[0].l.dir[0] = FTOFRAC8(xRight);
+    l->l[0].l.dir[1] = FTOFRAC8(yRight);
+    l->l[0].l.dir[2] = FTOFRAC8(zRight);
+    l->l[1].l.dir[0] = FTOFRAC8(xUp);
+    l->l[1].l.dir[1] = FTOFRAC8(yUp);
+    l->l[1].l.dir[2] = FTOFRAC8(zUp);
+    l->l[0].l.col[0] = 0x00;
+    l->l[0].l.col[1] = 0x00;
+    l->l[0].l.col[2] = 0x00;
+    l->l[0].l.pad1 = 0x00;
+    l->l[0].l.colc[0] = 0x00;
+    l->l[0].l.colc[1] = 0x00;
+    l->l[0].l.colc[2] = 0x00;
+    l->l[0].l.pad2 = 0x00;
+    l->l[1].l.col[0] = 0x00;
+    l->l[1].l.col[1] = 0x80;
+    l->l[1].l.col[2] = 0x00;
+    l->l[1].l.pad1 = 0x00;
+    l->l[1].l.colc[0] = 0x00;
+    l->l[1].l.colc[1] = 0x80;
+    l->l[1].l.colc[2] = 0x00;
+    l->l[1].l.pad2 = 0x00;
+
+    data.f32 = xRight;
+    mf[0 * 4 + 0] = data.u32;
+
+    data.f32 = yRight;
+    mf[1 * 4 + 0] = data.u32;
+
+    data.f32 = zRight;
+    mf[2 * 4 + 0] = data.u32;
+
+    data.f32 = -(xEye * xRight + yEye * yRight + zEye * zRight);
+    mf[3 * 4 + 0] = data.u32;
+
+    data.f32 = xUp;
+    mf[0 * 4 + 1] = data.u32;
+
+    data.f32 = yUp;
+    mf[1 * 4 + 1] = data.u32;
+
+    data.f32 = zUp;
+    mf[2 * 4 + 1] = data.u32;
+
+    data.f32 = -(xEye * xUp + yEye * yUp + zEye * zUp);
+    mf[3 * 4 + 1] = data.u32;
+
+    data.f32 = xLook;
+    mf[0 * 4 + 2] = data.u32;
+
+    data.f32 = yLook;
+    mf[1 * 4 + 2] = data.u32;
+
+    data.f32 = zLook;
+    mf[2 * 4 + 2] = data.u32;
+
+    data.f32 = -(xEye * xLook + yEye * yLook + zEye * zLook);
+    mf[3 * 4 + 2] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[0 * 4 + 3] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[1 * 4 + 3] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[2 * 4 + 3] = data.u32;
+
+    data.f32 = 1.0f;
+    mf[3 * 4 + 3] = data.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtHilite.s")
+#else
+void guLookAtHilite(Cpu* pCPU) {
+    LookAt_s* l;
+    Hilite_s* h;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    CpuFpr data;
+    f32 mf[4][4];
+    u32* m;
+    u32* sp;
+    s32* ai;
+    s32* af;
+    f32 len;
+    f32 xLook;
+    f32 yLook;
+    f32 zLook;
+    f32 xRight;
+    f32 yRight;
+    f32 zRight;
+    f32 xHilite;
+    f32 yHilite;
+    f32 zHilite;
+    f32 xEye;
+    f32 yEye;
+    f32 zEye;
+    f32 xAt;
+    f32 yAt;
+    f32 zAt;
+    f32 xUp;
+    f32 yUp;
+    f32 zUp;
+    f32 xl1;
+    f32 yl1;
+    f32 zl1;
+    f32 xl2;
+    f32 yl2;
+    f32 zl2;
+    s32 twidth;
+    s32 theight;
+    s32 pad[2];
 
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, &h, pCPU->aGPR[6].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[7].u32;
+    xEye = data.f32;
+
+    data.u32 = sp[4];
+    yEye = data.f32;
+
+    data.u32 = sp[5];
+    zEye = data.f32;
+
+    data.u32 = sp[6];
+    xAt = data.f32;
+
+    data.u32 = sp[7];
+    yAt = data.f32;
+
+    data.u32 = sp[8];
+    zAt = data.f32;
+
+    data.u32 = sp[9];
+    xUp = data.f32;
+
+    data.u32 = sp[10];
+    yUp = data.f32;
+
+    data.u32 = sp[11];
+    zUp = data.f32;
+
+    data.u32 = sp[12];
+    xl1 = data.f32;
+
+    data.u32 = sp[13];
+    yl1 = data.f32;
+
+    data.u32 = sp[14];
+    zl1 = data.f32;
+
+    data.u32 = sp[15];
+    xl2 = data.f32;
+
+    data.u32 = sp[16];
+    yl2 = data.f32;
+
+    data.u32 = sp[17];
+    zl2 = data.f32;
+
+    twidth = sp[18];
+    theight = sp[19];
+
+    xLook = xAt - xEye;
+    yLook = yAt - yEye;
+    zLook = zAt - zEye;
+    len = -1.0f / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    xLook *= len;
+    yLook *= len;
+    zLook *= len;
+
+    xRight = yUp * zLook - zUp * yLook;
+    yRight = zUp * xLook - xUp * zLook;
+    zRight = xUp * yLook - yUp * xLook;
+    len = 1.0f / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    xRight *= len;
+    yRight *= len;
+    zRight *= len;
+
+    xUp = yLook * zRight - zLook * yRight;
+    yUp = zLook * xRight - xLook * zRight;
+    zUp = xLook * yRight - yLook * xRight;
+    len = 1.0f / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    xUp *= len;
+    yUp *= len;
+    zUp *= len;
+
+    len = 1.0f / sqrtf(xl1 * xl1 + yl1 * yl1 + zl1 * zl1);
+    xl1 *= len;
+    yl1 *= len;
+    zl1 *= len;
+
+    xHilite = xl1 + xLook;
+    yHilite = yl1 + yLook;
+    zHilite = zl1 + zLook;
+
+    len = sqrtf(xHilite * xHilite + yHilite * yHilite + zHilite * zHilite);
+    if (len > 0.1) {
+        len = 1.0f / len;
+        xHilite *= len;
+        yHilite *= len;
+        zHilite *= len;
+
+        h->h.x1 = twidth * 4 + (s32)((xHilite * xRight + yHilite * yRight + zHilite * zRight) * twidth * 2);
+        h->h.y1 = theight * 4 + (s32)((xHilite * xUp + yHilite * yUp + zHilite * zUp) * theight * 2);
+    } else {
+        h->h.x1 = twidth * 2;
+        h->h.y1 = theight * 2;
+    }
+
+    len = 1.0f / sqrtf(xl2 * xl2 + yl2 * yl2 + zl2 * zl2);
+    xl2 *= len;
+    yl2 *= len;
+    zl2 *= len;
+
+    xHilite = xl2 + xLook;
+    yHilite = yl2 + yLook;
+    zHilite = zl2 + zLook;
+
+    len = sqrtf(xHilite * xHilite + yHilite * yHilite + zHilite * zHilite);
+    if (len > 0.1) {
+        len = 1.0f / len;
+        xHilite *= len;
+        yHilite *= len;
+        zHilite *= len;
+
+        h->h.x2 = twidth * 4 + (s32)((xHilite * xRight + yHilite * yRight + zHilite * zRight) * twidth * 2);
+        h->h.y2 = theight * 4 + (s32)((xHilite * xUp + yHilite * yUp + zHilite * zUp) * theight * 2);
+    } else {
+        h->h.x2 = twidth * 2;
+        h->h.y2 = theight * 2;
+    }
+
+    l->l[0].l.dir[0] = FTOFRAC8(xRight);
+    l->l[0].l.dir[1] = FTOFRAC8(yRight);
+    l->l[0].l.dir[2] = FTOFRAC8(zRight);
+    l->l[1].l.dir[0] = FTOFRAC8(xUp);
+    l->l[1].l.dir[1] = FTOFRAC8(yUp);
+    l->l[1].l.dir[2] = FTOFRAC8(zUp);
+    l->l[0].l.col[0] = 0x00;
+    l->l[0].l.col[1] = 0x00;
+    l->l[0].l.col[2] = 0x00;
+    l->l[0].l.pad1 = 0x00;
+    l->l[0].l.colc[0] = 0x00;
+    l->l[0].l.colc[1] = 0x00;
+    l->l[0].l.colc[2] = 0x00;
+    l->l[0].l.pad2 = 0x00;
+    l->l[1].l.col[0] = 0x00;
+    l->l[1].l.col[1] = 0x80;
+    l->l[1].l.col[2] = 0x00;
+    l->l[1].l.pad1 = 0x00;
+    l->l[1].l.colc[0] = 0x00;
+    l->l[1].l.colc[1] = 0x80;
+    l->l[1].l.colc[2] = 0x00;
+    l->l[1].l.pad2 = 0x00;
+
+    mf[0][0] = xRight;
+    mf[1][0] = yRight;
+    mf[2][0] = zRight;
+    mf[3][0] = -(xEye * xRight + yEye * yRight + zEye * zRight);
+
+    mf[0][1] = xUp;
+    mf[1][1] = yUp;
+    mf[2][1] = zUp;
+    mf[3][1] = -(xEye * xUp + yEye * yUp + zEye * zUp);
+
+    mf[0][2] = xLook;
+    mf[1][2] = yLook;
+    mf[2][2] = zLook;
+    mf[3][2] = -(xEye * xLook + yEye * yLook + zEye * zLook);
+
+    mf[0][3] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][3] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    ai = (s32*)&m[0];
+    af = (s32*)&m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtReflectF.s")
+#else
+void guLookAtReflectF(Cpu* pCPU) {
+    LookAt_s* l;
+    CpuFpr data;
+    u32* mf;
+    u32* sp;
+    f32 xEye;
+    f32 yEye;
+    f32 zEye;
+    f32 xAt;
+    f32 yAt;
+    f32 zAt;
+    f32 xUp;
+    f32 yUp;
+    f32 zUp;
+    f32 len;
+    f32 xLook;
+    f32 yLook;
+    f32 zLook;
+    f32 xRight;
+    f32 yRight;
+    f32 zRight;
 
+    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[6].u32;
+    xEye = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    yEye = data.f32;
+
+    data.u32 = sp[4];
+    zEye = data.f32;
+
+    data.u32 = sp[5];
+    xAt = data.f32;
+
+    data.u32 = sp[6];
+    yAt = data.f32;
+
+    data.u32 = sp[7];
+    zAt = data.f32;
+
+    data.u32 = sp[8];
+    xUp = data.f32;
+
+    data.u32 = sp[9];
+    yUp = data.f32;
+
+    data.u32 = sp[10];
+    zUp = data.f32;
+
+    xLook = xAt - xEye;
+    yLook = yAt - yEye;
+    zLook = zAt - zEye;
+    len = -1.0f / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    xLook *= len;
+    yLook *= len;
+    zLook *= len;
+
+    xRight = yUp * zLook - zUp * yLook;
+    yRight = zUp * xLook - xUp * zLook;
+    zRight = xUp * yLook - yUp * xLook;
+    len = 1.0f / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    xRight *= len;
+    yRight *= len;
+    zRight *= len;
+
+    xUp = yLook * zRight - zLook * yRight;
+    yUp = zLook * xRight - xLook * zRight;
+    zUp = xLook * yRight - yLook * xRight;
+    len = 1.0f / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    xUp *= len;
+    yUp *= len;
+    zUp *= len;
+
+    l->l[0].l.dir[0] = FTOFRAC8(xRight);
+    l->l[0].l.dir[1] = FTOFRAC8(yRight);
+    l->l[0].l.dir[2] = FTOFRAC8(zRight);
+    l->l[1].l.dir[0] = FTOFRAC8(xUp);
+    l->l[1].l.dir[1] = FTOFRAC8(yUp);
+    l->l[1].l.dir[2] = FTOFRAC8(zUp);
+    l->l[0].l.col[0] = 0x00;
+    l->l[0].l.col[1] = 0x00;
+    l->l[0].l.col[2] = 0x00;
+    l->l[0].l.pad1 = 0x00;
+    l->l[0].l.colc[0] = 0x00;
+    l->l[0].l.colc[1] = 0x00;
+    l->l[0].l.colc[2] = 0x00;
+    l->l[0].l.pad2 = 0x00;
+    l->l[1].l.col[0] = 0x00;
+    l->l[1].l.col[1] = 0x80;
+    l->l[1].l.col[2] = 0x00;
+    l->l[1].l.pad1 = 0x00;
+    l->l[1].l.colc[0] = 0x00;
+    l->l[1].l.colc[1] = 0x80;
+    l->l[1].l.colc[2] = 0x00;
+    l->l[1].l.pad2 = 0x00;
+
+    data.f32 = xRight;
+    mf[0 * 4 + 0] = data.u32;
+
+    data.f32 = yRight;
+    mf[1 * 4 + 0] = data.u32;
+
+    data.f32 = zRight;
+    mf[2 * 4 + 0] = data.u32;
+
+    data.f32 = -(xEye * xRight + yEye * yRight + zEye * zRight);
+    mf[3 * 4 + 0] = data.u32;
+
+    data.f32 = xUp;
+    mf[0 * 4 + 1] = data.u32;
+
+    data.f32 = yUp;
+    mf[1 * 4 + 1] = data.u32;
+
+    data.f32 = zUp;
+    mf[2 * 4 + 1] = data.u32;
+
+    data.f32 = -(xEye * xUp + yEye * yUp + zEye * zUp);
+    mf[3 * 4 + 1] = data.u32;
+
+    data.f32 = xLook;
+    mf[0 * 4 + 2] = data.u32;
+
+    data.f32 = yLook;
+    mf[1 * 4 + 2] = data.u32;
+
+    data.f32 = zLook;
+    mf[2 * 4 + 2] = data.u32;
+
+    data.f32 = -(xEye * xLook + yEye * yLook + zEye * zLook);
+    mf[3 * 4 + 2] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[0 * 4 + 3] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[1 * 4 + 3] = data.u32;
+
+    data.f32 = 0.0f;
+    mf[2 * 4 + 3] = data.u32;
+
+    data.f32 = 1.0f;
+    mf[3 * 4 + 3] = data.u32;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtReflect.s")
+#else
+void guLookAtReflect(Cpu* pCPU) {
+    LookAt_s* l;
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    CpuFpr data;
+    f32 mf[4][4];
+    u32* m;
+    u32* sp;
+    s32* ai;
+    s32* af;
+    f32 xEye;
+    f32 yEye;
+    f32 zEye;
+    f32 xAt;
+    f32 yAt;
+    f32 zAt;
+    f32 xUp;
+    f32 yUp;
+    f32 zUp;
+    f32 len;
+    f32 xLook;
+    f32 yLook;
+    f32 zLook;
+    f32 xRight;
+    f32 yRight;
+    f32 zRight;
+    s32 pad[2];
+
+    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+
+    data.u32 = pCPU->aGPR[6].u32;
+    xEye = data.f32;
+
+    data.u32 = pCPU->aGPR[7].u32;
+    yEye = data.f32;
+
+    data.u32 = sp[4];
+    zEye = data.f32;
+
+    data.u32 = sp[5];
+    xAt = data.f32;
+
+    data.u32 = sp[6];
+    yAt = data.f32;
+
+    data.u32 = sp[7];
+    zAt = data.f32;
+
+    data.u32 = sp[8];
+    xUp = data.f32;
+
+    data.u32 = sp[9];
+    yUp = data.f32;
+
+    data.u32 = sp[10];
+    zUp = data.f32;
+
+    xLook = xAt - xEye;
+    yLook = yAt - yEye;
+    zLook = zAt - zEye;
+    len = -1.0f / sqrtf(xLook * xLook + yLook * yLook + zLook * zLook);
+    xLook *= len;
+    yLook *= len;
+    zLook *= len;
+
+    xRight = yUp * zLook - zUp * yLook;
+    yRight = zUp * xLook - xUp * zLook;
+    zRight = xUp * yLook - yUp * xLook;
+    len = 1.0f / sqrtf(xRight * xRight + yRight * yRight + zRight * zRight);
+    xRight *= len;
+    yRight *= len;
+    zRight *= len;
+
+    xUp = yLook * zRight - zLook * yRight;
+    yUp = zLook * xRight - xLook * zRight;
+    zUp = xLook * yRight - yLook * xRight;
+    len = 1.0f / sqrtf(xUp * xUp + yUp * yUp + zUp * zUp);
+    xUp *= len;
+    yUp *= len;
+    zUp *= len;
+
+    l->l[0].l.dir[0] = FTOFRAC8(xRight);
+    l->l[0].l.dir[1] = FTOFRAC8(yRight);
+    l->l[0].l.dir[2] = FTOFRAC8(zRight);
+    l->l[1].l.dir[0] = FTOFRAC8(xUp);
+    l->l[1].l.dir[1] = FTOFRAC8(yUp);
+    l->l[1].l.dir[2] = FTOFRAC8(zUp);
+    l->l[0].l.col[0] = 0x00;
+    l->l[0].l.col[1] = 0x00;
+    l->l[0].l.col[2] = 0x00;
+    l->l[0].l.pad1 = 0x00;
+    l->l[0].l.colc[0] = 0x00;
+    l->l[0].l.colc[1] = 0x00;
+    l->l[0].l.colc[2] = 0x00;
+    l->l[0].l.pad2 = 0x00;
+    l->l[1].l.col[0] = 0x00;
+    l->l[1].l.col[1] = 0x80;
+    l->l[1].l.col[2] = 0x00;
+    l->l[1].l.pad1 = 0x00;
+    l->l[1].l.colc[0] = 0x00;
+    l->l[1].l.colc[1] = 0x80;
+    l->l[1].l.colc[2] = 0x00;
+    l->l[1].l.pad2 = 0x00;
+
+    mf[0][0] = xRight;
+    mf[1][0] = yRight;
+    mf[2][0] = zRight;
+    mf[3][0] = -(xEye * xRight + yEye * yRight + zEye * zRight);
+
+    mf[0][1] = xUp;
+    mf[1][1] = yUp;
+    mf[2][1] = zUp;
+    mf[3][1] = -(xEye * xUp + yEye * yUp + zEye * zUp);
+
+    mf[0][2] = xLook;
+    mf[1][2] = yLook;
+    mf[2][2] = zLook;
+    mf[3][2] = -(xEye * xLook + yEye * yLook + zEye * zLook);
+
+    mf[0][3] = 0.0f;
+    mf[1][3] = 0.0f;
+    mf[2][3] = 0.0f;
+    mf[3][3] = 1.0f;
+
+    ai = (s32*)&m[0];
+    af = (s32*)&m[8];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j += 2) {
+            e1 = 0x10000 * mf[i][j];
+            e2 = 0x10000 * mf[i][j + 1];
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/osAiSetFrequency.s")
 
