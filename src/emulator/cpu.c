@@ -15,8 +15,6 @@
 #include "macros.h"
 
 static s32 cpuSetTLB(Cpu* pCPU, s32 iEntry);
-s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
-s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
 inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
 static void treeCallerInit(CpuCallerID* block, s32 total);
 static s32 treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
@@ -2245,8 +2243,6 @@ inline s32 cpuExecuteCacheInstruction(Cpu* pCPU) {
 
     return 1;
 }
-
-#define CPU_DEVICE(nAddress) (apDevice[aiDevice[(u32)(nAddress) >> 16]])
 
 static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddressGCN) {
     s32 pad1[2];

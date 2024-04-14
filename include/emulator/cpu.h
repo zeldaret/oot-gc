@@ -311,6 +311,20 @@ struct Cpu {
     /* 0x12064 */ CpuOptimize nOptimize;
 }; // size = 0x12090
 
+// Helper macros for working with CPU devices. These assume that
+// apDevice = pCPU->apDevice and aiDevice = pCPU->aiDevice are in scope.
+#define CPU_DEVICE(nAddress) (apDevice[aiDevice[(u32)(nAddress) >> 16]])
+
+#define CPU_DEVICE_GET32(nAddress, pValue)                                                                          \
+    CPU_DEVICE(nAddress)->pfGet32(CPU_DEVICE(nAddress)->pObject, (nAddress) + CPU_DEVICE(nAddress)->nOffsetAddress, \
+                                  (s32*)pValue)
+
+#define CPU_DEVICE_PUT32(nAddress, pValue)                                                                          \
+    CPU_DEVICE(nAddress)->pfPut32(CPU_DEVICE(nAddress)->pObject, (nAddress) + CPU_DEVICE(nAddress)->nOffsetAddress, \
+                                  (s32*)pValue)
+
+s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
+s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
 s32 __cpuBreak(Cpu* pCPU);
 s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi);
 s32 cpuReset(Cpu* pCPU);
@@ -324,6 +338,7 @@ s32 cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pf
 s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
 s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress);
 s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress);
+s32 cpuInvalidateCache(Cpu* pCPU, s32 nAddress0, s32 nAddress1);
 s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction);
 s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size);
 

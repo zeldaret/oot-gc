@@ -1,8 +1,14 @@
 #include "emulator/library.h"
+#include "emulator/audio.h"
+#include "emulator/cpu.h"
 #include "emulator/frame.h"
 #include "emulator/library_jumptables.h"
+#include "emulator/peripheral.h"
 #include "emulator/ram.h"
+#include "emulator/rsp.h"
+#include "emulator/serial.h"
 #include "emulator/system.h"
+#include "emulator/video.h"
 #include "emulator/xlPostGCN.h"
 #include "libc/math.h"
 #include "macros.h"
@@ -308,10 +314,15 @@ LibraryFunc gaFunction[54] = {
 char D_800EFF34[] = "TestFunction: INTERNAL ERROR: osViSwapBuffer: No ADDIU opcode: 0x%08x";
 char D_800EFF7C[] = "library.c";
 
-void* jtbl_800EFF88[] = {
+#ifndef NON_MATCHING
+// __osException
+void* jtbl_800EFF88[9] = {
     &lbl_80097620, &lbl_800971AC, &lbl_80097208, &lbl_80097264, &lbl_80097488,
     &lbl_800974A0, &lbl_800974B4, &lbl_800974BC, &lbl_800974C4,
 };
+#else
+void* jtbl_800EFF88[9] = {0};
+#endif
 
 const f32 D_80136078 = 0.5f;
 const f32 D_8013607C = 48681812.0f;
@@ -330,27 +341,779 @@ const f64 D_801360C8 = 4503601774854144.0;
 const f32 D_801360D0 = 0.01745329238474369f;
 const f32 D_801360D4 = -2.0f;
 
+typedef union __OSfp_s {
+    struct {
+        /* 0x0 */ f32 f_odd;
+        /* 0x4 */ f32 f_even;
+    } f;
+    f64 d;
+    s64 u64;
+} __OSfp_s;
+
+typedef struct __OSThreadContext_s {
+    /* 0x000 */ u64 at;
+    /* 0x008 */ u64 v0;
+    /* 0x010 */ u64 v1;
+    /* 0x018 */ u64 a0;
+    /* 0x020 */ u64 a1;
+    /* 0x028 */ u64 a2;
+    /* 0x030 */ u64 a3;
+    /* 0x038 */ u64 t0;
+    /* 0x040 */ u64 t1;
+    /* 0x048 */ u64 t2;
+    /* 0x050 */ u64 t3;
+    /* 0x058 */ u64 t4;
+    /* 0x060 */ u64 t5;
+    /* 0x068 */ u64 t6;
+    /* 0x070 */ u64 t7;
+    /* 0x078 */ u64 s0;
+    /* 0x080 */ u64 s1;
+    /* 0x088 */ u64 s2;
+    /* 0x090 */ u64 s3;
+    /* 0x098 */ u64 s4;
+    /* 0x0A0 */ u64 s5;
+    /* 0x0A8 */ u64 s6;
+    /* 0x0B0 */ u64 s7;
+    /* 0x0B8 */ u64 t8;
+    /* 0x0C0 */ u64 t9;
+    /* 0x0C8 */ u64 gp;
+    /* 0x0D0 */ u64 sp;
+    /* 0x0D8 */ u64 s8;
+    /* 0x0E0 */ u64 ra;
+    /* 0x0E8 */ u64 lo;
+    /* 0x0F0 */ u64 hi;
+    /* 0x0F8 */ u32 sr;
+    /* 0x0FC */ u32 pc;
+    /* 0x100 */ u32 cause;
+    /* 0x104 */ u32 badvaddr;
+    /* 0x108 */ u32 rcp;
+    /* 0x10C */ u32 fpcsr;
+    /* 0x110 */ __OSfp_s fp0;
+    /* 0x118 */ __OSfp_s fp2;
+    /* 0x120 */ __OSfp_s fp4;
+    /* 0x128 */ __OSfp_s fp6;
+    /* 0x130 */ __OSfp_s fp8;
+    /* 0x138 */ __OSfp_s fp10;
+    /* 0x140 */ __OSfp_s fp12;
+    /* 0x148 */ __OSfp_s fp14;
+    /* 0x150 */ __OSfp_s fp16;
+    /* 0x158 */ __OSfp_s fp18;
+    /* 0x160 */ __OSfp_s fp20;
+    /* 0x168 */ __OSfp_s fp22;
+    /* 0x170 */ __OSfp_s fp24;
+    /* 0x178 */ __OSfp_s fp26;
+    /* 0x180 */ __OSfp_s fp28;
+    /* 0x188 */ __OSfp_s fp30;
+} __OSThreadContext_s; // size = 0x190
+
+typedef struct __OSThread_s __OSThread_s;
+
+struct __OSThread_s {
+    /* 0x00 */ __OSThread_s* next;
+    /* 0x04 */ s32 priority;
+    /* 0x08 */ __OSThread_s** queue;
+    /* 0x0C */ __OSThread_s* tlnext;
+    /* 0x10 */ u16 state;
+    /* 0x12 */ u16 flags;
+    /* 0x14 */ s32 id;
+    /* 0x18 */ s32 fp;
+    /* 0x20 */ __OSThreadContext_s context;
+}; // size = 0x1B0
+
+typedef struct OSMesgQueue_s {
+    /* 0x00 */ __OSThread_s* mtqueue;
+    /* 0x04 */ __OSThread_s* fullqueue;
+    /* 0x08 */ s32 validCount;
+    /* 0x0C */ s32 first;
+    /* 0x10 */ s32 msgCount;
+    /* 0x14 */ void* msg;
+} OSMesgQueue_s; // size = 0x18
+
+typedef struct OSIoMesgHdr_s {
+    /* 0x0 */ u16 type;
+    /* 0x2 */ u8 pri;
+    /* 0x3 */ u8 status;
+    /* 0x4 */ OSMesgQueue_s* retQueue;
+} OSIoMesgHdr_s; // size = 0x8
+
+typedef struct OSIoMesg_s {
+    /* 0x00 */ OSIoMesgHdr_s hdr;
+    /* 0x08 */ void* dramAddr;
+    /* 0x0C */ u32 devAddr;
+    /* 0x10 */ u32 size;
+    /* 0x14 */ void* piHandle;
+} OSIoMesg_s; // size = 0x18
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/__osException.s")
+#else
+s32 __osException(Cpu* pCPU) {
+    s32 iBit;
+    Library* pLibrary;
+    s64 nData64;
+    s64 nCause;
+    __OSThread_s* __osRunningThread;
+    CpuDevice** apDevice;
+    u8* aiDevice;
+    u32 nStatus;
+    u32 nStatusRSP;
+    u32 nData32;
+    u32 __OSGlobalIntMask;
+    u32 nS0;
+    u32 nS1;
+    u32 nMask;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/send_mesg.s")
+    apDevice = pCPU->apDevice;
+    aiDevice = pCPU->aiDevice;
+    pLibrary = SYSTEM_LIBRARY(pCPU->pHost);
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osEnqueueAndYield.s")
+    nData32 = *(u32*)pLibrary->apData[3];
+    __OSGlobalIntMask = nData32;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osEnqueueThread.s")
+    if (!cpuGetRegisterCP0(pCPU, 12, &nData64)) {
+        return 0;
+    }
+    nStatus = nData64;
+    if (!cpuSetRegisterCP0(pCPU, 12, nData64 & ~3)) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osPopThread.s")
+    CPU_DEVICE_GET32(pLibrary->anAddress[8], &pCPU->aGPR[26].u32);
+    if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[26].u32)) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osDispatchThread.s")
+    __osRunningThread->context.at = pCPU->aGPR[1].u64;
+    __osRunningThread->context.sr = nStatus;
+    __osRunningThread->context.t0 = pCPU->aGPR[8].u64;
+    __osRunningThread->context.t1 = pCPU->aGPR[9].u64;
+    __osRunningThread->context.t2 = pCPU->aGPR[10].u64;
+    __osRunningThread->context.v0 = pCPU->aGPR[2].u64;
+    __osRunningThread->context.v1 = pCPU->aGPR[3].u64;
+    __osRunningThread->context.a0 = pCPU->aGPR[4].u64;
+    __osRunningThread->context.a1 = pCPU->aGPR[5].u64;
+    __osRunningThread->context.a2 = pCPU->aGPR[6].u64;
+    __osRunningThread->context.a3 = pCPU->aGPR[7].u64;
+    __osRunningThread->context.t3 = pCPU->aGPR[11].u64;
+    __osRunningThread->context.t4 = pCPU->aGPR[12].u64;
+    __osRunningThread->context.t5 = pCPU->aGPR[13].u64;
+    __osRunningThread->context.t6 = pCPU->aGPR[14].u64;
+    __osRunningThread->context.t7 = pCPU->aGPR[15].u64;
+    __osRunningThread->context.s0 = pCPU->aGPR[16].u64;
+    __osRunningThread->context.s1 = pCPU->aGPR[17].u64;
+    __osRunningThread->context.s2 = pCPU->aGPR[18].u64;
+    __osRunningThread->context.s3 = pCPU->aGPR[19].u64;
+    __osRunningThread->context.s4 = pCPU->aGPR[20].u64;
+    __osRunningThread->context.s5 = pCPU->aGPR[21].u64;
+    __osRunningThread->context.s6 = pCPU->aGPR[22].u64;
+    __osRunningThread->context.s7 = pCPU->aGPR[23].u64;
+    __osRunningThread->context.t8 = pCPU->aGPR[24].u64;
+    __osRunningThread->context.t9 = pCPU->aGPR[25].u64;
+    __osRunningThread->context.gp = pCPU->aGPR[28].u64;
+    __osRunningThread->context.sp = pCPU->aGPR[29].u64;
+    __osRunningThread->context.s8 = pCPU->aGPR[30].u64;
+    __osRunningThread->context.ra = pCPU->aGPR[31].u64;
+    __osRunningThread->context.lo = pCPU->nLo;
+    __osRunningThread->context.hi = pCPU->nHi;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osGetMemSize.s")
+    if (nStatus & 0xFF00) {
+        nData32 = ~__OSGlobalIntMask;
+        nData32 &= 0xFF00;
+        nData32 |= nStatus & 0xFF00;
+        nData32 |= nStatus & 0xFFFF00FF;
+        __osRunningThread->context.sr = nData32;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osInvalICache.s")
+        nStatus &= (__OSGlobalIntMask & 0xFF00) | 0xFFFF00FF;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osDisableInt.s")
+    if (!mipsGet32(SYSTEM_MIPS(pCPU->pHost), 0xA430000C, (s32*)&nMask)) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osRestoreInt.s")
+    if (nMask != 0) {
+        nData32 = __OSGlobalIntMask;
+        nData32 >>= 16;
+        nData32 = ~nData32;
+        nData32 &= 0x3F;
+        nData32 &= __osRunningThread->context.rcp;
+        nMask |= nData32;
+    }
+    __osRunningThread->context.rcp = nMask;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osSpSetStatus.s")
+    nData32 = pCPU->anCP0[14];
+    __osRunningThread->context.pc = nData32;
+
+    __osRunningThread->context.fpcsr = pCPU->anFCR[31];
+    __osRunningThread->context.fp0.u64 = pCPU->aFPR[0].u64;
+    __osRunningThread->context.fp2.u64 = pCPU->aFPR[2].u64;
+    __osRunningThread->context.fp4.u64 = pCPU->aFPR[4].u64;
+    __osRunningThread->context.fp6.u64 = pCPU->aFPR[6].u64;
+    __osRunningThread->context.fp8.u64 = pCPU->aFPR[8].u64;
+    __osRunningThread->context.fp10.u64 = pCPU->aFPR[10].u64;
+    __osRunningThread->context.fp12.u64 = pCPU->aFPR[12].u64;
+    __osRunningThread->context.fp14.u64 = pCPU->aFPR[14].u64;
+    __osRunningThread->context.fp16.u64 = pCPU->aFPR[16].u64;
+    __osRunningThread->context.fp18.u64 = pCPU->aFPR[18].u64;
+    __osRunningThread->context.fp20.u64 = pCPU->aFPR[20].u64;
+    __osRunningThread->context.fp22.u64 = pCPU->aFPR[22].u64;
+    __osRunningThread->context.fp24.u64 = pCPU->aFPR[24].u64;
+    __osRunningThread->context.fp26.u64 = pCPU->aFPR[26].u64;
+    __osRunningThread->context.fp28.u64 = pCPU->aFPR[28].u64;
+    __osRunningThread->context.fp30.u64 = pCPU->aFPR[30].u64;
+
+    if (!cpuGetRegisterCP0(pCPU, 13, &nCause)) {
+        return 0;
+    }
+
+    nData32 = nCause;
+    __osRunningThread->context.cause = nData32;
+
+    __osRunningThread->state = 2;
+    switch ((nCause & 0x7C) >> 2) {
+        case 0: // interrupt
+            nS0 = nStatus & nCause;
+            while (TRUE) {
+                iBit = 0;
+                if (nS0 & 0x100) {
+                    iBit = 1;
+                }
+                if (nS0 & 0x200) {
+                    iBit = 2;
+                }
+                if (nS0 & 0x400) {
+                    iBit = 3;
+                }
+                if (nS0 & 0x800) {
+                    iBit = 4;
+                }
+                if (nS0 & 0x1000) {
+                    iBit = 5;
+                }
+                if (nS0 & 0x2000) {
+                    iBit = 6;
+                }
+                if (nS0 & 0x4000) {
+                    iBit = 7;
+                }
+                if (nS0 & 0x8000) {
+                    iBit = 8;
+                }
+                switch (iBit) {
+                    case 1:
+                        nCause &= ~0x100;
+                        if (!cpuSetRegisterCP0(pCPU, 13, nCause)) {
+                            return 0;
+                        }
+                        pCPU->aGPR[4].u32 = 0;
+                        send_mesg(pCPU);
+                        nS0 &= ~0x100;
+                        break;
+                    case 2:
+                        nCause &= ~0x200;
+                        if (!cpuSetRegisterCP0(pCPU, 13, nCause)) {
+                            return 0;
+                        }
+                        pCPU->aGPR[4].u32 = 8;
+                        send_mesg(pCPU);
+                        nS0 &= ~0x200;
+                        break;
+                    case 3:
+                        if (!mipsGet32(SYSTEM_MIPS(pCPU->pHost), 0xA4300008, (s32*)&nData32)) {
+                            return 0;
+                        }
+
+                        nS1 = (__OSGlobalIntMask >> 16) & nData32;
+
+                        if (nS1 & 1) {
+                            nS1 &= 0x3E;
+                            if (!rspGet32(SYSTEM_RSP(pCPU->pHost), 0x04040010, (s32*)&nStatusRSP)) {
+                                return 0;
+                            }
+                            nData32 = 0x8008;
+                            if (!rspPut32(SYSTEM_RSP(pCPU->pHost), 0x04040010, (s32*)&nData32)) {
+                                return 0;
+                            }
+                            if (nStatusRSP & 0x300) {
+                                pCPU->aGPR[4].u32 = 0x20;
+                                send_mesg(pCPU);
+                            } else {
+                                pCPU->aGPR[4].u32 = 0x58;
+                                send_mesg(pCPU);
+                            }
+                        }
+
+                        if (nS1 & 8) {
+                            nData32 = 0;
+                            nS1 &= 0x37;
+                            if (!videoPut32(SYSTEM_VIDEO(pCPU->pHost), 0xA4400010, (s32*)&nData32)) {
+                                return 0;
+                            }
+                            pCPU->aGPR[4].u32 = 0x38;
+                            send_mesg(pCPU);
+                        }
+
+                        if (nS1 & 4) {
+                            nData32 = 1;
+                            nS1 &= 0x3B;
+                            if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA450000C, (s32*)&nData32)) {
+                                return 0;
+                            }
+                            pCPU->aGPR[4].u32 = 0x30;
+                            send_mesg(pCPU);
+                        }
+
+                        if (nS1 & 2) {
+                            nData32 = 0;
+                            nS1 &= 0x3D;
+                            if (!serialPut32(SYSTEM_SERIAL(pCPU->pHost), 0xA4800018, (s32*)&nData32)) {
+                                return 0;
+                            }
+                            pCPU->aGPR[4].u32 = 0x28;
+                            send_mesg(pCPU);
+                        }
+
+                        if (nS1 & 0x10) {
+                            nData32 = 2;
+                            nS1 &= 0x2F;
+                            if (!peripheralPut32(SYSTEM_PERIPHERAL(pCPU->pHost), 0xA4600010, (s32*)&nData32)) {
+                                return 0;
+                            }
+                            pCPU->aGPR[4].u32 = 0x40;
+                            send_mesg(pCPU);
+                        }
+
+                        if (nS1 & 0x20) {
+                            nData32 = 0x800;
+                            if (!mipsPut32(SYSTEM_MIPS(pCPU->pHost), 0xA4300000, (s32*)&nData32)) {
+                                return 0;
+                            }
+                            pCPU->aGPR[4].u32 = 0x48;
+                            send_mesg(pCPU);
+                        }
+
+                        nS0 &= ~0x400;
+                        break;
+                    case 4:
+                        pCPU->aGPR[4].u32 = 0x10;
+                        nS0 &= ~0x800;
+                        send_mesg(pCPU);
+                        break;
+                    case 5:
+                        __osRunningThread->context.sr &= ~0x1000;
+                        goto redispatch;
+                    case 6:
+                        nS0 &= ~0x2000;
+                        break;
+                    case 7:
+                        nS0 &= ~0x4000;
+                        break;
+                    case 8:
+                        if (!cpuGetRegisterCP0(pCPU, 11, &nData64)) {
+                            return 0;
+                        }
+                        if (!cpuSetRegisterCP0(pCPU, 11, nData64)) {
+                            return 0;
+                        }
+                        pCPU->aGPR[4].u32 = 0x18;
+                        send_mesg(pCPU);
+                        nS0 &= ~0x8000;
+                        break;
+                    default:
+                        goto redispatch;
+                }
+            }
+            break;
+        case 9: // break
+            __osRunningThread->flags = 1;
+            pCPU->aGPR[4].u32 = 0x50;
+            send_mesg(pCPU);
+            goto redispatch;
+        case 11: // coprocessor unusable
+            __osRunningThread->fp = 1;
+            if (!cpuGetRegisterCP0(pCPU, 12, &nData64)) {
+                return 0;
+            }
+            nData64 |= 0x20000000;
+            if (!cpuSetRegisterCP0(pCPU, 12, nData64)) {
+                return 0;
+            }
+            goto enqueueRunning;
+        default:
+            *(s32*)pLibrary->apData[7] = pCPU->aGPR[26].s32;
+            __osRunningThread->state = 1;
+            __osRunningThread->flags = 2;
+            if (!cpuGetRegisterCP0(pCPU, 8, &nData64)) {
+                return 0;
+            }
+            nData32 = nData64;
+            __osRunningThread->context.badvaddr = nData32;
+            pCPU->aGPR[4].u32 = 0x60;
+            send_mesg(pCPU);
+            __osDispatchThread(pCPU);
+            return 1;
+    }
+
+redispatch:
+    CPU_DEVICE_GET32(pCPU->aGPR[26].u32 + 4, &pCPU->aGPR[9].u32);
+    CPU_DEVICE_GET32(pLibrary->anAddress[4], &pCPU->aGPR[10].u32);
+    CPU_DEVICE_GET32(pCPU->aGPR[10].u32 + 4, &pCPU->aGPR[11].u32);
+    if (pCPU->aGPR[9].u32 < pCPU->aGPR[11].u32) {
+        pCPU->aGPR[5].u32 = pCPU->aGPR[26].u32;
+        pCPU->aGPR[4].u32 = pLibrary->anAddress[4];
+        __osEnqueueThread(pCPU);
+        goto dispatchThread;
+    }
+
+enqueueRunning:
+    pCPU->aGPR[9].u32 = pLibrary->anAddress[4];
+    CPU_DEVICE_GET32(pCPU->aGPR[9].u32, &pCPU->aGPR[10].u32);
+    CPU_DEVICE_PUT32(pCPU->aGPR[26].u32, &pCPU->aGPR[10].u32);
+    CPU_DEVICE_PUT32(pCPU->aGPR[9].u32, &pCPU->aGPR[26].u32);
+
+dispatchThread:
+    __osDispatchThread(pCPU);
+    return 1;
+}
+#endif
+
+s32 send_mesg(Cpu* pCPU) {
+    Library* pLibrary;
+    CpuDevice** apDevice;
+    u8* aiDevice;
+
+    aiDevice = pCPU->aiDevice;
+    apDevice = pCPU->apDevice;
+    pLibrary = SYSTEM_LIBRARY(pCPU->pHost);
+
+    pCPU->aGPR[10].u32 = pLibrary->anAddress[9];
+    pCPU->aGPR[10].u32 += pCPU->aGPR[4].u32;
+    CPU_DEVICE_GET32(pCPU->aGPR[10].u32, &pCPU->aGPR[9].u32);
+
+    if (pCPU->aGPR[9].u32 != 0) {
+        CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x08, &pCPU->aGPR[11].s32);
+        CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x10, &pCPU->aGPR[12].s32);
+
+        if (pCPU->aGPR[11].s32 < pCPU->aGPR[12].s32) {
+            CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x0C, &pCPU->aGPR[13].u32);
+            pCPU->aGPR[13].u32 += pCPU->aGPR[11].u32;
+            pCPU->aGPR[13].u32 %= pCPU->aGPR[12].u32;
+            CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x14, &pCPU->aGPR[12].u32);
+            pCPU->aGPR[13].u32 *= 4;
+            pCPU->aGPR[12].s32 += pCPU->aGPR[13].u32;
+            CPU_DEVICE_GET32(pCPU->aGPR[10].u32 + 0x04, &pCPU->aGPR[13].u32);
+            CPU_DEVICE_PUT32(pCPU->aGPR[12].u32, &pCPU->aGPR[13].u32);
+            pCPU->aGPR[10].s32 = pCPU->aGPR[11].s32 + 1;
+            CPU_DEVICE_PUT32(pCPU->aGPR[9].u32 + 0x08, &pCPU->aGPR[10].u32);
+            CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x00, &pCPU->aGPR[10].u32);
+            CPU_DEVICE_GET32(pCPU->aGPR[10].u32, &pCPU->aGPR[11].u32);
+
+            if (pCPU->aGPR[11].u32 != 0) {
+                pCPU->aGPR[4].u32 = pCPU->aGPR[9].u32;
+                CPU_DEVICE_GET32(pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
+                CPU_DEVICE_GET32(pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
+                CPU_DEVICE_PUT32(pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
+                pCPU->aGPR[10].u32 = pCPU->aGPR[2].u32;
+                pCPU->aGPR[5].u32 = pCPU->aGPR[10].u32;
+                pCPU->aGPR[4].u32 = pLibrary->anAddress[4];
+
+                __osEnqueueThread(pCPU);
+            }
+        }
+    }
+
+    return 1;
+}
+
+s32 __osEnqueueAndYield(Cpu* pCPU) {
+    s64 nData64;
+    Library* pLibrary;
+    __OSThread_s* __osRunningThread;
+    u32 __OSGlobalIntMask;
+    u32 nStatus;
+    u32 nData32;
+    u32 nMask;
+    CpuDevice** apDevice;
+    u8* aiDevice;
+
+    apDevice = pCPU->apDevice;
+    aiDevice = pCPU->aiDevice;
+    pLibrary = SYSTEM_LIBRARY(pCPU->pHost);
+    __OSGlobalIntMask = *(u32*)pLibrary->apData[3];
+    CPU_DEVICE_GET32(pLibrary->anAddress[8], &pCPU->aGPR[5].u32);
+
+    if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[5].u32)) {
+        return 0;
+    }
+
+    if (!cpuGetRegisterCP0(pCPU, 0xC, &nData64)) {
+        return 0;
+    }
+
+    nStatus = nData64 | 2;
+    __osRunningThread->context.sr = nStatus;
+
+    __osRunningThread->context.s0 = pCPU->aGPR[16].u64;
+    __osRunningThread->context.s1 = pCPU->aGPR[17].u64;
+    __osRunningThread->context.s2 = pCPU->aGPR[18].u64;
+    __osRunningThread->context.s3 = pCPU->aGPR[19].u64;
+    __osRunningThread->context.s4 = pCPU->aGPR[20].u64;
+    __osRunningThread->context.s5 = pCPU->aGPR[21].u64;
+    __osRunningThread->context.s6 = pCPU->aGPR[22].u64;
+    __osRunningThread->context.s7 = pCPU->aGPR[23].u64;
+    __osRunningThread->context.gp = pCPU->aGPR[28].u64;
+    __osRunningThread->context.sp = pCPU->aGPR[29].u64;
+    __osRunningThread->context.s8 = pCPU->aGPR[30].u64;
+    __osRunningThread->context.ra = pCPU->aGPR[31].u64;
+
+    __osRunningThread->context.pc = pCPU->nReturnAddrLast;
+    __osRunningThread->context.fpcsr = pCPU->anFCR[31];
+
+    __osRunningThread->context.fp20.u64 = pCPU->aFPR[20].u64;
+    __osRunningThread->context.fp22.u64 = pCPU->aFPR[22].u64;
+    __osRunningThread->context.fp24.u64 = pCPU->aFPR[24].u64;
+    __osRunningThread->context.fp26.u64 = pCPU->aFPR[26].u64;
+    __osRunningThread->context.fp28.u64 = pCPU->aFPR[28].u64;
+    __osRunningThread->context.fp30.u64 = pCPU->aFPR[30].u64;
+
+    if (nStatus & 0xFF00) {
+        nData32 = ~__OSGlobalIntMask;
+        nData32 &= 0xFF00;
+        nData32 |= nStatus & 0xFF00;
+        nData32 |= nStatus & 0xFFFF00FF;
+        __osRunningThread->context.sr = nData32;
+    }
+
+    if (!mipsGet32(SYSTEM_MIPS(pCPU->pHost), 0xA430000C, (s32*)&nMask)) {
+        return 0;
+    }
+
+    if (nMask != 0) {
+        nData32 = __OSGlobalIntMask >> 16;
+        nData32 = ~nData32;
+        nData32 &= 0x3F;
+        nMask |= nData32 & __osRunningThread->context.rcp;
+    }
+
+    __osRunningThread->context.rcp = nMask;
+    if (pCPU->aGPR[4].u32 != 0) {
+        __osEnqueueThread(pCPU);
+    }
+
+    __osDispatchThread(pCPU);
+    return 1;
+}
+
+s32 __osEnqueueThread(Cpu* pCPU) {
+    CpuDevice** apDevice = pCPU->apDevice;
+    u8* aiDevice = pCPU->aiDevice;
+
+    pCPU->aGPR[25].u32 = pCPU->aGPR[4].u32;
+    CPU_DEVICE_GET32(pCPU->aGPR[4].u32, &pCPU->aGPR[24].u32);
+    CPU_DEVICE_GET32(pCPU->aGPR[5].u32 + 4, &pCPU->aGPR[15].u32);
+    CPU_DEVICE_GET32(pCPU->aGPR[24].u32 + 4, &pCPU->aGPR[14].u32);
+
+    while (pCPU->aGPR[14].s32 >= pCPU->aGPR[15].s32) {
+        pCPU->aGPR[25].u32 = pCPU->aGPR[24].u32;
+        CPU_DEVICE_GET32(pCPU->aGPR[24].u32, &pCPU->aGPR[24].u32);
+        CPU_DEVICE_GET32(pCPU->aGPR[24].u32 + 4, &pCPU->aGPR[14].u32);
+    }
+
+    CPU_DEVICE_GET32(pCPU->aGPR[25].u32, &pCPU->aGPR[24].u32);
+    CPU_DEVICE_PUT32(pCPU->aGPR[5].u32, &pCPU->aGPR[24].u32);
+    CPU_DEVICE_PUT32(pCPU->aGPR[25].u32, &pCPU->aGPR[5].u32);
+    CPU_DEVICE_PUT32(pCPU->aGPR[5].u32 + 8, &pCPU->aGPR[4].u32);
+
+    return 1;
+}
+
+s32 __osPopThread(Cpu* pCPU) {
+    CpuDevice** apDevice = pCPU->apDevice;
+    u8* aiDevice = pCPU->aiDevice;
+
+    CPU_DEVICE_GET32(pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
+    CPU_DEVICE_GET32(pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
+    CPU_DEVICE_PUT32(pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
+    return 1;
+}
+
+s32 __osDispatchThread(Cpu* pCPU) {
+    Library* pLibrary;
+    u32 nAddress;
+    u64 nData64;
+    __OSThread_s* __osRunningThread;
+    u32 nData32;
+    u32 __OSGlobalIntMask;
+    u32 nStatus;
+    u32 nMask;
+
+    pLibrary = SYSTEM_LIBRARY(pCPU->pHost);
+
+    nData32 = *(u32*)pLibrary->apData[3];
+    __OSGlobalIntMask = nData32;
+
+    pCPU->aGPR[4].u32 = pLibrary->anAddress[4];
+
+    __osPopThread(pCPU);
+
+    nAddress = pCPU->aGPR[2].u32;
+    *(u32*)pLibrary->apData[8] = nAddress;
+
+    if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, nAddress)) {
+        return 0;
+    }
+
+    __osRunningThread->state = 4;
+    nStatus = __osRunningThread->context.sr;
+
+    nData32 = __OSGlobalIntMask & 0xFF00;
+    nData32 &= nStatus & 0xFF00;
+
+    nStatus = (nStatus & 0xFFFF00FF) | nData32;
+    nData64 = nStatus;
+    if (!cpuSetRegisterCP0(pCPU, 12, nData64)) {
+        return 0;
+    }
+
+    pCPU->aGPR[1].u64 = __osRunningThread->context.at;
+    pCPU->aGPR[2].u64 = __osRunningThread->context.v0;
+    pCPU->aGPR[3].u64 = __osRunningThread->context.v1;
+    pCPU->aGPR[4].u64 = __osRunningThread->context.a0;
+    pCPU->aGPR[5].u64 = __osRunningThread->context.a1;
+    pCPU->aGPR[6].u64 = __osRunningThread->context.a2;
+    pCPU->aGPR[7].u64 = __osRunningThread->context.a3;
+    pCPU->aGPR[8].u64 = __osRunningThread->context.t0;
+    pCPU->aGPR[9].u64 = __osRunningThread->context.t1;
+    pCPU->aGPR[10].u64 = __osRunningThread->context.t2;
+    pCPU->aGPR[11].u64 = __osRunningThread->context.t3;
+    pCPU->aGPR[12].u64 = __osRunningThread->context.t4;
+    pCPU->aGPR[13].u64 = __osRunningThread->context.t5;
+    pCPU->aGPR[14].u64 = __osRunningThread->context.t6;
+    pCPU->aGPR[15].u64 = __osRunningThread->context.t7;
+    pCPU->aGPR[16].u64 = __osRunningThread->context.s0;
+    pCPU->aGPR[17].u64 = __osRunningThread->context.s1;
+    pCPU->aGPR[18].u64 = __osRunningThread->context.s2;
+    pCPU->aGPR[19].u64 = __osRunningThread->context.s3;
+    pCPU->aGPR[20].u64 = __osRunningThread->context.s4;
+    pCPU->aGPR[21].u64 = __osRunningThread->context.s5;
+    pCPU->aGPR[22].u64 = __osRunningThread->context.s6;
+    pCPU->aGPR[23].u64 = __osRunningThread->context.s7;
+    pCPU->aGPR[24].u64 = __osRunningThread->context.t8;
+    pCPU->aGPR[25].u64 = __osRunningThread->context.t9;
+    pCPU->aGPR[28].u64 = __osRunningThread->context.gp;
+    pCPU->aGPR[29].u64 = __osRunningThread->context.sp;
+    pCPU->aGPR[30].u64 = __osRunningThread->context.s8;
+    pCPU->aGPR[31].u64 = __osRunningThread->context.ra;
+    pCPU->nLo = __osRunningThread->context.lo;
+    pCPU->nHi = __osRunningThread->context.hi;
+
+    nData32 = __osRunningThread->context.pc;
+    pCPU->anCP0[14] = nData32;
+
+    pCPU->anFCR[31] = __osRunningThread->context.fpcsr;
+    pCPU->aFPR[0].u64 = __osRunningThread->context.fp0.u64;
+    pCPU->aFPR[2].u64 = __osRunningThread->context.fp2.u64;
+    pCPU->aFPR[4].u64 = __osRunningThread->context.fp4.u64;
+    pCPU->aFPR[6].u64 = __osRunningThread->context.fp6.u64;
+    pCPU->aFPR[8].u64 = __osRunningThread->context.fp8.u64;
+    pCPU->aFPR[10].u64 = __osRunningThread->context.fp10.u64;
+    pCPU->aFPR[12].u64 = __osRunningThread->context.fp12.u64;
+    pCPU->aFPR[14].u64 = __osRunningThread->context.fp14.u64;
+    pCPU->aFPR[16].u64 = __osRunningThread->context.fp16.u64;
+    pCPU->aFPR[18].u64 = __osRunningThread->context.fp18.u64;
+    pCPU->aFPR[20].u64 = __osRunningThread->context.fp20.u64;
+    pCPU->aFPR[22].u64 = __osRunningThread->context.fp22.u64;
+    pCPU->aFPR[24].u64 = __osRunningThread->context.fp24.u64;
+    pCPU->aFPR[26].u64 = __osRunningThread->context.fp26.u64;
+    pCPU->aFPR[28].u64 = __osRunningThread->context.fp28.u64;
+    pCPU->aFPR[30].u64 = __osRunningThread->context.fp30.u64;
+
+    nMask = __osRunningThread->context.rcp;
+
+    nData32 = __OSGlobalIntMask;
+    nData32 >>= 16;
+
+    nMask &= nData32;
+    nData32 = __osRcpImTable[nMask];
+
+    if (!mipsPut32(SYSTEM_MIPS(pCPU->pHost), 0xA430000C, (s32*)&nData32)) {
+        return 0;
+    }
+
+    __cpuERET(pCPU);
+    return 1;
+}
+
+s32 osGetMemSize(Cpu* pCPU) {
+    u32 nSize;
+
+    if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), (s32*)&nSize)) {
+        return 0;
+    }
+
+    pCPU->aGPR[2].u32 = nSize;
+    return 1;
+}
+
+s32 osInvalICache(Cpu* pCPU) {
+    u32 nAddress = pCPU->aGPR[4].u32;
+    u32 nSize = pCPU->aGPR[5].u32;
+
+    if (!cpuInvalidateCache(pCPU, nAddress, nAddress + nSize)) {
+        return 0;
+    }
+
+    if (!rspInvalidateCache(SYSTEM_RSP(pCPU->pHost), nAddress, nAddress + nSize)) {
+        return 0;
+    }
+
+    return 1;
+}
+
+s32 __osDisableInt(Cpu* pCPU) {
+    u32 nStatus;
+    u64 nData64;
+    s32 pad[2];
+
+    if (!cpuGetRegisterCP0(pCPU, 12, (s64*)&nData64)) {
+        return 0;
+    }
+
+    nStatus = nData64;
+    ;
+    nData64 = nStatus & ~1;
+    if (!cpuSetRegisterCP0(pCPU, 12, nData64)) {
+        return 0;
+    }
+
+    pCPU->aGPR[2].s32 = nStatus & 1;
+    return 1;
+}
+
+s32 __osRestoreInt(Cpu* pCPU) {
+    u64 nStatus;
+
+    if (!cpuGetRegisterCP0(pCPU, 12, (s64*)&nStatus)) {
+        return 0;
+    }
+
+    nStatus |= pCPU->aGPR[4].u64;
+    if (!cpuSetRegisterCP0(pCPU, 12, nStatus)) {
+        return 0;
+    }
+
+    return 1;
+}
+
+s32 __osSpSetStatus(Cpu* pCPU) {
+    u32 nData32 = pCPU->aGPR[4].u32;
+
+    if (!rspPut32(SYSTEM_RSP(pCPU->pHost), 0x04040010, &nData32)) {
+        return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/__cosf.s")
 
@@ -2297,12 +3060,6 @@ void guLookAtReflect(Cpu* pCPU) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/library/zeldaLoadSZS_Exit.s")
 
-#define DEVICE_GET32(nAddress, pValue)                                                          \
-    {                                                                                           \
-        CpuDevice* pDevice = apDevice[aiDevice[(u32)(nAddress) >> 16]];                         \
-        pDevice->pfGet32(pDevice->pObject, (nAddress) + pDevice->nOffsetAddress, (s32*)pValue); \
-    }
-
 static s32 libraryFindException(Library* pLibrary, s32 bException) {
     Cpu* pCPU;
     CpuDevice** apDevice;
@@ -2314,19 +3071,19 @@ static s32 libraryFindException(Library* pLibrary, s32 bException) {
     aiDevice = pCPU->aiDevice;
 
     if (bException) {
-        DEVICE_GET32(pCPU->nPC + 0x00, &anCode[0]);
-        DEVICE_GET32(pCPU->nPC + 0x04, &anCode[1]);
-        DEVICE_GET32(pCPU->nPC + 0x08, &anCode[2]);
-        DEVICE_GET32(pCPU->nPC + 0x0C, &anCode[3]);
-        DEVICE_GET32(pCPU->nPC + 0x10, &anCode[4]);
-        DEVICE_GET32(pCPU->nPC + 0x14, &anCode[5]);
+        CPU_DEVICE_GET32(pCPU->nPC + 0x00, &anCode[0]);
+        CPU_DEVICE_GET32(pCPU->nPC + 0x04, &anCode[1]);
+        CPU_DEVICE_GET32(pCPU->nPC + 0x08, &anCode[2]);
+        CPU_DEVICE_GET32(pCPU->nPC + 0x0C, &anCode[3]);
+        CPU_DEVICE_GET32(pCPU->nPC + 0x10, &anCode[4]);
+        CPU_DEVICE_GET32(pCPU->nPC + 0x14, &anCode[5]);
     } else {
-        DEVICE_GET32(0x80000180, &anCode[0]);
-        DEVICE_GET32(0x80000184, &anCode[1]);
-        DEVICE_GET32(0x80000188, &anCode[2]);
-        DEVICE_GET32(0x8000018C, &anCode[3]);
-        DEVICE_GET32(0x80000190, &anCode[4]);
-        DEVICE_GET32(0x80000194, &anCode[5]);
+        CPU_DEVICE_GET32(0x80000180, &anCode[0]);
+        CPU_DEVICE_GET32(0x80000184, &anCode[1]);
+        CPU_DEVICE_GET32(0x80000188, &anCode[2]);
+        CPU_DEVICE_GET32(0x8000018C, &anCode[3]);
+        CPU_DEVICE_GET32(0x80000190, &anCode[4]);
+        CPU_DEVICE_GET32(0x80000194, &anCode[5]);
     }
 
     if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09 && MIPS_OP(anCode[2]) == 0x00 &&
@@ -2357,8 +3114,8 @@ static s32 libraryFindVariables(Library* pLibrary) {
     apDevice = pCPU->apDevice;
     aiDevice = pCPU->aiDevice;
 
-    DEVICE_GET32(pLibrary->nAddressException + 0, &anCode[0]);
-    DEVICE_GET32(pLibrary->nAddressException + 4, &anCode[1]);
+    CPU_DEVICE_GET32(pLibrary->nAddressException + 0, &anCode[0]);
+    CPU_DEVICE_GET32(pLibrary->nAddressException + 4, &anCode[1]);
     if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
         if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
@@ -2375,13 +3132,13 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = pLibrary->nAddressException + 8;
     do {
-        DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(nAddress, &nOpcode);
         nAddress += 4;
     } while (nOpcode != 0x03404021 && nOpcode != 0x03404025);
 
-    DEVICE_GET32(nAddress + 0, &anCode[0]);
-    DEVICE_GET32(nAddress + 4, &anCode[1]);
-    DEVICE_GET32(nAddress + 8, &anCode[2]);
+    CPU_DEVICE_GET32(nAddress + 0, &anCode[0]);
+    CPU_DEVICE_GET32(nAddress + 4, &anCode[1]);
+    CPU_DEVICE_GET32(nAddress + 8, &anCode[2]);
     nAddressLast = nAddress;
     if (MIPS_OP(anCode[0]) == 0x0F) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
@@ -2414,14 +3171,14 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = nAddressLast;
     do {
-        DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(nAddress, &nOpcode);
         nAddress += 4;
     } while (nOpcode != 0x11200013 && nOpcode != 0x11200011 && nOpcode != 0x1120000D && nOpcode != 0x1120000B &&
              nOpcode != 0x11200009);
 
     nAddressLast = nAddress;
-    DEVICE_GET32(nAddress + 4, &anCode[0]);
-    DEVICE_GET32(nAddress + 8, &anCode[1]);
+    CPU_DEVICE_GET32(nAddress + 4, &anCode[0]);
+    CPU_DEVICE_GET32(nAddress + 8, &anCode[1]);
 
     nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
     if (nAddress == 0xC0000008) {
@@ -2453,12 +3210,12 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = nAddressLast;
     do {
-        DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(nAddress, &nOpcode);
         nAddress += 4;
     } while (nOpcode != 0x40895800);
 
-    DEVICE_GET32(nAddress + 0, &anCode[0]);
-    DEVICE_GET32(nAddress + 4, &anCode[1]);
+    CPU_DEVICE_GET32(nAddress + 0, &anCode[0]);
+    CPU_DEVICE_GET32(nAddress + 4, &anCode[1]);
 
     if (MIPS_OP(anCode[0]) == 0x03) {
         nAddress = ((nAddress + 0) & 0xF0000000) | (MIPS_TARGET(anCode[0]) << 2);
@@ -2466,9 +3223,9 @@ static s32 libraryFindVariables(Library* pLibrary) {
         nAddress = ((nAddress + 4) & 0xF0000000) | (MIPS_TARGET(anCode[1]) << 2);
     }
 
-    DEVICE_GET32(nAddress + 0, &anCode[0]);
-    DEVICE_GET32(nAddress + 4, &anCode[1]);
-    DEVICE_GET32(nAddress + 8, &anCode[2]);
+    CPU_DEVICE_GET32(nAddress + 0, &anCode[0]);
+    CPU_DEVICE_GET32(nAddress + 4, &anCode[1]);
+    CPU_DEVICE_GET32(nAddress + 8, &anCode[2]);
     if (MIPS_OP(anCode[0]) == 0x0F) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
     } else {
@@ -2508,10 +3265,10 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     aiDevice = pCPU->aiDevice;
 
     do {
-        DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(nAddress, &nOpcode);
         if (MIPS_OP(nOpcode) == 0x03) {
             nAddressLast = (nAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
-            DEVICE_GET32(nAddress + 8, &nOpcode);
+            CPU_DEVICE_GET32(nAddress + 8, &nOpcode);
             if (MIPS_OP(nOpcode) == 0x02) {
                 nAddressEnqueueThread = nAddressLast;
                 nAddressDispatchThread = (nAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
@@ -2526,7 +3283,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     if (iFunction < ARRAY_COUNTU(gaFunction)) {
         nAddress = pLibrary->nAddressException;
         do {
-            DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(nAddress, &nOpcode);
             nAddress += 4;
         } while (nOpcode != 0x400A4000);
 
@@ -2545,12 +3302,12 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread) != -1) {
         do {
             nAddress -= 4;
-            DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(nAddress, &nOpcode);
         } while (nOpcode != 0x40086000);
 
         do {
             nAddress -= 4;
-            DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(nAddress, &nOpcode);
         } while (MIPS_OP(nOpcode) != 0x02 && (nOpcode & 0xFFFF0000) != 0x10000000 && MIPS_OP(nOpcode) != 0x00 &&
                  MIPS_FUNCT(nOpcode) != 0x08);
 
@@ -2579,7 +3336,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     // bug: Tests if nAddressEnqueueThread + 8 != -1 instead of nAddressEnqueueThread != -1
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread + 8) != -1) {
         do {
-            DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(nAddress, &nOpcode);
             nAddress += 4;
         } while (nOpcode != 0x03E00008);
 

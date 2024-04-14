@@ -174,7 +174,7 @@ typedef struct SystemRomConfig {
 #define SYSTEM_SRAM(pSystem) ((Sram*)(((System*)(pSystem))->apObject[SOT_SRAM]))
 #define SYSTEM_AUDIO(pSystem) ((Audio*)(((System*)(pSystem))->apObject[SOT_AUDIO]))
 #define SYSTEM_VIDEO(pSystem) ((Video*)(((System*)(pSystem))->apObject[SOT_VIDEO]))
-#define SYSTEM_SERIAL(pSystem) ((Disk*)(((System*)(pSystem))->apObject[SOT_SERIAL]))
+#define SYSTEM_SERIAL(pSystem) ((Serial*)(((System*)(pSystem))->apObject[SOT_SERIAL]))
 #define SYSTEM_LIBRARY(pSystem) ((Library*)(((System*)(pSystem))->apObject[SOT_LIBRARY]))
 #define SYSTEM_PERIPHERAL(pSystem) ((Peripheral*)(((System*)(pSystem))->apObject[SOT_PERIPHERAL]))
 #define SYSTEM_RDB(pSystem) ((Rdb*)(((System*)(pSystem))->apObject[SOT_RDB]))

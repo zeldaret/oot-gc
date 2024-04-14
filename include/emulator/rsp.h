@@ -209,6 +209,7 @@ typedef struct Rsp {
     /* 0x39C8 */ s32* dctBuf;
 } Rsp; // size = 0x39CC
 
+s32 rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);
 s32 rspEnableABI(Rsp* pRSP, s32 bFlag);
 s32 rspUpdate(Rsp* pRSP, RspUpdateMode eMode);
 s32 rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
