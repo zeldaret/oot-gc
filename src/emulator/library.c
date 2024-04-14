@@ -571,7 +571,7 @@ s32 __osException(Cpu* pCPU) {
 
     __osRunningThread->state = 2;
     switch ((nCause & 0x7C) >> 2) {
-        case 0: // interrupt
+        case CEC_INTERRUPT:
             nS0 = nStatus & nCause;
             while (TRUE) {
                 iBit = 0;
@@ -724,12 +724,12 @@ s32 __osException(Cpu* pCPU) {
                 }
             }
             break;
-        case 9: // break
+        case CEC_BREAK:
             __osRunningThread->flags = 1;
             pCPU->aGPR[4].u32 = 0x50;
             send_mesg(pCPU);
             goto redispatch;
-        case 11: // coprocessor unusable
+        case CEC_COPROCESSOR:
             __osRunningThread->fp = 1;
             if (!cpuGetRegisterCP0(pCPU, 12, &nData64)) {
                 return 0;
