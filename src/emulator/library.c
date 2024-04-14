@@ -479,7 +479,7 @@ s32 __osException(Cpu* pCPU) {
         return 0;
     }
 
-    CPU_DEVICE_GET32(pLibrary->anAddress[8], &pCPU->aGPR[26].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[8], &pCPU->aGPR[26].u32);
     if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[26].u32)) {
         return 0;
     }
@@ -755,9 +755,9 @@ s32 __osException(Cpu* pCPU) {
     }
 
 redispatch:
-    CPU_DEVICE_GET32(pCPU->aGPR[26].u32 + 4, &pCPU->aGPR[9].u32);
-    CPU_DEVICE_GET32(pLibrary->anAddress[4], &pCPU->aGPR[10].u32);
-    CPU_DEVICE_GET32(pCPU->aGPR[10].u32 + 4, &pCPU->aGPR[11].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[26].u32 + 4, &pCPU->aGPR[9].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[4], &pCPU->aGPR[10].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[10].u32 + 4, &pCPU->aGPR[11].u32);
     if (pCPU->aGPR[9].u32 < pCPU->aGPR[11].u32) {
         pCPU->aGPR[5].u32 = pCPU->aGPR[26].u32;
         pCPU->aGPR[4].u32 = pLibrary->anAddress[4];
@@ -767,9 +767,9 @@ redispatch:
 
 enqueueRunning:
     pCPU->aGPR[9].u32 = pLibrary->anAddress[4];
-    CPU_DEVICE_GET32(pCPU->aGPR[9].u32, &pCPU->aGPR[10].u32);
-    CPU_DEVICE_PUT32(pCPU->aGPR[26].u32, &pCPU->aGPR[10].u32);
-    CPU_DEVICE_PUT32(pCPU->aGPR[9].u32, &pCPU->aGPR[26].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[9].u32, &pCPU->aGPR[10].u32);
+    CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[26].u32, &pCPU->aGPR[10].u32);
+    CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[9].u32, &pCPU->aGPR[26].u32);
 
 dispatchThread:
     __osDispatchThread(pCPU);
@@ -788,31 +788,31 @@ s32 send_mesg(Cpu* pCPU) {
 
     pCPU->aGPR[10].u32 = pLibrary->anAddress[9];
     pCPU->aGPR[10].u32 += pCPU->aGPR[4].u32;
-    CPU_DEVICE_GET32(pCPU->aGPR[10].u32, &pCPU->aGPR[9].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[10].u32, &pCPU->aGPR[9].u32);
 
     if (pCPU->aGPR[9].u32 != 0) {
-        CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x08, &pCPU->aGPR[11].s32);
-        CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x10, &pCPU->aGPR[12].s32);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[9].u32 + 0x08, &pCPU->aGPR[11].s32);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[9].u32 + 0x10, &pCPU->aGPR[12].s32);
 
         if (pCPU->aGPR[11].s32 < pCPU->aGPR[12].s32) {
-            CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x0C, &pCPU->aGPR[13].u32);
+            CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[9].u32 + 0x0C, &pCPU->aGPR[13].u32);
             pCPU->aGPR[13].u32 += pCPU->aGPR[11].u32;
             pCPU->aGPR[13].u32 %= pCPU->aGPR[12].u32;
-            CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x14, &pCPU->aGPR[12].u32);
+            CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[9].u32 + 0x14, &pCPU->aGPR[12].u32);
             pCPU->aGPR[13].u32 *= 4;
             pCPU->aGPR[12].s32 += pCPU->aGPR[13].u32;
-            CPU_DEVICE_GET32(pCPU->aGPR[10].u32 + 0x04, &pCPU->aGPR[13].u32);
-            CPU_DEVICE_PUT32(pCPU->aGPR[12].u32, &pCPU->aGPR[13].u32);
+            CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[10].u32 + 0x04, &pCPU->aGPR[13].u32);
+            CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[12].u32, &pCPU->aGPR[13].u32);
             pCPU->aGPR[10].s32 = pCPU->aGPR[11].s32 + 1;
-            CPU_DEVICE_PUT32(pCPU->aGPR[9].u32 + 0x08, &pCPU->aGPR[10].u32);
-            CPU_DEVICE_GET32(pCPU->aGPR[9].u32 + 0x00, &pCPU->aGPR[10].u32);
-            CPU_DEVICE_GET32(pCPU->aGPR[10].u32, &pCPU->aGPR[11].u32);
+            CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[9].u32 + 0x08, &pCPU->aGPR[10].u32);
+            CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[9].u32 + 0x00, &pCPU->aGPR[10].u32);
+            CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[10].u32, &pCPU->aGPR[11].u32);
 
             if (pCPU->aGPR[11].u32 != 0) {
                 pCPU->aGPR[4].u32 = pCPU->aGPR[9].u32;
-                CPU_DEVICE_GET32(pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
-                CPU_DEVICE_GET32(pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
-                CPU_DEVICE_PUT32(pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
+                CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
+                CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
+                CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
                 pCPU->aGPR[10].u32 = pCPU->aGPR[2].u32;
                 pCPU->aGPR[5].u32 = pCPU->aGPR[10].u32;
                 pCPU->aGPR[4].u32 = pLibrary->anAddress[4];
@@ -840,7 +840,7 @@ s32 __osEnqueueAndYield(Cpu* pCPU) {
     aiDevice = pCPU->aiDevice;
     pLibrary = SYSTEM_LIBRARY(pCPU->pHost);
     __OSGlobalIntMask = *(u32*)pLibrary->apData[3];
-    CPU_DEVICE_GET32(pLibrary->anAddress[8], &pCPU->aGPR[5].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[8], &pCPU->aGPR[5].u32);
 
     if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[5].u32)) {
         return 0;
@@ -909,20 +909,20 @@ s32 __osEnqueueThread(Cpu* pCPU) {
     u8* aiDevice = pCPU->aiDevice;
 
     pCPU->aGPR[25].u32 = pCPU->aGPR[4].u32;
-    CPU_DEVICE_GET32(pCPU->aGPR[4].u32, &pCPU->aGPR[24].u32);
-    CPU_DEVICE_GET32(pCPU->aGPR[5].u32 + 4, &pCPU->aGPR[15].u32);
-    CPU_DEVICE_GET32(pCPU->aGPR[24].u32 + 4, &pCPU->aGPR[14].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[24].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[5].u32 + 4, &pCPU->aGPR[15].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[24].u32 + 4, &pCPU->aGPR[14].u32);
 
     while (pCPU->aGPR[14].s32 >= pCPU->aGPR[15].s32) {
         pCPU->aGPR[25].u32 = pCPU->aGPR[24].u32;
-        CPU_DEVICE_GET32(pCPU->aGPR[24].u32, &pCPU->aGPR[24].u32);
-        CPU_DEVICE_GET32(pCPU->aGPR[24].u32 + 4, &pCPU->aGPR[14].u32);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[24].u32, &pCPU->aGPR[24].u32);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[24].u32 + 4, &pCPU->aGPR[14].u32);
     }
 
-    CPU_DEVICE_GET32(pCPU->aGPR[25].u32, &pCPU->aGPR[24].u32);
-    CPU_DEVICE_PUT32(pCPU->aGPR[5].u32, &pCPU->aGPR[24].u32);
-    CPU_DEVICE_PUT32(pCPU->aGPR[25].u32, &pCPU->aGPR[5].u32);
-    CPU_DEVICE_PUT32(pCPU->aGPR[5].u32 + 8, &pCPU->aGPR[4].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[25].u32, &pCPU->aGPR[24].u32);
+    CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[5].u32, &pCPU->aGPR[24].u32);
+    CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[25].u32, &pCPU->aGPR[5].u32);
+    CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[5].u32 + 8, &pCPU->aGPR[4].u32);
 
     return 1;
 }
@@ -931,9 +931,9 @@ s32 __osPopThread(Cpu* pCPU) {
     CpuDevice** apDevice = pCPU->apDevice;
     u8* aiDevice = pCPU->aiDevice;
 
-    CPU_DEVICE_GET32(pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
-    CPU_DEVICE_GET32(pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
-    CPU_DEVICE_PUT32(pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
+    CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
     return 1;
 }
 
@@ -3071,19 +3071,19 @@ static s32 libraryFindException(Library* pLibrary, s32 bException) {
     aiDevice = pCPU->aiDevice;
 
     if (bException) {
-        CPU_DEVICE_GET32(pCPU->nPC + 0x00, &anCode[0]);
-        CPU_DEVICE_GET32(pCPU->nPC + 0x04, &anCode[1]);
-        CPU_DEVICE_GET32(pCPU->nPC + 0x08, &anCode[2]);
-        CPU_DEVICE_GET32(pCPU->nPC + 0x0C, &anCode[3]);
-        CPU_DEVICE_GET32(pCPU->nPC + 0x10, &anCode[4]);
-        CPU_DEVICE_GET32(pCPU->nPC + 0x14, &anCode[5]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->nPC + 0x00, &anCode[0]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->nPC + 0x04, &anCode[1]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->nPC + 0x08, &anCode[2]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->nPC + 0x0C, &anCode[3]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->nPC + 0x10, &anCode[4]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->nPC + 0x14, &anCode[5]);
     } else {
-        CPU_DEVICE_GET32(0x80000180, &anCode[0]);
-        CPU_DEVICE_GET32(0x80000184, &anCode[1]);
-        CPU_DEVICE_GET32(0x80000188, &anCode[2]);
-        CPU_DEVICE_GET32(0x8000018C, &anCode[3]);
-        CPU_DEVICE_GET32(0x80000190, &anCode[4]);
-        CPU_DEVICE_GET32(0x80000194, &anCode[5]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, 0x80000180, &anCode[0]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, 0x80000184, &anCode[1]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, 0x80000188, &anCode[2]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, 0x8000018C, &anCode[3]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, 0x80000190, &anCode[4]);
+        CPU_DEVICE_GET32(apDevice, aiDevice, 0x80000194, &anCode[5]);
     }
 
     if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09 && MIPS_OP(anCode[2]) == 0x00 &&
@@ -3114,8 +3114,8 @@ static s32 libraryFindVariables(Library* pLibrary) {
     apDevice = pCPU->apDevice;
     aiDevice = pCPU->aiDevice;
 
-    CPU_DEVICE_GET32(pLibrary->nAddressException + 0, &anCode[0]);
-    CPU_DEVICE_GET32(pLibrary->nAddressException + 4, &anCode[1]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->nAddressException + 0, &anCode[0]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->nAddressException + 4, &anCode[1]);
     if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
         if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
@@ -3132,13 +3132,13 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = pLibrary->nAddressException + 8;
     do {
-        CPU_DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
         nAddress += 4;
     } while (nOpcode != 0x03404021 && nOpcode != 0x03404025);
 
-    CPU_DEVICE_GET32(nAddress + 0, &anCode[0]);
-    CPU_DEVICE_GET32(nAddress + 4, &anCode[1]);
-    CPU_DEVICE_GET32(nAddress + 8, &anCode[2]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 0, &anCode[0]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 4, &anCode[1]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 8, &anCode[2]);
     nAddressLast = nAddress;
     if (MIPS_OP(anCode[0]) == 0x0F) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
@@ -3171,14 +3171,14 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = nAddressLast;
     do {
-        CPU_DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
         nAddress += 4;
     } while (nOpcode != 0x11200013 && nOpcode != 0x11200011 && nOpcode != 0x1120000D && nOpcode != 0x1120000B &&
              nOpcode != 0x11200009);
 
     nAddressLast = nAddress;
-    CPU_DEVICE_GET32(nAddress + 4, &anCode[0]);
-    CPU_DEVICE_GET32(nAddress + 8, &anCode[1]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 4, &anCode[0]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 8, &anCode[1]);
 
     nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
     if (nAddress == 0xC0000008) {
@@ -3210,12 +3210,12 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = nAddressLast;
     do {
-        CPU_DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
         nAddress += 4;
     } while (nOpcode != 0x40895800);
 
-    CPU_DEVICE_GET32(nAddress + 0, &anCode[0]);
-    CPU_DEVICE_GET32(nAddress + 4, &anCode[1]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 0, &anCode[0]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 4, &anCode[1]);
 
     if (MIPS_OP(anCode[0]) == 0x03) {
         nAddress = ((nAddress + 0) & 0xF0000000) | (MIPS_TARGET(anCode[0]) << 2);
@@ -3223,9 +3223,9 @@ static s32 libraryFindVariables(Library* pLibrary) {
         nAddress = ((nAddress + 4) & 0xF0000000) | (MIPS_TARGET(anCode[1]) << 2);
     }
 
-    CPU_DEVICE_GET32(nAddress + 0, &anCode[0]);
-    CPU_DEVICE_GET32(nAddress + 4, &anCode[1]);
-    CPU_DEVICE_GET32(nAddress + 8, &anCode[2]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 0, &anCode[0]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 4, &anCode[1]);
+    CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 8, &anCode[2]);
     if (MIPS_OP(anCode[0]) == 0x0F) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
     } else {
@@ -3265,10 +3265,10 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     aiDevice = pCPU->aiDevice;
 
     do {
-        CPU_DEVICE_GET32(nAddress, &nOpcode);
+        CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
         if (MIPS_OP(nOpcode) == 0x03) {
             nAddressLast = (nAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
-            CPU_DEVICE_GET32(nAddress + 8, &nOpcode);
+            CPU_DEVICE_GET32(apDevice, aiDevice, nAddress + 8, &nOpcode);
             if (MIPS_OP(nOpcode) == 0x02) {
                 nAddressEnqueueThread = nAddressLast;
                 nAddressDispatchThread = (nAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
@@ -3283,7 +3283,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     if (iFunction < ARRAY_COUNTU(gaFunction)) {
         nAddress = pLibrary->nAddressException;
         do {
-            CPU_DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
             nAddress += 4;
         } while (nOpcode != 0x400A4000);
 
@@ -3302,12 +3302,12 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread) != -1) {
         do {
             nAddress -= 4;
-            CPU_DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
         } while (nOpcode != 0x40086000);
 
         do {
             nAddress -= 4;
-            CPU_DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
         } while (MIPS_OP(nOpcode) != 0x02 && (nOpcode & 0xFFFF0000) != 0x10000000 && MIPS_OP(nOpcode) != 0x00 &&
                  MIPS_FUNCT(nOpcode) != 0x08);
 
@@ -3336,7 +3336,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
     // bug: Tests if nAddressEnqueueThread + 8 != -1 instead of nAddressEnqueueThread != -1
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread + 8) != -1) {
         do {
-            CPU_DEVICE_GET32(nAddress, &nOpcode);
+            CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
             nAddress += 4;
         } while (nOpcode != 0x03E00008);
 

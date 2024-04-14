@@ -311,17 +311,41 @@ struct Cpu {
     /* 0x12064 */ CpuOptimize nOptimize;
 }; // size = 0x12090
 
-// Helper macros for working with CPU devices. These assume that
-// apDevice = pCPU->apDevice and aiDevice = pCPU->aiDevice are in scope.
-#define CPU_DEVICE(nAddress) (apDevice[aiDevice[(u32)(nAddress) >> 16]])
+#define CPU_DEVICE(apDevice, aiDevice, nAddress) (apDevice[aiDevice[(u32)(nAddress) >> 16]])
 
-#define CPU_DEVICE_GET32(nAddress, pValue)                                                                          \
-    CPU_DEVICE(nAddress)->pfGet32(CPU_DEVICE(nAddress)->pObject, (nAddress) + CPU_DEVICE(nAddress)->nOffsetAddress, \
-                                  (s32*)pValue)
+#define CPU_DEVICE_GET8(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                        \
+        ->pfGet8(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                 (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s8*)pValue)
+#define CPU_DEVICE_GET16(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                         \
+        ->pfGet16(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                  (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s16*)pValue)
+#define CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                         \
+        ->pfGet32(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                  (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s32*)pValue)
+#define CPU_DEVICE_GET64(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                         \
+        ->pfGet64(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                  (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s64*)pValue)
 
-#define CPU_DEVICE_PUT32(nAddress, pValue)                                                                          \
-    CPU_DEVICE(nAddress)->pfPut32(CPU_DEVICE(nAddress)->pObject, (nAddress) + CPU_DEVICE(nAddress)->nOffsetAddress, \
-                                  (s32*)pValue)
+#define CPU_DEVICE_PUT8(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                        \
+        ->pfPut8(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                 (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s8*)pValue)
+#define CPU_DEVICE_PUT16(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                         \
+        ->pfPut16(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                  (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s16*)pValue)
+#define CPU_DEVICE_PUT32(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                         \
+        ->pfPut32(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                  (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s32*)pValue)
+#define CPU_DEVICE_PUT64(apDevice, aiDevice, nAddress, pValue)       \
+    CPU_DEVICE(apDevice, aiDevice, nAddress)                         \
+        ->pfPut64(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
+                  (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s64*)pValue)
 
 s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
