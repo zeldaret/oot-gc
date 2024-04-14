@@ -4,13 +4,17 @@
 #include "emulator/frame.h"
 #include "emulator/library_jumptables.h"
 #include "emulator/peripheral.h"
+#include "emulator/pif.h"
 #include "emulator/ram.h"
+#include "emulator/rom.h"
 #include "emulator/rsp.h"
 #include "emulator/serial.h"
+#include "emulator/simGCN.h"
 #include "emulator/system.h"
 #include "emulator/video.h"
 #include "emulator/xlPostGCN.h"
 #include "libc/math.h"
+#include "libc/string.h"
 #include "macros.h"
 
 char D_800EEB00[] = "OS-LIBRARY";
@@ -1115,19 +1119,58 @@ s32 __osSpSetStatus(Cpu* pCPU) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__cosf.s")
+void __cosf(Cpu* pCPU) { pCPU->aFPR[0].f32 = cosf(pCPU->aFPR[12].f32); }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__sinf.s")
+void __sinf(Cpu* pCPU) { pCPU->aFPR[0].f32 = sinf(pCPU->aFPR[12].f32); }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/_bzero.s")
+void _bzero(Cpu* pCPU) {
+    s32 nSize;
+    void* pBuffer;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/_bcopy.s")
+    cpuGetAddressBuffer(pCPU, &pBuffer, pCPU->aGPR[4].u32);
+    nSize = pCPU->aGPR[5].s32;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/_memcpy.s")
+    memset(pBuffer, 0, nSize);
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osPhysicalToVirtual.s")
+void _bcopy(Cpu* pCPU) {
+    s32 nSize;
+    void* pSource;
+    void* pTarget;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osVirtualToPhysical.s")
+    cpuGetAddressBuffer(pCPU, &pSource, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &pTarget, pCPU->aGPR[5].u32);
+    nSize = pCPU->aGPR[6].s32;
+
+    xlHeapCopy(pTarget, pSource, nSize);
+    pCPU->aGPR[2].u32 = pCPU->aGPR[5].u32;
+}
+
+void _memcpy(Cpu* pCPU) {
+    s32 nSize;
+    void* pSource;
+    void* pTarget;
+
+    cpuGetAddressBuffer(pCPU, &pTarget, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, &pSource, pCPU->aGPR[5].u32);
+    nSize = pCPU->aGPR[6].s32;
+
+    xlHeapCopy(pTarget, pSource, nSize);
+    pCPU->aGPR[2].u32 = pCPU->aGPR[4].u32;
+}
+
+void osPhysicalToVirtual(Cpu* pCPU) { pCPU->aGPR[2].u32 = pCPU->aGPR[4].u32 | 0x80000000; }
+
+void osVirtualToPhysical(Cpu* pCPU) {
+    if (pCPU->aGPR[4].s32 >= 0x80000000 && pCPU->aGPR[4].s32 < 0xA0000000) {
+        pCPU->aGPR[2].s32 = pCPU->aGPR[4].s32 & 0x1FFFFFFF;
+    } else if (pCPU->aGPR[4].s32 >= 0xA0000000 && pCPU->aGPR[4].s32 < 0xC0000000) {
+        pCPU->aGPR[2].s32 = pCPU->aGPR[4].s32 & 0x1FFFFFFF;
+    } else {
+        pCPU->aGPR[2].s32 =
+            pCPU->aGPR[4].s32 + CPU_DEVICE(pCPU->apDevice, pCPU->aiDevice, pCPU->aGPR[4].s32)->nOffsetAddress;
+    }
+}
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
@@ -3034,31 +3077,326 @@ void guLookAtReflect(Cpu* pCPU) {
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/library/osAiSetFrequency.s")
+#else
+s32 osAiSetFrequency(Cpu* pCPU) {
+    s32 pad1[2];
+    u32 dacRate;
+    u8 bitRate;
+    u32 nData32;
+    s32 pad2;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osAiSetNextBuffer.s")
+    dacRate = 48681812.0f / pCPU->aGPR[4].u32 + 0.5f;
+    if (dacRate > 132) {
+        bitRate = dacRate / 66;
+        if (bitRate > 16) {
+            bitRate = 16;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osEepStatus.s")
+        nData32 = dacRate - 1;
+        if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500010, (s32*)&nData32)) {
+            return 0;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osEepromRead.s")
+        nData32 = bitRate - 1;
+        if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500014, (s32*)&nData32)) {
+            return 0;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osEepromWrite.s")
+        pCPU->aGPR[2].s32 = (s32)(0x02E6D354 / (s32)dacRate);
+    } else {
+        pCPU->aGPR[2].s32 = -1;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osEepromLongRead.s")
+    return 1;
+}
+#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osEepromLongWrite.s")
+s32 osAiSetNextBuffer(Cpu* pCPU) {
+    s32 pad1;
+    u32 buf;
+    u32 size;
+    u32 nData32;
+    s32 pad2;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/starfoxCopy.s")
+    buf = pCPU->aGPR[4].s32;
+    size = pCPU->aGPR[5].s32;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/pictureSnap_Zelda2.s")
+    pCPU->aGPR[4].s32 = buf;
+    osVirtualToPhysical(pCPU);
+    buf = pCPU->aGPR[2].s32;
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/dmaSoundRomHandler_ZELDA1.s")
+    nData32 = buf;
+    if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500000, (s32*)&nData32)) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/osViSwapBuffer_Entry.s")
+    nData32 = size;
+    if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500004, (s32*)&nData32)) {
+        return 0;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/zeldaLoadSZS_Entry.s")
+    pCPU->aGPR[2].s32 = 0;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/library/zeldaLoadSZS_Exit.s")
+s32 __osEepStatus(Cpu* pCPU) {
+    s32 ret;
+    s32 nSize;
+    u8* status;
+
+    if (!cpuGetAddressBuffer(pCPU, &status, pCPU->aGPR[5].u32)) {
+        return 0;
+    }
+
+    if (pifGetEEPROMSize(SYSTEM_PIF(pCPU->pHost), &nSize) != 0) {
+        status[0] = 0x80 | (nSize == 0x800 ? 0x40 : 0);
+        status[1] = 0;
+        status[2] = 0;
+        status[3] = 0;
+        ret = 0;
+    } else {
+        status[0] = 0;
+        status[1] = 0;
+        status[2] = 0;
+        status[3] = 0xFF;
+        ret = -1;
+    }
+
+    pCPU->aGPR[2].s32 = ret;
+    return 1;
+}
+
+s32 osEepromRead(Cpu* pCPU) {
+    s32 pad[2];
+    u8 address;
+    u8* buffer;
+
+    address = pCPU->aGPR[5].u8;
+    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+        return 0;
+    }
+
+    pCPU->aGPR[2].s32 = simulatorReadEEPROM(address, buffer) ? 0 : -1;
+    return 1;
+}
+
+s32 osEepromWrite(Cpu* pCPU) {
+    s32 pad[2];
+    u8 address;
+    u8* buffer;
+
+    address = pCPU->aGPR[5].u8;
+    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+        return 0;
+    }
+
+    pCPU->aGPR[2].s32 = simulatorWriteEEPROM(address, buffer) ? 0 : -1;
+    return 1;
+}
+
+s32 osEepromLongRead(Cpu* pCPU) {
+    s32 length;
+    s32 ret;
+    u8 address;
+    u8* buffer;
+
+    ret = 0;
+
+    address = pCPU->aGPR[5].u8;
+    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+        return 0;
+    }
+    length = pCPU->aGPR[7].s32;
+
+    while (length > 0) {
+        if (!simulatorReadEEPROM(address, buffer)) {
+            ret = -1;
+            break;
+        }
+
+        length -= 8;
+        address += 1;
+        buffer += 8;
+    }
+
+    pCPU->aGPR[2].s32 = ret;
+    return 1;
+}
+
+s32 osEepromLongWrite(Cpu* pCPU) {
+    s32 length;
+    s32 ret;
+    u8 address;
+    u8* buffer;
+
+    ret = 0;
+
+    address = pCPU->aGPR[5].u8;
+    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+        return 0;
+    }
+    length = pCPU->aGPR[7].s32;
+
+    while (length > 0) {
+        if (!simulatorWriteEEPROM(address, buffer)) {
+            ret = -1;
+            break;
+        }
+
+        length -= 8;
+        address += 1;
+        buffer += 8;
+    }
+
+    pCPU->aGPR[2].s32 = ret;
+    return 1;
+}
+
+s32 starfoxCopy(Cpu* pCPU) {
+    s32* A0;
+    s32 A1;
+    s32 A2;
+    s32 A3;
+    s32 T0;
+    s32 T1;
+    s32 T2;
+    s32 T3;
+    s32 T8;
+    s32 T9;
+    s16* pData16;
+    char* source;
+    char* target;
+
+    A1 = pCPU->aGPR[5].u32;
+    cpuGetAddressBuffer(pCPU, &A0, pCPU->aGPR[4].u32);
+
+    A3 = A0[2] + pCPU->aGPR[4].u32;
+    T9 = A0[3] + pCPU->aGPR[4].u32;
+
+    T8 = A0[1];
+    T8 += A1;
+
+    A0 += 4;
+    A2 = 0;
+
+    cpuInvalidateCache(pCPU, A1, T8);
+    do {
+        if (A2 == 0) {
+            A2 = 0x20;
+            T0 = *A0;
+            A0 += 1;
+        }
+
+        if (T0 < 0) {
+            T2 = 1;
+        } else {
+            T2 = 0;
+        }
+
+        if (T2 != 0) {
+            cpuGetAddressBuffer(pCPU, &source, T9);
+            cpuGetAddressBuffer(pCPU, &target, A1);
+            T9 += 1;
+            A1 += 1;
+            *target = *source;
+        } else {
+            cpuGetAddressBuffer(pCPU, &pData16, A3);
+            A3 += 2;
+            T3 = (((u32)*pData16 >> 12) & 0xF) + 3;
+            T1 = A1 - (*pData16 & 0xFFF);
+
+            do {
+                cpuGetAddressBuffer(pCPU, &source, T1 - 1);
+                cpuGetAddressBuffer(pCPU, &target, A1);
+                T3 -= 1;
+                A1 += 1;
+                T1 += 1;
+                *target = *source;
+            } while (T3 != 0);
+        }
+
+        T0 *= 2;
+        A2 -= 1;
+    } while (A1 != T8);
+
+    return 1;
+}
+
+s32 pictureSnap_Zelda2(Cpu* pCPU) {
+    pCPU->aGPR[25].u32 = 0xFFFA0000;
+    return 1;
+}
+
+s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
+    void* pTarget;
+    OSMesgQueue_s* mq;
+    u32* msg;
+    OSIoMesg_s* pIOMessage;
+    s32 first;
+    s32 msgCount;
+    s32 validCount;
+    s32 nSize;
+    s32 nAddress;
+    s32 nOffsetRAM;
+    s32 nOffsetROM;
+
+    nAddress = pCPU->aGPR[5].u32;
+    if (!cpuGetAddressBuffer(pCPU, &pIOMessage, nAddress)) {
+        return 0;
+    }
+
+    nAddress = (u32)pIOMessage->hdr.retQueue;
+    if (!cpuGetAddressBuffer(pCPU, &mq, nAddress)) {
+        return 0;
+    }
+
+    nAddress = (u32)mq->msg;
+    first = mq->first;
+    msgCount = mq->msgCount;
+    validCount = mq->validCount;
+    if (!cpuGetAddressBuffer(pCPU, &msg, nAddress)) {
+        return 0;
+    }
+
+    msg[(first + validCount) % msgCount] = pCPU->aGPR[5].u32;
+    mq->validCount = validCount + 1;
+
+    nOffsetRAM = (u32)pIOMessage->dramAddr;
+    if (!cpuGetAddressBuffer(pCPU, &pTarget, nOffsetRAM)) {
+        return 0;
+    }
+
+    nOffsetROM = (u32)pIOMessage->devAddr;
+    nSize = pIOMessage->size;
+    romCopyImmediate(SYSTEM_ROM(pCPU->pHost), pTarget, nOffsetROM, nSize);
+
+    pCPU->aGPR[2].s32 = 0;
+    return 1;
+}
+
+s32 osViSwapBuffer_Entry(Cpu* pCPU) {
+    pCPU->aGPR[29].s32 += SYSTEM_LIBRARY(pCPU->pHost)->nAddStackSwap;
+    if (nAddress != pCPU->aGPR[4].u32) {
+        nAddress = pCPU->aGPR[4].u32;
+        if (!rspFrameComplete(SYSTEM_RSP(pCPU->pHost))) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+s32 zeldaLoadSZS_Entry(Cpu* pCPU) {
+    pCPU->aGPR[29].s32 -= 0x40;
+    return 1;
+}
+
+s32 zeldaLoadSZS_Exit(Cpu* pCPU) {
+    pCPU->aGPR[29].s32 += 0x40;
+    return 1;
+}
 
 static s32 libraryFindException(Library* pLibrary, s32 bException) {
     Cpu* pCPU;
