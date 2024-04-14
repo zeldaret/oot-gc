@@ -862,15 +862,11 @@ void GenPerspective_1080(Cpu* pCPU) {
 #pragma GLOBAL_ASM("asm/non_matchings/library/guScaleF.s")
 #else
 void guScaleF(Cpu* pCPU) {
-    // Parameters
-    // struct _CPU* pCPU; // r31
-
-    // Local variables
-    s32 i; // r8
-    s32 j; // r4
-    u32* mf; // r1+0x20
-    CpuFpr data0; // r1+0x18
-    CpuFpr data1; // r1+0x10
+    s32 i;
+    s32 j;
+    u32* mf;
+    CpuFpr data0;
+    CpuFpr data1;
 
     data0.f32 = 0.0f;
     data1.f32 = 1.0f;
