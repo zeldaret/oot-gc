@@ -17,7 +17,7 @@ O_FILES :=                                              \
     $(BUILD_DIR)/src/emulator/mcardGCN.o                \
     $(BUILD_DIR)/src/emulator/codeGCN.o                 \
     $(BUILD_DIR)/src/emulator/soundGCN.o                \
-    $(BUILD_DIR)/asm/frame.o                            \
+    $(BUILD_DIR)/src/emulator/frame.o                   \
     $(BUILD_DIR)/src/emulator/system.o                  \
     $(BUILD_DIR)/src/emulator/cpu.o                     \
     $(BUILD_DIR)/src/emulator/pif.o                     \
