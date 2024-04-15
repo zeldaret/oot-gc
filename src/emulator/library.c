@@ -17,10 +17,12 @@
 #include "libc/string.h"
 #include "macros.h"
 
-char D_800EEB00[] = "OS-LIBRARY";
+static s32 send_mesg(Cpu* pCPU);
+static s32 __osEnqueueThread(Cpu* pCPU);
+static s32 __osDispatchThread(Cpu* pCPU);
 
 _XL_OBJECTTYPE gClassLibrary = {
-    D_800EEB00,
+    "OS-LIBRARY",
     sizeof(Library),
     NULL,
     (EventFunc)libraryEvent,
@@ -36,314 +38,6 @@ static u32 __osRcpImTable[] = {
     0x00000A55, 0x00000A56, 0x00000A59, 0x00000A5A, 0x00000A65, 0x00000A66, 0x00000A69, 0x00000A6A,
     0x00000A95, 0x00000A96, 0x00000A99, 0x00000A9A, 0x00000AA5, 0x00000AA6, 0x00000AA9, 0x00000AAA,
 };
-
-static f32 dtor_466 = 0.01745329238474369;
-static f32 dtor_480 = 0.01745329238474369;
-static u32 nAddress = 0xFFFFFFFF;
-
-LibraryFunc gaFunction[54] = {
-    {
-        "send_mesg",
-        (LibraryFuncImpl)send_mesg,
-        {0},
-    },
-    {
-        "__osEnqueueAndYield",
-        (LibraryFuncImpl)__osEnqueueAndYield,
-        {0},
-    },
-    {
-        "__osEnqueueThread",
-        (LibraryFuncImpl)__osEnqueueThread,
-        {0},
-    },
-    {
-        "__osPopThread",
-        (LibraryFuncImpl)__osPopThread,
-        {0},
-    },
-    {
-        "__osDispatchThread",
-        (LibraryFuncImpl)__osDispatchThread,
-        {0},
-    },
-    {
-        "osGetMemSize",
-        (LibraryFuncImpl)osGetMemSize,
-        {0x00000045, 0xE82F9DC4},
-    },
-    {
-        "osInvalDCache",
-        NULL,
-        {0x0000002C, 0x384D2C37, 0x0000002B, 0x3954FA00},
-    },
-    {
-        "osInvalICache",
-        (LibraryFuncImpl)osInvalICache,
-        {0x0000001D, 0x376979EF, 0x0000001D, 0x3769A92F},
-    },
-    {
-        "osWritebackDCache",
-        NULL,
-        {0x0000001D, 0x376979EF},
-    },
-    {
-        "osWritebackDCacheAll",
-        NULL,
-        {0x0000000A, 0x0F38926F},
-    },
-    {
-        "__osDisableInt",
-        (LibraryFuncImpl)__osDisableInt,
-        {0x00000020, 0x3F5B05D4, 0x00000022, 0x3F5B35D1, 0x00000008, 0x10310240, 0x0000000C, 0x10310300},
-    },
-    {
-        "__osRestoreInt",
-        (LibraryFuncImpl)__osRestoreInt,
-        {0x00000007, 0x10000400},
-    },
-    {
-        "__osSpSetStatus",
-        (LibraryFuncImpl)__osSpSetStatus,
-        {0x00000003, 0x0000F02B, 0x00000004, 0x003CD02B, 0x0000000B, 0x5604E8E1},
-    },
-    {
-        "__cosf",
-        (LibraryFuncImpl)__cosf,
-        {0x0000007E, 0x0EA800A6, 0x0000005A, 0xA7BF8A16, 0x0000008E, 0x417938C2, 0x000002B5, 0x82283827},
-    },
-    {
-        "__sinf",
-        (LibraryFuncImpl)__sinf,
-        {0x0000007D, 0x9DDC3AD1, 0x00000070, 0x972CC1AA, 0x000000AB, 0x537273BE, 0x00000090, 0xA23718AB},
-    },
-    {
-        "bzero",
-        (LibraryFuncImpl)_bzero,
-        {0x00000028, 0x6A68DD7D, 0x00000027, 0x6A68E5DB},
-    },
-    {
-        "bcopy",
-        (LibraryFuncImpl)_bcopy,
-        {0x000000CE, 0xFF1D6C61, 0x000000F0, 0x082F2020, 0x000000C7, 0xB1771900, 0x000000C7, 0xC732F943},
-    },
-    {
-        "memcpy",
-        (LibraryFuncImpl)_memcpy,
-        {0x00000026, 0xC912B3A8},
-    },
-    {
-        "osVirtualToPhysical",
-        (LibraryFuncImpl)osVirtualToPhysical,
-        {0x00000037, 0x5F70CFD6, 0x00000015, 0x17E44014},
-    },
-    {
-        "osPhysicalToVirtual",
-        (LibraryFuncImpl)osPhysicalToVirtual,
-        {0x0000000D, 0x2B8FBACB, 0x00000003, 0x0000F000},
-    },
-    {
-        "guMtxF2L",
-        (LibraryFuncImpl)guMtxF2L,
-        {0x00000026, 0x686C0856, 0x00000019, 0x7CC68902, 0x00000040, 0x4425DE45, 0x0000005C, 0x220BB2B0, 0x00000027,
-         0x60FF87FD},
-    },
-    {
-        "guMtxCatF",
-        (LibraryFuncImpl)guMtxCatF,
-        {0x00000037, 0x91255B90},
-    },
-    {
-        "guMtxIdentF",
-        (LibraryFuncImpl)guMtxIdentF,
-        {0x00000014, 0x14BCF092, 0x00000022, 0x69E2607E, 0x0000003B, 0x03585A21},
-    },
-    {
-        "guMtxIdent",
-        (LibraryFuncImpl)guMtxIdent,
-        {0x0000003C, 0xA20CBF46},
-    },
-    {
-        "guOrthoF",
-        (LibraryFuncImpl)guOrthoF,
-        {0x00000055, 0x7F37D860, 0x00000080, 0x7C65E2F4},
-    },
-    {
-        "guOrtho",
-        (LibraryFuncImpl)guOrtho,
-        {0x0000001A, 0xB0EC9807, 0x00000053, 0xA76A660F},
-    },
-    {
-        "guPerspectiveF",
-        (LibraryFuncImpl)guPerspectiveF,
-        {0x0000008C, 0x9EC5FEAB},
-    },
-    {
-        "guPerspective",
-        (LibraryFuncImpl)guPerspective,
-        {0x00000072, 0x2B0214E7, 0x00000016, 0x99A85378, 0x0000001B, 0x8CC9B39E},
-    },
-    {
-        "guScaleF",
-        (LibraryFuncImpl)guScaleF,
-        {0x00000015, 0xCA91FB16, 0x00000018, 0x8497864D, 0x00000020, 0xBC8FF165},
-    },
-    {
-        "guScale",
-        (LibraryFuncImpl)guScale,
-        {0x0000001F, 0xA2C19EFB, 0x00000012, 0x3E48EAE5},
-    },
-    {
-        "guRotateF",
-        (LibraryFuncImpl)guRotateF,
-        {0x00000065, 0xD5CF8FAE, 0x00000057, 0xFA3518F4, 0x00000093, 0x9AA6B979},
-    },
-    {
-        "guRotate",
-        (LibraryFuncImpl)guRotate,
-        {0x0000005E, 0x06A7BCE6, 0x00000014, 0x698E4905, 0x00000017, 0x36AEAFA5},
-    },
-    {
-        "guTranslateF",
-        (LibraryFuncImpl)guTranslateF,
-        {0x0000001B, 0xC211F512},
-    },
-    {
-        "guTranslate",
-        (LibraryFuncImpl)guTranslate,
-        {0x0000001C, 0x80FA01A4, 0x00000015, 0x71F205A8},
-    },
-    {
-        "guLookAtF",
-        (LibraryFuncImpl)guLookAtF,
-        {0x00000107, 0xB11E3841},
-    },
-    {
-        "guLookAt",
-        (LibraryFuncImpl)guLookAt,
-        {0x000000E1, 0xE544558C},
-    },
-    {
-        "guLookAtHiliteF",
-        (LibraryFuncImpl)guLookAtHiliteF,
-        {0x000002E9, 0xCA0CCB5F},
-    },
-    {
-        "guLookAtHilite",
-        (LibraryFuncImpl)guLookAtHilite,
-        {0x00000035, 0xC2E98EC2, 0x00000035, 0x6B82DCD5},
-    },
-    {
-        "guLookAtReflectF",
-        (LibraryFuncImpl)guLookAtReflectF,
-        {0x0000015E, 0x55ACFC31, 0x000001BF, 0xBFD63279},
-    },
-    {
-        "guLookAtReflect",
-        (LibraryFuncImpl)guLookAtReflect,
-        {0x0000001B, 0xD6F88212, 0x00000023, 0xD70B815D},
-    },
-    {
-        "osAiSetFrequency",
-        (LibraryFuncImpl)osAiSetFrequency,
-        {0x00000046, 0x88F8FC90, 0x00000058, 0xA177D03D, 0x00000051, 0xD3B85DEF},
-    },
-    {
-        "osAiSetNextBuffer",
-        (LibraryFuncImpl)osAiSetNextBuffer,
-        {0x00000025, 0x5ACF0804, 0x0000002A, 0x978F50F1, 0x0000001D, 0x47200DC9},
-    },
-    {
-        "__osEepStatus",
-        (LibraryFuncImpl)__osEepStatus,
-        {0x000000A8, 0x8FBCE3BC, 0x00000067, 0x9870CAC4, 0x00000089, 0x807A196A},
-    },
-    {
-        "osEepromRead",
-        (LibraryFuncImpl)osEepromRead,
-        {0x00000066, 0x380B07CA, 0x000000A5, 0x947050BF, 0x0000007C, 0x66EC38E8},
-    },
-    {
-        "osEepromWrite",
-        (LibraryFuncImpl)osEepromWrite,
-        {0x0000005A, 0x5FCCA978, 0x00000080, 0xF6971795, 0x0000006C, 0x07B6DF06},
-    },
-    {
-        "osEepromLongRead",
-        (LibraryFuncImpl)osEepromLongRead,
-        {0x0000001C, 0x63BA7FE0, 0x0000002E, 0xF25B283A, 0x0000004F, 0x5B919EF9},
-    },
-    {
-        "osEepromLongWrite",
-        (LibraryFuncImpl)osEepromLongWrite,
-        {0x00000039, 0xED7A2E0B, 0x00000044, 0xF6B9E6BD, 0x0000004F, 0x5B919EF9},
-    },
-    {
-        "starfoxCopy",
-        (LibraryFuncImpl)starfoxCopy,
-        {0x00000026, 0x158C0203},
-    },
-    {
-        "GenPerspective",
-        (LibraryFuncImpl)GenPerspective_1080,
-        {0x0000002F, 0x3879CA27},
-    },
-    {
-        "pictureSnap_Zelda2",
-        (LibraryFuncImpl)pictureSnap_Zelda2,
-        {0x000001F0, 0xC2739708},
-    },
-    {
-        "dmaSoundRomHandler_ZELDA1",
-        (LibraryFuncImpl)dmaSoundRomHandler_ZELDA1,
-        {0x0000001D, 0x7C4D46F6, 0x00000008, 0x008D2AC3},
-    },
-    {
-        "osViSwapBuffer_Entry",
-        (LibraryFuncImpl)osViSwapBuffer_Entry,
-        {0x00000011, 0x5147109A, 0x00000038, 0xBF405C09, 0x00000014, 0x745C58FD, 0x00000013, 0x6467CCEE},
-    },
-    {
-        "zeldaLoadSZS_Entry",
-        (LibraryFuncImpl)zeldaLoadSZS_Entry,
-        {0x0000005A, 0x8EA707A2},
-    },
-    {
-        "zeldaLoadSZS_Exit",
-        (LibraryFuncImpl)zeldaLoadSZS_Exit,
-        {0},
-    },
-};
-
-char D_800EFF34[] = "TestFunction: INTERNAL ERROR: osViSwapBuffer: No ADDIU opcode: 0x%08x";
-char D_800EFF7C[] = "library.c";
-
-#ifndef NON_MATCHING
-// __osException
-void* jtbl_800EFF88[9] = {
-    &lbl_80097620, &lbl_800971AC, &lbl_80097208, &lbl_80097264, &lbl_80097488,
-    &lbl_800974A0, &lbl_800974B4, &lbl_800974BC, &lbl_800974C4,
-};
-#else
-void* jtbl_800EFF88[9] = {0};
-#endif
-
-const f32 D_80136078 = 0.5f;
-const f32 D_8013607C = 48681812.0f;
-const f64 D_80136080 = 4503599627370496.0;
-const f32 D_80136088 = 0.0f;
-const f64 D_80136090 = 0.5;
-const f64 D_80136098 = 3.0;
-const f32 D_801360A0 = -1.0f;
-const f32 D_801360A4 = 1.0f;
-const f32 D_801360A8 = 128.0f;
-const f32 D_801360AC = 127.0f;
-const f32 D_801360B0 = 65536.0f;
-const f64 D_801360B8 = 0.1;
-const f32 D_801360C0 = 2.0f;
-const f64 D_801360C8 = 4503601774854144.0;
-const f32 D_801360D0 = 0.01745329238474369f;
-const f32 D_801360D4 = -2.0f;
 
 typedef union __OSfp_s {
     struct {
@@ -448,11 +142,7 @@ typedef struct OSIoMesg_s {
     /* 0x14 */ void* piHandle;
 } OSIoMesg_s; // size = 0x18
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/__osException.s")
-#else
-s32 __osException(Cpu* pCPU) {
+static s32 __osException(Cpu* pCPU) {
     s32 iBit;
     Library* pLibrary;
     s64 nData64;
@@ -779,9 +469,8 @@ dispatchThread:
     __osDispatchThread(pCPU);
     return 1;
 }
-#endif
 
-s32 send_mesg(Cpu* pCPU) {
+static s32 send_mesg(Cpu* pCPU) {
     Library* pLibrary;
     CpuDevice** apDevice;
     u8* aiDevice;
@@ -829,7 +518,7 @@ s32 send_mesg(Cpu* pCPU) {
     return 1;
 }
 
-s32 __osEnqueueAndYield(Cpu* pCPU) {
+static s32 __osEnqueueAndYield(Cpu* pCPU) {
     s64 nData64;
     Library* pLibrary;
     __OSThread_s* __osRunningThread;
@@ -908,7 +597,7 @@ s32 __osEnqueueAndYield(Cpu* pCPU) {
     return 1;
 }
 
-s32 __osEnqueueThread(Cpu* pCPU) {
+static s32 __osEnqueueThread(Cpu* pCPU) {
     CpuDevice** apDevice = pCPU->apDevice;
     u8* aiDevice = pCPU->aiDevice;
 
@@ -931,7 +620,7 @@ s32 __osEnqueueThread(Cpu* pCPU) {
     return 1;
 }
 
-s32 __osPopThread(Cpu* pCPU) {
+static s32 __osPopThread(Cpu* pCPU) {
     CpuDevice** apDevice = pCPU->apDevice;
     u8* aiDevice = pCPU->aiDevice;
 
@@ -941,7 +630,7 @@ s32 __osPopThread(Cpu* pCPU) {
     return 1;
 }
 
-s32 __osDispatchThread(Cpu* pCPU) {
+static s32 __osDispatchThread(Cpu* pCPU) {
     Library* pLibrary;
     u32 nAddress;
     u64 nData64;
@@ -1048,7 +737,7 @@ s32 __osDispatchThread(Cpu* pCPU) {
     return 1;
 }
 
-s32 osGetMemSize(Cpu* pCPU) {
+static s32 osGetMemSize(Cpu* pCPU) {
     u32 nSize;
 
     if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), (s32*)&nSize)) {
@@ -1059,7 +748,7 @@ s32 osGetMemSize(Cpu* pCPU) {
     return 1;
 }
 
-s32 osInvalICache(Cpu* pCPU) {
+static s32 osInvalICache(Cpu* pCPU) {
     u32 nAddress = pCPU->aGPR[4].u32;
     u32 nSize = pCPU->aGPR[5].u32;
 
@@ -1074,7 +763,7 @@ s32 osInvalICache(Cpu* pCPU) {
     return 1;
 }
 
-s32 __osDisableInt(Cpu* pCPU) {
+static s32 __osDisableInt(Cpu* pCPU) {
     u32 nStatus;
     u64 nData64;
     s32 pad[2];
@@ -1119,9 +808,9 @@ s32 __osSpSetStatus(Cpu* pCPU) {
     return 1;
 }
 
-void __cosf(Cpu* pCPU) { pCPU->aFPR[0].f32 = cosf(pCPU->aFPR[12].f32); }
+static void __cosf(Cpu* pCPU) { pCPU->aFPR[0].f32 = cosf(pCPU->aFPR[12].f32); }
 
-void __sinf(Cpu* pCPU) { pCPU->aFPR[0].f32 = sinf(pCPU->aFPR[12].f32); }
+static void __sinf(Cpu* pCPU) { pCPU->aFPR[0].f32 = sinf(pCPU->aFPR[12].f32); }
 
 void _bzero(Cpu* pCPU) {
     s32 nSize;
@@ -1172,10 +861,6 @@ void osVirtualToPhysical(Cpu* pCPU) {
     }
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guMtxCatF.s")
-#else
 void guMtxCatF(Cpu* pCPU) {
     s32 i;
     s32 j;
@@ -1209,12 +894,7 @@ void guMtxCatF(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guMtxF2L.s")
-#else
 void guMtxF2L(Cpu* pCPU) {
     f32* mf;
     s32 e1;
@@ -1244,12 +924,7 @@ void guMtxF2L(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guMtxIdentF.s")
-#else
 void guMtxIdentF(Cpu* pCPU) {
     f32* mf;
     s32 i;
@@ -1275,7 +950,6 @@ void guMtxIdentF(Cpu* pCPU) {
         }
     }
 }
-#endif
 
 void guMtxIdent(Cpu* pCPU) {
     s32* m;
@@ -1299,10 +973,6 @@ void guMtxIdent(Cpu* pCPU) {
     m[15] = 0;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guOrthoF.s")
-#else
 void guOrthoF(Cpu* pCPU) {
     s32 i;
     s32 j;
@@ -1378,12 +1048,7 @@ void guOrthoF(Cpu* pCPU) {
     data.f32 = 1.0f;
     mf[3 * 4 + 3] = data.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guOrtho.s")
-#else
 void guOrtho(Cpu* pCPU) {
     s32* m;
     s32 i;
@@ -1466,12 +1131,7 @@ void guOrtho(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guPerspectiveF.s")
-#else
 void guPerspectiveF(Cpu* pCPU) {
     s32 i;
     s32 j;
@@ -1543,12 +1203,7 @@ void guPerspectiveF(Cpu* pCPU) {
     data.f32 = 0.0f;
     mf[3 * 4 + 3] = data.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guPerspective.s")
-#else
 void guPerspective(Cpu* pCPU) {
     s32* m;
     f32 fovy;
@@ -1627,12 +1282,7 @@ void guPerspective(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/GenPerspective_1080.s")
-#else
 void GenPerspective_1080(Cpu* pCPU) {
     CpuFpr data;
     u32* mf;
@@ -1661,12 +1311,7 @@ void GenPerspective_1080(Cpu* pCPU) {
     frameSetMatrixHint(SYSTEM_FRAME(pCPU->pHost), 0, pCPU->aGPR[4].u32, 0, rNear, rFar, fovy, aspect, 1.0f);
     pFrame->iHintHack = pFrame->iHintLast;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guScaleF.s")
-#else
 void guScaleF(Cpu* pCPU) {
     s32 i;
     s32 j;
@@ -1693,12 +1338,7 @@ void guScaleF(Cpu* pCPU) {
     mf[2 * 4 + 2] = pCPU->aGPR[7].s32;
     mf[3 * 4 + 3] = data1.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guScale.s")
-#else
 void guScale(Cpu* pCPU) {
     f32 mf[4][4];
     s32* m;
@@ -1750,12 +1390,7 @@ void guScale(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guTranslateF.s")
-#else
 void guTranslateF(Cpu* pCPU) {
     s32 i;
     s32 j;
@@ -1781,12 +1416,7 @@ void guTranslateF(Cpu* pCPU) {
     mf[3 * 4 + 1] = pCPU->aGPR[6].s32;
     mf[3 * 4 + 2] = pCPU->aGPR[7].s32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guTranslate.s")
-#else
 void guTranslate(Cpu* pCPU) {
     s32* m;
     s32 i;
@@ -1838,12 +1468,7 @@ void guTranslate(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guRotateF.s")
-#else
 void guRotateF(Cpu* pCPU) {
     f32 m;
     s32 i;
@@ -1863,6 +1488,7 @@ void guRotateF(Cpu* pCPU) {
     f32 bc;
     f32 ca;
     f32 t;
+    static f32 dtor = (f32)M_PI / 180;
 
     cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
 
@@ -1880,7 +1506,7 @@ void guRotateF(Cpu* pCPU) {
 
     m = 1.0f / sqrtf(x * x + y * y + z * z);
 
-    a *= (f32)M_PI / 180;
+    a *= dtor;
     x *= m;
     y *= m;
     z *= m;
@@ -1937,12 +1563,7 @@ void guRotateF(Cpu* pCPU) {
     data.f32 = ab + z * sine;
     mf[0 * 4 + 1] = data.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guRotate.s")
-#else
 void guRotate(Cpu* pCPU) {
     s32* m;
     u32* sp;
@@ -1966,6 +1587,7 @@ void guRotate(Cpu* pCPU) {
     s32* ai;
     s32* af;
     s32 pad[2];
+    static f32 dtor = (f32)M_PI / 180;
 
     cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
     cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
@@ -1984,7 +1606,7 @@ void guRotate(Cpu* pCPU) {
 
     magnitude = 1.0f / sqrtf(x * x + y * y + z * z);
 
-    a *= (f32)M_PI / 180;
+    a *= dtor;
     x *= magnitude;
     y *= magnitude;
     z *= magnitude;
@@ -2038,12 +1660,7 @@ void guRotate(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtF.s")
-#else
 void guLookAtF(Cpu* pCPU) {
     f32 len;
     f32 xAt;
@@ -2164,12 +1781,7 @@ void guLookAtF(Cpu* pCPU) {
     mf[2 * 4 + 3] = data0.u32;
     mf[3 * 4 + 3] = data1.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guLookAt.s")
-#else
 void guLookAt(Cpu* pCPU) {
     f32 mf[4][4];
     s32* m;
@@ -2284,7 +1896,6 @@ void guLookAt(Cpu* pCPU) {
         }
     }
 }
-#endif
 
 typedef struct Light_t_s {
     /* 0x0 */ u8 col[3];
@@ -2319,10 +1930,6 @@ typedef union Hilite_s {
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FTOFRAC8(x) ((s32)MIN(((x) * (128.0f)), 127.0f) & 0xFF)
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtHiliteF.s")
-#else
 void guLookAtHiliteF(Cpu* pCPU) {
     LookAt_s* l;
     Hilite_s* h;
@@ -2551,12 +2158,7 @@ void guLookAtHiliteF(Cpu* pCPU) {
     data.f32 = 1.0f;
     mf[3 * 4 + 3] = data.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtHilite.s")
-#else
 void guLookAtHilite(Cpu* pCPU) {
     LookAt_s* l;
     Hilite_s* h;
@@ -2776,12 +2378,7 @@ void guLookAtHilite(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtReflectF.s")
-#else
 void guLookAtReflectF(Cpu* pCPU) {
     LookAt_s* l;
     CpuFpr data;
@@ -2930,12 +2527,7 @@ void guLookAtReflectF(Cpu* pCPU) {
     data.f32 = 1.0f;
     mf[3 * 4 + 3] = data.u32;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/guLookAtReflect.s")
-#else
 void guLookAtReflect(Cpu* pCPU) {
     LookAt_s* l;
     s32 i;
@@ -3075,12 +2667,7 @@ void guLookAtReflect(Cpu* pCPU) {
         }
     }
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/library/osAiSetFrequency.s")
-#else
 s32 osAiSetFrequency(Cpu* pCPU) {
     s32 pad1[2];
     u32 dacRate;
@@ -3112,7 +2699,6 @@ s32 osAiSetFrequency(Cpu* pCPU) {
 
     return 1;
 }
-#endif
 
 s32 osAiSetNextBuffer(Cpu* pCPU) {
     s32 pad1;
@@ -3378,6 +2964,8 @@ s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
 }
 
 s32 osViSwapBuffer_Entry(Cpu* pCPU) {
+    static u32 nAddress = 0xFFFFFFFF;
+
     pCPU->aGPR[29].s32 += SYSTEM_LIBRARY(pCPU->pHost)->nAddStackSwap;
     if (nAddress != pCPU->aGPR[4].u32) {
         nAddress = pCPU->aGPR[4].u32;
@@ -3397,6 +2985,280 @@ s32 zeldaLoadSZS_Exit(Cpu* pCPU) {
     pCPU->aGPR[29].s32 += 0x40;
     return 1;
 }
+
+LibraryFunc gaFunction[54] = {
+    {
+        "send_mesg",
+        (LibraryFuncImpl)send_mesg,
+        {0},
+    },
+    {
+        "__osEnqueueAndYield",
+        (LibraryFuncImpl)__osEnqueueAndYield,
+        {0},
+    },
+    {
+        "__osEnqueueThread",
+        (LibraryFuncImpl)__osEnqueueThread,
+        {0},
+    },
+    {
+        "__osPopThread",
+        (LibraryFuncImpl)__osPopThread,
+        {0},
+    },
+    {
+        "__osDispatchThread",
+        (LibraryFuncImpl)__osDispatchThread,
+        {0},
+    },
+    {
+        "osGetMemSize",
+        (LibraryFuncImpl)osGetMemSize,
+        {0x00000045, 0xE82F9DC4},
+    },
+    {
+        "osInvalDCache",
+        NULL,
+        {0x0000002C, 0x384D2C37, 0x0000002B, 0x3954FA00},
+    },
+    {
+        "osInvalICache",
+        (LibraryFuncImpl)osInvalICache,
+        {0x0000001D, 0x376979EF, 0x0000001D, 0x3769A92F},
+    },
+    {
+        "osWritebackDCache",
+        NULL,
+        {0x0000001D, 0x376979EF},
+    },
+    {
+        "osWritebackDCacheAll",
+        NULL,
+        {0x0000000A, 0x0F38926F},
+    },
+    {
+        "__osDisableInt",
+        (LibraryFuncImpl)__osDisableInt,
+        {0x00000020, 0x3F5B05D4, 0x00000022, 0x3F5B35D1, 0x00000008, 0x10310240, 0x0000000C, 0x10310300},
+    },
+    {
+        "__osRestoreInt",
+        (LibraryFuncImpl)__osRestoreInt,
+        {0x00000007, 0x10000400},
+    },
+    {
+        "__osSpSetStatus",
+        (LibraryFuncImpl)__osSpSetStatus,
+        {0x00000003, 0x0000F02B, 0x00000004, 0x003CD02B, 0x0000000B, 0x5604E8E1},
+    },
+    {
+        "__cosf",
+        (LibraryFuncImpl)__cosf,
+        {0x0000007E, 0x0EA800A6, 0x0000005A, 0xA7BF8A16, 0x0000008E, 0x417938C2, 0x000002B5, 0x82283827},
+    },
+    {
+        "__sinf",
+        (LibraryFuncImpl)__sinf,
+        {0x0000007D, 0x9DDC3AD1, 0x00000070, 0x972CC1AA, 0x000000AB, 0x537273BE, 0x00000090, 0xA23718AB},
+    },
+    {
+        "bzero",
+        (LibraryFuncImpl)_bzero,
+        {0x00000028, 0x6A68DD7D, 0x00000027, 0x6A68E5DB},
+    },
+    {
+        "bcopy",
+        (LibraryFuncImpl)_bcopy,
+        {0x000000CE, 0xFF1D6C61, 0x000000F0, 0x082F2020, 0x000000C7, 0xB1771900, 0x000000C7, 0xC732F943},
+    },
+    {
+        "memcpy",
+        (LibraryFuncImpl)_memcpy,
+        {0x00000026, 0xC912B3A8},
+    },
+    {
+        "osVirtualToPhysical",
+        (LibraryFuncImpl)osVirtualToPhysical,
+        {0x00000037, 0x5F70CFD6, 0x00000015, 0x17E44014},
+    },
+    {
+        "osPhysicalToVirtual",
+        (LibraryFuncImpl)osPhysicalToVirtual,
+        {0x0000000D, 0x2B8FBACB, 0x00000003, 0x0000F000},
+    },
+    {
+        "guMtxF2L",
+        (LibraryFuncImpl)guMtxF2L,
+        {0x00000026, 0x686C0856, 0x00000019, 0x7CC68902, 0x00000040, 0x4425DE45, 0x0000005C, 0x220BB2B0, 0x00000027,
+         0x60FF87FD},
+    },
+    {
+        "guMtxCatF",
+        (LibraryFuncImpl)guMtxCatF,
+        {0x00000037, 0x91255B90},
+    },
+    {
+        "guMtxIdentF",
+        (LibraryFuncImpl)guMtxIdentF,
+        {0x00000014, 0x14BCF092, 0x00000022, 0x69E2607E, 0x0000003B, 0x03585A21},
+    },
+    {
+        "guMtxIdent",
+        (LibraryFuncImpl)guMtxIdent,
+        {0x0000003C, 0xA20CBF46},
+    },
+    {
+        "guOrthoF",
+        (LibraryFuncImpl)guOrthoF,
+        {0x00000055, 0x7F37D860, 0x00000080, 0x7C65E2F4},
+    },
+    {
+        "guOrtho",
+        (LibraryFuncImpl)guOrtho,
+        {0x0000001A, 0xB0EC9807, 0x00000053, 0xA76A660F},
+    },
+    {
+        "guPerspectiveF",
+        (LibraryFuncImpl)guPerspectiveF,
+        {0x0000008C, 0x9EC5FEAB},
+    },
+    {
+        "guPerspective",
+        (LibraryFuncImpl)guPerspective,
+        {0x00000072, 0x2B0214E7, 0x00000016, 0x99A85378, 0x0000001B, 0x8CC9B39E},
+    },
+    {
+        "guScaleF",
+        (LibraryFuncImpl)guScaleF,
+        {0x00000015, 0xCA91FB16, 0x00000018, 0x8497864D, 0x00000020, 0xBC8FF165},
+    },
+    {
+        "guScale",
+        (LibraryFuncImpl)guScale,
+        {0x0000001F, 0xA2C19EFB, 0x00000012, 0x3E48EAE5},
+    },
+    {
+        "guRotateF",
+        (LibraryFuncImpl)guRotateF,
+        {0x00000065, 0xD5CF8FAE, 0x00000057, 0xFA3518F4, 0x00000093, 0x9AA6B979},
+    },
+    {
+        "guRotate",
+        (LibraryFuncImpl)guRotate,
+        {0x0000005E, 0x06A7BCE6, 0x00000014, 0x698E4905, 0x00000017, 0x36AEAFA5},
+    },
+    {
+        "guTranslateF",
+        (LibraryFuncImpl)guTranslateF,
+        {0x0000001B, 0xC211F512},
+    },
+    {
+        "guTranslate",
+        (LibraryFuncImpl)guTranslate,
+        {0x0000001C, 0x80FA01A4, 0x00000015, 0x71F205A8},
+    },
+    {
+        "guLookAtF",
+        (LibraryFuncImpl)guLookAtF,
+        {0x00000107, 0xB11E3841},
+    },
+    {
+        "guLookAt",
+        (LibraryFuncImpl)guLookAt,
+        {0x000000E1, 0xE544558C},
+    },
+    {
+        "guLookAtHiliteF",
+        (LibraryFuncImpl)guLookAtHiliteF,
+        {0x000002E9, 0xCA0CCB5F},
+    },
+    {
+        "guLookAtHilite",
+        (LibraryFuncImpl)guLookAtHilite,
+        {0x00000035, 0xC2E98EC2, 0x00000035, 0x6B82DCD5},
+    },
+    {
+        "guLookAtReflectF",
+        (LibraryFuncImpl)guLookAtReflectF,
+        {0x0000015E, 0x55ACFC31, 0x000001BF, 0xBFD63279},
+    },
+    {
+        "guLookAtReflect",
+        (LibraryFuncImpl)guLookAtReflect,
+        {0x0000001B, 0xD6F88212, 0x00000023, 0xD70B815D},
+    },
+    {
+        "osAiSetFrequency",
+        (LibraryFuncImpl)osAiSetFrequency,
+        {0x00000046, 0x88F8FC90, 0x00000058, 0xA177D03D, 0x00000051, 0xD3B85DEF},
+    },
+    {
+        "osAiSetNextBuffer",
+        (LibraryFuncImpl)osAiSetNextBuffer,
+        {0x00000025, 0x5ACF0804, 0x0000002A, 0x978F50F1, 0x0000001D, 0x47200DC9},
+    },
+    {
+        "__osEepStatus",
+        (LibraryFuncImpl)__osEepStatus,
+        {0x000000A8, 0x8FBCE3BC, 0x00000067, 0x9870CAC4, 0x00000089, 0x807A196A},
+    },
+    {
+        "osEepromRead",
+        (LibraryFuncImpl)osEepromRead,
+        {0x00000066, 0x380B07CA, 0x000000A5, 0x947050BF, 0x0000007C, 0x66EC38E8},
+    },
+    {
+        "osEepromWrite",
+        (LibraryFuncImpl)osEepromWrite,
+        {0x0000005A, 0x5FCCA978, 0x00000080, 0xF6971795, 0x0000006C, 0x07B6DF06},
+    },
+    {
+        "osEepromLongRead",
+        (LibraryFuncImpl)osEepromLongRead,
+        {0x0000001C, 0x63BA7FE0, 0x0000002E, 0xF25B283A, 0x0000004F, 0x5B919EF9},
+    },
+    {
+        "osEepromLongWrite",
+        (LibraryFuncImpl)osEepromLongWrite,
+        {0x00000039, 0xED7A2E0B, 0x00000044, 0xF6B9E6BD, 0x0000004F, 0x5B919EF9},
+    },
+    {
+        "starfoxCopy",
+        (LibraryFuncImpl)starfoxCopy,
+        {0x00000026, 0x158C0203},
+    },
+    {
+        "GenPerspective",
+        (LibraryFuncImpl)GenPerspective_1080,
+        {0x0000002F, 0x3879CA27},
+    },
+    {
+        "pictureSnap_Zelda2",
+        (LibraryFuncImpl)pictureSnap_Zelda2,
+        {0x000001F0, 0xC2739708},
+    },
+    {
+        "dmaSoundRomHandler_ZELDA1",
+        (LibraryFuncImpl)dmaSoundRomHandler_ZELDA1,
+        {0x0000001D, 0x7C4D46F6, 0x00000008, 0x008D2AC3},
+    },
+    {
+        "osViSwapBuffer_Entry",
+        (LibraryFuncImpl)osViSwapBuffer_Entry,
+        {0x00000011, 0x5147109A, 0x00000038, 0xBF405C09, 0x00000014, 0x745C58FD, 0x00000013, 0x6467CCEE},
+    },
+    {
+        "zeldaLoadSZS_Entry",
+        (LibraryFuncImpl)zeldaLoadSZS_Entry,
+        {0x0000005A, 0x8EA707A2},
+    },
+    {
+        "zeldaLoadSZS_Exit",
+        (LibraryFuncImpl)zeldaLoadSZS_Exit,
+        {0},
+    },
+};
 
 static s32 libraryFindException(Library* pLibrary, s32 bException) {
     Cpu* pCPU;
@@ -3789,7 +3651,8 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                 if (bFlag) {
                     bReturn = 0;
                     if ((nOpcode & 0xFFFF0000) != 0x27BD0000) {
-                        xlPostText(D_800EFF34, D_800EFF7C, 6971, nOpcode);
+                        xlPostText("TestFunction: INTERNAL ERROR: osViSwapBuffer: No ADDIU opcode: 0x%08x", "library.c",
+                                   6971, nOpcode);
                     } else {
                         pLibrary->nAddStackSwap = MIPS_IMM_S16(nOpcode);
                     }
