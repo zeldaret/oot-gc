@@ -284,7 +284,7 @@ typedef struct Frame {
     /* 0x3C520 */ f32 aMatrixModel[10][4][4];
     /* 0x3C7A0 */ f32 matrixProjection[4][4];
     /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
-    /* 0x3C820 */ MatrixHint MatrixHint[64];
+    /* 0x3C820 */ MatrixHint aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
     /* 0x3D122 */ u8 lastTile;
