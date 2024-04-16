@@ -4,7 +4,7 @@
 #include "dolphin.h"
 #include "emulator/xlObject.h"
 
-typedef s32 (*FrameDrawCallback)(void*, void*);
+typedef s32 (*FrameDrawFunc)(void*, void*);
 
 // __anon_0x27B8C
 typedef enum ViewType {
@@ -257,7 +257,7 @@ typedef struct Frame {
     /* 0x00120 */ s32 nWidthLine;
     /* 0x00124 */ f32 rDepth;
     /* 0x00128 */ f32 rDelta;
-    /* 0x0012C */ FrameDrawCallback aDraw[4];
+    /* 0x0012C */ FrameDrawFunc aDraw[4];
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ Light aLight[8];
     /* 0x00320 */ LookAt lookAt;

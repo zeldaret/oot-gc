@@ -584,7 +584,7 @@ static s32 frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
         return 0;
     }
 
-    pFrame->aDraw[0] = (FrameDrawCallback)gapfDrawLine[nColors + (bFlag ? 3 : 0)];
+    pFrame->aDraw[0] = (FrameDrawFunc)gapfDrawLine[nColors + (bFlag ? 3 : 0)];
     if (!pFrame->aDraw[0](pFrame, pPrimitive)) {
         return 0;
     }
@@ -609,7 +609,7 @@ static s32 frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
         return 0;
     }
 
-    pFrame->aDraw[2] = (FrameDrawCallback)frameDrawRectFill;
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill;
 
     if (!pFrame->aDraw[2](pFrame, pRectangle)) {
         return 0;
@@ -703,10 +703,10 @@ static s32 packFreeBlocks(s32* piPack, u32* anPack) {
         return 1;
     }
 
-    nMask = ((1 << ((iPack) >> 0x10)) - 1) << (iPack & 0x1F);
+    nMask = ((1 << (iPack >> 16)) - 1) << (iPack & 0x1F);
     temp_r6 = (iPack & 0xFFFF) >> 5;
 
-    if (nMask == (u32)(nMask & anPack[temp_r6])) {
+    if (nMask == (nMask & anPack[temp_r6])) {
         anPack[temp_r6] &= ~nMask;
         *piPack = -1;
         return 1;
@@ -725,10 +725,10 @@ static s32 packFreeBlocks(s32* piPack, u32* anPack) {
 
 s32 frameDrawReset(Frame* pFrame, s32 nFlag) {
     pFrame->nFlag |= nFlag;
-    pFrame->aDraw[0] = (FrameDrawCallback)frameDrawLine_Setup;
-    pFrame->aDraw[1] = (FrameDrawCallback)frameDrawTriangle_Setup;
-    pFrame->aDraw[2] = (FrameDrawCallback)frameDrawRectFill_Setup;
-    pFrame->aDraw[3] = (FrameDrawCallback)frameDrawRectTexture_Setup;
+    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
+    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
+    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
     return 1;
 }
 
@@ -736,7 +736,7 @@ s32 frameSetFill(Frame* pFrame, s32 bFill) {
     if (bFill) {
         pFrame->nMode |= 0x20000;
     } else {
-        pFrame->nMode &= 0xFFFDFFFF;
+        pFrame->nMode &= ~0x20000;
     }
     return 1;
 }
