@@ -1,5 +1,10 @@
+#include "dolphin.h"
 #include "emulator/frame.h"
-#include "dolphin/types.h"
+#include "emulator/ram.h"
+#include "emulator/rsp.h"
+#include "emulator/simGCN.h"
+#include "emulator/system.h"
+#include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
 #include "macros.h"
 
@@ -24,13 +29,15 @@ static u32 snScissorXOrig;
 static u32 snScissorYOrig;
 static u32 snScissorWidth;
 static u32 snScissorHeight;
-static s32 sCopyFrameSyncReceived;
+
+static volatile s32 sCopyFrameSyncReceived;
+
 static u8 sSpecialZeldaHackON;
 static u32 sDestinationBuffer;
 static u32 sSrcBuffer;
-static u32 sConstantBufAddr[8] ALIGNAS(32);
-static u32 sNumAddr; // .skip
-static u32 gHackCreditsColor; // .skip
+static u32 sConstantBufAddr[6] ALIGNAS(32);
+static u32 sNumAddr;
+static u32 gHackCreditsColor;
 s32 ganNameColor[] = {
     0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004, 0x00000005, 0x00000006, 0x00000007,
 };
@@ -75,13 +82,13 @@ s32 (*gapfDrawLine[6])(Frame*, Primitive*) = {
     frameDrawLine_C0T2, frameDrawLine_C1T2, frameDrawLine_C2T2,
 };
 
-u8 nCopyFrame[4]; // .skip
-u8 nLastFrame[4]; // .skip
-u8 bSkip[4]; // .skip
-u8 nCounter[4]; // .skip
-u8 gnCountMapHack[4]; // .skip
-s32 gNoSwapBuffer; // .skip
-static u16 sTempZBuf[4800][4][4];
+s32 nCopyFrame;
+s32 nLastFrame;
+s32 bSkip;
+s32 nCounter;
+s32 gnCountMapHack;
+s32 gNoSwapBuffer;
+static u16 sTempZBuf[4800][4][4] ALIGNAS(32);
 
 s32 sZBufShift[] = {
     0x0003F800, 0x00000000, 0x0003F000, 0x00000000, 0x0003E000, 0x00000001, 0x0003C000, 0x00000002,
@@ -94,23 +101,19 @@ char* gaszNameColorType[] = {
     "FOG", "FILL", "BLEND", D_800EAA0C, D_800EAA18,
 };
 
-static u8 sFrameObj1[32]; // .skip
-static u8 sFrameObj2[32]; // .skip
-// size = 0x20, address = 0x8012DE00
-static struct _GXTexObj sFrameObj_1564;
-// size = 0x20, address = 0x8012DE20
-static struct _GXTexObj sFrameObj_1565;
-// size = 0x20, address = 0x8012DE40
-static struct _GXTexObj sFrameObj_1568;
-// size = 0x1400, address = 0x8012DE60
+static GXTexObj sFrameObj1;
+static GXTexObj sFrameObj2;
+static GXTexObj sFrameObj_1564;
+static GXTexObj sFrameObj_1565;
+static GXTexObj sFrameObj_1568;
 static u32 line_1582[80][4][4];
 static u16 line_1606[80][4][4];
 static u16 line_1630[80][4][4];
-static struct _GXTexObj sFrameObj_1647;
+static GXTexObj sFrameObj_1647;
 static u8 cAlpha = 0x0F;
-static struct _GXTexObj sFrameObj_1660;
-static struct _GXTexObj frameObj_1663;
-static struct _GXTexObj frameObj_1673;
+static GXTexObj sFrameObj_1660;
+static GXTexObj frameObj_1663;
+static GXTexObj frameObj_1673;
 
 s32 sCommandCodes_1679[] = {
     0xF5500000, 0x07080200, 0xE6000000, 0x00000000, 0xF3000000, 0x073BF01A, 0xE7000000, 0x00000000,
