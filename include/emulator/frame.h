@@ -4,6 +4,8 @@
 #include "dolphin.h"
 #include "emulator/xlObject.h"
 
+typedef s32 (*FrameDrawFunc)(void*, void*);
+
 // __anon_0x27B8C
 typedef enum ViewType {
     FMT_MODELVIEW = 0,
@@ -203,6 +205,19 @@ typedef struct MatrixHint {
     /* 0x20 */ TypeProjection eProjection;
 } MatrixHint; // size = 0x24
 
+typedef struct Rectangle {
+    /* 0x00 */ s32 bFlip;
+    /* 0x04 */ s32 iTile;
+    /* 0x08 */ s32 nX0;
+    /* 0x0C */ s32 nY0;
+    /* 0x10 */ s32 nX1;
+    /* 0x14 */ s32 nY1;
+    /* 0x18 */ f32 rS;
+    /* 0x1C */ f32 rT;
+    /* 0x20 */ f32 rDeltaS;
+    /* 0x24 */ f32 rDeltaT;
+} Rectangle; // size = 0x28
+
 // __anon_0x24C38
 typedef struct Frame {
     /* 0x00000 */ u32 anCIMGAddresses[8];
@@ -242,7 +257,7 @@ typedef struct Frame {
     /* 0x00120 */ s32 nWidthLine;
     /* 0x00124 */ f32 rDepth;
     /* 0x00128 */ f32 rDelta;
-    /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
+    /* 0x0012C */ FrameDrawFunc aDraw[4];
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ Light aLight[8];
     /* 0x00320 */ LookAt lookAt;

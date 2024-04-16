@@ -247,10 +247,12 @@ extern void* lbl_80029818;
 extern void* lbl_80029824;
 extern void* lbl_80029830;
 
+#ifndef NON_MATCHING
 void* jtbl_800EB20C[] = {
     &lbl_800297DC, &lbl_800297E8, &lbl_800297F4, &lbl_80029800,
     &lbl_8002980C, &lbl_80029818, &lbl_80029824, &lbl_80029830,
 };
+#endif
 
 extern void* lbl_8002986C;
 extern void* lbl_80029878;
@@ -285,6 +287,7 @@ extern void* lbl_80029938;
 extern void* lbl_80029938;
 extern void* lbl_8002992C;
 
+#ifndef NON_MATCHING
 void* jtbl_800EB22C[] = {
     &lbl_8002986C, &lbl_80029878, &lbl_80029884, &lbl_80029890, &lbl_8002989C, &lbl_800298A8, &lbl_80029920,
     &lbl_800298B4, &lbl_800298C0, &lbl_800298CC, &lbl_800298D8, &lbl_800298E4, &lbl_800298F0, &lbl_800298FC,
@@ -292,6 +295,7 @@ void* jtbl_800EB22C[] = {
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938,
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_8002992C,
 };
+#endif
 
 char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
 char D_800EB2D4[] = "MakeTexture: 'aTexture' is exhausted!\0\0";
@@ -389,13 +393,41 @@ const f32 D_80135F7C = 0.25999999046325684;
 const f32 D_80135F80 = 8.4399995803833;
 const f64 D_80135F88 = 8.44;
 
+// temporary
+#pragma peephole off
+static s32 frameDrawSetupSP(Frame* pFrame, s32* pnColors, s32* pbFlag, s32 nVertexCount);
+static s32 frameDrawSetupDP(Frame* pFrame, s32* pnColors, s32* pbFlag, s32);
+static s32 frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static s32 frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
+static s32 frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
+
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSyncCallback.s")
+static void frameDrawSyncCallback(u16 nToken) {
+    if (nToken == 0x7D00) {
+        sCopyFrameSyncReceived = 1;
+    }
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawDone.s")
+static void frameDrawDone() {
+    if (gbFrameValid != 0) {
+        gbFrameValid = 0;
+        if (gNoSwapBuffer == 0) {
+            VISetNextFrameBuffer(DemoCurrentBuffer);
+            VIFlush();
+            if (DemoCurrentBuffer == DemoFrameBuffer1) {
+                DemoCurrentBuffer = DemoFrameBuffer2;
+            } else {
+                DemoCurrentBuffer = DemoFrameBuffer1;
+            }
+        } else {
+            VIFlush();
+            gNoSwapBuffer = 0;
+        }
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTLUT.s")
 
@@ -407,9 +439,108 @@ const f64 D_80135F88 = 8.44;
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupSP.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetCombineColor.s")
+#else
+static s32 frameGetCombineColor(Frame* pFrame, GXTevColorArg* pnColorTEV, s32 nColorN64) {
+    switch (nColorN64) {
+        case 0:
+            *pnColorTEV = GX_CC_TEXC;
+            break;
+        case 1:
+            *pnColorTEV = GX_CC_TEXC;
+            break;
+        case 2:
+            *pnColorTEV = GX_CC_TEXC;
+            break;
+        case 3:
+            *pnColorTEV = GX_CC_C0;
+            break;
+        case 4:
+            *pnColorTEV = GX_CC_RASC;
+            break;
+        case 5:
+            *pnColorTEV = GX_CC_C1;
+            break;
+        case 7:
+            *pnColorTEV = GX_CC_TEXA;
+            break;
+        case 8:
+            *pnColorTEV = GX_CC_TEXA;
+            break;
+        case 9:
+            *pnColorTEV = GX_CC_TEXA;
+            break;
+        case 10:
+            *pnColorTEV = GX_CC_A0;
+            break;
+        case 11:
+            *pnColorTEV = GX_CC_RASA;
+            break;
+        case 12:
+            *pnColorTEV = GX_CC_A1;
+            break;
+        case 13:
+            *pnColorTEV = GX_CC_TEXC;
+            break;
+        case 14:
+            *pnColorTEV = GX_CC_TEXC;
+            break;
+        case 15:
+            *pnColorTEV = GX_CC_C2;
+            break;
+        case 6:
+            *pnColorTEV = GX_CC_ONE;
+            break;
+        case 31:
+            *pnColorTEV = GX_CC_ZERO;
+            break;
+        default:
+            return 0;
+    }
 
+    return 1;
+}
+#endif
+
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetCombineAlpha.s")
+#else
+static s32 frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nAlphaN64) {
+    switch (nAlphaN64) {
+        case 0:
+            *pnAlphaTEV = GX_CA_TEXA;
+            break;
+        case 1:
+            *pnAlphaTEV = GX_CA_TEXA;
+            break;
+        case 2:
+            *pnAlphaTEV = GX_CA_TEXA;
+            break;
+        case 3:
+            *pnAlphaTEV = GX_CA_A0;
+            break;
+        case 4:
+            *pnAlphaTEV = GX_CA_RASA;
+            break;
+        case 5:
+            *pnAlphaTEV = GX_CA_A1;
+            break;
+        case 6:
+            *pnAlphaTEV = GX_CA_KONST;
+            break;
+        case 7:
+            *pnAlphaTEV = GX_CA_ZERO;
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupDP.s")
 
@@ -441,25 +572,74 @@ const f64 D_80135F88 = 8.44;
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T2.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_Setup.s")
+static s32 frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
+    s32 bFlag;
+    s32 nColors;
+
+    if (!frameDrawSetupSP(pFrame, &nColors, &bFlag, 2)) {
+        return 0;
+    }
+
+    if (!frameDrawSetupDP(pFrame, &nColors, &bFlag, 0)) {
+        return 0;
+    }
+
+    pFrame->aDraw[0] = (FrameDrawFunc)gapfDrawLine[nColors + (bFlag ? 3 : 0)];
+    if (!pFrame->aDraw[0](pFrame, pPrimitive)) {
+        return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectFill.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectFill_Setup.s")
+static s32 frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
+    s32 bFlag;
+    s32 nColors;
+
+    if (!frameDrawSetup2D(pFrame)) {
+        return 0;
+    }
+
+    bFlag = 0;
+    nColors = 0;
+
+    if (!frameDrawSetupDP(pFrame, &nColors, &bFlag, 1)) {
+        return 0;
+    }
+
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill;
+
+    if (!pFrame->aDraw[2](pFrame, pRectangle)) {
+        return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameShow.s")
+s32 frameShow() { return 1; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetScissor.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetDepth.s")
+s32 frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
+    pFrame->rDepth = rDepth;
+    pFrame->rDelta = rDelta;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetColor.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameBeginOK.s")
+s32 frameBeginOK(void) {
+    if (gbFrameValid != 0) {
+        return 0;
+    }
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameBegin.s")
 
@@ -511,7 +691,29 @@ const f64 D_80135F88 = 8.44;
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/packTakeBlocks.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/packFreeBlocks.s")
+static s32 packFreeBlocks(s32* piPack, u32* anPack) {
+    s32 iPack;
+    u32 nMask;
+
+    s32 temp_r6;
+
+    iPack = *piPack;
+
+    if (iPack == -1) {
+        return 1;
+    }
+
+    nMask = ((1 << (iPack >> 16)) - 1) << (iPack & 0x1F);
+    temp_r6 = (iPack & 0xFFFF) >> 5;
+
+    if (nMask == (nMask & anPack[temp_r6])) {
+        anPack[temp_r6] &= ~nMask;
+        *piPack = -1;
+        return 1;
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTexture.s")
 
@@ -521,15 +723,32 @@ const f64 D_80135F88 = 8.44;
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTile.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawReset.s")
+s32 frameDrawReset(Frame* pFrame, s32 nFlag) {
+    pFrame->nFlag |= nFlag;
+    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
+    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
+    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+    return 1;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetFill.s")
+s32 frameSetFill(Frame* pFrame, s32 bFill) {
+    if (bFill) {
+        pFrame->nMode |= 0x20000;
+    } else {
+        pFrame->nMode &= ~0x20000;
+    }
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMode.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetMode.s")
+s32 frameGetMode(Frame* pFrame, Etype eType, u32* pnMode) {
+    *pnMode = pFrame->aMode[eType];
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrix.s")
 
@@ -543,7 +762,10 @@ const f64 D_80135F88 = 8.44;
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTMEM.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLightCount.s")
+s32 frameSetLightCount(Frame* pFrame, s32 nCount) {
+    pFrame->nCountLight = nCount;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLight.s")
 
@@ -553,7 +775,13 @@ const f64 D_80135F88 = 8.44;
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameResetUCode.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetBuffer.s")
+s32 frameSetBuffer(Frame* pFrame, FBTType eType) {
+    if (((u32)(eType - 2) > 1) && (eType == FBT_DEPTH)) {
+        pFrame->nOffsetDepth0 = pFrame->aBuffer[0].nAddress & 0x03FFFFFF;
+        pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
+    }
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameFixMatrixHint.s")
 
