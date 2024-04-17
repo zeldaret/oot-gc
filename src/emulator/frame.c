@@ -1,5 +1,5 @@
-#include "dolphin.h"
 #include "emulator/frame.h"
+#include "dolphin.h"
 #include "emulator/ram.h"
 #include "emulator/rsp.h"
 #include "emulator/simGCN.h"
@@ -396,13 +396,35 @@ const f32 D_80135F7C = 0.25999999046325684;
 const f32 D_80135F80 = 8.4399995803833;
 const f64 D_80135F88 = 8.44;
 
-// temporary
+// TODO: caused by inline asm somewhere, remove when that function is matched
 #pragma peephole off
+
 static s32 frameDrawSetupSP(Frame* pFrame, s32* pnColors, s32* pbFlag, s32 nVertexCount);
 static s32 frameDrawSetupDP(Frame* pFrame, s32* pnColors, s32* pbFlag, s32);
 static s32 frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
 static s32 frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
 static s32 frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
+inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
+
+inline s32 frameSetProjection(Frame* pFrame, s32 iHint) {
+    MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
+
+    pFrame->nMode |= 0x24000000;
+    pFrame->nMode &= ~0x18000000;
+
+    if (pHint->eProjection == FMP_PERSPECTIVE) {
+        C_MTXPerspective(pFrame->matrixProjection, pHint->rFieldOfViewY, pHint->rAspect, pHint->rClipNear,
+                         pHint->rClipFar);
+    } else if (pHint->eProjection == FMP_ORTHOGRAPHIC) {
+        C_MTXOrtho(pFrame->matrixProjection, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f,
+                   pHint->rClipNear, pHint->rClipFar);
+    } else {
+        return 0;
+    }
+
+    pFrame->eTypeProjection = pHint->eProjection;
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
 
@@ -688,6 +710,26 @@ s32 frameBeginOK(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameEvent.s")
 
+inline s32 frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
+    matrixTarget[0][0] = matrixSource[0][0];
+    matrixTarget[0][1] = matrixSource[0][1];
+    matrixTarget[0][2] = matrixSource[0][2];
+    matrixTarget[0][3] = matrixSource[0][3];
+    matrixTarget[1][0] = matrixSource[1][0];
+    matrixTarget[1][1] = matrixSource[1][1];
+    matrixTarget[1][2] = matrixSource[1][2];
+    matrixTarget[1][3] = matrixSource[1][3];
+    matrixTarget[2][0] = matrixSource[2][0];
+    matrixTarget[2][1] = matrixSource[2][1];
+    matrixTarget[2][2] = matrixSource[2][2];
+    matrixTarget[2][3] = matrixSource[2][3];
+    matrixTarget[3][0] = matrixSource[3][0];
+    matrixTarget[3][1] = matrixSource[3][1];
+    matrixTarget[3][2] = matrixSource[3][2];
+    matrixTarget[3][3] = matrixSource[3][3];
+    return 1;
+}
+
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameScaleMatrix.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameConvertYUVtoRGB.s")
@@ -753,9 +795,124 @@ s32 frameGetMode(Frame* pFrame, Etype eType, u32* pnMode) {
     return 1;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrix.s")
+#else
+s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bLoad, s32 bPush, s32 nAddressN64) {
+    s32 pad1;
+    s32 bFlag;
+    f32(*matrixTarget)[4];
+    Mtx44 matrixResult;
+    s32 pad2[9];
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetMatrix.s")
+    OSGetTick();
+
+    switch (eType) {
+        case FMP_PERSPECTIVE:
+            if (!bLoad && (pFrame->nMode & 0x800000)) {
+                bFlag = 1;
+                PSMTX44Concat(matrix, pFrame->aMatrixModel[pFrame->iMatrixModel], matrixResult);
+            } else {
+                bFlag = 0;
+            }
+
+            if (bPush && pFrame->iMatrixModel < ARRAY_COUNT(pFrame->aMatrixModel) - 1) {
+                pFrame->iMatrixModel++;
+            }
+
+            if (bFlag) {
+                matrixTarget = pFrame->aMatrixModel[pFrame->iMatrixModel];
+                frameCopyMatrix(matrixTarget, matrixResult);
+            } else {
+                matrixTarget = pFrame->aMatrixModel[pFrame->iMatrixModel];
+                frameCopyMatrix(matrixTarget, matrix);
+            }
+
+            pFrame->nMode |= 0x800000;
+            pFrame->nMode &= ~0x600000;
+            break;
+        case FMP_ORTHOGRAPHIC:
+            pFrame->nMode &= ~0x20000000;
+            if (gpSystem->eTypeROM == SRT_1080 && (matrix[0][0] < 0.006240f || matrix[0][0] > 0.006242f)) {
+                if (!frameSetProjection(pFrame, pFrame->iHintHack)) {
+                    return 0;
+                }
+                bLoad = 0;
+            }
+
+            // TODO: fake volatile
+            if (bLoad || !(*(volatile u32*)&pFrame->nMode & 0x4000000) ||
+                (*(volatile u32*)&pFrame->nMode & 0x10000000)) {
+                if (matrix[0][0] == 1.0f && matrix[0][1] == 0.0f && matrix[0][2] == 0.0f && matrix[0][3] == 0.0f &&
+                    matrix[1][0] == 0.0f && matrix[1][1] == 1.0f && matrix[1][2] == 0.0f && matrix[1][3] == 0.0f &&
+                    matrix[2][0] == 0.0f && matrix[2][1] == 0.0f && matrix[2][2] == 1.0f && matrix[2][3] == 0.0f &&
+                    matrix[3][0] == 0.0f && matrix[3][1] == 0.0f && matrix[3][2] == 0.0f && matrix[3][3] == 1.0f) {
+                    pFrame->nMode |= 0x10000000;
+                } else {
+                    pFrame->nMode &= ~0x10000000;
+                }
+
+                matrixTarget = pFrame->matrixProjection;
+                frameCopyMatrix(matrixTarget, matrix);
+
+                pFrame->nMode |= 0x4000000;
+                pFrame->nMode &= ~0x8000000;
+
+                if (!frameGetMatrixHint(pFrame, nAddressN64 | 0x80000000, &pFrame->iHintProjection)) {
+                    pFrame->iHintProjection = -1;
+                }
+            } else if (*(volatile u32*)&pFrame->nMode & 0x8000000) {
+                PSMTX44Concat(matrix, pFrame->matrixProjectionExtra, pFrame->matrixProjectionExtra);
+            } else {
+                pFrame->nMode |= 0x8000000;
+                matrixTarget = pFrame->matrixProjectionExtra;
+                frameCopyMatrix(matrixTarget, matrix);
+            }
+
+            pFrame->nMode &= ~0x400000;
+            frameDrawReset(pFrame, 0x40000);
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+#endif
+
+s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bPull) {
+    switch (eType) {
+        case FMP_PERSPECTIVE:
+            if (matrix != NULL) {
+                if (!xlHeapCopy(matrix, pFrame->aMatrixModel[pFrame->iMatrixModel], sizeof(Mtx44))) {
+                    return 0;
+                }
+            }
+            if (bPull) {
+                if (pFrame->iMatrixModel > 0) {
+                    pFrame->iMatrixModel--;
+                    pFrame->nMode &= ~0x600000;
+                }
+            }
+            break;
+        case FMP_ORTHOGRAPHIC:
+            if (matrix != NULL) {
+                if (pFrame->nMode & 0x8000000) {
+                    PSMTX44Concat(pFrame->matrixProjectionExtra, pFrame->matrixProjection, matrix);
+                } else {
+                    if (!xlHeapCopy(matrix, pFrame->matrixProjection, sizeof(Mtx44))) {
+                        return 0;
+                    }
+                }
+            }
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadVertex.s")
 
@@ -786,9 +943,94 @@ s32 frameSetBuffer(Frame* pFrame, FBTType eType) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameFixMatrixHint.s")
+s32 frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed) {
+    s32 iHint;
+    s32 iHintTest;
 
+    for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
+        if (pFrame->aMatrixHint[iHint].nAddressFloat == nAddressFloat && pFrame->aMatrixHint[iHint].nCount >= 0) {
+            pFrame->aMatrixHint[iHint].nAddressFloat = 0;
+            pFrame->aMatrixHint[iHint].nAddressFixed = nAddressFixed;
+
+            for (iHintTest = 0; iHintTest < pFrame->iHintMatrix; iHintTest++) {
+                if (iHintTest != iHint && pFrame->aMatrixHint[iHintTest].nAddressFixed == nAddressFixed) {
+                    pFrame->aMatrixHint[iHintTest].nAddressFloat = 0;
+                    pFrame->aMatrixHint[iHintTest].nAddressFixed = 0;
+                }
+            }
+
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
+    s32 iHint;
+
+    for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
+        if (pFrame->aMatrixHint[iHint].nAddressFixed == nAddress && pFrame->aMatrixHint[iHint].nCount >= 0) {
+            pFrame->aMatrixHint[iHint].nCount = 4;
+            *piHint = iHint;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrixHint.s")
+#else
+s32 frameSetMatrixHint(Frame* pFrame, TypeProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
+                       f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
+    s32 iHint;
+
+    if (nAddressFloat != 0) {
+        nAddressFloat |= 0x80000000;
+    }
+    if (nAddressFixed != 0) {
+        nAddressFixed |= 0x80000000;
+    }
+
+    for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
+        if ((nAddressFloat != 0 && pFrame->aMatrixHint[iHint].nAddressFloat == nAddressFloat) ||
+            (nAddressFixed != 0 && pFrame->aMatrixHint[iHint].nAddressFixed == nAddressFixed)) {
+            break;
+        }
+    }
+
+    if (iHint == pFrame->iHintMatrix) {
+        for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
+            if (pFrame->aMatrixHint[iHint].nCount < 0) {
+                break;
+            }
+        }
+    }
+
+    if (eProjection == 1) {
+        rScale = 0.0f;
+    }
+
+    pFrame->aMatrixHint[iHint].nCount = 4;
+    pFrame->aMatrixHint[iHint].rScale = rScale;
+    pFrame->aMatrixHint[iHint].rClipFar = rFar;
+    pFrame->aMatrixHint[iHint].rClipNear = rNear;
+    pFrame->aMatrixHint[iHint].rAspect = rAspect;
+    pFrame->aMatrixHint[iHint].rFieldOfViewY = rFOVY;
+    pFrame->aMatrixHint[iHint].eProjection = eProjection;
+    pFrame->aMatrixHint[iHint].nAddressFloat = nAddressFloat;
+    pFrame->aMatrixHint[iHint].nAddressFixed = nAddressFixed;
+
+    if (iHint == pFrame->iHintMatrix) {
+        pFrame->iHintMatrix++;
+    }
+
+    pFrame->iHintLast = iHint;
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameInvalidateCache.s")
 
