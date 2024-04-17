@@ -119,6 +119,8 @@ void simulatorUnpackTexPalette(__anon_0xDB69* pal);
 s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
 s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
+s32 simulatorReadEEPROM(u8 address, u8* data);
+s32 simulatorWriteEEPROM(u8 address, u8* data);
 s32 simulatorReadSRAM(u32 address, u8* data, s32 size);
 s32 simulatorWriteSRAM(u32 address, u8* data, s32 size);
 s32 simulatorReadFLASH(u32 address, u8* data, s32 size);

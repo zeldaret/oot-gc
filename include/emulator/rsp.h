@@ -211,6 +211,7 @@ typedef struct Rsp {
 
 s32 rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);
 s32 rspEnableABI(Rsp* pRSP, s32 bFlag);
+s32 rspFrameComplete(Rsp* pRSP);
 s32 rspUpdate(Rsp* pRSP, RspUpdateMode eMode);
 s32 rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
 
