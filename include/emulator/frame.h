@@ -292,13 +292,13 @@ typedef struct Frame {
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ f32 matrixView[4][4];
+    /* 0x3C4D4 */ Mtx44 matrixView;
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
     /* 0x3C51C */ TypeProjection eTypeProjection;
-    /* 0x3C520 */ f32 aMatrixModel[10][4][4];
-    /* 0x3C7A0 */ f32 matrixProjection[4][4];
-    /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
+    /* 0x3C520 */ Mtx44 aMatrixModel[10];
+    /* 0x3C7A0 */ Mtx44 matrixProjection;
+    /* 0x3C7E0 */ Mtx44 matrixProjectionExtra;
     /* 0x3C820 */ MatrixHint aMatrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
@@ -328,6 +328,7 @@ s32 frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
 s32 frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
 s32 frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
+s32 frameDrawReset(Frame* pFrame, s32 nFlag);
 s32 frameSetBuffer(Frame* pFrame, FBTType eType);
 s32 frameSetSize(Frame* pFrame, ESize eSize, s32 nSizeX, s32 nSizeY);
 s32 frameSetMatrixHint(Frame* pFrame, TypeProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
