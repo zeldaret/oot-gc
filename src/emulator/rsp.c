@@ -47,10 +47,15 @@ void* jtbl_800EE338[29] = {
     &lbl_80072998, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007293C,
 };
 
+#ifndef NON_MATCHING
+// rspParseGBI
 void* jtbl_800EE3AC[11] = {
     &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AE8, &lbl_80072AC0,
     &lbl_80072AD4, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AC0, &lbl_80072AD4,
 };
+#else
+void* jtbl_800EE3AC[11] = {0};
+#endif
 
 void* jtbl_800EE3D8[13] = {
     &lbl_80075608, &lbl_8007600C, &lbl_8007600C, &lbl_8007600C, &lbl_80075630, &lbl_8007600C, &lbl_8007600C,
@@ -313,10 +318,12 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetGeometryMode1.s")
 
+static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX1.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGeometryMode.s")
 
+static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX2.s")
 
 // Matches but data doesn't
@@ -446,6 +453,15 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
 }
 #endif
 
+inline s32 rspPopDL(Rsp* pRSP) {
+    if (pRSP->iDL == 0) {
+        return false;
+    } else {
+        pRSP->iDL--;
+        return true;
+    }
+}
+
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSaveYield.s")
@@ -454,7 +470,81 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_Setup.s")
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI.s")
+#else
+static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
+    bool bDone;
+    s32 nStatus;
+    u64* pDL;
+    Cpu* pCPU;
+
+    pCPU = SYSTEM_CPU(pRSP->pHost);
+    bDone = false;
+
+    while (!bDone) {
+        pDL = pRSP->apDL[pRSP->iDL];
+        switch (pRSP->eTypeUCode) {
+            case RUT_TURBO:
+            case RUT_SPRITE2D:
+            case RUT_FAST3D:
+            case RUT_F3DEX1:
+            case RUT_S2DEX1:
+            case RUT_L3DEX1:
+                nStatus = rspParseGBI_F3DEX1(pRSP, &pRSP->apDL[pRSP->iDL], &bDone);
+                break;
+            case RUT_ZSORT:
+            case RUT_F3DEX2:
+            case RUT_S2DEX2:
+            case RUT_L3DEX2:
+                nStatus = rspParseGBI_F3DEX2(pRSP, &pRSP->apDL[pRSP->iDL], &bDone);
+                break;
+            default:
+                return false;
+        }
+
+        if (nStatus == 0) {
+            pRSP->apDL[pRSP->iDL] = pDL;
+            if (!rdpParseGBI(SYSTEM_RDP(pRSP->pHost), &pRSP->apDL[pRSP->iDL], pRSP->eTypeUCode)) {
+                if (!rspPopDL(pRSP)) {
+                    bDone = true;
+                }
+            }
+        }
+
+        if (nCount == -1) {
+            if (pCPU->nRetrace != pCPU->nRetraceUsed) {
+                break;
+            }
+        } else if (nCount != 0) {
+            if (--nCount == 0) {
+                break;
+            }
+        }
+    }
+
+    if (pRSP->eTypeUCode == RUT_ZSORT) {
+        if (pRSP->nPass == 1) {
+            pRSP->nPass = 2;
+        } else {
+            pRSP->nPass = 1;
+        }
+    } else {
+        pRSP->nPass = 2;
+    }
+
+    if (bDone) {
+        pRSP->nMode |= 8;
+    }
+
+    if (pbDone != NULL) {
+        *pbDone = bDone;
+    }
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut8.s")
 
