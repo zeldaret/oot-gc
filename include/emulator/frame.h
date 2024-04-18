@@ -328,6 +328,7 @@ s32 frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
 s32 frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
 s32 frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
+s32 frameDrawReset(Frame* pFrame, s32 nFlag);
 s32 frameSetBuffer(Frame* pFrame, FBTType eType);
 s32 frameSetSize(Frame* pFrame, ESize eSize, s32 nSizeX, s32 nSizeY);
 s32 frameSetMatrixHint(Frame* pFrame, TypeProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,

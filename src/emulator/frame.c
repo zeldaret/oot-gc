@@ -682,7 +682,70 @@ s32 frameBeginOK(void) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameBegin.s")
+inline void frameClearModes(Frame* pFrame) {
+    s32 i;
+
+    for (i = 0; i < ARRAY_COUNT(pFrame->aMode); i++) {
+        pFrame->aMode[i] = 0;
+    }
+}
+
+s32 frameBegin(Frame* pFrame, s32 nCountVertex) {
+    s32 i;
+    Mtx matrix;
+
+    if (gbFrameBegin) {
+        gbFrameBegin = 0;
+
+        while (gbFrameValid) {
+            OSReport(D_800EB1F8);
+        }
+
+        if (!simulatorTestReset(0, 0, 1, 0)) {
+            return 0;
+        }
+
+        if (!frameUpdateCache(pFrame)) {
+            return 0;
+        }
+
+        xlCoreBeforeRender();
+        pFrame->nMode &= ~0x180000;
+
+        GXSetMisc(GX_MT_XF_FLUSH, 8);
+        PSMTXIdentity(matrix);
+        GXLoadPosMtxImm(matrix, 0);
+
+        pFrame->nCountVertex = nCountVertex;
+
+        GXSetChanCtrl(GX_COLOR1A1, GX_FALSE, GX_SRC_REG, GX_SRC_REG, 0, GX_DF_NONE, GX_AF_NONE);
+        GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_VTX, GX_SRC_VTX, 0, GX_DF_NONE, GX_AF_NONE);
+
+        GXSetDrawSyncCallback(&frameDrawSyncCallback);
+
+        for (i = 0; i < 8; i++) {
+            GXSetTexCoordGen(ganNameTexCoord[i], GX_TG_MTX2x4, GX_TG_TEX0, ganNameTexMtx[i]);
+        }
+
+        GXSetScissor(0, 0, pFrame->anSizeX[1], pFrame->anSizeY[1]);
+    }
+
+    pFrame->iMatrixModel = 0;
+    pFrame->nMode &= 0x9C1F0000;
+    pFrame->nMode &= ~0x1C000000;
+    pFrame->iHintProjection = -1;
+
+    frameClearModes(pFrame);
+
+    pFrame->nWidthLine = -1;
+    pFrame->nCountLight = 0;
+
+    frameDrawReset(pFrame, 0x47F2D);
+
+    pFrame->nModeVtx = -1;
+    pFrame->nAddressLoad = -1;
+    return 1;
+}
 
 s32 frameEnd(Frame* pFrame) {
     Cpu* pCPU;
