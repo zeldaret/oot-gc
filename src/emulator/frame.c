@@ -832,7 +832,71 @@ s32 frameEnd(Frame* pFrame) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameNoBlend.s")
 
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameBlur.s")
+#else
+void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
+    Mtx matrix;
+    s32 pad[8];
+    GXColor color;
+
+    color.r = 0xFF;
+    color.g = 0xFF;
+    color.b = 0xFF;
+    color.a = pFrame->cBlurAlpha;
+
+    frameDrawSetup2D(pFrame);
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevColor(1, color);
+    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+    GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
+    GXSetTevAlphaIn(0, 7, 7, 7, 1);
+    GXSetTevOrder(0, 0, 0, 0xFF);
+    GXSetBlendMode(1, 4, 5, 5);
+    GXSetAlphaCompare(7, 0, 0, 7, 0);
+    GXSetZMode(0, 3, 0);
+    GXSetZCompLoc(1);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 0x1E, 1);
+    GXInitTexObj(&sFrameObj_1565, pData, 0x140, 0xF0, 4, 0, 0, 0);
+    GXInitTexObjLOD(&sFrameObj_1565, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
+    GXLoadTexObj(&sFrameObj_1565, 0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xD, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    GXBegin(0x80, 0, 4);
+    GXWGFifo.f32 = -1.0f;
+    GXWGFifo.f32 = -1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 319.0f;
+    GXWGFifo.f32 = -1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 319.0f;
+    GXWGFifo.f32 = 239.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = -1.0f;
+    GXWGFifo.f32 = 239.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    pFrame->nMode = 0;
+    pFrame->nModeVtx = -1;
+    frameDrawReset(pFrame, 0x47F2D);
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrame.s")
 
