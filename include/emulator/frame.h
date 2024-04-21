@@ -7,13 +7,13 @@
 typedef s32 (*FrameDrawFunc)(void*, void*);
 
 // __anon_0x27B8C
-typedef enum ViewType {
+typedef enum FrameMatrixType {
     FMT_MODELVIEW = 0,
     FMT_PROJECTION = 1,
-} ViewType;
+} FrameMatrixType;
 
 // __anon_0x27E96
-typedef enum Etype {
+typedef enum FrameModeType {
     FMT_NONE = -1,
     FMT_FOG = 0,
     FMT_GEOMETRY = 1,
@@ -26,46 +26,46 @@ typedef enum Etype {
     FMT_COMBINE_ALPHA1 = 8,
     FMT_COMBINE_ALPHA2 = 9,
     FMT_COUNT = 10,
-} Etype;
+} FrameModeType;
 
 // __anon_0x2813A
-typedef enum ESize {
+typedef enum FrameSize {
     FS_NONE = -1,
     FS_SOURCE = 0,
     FS_TARGET = 1,
     FS_COUNT = 2,
-} ESize;
+} FrameSize;
 
 // __anon_0x2614E
-typedef enum FBTType {
+typedef enum FrameBufferType {
     FBT_NONE = -1,
     FBT_DEPTH = 0,
     FBT_IMAGE = 1,
     FBT_COLOR_SHOW = 2,
     FBT_COLOR_DRAW = 3,
     FBT_COUNT = 4,
-} FBTType;
+} FrameBufferType;
 
 // __anon_0x2625D
-typedef enum ColorHeat {
+typedef enum FrameResetType {
     FRT_NONE = -1,
     FRT_COLD = 0,
     FRT_WARM = 1,
-} ColorHeat;
+} FrameResetType;
 
 // __anon_0x26C3F
-typedef enum FLTType {
+typedef enum FrameLoadType {
     FLT_NONE = -1,
     FLT_TILE = 0,
     FLT_BLOCK = 1,
-} FLTType;
+} FrameLoadType;
 
 // __anon_0x25D5E
-typedef enum TypeProjection {
+typedef enum FrameMatrixProjection {
     FMP_NONE = -1,
     FMP_PERSPECTIVE = 0,
     FMP_ORTHOGRAPHIC = 1,
-} TypeProjection;
+} FrameMatrixProjection;
 
 // __anon_0x2D45B
 typedef struct Primitive {
@@ -202,7 +202,7 @@ typedef struct MatrixHint {
     /* 0x14 */ f32 rClipFar;
     /* 0x18 */ u32 nAddressFloat;
     /* 0x1C */ u32 nAddressFixed;
-    /* 0x20 */ TypeProjection eProjection;
+    /* 0x20 */ FrameMatrixProjection eProjection;
 } MatrixHint; // size = 0x24
 
 typedef struct Rectangle {
@@ -295,7 +295,7 @@ typedef struct Frame {
     /* 0x3C4D4 */ Mtx44 matrixView;
     /* 0x3C514 */ s32 iHintLast;
     /* 0x3C518 */ s32 iHintHack;
-    /* 0x3C51C */ TypeProjection eTypeProjection;
+    /* 0x3C51C */ FrameMatrixProjection eTypeProjection;
     /* 0x3C520 */ Mtx44 aMatrixModel[10];
     /* 0x3C7A0 */ Mtx44 matrixProjection;
     /* 0x3C7E0 */ Mtx44 matrixProjectionExtra;
@@ -330,9 +330,9 @@ s32 frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
 s32 frameDrawSetup2D(Frame* pFrame);
 s32 frameDrawReset(Frame* pFrame, s32 nFlag);
-s32 frameSetBuffer(Frame* pFrame, FBTType eType);
-s32 frameSetSize(Frame* pFrame, ESize eSize, s32 nSizeX, s32 nSizeY);
-s32 frameSetMatrixHint(Frame* pFrame, TypeProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
+s32 frameSetBuffer(Frame* pFrame, FrameBufferType eType);
+s32 frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
+s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
                        f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 
 extern _XL_OBJECTTYPE gClassFrame;
