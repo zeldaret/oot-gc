@@ -1119,7 +1119,7 @@ s32 frameSetFill(Frame* pFrame, s32 bFill) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMode.s")
 
-s32 frameGetMode(Frame* pFrame, Etype eType, u32* pnMode) {
+s32 frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
     *pnMode = pFrame->aMode[eType];
     return 1;
 }
@@ -1128,7 +1128,7 @@ s32 frameGetMode(Frame* pFrame, Etype eType, u32* pnMode) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrix.s")
 #else
-s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bLoad, s32 bPush, s32 nAddressN64) {
+s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad, s32 bPush, s32 nAddressN64) {
     s32 pad1;
     s32 bFlag;
     f32(*matrixTarget)[4];
@@ -1138,7 +1138,7 @@ s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bLoad,
     OSGetTick();
 
     switch (eType) {
-        case FMP_PERSPECTIVE:
+        case FMT_MODELVIEW:
             if (!bLoad && (pFrame->nMode & 0x800000)) {
                 bFlag = 1;
                 PSMTX44Concat(matrix, pFrame->aMatrixModel[pFrame->iMatrixModel], matrixResult);
@@ -1161,7 +1161,7 @@ s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bLoad,
             pFrame->nMode |= 0x800000;
             pFrame->nMode &= ~0x600000;
             break;
-        case FMP_ORTHOGRAPHIC:
+        case FMT_PROJECTION:
             pFrame->nMode &= ~0x20000000;
             if (gpSystem->eTypeROM == SRT_1080 && (matrix[0][0] < 0.006240f || matrix[0][0] > 0.006242f)) {
                 if (!frameSetProjection(pFrame, pFrame->iHintHack)) {
@@ -1210,9 +1210,9 @@ s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bLoad,
 }
 #endif
 
-s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bPull) {
+s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bPull) {
     switch (eType) {
-        case FMP_PERSPECTIVE:
+        case FMT_MODELVIEW:
             if (matrix != NULL) {
                 if (!xlHeapCopy(matrix, pFrame->aMatrixModel[pFrame->iMatrixModel], sizeof(Mtx44))) {
                     return 0;
@@ -1225,7 +1225,7 @@ s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, TypeProjection eType, s32 bPull)
                 }
             }
             break;
-        case FMP_ORTHOGRAPHIC:
+        case FMT_PROJECTION:
             if (matrix != NULL) {
                 if (pFrame->nMode & 0x8000000) {
                     PSMTX44Concat(pFrame->matrixProjectionExtra, pFrame->matrixProjection, matrix);
@@ -1264,7 +1264,7 @@ s32 frameSetLightCount(Frame* pFrame, s32 nCount) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameResetUCode.s")
 
-s32 frameSetBuffer(Frame* pFrame, FBTType eType) {
+s32 frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
     if (((u32)(eType - 2) > 1) && (eType == FBT_DEPTH)) {
         pFrame->nOffsetDepth0 = pFrame->aBuffer[0].nAddress & 0x03FFFFFF;
         pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
@@ -1312,7 +1312,7 @@ inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrixHint.s")
 #else
-s32 frameSetMatrixHint(Frame* pFrame, TypeProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
+s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
                        f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
     s32 iHint;
 
