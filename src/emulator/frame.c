@@ -2701,8 +2701,25 @@ static inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     return true;
 }
 
-bool frameScaleMatrix(Mtx44 matrixResult, Mtx44 matrix, f32 rScale);
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameScaleMatrix.s")
+bool frameScaleMatrix(Mtx44 matrixResult, Mtx44 matrix, f32 rScale) {
+    matrixResult[0][0] = matrix[0][0] * rScale;
+    matrixResult[0][1] = matrix[0][1] * rScale;
+    matrixResult[0][2] = matrix[0][2] * rScale;
+    matrixResult[0][3] = matrix[0][3] * rScale;
+    matrixResult[1][0] = matrix[1][0] * rScale;
+    matrixResult[1][1] = matrix[1][1] * rScale;
+    matrixResult[1][2] = matrix[1][2] * rScale;
+    matrixResult[1][3] = matrix[1][3] * rScale;
+    matrixResult[2][0] = matrix[2][0] * rScale;
+    matrixResult[2][1] = matrix[2][1] * rScale;
+    matrixResult[2][2] = matrix[2][2] * rScale;
+    matrixResult[2][3] = matrix[2][3] * rScale;
+    matrixResult[3][0] = matrix[3][0] * rScale;
+    matrixResult[3][1] = matrix[3][1] * rScale;
+    matrixResult[3][2] = matrix[3][2] * rScale;
+    matrixResult[3][3] = matrix[3][3] * rScale;
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameConvertYUVtoRGB.s")
 
@@ -3417,7 +3434,24 @@ bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetViewport.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameResetUCode.s")
+bool frameResetUCode(Frame* pFrame, FrameResetType eType) {
+    s32 iMode;
+
+    pFrame->iMatrixModel = 0;
+    pFrame->nMode &= 0x9C1F0000;
+    if (eType == FRT_COLD) {
+        pFrame->nMode &= ~0x1C000000;
+        pFrame->iHintProjection = -1;
+    }
+
+    for (iMode = 0; iMode < ARRAY_COUNT(pFrame->aMode); iMode++) {
+        pFrame->aMode[iMode] = 0;
+    }
+
+    pFrame->nWidthLine = -1;
+    pFrame->nCountLight = 0;
+    return true;
+}
 
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
     if (((u32)(eType - 2) > 1) && (eType == FBT_DEPTH)) {

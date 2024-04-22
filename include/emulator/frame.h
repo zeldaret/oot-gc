@@ -392,7 +392,7 @@ bool frameSetLightCount(Frame* pFrame, s32 nCount);
 bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData);
 bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData);
 bool frameSetViewport(Frame* pFrame, s16* pData);
-bool frameResetUCode(Frame* pFrame, RspUCodeType eType);
+bool frameResetUCode(Frame* pFrame, FrameResetType eType);
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType);
 bool frameFixMatrixHint(Frame* pFrame, s32 nAddressFloat, s32 nAddressFixed);
 bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
