@@ -1312,8 +1312,8 @@ inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrixHint.s")
 #else
-s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
-                       f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
+s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
+                       f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
     s32 iHint;
 
     if (nAddressFloat != 0) {

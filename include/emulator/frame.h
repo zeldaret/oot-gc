@@ -332,8 +332,8 @@ s32 frameDrawSetup2D(Frame* pFrame);
 s32 frameDrawReset(Frame* pFrame, s32 nFlag);
 s32 frameSetBuffer(Frame* pFrame, FrameBufferType eType);
 s32 frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
-s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed, f32 rNear,
-                       f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
+s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
+                       f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 
 extern _XL_OBJECTTYPE gClassFrame;
 
