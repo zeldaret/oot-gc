@@ -163,7 +163,7 @@ void OSSetCurrentContext(register OSContext* context);
 OSContext* OSGetCurrentContext(void);
 u32 OSSaveContext(register OSContext* context);
 void OSLoadContext(register OSContext* context);
-u32 OSGetStackPointer();
+u32 OSGetStackPointer(void);
 void OSClearContext(register OSContext* context);
 void OSInitContext(register OSContext* context, register u32 pc, register u32 newsp);
 void OSDumpContext(OSContext* context);

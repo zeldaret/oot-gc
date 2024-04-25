@@ -467,23 +467,23 @@ typedef union {
 #define FPSCR_NI_BIT 29 // Non-IEEE mode
 #endif
 
-u32 PPCMfmsr();
+u32 PPCMfmsr(void);
 void PPCMtmsr(u32 newMSR);
-u32 PPCMfhid0();
+u32 PPCMfhid0(void);
 void PPCMthid0(u32 newHID0);
-u32 PPCMfl2cr();
+u32 PPCMfl2cr(void);
 void PPCMtl2cr(u32 newL2cr);
 void PPCMtdec(u32 newDec);
-void PPCSync();
-void PPCHalt();
-u32 PPCMffpscr();
+void PPCSync(void);
+void PPCHalt(void);
+u32 PPCMffpscr(void);
 void PPCMtfpscr(u32 newFPSCR);
-u32 PPCMfhid2();
+u32 PPCMfhid2(void);
 void PPCMthid2(u32 newhid2);
 void PPCMtwpar(u32 newwpar);
-void PPCEnableSpeculation();
-void PPCDisableSpeculation();
-void PPCSetFpNonIEEEMode();
+void PPCEnableSpeculation(void);
+void PPCDisableSpeculation(void);
+void PPCSetFpNonIEEEMode(void);
 
 #ifdef __cplusplus
 }

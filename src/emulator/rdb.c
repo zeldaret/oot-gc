@@ -10,7 +10,7 @@ _XL_OBJECTTYPE gClassRdb = {
 
 // This function only clears the string buffer, but it may have done something
 // with the string in debug mode.
-inline void rdbHandleString(Rdb* pRDB) {
+static inline void rdbHandleString(Rdb* pRDB) {
     s32 iCounter;
 
     for (iCounter = 0; iCounter < pRDB->nIndexString; iCounter++) {

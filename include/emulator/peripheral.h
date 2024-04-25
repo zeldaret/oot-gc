@@ -22,6 +22,8 @@ typedef struct Peripheral {
     /* 0x34 */ s32 nWidthPulse2;
 } Peripheral; // size = 0x38
 
+bool peripheralPut32(Peripheral* pPeripheral, u32 nAddress, s32* pData);
+bool peripheralGet32(Peripheral* pPeripheral, u32 nAddress, s32* pData);
 bool peripheralEvent(Peripheral* pPeripheral, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassPeripheral;

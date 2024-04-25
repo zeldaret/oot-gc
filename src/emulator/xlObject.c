@@ -3,7 +3,7 @@
 
 static tXL_LIST* gpListData;
 
-inline bool xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
+static inline bool xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
     tXL_NODE* pListNode;
 
     for (pListNode = (tXL_NODE*)gpListData->pNodeHead; pListNode != NULL; pListNode = pListNode->next) {
@@ -16,7 +16,7 @@ inline bool xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
     return false;
 }
 
-inline bool xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
+static inline bool xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
     if (!xlListMakeItem(gpListData, ppData)) {
         return false;
     }
@@ -93,7 +93,7 @@ bool xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType) {
     return false;
 }
 
-inline bool xlObjectFindType(void* pObject, _XL_OBJECTTYPE* pType) {
+static inline bool xlObjectFindType(void* pObject, _XL_OBJECTTYPE* pType) {
     if (pObject != NULL) {
         __anon_0x5062* pData = *(__anon_0x5062**)((u8*)pObject - 4);
         if (xlListTestItem(gpListData, pData)) {

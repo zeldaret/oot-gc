@@ -1,6 +1,7 @@
 WINDOWS := $(shell which wine ; echo $$?)
 
 NON_MATCHING := 0
+RUN_CC_CHECK := 1
 
 #-------------------------------------------------------------------------------
 # Files
@@ -62,6 +63,21 @@ LD := $(WINE) $(MWCC_DIR)/mwldeppc.exe
 DOLPHIN_MWCC_DIR := tools/mwcc_compiler/GC/1.2.5n
 DOLPHIN_CC := $(WINE) $(DOLPHIN_MWCC_DIR)/mwcceppc.exe
 
+CC_CHECK := gcc
+CC_CHECK_WARNINGS := \
+	-Wall \
+	-Wextra \
+	-Wstrict-prototypes \
+	-Wno-cast-function-type \
+	-Wno-incompatible-pointer-types \
+	-Wno-sequence-point \
+	-Wno-sign-compare \
+	-Wno-unknown-pragmas \
+	-Wno-unused-but-set-variable \
+	-Wno-unused-function \
+	-Wno-unused-parameter \
+	-Wno-unused-variable
+
 SHA1SUM := sha1sum
 PYTHON := python3
 ELF2DOL := tools/elf2dol/elf2dol
@@ -73,15 +89,10 @@ POSTPROC := tools/postprocess.py
 
 # Options
 INCLUDES := -Iinclude -Ilibc
-
-# Assembler Flags
 ASFLAGS := -mgekko -I include -I libc
-
-# Linker Flags
 LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
-
-# Compiler Flags
 CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int  -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -inline auto -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+CC_CHECK_FLAGS := -fno-builtin -fsyntax-only -std=gnu99 -I include -I libc $(CC_CHECK_WARNINGS) -DNON_MATCHING
 
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
@@ -158,4 +169,7 @@ $(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
 	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
 	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<

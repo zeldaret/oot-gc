@@ -18,7 +18,7 @@ void ICInvalidateRange(void* addr, u32 nBytes);
 #define LC_BASE (LC_BASE_PREFIX << 16)
 #define LCGetBase() ((void*)LC_BASE)
 
-void LCEnable();
+void LCEnable(void);
 void LCDisable(void);
 void LCStoreBlocks(void* destAddr, void* srcTag, u32 numBlocks);
 u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes);

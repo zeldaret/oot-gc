@@ -20,8 +20,10 @@
 #include "emulator/soundGCN.h"
 #include "emulator/sram.h"
 #include "emulator/video.h"
-#include "libc/stdlib.h"
+#include "emulator/xlHeap.h"
 #include "macros.h"
+#include "stdlib.h"
+#include "string.h"
 
 _XL_OBJECTTYPE gClassSystem = {
     "SYSTEM (N64)",
@@ -222,8 +224,8 @@ static bool systemSetupGameRAM(System* pSystem) {
     return true;
 }
 
-inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 controllerConfig,
-                                             bool bSetControllerConfig) {
+static inline void systemSetControllerConfiguration(SystemRomConfig* pRomConfig, s32 controllerConfig,
+                                                    bool bSetControllerConfig) {
     s32 iConfigList;
 
     pRomConfig->rumbleConfiguration = 0;
@@ -1482,7 +1484,7 @@ bool systemReset(System* pSystem) {
     return true;
 }
 
-inline bool systemTestClassObject(System* pSystem) {
+static inline bool systemTestClassObject(System* pSystem) {
     if (xlObjectTest(pSystem, &gClassSystem)) {
         pSystem->eMode = SM_STOPPED;
         pSystem->nAddressBreak = -1;
@@ -1583,7 +1585,7 @@ bool systemExceptionPending(System* pSystem, SystemInterruptType nException) {
     return false;
 }
 
-inline bool systemClearExceptions(System* pSystem) {
+static inline bool systemClearExceptions(System* pSystem) {
     int iException;
 
     pSystem->bException = false;
@@ -1770,7 +1772,7 @@ bool systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             }
             break;
         case 0x1001:
-            if (!systemGetException(pSystem, (SystemInterruptType)pArgument, &exception)) {
+            if (!systemGetException(pSystem, (SystemInterruptType)(s32)pArgument, &exception)) {
                 return false;
             }
             if (exception.eTypeMips != MIT_NONE) {
@@ -1778,9 +1780,9 @@ bool systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             }
             break;
         case 0x1000:
-            if (((SystemInterruptType)pArgument > SIT_NONE) && ((SystemInterruptType)pArgument < SIT_COUNT)) {
+            if (((SystemInterruptType)(s32)pArgument > SIT_NONE) && ((SystemInterruptType)(s32)pArgument < SIT_COUNT)) {
                 pSystem->bException = true;
-                pSystem->anException[(SystemInterruptType)pArgument]++;
+                pSystem->anException[(SystemInterruptType)(s32)pArgument]++;
                 break;
             }
             return false;

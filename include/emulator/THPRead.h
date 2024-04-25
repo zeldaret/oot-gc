@@ -16,7 +16,7 @@ typedef enum MovieMessage {
 
 extern bool gMovieErrorToggle;
 
-bool movieGXInit();
+bool movieGXInit(void);
 bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0);
 bool movieDrawErrorMessage(MovieMessage movieMessage);
 bool movieDVDShowError(s32 nStatus, void*, s32, u32);
@@ -27,11 +27,11 @@ void movieReset(bool IPL, bool forceMenu);
 bool CreateReadThread(OSPriority priority);
 void ReadThreadStart(void);
 void ReadThreadCancel(void);
-void* PopReadedBuffer();
+void* PopReadedBuffer(void);
 void PushReadedBuffer(void* buffer);
-void* PopFreeReadBuffer();
+void* PopFreeReadBuffer(void);
 void PushFreeReadBuffer(void* buffer);
-void* PopReadedBuffer2();
+void* PopReadedBuffer2(void);
 void PushReadedBuffer2(void* buffer);
 
 #endif

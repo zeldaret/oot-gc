@@ -11,15 +11,21 @@
 #include "emulator/video.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
-#include "libc/math.h"
 #include "macros.h"
+#include "math.h"
 
+static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
+static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost);
 static bool cpuSetTLB(Cpu* pCPU, s32 iEntry);
-inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
-static void treeCallerInit(CpuCallerID* block, s32 total);
-static bool treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
-inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
+static void treeCallerInit(CpuCallerID* block, s32 total);
+static bool treeAdjustRoot(Cpu* pCPU, s32 new_start, s32 new_end);
+static bool treeKillReason(Cpu* pCPU, s32* value);
+static bool treeKillRange(Cpu* pCPU, CpuFunction* tree, s32 start, s32 end);
+static bool treeTimerCheck(Cpu* pCPU);
+static bool treeCleanUp(Cpu* pCPU, CpuTreeRoot* root);
+static inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+static bool treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -983,7 +989,7 @@ static bool cpuCompile_DDIVU(Cpu* pCPU, s32* addressGCN) {
     return true;
 }
 
-inline bool cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
+static inline bool cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
@@ -1004,7 +1010,7 @@ inline bool cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
     return true;
 }
 
-inline bool cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
+static inline bool cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
@@ -1025,7 +1031,7 @@ inline bool cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
     return true;
 }
 
-inline bool cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
+static inline bool cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
@@ -1046,7 +1052,7 @@ inline bool cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
     return true;
 }
 
-inline bool cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
+static inline bool cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
@@ -1355,7 +1361,7 @@ static bool cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
     return true;
 }
 
-inline bool cpuCompile_ROUND_W(s32* addressGCN) {
+static inline bool cpuCompile_ROUND_W(s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
@@ -1376,7 +1382,7 @@ inline bool cpuCompile_ROUND_W(s32* addressGCN) {
     return true;
 }
 
-inline bool cpuCompile_TRUNC_W(s32* addressGCN) {
+static inline bool cpuCompile_TRUNC_W(s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
@@ -1847,7 +1853,7 @@ static bool cpuCheckDelaySlot(u32 opcode) {
 }
 #endif
 
-inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
+static inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
     while (*iCode != number) {
         anCode[(*iCode)++] = 0x60000000;
     }
@@ -2043,7 +2049,7 @@ static bool cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
     return false;
 }
 
-inline bool cpuNoBranchTo(CpuFunction* pFunction, s32 addressN64) {
+static inline bool cpuNoBranchTo(CpuFunction* pFunction, s32 addressN64) {
     s32 i;
 
     for (i = 0; i < pFunction->nCountJump; i++) {
@@ -2201,7 +2207,7 @@ static bool cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
 static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteOpcode.s")
 #else
-inline bool cpuCheckInterrupts(Cpu* pCPU) {
+static inline bool cpuCheckInterrupts(Cpu* pCPU) {
     System* pSystem;
 
     pSystem = (System*)pCPU->pHost;
@@ -2216,7 +2222,7 @@ inline bool cpuCheckInterrupts(Cpu* pCPU) {
     return true;
 }
 
-inline bool cpuTLBRandom(Cpu* pCPU) {
+static inline bool cpuTLBRandom(Cpu* pCPU) {
     s32 iEntry;
     s32 nCount;
 
@@ -2230,7 +2236,7 @@ inline bool cpuTLBRandom(Cpu* pCPU) {
     return nCount;
 }
 
-inline bool cpuExecuteCacheInstruction(Cpu* pCPU) {
+static inline bool cpuExecuteCacheInstruction(Cpu* pCPU) {
     s32* pBuffer;
 
     if (!cpuGetAddressBuffer(pCPU, (void**)&pBuffer, pCPU->nPC)) {
@@ -3557,7 +3563,7 @@ static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddre
             break;
         case 0x25: // lhu
             nAddress = pCPU->aGPR[MIPS_RS(nOpcode)].s32 + MIPS_IMM_S16(nOpcode);
-            if (frameGetDepth(SYSTEM_FRAME(pCPU->pHost), &nData16, nAddress)) {
+            if (frameGetDepth(SYSTEM_FRAME(pCPU->pHost), (u16*)&nData16, nAddress)) {
                 pCPU->aGPR[MIPS_RT(nOpcode)].u32 = (u16)nData16;
             } else {
                 if (CPU_DEVICE_GET16(apDevice, aiDevice, nAddress, &nData16)) {
@@ -4380,7 +4386,7 @@ static bool cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFun
     return true;
 }
 
-inline bool cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
+static inline bool cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
     if (!xlHeapFree(&ppfLink)) {
         return false;
     } else {
@@ -4389,7 +4395,7 @@ inline bool cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
     }
 }
 
-bool cpuExecute(Cpu* pCPU) {
+bool cpuExecute(Cpu* pCPU, u64 nAddressBreak) {
     s32 pad1;
     s32 iGPR;
     s32* pnCode;
@@ -4611,10 +4617,6 @@ bool cpuExecute(Cpu* pCPU) {
         if (!xlHeapFree((void**)&cpuCompile_LWR_function)) {
             return false;
         }
-
-        PAD_STACK();
-        PAD_STACK();
-        PAD_STACK();
     }
 
     return true;
@@ -4622,7 +4624,7 @@ bool cpuExecute(Cpu* pCPU) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHackHandler.s")
 
-inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction) {
+static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction) {
     s32 iAddress;
     CpuAddress* aAddressCache;
 
@@ -4743,7 +4745,7 @@ static bool cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
 
     *peSize = CS_NONE;
     if (peMode != NULL) {
-        *peMode = CS_NONE;
+        *peMode = CM_NONE;
     }
 
     if (cpuGetMode(nStatus, &eMode)) {
@@ -4771,7 +4773,7 @@ static bool cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
     return false;
 }
 
-static bool cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32) {
+static bool cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32 unknown) {
     CpuMode eMode;
     CpuMode eModeLast;
     CpuSize eSize;
@@ -4964,7 +4966,7 @@ bool cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
     return true;
 }
 
-inline bool cpuInitAllDevices(Cpu* pCPU) {
+static inline bool cpuInitAllDevices(Cpu* pCPU) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
@@ -4974,7 +4976,7 @@ inline bool cpuInitAllDevices(Cpu* pCPU) {
     return true;
 }
 
-inline bool cpuFreeAllDevices(Cpu* pCPU) {
+static inline bool cpuFreeAllDevices(Cpu* pCPU) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
@@ -5024,7 +5026,7 @@ bool cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
         iDevice = pCPU->aiDevice[nAddress >> 0x10];
 
         if (pCPU->apDevice[iDevice]->nType & 0x100) {
-            *pnOffset = nAddress + pCPU->apDevice[iDevice]->nOffsetAddress & 0x7FFFFF;
+            *pnOffset = (nAddress + pCPU->apDevice[iDevice]->nOffsetAddress) & 0x7FFFFF;
         } else {
             return false;
         }
@@ -5389,7 +5391,7 @@ static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
     return true;
 }
 
-inline void treeCallerInit(CpuCallerID* block, s32 total) {
+static inline void treeCallerInit(CpuCallerID* block, s32 total) {
     s32 count;
 
     for (count = 0; count < total; count++) {
@@ -5430,7 +5432,7 @@ inline void treeCallerInit(CpuCallerID* block, s32 total) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCleanNodes.s")
 
-inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
+static inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
     CpuTreeRoot* root = pCPU->gTree;
 
     root->kill_limit = 0;

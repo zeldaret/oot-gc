@@ -12,6 +12,7 @@ typedef struct Ram {
 } Ram; // size = 0x0C
 
 bool ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize);
+bool ramWipe(Ram* pRAM);
 bool ramSetSize(Ram* pRAM, s32 nSize);
 bool ramGetSize(Ram* pRAM, s32* nSize);
 bool ramEvent(Ram* pRAM, s32 nEvent, void* pArgument);

@@ -10,6 +10,8 @@ typedef struct Serial {
     /* 0x04 */ s32 nAddress;
 } Serial; // size = 0x08
 
+bool serialPut32(Serial* pSerial, u32 nAddress, s32* pData);
+bool serialGet32(Serial* pSerial, u32 nAddress, s32* pData);
 bool serialEvent(Serial* pSerial, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassSerial;

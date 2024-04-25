@@ -61,10 +61,10 @@ void* OSGetArenaLo(void);
 void OSSetArenaHi(void* newHi);
 void OSSetArenaLo(void* newLo);
 
-void OSInit();
+void OSInit(void);
 
-OSTime OSGetTime();
-OSTick OSGetTick();
+OSTime OSGetTime(void);
+OSTick OSGetTick(void);
 
 typedef struct OSCalendarTime {
     int sec; // seconds after the minute [0, 61]
@@ -104,7 +104,7 @@ void OSTicksToCalendarTime(OSTime ticks, OSCalendarTime* td);
 #define OS_CONSOLE_PC_EMULATOR 0x10000001
 #define OS_CONSOLE_EMULATOR 0x10000000
 
-u32 OSGetConsoleType();
+u32 OSGetConsoleType(void);
 
 #define OS_SOUND_MODE_MONO 0u
 #define OS_SOUND_MODE_STEREO 1u
@@ -211,7 +211,6 @@ void OSPanic(const char* file, int line, const char* msg, ...);
 #include "dolphin/os/OSContext.h"
 #include "dolphin/os/OSError.h"
 #include "dolphin/os/OSException.h"
-#include "dolphin/os/OSExpansion.h"
 #include "dolphin/os/OSFastCast.h"
 #include "dolphin/os/OSFont.h"
 #include "dolphin/os/OSInterrupt.h"

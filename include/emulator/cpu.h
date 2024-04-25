@@ -347,24 +347,30 @@ struct Cpu {
         ->pfPut64(CPU_DEVICE(apDevice, aiDevice, nAddress)->pObject, \
                   (nAddress) + CPU_DEVICE(apDevice, aiDevice, nAddress)->nOffsetAddress, (s64*)pValue)
 
+bool cpuFreeCachedAddress(Cpu* pCPU, s32 nAddress0, s32 nAddress1);
+bool cpuTestInterrupt(Cpu* pCPU, s32 nMaskIP);
+bool cpuException(Cpu* pCPU, CpuExceptionCode eCode, s32 nMaskIP);
+bool cpuExecute(Cpu* pCPU, u64 nAddressBreak);
 bool cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 bool cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
+bool __cpuERET(Cpu* pCPU);
 bool __cpuBreak(Cpu* pCPU);
 bool cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi);
 bool cpuReset(Cpu* pCPU);
 bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew);
-
-bool cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
-                     Put64Func pfPut64);
-
+bool cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nType);
 bool cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
                      Get64Func pfGet64);
+bool cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
+                     Put64Func pfPut64);
 bool cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument);
 bool cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress);
 bool cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress);
+bool cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u32 nSize);
 bool cpuInvalidateCache(Cpu* pCPU, s32 nAddress0, s32 nAddress1);
 bool cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction);
 bool cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size);
+bool cpuFindFunction(Cpu* pCPU, s32 theAddress, CpuFunction** tree_node);
 
 extern _XL_OBJECTTYPE gClassCPU;
 

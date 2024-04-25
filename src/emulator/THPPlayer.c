@@ -25,7 +25,7 @@ static bool Initialized;
 static void* PrepareReadyMessage;
 static void (*OldVIPostCallback)(u32);
 static s32 SoundBufferIndex;
-static void (*OldAIDCallback)();
+static void (*OldAIDCallback)(void);
 static s16* LastAudioBuffer;
 static s16* CurAudioBuffer;
 static bool AudioSystem;

@@ -6,6 +6,7 @@
 #include "emulator/rsp.h"
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
+#include "emulator/xlCoreGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
 #include "macros.h"
@@ -421,12 +422,13 @@ static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
 static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
+static bool frameUpdateCache(Frame* pFrame);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
 static inline bool frameResetCache(Frame* pFrame);
 static bool frameSetupCache(Frame* pFrame);
 void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
 
-inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
+static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
 
     pFrame->nMode |= 0x24000000;
@@ -466,7 +468,7 @@ static void frameDrawSyncCallback(u16 nToken) {
     }
 }
 
-static void frameDrawDone() {
+static void frameDrawDone(void) {
     if (gbFrameValid) {
         gbFrameValid = false;
         if (!gNoSwapBuffer) {
@@ -609,6 +611,7 @@ static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 n
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C1T3.s")
 
+static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
 
 #ifndef NON_MATCHING
@@ -710,13 +713,13 @@ static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
 
-bool frameShow(void) { return true; }
+bool frameShow(Frame* pFrame) { return true; }
 
 #ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetScissor.s")
 #else
-bool frameSetScissor(Frame* pFrame, Scissor* pScissor) {
+bool frameSetScissor(Frame* pFrame, Rectangle* pScissor) {
     s32 nTemp;
     s32 nX0;
     s32 nY0;
@@ -767,14 +770,14 @@ bool frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA) {
     return true;
 }
 
-bool frameBeginOK(void) {
+bool frameBeginOK(Frame* pFrame) {
     if (gbFrameValid) {
         return false;
     }
     return true;
 }
 
-inline void frameClearModes(Frame* pFrame) {
+static inline void frameClearModes(Frame* pFrame) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(pFrame->aMode); i++) {
@@ -969,6 +972,7 @@ void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
 #ifndef NON_MATCHING
+void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameBlur.s")
 #else
 void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
@@ -1132,6 +1136,7 @@ void CopyAndConvertCFB(u16* srcP) {
 // matches but data doesn't
 //! TODO: make sFrameObj and cAlpha a static variable in the function
 #ifndef NON_MATCHING
+void ZeldaGreyScaleConvert(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaGreyScaleConvert.s")
 #else
 void ZeldaGreyScaleConvert(Frame* pFrame) {
@@ -1217,6 +1222,7 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
 #ifndef NON_MATCHING
+void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameShrink.s")
 #else
 void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
@@ -1349,6 +1355,7 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
 #ifndef NON_MATCHING
+void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameCamera.s")
 #else
 void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
@@ -1442,10 +1449,10 @@ bool frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCo
     return true;
 }
 
-bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
+bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi) {
     u32 i;
     u32* pGBI;
-    s32 pad[4];
+    s32 pad[2];
 
     if (pBuffer->nAddress == pFrame->aBuffer[0].nAddress) {
         pFrame->nHackCount += 1;
@@ -1522,7 +1529,7 @@ bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
     return true;
 }
 
-bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo) {
+bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi) {
     u32 i;
     u32 low2;
     u32 high2;
@@ -1598,7 +1605,6 @@ bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nC
     }
 
     PAD_STACK();
-    PAD_STACK();
     return true;
 }
 
@@ -1610,7 +1616,7 @@ bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
     u32 nCommandHi;
     Rsp* pRSP;
     s32 done;
-    __anon_0x2ACA3 bg;
+    union __anon_0x5F2FB bg;
 
     pnGBI = *ppnGBI;
     for (count = 0; count < ARRAY_COUNT(GBIcode); count++) {
@@ -1802,7 +1808,7 @@ bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
 }
 #endif
 
-inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
+static inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     matrixTarget[0][0] = matrixSource[0][0];
     matrixTarget[0][1] = matrixSource[0][1];
     matrixTarget[0][2] = matrixSource[0][2];
@@ -1822,6 +1828,7 @@ inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     return true;
 }
 
+bool frameScaleMatrix(Mtx44 matrixResult, Mtx44 matrix, f32 rScale);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameScaleMatrix.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameConvertYUVtoRGB.s")
@@ -2001,6 +2008,8 @@ bool frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
                 nFlag |= 0x7D00;
             }
             break;
+        default:
+            break;
     }
 
     if (nFlag != 0) {
@@ -2138,9 +2147,9 @@ bool frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bPu
 
 // TODO: move these paired-single/quantization functions to a separate header
 // along with the GQR initialization in xlMain()?
-inline void s16tof32(register s16* in, register f32* out) { OSs16tof32(in, out); }
+static inline void s16tof32(register s16* in, register f32* out) { OSs16tof32(in, out); }
 
-inline void s16tof32Pair(register s16* in, register f32* out) {
+static inline void s16tof32Pair(register s16* in, register f32* out) {
 #ifdef __MWERKS__
     // clang-format off
     asm {
@@ -2154,7 +2163,7 @@ inline void s16tof32Pair(register s16* in, register f32* out) {
 #endif
 }
 
-inline void s8tof32Scaled128(register s8* in, register f32* out) {
+static inline void s8tof32Scaled128(register s8* in, register f32* out) {
 #ifdef __MWERKS__
     // clang-format off
     asm {
@@ -2167,7 +2176,7 @@ inline void s8tof32Scaled128(register s8* in, register f32* out) {
 #endif
 }
 
-inline void s8tof32Scaled128Pair(register s8* in, register f32* out) {
+static inline void s8tof32Scaled128Pair(register s8* in, register f32* out) {
 #ifdef __MWERKS__
     // clang-format off
     asm {
@@ -2181,7 +2190,7 @@ inline void s8tof32Scaled128Pair(register s8* in, register f32* out) {
 #endif
 }
 
-inline void s16tof32Scaled32Pair(register s16* src, register f32* dst) {
+static inline void s16tof32Scaled32Pair(register s16* src, register f32* dst) {
 #ifdef __MWERKS__
     // clang-format off
     asm {
@@ -2549,7 +2558,7 @@ bool frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed) {
     return false;
 }
 
-inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
+static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
     s32 iHint;
 
     for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
@@ -2636,7 +2645,7 @@ bool frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
 
         while (pTexture != NULL) {
             nCount++;
-            switch (pTexture->eFormat) {
+            switch ((s32)pTexture->eFormat) {
                 case GX_TF_I4:
                 case 8: // GX_TF_CI4?
                     nSize += ((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;

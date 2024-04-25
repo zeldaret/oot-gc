@@ -100,7 +100,7 @@ extern char gpErrorMessageBuffer[20480];
 void simulatorUnpackTexPalette(TEXDescriptorPtr pal);
 bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
 bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
-bool simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
+bool simulatorShowLoad(s32 unknown, char* szNameFile, f32 rProgress);
 bool simulatorReadEEPROM(u8 address, u8* data);
 bool simulatorWriteEEPROM(u8 address, u8* data);
 bool simulatorReadSRAM(u32 address, u8* data, s32 size);
@@ -109,9 +109,11 @@ bool simulatorReadFLASH(u32 address, u8* data, s32 size);
 bool simulatorWriteFLASH(u32 address, u8* data, s32 size);
 bool simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
 bool simulatorSetControllerMap(u32* mapData, s32 channel);
-void simulatorResetAndPlayMovie();
+void simulatorResetAndPlayMovie(void);
 bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
+bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings);
 bool simulatorGetArgument(SimArgumentType eType, char** pszArgument);
 bool simulatorPlayMovie(void);
+bool xlMain(void);
 
 #endif
