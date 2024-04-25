@@ -1034,16 +1034,16 @@ s32 xlMain(void) {
     VISetBlack(0);
     VIFlush();
 
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gcoverOpen);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gnoDisk);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gretryErr);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gfatalErr);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gwrongDisk);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&greadingDisk);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gbar);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gyes);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gno);
-    simulatorUnpackTexPalette((__anon_0xDB69*)&gmesgOK);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gcoverOpen);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gnoDisk);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gretryErr);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gfatalErr);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gwrongDisk);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)greadingDisk);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gbar);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gyes);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gno);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gmesgOK);
 
     gbReset = 0;
     gnTickReset = OSGetTick();

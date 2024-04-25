@@ -19,9 +19,6 @@ GXRenderModeObj* rmode;
 
 const GXColor D_80135D00 = {0};
 
-// TODO: move to dolphin/tex.h as `TEXDescriptor* TEXGet(TEXPalette* pal, u32 id)`
-__anon_0xDAF8* TEXGet(u8* pTexture, u32 i);
-
 s32 xlCoreReset(void) {
     OSFreeToHeap(__OSCurrHeap, gpHeap);
     OSSetArenaLo(gArenaLo);
@@ -148,7 +145,7 @@ s32 xlCoreHiResolution(void) { return 1; }
 s32 main(s32 nCount, char** aszArgument) {
     void* pHeap;
     u32 i;
-    __anon_0xDAF8* tdp;
+    TEXDescriptorPtr tdp;
     GXColor black;
     s32 nSizeHeap;
     s32 nSize;
@@ -198,11 +195,11 @@ s32 main(s32 nCount, char** aszArgument) {
         VIWaitForRetrace();
     }
 
-    simulatorUnpackTexPalette((__anon_0xDB69*)gTgPcTPL);
+    simulatorUnpackTexPalette((TEXDescriptorPtr)gTgPcTPL);
 
     black = D_80135D00;
     for (i = 0; i < 2; i++) {
-        tdp = TEXGet(gTgPcTPL, i);
+        tdp = TEXGet((TEXPalettePtr)gTgPcTPL, i);
         GXInitTexObj(&g_texMap[i], tdp->textureHeader->data, tdp->textureHeader->width, tdp->textureHeader->height,
                      tdp->textureHeader->format, GX_CLAMP, GX_CLAMP, GX_FALSE);
     }
