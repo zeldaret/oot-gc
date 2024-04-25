@@ -8776,6 +8776,10 @@ gContMap:
 gaszArgument:
     .skip 32
 
+/* 000F1760 800F46E0 5000 */
+glabel gpErrorMessageBuffer
+    .skip 20480
+
 .section .sdata, "wa"
 
 .balign 8

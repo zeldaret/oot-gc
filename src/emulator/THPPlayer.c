@@ -25,8 +25,6 @@ char D_800EA3F8[] = "This thp file doesn't have the offset data\n";
 char D_800EA424[] = "Specified frame number is over total frame number\n";
 char D_800EA458[] = "Specified audio track number is invalid\n";
 
-static char gpErrorMessageBuffer[20480];
-
 static s32 WorkBuffer[16];
 static OSMessageQueue PrepareReadyQueue;
 static OSMessageQueue UsedTextureSetQueue;

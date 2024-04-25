@@ -295,6 +295,7 @@ void* gpFrame;
 void* gpSound;
 System* gpSystem;
 
+static char gpErrorMessageBuffer[20480];
 s32 gbDisplayedError;
 s32 gPreviousAllowResetSetting;
 s32 gPreviousForceMenuSetting;
