@@ -416,11 +416,6 @@ const f32 D_80135F7C = 0.25999999046325684;
 const f32 D_80135F80 = 8.4399995803833;
 const f64 D_80135F88 = 8.44;
 
-#define GBI_COMMAND_HI(p) (((u32*)(p))[0])
-#define GBI_COMMAND_LO(p) (((u32*)(p))[1])
-#define SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
-    (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM)&0xFFFFFF))
-
 // TODO: caused by inline asm somewhere, remove when that function is matched
 #pragma peephole off
 
@@ -1022,11 +1017,7 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     GXWGFifo.f32 = 1.0f;
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
-    pFrame->nFlag |= 0x40000 | 0x7F2D;
-    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
-    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
-    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
-    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+    frameDrawReset(pFrame, 0x47F2D);
 }
 #endif
 
@@ -1157,11 +1148,7 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXWGFifo.f32 = 1.0f;
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
-    pFrame->nFlag |= 0x40000 | 0x7F2D;
-    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
-    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
-    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
-    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+    frameDrawReset(pFrame, 0x47F2D);
 }
 #endif
 
@@ -1226,11 +1213,7 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     GXWGFifo.f32 = 0.859375;
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
-    pFrame->nFlag |= 0x40000 | 0x7F2D;
-    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
-    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
-    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
-    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+    frameDrawReset(pFrame, 0x47F2D);
 }
 #endif
 
