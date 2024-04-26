@@ -2,6 +2,7 @@
 #include "dolphin.h"
 #include "emulator/cpu.h"
 #include "emulator/ram.h"
+#include "emulator/rdp.h"
 #include "emulator/rsp.h"
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
@@ -22,6 +23,9 @@
 // Dimensions of the player preview on the equipment menu of the Zelda pause screen
 #define ZELDA_PAUSE_EQUIP_PLAYER_WIDTH 64
 #define ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT 112
+
+#define ZELDA2_CAMERA_WIDTH 160
+#define ZELDA2_CAMERA_HEIGHT 128
 
 const s32 D_800D31C0[] = {
     0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
@@ -412,6 +416,11 @@ const f32 D_80135F7C = 0.25999999046325684;
 const f32 D_80135F80 = 8.4399995803833;
 const f64 D_80135F88 = 8.44;
 
+#define GBI_COMMAND_HI(p) (((u32*)(p))[0])
+#define GBI_COMMAND_LO(p) (((u32*)(p))[1])
+#define SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
+    (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM)&0xFFFFFF))
+
 // TODO: caused by inline asm somewhere, remove when that function is matched
 #pragma peephole off
 
@@ -440,6 +449,16 @@ inline s32 frameSetProjection(Frame* pFrame, s32 iHint) {
 
     pFrame->eTypeProjection = pHint->eProjection;
     return 1;
+}
+
+static inline void CopyCFB(u16* srcP) {
+    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
+    GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
+    DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
+    GXCopyTex(srcP, GX_FALSE);
+    sCopyFrameSyncReceived = 0;
+    GXSetDrawSync(FRAME_SYNC_TOKEN);
+    while (!sCopyFrameSyncReceived) {}
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
@@ -779,16 +798,7 @@ s32 frameEnd(Frame* pFrame) {
 
     if (gpSystem->eTypeROM == SRT_DRMARIO && pFrame->bGrabbedFrame) {
         pData = pFrame->nTempBuffer;
-
-        GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
-        GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
-        DCInvalidateRange(pData, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
-        GXCopyTex(pData, GX_FALSE);
-
-        sCopyFrameSyncReceived = 0;
-        GXSetDrawSync(FRAME_SYNC_TOKEN);
-        while (!sCopyFrameSyncReceived) {}
-
+        CopyCFB(pData);
         pFrame->bGrabbedFrame = 0;
     }
 
@@ -863,7 +873,7 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXSetZCompLoc(1);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 0x1E, 1);
-    GXInitTexObj(&sFrameObj_1565, pData, 0x140, 0xF0, 4, 0, 0, 0);
+    GXInitTexObj(&sFrameObj_1565, pData, 320, 240, 4, 0, 0, 0);
     GXInitTexObjLOD(&sFrameObj_1565, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
     GXLoadTexObj(&sFrameObj_1565, 0);
     GXClearVtxDesc();
@@ -931,15 +941,408 @@ void CopyAndConvertCFB(u16* srcP) {
     }
 }
 
+// matches but data doesn't
+//! TODO: make sFrameObj and cAlpha a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaGreyScaleConvert.s")
+#else
+void ZeldaGreyScaleConvert(Frame* pFrame) {
+    Mtx matrix;
+    void* dataP;
+    s32 pad[9];
+    GXColor color;
 
+    dataP = DemoCurrentBuffer;
+    color.r = 192;
+    color.g = 161;
+    color.b = 85;
+    color.a = cAlpha;
+    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
+    GXSetTexCopyDst(GC_FRAME_WIDTH, GC_FRAME_HEIGHT, 1, 0);
+    GXCopyTex(dataP, 0);
+    GXPixModeSync();
+    frameDrawSetup2D(pFrame);
+
+    if (gHackCreditsColor != 0) {
+        GXSetNumTevStages(1);
+        GXSetNumChans(0);
+        GXSetNumTexGens(1);
+        GXSetTevColor(1, color);
+        GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+        GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+        GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
+        GXSetTevAlphaIn(0, 7, 7, 7, 1);
+        GXSetTevOrder(0, 0, 0, 0xFF);
+        GXSetBlendMode(1, 4, 5, 5);
+        if (cAlpha < 255) {
+            cAlpha += 20;
+        }
+    } else {
+        GXSetNumTevStages(1);
+        GXSetNumChans(0);
+        GXSetNumTexGens(1);
+        GXSetTevOp(0, 3);
+        GXSetTevOrder(0, 0, 0, 0xFF);
+        GXSetBlendMode(0, 4, 5, 5);
+    }
+
+    GXSetAlphaCompare(7, 0, 0, 7, 0);
+    GXSetZMode(0, 3, 0);
+    GXSetZCompLoc(1);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 0x1E, 1);
+    GXInitTexObj(&sFrameObj_1647, dataP, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, 1, 0, 0, 0);
+    GXInitTexObjLOD(&sFrameObj_1647, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
+    GXLoadTexObj(&sFrameObj_1647, 0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xD, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    GXBegin(0x80, 0, 4);
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    pFrame->nMode = 0;
+    pFrame->nModeVtx = -1;
+    pFrame->nFlag |= 0x40000 | 0x7F2D;
+    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
+    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
+    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+}
+#endif
+
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameShrink.s")
+#else
+void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
+    Mtx matrix;
+    s32 pad;
+    f32 nX0;
+    f32 nX1;
+    f32 nY0;
+    f32 nY1;
+    f32 scale;
+    void* frameBuffer;
+    GXColor color;
 
+    frameBuffer = DemoCurrentBuffer;
+    nX0 = posX;
+    nY0 = posY;
+    nX1 = 320.0f;
+    nY1 = 240.0f;
+
+    nX0 *= 2.0f;
+    nY0 *= 2.0f;
+    switch (size) {
+        case 0x435:
+            scale = 0.95f;
+            break;
+        case 0x471:
+            scale = 0.90f;
+            break;
+        case 0x4B4:
+            scale = 0.85f;
+            break;
+        case 0x500:
+            scale = 0.80f;
+            break;
+    }
+    nX1 *= scale;
+    nY1 *= scale;
+    GXSetTexCopySrc(0, 0, 0x280, 0x1E0);
+    GXSetTexCopyDst(0x280, 0x1E0, 4, 0);
+    GXCopyTex(frameBuffer, 0);
+    GXPixModeSync();
+    frameDrawSetup2D(pFrame);
+    GXSetZMode(0, 3, 0);
+    GXSetZCompLoc(1);
+    GXSetNumTevStages(1);
+    GXSetNumChans(1);
+    GXSetNumTexGens(0);
+    color.r = 0;
+    color.g = 0;
+    color.b = 0;
+    color.a = 255;
+    GXSetTevColor(1, color);
+    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
+    GXSetTevAlphaIn(0, 7, 7, 7, 6);
+    GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
+    GXSetBlendMode(0, 4, 5, 5);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXBegin(0x80, 0, 4);
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = 0.0f;
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;
+    color.a = 255;
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevColor(1, color);
+    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+    GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
+    GXSetTevAlphaIn(0, 7, 7, 7, 1);
+    GXSetTevOrder(0, 0, 0, 0xFF);
+    GXSetBlendMode(1, 4, 5, 5);
+    GXSetAlphaCompare(7, 0, 0, 7, 0);
+    GXSetZMode(0, 3, 0);
+    GXSetZCompLoc(1);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 0x1E, 1);
+    GXInitTexObj(&frameObj_1663, frameBuffer, 0x280, 0x1E0, 4, 0, 0, 0);
+    GXInitTexObjLOD(&frameObj_1663, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
+    GXLoadTexObj(&frameObj_1663, 0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xD, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    GXBegin(0x80, 0, 4);
+    GXWGFifo.f32 = nX0;
+    GXWGFifo.f32 = nY0;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = nX1;
+    GXWGFifo.f32 = nY0;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = nX1;
+    GXWGFifo.f32 = nY1;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = nX0;
+    GXWGFifo.f32 = nY1;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    pFrame->nMode = 0;
+    pFrame->nModeVtx = -1;
+    pFrame->nFlag |= 0x40000 | 0x7F2D;
+    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
+    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
+    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+}
+#endif
+
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameCamera.s")
+#else
+void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
+    Mtx matrix;
+    GXColor color;
+    s32 pad[6];
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackTIMG_Zelda.s")
+    frameDrawSetup2D(pFrame);
+    color.r = 255;
+    color.g = 167;
+    color.b = 176;
+    color.a = 255;
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevColor(1, color);
+    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+    GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
+    GXSetTevAlphaIn(0, 7, 7, 7, 1);
+    GXSetTevOrder(0, 0, 0, 0xFF);
+    GXSetBlendMode(1, 4, 5, 5);
+    GXSetAlphaCompare(7, 0, 0, 7, 0);
+    GXSetZMode(0, 3, 0);
+    GXSetZCompLoc(1);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 0x1E, 1);
+    GXInitTexObj(&frameObj_1673, buffer, ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, 1, 0, 0, 0);
+    GXInitTexObjLOD(&frameObj_1673, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
+    GXLoadTexObj(&frameObj_1673, 0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xD, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    GXBegin(0x80, 0, 4);
+    GXWGFifo.f32 = 80.0f;
+    GXWGFifo.f32 = 31.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.015625f;
+    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = 31.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.015625f;
+    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = 143.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.859375;
+    GXWGFifo.f32 = 80.0f;
+    GXWGFifo.f32 = 143.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.859375;
+    pFrame->nMode = 0;
+    pFrame->nModeVtx = -1;
+    pFrame->nFlag |= 0x40000 | 0x7F2D;
+    pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
+    pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
+    pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
+    pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
+}
+#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Zelda2.s")
+//! TODO: make sCommandCodes a static variable in the function
+s32 frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi) {
+    u32 i;
+
+    if ((*pnCommandLo == 0x0F000000) && (*pnCommandHi == 0xFD500000)) {
+        u32* tmp = (u32*)*pnGBI;
+        for (i = 0; i < ARRAY_COUNT(sCommandCodes_1679); i++) {
+            if (tmp[i] != sCommandCodes_1679[i]) {
+                break;
+            }
+        }
+
+        if (i == ARRAY_COUNT(sCommandCodes_1679)) {
+            ZeldaGreyScaleConvert(pFrame);
+            sSpecialZeldaHackON = 1;
+        }
+    }
+
+    if ((sSpecialZeldaHackON != 0) && ((*pnCommandLo & 0xFF000000) != 0x0F000000)) {
+        sSpecialZeldaHackON = 0;
+    }
+
+    if (sSrcBuffer == SEGMENT_ADDRESS(SYSTEM_RSP(gpSystem), *pnCommandLo)) {
+        *pnCommandLo = sDestinationBuffer;
+        *pnGBI += 8;
+    }
+
+    return 1;
+}
+
+s32 frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
+    u32 i;
+    u32* pGBI;
+    s32 pad[4];
+
+    if (pBuffer->nAddress == pFrame->aBuffer[0].nAddress) {
+        pFrame->nHackCount += 1;
+    }
+
+    pFrame->nFrameCIMGCalls += 1;
+
+    if ((s32)pFrame->nHackCount > 1) {
+        pGBI = (u32*)&pnGBI[-5];
+        for (i = 0; i < ARRAY_COUNT(sCommandCodes_1702); i++) {
+            if (pGBI[i] != sCommandCodes_1702[i] && !(i == 9 && (pGBI[9] == 0x80383C80 || pGBI[9] == 0x80383AC0))) {
+                break;
+            }
+        }
+
+        if (i == ARRAY_COUNT(sCommandCodes_1702)) {
+            if (!pFrame->bHackPause) {
+                nCopyFrame = 1;
+            }
+        } else {
+            pFrame->bPauseThisFrame = 0;
+        }
+    }
+
+    if ((s32)nCopyFrame != 0) {
+        pGBI = (u32*)&pnGBI[-5];
+        for (i = 0; i < ARRAY_COUNT(sCommandCodes2); i++) {
+            if (pGBI[i] != sCommandCodes2[i]) {
+                break;
+            }
+        }
+
+        if (i == ARRAY_COUNT(sCommandCodes2)) {
+            if (!pFrame->bHackPause) {
+                for (i = 0; i < N64_FRAME_WIDTH * N64_FRAME_HEIGHT; i++) {
+                    pFrame->nCopyBuffer[i] = pFrame->nTempBuffer[i];
+                }
+            }
+            pFrame->bHackPause = 1;
+            pFrame->nHackCount = 0;
+            pFrame->bPauseThisFrame = 1;
+            nCopyFrame = 0;
+        } else {
+            pFrame->bPauseThisFrame = 0;
+        }
+    }
+
+    if (pFrame->bHackPause) {
+        if ((pFrame->nFrameCounter - nLastFrame) >= 2) {
+            nLastFrame = pFrame->nFrameCounter;
+            gNoSwapBuffer = 1;
+        }
+        pFrame->bHackPause = 0;
+    } else {
+        if (pFrame->bShrinking & 0xFFFF) {
+            if (pFrame->bBlurOn) {
+                pFrame->bShrinking |= 0x10;
+            }
+            if (!pFrame->bBlurOn && (pFrame->bShrinking & 0xF0) == 0) {
+                CopyCFB(pFrame->nTempBuffer);
+            }
+        } else if (!pFrame->bBlurOn) {
+            CopyCFB(pFrame->nTempBuffer);
+        }
+    }
+
+    if (((pBuffer->nAddress == 0x42EEC0) || (pBuffer->nAddress == 0x3A9480) || (pBuffer->nAddress == 0x3A92C0)) &&
+        pFrame->bBlurOn && !pFrame->bBlurredThisFrame) {
+        ZeldaDrawFrameBlur(pFrame, pFrame->nTempBuffer);
+        CopyCFB(pFrame->nTempBuffer);
+        pFrame->bBlurredThisFrame = 1;
+    }
+
+    return 1;
+}
 
 s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo) {
     u32 i;
@@ -1021,9 +1424,96 @@ s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCo
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Zelda2_Shrink.s")
+s32 frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
+    u64* pnGBI;
+    s32 count;
+    s32 nAddress;
+    u32 nCommandLo;
+    u32 nCommandHi;
+    Rsp* pRSP;
+    s32 done;
+    __anon_0x2ACA3 bg;
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Zelda2_Camera.s")
+    pnGBI = *ppnGBI;
+    for (count = 0; count < ARRAY_COUNT(GBIcode); count++) {
+        nCommandHi = GBI_COMMAND_HI(pnGBI + count);
+        if (GBIcode[count] != nCommandHi) {
+            break;
+        }
+    }
+
+    if (count == ARRAY_COUNT(GBIcode)) {
+        pnGBI = pnGBI + count;
+        pRSP = SYSTEM_RSP(pRDP->pHost);
+        done = 0;
+
+        while (TRUE) {
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            if (nCommandHi == 0x09000000) {
+                nCommandLo = GBI_COMMAND_LO(pnGBI);
+                nAddress = SEGMENT_ADDRESS(pRSP, nCommandLo);
+
+                rspFillObjBgScale(pRSP, nAddress, &bg);
+                pFrame->bShrinking |= 1;
+                pFrame->bShrinking |= 0x100;
+
+                if ((pFrame->bShrinking & 0xFFFF0000) == 0) {
+                    pFrame->bShrinking |= bg.b.tmemW << 16;
+                }
+                ZeldaDrawFrameShrink(pFrame, bg.b.frameX >> 2, bg.b.frameY >> 2, bg.b.tmemW);
+                done = 1;
+            }
+
+            if (done && nCommandHi == 0xDF000000) {
+                break;
+            }
+            pnGBI++;
+        };
+    } else {
+        return 0;
+    }
+
+    *ppnGBI = ++pnGBI;
+    return 1;
+}
+
+static inline void Zelda2Camera_UnkownInline(u16* nCameraBuffer) {
+    GXSetTexCopySrc(ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT - 10, ZELDA2_CAMERA_WIDTH * 2, ZELDA2_CAMERA_HEIGHT * 2);
+    GXSetTexCopyDst(ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, GX_TF_I8, GX_TRUE);
+    DCInvalidateRange(nCameraBuffer, ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT * sizeof(u16));
+    GXCopyTex(nCameraBuffer, GX_FALSE);
+    GXPixModeSync();
+}
+
+s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nCommandHi, u32 nCommandLo) {
+    if (pBuffer != NULL) {
+        if (pBuffer->nAddress == 0x00784600) {
+            pFrame->bSnapShot |= 0x10;
+            return 1;
+        }
+
+        if ((pFrame->bSnapShot & 0xF00) != 0) {
+            ZeldaDrawFrameCamera(pFrame, pFrame->nCameraBuffer);
+            pFrame->bSnapShot &= ~0xF00;
+            return 1;
+        }
+        return 0;
+    }
+
+    if ((nCommandHi == 0xF63EC25C) && (nCommandLo == 0x00118058)) {
+        pFrame->bSnapShot |= 1;
+
+        // possible bug? probably meant to be ``pFrame->bSnapShot & 0xF00``
+        if ((pFrame->bSnapShot & 0xF0) != 0) {
+            Zelda2Camera_UnkownInline(pFrame->nCameraBuffer);
+            pFrame->bSnapShot &= ~0xF00;
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawBG8.s")
 
