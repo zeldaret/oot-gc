@@ -87,42 +87,6 @@ typedef enum CpuSize {
     CS_64BIT = 1,
 } CpuSize;
 
-// __anon_0x3DE78
-typedef struct CpuJump {
-    /* 0x0 */ s32 nOffsetHost;
-    /* 0x4 */ s32 nAddressN64;
-} CpuJump; // size = 0x8
-
-// cpu_callerID
-typedef struct CpuCallerID {
-    /* 0x0 */ s32 N64address;
-    /* 0x4 */ s32 GCNaddress;
-} CpuCallerID; // size = 0x8
-
-typedef struct CpuFunction CpuFunction;
-
-// cpu_function
-struct CpuFunction {
-    /* 0x00 */ void* pnBase;
-    /* 0x04 */ void* pfCode;
-    /* 0x08 */ s32 nCountJump;
-    /* 0x0C */ CpuJump* aJump;
-    /* 0x10 */ s32 nAddress0;
-    /* 0x14 */ s32 nAddress1;
-    /* 0x18 */ CpuCallerID* block;
-    /* 0x1C */ s32 callerID_total;
-    /* 0x20 */ s32 callerID_flag;
-    /* 0x24 */ u32 nChecksum;
-    /* 0x28 */ s32 timeToLive;
-    /* 0x2C */ s32 memory_size;
-    /* 0x30 */ s32 heapID;
-    /* 0x34 */ s32 heapWhere;
-    /* 0x38 */ s32 treeheapWhere;
-    /* 0x3C */ CpuFunction* prev;
-    /* 0x40 */ CpuFunction* left;
-    /* 0x44 */ CpuFunction* right;
-}; // size = 0x48
-
 // __anon_0x3E22D
 typedef union CpuGpr {
     struct {
@@ -214,6 +178,42 @@ typedef struct CpuDevice {
     /* 0x2C */ u32 nAddressPhysical0;
     /* 0x30 */ u32 nAddressPhysical1;
 } CpuDevice; // size = 0x34
+
+// __anon_0x3DE78
+typedef struct CpuJump {
+    /* 0x0 */ s32 nOffsetHost;
+    /* 0x4 */ s32 nAddressN64;
+} CpuJump; // size = 0x8
+
+// cpu_callerID
+typedef struct CpuCallerID {
+    /* 0x0 */ s32 N64address;
+    /* 0x4 */ s32 GCNaddress;
+} CpuCallerID; // size = 0x8
+
+typedef struct CpuFunction CpuFunction;
+
+// cpu_function
+struct CpuFunction {
+    /* 0x00 */ void* pnBase;
+    /* 0x04 */ void* pfCode;
+    /* 0x08 */ s32 nCountJump;
+    /* 0x0C */ CpuJump* aJump;
+    /* 0x10 */ s32 nAddress0;
+    /* 0x14 */ s32 nAddress1;
+    /* 0x18 */ CpuCallerID* block;
+    /* 0x1C */ s32 callerID_total;
+    /* 0x20 */ s32 callerID_flag;
+    /* 0x24 */ u32 nChecksum;
+    /* 0x28 */ s32 timeToLive;
+    /* 0x2C */ s32 memory_size;
+    /* 0x30 */ s32 heapID;
+    /* 0x34 */ s32 heapWhere;
+    /* 0x38 */ s32 treeheapWhere;
+    /* 0x3C */ CpuFunction* prev;
+    /* 0x40 */ CpuFunction* left;
+    /* 0x44 */ CpuFunction* right;
+}; // size = 0x48
 
 // cpu_treeRoot
 typedef struct CpuTreeRoot {
