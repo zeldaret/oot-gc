@@ -856,27 +856,27 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXSetNumTevStages(1);
     GXSetNumChans(0);
     GXSetNumTexGens(1);
-    GXSetTevColor(1, color);
-    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
-    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-    GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
-    GXSetTevAlphaIn(0, 7, 7, 7, 1);
-    GXSetTevOrder(0, 0, 0, 0xFF);
-    GXSetBlendMode(1, 4, 5, 5);
-    GXSetAlphaCompare(7, 0, 0, 7, 0);
-    GXSetZMode(0, 3, 0);
-    GXSetZCompLoc(1);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
-    GXLoadTexMtxImm(matrix, 0x1E, 1);
-    GXInitTexObj(&sFrameObj_1565, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 4, 0, 0, 0);
-    GXInitTexObjLOD(&sFrameObj_1565, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
-    GXLoadTexObj(&sFrameObj_1565, 0);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&sFrameObj_1565, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj_1565, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj_1565, GX_TEXMAP0);
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxDesc(0xD, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    GXBegin(0x80, 0, 4);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
     GXWGFifo.f32 = -1.0f;
     GXWGFifo.f32 = -1.0f;
     GXWGFifo.f32 = 0.0f;
@@ -953,8 +953,8 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     color.b = 85;
     color.a = cAlpha;
     GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
-    GXSetTexCopyDst(GC_FRAME_WIDTH, GC_FRAME_HEIGHT, 1, 0);
-    GXCopyTex(dataP, 0);
+    GXSetTexCopyDst(GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_I8, GX_FALSE);
+    GXCopyTex(dataP, GX_FALSE);
     GXPixModeSync();
     frameDrawSetup2D(pFrame);
 
@@ -962,13 +962,13 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
         GXSetNumTevStages(1);
         GXSetNumChans(0);
         GXSetNumTexGens(1);
-        GXSetTevColor(1, color);
-        GXSetTevColorOp(0, 0, 0, 0, 0, 0);
-        GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-        GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
-        GXSetTevAlphaIn(0, 7, 7, 7, 1);
-        GXSetTevOrder(0, 0, 0, 0xFF);
-        GXSetBlendMode(1, 4, 5, 5);
+        GXSetTevColor(GX_TEVREG0, color);
+        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
         if (cAlpha < 255) {
             cAlpha += 20;
         }
@@ -976,25 +976,25 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
         GXSetNumTevStages(1);
         GXSetNumChans(0);
         GXSetNumTexGens(1);
-        GXSetTevOp(0, 3);
-        GXSetTevOrder(0, 0, 0, 0xFF);
-        GXSetBlendMode(0, 4, 5, 5);
+        GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     }
 
-    GXSetAlphaCompare(7, 0, 0, 7, 0);
-    GXSetZMode(0, 3, 0);
-    GXSetZCompLoc(1);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
-    GXLoadTexMtxImm(matrix, 0x1E, 1);
-    GXInitTexObj(&sFrameObj_1647, dataP, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, 1, 0, 0, 0);
-    GXInitTexObjLOD(&sFrameObj_1647, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
-    GXLoadTexObj(&sFrameObj_1647, 0);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&sFrameObj_1647, dataP, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_I8, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj_1647, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj_1647, GX_TEXMAP0);
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxDesc(0xD, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    GXBegin(0x80, 0, 4);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
@@ -1061,13 +1061,13 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     }
     nX1 *= scale;
     nY1 *= scale;
-    GXSetTexCopySrc(0, 0, 0x280, 0x1E0);
-    GXSetTexCopyDst(0x280, 0x1E0, 4, 0);
-    GXCopyTex(frameBuffer, 0);
+    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
+    GXSetTexCopyDst(GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_RGB565, GX_FALSE);
+    GXCopyTex(frameBuffer, GX_FALSE);
     GXPixModeSync();
     frameDrawSetup2D(pFrame);
-    GXSetZMode(0, 3, 0);
-    GXSetZCompLoc(1);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
     GXSetNumTevStages(1);
     GXSetNumChans(1);
     GXSetNumTexGens(0);
@@ -1075,17 +1075,17 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     color.g = 0;
     color.b = 0;
     color.a = 255;
-    GXSetTevColor(1, color);
-    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
-    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
-    GXSetTevAlphaIn(0, 7, 7, 7, 6);
-    GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
-    GXSetBlendMode(0, 4, 5, 5);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_C0);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_KONST);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXBegin(0x80, 0, 4);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
@@ -1105,27 +1105,28 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXSetNumTevStages(1);
     GXSetNumChans(0);
     GXSetNumTexGens(1);
-    GXSetTevColor(1, color);
-    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
-    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-    GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
-    GXSetTevAlphaIn(0, 7, 7, 7, 1);
-    GXSetTevOrder(0, 0, 0, 0xFF);
-    GXSetBlendMode(1, 4, 5, 5);
-    GXSetAlphaCompare(7, 0, 0, 7, 0);
-    GXSetZMode(0, 3, 0);
-    GXSetZCompLoc(1);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
-    GXLoadTexMtxImm(matrix, 0x1E, 1);
-    GXInitTexObj(&frameObj_1663, frameBuffer, 0x280, 0x1E0, 4, 0, 0, 0);
-    GXInitTexObjLOD(&frameObj_1663, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
-    GXLoadTexObj(&frameObj_1663, 0);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&frameObj_1663, frameBuffer, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP,
+                 GX_FALSE);
+    GXInitTexObjLOD(&frameObj_1663, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&frameObj_1663, GX_TEXMAP0);
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxDesc(0xD, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    GXBegin(0x80, 0, 4);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
     GXWGFifo.f32 = nX0;
     GXWGFifo.f32 = nY0;
     GXWGFifo.f32 = 0.0f;
@@ -1170,27 +1171,28 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     GXSetNumTevStages(1);
     GXSetNumChans(0);
     GXSetNumTexGens(1);
-    GXSetTevColor(1, color);
-    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
-    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-    GXSetTevColorIn(0, 0xF, 8, 2, 0xF);
-    GXSetTevAlphaIn(0, 7, 7, 7, 1);
-    GXSetTevOrder(0, 0, 0, 0xFF);
-    GXSetBlendMode(1, 4, 5, 5);
-    GXSetAlphaCompare(7, 0, 0, 7, 0);
-    GXSetZMode(0, 3, 0);
-    GXSetZCompLoc(1);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
-    GXLoadTexMtxImm(matrix, 0x1E, 1);
-    GXInitTexObj(&frameObj_1673, buffer, ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, 1, 0, 0, 0);
-    GXInitTexObjLOD(&frameObj_1673, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
-    GXLoadTexObj(&frameObj_1673, 0);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&frameObj_1673, buffer, ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, GX_TF_I8, GX_CLAMP, GX_CLAMP,
+                 GX_FALSE);
+    GXInitTexObjLOD(&frameObj_1673, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&frameObj_1673, GX_TEXMAP0);
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxDesc(0xD, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    GXBegin(0x80, 0, 4);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
     GXWGFifo.f32 = 80.0f;
     GXWGFifo.f32 = 31.0f;
     GXWGFifo.f32 = 0.0f;
@@ -1460,11 +1462,11 @@ s32 frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
     return 1;
 }
 
-static inline void Zelda2Camera_UnkownInline(u16* nCameraBuffer) {
+static inline void ZeldaCopyCamera(u16* buffer) {
     GXSetTexCopySrc(ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT - 10, ZELDA2_CAMERA_WIDTH * 2, ZELDA2_CAMERA_HEIGHT * 2);
     GXSetTexCopyDst(ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, GX_TF_I8, GX_TRUE);
-    DCInvalidateRange(nCameraBuffer, ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT * sizeof(u16));
-    GXCopyTex(nCameraBuffer, GX_FALSE);
+    DCInvalidateRange(buffer, ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT * sizeof(u16));
+    GXCopyTex(buffer, GX_FALSE);
     GXPixModeSync();
 }
 
@@ -1488,7 +1490,7 @@ s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComman
 
         // possible bug? probably meant to be ``pFrame->bSnapShot & 0xF00``
         if ((pFrame->bSnapShot & 0xF0) != 0) {
-            Zelda2Camera_UnkownInline(pFrame->nCameraBuffer);
+            ZeldaCopyCamera(pFrame->nCameraBuffer);
             pFrame->bSnapShot &= ~0xF00;
         }
 
