@@ -146,6 +146,12 @@ typedef struct TextureMemory {
     /* 0x0 */ TMEM_Block data;
 } TextureMemory; // size = 0x1000
 
+// __anon_0x25A82
+typedef struct TextureInfo {
+    /* 0x0 */ s32 nSizeTextures;
+    /* 0x4 */ s32 nCountTextures;
+} TextureInfo; // size = 0x8
+
 // _FRAME_TEXTURE
 // __anon_0x24462
 typedef struct FrameTexture FrameTexture;

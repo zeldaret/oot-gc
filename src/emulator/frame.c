@@ -77,11 +77,10 @@ GXTexCoordID ganNameTexCoord[] = {
 char D_800EA8D8[] = "TEXRRR (obsolete)";
 char D_800EA8EC[] = "TEXGGG (obsolete)";
 char D_800EA900[] = "TEXBBB (obsolete)";
-char D_800EA914[] = "GX_CC_KONST";
 
 char* gaszNameColor[] = {
     "CPREV", "APREV", "C0",  "A0",   "C1",    "A1",   "C2",       "A2",       "TEXC",     "TEXA",
-    "RASC",  "RASA",  "ONE", "HALF", "KONST", "ZERO", D_800EA8D8, D_800EA8EC, D_800EA900, D_800EA914,
+    "RASC",  "RASA",  "ONE", "HALF", "KONST", "ZERO", D_800EA8D8, D_800EA8EC, D_800EA900, "GX_CC_KONST",
 };
 
 char* gaszNameAlpha[] = {
@@ -111,10 +110,8 @@ s32 sZBufShift[] = {
     0x00038000, 0x00000003, 0x00030000, 0x00000004, 0x00020000, 0x00000005, 0x00000000, 0x00000006,
 };
 
-char D_800EAA0C[] = "PRIMITIVE";
-char D_800EAA18[] = "ENVIRONMENT";
 char* gaszNameColorType[] = {
-    "FOG", "FILL", "BLEND", D_800EAA0C, D_800EAA18,
+    "FOG", "FILL", "BLEND", "PRIMITIVE", "ENVIRONMENT",
 };
 
 static GXTexObj sFrameObj1;
@@ -227,6 +224,7 @@ s32 anRenderModeDatabaseCycle1[] = {
 
 char D_800EB13C[] = "GetTextureInfo: Unknown texture-format: %d\n";
 
+#ifndef NON_MATCHING
 extern void* lbl_8001D3FC;
 extern void* lbl_8001D418;
 extern void* lbl_8001D418;
@@ -240,7 +238,11 @@ extern void* lbl_8001D418;
 
 void* jtbl_800EB168[] = {&lbl_8001D3FC, &lbl_8001D418, &lbl_8001D418, &lbl_8001D42C, &lbl_8001D42C,
                          &lbl_8001D42C, &lbl_8001D444, &lbl_8001D45C, &lbl_8001D3FC, &lbl_8001D418};
+#else
+void* jtbl_800EB168[] = {0};
+#endif
 
+#ifndef NON_MATCHING
 extern void* lbl_80020074;
 extern void* lbl_80020084;
 extern void* lbl_800200C8;
@@ -254,9 +256,14 @@ extern void* lbl_80020144;
 
 void* jtbl_800EB190[] = {&lbl_80020074, &lbl_80020084, &lbl_800200C8, &lbl_800200D8, &lbl_800200E8,
                          &lbl_80020134, &lbl_80020144, &lbl_80020144, &lbl_80020144, &lbl_80020144};
+#else
+void* jtbl_800EB190[] = {0};
+#endif
+
 char D_800EB1B8[] = "frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n";
 char D_800EB1F8[] = "Waiting for valid?\n";
 
+#ifndef NON_MATCHING
 extern void* lbl_800297DC;
 extern void* lbl_800297E8;
 extern void* lbl_800297F4;
@@ -266,13 +273,15 @@ extern void* lbl_80029818;
 extern void* lbl_80029824;
 extern void* lbl_80029830;
 
-#ifndef NON_MATCHING
 void* jtbl_800EB20C[] = {
     &lbl_800297DC, &lbl_800297E8, &lbl_800297F4, &lbl_80029800,
     &lbl_8002980C, &lbl_80029818, &lbl_80029824, &lbl_80029830,
 };
+#else
+void* jtbl_800EB20C[] = {0};
 #endif
 
+#ifndef NON_MATCHING
 extern void* lbl_8002986C;
 extern void* lbl_80029878;
 extern void* lbl_80029884;
@@ -306,7 +315,6 @@ extern void* lbl_80029938;
 extern void* lbl_80029938;
 extern void* lbl_8002992C;
 
-#ifndef NON_MATCHING
 void* jtbl_800EB22C[] = {
     &lbl_8002986C, &lbl_80029878, &lbl_80029884, &lbl_80029890, &lbl_8002989C, &lbl_800298A8, &lbl_80029920,
     &lbl_800298B4, &lbl_800298C0, &lbl_800298CC, &lbl_800298D8, &lbl_800298E4, &lbl_800298F0, &lbl_800298FC,
@@ -314,6 +322,8 @@ void* jtbl_800EB22C[] = {
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938,
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_8002992C,
 };
+#else
+void* jtbl_800EB22C[] = {0};
 #endif
 
 char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
@@ -597,7 +607,40 @@ static s32 frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nA
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T3.s")
+#else
+s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
+    u32 pad[20];
+
+    if (gpSystem->eTypeROM == SRT_ZELDA1 && pPrimitive->nCount == 3 && (pFrame->aMode[4] & 0xC00) == 0xC00) {
+        f32(*pMatrix)[4] = pFrame->aMatrixModel[pFrame->iMatrixModel];
+        Vertex* vtx = &pFrame->aVertex[pPrimitive->anData[0]];
+        if ((vtx->rSum == 53.0f && pMatrix[3][0] == -3080.0f && pMatrix[3][2] == 6067.0f) ||
+            (pMatrix[2][4] == -31.0f && pMatrix[3][2] == 1669.0f)) {
+            if (pMatrix[2][4] == -31.0f && pMatrix[3][2] == 1669.0f) {
+                gHackCreditsColor = 1;
+            }
+            return 1;
+        }
+    }
+
+    if (pFrame->nModeVtx != 0x17) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(9, 1);
+        GXSetVtxDesc(0xB, 1);
+        GXSetVtxDesc(0xD, 1);
+        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+        GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+        GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+        pFrame->nModeVtx = 0x17;
+    }
+
+    frameCheckTriangleDivide(pFrame, pPrimitive);
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_Setup.s")
 
@@ -1117,7 +1160,90 @@ s32 frameSetFill(Frame* pFrame, s32 bFill) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMode.s")
+#else
+s32 frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
+    u32 nFlag;
+    u32 nModeChanged;
+
+    if ((pFrame->nMode & (1 << eType))) {
+        nModeChanged = pFrame->aMode[eType] ^ nMode;
+    } else {
+        nModeChanged = 0xFFFFFFFF;
+        *((volatile u32*)&pFrame->nMode) |= (1 << eType);
+    }
+
+    nFlag = 0;
+    switch (eType) {
+        case FMT_FOG:
+            if (nModeChanged != 0) {
+                nFlag |= 0x20;
+            }
+            break;
+        case FMT_GEOMETRY:
+            if ((nModeChanged & 0x10) != 0) {
+                nFlag |= 0x20;
+            }
+            if ((nModeChanged & 1) != 0) {
+                nFlag |= 4;
+            }
+            if ((nModeChanged & 0xC) != 0) {
+                nFlag |= 8;
+            }
+            if ((nModeChanged & 0x180) != 0) {
+                nFlag |= 2;
+            }
+            break;
+        case FMT_TEXTURE1:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7C01;
+            }
+            break;
+        case FMT_TEXTURE2:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7D01;
+            }
+            break;
+        case FMT_OTHER0:
+            nFlag |= 0x200;
+            if ((nModeChanged & 3) != 0) {
+                nFlag |= 0x7C00;
+            }
+            if ((nModeChanged & 0xF0) != 0) {
+                nFlag |= 4;
+            }
+            if ((nModeChanged & 0xC00) != 0) {
+                nFlag |= 0x40000 | 4;
+            }
+            if ((nModeChanged & 0xFFFF0000) != 0) {
+                nFlag |= 0x7C00;
+            }
+            break;
+        case FMT_OTHER1:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7F01;
+            }
+            break;
+        case FMT_COMBINE_COLOR1:
+        case FMT_COMBINE_COLOR2:
+        case FMT_COMBINE_ALPHA1:
+        case FMT_COMBINE_ALPHA2:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7D00;
+            }
+            break;
+    }
+
+    if (nFlag != 0) {
+        frameDrawReset(pFrame, nFlag);
+    }
+
+    pFrame->aMode[eType] = nMode;
+    return 1;
+}
+#endif
 
 s32 frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
     *pnMode = pFrame->aMode[eType];
@@ -1363,6 +1489,55 @@ s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAd
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameInvalidateCache.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetTextureInfo.s")
+#else
+s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
+    FrameTexture* pTexture;
+    s32 iTexture;
+    s32 nCount;
+    s32 nSize;
+
+    nSize = 0;
+    nCount = 0;
+    iTexture = 0;
+
+    for (iTexture = 0; iTexture < ARRAY_COUNT(pFrame->apTextureCached); iTexture++) {
+        pTexture = pFrame->apTextureCached[iTexture];
+
+        while (pTexture != NULL) {
+            nCount++;
+            switch (pTexture->eFormat) {
+                case GX_TF_I4:
+                case 8:
+                    nSize += (s32)((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;
+                    break;
+                case GX_TF_I8:
+                case GX_TF_IA4:
+                case 9:
+                    nSize += pTexture->nSizeX * pTexture->nSizeY;
+                    break;
+                case GX_TF_IA8:
+                case GX_TF_RGB565:
+                case GX_TF_RGB5A3:
+                    nSize += pTexture->nSizeX * pTexture->nSizeY * 2;
+                    break;
+                case GX_TF_RGBA8:
+                    nSize += pTexture->nSizeX * pTexture->nSizeY * 4;
+                    break;
+                default:
+                    OSReport("GetTextureInfo: Unknown texture-format: %d\n", pTexture->eFormat);
+                    return 0;
+            }
+            pTexture = pTexture->pTextureNext;
+        }
+    }
+
+    pInfo->nSizeTextures = nSize + (nCount * 0x6C);
+    pInfo->nCountTextures = nCount;
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/PSMTX44MultVecNoW.s")
