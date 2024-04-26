@@ -873,7 +873,7 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXSetZCompLoc(1);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 0x1E, 1);
-    GXInitTexObj(&sFrameObj_1565, pData, 320, 240, 4, 0, 0, 0);
+    GXInitTexObj(&sFrameObj_1565, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 4, 0, 0, 0);
     GXInitTexObjLOD(&sFrameObj_1565, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0.0f);
     GXLoadTexObj(&sFrameObj_1565, 0);
     GXClearVtxDesc();
