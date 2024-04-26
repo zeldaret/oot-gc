@@ -15,6 +15,7 @@
 #include "dolphin/os.h"
 #include "dolphin/pad.h"
 #include "dolphin/si.h"
+#include "dolphin/tex.h"
 #include "dolphin/thp.h"
 #include "dolphin/types.h"
 #include "dolphin/vi.h"

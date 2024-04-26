@@ -93,6 +93,4 @@ typedef struct __anon_0x10B6F {
     /* 0x1A8 */ __anon_0x109FA audioBuffer[3];
 } __anon_0x10B6F; // size = 0x1D0
 
-extern char gpErrorMessageBuffer[20480];
-
 #endif
