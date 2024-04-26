@@ -722,7 +722,38 @@ static s32 frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
 
 s32 frameShow() { return 1; }
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetScissor.s")
+#else
+s32 frameSetScissor(Frame* pFrame, Scissor* pScissor) {
+    s32 nTemp;
+    s32 nX0;
+    s32 nY0;
+    s32 nX1;
+    s32 nY1;
+
+    nX0 = pScissor->nX0 / 4.0f * pFrame->rScaleX;
+    nY0 = pScissor->nY0 / 4.0f * pFrame->rScaleY;
+    nX1 = pScissor->nX1 / 4.0f * pFrame->rScaleX;
+    nY1 = pScissor->nY1 / 4.0f * pFrame->rScaleY;
+
+    if (nX1 < nX0) {
+        nTemp = nX1;
+        nX1 = nX0;
+        nX0 = nTemp;
+    }
+
+    if (nY1 < nY0) {
+        nTemp = nY1;
+        nY1 = nY0;
+        nY0 = nTemp;
+    }
+
+    GXSetScissor(nX0, nY0, nX1 - nX0, nY1 - nY0);
+    return 1;
+}
+#endif
 
 s32 frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
     pFrame->rDepth = rDepth;
@@ -730,7 +761,21 @@ s32 frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetColor.s")
+s32 frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA) {
+    pFrame->aColor[eType].r = (nRGBA >> 24) & 0xFF;
+    pFrame->aColor[eType].g = (nRGBA >> 16) & 0xFF;
+    pFrame->aColor[eType].b = (nRGBA >> 8) & 0xFF;
+    pFrame->aColor[eType].a = nRGBA & 0xFF;
+
+    if (eType == FCT_PRIMITIVE) {
+        GXSetTevColor(GX_TEVREG2, pFrame->aColor[eType]);
+    } else if (eType == FCT_ENVIRONMENT) {
+        GXSetTevKColor(GX_KCOLOR1, pFrame->aColor[eType]);
+    }
+
+    frameDrawReset(pFrame, (eType == FCT_FOG ? 0x20 : 0x0) | 0x7F00);
+    return 1;
+}
 
 s32 frameBeginOK(void) {
     if (gbFrameValid) {
@@ -878,7 +923,58 @@ s32 frameEnd(Frame* pFrame) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/_frameDrawRectangle.s")
 
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameNoBlend.s")
+#else
+void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
+    Mtx matrix;
+    u32 pad[8];
+
+    frameDrawSetup2D(pFrame);
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevOp(0, 3);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&sFrameObj_1564, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj_1564, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj_1564, GX_TEXMAP0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+}
+#endif
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
@@ -890,9 +986,9 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     s32 pad[8];
     GXColor color;
 
-    color.r = 0xFF;
-    color.g = 0xFF;
-    color.b = 0xFF;
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;
     color.a = pFrame->cBlurAlpha;
 
     frameDrawSetup2D(pFrame);
@@ -925,18 +1021,18 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 319.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH - 1;
     GXWGFifo.f32 = -1.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 319.0f;
-    GXWGFifo.f32 = 239.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH - 1;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT - 1;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = -1.0f;
-    GXWGFifo.f32 = 239.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT - 1;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
@@ -946,7 +1042,71 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
 }
 #endif
 
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrame.s")
+#else
+void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
+    Mtx matrix;
+    u32 pad[8];
+    GXColor color;
+
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;
+    color.a = pFrame->cBlurAlpha;
+
+    frameDrawSetup2D(pFrame);
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&sFrameObj_1568, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj_1568, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj_1568, GX_TEXMAP0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    pFrame->nMode = 0;
+    pFrame->nModeVtx = -1;
+    frameDrawReset(pFrame, 0x47F2D);
+}
+#endif
 
 void CopyAndConvertCFB(u16* srcP) {
     u16* dataEndP;
@@ -1043,18 +1203,18 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
@@ -1083,8 +1243,8 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     frameBuffer = DemoCurrentBuffer;
     nX0 = posX;
     nY0 = posY;
-    nX1 = 320.0f;
-    nY1 = 240.0f;
+    nX1 = N64_FRAME_WIDTH;
+    nY1 = N64_FRAME_HEIGHT;
 
     nX0 *= 2.0f;
     nY0 *= 2.0f;
@@ -1132,14 +1292,14 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     color.r = 255;
     color.g = 255;
@@ -1241,12 +1401,12 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.015625f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 31.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.015625f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 143.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;

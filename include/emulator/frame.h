@@ -67,6 +67,17 @@ typedef enum FrameMatrixProjection {
     FMP_ORTHOGRAPHIC = 1,
 } FrameMatrixProjection;
 
+// __anon_0x2D223
+typedef enum FrameColorType {
+    FCT_NONE = -1,
+    FCT_FOG,
+    FCT_FILL,
+    FCT_BLEND,
+    FCT_PRIMITIVE,
+    FCT_ENVIRONMENT,
+    FCT_COUNT
+} FrameColorType;
+
 // __anon_0x2D45B
 typedef struct Primitive {
     /* 0x0 */ s32 nCount;
@@ -80,6 +91,20 @@ typedef struct Viewport {
     /* 0x8 */ f32 rSizeX;
     /* 0xC */ f32 rSizeY;
 } Viewport; // size = 0x10
+
+// __anon_0x2D2B6
+typedef struct Scissor {
+    /* 0x00 */ s32 bFlip;
+    /* 0x04 */ s32 iTile;
+    /* 0x08 */ s32 nX0;
+    /* 0x0C */ s32 nY0;
+    /* 0x10 */ s32 nX1;
+    /* 0x14 */ s32 nY1;
+    /* 0x18 */ f32 rS;
+    /* 0x1C */ f32 rT;
+    /* 0x20 */ f32 rDeltaS;
+    /* 0x24 */ f32 rDeltaT;
+} Scissor; // size = 0x28
 
 // __anon_0x23B9E
 typedef struct FrameBuffer {
