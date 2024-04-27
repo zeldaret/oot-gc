@@ -10,23 +10,6 @@
 #include "emulator/xlObject.h"
 #include "macros.h"
 
-#define FRAME_SYNC_TOKEN 0x7D00
-
-// N64 frame buffer dimensions
-#define N64_FRAME_WIDTH 320
-#define N64_FRAME_HEIGHT 240
-
-// GC is rendered at double the resolution
-#define GC_FRAME_WIDTH (N64_FRAME_WIDTH * 2)
-#define GC_FRAME_HEIGHT (N64_FRAME_HEIGHT * 2)
-
-// Dimensions of the player preview on the equipment menu of the Zelda pause screen
-#define ZELDA_PAUSE_EQUIP_PLAYER_WIDTH 64
-#define ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT 112
-
-#define ZELDA2_CAMERA_WIDTH 160
-#define ZELDA2_CAMERA_HEIGHT 128
-
 const s32 D_800D31C0[] = {
     0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
     0x00000002, 0x0003C000, 0x00000001, 0x0003E000, 0x00000000, 0x0003F000, 0x00000000, 0x0003F800,
@@ -81,25 +64,30 @@ GXTexCoordID ganNameTexCoord[] = {
 char D_800EA8D8[] = "TEXRRR (obsolete)";
 char D_800EA8EC[] = "TEXGGG (obsolete)";
 char D_800EA900[] = "TEXBBB (obsolete)";
-char D_800EA914[] = "GX_CC_KONST";
 
 char* gaszNameColor[] = {
     "CPREV", "APREV", "C0",  "A0",   "C1",    "A1",   "C2",       "A2",       "TEXC",     "TEXA",
-    "RASC",  "RASA",  "ONE", "HALF", "KONST", "ZERO", D_800EA8D8, D_800EA8EC, D_800EA900, D_800EA914,
+    "RASC",  "RASA",  "ONE", "HALF", "KONST", "ZERO", D_800EA8D8, D_800EA8EC, D_800EA900, "GX_CC_KONST",
 };
 
 char* gaszNameAlpha[] = {
     "APREV", "A0", "A1", "A2", "TEXA", "RASA", "KONST", "ZERO", "KONST",
 };
 
-s32 (*gapfDrawTriangle[8])(Frame*, Primitive*) = {
-    frameDrawTriangle_C0T0, frameDrawTriangle_C1T0, 0x00000000, frameDrawTriangle_C3T0,
-    frameDrawTriangle_C0T3, frameDrawTriangle_C1T3, 0x00000000, frameDrawTriangle_C3T3,
+FrameDrawFunc gapfDrawTriangle[8] = {
+    (FrameDrawFunc)frameDrawTriangle_C0T0,
+    (FrameDrawFunc)frameDrawTriangle_C1T0,
+    NULL,
+    (FrameDrawFunc)frameDrawTriangle_C3T0,
+    (FrameDrawFunc)frameDrawTriangle_C0T3,
+    (FrameDrawFunc)frameDrawTriangle_C1T3,
+    NULL,
+    (FrameDrawFunc)frameDrawTriangle_C3T3,
 };
 
-s32 (*gapfDrawLine[6])(Frame*, Primitive*) = {
-    frameDrawLine_C0T0, frameDrawLine_C1T0, frameDrawLine_C2T0,
-    frameDrawLine_C0T2, frameDrawLine_C1T2, frameDrawLine_C2T2,
+FrameDrawFunc gapfDrawLine[6] = {
+    (FrameDrawFunc)frameDrawLine_C0T0, (FrameDrawFunc)frameDrawLine_C1T0, (FrameDrawFunc)frameDrawLine_C2T0,
+    (FrameDrawFunc)frameDrawLine_C0T2, (FrameDrawFunc)frameDrawLine_C1T2, (FrameDrawFunc)frameDrawLine_C2T2,
 };
 
 s32 nCopyFrame;
@@ -115,10 +103,8 @@ s32 sZBufShift[] = {
     0x00038000, 0x00000003, 0x00030000, 0x00000004, 0x00020000, 0x00000005, 0x00000000, 0x00000006,
 };
 
-char D_800EAA0C[] = "PRIMITIVE";
-char D_800EAA18[] = "ENVIRONMENT";
 char* gaszNameColorType[] = {
-    "FOG", "FILL", "BLEND", D_800EAA0C, D_800EAA18,
+    "FOG", "FILL", "BLEND", "PRIMITIVE", "ENVIRONMENT",
 };
 
 static GXTexObj sFrameObj1;
@@ -231,6 +217,7 @@ s32 anRenderModeDatabaseCycle1[] = {
 
 char D_800EB13C[] = "GetTextureInfo: Unknown texture-format: %d\n";
 
+#ifndef NON_MATCHING
 extern void* lbl_8001D3FC;
 extern void* lbl_8001D418;
 extern void* lbl_8001D418;
@@ -242,9 +229,13 @@ extern void* lbl_8001D45C;
 extern void* lbl_8001D3FC;
 extern void* lbl_8001D418;
 
-void* jtbl_800EB168[] = {&lbl_8001D3FC, &lbl_8001D418, &lbl_8001D418, &lbl_8001D42C, &lbl_8001D42C,
-                         &lbl_8001D42C, &lbl_8001D444, &lbl_8001D45C, &lbl_8001D3FC, &lbl_8001D418};
+void* jtbl_800EB168[10] = {&lbl_8001D3FC, &lbl_8001D418, &lbl_8001D418, &lbl_8001D42C, &lbl_8001D42C,
+                           &lbl_8001D42C, &lbl_8001D444, &lbl_8001D45C, &lbl_8001D3FC, &lbl_8001D418};
+#else
+void* jtbl_800EB168[10] = {0};
+#endif
 
+#ifndef NON_MATCHING
 extern void* lbl_80020074;
 extern void* lbl_80020084;
 extern void* lbl_800200C8;
@@ -256,11 +247,16 @@ extern void* lbl_80020144;
 extern void* lbl_80020144;
 extern void* lbl_80020144;
 
-void* jtbl_800EB190[] = {&lbl_80020074, &lbl_80020084, &lbl_800200C8, &lbl_800200D8, &lbl_800200E8,
-                         &lbl_80020134, &lbl_80020144, &lbl_80020144, &lbl_80020144, &lbl_80020144};
+void* jtbl_800EB190[10] = {&lbl_80020074, &lbl_80020084, &lbl_800200C8, &lbl_800200D8, &lbl_800200E8,
+                           &lbl_80020134, &lbl_80020144, &lbl_80020144, &lbl_80020144, &lbl_80020144};
+#else
+void* jtbl_800EB190[10] = {0};
+#endif
+
 char D_800EB1B8[] = "frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n";
 char D_800EB1F8[] = "Waiting for valid?\n";
 
+#ifndef NON_MATCHING
 extern void* lbl_800297DC;
 extern void* lbl_800297E8;
 extern void* lbl_800297F4;
@@ -270,13 +266,15 @@ extern void* lbl_80029818;
 extern void* lbl_80029824;
 extern void* lbl_80029830;
 
-#ifndef NON_MATCHING
-void* jtbl_800EB20C[] = {
+void* jtbl_800EB20C[8] = {
     &lbl_800297DC, &lbl_800297E8, &lbl_800297F4, &lbl_80029800,
     &lbl_8002980C, &lbl_80029818, &lbl_80029824, &lbl_80029830,
 };
+#else
+void* jtbl_800EB20C[8] = {0};
 #endif
 
+#ifndef NON_MATCHING
 extern void* lbl_8002986C;
 extern void* lbl_80029878;
 extern void* lbl_80029884;
@@ -310,14 +308,15 @@ extern void* lbl_80029938;
 extern void* lbl_80029938;
 extern void* lbl_8002992C;
 
-#ifndef NON_MATCHING
-void* jtbl_800EB22C[] = {
+void* jtbl_800EB22C[32] = {
     &lbl_8002986C, &lbl_80029878, &lbl_80029884, &lbl_80029890, &lbl_8002989C, &lbl_800298A8, &lbl_80029920,
     &lbl_800298B4, &lbl_800298C0, &lbl_800298CC, &lbl_800298D8, &lbl_800298E4, &lbl_800298F0, &lbl_800298FC,
     &lbl_80029908, &lbl_80029914, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938,
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938,
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_8002992C,
 };
+#else
+void* jtbl_800EB22C[32] = {0};
 #endif
 
 char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
@@ -611,7 +610,40 @@ static s32 frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nA
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T3.s")
+#else
+s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
+    u32 pad[20];
+
+    if (gpSystem->eTypeROM == SRT_ZELDA1 && pPrimitive->nCount == 3 && (pFrame->aMode[4] & 0xC00) == 0xC00) {
+        Mtx44Ptr pMatrix = pFrame->aMatrixModel[pFrame->iMatrixModel];
+        Vertex* vtx = &pFrame->aVertex[pPrimitive->anData[0]];
+        if ((vtx->rSum == 53.0f && pMatrix[3][0] == -3080.0f && pMatrix[3][2] == 6067.0f) ||
+            (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f)) {
+            if (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f) {
+                gHackCreditsColor = 1;
+            }
+            return 1;
+        }
+    }
+
+    if (pFrame->nModeVtx != 0x17) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+        pFrame->nModeVtx = 0x17;
+    }
+
+    frameCheckTriangleDivide(pFrame, pPrimitive);
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_Setup.s")
 
@@ -679,7 +711,38 @@ static s32 frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
 
 s32 frameShow() { return 1; }
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetScissor.s")
+#else
+s32 frameSetScissor(Frame* pFrame, Scissor* pScissor) {
+    s32 nTemp;
+    s32 nX0;
+    s32 nY0;
+    s32 nX1;
+    s32 nY1;
+
+    nX0 = pScissor->nX0 / 4.0f * pFrame->rScaleX;
+    nY0 = pScissor->nY0 / 4.0f * pFrame->rScaleY;
+    nX1 = pScissor->nX1 / 4.0f * pFrame->rScaleX;
+    nY1 = pScissor->nY1 / 4.0f * pFrame->rScaleY;
+
+    if (nX1 < nX0) {
+        nTemp = nX1;
+        nX1 = nX0;
+        nX0 = nTemp;
+    }
+
+    if (nY1 < nY0) {
+        nTemp = nY1;
+        nY1 = nY0;
+        nY0 = nTemp;
+    }
+
+    GXSetScissor(nX0, nY0, nX1 - nX0, nY1 - nY0);
+    return 1;
+}
+#endif
 
 s32 frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
     pFrame->rDepth = rDepth;
@@ -687,7 +750,21 @@ s32 frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
     return 1;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetColor.s")
+s32 frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA) {
+    pFrame->aColor[eType].r = (nRGBA >> 24) & 0xFF;
+    pFrame->aColor[eType].g = (nRGBA >> 16) & 0xFF;
+    pFrame->aColor[eType].b = (nRGBA >> 8) & 0xFF;
+    pFrame->aColor[eType].a = nRGBA & 0xFF;
+
+    if (eType == FCT_PRIMITIVE) {
+        GXSetTevColor(GX_TEVREG2, pFrame->aColor[eType]);
+    } else if (eType == FCT_ENVIRONMENT) {
+        GXSetTevKColor(GX_KCOLOR1, pFrame->aColor[eType]);
+    }
+
+    frameDrawReset(pFrame, (eType == FCT_FOG ? 0x20 : 0x0) | 0x7F00);
+    return 1;
+}
 
 s32 frameBeginOK(void) {
     if (gbFrameValid) {
@@ -835,7 +912,58 @@ s32 frameEnd(Frame* pFrame) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/_frameDrawRectangle.s")
 
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameNoBlend.s")
+#else
+void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
+    Mtx matrix;
+    u32 pad[8];
+
+    frameDrawSetup2D(pFrame);
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevOp(0, 3);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&sFrameObj_1564, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj_1564, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj_1564, GX_TEXMAP0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+}
+#endif
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
@@ -847,9 +975,9 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     s32 pad[8];
     GXColor color;
 
-    color.r = 0xFF;
-    color.g = 0xFF;
-    color.b = 0xFF;
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;
     color.a = pFrame->cBlurAlpha;
 
     frameDrawSetup2D(pFrame);
@@ -882,18 +1010,18 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 319.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH - 1;
     GXWGFifo.f32 = -1.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 319.0f;
-    GXWGFifo.f32 = 239.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH - 1;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT - 1;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = -1.0f;
-    GXWGFifo.f32 = 239.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT - 1;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
@@ -903,7 +1031,71 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
 }
 #endif
 
+// matches but data doesn't
+//! TODO: make sFrameObj a static variable in the function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrame.s")
+#else
+void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
+    Mtx matrix;
+    u32 pad[8];
+    GXColor color;
+
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;
+    color.a = pFrame->cBlurAlpha;
+
+    frameDrawSetup2D(pFrame);
+    GXSetNumTevStages(1);
+    GXSetNumChans(0);
+    GXSetNumTexGens(1);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
+    PSMTXIdentity(matrix);
+    GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
+    GXInitTexObj(&sFrameObj_1568, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj_1568, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj_1568, GX_TEXMAP0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 1.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 0.0f;
+    GXWGFifo.f32 = 1.0f;
+    pFrame->nMode = 0;
+    pFrame->nModeVtx = -1;
+    frameDrawReset(pFrame, 0x47F2D);
+}
+#endif
 
 void CopyAndConvertCFB(u16* srcP) {
     u16* dataEndP;
@@ -1000,18 +1192,18 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
@@ -1040,8 +1232,8 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     frameBuffer = DemoCurrentBuffer;
     nX0 = posX;
     nY0 = posY;
-    nX1 = 320.0f;
-    nY1 = 240.0f;
+    nX1 = N64_FRAME_WIDTH;
+    nY1 = N64_FRAME_HEIGHT;
 
     nX0 *= 2.0f;
     nY0 *= 2.0f;
@@ -1089,14 +1281,14 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_WIDTH;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 0.0f;
     color.r = 255;
     color.g = 255;
@@ -1198,12 +1390,12 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 0.015625f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 31.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
     GXWGFifo.f32 = 0.015625f;
-    GXWGFifo.f32 = 240.0f;
+    GXWGFifo.f32 = N64_FRAME_HEIGHT;
     GXWGFifo.f32 = 143.0f;
     GXWGFifo.f32 = 0.0f;
     GXWGFifo.f32 = 1.0f;
@@ -1592,7 +1784,90 @@ s32 frameSetFill(Frame* pFrame, s32 bFill) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMode.s")
+#else
+s32 frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
+    u32 nFlag;
+    u32 nModeChanged;
+
+    if (pFrame->nMode & (1 << eType)) {
+        nModeChanged = pFrame->aMode[eType] ^ nMode;
+    } else {
+        nModeChanged = 0xFFFFFFFF;
+        *((volatile u32*)&pFrame->nMode) |= (1 << eType);
+    }
+
+    nFlag = 0;
+    switch (eType) {
+        case FMT_FOG:
+            if (nModeChanged != 0) {
+                nFlag |= 0x20;
+            }
+            break;
+        case FMT_GEOMETRY:
+            if ((nModeChanged & 0x10) != 0) {
+                nFlag |= 0x20;
+            }
+            if ((nModeChanged & 1) != 0) {
+                nFlag |= 4;
+            }
+            if ((nModeChanged & 0xC) != 0) {
+                nFlag |= 8;
+            }
+            if ((nModeChanged & 0x180) != 0) {
+                nFlag |= 2;
+            }
+            break;
+        case FMT_TEXTURE1:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7C01;
+            }
+            break;
+        case FMT_TEXTURE2:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7D01;
+            }
+            break;
+        case FMT_OTHER0:
+            nFlag |= 0x200;
+            if ((nModeChanged & 3) != 0) {
+                nFlag |= 0x7C00;
+            }
+            if ((nModeChanged & 0xF0) != 0) {
+                nFlag |= 4;
+            }
+            if ((nModeChanged & 0xC00) != 0) {
+                nFlag |= 0x40000 | 4;
+            }
+            if ((nModeChanged & 0xFFFF0000) != 0) {
+                nFlag |= 0x7C00;
+            }
+            break;
+        case FMT_OTHER1:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7F01;
+            }
+            break;
+        case FMT_COMBINE_COLOR1:
+        case FMT_COMBINE_COLOR2:
+        case FMT_COMBINE_ALPHA1:
+        case FMT_COMBINE_ALPHA2:
+            if (nModeChanged != 0) {
+                nFlag |= 0x7D00;
+            }
+            break;
+    }
+
+    if (nFlag != 0) {
+        frameDrawReset(pFrame, nFlag);
+    }
+
+    pFrame->aMode[eType] = nMode;
+    return 1;
+}
+#endif
 
 s32 frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
     *pnMode = pFrame->aMode[eType];
@@ -1606,7 +1881,7 @@ s32 frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
 s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad, s32 bPush, s32 nAddressN64) {
     s32 pad1;
     s32 bFlag;
-    f32(*matrixTarget)[4];
+    Mtx44Ptr matrixTarget;
     Mtx44 matrixResult;
     s32 pad2[9];
 
@@ -1838,6 +2113,55 @@ s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAd
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameInvalidateCache.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetTextureInfo.s")
+#else
+s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
+    FrameTexture* pTexture;
+    s32 iTexture;
+    s32 nCount;
+    s32 nSize;
+
+    nSize = 0;
+    nCount = 0;
+    iTexture = 0;
+
+    for (iTexture = 0; iTexture < ARRAY_COUNT(pFrame->apTextureCached); iTexture++) {
+        pTexture = pFrame->apTextureCached[iTexture];
+
+        while (pTexture != NULL) {
+            nCount++;
+            switch (pTexture->eFormat) {
+                case GX_TF_I4:
+                case 8: // GX_TF_CI4?
+                    nSize += ((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;
+                    break;
+                case GX_TF_I8:
+                case GX_TF_IA4:
+                case 9: // GX_TF_CI8?
+                    nSize += pTexture->nSizeX * pTexture->nSizeY;
+                    break;
+                case GX_TF_IA8:
+                case GX_TF_RGB565:
+                case GX_TF_RGB5A3:
+                    nSize += pTexture->nSizeX * pTexture->nSizeY * 2;
+                    break;
+                case GX_TF_RGBA8:
+                    nSize += pTexture->nSizeX * pTexture->nSizeY * 4;
+                    break;
+                default:
+                    OSReport("GetTextureInfo: Unknown texture-format: %d\n", pTexture->eFormat);
+                    return 0;
+            }
+            pTexture = pTexture->pTextureNext;
+        }
+    }
+
+    pInfo->nSizeTextures = nSize + (nCount * sizeof(FrameTexture));
+    pInfo->nCountTextures = nCount;
+    return 1;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/PSMTX44MultVecNoW.s")
