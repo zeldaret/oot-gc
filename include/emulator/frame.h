@@ -363,7 +363,7 @@ typedef struct Frame {
 } Frame; // size = 0x3D150
 
 s32 _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
-s32 frameEvent(Frame* pFrame, s32 nEvent);
+s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
 s32 frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
 s32 frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
 s32 frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);

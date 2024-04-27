@@ -425,6 +425,8 @@ static s32 frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
 static s32 frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
 static s32 frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
+static inline s32 frameResetCache(Frame* pFrame);
+static s32 frameSetupCache(Frame* pFrame);
 
 inline s32 frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
@@ -1512,7 +1514,108 @@ s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComman
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetDepth.s")
 
+#ifndef NON_MATCHING
+// matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameEvent.s")
+#else
+static inline s32 frameEvent_Inline(Frame* pFrame) {
+    if (xlCoreHiResolution()) {
+        return 0;
+    }
+    return 1;
+}
+
+s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
+    s32 temp_r4;
+
+    switch (nEvent) {
+        case 2:
+            pFrame->nFlag = 0;
+            pFrame->nMode = 0x20000;
+            pFrame->iHintMatrix = 0;
+            pFrame->nCountFrames = 0;
+            gbFrameBegin = 1;
+            gbFrameValid = 0;
+            gnCountMapHack = 0;
+            if (!frameSetupCache(pFrame)) {
+                return 0;
+            }
+            pFrame->nOffsetDepth0 = -1;
+            pFrame->nOffsetDepth1 = -1;
+            pFrame->viewport.rX = 0.0f;
+            pFrame->viewport.rY = 0.0f;
+            pFrame->nHackCount = 0;
+            pFrame->bBlurOn = 0;
+            pFrame->bHackPause = 0;
+            pFrame->nFrameCounter = 0;
+            pFrame->nNumCIMGAddresses = 0;
+            pFrame->bPauseThisFrame = 0;
+            pFrame->bCameFromBomberNotes = 0;
+            pFrame->bInBomberNotes = 0;
+            pFrame->bShrinking = 0;
+            pFrame->bUsingLens = 0;
+            pFrame->cBlurAlpha = 170;
+            pFrame->bBlurredThisFrame = 0;
+            pFrame->nFrameCIMGCalls = 0;
+            pFrame->nZBufferSets = 0;
+            pFrame->nLastFrameZSets = 0;
+            pFrame->bPauseBGDrawn = 0;
+            pFrame->bFrameOn = 0;
+            pFrame->bModifyZBuffer = 0;
+            pFrame->bOverrideDepth = 0;
+            pFrame->viewport.rSizeX = GC_FRAME_WIDTH;
+            pFrame->viewport.rSizeY = GC_FRAME_HEIGHT;
+            pFrame->anSizeX[0] = N64_FRAME_WIDTH;
+            pFrame->anSizeY[0] = N64_FRAME_HEIGHT;
+            pFrame->rScaleX = (f32)pFrame->anSizeX[1] / (f32)N64_FRAME_WIDTH;
+            pFrame->rScaleY = (f32)pFrame->anSizeY[1] / (f32)N64_FRAME_HEIGHT;
+
+            temp_r4 = GC_FRAME_HEIGHT >> frameEvent_Inline(pFrame);
+            if (temp_r4 > 0) {
+                pFrame->anSizeX[1] = GC_FRAME_WIDTH;
+                pFrame->anSizeY[1] = temp_r4;
+                pFrame->rScaleX = GC_FRAME_WIDTH / (f32)pFrame->anSizeX[0];
+                pFrame->rScaleY = temp_r4 / (f32)pFrame->anSizeY[0];
+            }
+            GXSetDrawDoneCallback(&frameDrawDone);
+            break;
+        case 3:
+            if (!frameResetCache(pFrame)) {
+                return 0;
+            }
+            break;
+        case 0x1003:
+            pFrame->nTempBuffer = NULL;
+            pFrame->nCopyBuffer = NULL;
+            pFrame->nLensBuffer = NULL;
+            pFrame->nCameraBuffer = NULL;
+            if (((gpSystem->eTypeROM == SRT_PANEL) || (gpSystem->eTypeROM == SRT_ZELDA2) ||
+                 (gpSystem->eTypeROM == SRT_DRMARIO)) &&
+                !xlHeapTake(&pFrame->nTempBuffer, 0x30000000 | 0x25800)) {
+                return 0;
+            }
+            if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nCopyBuffer, 0x30000000 | 0x25800)) {
+                return 0;
+            }
+            if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nLensBuffer, 0x30000000 | 0x4B000)) {
+                return 0;
+            }
+            if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nCameraBuffer, 0x30000000 | 0xA000)) {
+                return 0;
+            }
+            break;
+        case 0:
+        case 1:
+        case 5:
+        case 6:
+            break;
+        default:
+            return 0;
+    }
+
+    return 1;
+}
+#endif
 
 inline s32 frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     matrixTarget[0][0] = matrixSource[0][0];
@@ -1566,7 +1669,54 @@ static s32 packFreeBlocks(s32* piPack, u32* anPack) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTexture.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetupCache.s")
+static s32 frameSetupCache(Frame* pFrame) {
+    s32 iTexture;
+
+    pFrame->nBlocksMaxPixel = 0;
+    pFrame->nBlocksPixel = 0;
+    pFrame->nBlocksMaxColor = 0;
+    pFrame->nBlocksColor = 0;
+    pFrame->nBlocksMaxTexture = 0;
+    pFrame->nBlocksTexture = 0;
+
+    for (iTexture = 0; iTexture < ARRAY_COUNT(pFrame->apTextureCached); iTexture++) {
+        pFrame->apTextureCached[iTexture] = 0;
+    }
+
+    for (iTexture = 0; iTexture < ARRAY_COUNTU(pFrame->anTextureUsed); iTexture++) {
+        pFrame->anTextureUsed[iTexture] = 0;
+    }
+
+    for (iTexture = 0; iTexture < ARRAY_COUNT(pFrame->anPackPixel); iTexture++) {
+        pFrame->anPackPixel[iTexture] = 0;
+    }
+
+    if (!xlHeapTake(&pFrame->aPixelData, 0x30000000 | 0x00300000)) {
+        return 0;
+    }
+
+    for (iTexture = 0; iTexture < ARRAY_COUNT(pFrame->anPackColor); iTexture++) {
+        pFrame->anPackColor[iTexture] = 0;
+    }
+
+    if (!xlHeapTake(&pFrame->aColorData, 0x30000000 | (N64_FRAME_WIDTH * 1024))) {
+        return 0;
+    }
+
+    return 1;
+}
+
+static inline s32 frameResetCache(Frame* pFrame) {
+    if (!xlHeapFree(&pFrame->aColorData)) {
+        return 0;
+    }
+
+    if (!xlHeapFree(&pFrame->aPixelData)) {
+        return 0;
+    }
+
+    return 1;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameUpdateCache.s")
 
