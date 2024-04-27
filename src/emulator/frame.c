@@ -91,14 +91,20 @@ char* gaszNameAlpha[] = {
     "APREV", "A0", "A1", "A2", "TEXA", "RASA", "KONST", "ZERO", "KONST",
 };
 
-s32 (*gapfDrawTriangle[8])(Frame*, Primitive*) = {
-    frameDrawTriangle_C0T0, frameDrawTriangle_C1T0, 0x00000000, frameDrawTriangle_C3T0,
-    frameDrawTriangle_C0T3, frameDrawTriangle_C1T3, 0x00000000, frameDrawTriangle_C3T3,
+FrameDrawFunc gapfDrawTriangle[8] = {
+    (FrameDrawFunc)frameDrawTriangle_C0T0,
+    (FrameDrawFunc)frameDrawTriangle_C1T0,
+    NULL,
+    (FrameDrawFunc)frameDrawTriangle_C3T0,
+    (FrameDrawFunc)frameDrawTriangle_C0T3,
+    (FrameDrawFunc)frameDrawTriangle_C1T3,
+    NULL,
+    (FrameDrawFunc)frameDrawTriangle_C3T3,
 };
 
-s32 (*gapfDrawLine[6])(Frame*, Primitive*) = {
-    frameDrawLine_C0T0, frameDrawLine_C1T0, frameDrawLine_C2T0,
-    frameDrawLine_C0T2, frameDrawLine_C1T2, frameDrawLine_C2T2,
+FrameDrawFunc gapfDrawLine[6] = {
+    (FrameDrawFunc)frameDrawLine_C0T0, (FrameDrawFunc)frameDrawLine_C1T0, (FrameDrawFunc)frameDrawLine_C2T0,
+    (FrameDrawFunc)frameDrawLine_C0T2, (FrameDrawFunc)frameDrawLine_C1T2, (FrameDrawFunc)frameDrawLine_C2T2,
 };
 
 s32 nCopyFrame;
@@ -642,12 +648,12 @@ s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
 
     if (pFrame->nModeVtx != 0x17) {
         GXClearVtxDesc();
-        GXSetVtxDesc(9, 1);
-        GXSetVtxDesc(0xB, 1);
-        GXSetVtxDesc(0xD, 1);
-        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-        GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
-        GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
         pFrame->nModeVtx = 0x17;
     }
 
