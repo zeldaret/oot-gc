@@ -1710,13 +1710,6 @@ s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComman
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameEvent.s")
 #else
-static inline s32 frameEvent_Inline(Frame* pFrame) {
-    if (xlCoreHiResolution()) {
-        return 0;
-    }
-    return 1;
-}
-
 s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
     s32 temp_r4;
 
@@ -1762,7 +1755,7 @@ s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->rScaleX = (f32)pFrame->anSizeX[1] / (f32)N64_FRAME_WIDTH;
             pFrame->rScaleY = (f32)pFrame->anSizeY[1] / (f32)N64_FRAME_HEIGHT;
 
-            temp_r4 = GC_FRAME_HEIGHT >> frameEvent_Inline(pFrame);
+            temp_r4 = GC_FRAME_HEIGHT >> (xlCoreHiResolution() ? 0 : 1);
             if (temp_r4 > 0) {
                 pFrame->anSizeX[1] = GC_FRAME_WIDTH;
                 pFrame->anSizeY[1] = temp_r4;
@@ -1783,10 +1776,11 @@ s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->nCameraBuffer = NULL;
             if (((gpSystem->eTypeROM == SRT_PANEL) || (gpSystem->eTypeROM == SRT_ZELDA2) ||
                  (gpSystem->eTypeROM == SRT_DRMARIO)) &&
-                !xlHeapTake(&pFrame->nTempBuffer, 0x30000000 | 0x25800)) {
+                !xlHeapTake(&pFrame->nTempBuffer, 0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
                 return 0;
             }
-            if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nCopyBuffer, 0x30000000 | 0x25800)) {
+            if ((gpSystem->eTypeROM == SRT_ZELDA2) &&
+                !xlHeapTake(&pFrame->nCopyBuffer, 0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
                 return 0;
             }
             if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nLensBuffer, 0x30000000 | 0x4B000)) {
