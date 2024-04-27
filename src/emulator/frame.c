@@ -246,10 +246,10 @@ extern void* lbl_8001D45C;
 extern void* lbl_8001D3FC;
 extern void* lbl_8001D418;
 
-void* jtbl_800EB168[] = {&lbl_8001D3FC, &lbl_8001D418, &lbl_8001D418, &lbl_8001D42C, &lbl_8001D42C,
-                         &lbl_8001D42C, &lbl_8001D444, &lbl_8001D45C, &lbl_8001D3FC, &lbl_8001D418};
+void* jtbl_800EB168[10] = {&lbl_8001D3FC, &lbl_8001D418, &lbl_8001D418, &lbl_8001D42C, &lbl_8001D42C,
+                           &lbl_8001D42C, &lbl_8001D444, &lbl_8001D45C, &lbl_8001D3FC, &lbl_8001D418};
 #else
-void* jtbl_800EB168[] = {0};
+void* jtbl_800EB168[10] = {0};
 #endif
 
 #ifndef NON_MATCHING
@@ -264,10 +264,10 @@ extern void* lbl_80020144;
 extern void* lbl_80020144;
 extern void* lbl_80020144;
 
-void* jtbl_800EB190[] = {&lbl_80020074, &lbl_80020084, &lbl_800200C8, &lbl_800200D8, &lbl_800200E8,
-                         &lbl_80020134, &lbl_80020144, &lbl_80020144, &lbl_80020144, &lbl_80020144};
+void* jtbl_800EB190[10] = {&lbl_80020074, &lbl_80020084, &lbl_800200C8, &lbl_800200D8, &lbl_800200E8,
+                           &lbl_80020134, &lbl_80020144, &lbl_80020144, &lbl_80020144, &lbl_80020144};
 #else
-void* jtbl_800EB190[] = {0};
+void* jtbl_800EB190[10] = {0};
 #endif
 
 char D_800EB1B8[] = "frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n";
@@ -283,12 +283,12 @@ extern void* lbl_80029818;
 extern void* lbl_80029824;
 extern void* lbl_80029830;
 
-void* jtbl_800EB20C[] = {
+void* jtbl_800EB20C[8] = {
     &lbl_800297DC, &lbl_800297E8, &lbl_800297F4, &lbl_80029800,
     &lbl_8002980C, &lbl_80029818, &lbl_80029824, &lbl_80029830,
 };
 #else
-void* jtbl_800EB20C[] = {0};
+void* jtbl_800EB20C[8] = {0};
 #endif
 
 #ifndef NON_MATCHING
@@ -325,7 +325,7 @@ extern void* lbl_80029938;
 extern void* lbl_80029938;
 extern void* lbl_8002992C;
 
-void* jtbl_800EB22C[] = {
+void* jtbl_800EB22C[32] = {
     &lbl_8002986C, &lbl_80029878, &lbl_80029884, &lbl_80029890, &lbl_8002989C, &lbl_800298A8, &lbl_80029920,
     &lbl_800298B4, &lbl_800298C0, &lbl_800298CC, &lbl_800298D8, &lbl_800298E4, &lbl_800298F0, &lbl_800298FC,
     &lbl_80029908, &lbl_80029914, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_80029938,
@@ -333,7 +333,7 @@ void* jtbl_800EB22C[] = {
     &lbl_80029938, &lbl_80029938, &lbl_80029938, &lbl_8002992C,
 };
 #else
-void* jtbl_800EB22C[] = {0};
+void* jtbl_800EB22C[32] = {0};
 #endif
 
 char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
@@ -638,8 +638,8 @@ s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
         f32(*pMatrix)[4] = pFrame->aMatrixModel[pFrame->iMatrixModel];
         Vertex* vtx = &pFrame->aVertex[pPrimitive->anData[0]];
         if ((vtx->rSum == 53.0f && pMatrix[3][0] == -3080.0f && pMatrix[3][2] == 6067.0f) ||
-            (pMatrix[2][4] == -31.0f && pMatrix[3][2] == 1669.0f)) {
-            if (pMatrix[2][4] == -31.0f && pMatrix[3][2] == 1669.0f) {
+            (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f)) {
+            if (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f) {
                 gHackCreditsColor = 1;
             }
             return 1;
@@ -1809,7 +1809,7 @@ s32 frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
     u32 nFlag;
     u32 nModeChanged;
 
-    if ((pFrame->nMode & (1 << eType))) {
+    if (pFrame->nMode & (1 << eType)) {
         nModeChanged = pFrame->aMode[eType] ^ nMode;
     } else {
         nModeChanged = 0xFFFFFFFF;
@@ -2151,12 +2151,12 @@ s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
             nCount++;
             switch (pTexture->eFormat) {
                 case GX_TF_I4:
-                case 8:
-                    nSize += (s32)((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;
+                case 8: // GX_TF_CI4?
+                    nSize += ((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;
                     break;
                 case GX_TF_I8:
                 case GX_TF_IA4:
-                case 9:
+                case 9: // GX_TF_CI8?
                     nSize += pTexture->nSizeX * pTexture->nSizeY;
                     break;
                 case GX_TF_IA8:
@@ -2175,7 +2175,7 @@ s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
         }
     }
 
-    pInfo->nSizeTextures = nSize + (nCount * 0x6C);
+    pInfo->nSizeTextures = nSize + (nCount * sizeof(FrameTexture));
     pInfo->nCountTextures = nCount;
     return 1;
 }
