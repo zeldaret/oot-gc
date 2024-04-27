@@ -4,6 +4,23 @@
 #include "dolphin.h"
 #include "emulator/xlObject.h"
 
+#define FRAME_SYNC_TOKEN 0x7D00
+
+// N64 frame buffer dimensions
+#define N64_FRAME_WIDTH 320
+#define N64_FRAME_HEIGHT 240
+
+// GC is rendered at double the resolution
+#define GC_FRAME_WIDTH (N64_FRAME_WIDTH * 2)
+#define GC_FRAME_HEIGHT (N64_FRAME_HEIGHT * 2)
+
+// Dimensions of the player preview on the equipment menu of the Zelda pause screen
+#define ZELDA_PAUSE_EQUIP_PLAYER_WIDTH 64
+#define ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT 112
+
+#define ZELDA2_CAMERA_WIDTH 160
+#define ZELDA2_CAMERA_HEIGHT 128
+
 typedef s32 (*FrameDrawFunc)(void*, void*);
 
 // __anon_0x27B8C
@@ -354,7 +371,7 @@ typedef struct Frame {
     /* 0x01C30 */ s32 nBlocksTexture;
     /* 0x01C34 */ s32 nBlocksMaxTexture;
     /* 0x01C38 */ u32 anPackPixel[48];
-    /* 0x01CF8 */ u32 anPackColor[320];
+    /* 0x01CF8 */ u32 anPackColor[N64_FRAME_WIDTH];
     /* 0x021F8 */ u32 nAddressLoad;
     /* 0x021FC */ u32 nCodePixel;
     /* 0x02200 */ u32 nTlutCode[16];

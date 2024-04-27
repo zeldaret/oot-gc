@@ -10,23 +10,6 @@
 #include "emulator/xlObject.h"
 #include "macros.h"
 
-#define FRAME_SYNC_TOKEN 0x7D00
-
-// N64 frame buffer dimensions
-#define N64_FRAME_WIDTH 320
-#define N64_FRAME_HEIGHT 240
-
-// GC is rendered at double the resolution
-#define GC_FRAME_WIDTH (N64_FRAME_WIDTH * 2)
-#define GC_FRAME_HEIGHT (N64_FRAME_HEIGHT * 2)
-
-// Dimensions of the player preview on the equipment menu of the Zelda pause screen
-#define ZELDA_PAUSE_EQUIP_PLAYER_WIDTH 64
-#define ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT 112
-
-#define ZELDA2_CAMERA_WIDTH 160
-#define ZELDA2_CAMERA_HEIGHT 128
-
 const s32 D_800D31C0[] = {
     0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
     0x00000002, 0x0003C000, 0x00000001, 0x0003E000, 0x00000000, 0x0003F000, 0x00000000, 0x0003F800,
@@ -635,7 +618,7 @@ s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
     u32 pad[20];
 
     if (gpSystem->eTypeROM == SRT_ZELDA1 && pPrimitive->nCount == 3 && (pFrame->aMode[4] & 0xC00) == 0xC00) {
-        f32(*pMatrix)[4] = pFrame->aMatrixModel[pFrame->iMatrixModel];
+        Mtx44Ptr pMatrix = pFrame->aMatrixModel[pFrame->iMatrixModel];
         Vertex* vtx = &pFrame->aVertex[pPrimitive->anData[0]];
         if ((vtx->rSum == 53.0f && pMatrix[3][0] == -3080.0f && pMatrix[3][2] == 6067.0f) ||
             (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f)) {
@@ -1898,7 +1881,7 @@ s32 frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
 s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad, s32 bPush, s32 nAddressN64) {
     s32 pad1;
     s32 bFlag;
-    f32(*matrixTarget)[4];
+    Mtx44Ptr matrixTarget;
     Mtx44 matrixResult;
     s32 pad2[9];
 
