@@ -4,6 +4,23 @@
 #include "dolphin.h"
 #include "emulator/xlObject.h"
 
+#define FRAME_SYNC_TOKEN 0x7D00
+
+// N64 frame buffer dimensions
+#define N64_FRAME_WIDTH 320
+#define N64_FRAME_HEIGHT 240
+
+// GC is rendered at double the resolution
+#define GC_FRAME_WIDTH (N64_FRAME_WIDTH * 2)
+#define GC_FRAME_HEIGHT (N64_FRAME_HEIGHT * 2)
+
+// Dimensions of the player preview on the equipment menu of the Zelda pause screen
+#define ZELDA_PAUSE_EQUIP_PLAYER_WIDTH 64
+#define ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT 112
+
+#define ZELDA2_CAMERA_WIDTH 160
+#define ZELDA2_CAMERA_HEIGHT 128
+
 typedef s32 (*FrameDrawFunc)(void*, void*);
 
 // __anon_0x27B8C
@@ -67,6 +84,17 @@ typedef enum FrameMatrixProjection {
     FMP_ORTHOGRAPHIC = 1,
 } FrameMatrixProjection;
 
+// __anon_0x2D223
+typedef enum FrameColorType {
+    FCT_NONE = -1,
+    FCT_FOG,
+    FCT_FILL,
+    FCT_BLEND,
+    FCT_PRIMITIVE,
+    FCT_ENVIRONMENT,
+    FCT_COUNT
+} FrameColorType;
+
 // __anon_0x2D45B
 typedef struct Primitive {
     /* 0x0 */ s32 nCount;
@@ -80,6 +108,20 @@ typedef struct Viewport {
     /* 0x8 */ f32 rSizeX;
     /* 0xC */ f32 rSizeY;
 } Viewport; // size = 0x10
+
+// __anon_0x2D2B6
+typedef struct Scissor {
+    /* 0x00 */ s32 bFlip;
+    /* 0x04 */ s32 iTile;
+    /* 0x08 */ s32 nX0;
+    /* 0x0C */ s32 nY0;
+    /* 0x10 */ s32 nX1;
+    /* 0x14 */ s32 nY1;
+    /* 0x18 */ f32 rS;
+    /* 0x1C */ f32 rT;
+    /* 0x20 */ f32 rDeltaS;
+    /* 0x24 */ f32 rDeltaT;
+} Scissor; // size = 0x28
 
 // __anon_0x23B9E
 typedef struct FrameBuffer {
@@ -145,6 +187,12 @@ typedef union TMEM_Block {
 typedef struct TextureMemory {
     /* 0x0 */ TMEM_Block data;
 } TextureMemory; // size = 0x1000
+
+// __anon_0x25A82
+typedef struct TextureInfo {
+    /* 0x0 */ s32 nSizeTextures;
+    /* 0x4 */ s32 nCountTextures;
+} TextureInfo; // size = 0x8
 
 // _FRAME_TEXTURE
 // __anon_0x24462
@@ -299,7 +347,7 @@ typedef struct Frame {
     /* 0x00084 */ f32 rScaleY;
     /* 0x00088 */ u32 nCountFrames;
     /* 0x0008C */ u32 nMode;
-    /* 0x00090 */ u32 aMode[10];
+    /* 0x00090 */ u32 aMode[FMT_COUNT];
     /* 0x000B8 */ Viewport viewport;
     /* 0x000C8 */ FrameBuffer aBuffer[4];
     /* 0x00118 */ u32 nOffsetDepth0;
@@ -323,7 +371,7 @@ typedef struct Frame {
     /* 0x01C30 */ s32 nBlocksTexture;
     /* 0x01C34 */ s32 nBlocksMaxTexture;
     /* 0x01C38 */ u32 anPackPixel[48];
-    /* 0x01CF8 */ u32 anPackColor[320];
+    /* 0x01CF8 */ u32 anPackColor[N64_FRAME_WIDTH];
     /* 0x021F8 */ u32 nAddressLoad;
     /* 0x021FC */ u32 nCodePixel;
     /* 0x02200 */ u32 nTlutCode[16];

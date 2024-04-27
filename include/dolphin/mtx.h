@@ -17,6 +17,7 @@ typedef struct Quaternion {
 
 typedef f32 Mtx[3][4];
 typedef f32 Mtx44[4][4];
+typedef f32 (*Mtx44Ptr)[4];
 
 void PSMTXIdentity(Mtx m);
 void SMTXConcat(const Mtx a, const Mtx b, Mtx ab);
