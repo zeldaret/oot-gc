@@ -13,6 +13,7 @@ const f32 D_800D3190[12] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.
 
 char D_800EA4B0[] = "Can't create read thread\n";
 
+#ifndef NON_MATCHING
 void* jtbl_800EA4CC[] = {
     &lbl_80011F4C, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F54, &lbl_80011F5C,
     &lbl_80011F64, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F6C,
@@ -21,6 +22,10 @@ void* jtbl_800EA4CC[] = {
 void* jtbl_800EA500[] = {
     &lbl_8001219C, &lbl_800121D4, &lbl_8001220C, &lbl_8001227C, &lbl_80012244, &lbl_800122B4, &lbl_800122EC,
 };
+#else
+void* jtbl_800EA4CC[] = {0};
+void* jtbl_800EA500[] = {0};
+#endif
 
 static OSMessageQueue FreeReadBufferQueue;
 static OSMessageQueue ReadedBufferQueue;
@@ -66,12 +71,11 @@ static void* Reader();
 #pragma GLOBAL_ASM("asm/non_matchings/THPRead/movieGXInit.s")
 #else
 s32 movieGXInit(void) {
-    // Local variables
-    s32 i; // r31
-    GXColor GX_DEFAULT_BG = {0}; // r1+0x58
-    GXColor BLACK = {0}; // r1+0x54
-    GXColor WHITE = {0}; // r1+0x50
-    Mtx identity_mtx = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, -1.0}}; // r1+0x20
+    s32 i;
+    GXColor GX_DEFAULT_BG = {0};
+    GXColor BLACK = {0};
+    GXColor WHITE = {0};
+    Mtx identity_mtx = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, -1.0}};
 
     // possible bug? GX_TG_MTX3x4 vs GX_TG_MTX2x4 (see identity_mtx)
     GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, 0x3C, GX_FALSE, 0x7D);
