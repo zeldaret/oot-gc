@@ -158,6 +158,9 @@ $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
 $(BUILD_DIR)/src/emulator/THPAudioDecode.o: src/emulator/THPAudioDecode.c
 	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
+$(BUILD_DIR)/src/emulator/THPDraw.o: src/emulator/THPDraw.c
+	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+
 $(BUILD_DIR)/src/emulator/THPPlayer.o: src/emulator/THPPlayer.c
 	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
