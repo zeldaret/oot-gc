@@ -620,7 +620,6 @@ inline void* PopFreeReadBuffer() {
     return msg;
 }
 
-
 void PushFreeReadBuffer(void* buffer) { OSSendMessage(&FreeReadBufferQueue, buffer, OS_MESSAGE_BLOCK); }
 
 void* PopReadedBuffer2() {
