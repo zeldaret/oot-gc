@@ -89,7 +89,6 @@ endif
 
 DOLPHIN_CFLAGS := $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -inline auto
 EMULATOR_CFLAGS := $(CFLAGS) -inline auto,deferred
-THP_CFLAGS := $(DOLPHIN_CFLAGS) -inline auto
 
 # elf2dol needs to know these in order to calculate sbss correctly.
 SDATA_PDHR 	:= 9
@@ -155,17 +154,11 @@ $(BUILD_DIR)/%.o: %.s
 $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
 	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
-$(BUILD_DIR)/src/emulator/THPAudioDecode.o: src/emulator/THPAudioDecode.c
-	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+$(BUILD_DIR)/src/emulator/THPRead.o: src/emulator/THPRead.c
+	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
-$(BUILD_DIR)/src/emulator/THPDraw.o: src/emulator/THPDraw.c
-	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
-
-$(BUILD_DIR)/src/emulator/THPPlayer.o: src/emulator/THPPlayer.c
-	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
-
-$(BUILD_DIR)/src/emulator/THPVideoDecode.o: src/emulator/THPVideoDecode.c
-	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+$(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
+	$(ASM_PROCESSOR) "$(CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
 	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
