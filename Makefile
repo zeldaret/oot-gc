@@ -155,6 +155,9 @@ $(BUILD_DIR)/%.o: %.s
 $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
 	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
+$(BUILD_DIR)/src/emulator/THPAudioDecode.o: src/emulator/THPAudioDecode.c
+	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+
 $(BUILD_DIR)/src/emulator/THPPlayer.o: src/emulator/THPPlayer.c
 	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
