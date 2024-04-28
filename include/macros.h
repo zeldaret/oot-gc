@@ -50,4 +50,10 @@ inline void padStack(void) { s32 pad = 0; }
 #define INIT
 #endif
 
+#ifdef __MWERKS__
+#define AT_ADDRESS(xyz) : (xyz)
+#else
+#define AT_ADDRESS(xyz)
+#endif
+
 #endif
