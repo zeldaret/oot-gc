@@ -87,9 +87,6 @@ void THPPlayerQuit() {
 }
 #endif
 
-#ifdef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/THPPlayer/THPPlayerOpen.s")
-#else
 s32 THPPlayerOpen(char* fileName, s32 onMemory) {
     s32 readOffset;
     s32 i;
@@ -163,7 +160,6 @@ s32 THPPlayerOpen(char* fileName, s32 onMemory) {
 
     return TRUE;
 }
-#endif
 
 #ifdef UNUSED
 BOOL THPPlayerClose() {
@@ -296,9 +292,6 @@ static inline s32 WaitUntilPrepare() {
 
 void PrepareReady(s32 msg) { OSSendMessage(&PrepareReadyQueue, (OSMessage)msg, OS_MESSAGE_BLOCK); }
 
-#ifdef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/THPPlayer/THPPlayerPrepare.s")
-#else
 s32 THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
     s32 offset;
     u8* threadData;
@@ -387,7 +380,6 @@ s32 THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
 
     return FALSE;
 }
-#endif
 
 s32 THPPlayerPlay() {
     if (ActivePlayer.open && (ActivePlayer.state == 1 || ActivePlayer.state == 4)) {
