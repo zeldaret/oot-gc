@@ -30,8 +30,6 @@ static s16* LastAudioBuffer;
 static s16* CurAudioBuffer;
 static s32 AudioSystem;
 
-
-
 static void PlayControl(u32);
 static s32 ProperTimingForStart();
 static s32 ProperTimingForGettingNextFrame();

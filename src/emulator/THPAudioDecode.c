@@ -1,5 +1,5 @@
-#include "dolphin.h"
 #include "emulator/THPAudioDecode.h"
+#include "dolphin.h"
 #include "emulator/THPPlayer.h"
 
 #define STACK_SIZE 0x1000
