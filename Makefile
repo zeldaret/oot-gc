@@ -164,5 +164,8 @@ $(BUILD_DIR)/src/emulator/THPDraw.o: src/emulator/THPDraw.c
 $(BUILD_DIR)/src/emulator/THPPlayer.o: src/emulator/THPPlayer.c
 	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
+$(BUILD_DIR)/src/emulator/THPVideoDecode.o: src/emulator/THPVideoDecode.c
+	$(ASM_PROCESSOR) "$(CC) $(THP_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
 	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
