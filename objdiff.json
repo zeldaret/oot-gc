@@ -130,7 +130,7 @@
             "name": "emulator/THPPlayer",
             "target_path": "expected/build/SIM/src/emulator/THPPlayer.o",
             "base_path": "build/SIM/src/emulator/THPPlayer.o",
-            "reverse_fn_order": true,
+            "reverse_fn_order": false,
             "complete": false,
             "scratch": {
                 "platform": "gc_wii",
@@ -144,7 +144,7 @@
             "name": "emulator/THPAudioDecode",
             "target_path": "expected/build/SIM/src/emulator/THPAudioDecode.o",
             "base_path": "build/SIM/src/emulator/THPAudioDecode.o",
-            "reverse_fn_order": true,
+            "reverse_fn_order": false,
             "complete": false,
             "scratch": {
                 "platform": "gc_wii",
@@ -158,7 +158,7 @@
             "name": "emulator/THPDraw",
             "target_path": "expected/build/SIM/src/emulator/THPDraw.o",
             "base_path": "build/SIM/src/emulator/THPDraw.o",
-            "reverse_fn_order": true,
+            "reverse_fn_order": false,
             "complete": false,
             "scratch": {
                 "platform": "gc_wii",
@@ -186,7 +186,7 @@
             "name": "emulator/THPVideoDecode",
             "target_path": "expected/build/SIM/src/emulator/THPVideoDecode.o",
             "base_path": "build/SIM/src/emulator/THPVideoDecode.o",
-            "reverse_fn_order": true,
+            "reverse_fn_order": false,
             "complete": false,
             "scratch": {
                 "platform": "gc_wii",

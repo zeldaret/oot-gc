@@ -2,66 +2,17 @@
 #define _THPPLAYER_H
 
 #include "dolphin.h"
+#include "emulator/THPBuffer.h"
+#include "emulator/THPFile.h"
+#include "emulator/THPInfo.h"
 #include "emulator/xlObject.h"
 
-typedef struct __anon_0x10576 {
-    /* 0x00 */ char magic[4];
-    /* 0x04 */ u32 version;
-    /* 0x08 */ u32 bufSize;
-    /* 0x0C */ u32 audioMaxSamples;
-    /* 0x10 */ f32 frameRate;
-    /* 0x14 */ u32 numFrames;
-    /* 0x18 */ u32 firstFrameSize;
-    /* 0x1C */ u32 movieDataSize;
-    /* 0x20 */ u32 compInfoDataOffsets;
-    /* 0x24 */ u32 offsetDataOffsets;
-    /* 0x28 */ u32 movieDataOffsets;
-    /* 0x2C */ u32 finalFrameDataOffsets;
-} __anon_0x10576; // size = 0x30
-
-typedef struct __anon_0x107A2 {
-    /* 0x0 */ u32 numComponents;
-    /* 0x4 */ u8 frameComp[16];
-} __anon_0x107A2; // size = 0x14
-
-typedef struct __anon_0x1080A {
-    /* 0x0 */ u32 xSize;
-    /* 0x4 */ u32 ySize;
-    /* 0x8 */ u32 videoType;
-} __anon_0x1080A; // size = 0xC
-
-typedef struct __anon_0x1088A {
-    /* 0x0 */ u32 sndChannels;
-    /* 0x4 */ u32 sndFrequency;
-    /* 0x8 */ u32 sndNumSamples;
-    /* 0xC */ u32 sndNumTracks;
-} __anon_0x1088A; // size = 0x10
-
-typedef struct __anon_0x10944 {
-    /* 0x0 */ u8* ytexture;
-    /* 0x4 */ u8* utexture;
-    /* 0x8 */ u8* vtexture;
-    /* 0xC */ s32 frameNumber;
-} __anon_0x10944; // size = 0x10
-
-typedef struct __anon_0x109FA {
-    /* 0x0 */ s16* buffer;
-    /* 0x4 */ s16* curPtr;
-    /* 0x8 */ u32 validSample;
-} __anon_0x109FA; // size = 0xC
-
-typedef struct __anon_0x10A84 {
-    /* 0x0 */ u8* ptr;
-    /* 0x4 */ s32 frameNumber;
-    /* 0x8 */ s32 isValid;
-} __anon_0x10A84; // size = 0xC
-
-typedef struct __anon_0x10B6F {
-    /* 0x000 */ struct DVDFileInfo fileInfo;
-    /* 0x03C */ __anon_0x10576 header;
-    /* 0x06C */ __anon_0x107A2 compInfo;
-    /* 0x080 */ __anon_0x1080A videoInfo;
-    /* 0x08C */ __anon_0x1088A audioInfo;
+typedef struct THPPlayer {
+    /* 0x000 */ DVDFileInfo fileInfo;
+    /* 0x03C */ THPHeader header;
+    /* 0x06C */ THPFrameCompInfo compInfo;
+    /* 0x080 */ THPVideoInfo videoInfo;
+    /* 0x08C */ THPAudioInfo audioInfo;
     /* 0x09C */ void* thpWork;
     /* 0x0A0 */ s32 open;
     /* 0x0A4 */ u8 state;
@@ -86,11 +37,34 @@ typedef struct __anon_0x10B6F {
     /* 0x0EC */ s32 curAudioTrack;
     /* 0x0F0 */ s32 curVideoNumber;
     /* 0x0F4 */ s32 curAudioNumber;
-    /* 0x0F8 */ __anon_0x10944* dispTextureSet;
-    /* 0x0FC */ __anon_0x109FA* playAudioBuffer;
-    /* 0x100 */ __anon_0x10A84 readBuffer[10];
-    /* 0x178 */ __anon_0x10944 textureSet[3];
-    /* 0x1A8 */ __anon_0x109FA audioBuffer[3];
-} __anon_0x10B6F; // size = 0x1D0
+    /* 0x0F8 */ THPTextureSet* dispTextureSet;
+    /* 0x0FC */ THPAudioBuffer* playAudioBuffer;
+    /* 0x100 */ THPReadBuffer readBuffer[10];
+    /* 0x178 */ THPTextureSet textureSet[3];
+    /* 0x1A8 */ THPAudioBuffer audioBuffer[3];
+} THPPlayer; // size = 0x1D0
+
+s32 THPPlayerInit(s32 audioSystem);
+void THPPlayerQuit(void);
+s32 THPPlayerOpen(char* fileName, s32 onMemory);
+s32 THPPlayerClose(void);
+u32 THPPlayerCalcNeedMemory(void);
+s32 THPPlayerSetBuffer(u8* buffer);
+s32 THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack);
+s32 THPPlayerPlay(void);
+void THPPlayerStop(void);
+s32 THPPlayerPause(void);
+s32 THPPlayerSkip(void);
+s32 THPPlayerDrawCurrentFrame(GXRenderModeObj* rmode, u32 x, u32 y, u32 polygonW, u32 polygonH);
+s32 THPPlayerGetVideoInfo(THPVideoInfo* videoInfo);
+s32 THPPlayerGetAudioInfo(THPAudioInfo* audioInfo);
+f32 THPPlayerGetFrameRate(void);
+u32 THPPlayerGetTotalFrame(void);
+s32 THPPlayerGetState(void);
+void THPPlayerDrawDone(void);
+s32 THPPlayerSetVolume(s32 vol, s32 time);
+s32 THPPlayerGetVolume(void);
+
+extern THPPlayer ActivePlayer;
 
 #endif
