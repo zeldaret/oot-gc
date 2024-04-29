@@ -48,15 +48,6 @@ void VideoDecodeThreadStart() {
         OSResumeThread(&VideoDecodeThread);
 }
 
-#ifdef UNUSED
-void VideoDecodeThreadCancel() {
-    if (VideoDecodeThreadCreated) {
-        OSCancelThread(&VideoDecodeThread);
-        VideoDecodeThreadCreated = FALSE;
-    }
-}
-#endif
-
 static void* VideoDecoder() {
     THPReadBuffer* readBuffer;
     s32 old;

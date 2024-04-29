@@ -544,15 +544,6 @@ void ReadThreadStart() {
     }
 }
 
-#ifdef UNUSED
-void ReadThreadCancel() {
-    if (ReadThreadCreated != FALSE) {
-        OSCancelThread(&ReadThread);
-        ReadThreadCreated = FALSE;
-    }
-}
-#endif
-
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/THPRead/Reader.s")
 #else

@@ -155,10 +155,10 @@ $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
 	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/THPRead.o: src/emulator/THPRead.c
-	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline auto,deferred" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
-	$(ASM_PROCESSOR) "$(CC) $(DOLPHIN_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
 	$(ASM_PROCESSOR) "$(CC) $(EMULATOR_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<

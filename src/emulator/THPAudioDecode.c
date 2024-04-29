@@ -47,15 +47,6 @@ void AudioDecodeThreadStart() {
     }
 }
 
-#ifdef UNUSED
-void AudioDecodeThreadCancel() {
-    if (AudioDecodeThreadCreated) {
-        OSCancelThread(&AudioDecodeThread);
-        AudioDecodeThreadCreated = FALSE;
-    }
-}
-#endif
-
 static void* AudioDecoder(void* _) {
     THPReadBuffer* buf;
     while (TRUE) {
