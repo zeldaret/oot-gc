@@ -81,7 +81,7 @@ ASFLAGS := -mgekko -I include -I libc
 LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
 
 # Compiler Flags
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int  -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -inline auto -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
 
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
@@ -149,13 +149,13 @@ $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
-	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(CFLAGS) -align powerpc -maxerrors 1 -nosyspath -RTTI off -str reuse -multibyte -inline auto" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/THPRead.o: src/emulator/THPRead.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline auto,deferred" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
 	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline auto,deferred" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
