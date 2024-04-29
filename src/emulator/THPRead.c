@@ -1,31 +1,11 @@
 #include "emulator/THPRead.h"
-#include "emulator/THPRead_jumptables.h"
+#include "emulator/THPBuffer.h"
+#include "emulator/THPPlayer.h"
+#include "emulator/simGCN.h"
 #include "macros.h"
 
 #define STACK_SIZE 0x1000
 #define BUFFER_COUNT 10
-
-const f32 D_800D3130[12] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
-const f32 D_800D3160[12] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
-const f32 D_800D3190[12] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
-char D_800EA4B0[] = "Can't create read thread\n";
-
-#ifndef NON_MATCHING
-void* jtbl_800EA4CC[] = {
-    &lbl_80011F4C, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F54, &lbl_80011F5C,
-    &lbl_80011F64, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F70, &lbl_80011F6C,
-};
-
-void* jtbl_800EA500[] = {
-    &lbl_8001219C, &lbl_800121D4, &lbl_8001220C, &lbl_8001227C, &lbl_80012244, &lbl_800122B4, &lbl_800122EC,
-};
-#else
-void* jtbl_800EA4CC[] = {0};
-void* jtbl_800EA500[] = {0};
-#endif
 
 static OSMessageQueue FreeReadBufferQueue;
 static OSMessageQueue ReadedBufferQueue;
@@ -35,10 +15,10 @@ static void* ReadedBufferMessage[10];
 static void* ReadedBufferMessage2[10];
 static OSThread ReadThread;
 static u8 ReadThreadStack[4096];
-f32 gOrthoMtx[4][4];
+static f32 gOrthoMtx[4][4];
 
 //! TODO: make static (data ordering issues)
-// and remove prefix (there's other global variables sharing the same name)
+// and remove suffix (there's other global variables sharing the same name)
 u32 gnTickReset_thpread;
 s32 gbReset_thpread;
 s32 toggle_184;
@@ -46,30 +26,8 @@ s32 toggle_184;
 s32 gMovieErrorToggle;
 s32 ReadThreadCreated;
 
-const s32 D_80135DA0 = 0x00000000;
-const s32 D_80135DA4 = 0x00000000;
-const s32 D_80135DA8 = 0x00000000;
-const f32 D_80135DAC = 0.5;
-const f64 D_80135DB0 = 4503599627370496.0;
-const f32 D_80135DB8 = 0.0;
-const f32 D_80135DBC = 240.0;
-const f32 D_80135DC0 = 320.0;
-const f32 D_80135DC4 = 0.10000000149011612;
-const f32 D_80135DC8 = 10000.0;
-const f32 D_80135DCC = 160.0;
-const f32 D_80135DD0 = 120.0;
-const f32 D_80135DD4 = 1.0;
+static void* Reader(void* ptr);
 
-extern s16 Vert_s16[12];
-extern u32 Colors_u32[3];
-extern u8 TexCoords_u8[8];
-
-static void* Reader();
-
-#ifndef NON_MATCHING
-// matches but data doesn't
-#pragma GLOBAL_ASM("asm/non_matchings/THPRead/movieGXInit.s")
-#else
 s32 movieGXInit(void) {
     s32 i;
     GXColor GX_DEFAULT_BG = {0};
@@ -193,12 +151,7 @@ s32 movieGXInit(void) {
     GXClearGPMetric();
     return 1;
 }
-#endif
 
-#ifndef NON_MATCHING
-// matches but data doesn't
-#pragma GLOBAL_ASM("asm/non_matchings/THPRead/movieDrawImage.s")
-#else
 s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     GXTexObj texObj;
     s32 pad2;
@@ -220,7 +173,7 @@ s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     GXSetNumChans(1);
 
     PSMTXTransApply(g2DviewMtx, g2, 160.0f, 120.0f, 0.0f);
-    PSMTXScaleApply(g2, g2, D_80135DAC, D_80135DAC, 1.0f);
+    PSMTXScaleApply(g2, g2, 0.5f, 0.5f, 1.0f);
 
     GXLoadPosMtxImm(g2, 0);
     GXLoadTexMtxImm(identity_mtx, 0x3C, 0);
@@ -264,14 +217,14 @@ s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     Vert_s16[7] = nY0 + tpl->descriptorArray->textureHeader->height;
     Vert_s16[9] = nX0;
     Vert_s16[10] = nY0 + tpl->descriptorArray->textureHeader->height;
-    DCStoreRange(&Vert_s16, sizeof(Vert_s16));
+    DCStoreRange(&Vert_s16, 24);
 
     C_MTXOrtho(gOrthoMtx, 0.0f, 240.0f, 0.0f, 320.0f, 0.10000000149011612f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
     GXSetNumChans(1);
 
     PSMTXTransApply(g2DviewMtx, g2, 160.0f, 120.0f, 0.0f);
-    PSMTXScaleApply(g2, g2, D_80135DAC, D_80135DAC, 1.0f);
+    PSMTXScaleApply(g2, g2, 0.5f, 0.5f, 1.0f);
     GXLoadPosMtxImm(g2, 0);
     GXLoadTexMtxImm(identity_mtx, 0x3C, GX_MTX3x4);
     GXSetNumChans(1);
@@ -307,52 +260,49 @@ s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     PAD_STACK();
     return 1;
 }
-#endif
 
-#ifndef NON_MATCHING
-//! TODO: figure out how to make this work with simGCN's incbins
-#pragma GLOBAL_ASM("asm/non_matchings/THPRead/movieDrawErrorMessage.s")
-#else
 s32 movieDrawErrorMessage(MovieMessage movieMessage) {
     switch (movieMessage) {
         case M_M_DISK_COVER_OPEN:
-            movieDrawImage(&gcoverOpen, 0xA0 - ((s32)gcoverOpen->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)gcoverOpen->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)gcoverOpen,
+                           160 - ((TEXPalettePtr)(u8*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)gcoverOpen)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_WRONG_DISK:
-            movieDrawImage(&gwrongDisk, 0xA0 - ((s32)gwrongDisk->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)gwrongDisk->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)gwrongDisk,
+                           160 - ((TEXPalettePtr)(u8*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)gwrongDisk)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_READING_DISK:
-            movieDrawImage(&greadingDisk, 0xA0 - ((s32)greadingDisk->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)greadingDisk->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)greadingDisk,
+                           160 - ((TEXPalettePtr)(u8*)greadingDisk)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)greadingDisk)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_RETRY_ERROR:
-            movieDrawImage(&gretryErr, 0xA0 - ((s32)gretryErr->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)gretryErr->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)gretryErr,
+                           160 - ((TEXPalettePtr)(u8*)gretryErr)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)gretryErr)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_FATAL_ERROR:
-            movieDrawImage(&gfatalErr, 0xA0 - ((s32)gfatalErr->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)gfatalErr->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)gfatalErr,
+                           160 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_NO_DISK:
-            movieDrawImage(&gnoDisk, 0xA0 - ((s32)gnoDisk->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)gnoDisk->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)gnoDisk,
+                           160 - ((TEXPalettePtr)(u8*)gnoDisk)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)gnoDisk)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_DEFAULT_ERROR:
-            movieDrawImage(&gfatalErr, 0xA0 - ((s32)gfatalErr->descriptorArray->textureHeader->width / 2),
-                           0x78 - ((s32)gfatalErr->descriptorArray->textureHeader->height / 2));
+            movieDrawImage((TEXPalettePtr)(u8*)gfatalErr,
+                           160 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
             break;
     }
 
     return 1;
 }
-#endif
 
-#ifndef NON_MATCHING
-// matches but data doesn't
-#pragma GLOBAL_ASM("asm/non_matchings/THPRead/movieDVDShowError.s")
-#else
 s32 movieDVDShowError(s32 nStatus, void*, s32, u32) {
     MovieMessage nMessage;
     s32 nTick;
@@ -423,7 +373,6 @@ s32 movieDVDShowError(s32 nStatus, void*, s32, u32) {
     PAD_STACK();
     return 1;
 }
-#endif
 
 s32 movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
     s32 nStatus;
@@ -446,10 +395,6 @@ s32 movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffse
     return 1;
 }
 
-#ifndef NON_MATCHING
-// matches but data doesn't
-#pragma GLOBAL_ASM("asm/non_matchings/THPRead/movieTestReset.s")
-#else
 s32 movieTestReset(s32 IPL, s32 forceMenu) {
     s32 nTick;
     u32 bFlag;
@@ -502,7 +447,6 @@ s32 movieTestReset(s32 IPL, s32 forceMenu) {
     PAD_STACK();
     return 1;
 }
-#endif
 
 void movieReset(s32 IPL, s32 forceMenu) {
     VISetBlack(1);
@@ -526,7 +470,7 @@ void movieReset(s32 IPL, s32 forceMenu) {
 
 s32 CreateReadThread(OSPriority priority) {
     if (OSCreateThread(&ReadThread, Reader, NULL, ReadThreadStack + STACK_SIZE, STACK_SIZE, priority, 1) == FALSE) {
-        OSReport(D_800EA4B0);
+        OSReport("Can't create read thread\n");
         return FALSE;
     }
 
@@ -544,19 +488,16 @@ void ReadThreadStart() {
     }
 }
 
+// regalloc issues
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/THPRead/Reader.s")
 #else
-// regalloc issues
-static void* Reader() {
+static void* Reader(void* ptr) {
     THPReadBuffer* readBuffer;
     s32 offset;
     s32 size;
     s32 readFrame;
-    s32 bRetry;
-    s32 nStatus;
     s32 frameNumber;
-    u8* ptr;
 
     readFrame = 0;
     offset = ActivePlayer.initOffset;
@@ -564,22 +505,7 @@ static void* Reader() {
 
     while (TRUE) {
         readBuffer = PopFreeReadBuffer();
-        ptr = readBuffer->ptr;
-
-        do {
-            bRetry = 0;
-            DVDReadAsync(&ActivePlayer.fileInfo, ptr, size, offset, NULL);
-            while ((nStatus = DVDGetCommandBlockStatus(&ActivePlayer.fileInfo.cb)) != 0) {
-                movieDVDShowError(nStatus, ptr, size, offset);
-                if ((nStatus == 11) || (nStatus == -1)) {
-                    DVDCancel(&ActivePlayer.fileInfo.cb);
-                    bRetry = 1;
-                    break;
-                }
-            }
-        } while (bRetry);
-
-        gMovieErrorToggle = 0;
+        movieDVDRead(&ActivePlayer.fileInfo, readBuffer->ptr, size, offset);
         readBuffer->frameNumber = readFrame;
         PushReadedBuffer(readBuffer);
         offset += size;
@@ -595,8 +521,6 @@ static void* Reader() {
 
         readFrame++;
     }
-
-    PAD_STACK();
     return NULL;
 }
 #endif
