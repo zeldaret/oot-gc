@@ -3,6 +3,7 @@
 
 #include "dolphin.h"
 #include "emulator/rdp.h"
+#include "emulator/rsp.h"
 #include "emulator/xlObject.h"
 
 #define FRAME_SYNC_TOKEN 0x7D00
@@ -286,7 +287,7 @@ typedef struct Frame {
     /* 0x0008C */ u32 nMode;
     /* 0x00090 */ u32 aMode[FMT_COUNT];
     /* 0x000B8 */ Viewport viewport;
-    /* 0x000C8 */ FrameBuffer aBuffer[4];
+    /* 0x000C8 */ FrameBuffer aBuffer[FBT_COUNT];
     /* 0x00118 */ u32 nOffsetDepth0;
     /* 0x0011C */ u32 nOffsetDepth1;
     /* 0x00120 */ s32 nWidthLine;
@@ -386,9 +387,23 @@ bool frameBeginOK(Frame* pFrame);
 bool frameBegin(Frame* pFrame, s32 nCountVertex);
 bool frameEnd(Frame* pFrame);
 bool frameDrawReset(Frame* pFrame, s32 nFlag);
-bool frameSetBuffer(Frame* pFrame, FrameBufferType eType);
+bool frameSetFill(Frame* pFrame, bool bFill);
 bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
-bool frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed);
+bool frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode);
+bool frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode);
+bool frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bLoad, bool bPush, s32 nAddressN64);
+bool frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bPull);
+bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount);
+bool frameCullDL(Frame* pFrame, s32 nVertexStart, s32 nVertexEnd);
+bool frameLoadTLUT(Frame* pFrame, s32 nCount, s32 iTile);
+bool frameLoadTMEM(Frame* pFrame, FrameLoadType eType, s32 iTile);
+bool frameSetLightCount(Frame* pFrame, s32 nCount);
+bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData);
+bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData);
+bool frameSetViewport(Frame* pFrame, s16* pData);
+bool frameResetUCode(Frame* pFrame, RspUCodeType eType);
+bool frameSetBuffer(Frame* pFrame, FrameBufferType eType);
+bool frameFixMatrixHint(Frame* pFrame, s32 nAddressFloat, s32 nAddressFixed);
 bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
                         f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1);

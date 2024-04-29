@@ -19,8 +19,7 @@ typedef enum __anon_0x581E7 {
     RUT_UNKNOWN = 4,
 } __anon_0x581E7;
 
-// RspUcodeType
-typedef enum RspUcodeType {
+typedef enum RspUCodeType {
     RUT_NONE = -1,
     RUT_TURBO = 0,
     RUT_SPRITE2D = 1,
@@ -36,7 +35,7 @@ typedef enum RspUcodeType {
     RUT_AUDIO1 = 11,
     RUT_AUDIO2 = 12,
     RUT_JPEG = 13,
-} RspUcodeType;
+} RspUCodeType;
 
 // __anon_0x44829
 typedef enum RspUpdateMode {
@@ -68,7 +67,7 @@ typedef struct __anon_0x57890 {
     /* 0x04 */ bool bValid;
     /* 0x08 */ struct __anon_0x575BD task;
     /* 0x48 */ s32 nCountVertex;
-    /* 0x4C */ RspUcodeType eTypeUCode;
+    /* 0x4C */ RspUCodeType eTypeUCode;
     /* 0x50 */ u32 n2TriMult;
     /* 0x54 */ u32 nVersionUCode;
     /* 0x58 */ s32 anBaseSegment[16];
@@ -201,7 +200,7 @@ typedef struct Rsp {
     /* 0x3914 */ s32 nAddressRDRAM;
     /* 0x3918 */ struct tXL_LIST* pListUCode;
     /* 0x391C */ s32 nCountVertex;
-    /* 0x3920 */ RspUcodeType eTypeUCode;
+    /* 0x3920 */ RspUCodeType eTypeUCode;
     /* 0x3924 */ u32 nVersionUCode;
     /* 0x3928 */ s32 anBaseSegment[16];
     /* 0x3968 */ u64* apDL[16];

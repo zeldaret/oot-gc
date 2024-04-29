@@ -5,7 +5,6 @@
 #include "emulator/rsp.h"
 #include "emulator/xlObject.h"
 
-// __anon_0x52CD0
 typedef struct Rdp {
     /* 0x00 */ s32 nBIST;
     /* 0x04 */ s32 nStatus;
@@ -21,8 +20,8 @@ typedef struct Rdp {
     /* 0x2C */ s32 nClockTMEM;
 } Rdp; // size = 0x30
 
-s32 rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUcodeType eType);
-s32 rdpEvent(Rdp* pRDP, s32 nEvent, void* pArgument);
+bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode);
+bool rdpEvent(Rdp* pRDP, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassRDP;
 
