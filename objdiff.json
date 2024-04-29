@@ -130,8 +130,8 @@
             "name": "emulator/THPPlayer",
             "target_path": "expected/build/SIM/src/emulator/THPPlayer.o",
             "base_path": "build/SIM/src/emulator/THPPlayer.o",
-            "reverse_fn_order": true,
-            "complete": false,
+            "reverse_fn_order": false,
+            "complete": true,
             "scratch": {
                 "platform": "gc_wii",
                 "compiler": "mwcc_233_159",
@@ -144,8 +144,8 @@
             "name": "emulator/THPAudioDecode",
             "target_path": "expected/build/SIM/src/emulator/THPAudioDecode.o",
             "base_path": "build/SIM/src/emulator/THPAudioDecode.o",
-            "reverse_fn_order": true,
-            "complete": false,
+            "reverse_fn_order": false,
+            "complete": true,
             "scratch": {
                 "platform": "gc_wii",
                 "compiler": "mwcc_233_159",
@@ -158,8 +158,8 @@
             "name": "emulator/THPDraw",
             "target_path": "expected/build/SIM/src/emulator/THPDraw.o",
             "base_path": "build/SIM/src/emulator/THPDraw.o",
-            "reverse_fn_order": true,
-            "complete": false,
+            "reverse_fn_order": false,
+            "complete": true,
             "scratch": {
                 "platform": "gc_wii",
                 "compiler": "mwcc_233_159",
@@ -186,8 +186,8 @@
             "name": "emulator/THPVideoDecode",
             "target_path": "expected/build/SIM/src/emulator/THPVideoDecode.o",
             "base_path": "build/SIM/src/emulator/THPVideoDecode.o",
-            "reverse_fn_order": true,
-            "complete": false,
+            "reverse_fn_order": false,
+            "complete": true,
             "scratch": {
                 "platform": "gc_wii",
                 "compiler": "mwcc_233_159",
@@ -467,7 +467,7 @@
             "target_path": "expected/build/SIM/src/emulator/library.o",
             "base_path": "build/SIM/src/emulator/library.o",
             "reverse_fn_order": true,
-            "complete": false,
+            "complete": true,
             "scratch": {
                 "platform": "gc_wii",
                 "compiler": "mwcc_233_159",

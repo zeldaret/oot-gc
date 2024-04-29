@@ -80,6 +80,8 @@ extern System* gpSystem;
 extern u32 gz_bnrSize;
 extern u32 gz_iconSize;
 
+extern char gpErrorMessageBuffer[20480];
+
 void simulatorUnpackTexPalette(TEXDescriptorPtr pal);
 s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
 s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
