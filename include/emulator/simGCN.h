@@ -80,6 +80,21 @@ extern System* gpSystem;
 extern u32 gz_bnrSize;
 extern u32 gz_iconSize;
 
+extern u8 gcoverOpen[];
+extern u8 gnoDisk[];
+extern u8 gretryErr[];
+extern u8 gfatalErr[];
+extern u8 gwrongDisk[];
+extern u8 greadingDisk[];
+extern u8 gbar[];
+extern u8 gyes[];
+extern u8 yno[];
+extern u8 gmesgOK[];
+
+extern s16 Vert_s16[];
+extern u32 Colors_u32[];
+extern u8 TexCoords_u8[];
+
 extern char gpErrorMessageBuffer[20480];
 
 void simulatorUnpackTexPalette(TEXDescriptorPtr pal);
