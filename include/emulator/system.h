@@ -139,7 +139,7 @@ typedef struct SystemRomCopy {
 typedef struct System {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
-    /* 0x08 */ s32 bException;
+    /* 0x08 */ bool bException;
     /* 0x0C */ SystemMode eMode;
     /* 0x10 */ SystemRomCopy romCopy;
     /* 0x20 */ SystemRomType eTypeROM;
@@ -147,7 +147,7 @@ typedef struct System {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ SystemObjectType storageDevice;
     /* 0x74 */ u8 anException[16];
-    /* 0x84 */ s32 bJapaneseVersion;
+    /* 0x84 */ bool bJapaneseVersion;
 } System; // size = 0x88
 
 // __anon_0x3459E
@@ -183,16 +183,16 @@ extern u32 nTickMultiplier;
 extern f32 fTickScale;
 extern u32 gnFlagZelda;
 
-s32 systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback);
-s32 systemSetMode(System* pSystem, SystemMode eMode);
-s32 systemGetMode(System* pSystem, SystemMode* peMode);
-s32 systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
-s32 systemGetStorageDevice(System* pSystem, SystemObjectType* pStorageDevice);
-s32 systemReset(System* pSystem);
-s32 systemExecute(System* pSystem, s32 nCount);
-s32 systemCheckInterrupts(System* pSystem);
-s32 systemExceptionPending(System* pSystem, SystemInterruptType nException);
-s32 systemEvent(System* pSystem, s32 nEvent, void* pArgument);
+bool systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback);
+bool systemSetMode(System* pSystem, SystemMode eMode);
+bool systemGetMode(System* pSystem, SystemMode* peMode);
+bool systemSetStorageDevice(System* pSystem, SystemObjectType eStorageDevice);
+bool systemGetStorageDevice(System* pSystem, SystemObjectType* pStorageDevice);
+bool systemReset(System* pSystem);
+bool systemExecute(System* pSystem, s32 nCount);
+bool systemCheckInterrupts(System* pSystem);
+bool systemExceptionPending(System* pSystem, SystemInterruptType nException);
+bool systemEvent(System* pSystem, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassSystem;
 

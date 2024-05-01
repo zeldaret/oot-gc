@@ -5,8 +5,8 @@
 #include "emulator/xlFileGCN.h"
 #include "emulator/xlObject.h"
 
-typedef s32 UnknownCallbackFunc(void);
-typedef s32 ProgressCallbackFunc(f32 progressPercent);
+typedef bool UnknownCallbackFunc(void);
+typedef bool ProgressCallbackFunc(f32 progressPercent);
 
 // __anon_0x4CF87
 typedef enum RomModeLoad {
@@ -33,7 +33,7 @@ typedef struct RomBlock {
 
 // __anon_0x4D0FA
 typedef struct RomCopyState {
-    /* 0x00 */ s32 bWait;
+    /* 0x00 */ bool bWait;
     /* 0x04 */ UnknownCallbackFunc* pCallback;
     /* 0x08 */ u8* pTarget;
     /* 0x0C */ u32 nSize;
@@ -42,8 +42,8 @@ typedef struct RomCopyState {
 
 // __anon_0x4D1DA
 typedef struct RomLoadState {
-    /* 0x00 */ s32 bWait;
-    /* 0x04 */ s32 bDone;
+    /* 0x00 */ bool bWait;
+    /* 0x04 */ bool bDone;
     /* 0x08 */ s32 nResult;
     /* 0x0C */ u8* anData;
     /* 0x10 */ UnknownCallbackFunc* pCallback;
@@ -60,8 +60,8 @@ typedef struct RomLoadState {
 typedef struct Rom {
     /* 0x00000 */ void* pHost;
     /* 0x00004 */ void* pBuffer;
-    /* 0x00008 */ s32 bFlip;
-    /* 0x0000C */ s32 bLoad;
+    /* 0x00008 */ bool bFlip;
+    /* 0x0000C */ bool bLoad;
     /* 0x00010 */ char acNameFile[513];
     /* 0x00214 */ u32 nSize;
     /* 0x00218 */ RomModeLoad eModeLoad;
@@ -81,20 +81,20 @@ typedef struct Rom {
     /* 0x10EF4 */ s32 offsetToRom;
 } Rom; // size = 0x10EF8
 
-s32 romGetPC(Rom* pROM, u64* pnPC);
-s32 romGetCode(Rom* pROM, char* acCode);
-s32 romTestCode(Rom* pROM, char* acCode);
+bool romGetPC(Rom* pROM, u64* pnPC);
+bool romGetCode(Rom* pROM, char* acCode);
+bool romTestCode(Rom* pROM, char* acCode);
 
 //! NOTE: The debug informations indicates that `nSize` is unsigned, but the
 //! generated code seems to treat it as signed.
-s32 romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFunc* pCallback);
-s32 romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
+bool romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFunc* pCallback);
+bool romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize);
 
-s32 romUpdate(Rom* pROM);
-s32 romSetCacheSize(Rom* pROM, s32 nSize);
-s32 romSetImage(Rom* pROM, char* szNameFile);
-s32 romGetImage(Rom* pROM, char* acNameFile);
-s32 romEvent(Rom* pROM, s32 nEvent, void* pArgument);
+bool romUpdate(Rom* pROM);
+bool romSetCacheSize(Rom* pROM, s32 nSize);
+bool romSetImage(Rom* pROM, char* szNameFile);
+bool romGetImage(Rom* pROM, char* acNameFile);
+bool romEvent(Rom* pROM, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassROM;
 

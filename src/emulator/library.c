@@ -17,9 +17,9 @@
 #include "libc/string.h"
 #include "macros.h"
 
-static s32 send_mesg(Cpu* pCPU);
-static s32 __osEnqueueThread(Cpu* pCPU);
-static s32 __osDispatchThread(Cpu* pCPU);
+static bool send_mesg(Cpu* pCPU);
+static bool __osEnqueueThread(Cpu* pCPU);
+static bool __osDispatchThread(Cpu* pCPU);
 
 _XL_OBJECTTYPE gClassLibrary = {
     "OS-LIBRARY",
@@ -142,7 +142,7 @@ typedef struct OSIoMesg_s {
     /* 0x14 */ void* piHandle;
 } OSIoMesg_s; // size = 0x18
 
-static s32 __osException(Cpu* pCPU) {
+static bool __osException(Cpu* pCPU) {
     s32 iBit;
     Library* pLibrary;
     s64 nData64;
@@ -166,16 +166,16 @@ static s32 __osException(Cpu* pCPU) {
     __OSGlobalIntMask = nData32;
 
     if (!cpuGetRegisterCP0(pCPU, 12, &nData64)) {
-        return 0;
+        return false;
     }
     nStatus = nData64;
     if (!cpuSetRegisterCP0(pCPU, 12, nData64 & ~3)) {
-        return 0;
+        return false;
     }
 
     CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[8], &pCPU->aGPR[26].u32);
     if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[26].u32)) {
-        return 0;
+        return false;
     }
 
     __osRunningThread->context.at = pCPU->aGPR[1].u64;
@@ -222,7 +222,7 @@ static s32 __osException(Cpu* pCPU) {
     }
 
     if (!mipsGet32(SYSTEM_MIPS(pCPU->pHost), 0xA430000C, (s32*)&nMask)) {
-        return 0;
+        return false;
     }
 
     if (nMask != 0) {
@@ -257,7 +257,7 @@ static s32 __osException(Cpu* pCPU) {
     __osRunningThread->context.fp30.u64 = pCPU->aFPR[30].u64;
 
     if (!cpuGetRegisterCP0(pCPU, 13, &nCause)) {
-        return 0;
+        return false;
     }
 
     nData32 = nCause;
@@ -297,7 +297,7 @@ static s32 __osException(Cpu* pCPU) {
                     case 1:
                         nCause &= ~0x100;
                         if (!cpuSetRegisterCP0(pCPU, 13, nCause)) {
-                            return 0;
+                            return false;
                         }
                         pCPU->aGPR[4].u32 = 0;
                         send_mesg(pCPU);
@@ -306,7 +306,7 @@ static s32 __osException(Cpu* pCPU) {
                     case 2:
                         nCause &= ~0x200;
                         if (!cpuSetRegisterCP0(pCPU, 13, nCause)) {
-                            return 0;
+                            return false;
                         }
                         pCPU->aGPR[4].u32 = 8;
                         send_mesg(pCPU);
@@ -314,7 +314,7 @@ static s32 __osException(Cpu* pCPU) {
                         break;
                     case 3:
                         if (!mipsGet32(SYSTEM_MIPS(pCPU->pHost), 0xA4300008, (s32*)&nData32)) {
-                            return 0;
+                            return false;
                         }
 
                         nS1 = (__OSGlobalIntMask >> 16) & nData32;
@@ -322,11 +322,11 @@ static s32 __osException(Cpu* pCPU) {
                         if (nS1 & 1) {
                             nS1 &= 0x3E;
                             if (!rspGet32(SYSTEM_RSP(pCPU->pHost), 0x04040010, (s32*)&nStatusRSP)) {
-                                return 0;
+                                return false;
                             }
                             nData32 = 0x8008;
                             if (!rspPut32(SYSTEM_RSP(pCPU->pHost), 0x04040010, (s32*)&nData32)) {
-                                return 0;
+                                return false;
                             }
                             if (nStatusRSP & 0x300) {
                                 pCPU->aGPR[4].u32 = 0x20;
@@ -341,7 +341,7 @@ static s32 __osException(Cpu* pCPU) {
                             nData32 = 0;
                             nS1 &= 0x37;
                             if (!videoPut32(SYSTEM_VIDEO(pCPU->pHost), 0xA4400010, (s32*)&nData32)) {
-                                return 0;
+                                return false;
                             }
                             pCPU->aGPR[4].u32 = 0x38;
                             send_mesg(pCPU);
@@ -351,7 +351,7 @@ static s32 __osException(Cpu* pCPU) {
                             nData32 = 1;
                             nS1 &= 0x3B;
                             if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA450000C, (s32*)&nData32)) {
-                                return 0;
+                                return false;
                             }
                             pCPU->aGPR[4].u32 = 0x30;
                             send_mesg(pCPU);
@@ -361,7 +361,7 @@ static s32 __osException(Cpu* pCPU) {
                             nData32 = 0;
                             nS1 &= 0x3D;
                             if (!serialPut32(SYSTEM_SERIAL(pCPU->pHost), 0xA4800018, (s32*)&nData32)) {
-                                return 0;
+                                return false;
                             }
                             pCPU->aGPR[4].u32 = 0x28;
                             send_mesg(pCPU);
@@ -371,7 +371,7 @@ static s32 __osException(Cpu* pCPU) {
                             nData32 = 2;
                             nS1 &= 0x2F;
                             if (!peripheralPut32(SYSTEM_PERIPHERAL(pCPU->pHost), 0xA4600010, (s32*)&nData32)) {
-                                return 0;
+                                return false;
                             }
                             pCPU->aGPR[4].u32 = 0x40;
                             send_mesg(pCPU);
@@ -380,7 +380,7 @@ static s32 __osException(Cpu* pCPU) {
                         if (nS1 & 0x20) {
                             nData32 = 0x800;
                             if (!mipsPut32(SYSTEM_MIPS(pCPU->pHost), 0xA4300000, (s32*)&nData32)) {
-                                return 0;
+                                return false;
                             }
                             pCPU->aGPR[4].u32 = 0x48;
                             send_mesg(pCPU);
@@ -404,10 +404,10 @@ static s32 __osException(Cpu* pCPU) {
                         break;
                     case 8:
                         if (!cpuGetRegisterCP0(pCPU, 11, &nData64)) {
-                            return 0;
+                            return false;
                         }
                         if (!cpuSetRegisterCP0(pCPU, 11, nData64)) {
-                            return 0;
+                            return false;
                         }
                         pCPU->aGPR[4].u32 = 0x18;
                         send_mesg(pCPU);
@@ -426,11 +426,11 @@ static s32 __osException(Cpu* pCPU) {
         case CEC_COPROCESSOR:
             __osRunningThread->fp = 1;
             if (!cpuGetRegisterCP0(pCPU, 12, &nData64)) {
-                return 0;
+                return false;
             }
             nData64 |= 0x20000000;
             if (!cpuSetRegisterCP0(pCPU, 12, nData64)) {
-                return 0;
+                return false;
             }
             goto enqueueRunning;
         default:
@@ -438,14 +438,14 @@ static s32 __osException(Cpu* pCPU) {
             __osRunningThread->state = 1;
             __osRunningThread->flags = 2;
             if (!cpuGetRegisterCP0(pCPU, 8, &nData64)) {
-                return 0;
+                return false;
             }
             nData32 = nData64;
             __osRunningThread->context.badvaddr = nData32;
             pCPU->aGPR[4].u32 = 0x60;
             send_mesg(pCPU);
             __osDispatchThread(pCPU);
-            return 1;
+            return true;
     }
 
 redispatch:
@@ -467,10 +467,10 @@ enqueueRunning:
 
 dispatchThread:
     __osDispatchThread(pCPU);
-    return 1;
+    return true;
 }
 
-static s32 send_mesg(Cpu* pCPU) {
+static bool send_mesg(Cpu* pCPU) {
     Library* pLibrary;
     CpuDevice** apDevice;
     u8* aiDevice;
@@ -515,10 +515,10 @@ static s32 send_mesg(Cpu* pCPU) {
         }
     }
 
-    return 1;
+    return true;
 }
 
-static s32 __osEnqueueAndYield(Cpu* pCPU) {
+static bool __osEnqueueAndYield(Cpu* pCPU) {
     s64 nData64;
     Library* pLibrary;
     __OSThread_s* __osRunningThread;
@@ -536,11 +536,11 @@ static s32 __osEnqueueAndYield(Cpu* pCPU) {
     CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[8], &pCPU->aGPR[5].u32);
 
     if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[5].u32)) {
-        return 0;
+        return false;
     }
 
     if (!cpuGetRegisterCP0(pCPU, 0xC, &nData64)) {
-        return 0;
+        return false;
     }
 
     nStatus = nData64 | 2;
@@ -578,7 +578,7 @@ static s32 __osEnqueueAndYield(Cpu* pCPU) {
     }
 
     if (!mipsGet32(SYSTEM_MIPS(pCPU->pHost), 0xA430000C, (s32*)&nMask)) {
-        return 0;
+        return false;
     }
 
     if (nMask != 0) {
@@ -594,10 +594,10 @@ static s32 __osEnqueueAndYield(Cpu* pCPU) {
     }
 
     __osDispatchThread(pCPU);
-    return 1;
+    return true;
 }
 
-static s32 __osEnqueueThread(Cpu* pCPU) {
+static bool __osEnqueueThread(Cpu* pCPU) {
     CpuDevice** apDevice = pCPU->apDevice;
     u8* aiDevice = pCPU->aiDevice;
 
@@ -617,20 +617,20 @@ static s32 __osEnqueueThread(Cpu* pCPU) {
     CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[25].u32, &pCPU->aGPR[5].u32);
     CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[5].u32 + 8, &pCPU->aGPR[4].u32);
 
-    return 1;
+    return true;
 }
 
-static s32 __osPopThread(Cpu* pCPU) {
+static bool __osPopThread(Cpu* pCPU) {
     CpuDevice** apDevice = pCPU->apDevice;
     u8* aiDevice = pCPU->aiDevice;
 
     CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[2].u32);
     CPU_DEVICE_GET32(apDevice, aiDevice, pCPU->aGPR[2].u32, &pCPU->aGPR[25].u32);
     CPU_DEVICE_PUT32(apDevice, aiDevice, pCPU->aGPR[4].u32, &pCPU->aGPR[25].u32);
-    return 1;
+    return true;
 }
 
-static s32 __osDispatchThread(Cpu* pCPU) {
+static bool __osDispatchThread(Cpu* pCPU) {
     Library* pLibrary;
     u32 nAddress;
     u64 nData64;
@@ -653,7 +653,7 @@ static s32 __osDispatchThread(Cpu* pCPU) {
     *(u32*)pLibrary->apData[8] = nAddress;
 
     if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, nAddress)) {
-        return 0;
+        return false;
     }
 
     __osRunningThread->state = 4;
@@ -665,7 +665,7 @@ static s32 __osDispatchThread(Cpu* pCPU) {
     nStatus = (nStatus & 0xFFFF00FF) | nData32;
     nData64 = nStatus;
     if (!cpuSetRegisterCP0(pCPU, 12, nData64)) {
-        return 0;
+        return false;
     }
 
     pCPU->aGPR[1].u64 = __osRunningThread->context.at;
@@ -730,82 +730,82 @@ static s32 __osDispatchThread(Cpu* pCPU) {
     nData32 = __osRcpImTable[nMask];
 
     if (!mipsPut32(SYSTEM_MIPS(pCPU->pHost), 0xA430000C, (s32*)&nData32)) {
-        return 0;
+        return false;
     }
 
     __cpuERET(pCPU);
-    return 1;
+    return true;
 }
 
-static s32 osGetMemSize(Cpu* pCPU) {
+static bool osGetMemSize(Cpu* pCPU) {
     u32 nSize;
 
     if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), (s32*)&nSize)) {
-        return 0;
+        return false;
     }
 
     pCPU->aGPR[2].u32 = nSize;
-    return 1;
+    return true;
 }
 
-static s32 osInvalICache(Cpu* pCPU) {
+static bool osInvalICache(Cpu* pCPU) {
     u32 nAddress = pCPU->aGPR[4].u32;
     u32 nSize = pCPU->aGPR[5].u32;
 
     if (!cpuInvalidateCache(pCPU, nAddress, nAddress + nSize)) {
-        return 0;
+        return false;
     }
 
     if (!rspInvalidateCache(SYSTEM_RSP(pCPU->pHost), nAddress, nAddress + nSize)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 __osDisableInt(Cpu* pCPU) {
+static bool __osDisableInt(Cpu* pCPU) {
     u32 nStatus;
     u64 nData64;
     s32 pad[2];
 
     if (!cpuGetRegisterCP0(pCPU, 12, (s64*)&nData64)) {
-        return 0;
+        return false;
     }
 
     nStatus = nData64;
     ;
     nData64 = nStatus & ~1;
     if (!cpuSetRegisterCP0(pCPU, 12, nData64)) {
-        return 0;
+        return false;
     }
 
     pCPU->aGPR[2].s32 = nStatus & 1;
-    return 1;
+    return true;
 }
 
-s32 __osRestoreInt(Cpu* pCPU) {
+bool __osRestoreInt(Cpu* pCPU) {
     u64 nStatus;
 
     if (!cpuGetRegisterCP0(pCPU, 12, (s64*)&nStatus)) {
-        return 0;
+        return false;
     }
 
     nStatus |= pCPU->aGPR[4].u64;
     if (!cpuSetRegisterCP0(pCPU, 12, nStatus)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 __osSpSetStatus(Cpu* pCPU) {
+bool __osSpSetStatus(Cpu* pCPU) {
     u32 nData32 = pCPU->aGPR[4].u32;
 
     if (!rspPut32(SYSTEM_RSP(pCPU->pHost), 0x04040010, &nData32)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 static void __cosf(Cpu* pCPU) { pCPU->aFPR[0].f32 = cosf(pCPU->aFPR[12].f32); }
@@ -2668,7 +2668,7 @@ void guLookAtReflect(Cpu* pCPU) {
     }
 }
 
-s32 osAiSetFrequency(Cpu* pCPU) {
+bool osAiSetFrequency(Cpu* pCPU) {
     s32 pad1[2];
     u32 dacRate;
     u8 bitRate;
@@ -2684,12 +2684,12 @@ s32 osAiSetFrequency(Cpu* pCPU) {
 
         nData32 = dacRate - 1;
         if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500010, (s32*)&nData32)) {
-            return 0;
+            return false;
         }
 
         nData32 = bitRate - 1;
         if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500014, (s32*)&nData32)) {
-            return 0;
+            return false;
         }
 
         pCPU->aGPR[2].s32 = (s32)(0x02E6D354 / (s32)dacRate);
@@ -2697,10 +2697,10 @@ s32 osAiSetFrequency(Cpu* pCPU) {
         pCPU->aGPR[2].s32 = -1;
     }
 
-    return 1;
+    return true;
 }
 
-s32 osAiSetNextBuffer(Cpu* pCPU) {
+bool osAiSetNextBuffer(Cpu* pCPU) {
     s32 pad1;
     u32 buf;
     u32 size;
@@ -2716,25 +2716,25 @@ s32 osAiSetNextBuffer(Cpu* pCPU) {
 
     nData32 = buf;
     if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500000, (s32*)&nData32)) {
-        return 0;
+        return false;
     }
 
     nData32 = size;
     if (!audioPut32(SYSTEM_AUDIO(pCPU->pHost), 0xA4500004, (s32*)&nData32)) {
-        return 0;
+        return false;
     }
 
     pCPU->aGPR[2].s32 = 0;
-    return 1;
+    return true;
 }
 
-s32 __osEepStatus(Cpu* pCPU) {
+bool __osEepStatus(Cpu* pCPU) {
     s32 ret;
     s32 nSize;
     u8* status;
 
     if (!cpuGetAddressBuffer(pCPU, &status, pCPU->aGPR[5].u32)) {
-        return 0;
+        return false;
     }
 
     if (pifGetEEPROMSize(SYSTEM_PIF(pCPU->pHost), &nSize) != 0) {
@@ -2752,38 +2752,38 @@ s32 __osEepStatus(Cpu* pCPU) {
     }
 
     pCPU->aGPR[2].s32 = ret;
-    return 1;
+    return true;
 }
 
-s32 osEepromRead(Cpu* pCPU) {
+bool osEepromRead(Cpu* pCPU) {
     s32 pad[2];
     u8 address;
     u8* buffer;
 
     address = pCPU->aGPR[5].u8;
     if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
-        return 0;
+        return false;
     }
 
     pCPU->aGPR[2].s32 = simulatorReadEEPROM(address, buffer) ? 0 : -1;
-    return 1;
+    return true;
 }
 
-s32 osEepromWrite(Cpu* pCPU) {
+bool osEepromWrite(Cpu* pCPU) {
     s32 pad[2];
     u8 address;
     u8* buffer;
 
     address = pCPU->aGPR[5].u8;
     if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
-        return 0;
+        return false;
     }
 
     pCPU->aGPR[2].s32 = simulatorWriteEEPROM(address, buffer) ? 0 : -1;
-    return 1;
+    return true;
 }
 
-s32 osEepromLongRead(Cpu* pCPU) {
+bool osEepromLongRead(Cpu* pCPU) {
     s32 length;
     s32 ret;
     u8 address;
@@ -2793,7 +2793,7 @@ s32 osEepromLongRead(Cpu* pCPU) {
 
     address = pCPU->aGPR[5].u8;
     if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
-        return 0;
+        return false;
     }
     length = pCPU->aGPR[7].s32;
 
@@ -2809,10 +2809,10 @@ s32 osEepromLongRead(Cpu* pCPU) {
     }
 
     pCPU->aGPR[2].s32 = ret;
-    return 1;
+    return true;
 }
 
-s32 osEepromLongWrite(Cpu* pCPU) {
+bool osEepromLongWrite(Cpu* pCPU) {
     s32 length;
     s32 ret;
     u8 address;
@@ -2822,7 +2822,7 @@ s32 osEepromLongWrite(Cpu* pCPU) {
 
     address = pCPU->aGPR[5].u8;
     if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
-        return 0;
+        return false;
     }
     length = pCPU->aGPR[7].s32;
 
@@ -2838,10 +2838,10 @@ s32 osEepromLongWrite(Cpu* pCPU) {
     }
 
     pCPU->aGPR[2].s32 = ret;
-    return 1;
+    return true;
 }
 
-s32 starfoxCopy(Cpu* pCPU) {
+bool starfoxCopy(Cpu* pCPU) {
     s32* A0;
     s32 A1;
     s32 A2;
@@ -2908,15 +2908,15 @@ s32 starfoxCopy(Cpu* pCPU) {
         A2 -= 1;
     } while (A1 != T8);
 
-    return 1;
+    return true;
 }
 
-s32 pictureSnap_Zelda2(Cpu* pCPU) {
+bool pictureSnap_Zelda2(Cpu* pCPU) {
     pCPU->aGPR[25].u32 = 0xFFFA0000;
-    return 1;
+    return true;
 }
 
-s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
+bool dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     void* pTarget;
     OSMesgQueue_s* mq;
     u32* msg;
@@ -2931,12 +2931,12 @@ s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
 
     nAddress = pCPU->aGPR[5].u32;
     if (!cpuGetAddressBuffer(pCPU, &pIOMessage, nAddress)) {
-        return 0;
+        return false;
     }
 
     nAddress = (u32)pIOMessage->hdr.retQueue;
     if (!cpuGetAddressBuffer(pCPU, &mq, nAddress)) {
-        return 0;
+        return false;
     }
 
     nAddress = (u32)mq->msg;
@@ -2944,7 +2944,7 @@ s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     msgCount = mq->msgCount;
     validCount = mq->validCount;
     if (!cpuGetAddressBuffer(pCPU, &msg, nAddress)) {
-        return 0;
+        return false;
     }
 
     msg[(first + validCount) % msgCount] = pCPU->aGPR[5].u32;
@@ -2952,7 +2952,7 @@ s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
 
     nOffsetRAM = (u32)pIOMessage->dramAddr;
     if (!cpuGetAddressBuffer(pCPU, &pTarget, nOffsetRAM)) {
-        return 0;
+        return false;
     }
 
     nOffsetROM = (u32)pIOMessage->devAddr;
@@ -2960,30 +2960,30 @@ s32 dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     romCopyImmediate(SYSTEM_ROM(pCPU->pHost), pTarget, nOffsetROM, nSize);
 
     pCPU->aGPR[2].s32 = 0;
-    return 1;
+    return true;
 }
 
-s32 osViSwapBuffer_Entry(Cpu* pCPU) {
+bool osViSwapBuffer_Entry(Cpu* pCPU) {
     static u32 nAddress = 0xFFFFFFFF;
 
     pCPU->aGPR[29].s32 += SYSTEM_LIBRARY(pCPU->pHost)->nAddStackSwap;
     if (nAddress != pCPU->aGPR[4].u32) {
         nAddress = pCPU->aGPR[4].u32;
         if (!rspFrameComplete(SYSTEM_RSP(pCPU->pHost))) {
-            return 0;
+            return false;
         }
     }
-    return 1;
+    return true;
 }
 
-s32 zeldaLoadSZS_Entry(Cpu* pCPU) {
+bool zeldaLoadSZS_Entry(Cpu* pCPU) {
     pCPU->aGPR[29].s32 -= 0x40;
-    return 1;
+    return true;
 }
 
-s32 zeldaLoadSZS_Exit(Cpu* pCPU) {
+bool zeldaLoadSZS_Exit(Cpu* pCPU) {
     pCPU->aGPR[29].s32 += 0x40;
-    return 1;
+    return true;
 }
 
 LibraryFunc gaFunction[54] = {
@@ -3260,7 +3260,7 @@ LibraryFunc gaFunction[54] = {
     },
 };
 
-static s32 libraryFindException(Library* pLibrary, s32 bException) {
+static bool libraryFindException(Library* pLibrary, bool bException) {
     Cpu* pCPU;
     CpuDevice** apDevice;
     u8* aiDevice;
@@ -3289,18 +3289,18 @@ static s32 libraryFindException(Library* pLibrary, s32 bException) {
     if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09 && MIPS_OP(anCode[2]) == 0x00 &&
         (anCode[2] & 0x1F) == 0x08 && anCode[3] == 0) {
         pLibrary->nAddressException = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
-        return 1;
+        return true;
     }
 
     if (!bException) {
-        return 0;
+        return false;
     }
 
     __cpuBreak(pCPU);
-    return 0;
+    return false;
 }
 
-static s32 libraryFindVariables(Library* pLibrary) {
+static bool libraryFindVariables(Library* pLibrary) {
     Cpu* pCPU;
     CpuDevice** apDevice;
     u8* aiDevice;
@@ -3319,15 +3319,15 @@ static s32 libraryFindVariables(Library* pLibrary) {
     if (MIPS_OP(anCode[0]) == 0x0F && MIPS_OP(anCode[1]) == 0x09) {
         nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
         if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
-            return 0;
+            return false;
         }
 
         pLibrary->anAddress[6] = 0x80000000 | nAddress;
         if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[6], nOffset, NULL)) {
-            return 0;
+            return false;
         }
     } else {
-        return 0;
+        return false;
     }
 
     nAddress = pLibrary->nAddressException + 8;
@@ -3346,27 +3346,27 @@ static s32 libraryFindVariables(Library* pLibrary) {
         nAddress = (MIPS_IMM_U16(anCode[1]) << 16) + MIPS_IMM_S16(anCode[2]);
     }
     if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[8] = 0x80000000 | nAddress;
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[8], nOffset, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[7] = 0x80000000 | (nAddress + 4);
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[7], nOffset + 4, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[5] = 0x80000000 | (nAddress - 4);
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[5], nOffset - 4, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[4] = 0x80000000 | (nAddress - 8);
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[4], nOffset - 8, NULL)) {
-        return 0;
+        return false;
     }
 
     nAddress = nAddressLast;
@@ -3382,30 +3382,30 @@ static s32 libraryFindVariables(Library* pLibrary) {
 
     nAddress = (MIPS_IMM_U16(anCode[0]) << 16) + MIPS_IMM_S16(anCode[1]);
     if (nAddress == 0xC0000008) {
-        return 0;
+        return false;
     }
     if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[3] = 0x80000000 | nAddress;
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[3], nOffset, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[2] = 0x80000000 | (nAddress - 4);
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[2], nOffset - 4, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[1] = 0x80000000 | (nAddress - 8);
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[1], nOffset - 8, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[0] = 0x80000000 | (nAddress - 16);
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[0], nOffset - 16, NULL)) {
-        return 0;
+        return false;
     }
 
     nAddress = nAddressLast;
@@ -3432,19 +3432,19 @@ static s32 libraryFindVariables(Library* pLibrary) {
         nAddress = (MIPS_IMM_U16(anCode[1]) << 16) + MIPS_IMM_S16(anCode[2]);
     }
     if (!cpuGetAddressOffset(pCPU, (s32*)&nOffset, nAddress)) {
-        return 0;
+        return false;
     }
 
     pLibrary->anAddress[9] = 0x80000000 | nAddress;
     if (!ramGetBuffer(SYSTEM_RAM(pLibrary->pHost), &pLibrary->apData[9], nOffset, NULL)) {
-        return 0;
+        return false;
     }
 
     pLibrary->nFlag |= 4;
-    return 1;
+    return true;
 }
 
-static s32 libraryFindFunctions(Library* pLibrary) {
+static bool libraryFindFunctions(Library* pLibrary) {
     Cpu* pCPU;
     s32 iFunction;
     CpuDevice** apDevice;
@@ -3488,7 +3488,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         } while (nOpcode != 0x400A4000);
 
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 0x14)) {
-            return 0;
+            return false;
         }
 
         *(pnCode++) = 0x7C000000 | iFunction;
@@ -3512,7 +3512,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
                  MIPS_FUNCT(nOpcode) != 0x08);
 
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 8)) {
-            return 0;
+            return false;
         }
 
         *(pnCode++) = 0x7C000000 | iFunction;
@@ -3523,7 +3523,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressEnqueueThread != -1) {
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressEnqueueThread)) {
-            return 0;
+            return false;
         }
         *(pnCode++) = 0x7C000000 | iFunction;
         *(pnCode++) = 0x03E00008;
@@ -3541,7 +3541,7 @@ static s32 libraryFindFunctions(Library* pLibrary) {
         } while (nOpcode != 0x03E00008);
 
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 4)) {
-            return 0;
+            return false;
         }
 
         *(pnCode++) = 0x7C000000 | iFunction;
@@ -3554,21 +3554,21 @@ static s32 libraryFindFunctions(Library* pLibrary) {
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressDispatchThread != -1) {
         if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressDispatchThread)) {
-            return 0;
+            return false;
         }
 
         *(pnCode++) = 0x7C000000 | iFunction;
     }
 
-    return 1;
+    return true;
 }
 
-s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
+bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
     s32 iFunction;
     s32 iData;
-    s32 bFlag;
-    s32 bDone;
-    s32 bReturn;
+    bool bFlag;
+    bool bDone;
+    bool bReturn;
     u32 iCode;
     u32* pnCode;
     u32* pnCodeTemp;
@@ -3577,10 +3577,8 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
     u32 nOpcode;
     u32 nAddress;
 
-    s32 var_r0;
-
     if (!cpuGetFunctionChecksum(SYSTEM_CPU(pLibrary->pHost), &nChecksum, pFunction)) {
-        return 0;
+        return false;
     }
 
     nSizeCode = ((pFunction->nAddress1 - pFunction->nAddress0) >> 2) + 1;
@@ -3592,33 +3590,32 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                 continue;
             }
 
-            bDone = 0;
-            bReturn = 1;
+            bDone = false;
+            bReturn = true;
 
             if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, pFunction->nAddress0)) {
-                return 0;
+                return false;
             }
 
             nOpcode = pnCode[0];
-            var_r0 = MIPS_OP(nOpcode) == 0x1F ? 0 : 1;
-            bFlag = var_r0;
+            bFlag = MIPS_OP(nOpcode) == 0x1F ? false : true;
             if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osEepromLongRead && nChecksum == 0x5B919EF9) {
                 nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
                 if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
-                    return 0;
+                    return false;
                 }
                 if (pnCodeTemp[10] != 0xAFA00030) {
-                    bDone = 1;
+                    bDone = true;
                     iFunction += 1;
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osEepromLongWrite &&
                        nChecksum == 0x5B919EF9) {
                 nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
                 if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
-                    return 0;
+                    return false;
                 }
                 if (pnCodeTemp[10] == 0xAFA00030) {
-                    bDone = 1;
+                    bDone = true;
                     iFunction -= 1;
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osSpSetStatus) {
@@ -3627,16 +3624,16 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     nChecksum += pnCode[iCode];
                 }
                 if (nChecksum != 0xC1E27C6E && nChecksum != 0xEDB2A41C && nChecksum != 0x2068A41C) {
-                    bFlag = 0;
+                    bFlag = false;
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osInvalICache) {
                 if (MIPS_IMM_U16(pnCode[2]) == 0x2000) {
-                    bDone = 1;
+                    bDone = true;
                     iFunction += 1;
                 }
             } else if (gaFunction[iFunction].pfLibrary == NULL && nChecksum == 0x376979EF) {
                 if (MIPS_IMM_U16(pnCode[2]) == 0x4000) {
-                    bDone = 1;
+                    bDone = true;
                     iFunction -= 1;
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osDisableInt) {
@@ -3649,7 +3646,7 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osViSwapBuffer_Entry) {
                 if (bFlag) {
-                    bReturn = 0;
+                    bReturn = false;
                     if ((nOpcode & 0xFFFF0000) != 0x27BD0000) {
                         xlPostText("TestFunction: INTERNAL ERROR: osViSwapBuffer: No ADDIU opcode: 0x%08x", "library.c",
                                    6971, nOpcode);
@@ -3659,19 +3656,19 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)GenPerspective_1080) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_1080) {
-                    bFlag = 0;
+                    bFlag = false;
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)pictureSnap_Zelda2) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA2) {
-                    bFlag = 0;
+                    bFlag = false;
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Entry) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA1) {
-                    bFlag = 0;
+                    bFlag = false;
                 }
                 if (bFlag) {
                     pnCodeTemp = pnCode;
-                    bReturn = 0;
+                    bReturn = false;
                     while (pnCodeTemp[0] != 0x27BD0040) {
                         pnCodeTemp++;
                     }
@@ -3679,11 +3676,11 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                 }
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)dmaSoundRomHandler_ZELDA1) {
                 if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA1) {
-                    bFlag = 0;
+                    bFlag = false;
                 } else {
                     nOpcode = pnCode[2];
                     if (iData != 0 && nOpcode != 0x0C000F3C) {
-                        bFlag = 0;
+                        bFlag = false;
                     }
                 }
             }
@@ -3695,30 +3692,30 @@ s32 libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     *(pnCode++) = 0x03E00008;
                     *(pnCode++) = 0;
                 }
-                return 1;
+                return true;
             }
 
             if (bDone) {
-                return 1;
+                return true;
             }
         }
     }
 
-    return 1;
+    return true;
 }
 
-static s32 librarySearch(Library* pLibrary, CpuFunction* pFunction) {
+static bool librarySearch(Library* pLibrary, CpuFunction* pFunction) {
     if (pFunction->left != NULL && !librarySearch(pLibrary, pFunction->left)) {
-        return 0;
+        return false;
     } else if (pFunction->right != NULL && !librarySearch(pLibrary, pFunction->right)) {
-        return 0;
+        return false;
     } else if (!libraryTestFunction(pLibrary, pFunction)) {
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
 
-inline s32 libraryUpdate(Library* pLibrary) {
+inline bool libraryUpdate(Library* pLibrary) {
     Cpu* pCPU;
     CpuFunction* pFunction;
 
@@ -3729,41 +3726,41 @@ inline s32 libraryUpdate(Library* pLibrary) {
 
     if (pCPU->gTree != NULL) {
         if (pCPU->gTree->left != NULL && !librarySearch(pLibrary, pCPU->gTree->left)) {
-            return 0;
+            return false;
         } else if (pCPU->gTree->right != NULL && !librarySearch(pLibrary, pCPU->gTree->right)) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
-s32 libraryFunctionReplaced(Library* pLibrary, s32 iFunction) {
+bool libraryFunctionReplaced(Library* pLibrary, s32 iFunction) {
     if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)send_mesg) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osEnqueueAndYield) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osEnqueueThread) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osPopThread) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__osDispatchThread) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)__sinf) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osViSwapBuffer_Entry) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Entry) {
-        return 0;
+        return false;
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Exit) {
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
 
-s32 libraryCall(Library* pLibrary, Cpu* pCPU, s32 iFunction) {
+bool libraryCall(Library* pLibrary, Cpu* pCPU, s32 iFunction) {
     if (!(pLibrary->nFlag & 1)) {
-        if (libraryFindException(pLibrary, iFunction == -1 ? 1 : 0)) {
+        if (libraryFindException(pLibrary, iFunction == -1 ? true : false)) {
             pLibrary->nFlag |= 1;
             if (libraryFindVariables(pLibrary)) {
                 pLibrary->nFlag |= 2;
@@ -3783,10 +3780,10 @@ s32 libraryCall(Library* pLibrary, Cpu* pCPU, s32 iFunction) {
         }
     }
 
-    return 1;
+    return true;
 }
 
-s32 libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument) {
+bool libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pLibrary->nFlag = 0;
@@ -3803,12 +3800,12 @@ s32 libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument) {
             break;
         case 0x1003:
             if (!libraryUpdate(pLibrary)) {
-                return 0;
+                return false;
             }
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
