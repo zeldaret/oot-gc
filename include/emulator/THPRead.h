@@ -14,15 +14,17 @@ typedef enum MovieMessage {
     M_M_DISK_DEFAULT_ERROR = 6,
 } MovieMessage;
 
-s32 movieGXInit();
-s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0);
-s32 movieDrawErrorMessage(MovieMessage movieMessage);
-s32 movieDVDShowError(s32 nStatus, void*, s32, u32);
-s32 movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset);
-s32 movieTestReset(s32 IPL, s32 forceMenu);
-void movieReset(s32 IPL, s32 forceMenu);
+extern bool gMovieErrorToggle;
 
-s32 CreateReadThread(OSPriority priority);
+bool movieGXInit();
+bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0);
+bool movieDrawErrorMessage(MovieMessage movieMessage);
+bool movieDVDShowError(s32 nStatus, void*, s32, u32);
+bool movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset);
+bool movieTestReset(bool IPL, bool forceMenu);
+void movieReset(bool IPL, bool forceMenu);
+
+bool CreateReadThread(OSPriority priority);
 void ReadThreadStart(void);
 void ReadThreadCancel(void);
 void* PopReadedBuffer();
@@ -31,7 +33,5 @@ void* PopFreeReadBuffer();
 void PushFreeReadBuffer(void* buffer);
 void* PopReadedBuffer2();
 void PushReadedBuffer2(void* buffer);
-
-extern s32 gMovieErrorToggle;
 
 #endif

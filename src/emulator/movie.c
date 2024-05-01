@@ -10,7 +10,7 @@ void MovieInit(void) {
     char* szText;
     u32 size;
 
-    THPPlayerInit(0);
+    THPPlayerInit(false);
 
     if (!simulatorGetArgument(SAT_MOVIE, &szText)) {
         THPPlayerOpen("final_zelda_credits_sound.thp", false);

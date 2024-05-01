@@ -11,8 +11,8 @@ static OSMessageQueue FreeTextureSetQueue;
 static OSMessageQueue DecodedTextureSetQueue;
 static void* FreeTextureSetMessage[3];
 static void* DecodedTextureSetMessage[3];
-static s32 VideoDecodeThreadCreated;
-static s32 First;
+static bool VideoDecodeThreadCreated;
+static bool First;
 
 static void* VideoDecoder();
 static void* VideoDecoderForOnMemory(void* ptr);
@@ -43,12 +43,12 @@ bool CreateVideoDecodeThread(OSPriority priority, u8* ptr) {
     return true;
 }
 
-void VideoDecodeThreadStart() {
+void VideoDecodeThreadStart(void) {
     if (VideoDecodeThreadCreated)
         OSResumeThread(&VideoDecodeThread);
 }
 
-static void* VideoDecoder() {
+static void* VideoDecoder(void) {
     THPReadBuffer* readBuffer;
     s32 old;
     s32 decodedFrame = ActivePlayer.videoAhead;
@@ -178,7 +178,7 @@ static void VideoDecode(THPReadBuffer* readBuffer) {
     }
 }
 
-void* PopFreeTextureSet() {
+void* PopFreeTextureSet(void) {
     void* msg;
     OSReceiveMessage(&FreeTextureSetQueue, &msg, 1);
     return msg;
