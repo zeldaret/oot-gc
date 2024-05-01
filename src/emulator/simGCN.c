@@ -607,16 +607,16 @@ void simulatorResetAndPlayMovie(void) {
     while (true) {
         OSGetTick();
 
-        if (gMovieErrorToggle == 1) {
+        if (gMovieErrorToggle == true) {
             continue;
         }
 
         DEMOBeforeRender();
         MovieDraw();
         simulatorUnknownInline();
-        VISetBlack(0);
+        VISetBlack(false);
         GXSetCopyClear(color, 0);
-        movieTestReset(0, 0);
+        movieTestReset(false, false);
     }
 }
 

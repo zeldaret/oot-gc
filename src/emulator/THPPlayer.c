@@ -21,28 +21,28 @@ static void* UsedTextureSetMessage[3];
 static s16 SoundBuffer[2][320] ALIGNAS(32);
 THPPlayer ActivePlayer;
 
-static s32 Initialized;
+static bool Initialized;
 static void* PrepareReadyMessage;
 static void (*OldVIPostCallback)(u32);
 static s32 SoundBufferIndex;
 static void (*OldAIDCallback)();
 static s16* LastAudioBuffer;
 static s16* CurAudioBuffer;
-static s32 AudioSystem;
+static bool AudioSystem;
 
-static void PlayControl(u32);
-static s32 ProperTimingForStart();
-static s32 ProperTimingForGettingNextFrame();
+static void PlayControl(u32 retraceCnt);
+static bool ProperTimingForStart(void);
+static bool ProperTimingForGettingNextFrame(void);
 static void PushUsedTextureSet(OSMessage msg);
-static OSMessage PopUsedTextureSet();
-static void MixAudio(s16*, s16*, u32);
-static void THPAudioMixCallback();
+static OSMessage PopUsedTextureSet(void);
+static void MixAudio(s16* destination, s16* source, u32 sample);
+static void THPAudioMixCallback(void);
 
 void THPGXYuv2RgbDraw(u8* y_data, u8* u_data, u8* v_data, s16 x, s16 y, s16 textureWidth, s16 textureHeight,
                       s16 polygonWidth, s16 polygonHeight);
 
-s32 THPPlayerInit(s32 audioSystem) {
-    s32 old;
+bool THPPlayerInit(bool audioSystem) {
+    bool old;
 
     memset(&ActivePlayer, 0, sizeof(THPPlayer));
     LCEnable();
@@ -59,16 +59,16 @@ s32 THPPlayerInit(s32 audioSystem) {
     LastAudioBuffer = NULL;
     CurAudioBuffer = NULL;
     OldAIDCallback = AIRegisterDMACallback(THPAudioMixCallback);
-    if (OldAIDCallback == NULL && AudioSystem != 0) {
+    if (OldAIDCallback == NULL && AudioSystem) {
         AIRegisterDMACallback(NULL);
         OSRestoreInterrupts(old);
         OSReport("Pleae call AXInit or sndInit before you call THPPlayerInit\n");
-        return 0;
+        return false;
     }
 
     OSRestoreInterrupts(old);
 
-    if (AudioSystem == 0) {
+    if (!AudioSystem) {
         memset(SoundBuffer, 0, sizeof(SoundBuffer));
         DCFlushRange(SoundBuffer, sizeof(SoundBuffer));
         AIInitDMA((u32)&SoundBuffer[SoundBufferIndex], 320 * 2);
@@ -79,11 +79,11 @@ s32 THPPlayerInit(s32 audioSystem) {
     return true;
 }
 
-s32 THPPlayerOpen(char* fileName, s32 onMemory) {
+bool THPPlayerOpen(char* fileName, bool onMemory) {
     s32 readOffset;
     s32 i;
 
-    if (Initialized == false) {
+    if (!Initialized) {
         OSReport("You must call THPPlayerInit before you call this function\n");
         return false;
     }
@@ -120,7 +120,7 @@ s32 THPPlayerOpen(char* fileName, s32 onMemory) {
     movieDVDRead(&ActivePlayer.fileInfo, WorkBuffer, 32, readOffset);
     memcpy(&ActivePlayer.compInfo, WorkBuffer, sizeof(THPFrameCompInfo));
     readOffset += sizeof(THPFrameCompInfo);
-    ActivePlayer.audioExist = 0;
+    ActivePlayer.audioExist = false;
 
     for (i = 0; i < ActivePlayer.compInfo.numComponents; i++) {
         switch (ActivePlayer.compInfo.frameComp[i]) {
@@ -133,7 +133,7 @@ s32 THPPlayerOpen(char* fileName, s32 onMemory) {
                 movieDVDRead(&ActivePlayer.fileInfo, WorkBuffer, 32, readOffset);
                 memcpy(&ActivePlayer.audioInfo, WorkBuffer, sizeof(THPAudioInfo));
                 readOffset += sizeof(THPAudioInfo);
-                ActivePlayer.audioExist = 1;
+                ActivePlayer.audioExist = true;
                 break;
             default:
                 OSReport("Unknown frame components.\n");
@@ -153,7 +153,7 @@ s32 THPPlayerOpen(char* fileName, s32 onMemory) {
     return true;
 }
 
-u32 THPPlayerCalcNeedMemory() {
+u32 THPPlayerCalcNeedMemory(void) {
     u32 size;
 
     if (ActivePlayer.open) {
@@ -178,7 +178,7 @@ u32 THPPlayerCalcNeedMemory() {
     return 0;
 }
 
-s32 THPPlayerSetBuffer(u8* buffer) {
+bool THPPlayerSetBuffer(u8* buffer) {
     u32 i;
     u8* workPtr;
     u32 ySampleSize;
@@ -231,7 +231,7 @@ s32 THPPlayerSetBuffer(u8* buffer) {
     return false;
 }
 
-void InitAllMessageQueue() {
+void InitAllMessageQueue(void) {
     s32 i;
     THPReadBuffer* readBuffer;
     THPTextureSet* textureSet;
@@ -258,7 +258,7 @@ void InitAllMessageQueue() {
     OSInitMessageQueue(&PrepareReadyQueue, &PrepareReadyMessage, 1);
 }
 
-static inline s32 WaitUntilPrepare() {
+static inline bool WaitUntilPrepare(void) {
     OSMessage msg;
 
     OSReceiveMessage(&PrepareReadyQueue, &msg, OS_MESSAGE_BLOCK);
@@ -272,7 +272,7 @@ static inline s32 WaitUntilPrepare() {
 
 void PrepareReady(s32 msg) { OSSendMessage(&PrepareReadyQueue, (OSMessage)msg, OS_MESSAGE_BLOCK); }
 
-s32 THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
+bool THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
     s32 offset;
     u8* threadData;
 
@@ -325,7 +325,7 @@ s32 THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
             }
 
         } else {
-            CreateVideoDecodeThread(20, 0);
+            CreateVideoDecodeThread(20, NULL);
             if (ActivePlayer.audioExist) {
                 CreateAudioDecodeThread(12, NULL);
             }
@@ -339,7 +339,7 @@ s32 THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
             AudioDecodeThreadStart();
         }
 
-        if (ActivePlayer.onMemory == 0) {
+        if (!ActivePlayer.onMemory) {
             ReadThreadStart();
         }
 
@@ -361,7 +361,7 @@ s32 THPPlayerPrepare(s32 frame, s32 flag, s32 audioTrack) {
     return false;
 }
 
-s32 THPPlayerPlay() {
+bool THPPlayerPlay(void) {
     if (ActivePlayer.open && (ActivePlayer.state == 1 || ActivePlayer.state == 4)) {
         ActivePlayer.state = 2;
         ActivePlayer.prevCount = 0;
@@ -458,7 +458,7 @@ static void PlayControl(u32 retraceCnt) {
     }
 }
 
-static s32 ProperTimingForStart() {
+static bool ProperTimingForStart(void) {
     if (ActivePlayer.videoInfo.videoType & 1) {
         if (VIGetNextField() == 0) {
             return true;
@@ -475,7 +475,7 @@ static s32 ProperTimingForStart() {
     return false;
 }
 
-static s32 ProperTimingForGettingNextFrame() {
+static bool ProperTimingForGettingNextFrame(void) {
     s32 frameRate;
 
     if (ActivePlayer.videoInfo.videoType & 1) {
@@ -520,15 +520,15 @@ static void PushUsedTextureSet(OSMessage msg) {
     NO_INLINE();
 }
 
-static inline OSMessage PopUsedTextureSet() {
+static inline OSMessage PopUsedTextureSet(void) {
     OSMessage msg;
-    if (OSReceiveMessage(&UsedTextureSetQueue, &msg, OS_MESSAGE_NOBLOCK) == 1)
+    if (OSReceiveMessage(&UsedTextureSetQueue, &msg, OS_MESSAGE_NOBLOCK) == true)
         return msg;
 
     return NULL;
 }
 
-void THPPlayerDrawDone() {
+void THPPlayerDrawDone(void) {
     if (Initialized) {
         while (true) {
             OSMessage msg = PopUsedTextureSet();
@@ -541,8 +541,8 @@ void THPPlayerDrawDone() {
     }
 }
 
-static void THPAudioMixCallback() {
-    s32 old;
+static void THPAudioMixCallback(void) {
+    bool old;
 
     if (AudioSystem == 0) {
         SoundBufferIndex ^= 1;
@@ -554,7 +554,7 @@ static void THPAudioMixCallback() {
         return;
     }
 
-    if (AudioSystem == 1) {
+    if (AudioSystem == true) {
         if (LastAudioBuffer != NULL) {
             CurAudioBuffer = LastAudioBuffer;
         }

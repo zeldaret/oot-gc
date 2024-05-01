@@ -19,7 +19,7 @@ typedef struct THPAudioBuffer {
 typedef struct THPReadBuffer {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
-    /* 0x8 */ s32 isValid;
+    /* 0x8 */ bool isValid;
 } THPReadBuffer; // size = 0xC
 
 #endif

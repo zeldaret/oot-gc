@@ -20,15 +20,15 @@ static f32 gOrthoMtx[4][4];
 //! TODO: make static (data ordering issues)
 // and remove suffix (there's other global variables sharing the same name)
 u32 gnTickReset_thpread;
-s32 gbReset_thpread;
-s32 toggle_184;
+bool gbReset_thpread;
+bool toggle_184;
 
-s32 gMovieErrorToggle;
-s32 ReadThreadCreated;
+bool gMovieErrorToggle;
+bool ReadThreadCreated;
 
 static void* Reader(void* ptr);
 
-s32 movieGXInit(void) {
+bool movieGXInit(void) {
     s32 i;
     GXColor GX_DEFAULT_BG = {0};
     GXColor BLACK = {0};
@@ -149,10 +149,10 @@ s32 movieGXInit(void) {
     GXPokeZMode(GX_ENABLE, GX_ALWAYS, GX_ENABLE);
     GXSetGPMetric(GX_PERF0_NONE, GX_PERF0_TRIANGLES_7TEX);
     GXClearGPMetric();
-    return 1;
+    return true;
 }
 
-s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
+bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     GXTexObj texObj;
     s32 pad2;
     GXColor color;
@@ -258,10 +258,10 @@ s32 movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     DEMODoneRender();
 
     PAD_STACK();
-    return 1;
+    return true;
 }
 
-s32 movieDrawErrorMessage(MovieMessage movieMessage) {
+bool movieDrawErrorMessage(MovieMessage movieMessage) {
     switch (movieMessage) {
         case M_M_DISK_COVER_OPEN:
             movieDrawImage((TEXPalettePtr)(u8*)gcoverOpen,
@@ -300,13 +300,11 @@ s32 movieDrawErrorMessage(MovieMessage movieMessage) {
             break;
     }
 
-    return 1;
+    return true;
 }
 
-s32 movieDVDShowError(s32 nStatus, void*, s32, u32) {
+bool movieDVDShowError(s32 nStatus, void*, s32, u32) {
     MovieMessage nMessage;
-    s32 nTick;
-    u32 bFlag;
 
     nMessage = M_M_NONE;
     switch (nStatus) {
@@ -329,73 +327,48 @@ s32 movieDVDShowError(s32 nStatus, void*, s32, u32) {
 
     if ((nStatus != 1) && (nStatus != 0) && (nStatus != 2) && (nStatus != 3) && (nStatus != 7) && (nStatus != 8) &&
         (nStatus != 0xA)) {
-        gMovieErrorToggle = 1;
-        toggle_184 = 1;
-    } else if (toggle_184 == 1) {
-        toggle_184 = 0;
+        gMovieErrorToggle = true;
+        toggle_184 = true;
+    } else if (toggle_184 == true) {
+        toggle_184 = false;
         nMessage = M_M_DISK_READING_DISK;
     }
 
     if (nStatus == 5) {
-        nTick = OSGetTick();
-        DEMOPadRead();
-        bFlag = OSGetResetButtonState();
-        if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
-            gnTickReset_thpread = nTick;
-            if ((gbReset_thpread == 0) || (bFlag != 0U)) {
-                gbReset_thpread = bFlag;
-            } else {
-                movieReset(1, 1);
-            }
-        } else if ((nTick - gnTickReset_thpread) >= OSSecondsToTicks(0.5f)) {
-            movieReset(1, 1);
-        }
+        movieTestReset(true, true);
     } else if (nStatus != -1) {
-        nTick = OSGetTick();
-        DEMOPadRead();
-        bFlag = OSGetResetButtonState();
-        if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
-            gnTickReset_thpread = nTick;
-            if ((gbReset_thpread == 0) || (bFlag != 0U)) {
-                gbReset_thpread = bFlag;
-            } else {
-                movieReset(1, 0);
-            }
-        } else if ((nTick - gnTickReset_thpread) >= OSSecondsToTicks(0.5f)) {
-            movieReset(1, 0);
-        }
+        movieTestReset(true, false);
     }
 
     if (nMessage != M_M_NONE) {
         movieDrawErrorMessage(nMessage);
     }
 
-    PAD_STACK();
     return 1;
 }
 
-s32 movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
+bool movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
     s32 nStatus;
-    s32 bRetry;
+    bool bRetry;
 
     do {
-        bRetry = 0;
+        bRetry = false;
         DVDReadAsync(pFileInfo, anData, nSizeRead, nOffset, NULL);
         while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
             movieDVDShowError(nStatus, anData, nSizeRead, nOffset);
             if ((nStatus == 11) || (nStatus == -1)) {
                 DVDCancel(&pFileInfo->cb);
-                bRetry = 1;
+                bRetry = true;
                 break;
             }
         }
     } while (bRetry);
 
-    gMovieErrorToggle = 0;
-    return 1;
+    gMovieErrorToggle = false;
+    return true;
 }
 
-s32 movieTestReset(s32 IPL, s32 forceMenu) {
+bool movieTestReset(bool IPL, bool forceMenu) {
     s32 nTick;
     u32 bFlag;
 
@@ -405,70 +378,39 @@ s32 movieTestReset(s32 IPL, s32 forceMenu) {
 
     if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
         gnTickReset_thpread = nTick;
-        if ((gbReset_thpread == 0) || (bFlag != 0U)) {
+        if (!gbReset_thpread || bFlag) {
             gbReset_thpread = bFlag;
             return 1;
         }
-        VISetBlack(1);
-        VIFlush();
-        VIWaitForRetrace();
-        PADRecalibrate(0xF0000000);
-        GXAbortFrame();
-        LCDisable();
-        VIWaitForRetrace();
-        if (IPL == 1) {
-            if (forceMenu == 1) {
-                OSResetSystem(1, 0, 1);
-            } else {
-                OSResetSystem(1, 0, 0);
-            }
-        } else {
-            OSResetSystem(0, 0, 0);
-        }
-    } else if ((nTick - gnTickReset_thpread) >= OSSecondsToTicks(0.5f)) {
-        VISetBlack(1);
-        VIFlush();
-        VIWaitForRetrace();
-        PADRecalibrate(0xF0000000);
-        GXAbortFrame();
-        LCDisable();
-        VIWaitForRetrace();
-        if (IPL == 1) {
-            if (forceMenu == 1) {
-                OSResetSystem(1, 0, 1);
-            } else {
-                OSResetSystem(1, 0, 0);
-            }
-        } else {
-            OSResetSystem(0, 0, 0);
-        }
+        movieReset(IPL, forceMenu);
+    } else if (nTick - gnTickReset_thpread >= OSSecondsToTicks(0.5f)) {
+        movieReset(IPL, forceMenu);
     }
 
     PAD_STACK();
-    return 1;
+    return true;
 }
 
-void movieReset(s32 IPL, s32 forceMenu) {
-    VISetBlack(1);
+void movieReset(bool IPL, bool forceMenu) {
+    VISetBlack(true);
     VIFlush();
     VIWaitForRetrace();
     PADRecalibrate(0xF0000000);
     GXAbortFrame();
     LCDisable();
     VIWaitForRetrace();
-    if (IPL == 1) {
-        if (forceMenu == 1) {
-            OSResetSystem(1, 0, 1);
-            return;
+    if (IPL == true) {
+        if (forceMenu == true) {
+            OSResetSystem(OS_RESET_HOTRESET, 0, true);
+        } else {
+            OSResetSystem(OS_RESET_HOTRESET, 0, false);
         }
-        OSResetSystem(1, 0, 0);
-        return;
+    } else {
+        OSResetSystem(OS_RESET_RESTART, 0, false);
     }
-    OSResetSystem(0, 0, 0);
-    NO_INLINE();
 }
 
-s32 CreateReadThread(OSPriority priority) {
+bool CreateReadThread(OSPriority priority) {
     if (OSCreateThread(&ReadThread, Reader, NULL, ReadThreadStack + STACK_SIZE, STACK_SIZE, priority, 1) == false) {
         OSReport("Can't create read thread\n");
         return false;
@@ -483,7 +425,7 @@ s32 CreateReadThread(OSPriority priority) {
 }
 
 void ReadThreadStart() {
-    if (ReadThreadCreated != false) {
+    if (ReadThreadCreated) {
         OSResumeThread(&ReadThread);
     }
 }

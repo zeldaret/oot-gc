@@ -11,7 +11,7 @@ static OSMessageQueue FreeAudioBufferQueue;
 static OSMessageQueue DecodedAudioBufferQueue;
 static void* FreeAudioBufferMessage[3];
 static void* DecodedAudioBufferMessage[3];
-static s32 AudioDecodeThreadCreated;
+static bool AudioDecodeThreadCreated;
 
 static void* AudioDecoder(void* _);
 static void* AudioDecoderForOnMemory(void* bufPtr);
@@ -22,14 +22,14 @@ bool CreateAudioDecodeThread(OSPriority prio, void* param) {
     if (param) {
         res = OSCreateThread(&AudioDecodeThread, AudioDecoderForOnMemory, param, AudioDecodeThreadStack + STACK_SIZE,
                              STACK_SIZE, prio, OS_THREAD_ATTR_DETACH);
-        if (res == false) {
+        if (!res) {
             OSReport("Can't create audio decode thread\n");
             return false;
         }
     } else {
         res = OSCreateThread(&AudioDecodeThread, AudioDecoder, NULL, AudioDecodeThreadStack + STACK_SIZE, STACK_SIZE,
                              prio, OS_THREAD_ATTR_DETACH);
-        if (res == false) {
+        if (!res) {
             OSReport("Can't create audio decode thread\n");
             return false;
         }
@@ -127,8 +127,8 @@ void PushFreeAudioBuffer(void* buf) { OSSendMessage(&FreeAudioBufferQueue, buf, 
 
 void* PopDecodedAudioBuffer(s32 flags) {
     void* buf;
-    s32 res = OSReceiveMessage(&DecodedAudioBufferQueue, &buf, flags);
-    if (res == 1) {
+    bool res = OSReceiveMessage(&DecodedAudioBufferQueue, &buf, flags);
+    if (res == true) {
         return buf;
     }
     return NULL;
