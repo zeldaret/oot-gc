@@ -1913,7 +1913,7 @@ s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
             memory_used += pFunction->nCountJump * sizeof(CpuJump);
         }
 
-        while (TRUE) {
+        while (true) {
             if (cpuHeapTake(&chunkMemory, pCPU, pFunction, memory_used)) {
                 break;
             }

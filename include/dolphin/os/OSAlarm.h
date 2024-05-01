@@ -26,7 +26,7 @@ void OSCreateAlarm(OSAlarm* alarm);
 void OSSetAlarm(OSAlarm* alarm, OSTime tick, OSAlarmHandler handler);
 void OSCancelAlarm(OSAlarm* alarm);
 
-BOOL OSCheckAlarmQueue(void);
+bool OSCheckAlarmQueue(void);
 
 #ifdef __cplusplus
 }

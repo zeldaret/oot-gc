@@ -9,8 +9,8 @@ void OSInitMessageQueue(OSMessageQueue* mq, OSMessage* msgArray, s32 msgCount) {
     mq->usedCount = 0;
 }
 
-BOOL OSSendMessage(OSMessageQueue* mq, OSMessage msg, s32 flags) {
-    BOOL enabled;
+bool OSSendMessage(OSMessageQueue* mq, OSMessage msg, s32 flags) {
+    bool enabled;
     s32 lastIndex;
 
     enabled = OSDisableInterrupts();
@@ -18,7 +18,7 @@ BOOL OSSendMessage(OSMessageQueue* mq, OSMessage msg, s32 flags) {
     while (mq->msgCount <= mq->usedCount) {
         if (!(flags & OS_MESSAGE_BLOCK)) {
             OSRestoreInterrupts(enabled);
-            return FALSE;
+            return false;
         } else {
             OSSleepThread(&mq->queueSend);
         }
@@ -31,18 +31,18 @@ BOOL OSSendMessage(OSMessageQueue* mq, OSMessage msg, s32 flags) {
     OSWakeupThread(&mq->queueReceive);
 
     OSRestoreInterrupts(enabled);
-    return TRUE;
+    return true;
 }
 
-BOOL OSReceiveMessage(OSMessageQueue* mq, OSMessage* msg, s32 flags) {
-    BOOL enabled;
+bool OSReceiveMessage(OSMessageQueue* mq, OSMessage* msg, s32 flags) {
+    bool enabled;
 
     enabled = OSDisableInterrupts();
 
     while (mq->usedCount == 0) {
         if (!(flags & OS_MESSAGE_BLOCK)) {
             OSRestoreInterrupts(enabled);
-            return FALSE;
+            return false;
         } else {
             OSSleepThread(&mq->queueReceive);
         }
@@ -57,5 +57,5 @@ BOOL OSReceiveMessage(OSMessageQueue* mq, OSMessage* msg, s32 flags) {
     OSWakeupThread(&mq->queueSend);
 
     OSRestoreInterrupts(enabled);
-    return TRUE;
+    return true;
 }

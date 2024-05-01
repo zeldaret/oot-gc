@@ -7,7 +7,7 @@ typedef void (*AIDCallback)(void);
 
 AIDCallback AIRegisterDMACallback(AIDCallback);
 void AIInitDMA(u32 start_addr, u32 length);
-BOOL AIGetDMAEnableFlag(void);
+bool AIGetDMAEnableFlag(void);
 void AIStartDMA(void);
 void AIStopDMA(void);
 u32 AIGetDMABytesLeft(void);

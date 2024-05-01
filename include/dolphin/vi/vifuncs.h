@@ -12,7 +12,7 @@ void VIFlush(void);
 u32 VIGetTvFormat(void);
 void VISetNextFrameBuffer(void* fb);
 void VIWaitForRetrace(void);
-void VISetBlack(BOOL black);
+void VISetBlack(bool black);
 u32 VIGetNextField(void);
 u32 VIGetCurrentLine(void);
 

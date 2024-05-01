@@ -3,7 +3,7 @@
 
 #include "dolphin.h"
 
-BOOL CreateAudioDecodeThread(OSPriority prio, void* param);
+bool CreateAudioDecodeThread(OSPriority prio, void* param);
 void AudioDecodeThreadStart();
 void AudioDecodeThreadCancel();
 void* PopFreeAudioBuffer();

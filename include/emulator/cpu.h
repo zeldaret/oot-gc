@@ -24,15 +24,15 @@
 #define MIPS_FS(inst) (((inst) >> 11) & 0x1F)
 #define MIPS_FD(inst) (((inst) >> 6) & 0x1F)
 
-typedef s32 (*Put8Func)(void* pObject, u32 nAddress, s8* pData);
-typedef s32 (*Put16Func)(void* pObject, u32 nAddress, s16* pData);
-typedef s32 (*Put32Func)(void* pObject, u32 nAddress, s32* pData);
-typedef s32 (*Put64Func)(void* pObject, u32 nAddress, s64* pData);
+typedef bool (*Put8Func)(void* pObject, u32 nAddress, s8* pData);
+typedef bool (*Put16Func)(void* pObject, u32 nAddress, s16* pData);
+typedef bool (*Put32Func)(void* pObject, u32 nAddress, s32* pData);
+typedef bool (*Put64Func)(void* pObject, u32 nAddress, s64* pData);
 
-typedef s32 (*Get8Func)(void* pObject, u32 nAddress, s8* pData);
-typedef s32 (*Get16Func)(void* pObject, u32 nAddress, s16* pData);
-typedef s32 (*Get32Func)(void* pObject, u32 nAddress, s32* pData);
-typedef s32 (*Get64Func)(void* pObject, u32 nAddress, s64* pData);
+typedef bool (*Get8Func)(void* pObject, u32 nAddress, s8* pData);
+typedef bool (*Get16Func)(void* pObject, u32 nAddress, s16* pData);
+typedef bool (*Get32Func)(void* pObject, u32 nAddress, s32* pData);
+typedef bool (*Get64Func)(void* pObject, u32 nAddress, s64* pData);
 
 // __anon_0x3994B
 typedef enum CpuExceptionCode {

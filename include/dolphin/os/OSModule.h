@@ -96,11 +96,11 @@ struct OSRel {
 #define R_DOLPHIN_MRKREF 204 //  CCh
 
 void OSSetStringTable(const void* stringTable);
-BOOL OSLink(OSModuleInfo* newModule, void* bss);
+bool OSLink(OSModuleInfo* newModule, void* bss);
 #if (3 <= OS_MODULE_VERSION)
-BOOL OSLinkFixed(OSModuleInfo* newModule, void* bss);
+bool OSLinkFixed(OSModuleInfo* newModule, void* bss);
 #endif
-BOOL OSUnlink(OSModuleInfo* oldModule);
+bool OSUnlink(OSModuleInfo* oldModule);
 
 OSModuleInfo* OSSearchModule(void* ptr, u32* section, u32* offset);
 

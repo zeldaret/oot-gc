@@ -25,7 +25,7 @@ extern void __init_user(void);
 extern void InitMetroTRK_BBA();
 extern void OSInit(void);
 extern void DBInit(void);
-extern void OSResetSystem(BOOL reset, u32 resetCode, BOOL forceMenu);
+extern void OSResetSystem(bool reset, u32 resetCode, bool forceMenu);
 extern void __OSCacheInit(void);
 extern void __OSPSInit(void);
 

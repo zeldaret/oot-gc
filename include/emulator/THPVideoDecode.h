@@ -3,7 +3,7 @@
 
 #include "dolphin.h"
 
-BOOL CreateVideoDecodeThread(OSPriority priority, u8* ptr);
+bool CreateVideoDecodeThread(OSPriority priority, u8* ptr);
 void VideoDecodeThreadStart(void);
 void VideoDecodeThreadCancel(void);
 void* PopFreeTextureSet();

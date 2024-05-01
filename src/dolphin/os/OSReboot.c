@@ -28,7 +28,7 @@ extern u32 OS_RESET_CODE AT_ADDRESS(0x800030F0);
 extern u8 OS_REBOOT_BOOL AT_ADDRESS(0x800030E2); // unknown function, set to true by __OSReboot
 extern s32 __OSIsGcam;
 
-static BOOL Prepared = FALSE;
+static bool Prepared = false;
 
 void __OSDoHotReset(int);
 
@@ -52,15 +52,15 @@ ASM void Run() {
 
 #pragma dont_inline reset
 
-static void Callback() { Prepared = TRUE; }
+static void Callback() { Prepared = true; }
 
 #pragma peephole off
 
-inline BOOL IsStreamEnabled(void) {
+inline bool IsStreamEnabled(void) {
     if (DVDGetCurrentDiskID()->streaming) {
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 void __OSReboot(u32 resetCode, u32 bootDol) {
@@ -75,22 +75,22 @@ void __OSReboot(u32 resetCode, u32 bootDol) {
     OSDisableInterrupts();
     UNK_817FFFFC = 0;
     UNK_817FFFF8 = 0;
-    OS_REBOOT_BOOL = TRUE;
+    OS_REBOOT_BOOL = true;
     BOOT_REGION_START = (u32)SaveStart;
     BOOT_REGION_END = (u32)SaveEnd;
     OSClearContext(&exceptionContext);
     OSSetCurrentContext(&exceptionContext);
     DVDInit();
-    DVDSetAutoInvalidation(TRUE);
+    DVDSetAutoInvalidation(true);
     DVDResume();
-    Prepared = FALSE;
+    Prepared = false;
     __DVDPrepareResetAsync(Callback);
     __OSMaskInterrupts(~0x1F);
     __OSUnmaskInterrupts(0x400);
     OSEnableInterrupts();
 
     time = OSGetTime();
-    while (Prepared != TRUE) {
+    while (Prepared != true) {
         ReadApploader(time);
     }
 

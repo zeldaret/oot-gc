@@ -437,7 +437,7 @@ void OSDumpContext(OSContext* context) {
     if (context->state & OS_CONTEXT_STATE_FPSAVED) {
         OSContext* currentContext;
         OSContext fpuContext;
-        BOOL enabled;
+        bool enabled;
 
         enabled = OSDisableInterrupts();
         currentContext = OSGetCurrentContext();

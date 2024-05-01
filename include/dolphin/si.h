@@ -51,9 +51,9 @@ typedef struct SIPacket {
 } SIPacket;
 
 s32 SIBusy(void);
-BOOL SIIsChanBusy(s32 chan);
-BOOL SIRegisterPollingHandler(__OSInterruptHandler handler);
-BOOL SIUnregisterPollingHandler(__OSInterruptHandler handler);
+bool SIIsChanBusy(s32 chan);
+bool SIRegisterPollingHandler(__OSInterruptHandler handler);
+bool SIUnregisterPollingHandler(__OSInterruptHandler handler);
 void SIInit(void);
 u32 SIGetStatus(void);
 void SISetCommand(s32 chan, u32 command);

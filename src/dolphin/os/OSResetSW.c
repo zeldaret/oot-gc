@@ -10,12 +10,12 @@ extern OSTime __OSStartTime;
 
 #if DOLPHIN_REV == 2002
 //! TODO: find what's wrong with sbss on mq
-static BOOL bootThisDol;
+static bool bootThisDol;
 #endif
 
 static OSResetCallback ResetCallback;
-static BOOL Down;
-static BOOL LastState;
+static bool Down;
+static bool LastState;
 static OSTime HoldUp;
 static OSTime HoldDown;
 
@@ -27,7 +27,7 @@ void __OSResetSWInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
         ;
     }
     if (!(__PIRegs[0] & 0x00010000)) {
-        LastState = Down = TRUE;
+        LastState = Down = true;
         __OSMaskInterrupts(OS_INTERRUPTMASK_PI_RSW);
         if (ResetCallback) {
             callback = ResetCallback;
@@ -44,9 +44,9 @@ void __OSResetSWInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
 #define GAME_CHOICE_MASK 0x1F
 #endif
 
-BOOL OSGetResetButtonState(void) {
-    BOOL enabled;
-    BOOL state;
+bool OSGetResetButtonState(void) {
+    bool enabled;
+    bool state;
     u32 reg;
     OSTime now;
 
@@ -57,14 +57,14 @@ BOOL OSGetResetButtonState(void) {
     reg = __PIRegs[0];
     if (!(reg & 0x00010000)) {
         if (!Down) {
-            Down = TRUE;
-            state = HoldUp ? TRUE : FALSE;
+            Down = true;
+            state = HoldUp ? true : false;
             HoldDown = now;
         } else {
-            state = (HoldUp || (OSMicrosecondsToTicks(100) < now - HoldDown)) ? TRUE : FALSE;
+            state = (HoldUp || (OSMicrosecondsToTicks(100) < now - HoldDown)) ? true : false;
         }
     } else if (Down) {
-        Down = FALSE;
+        Down = false;
         state = LastState;
         if (state) {
             HoldUp = now;
@@ -72,9 +72,9 @@ BOOL OSGetResetButtonState(void) {
             HoldUp = 0;
         }
     } else if (HoldUp && (now - HoldUp < OSMillisecondsToTicks(40))) {
-        state = TRUE;
+        state = true;
     } else {
-        state = FALSE;
+        state = false;
         HoldUp = 0;
     }
 
@@ -87,9 +87,9 @@ BOOL OSGetResetButtonState(void) {
             now -= fire;
             now = OSTicksToSeconds(now) / 2;
             if ((now & 1) == 0) {
-                state = TRUE;
+                state = true;
             } else {
-                state = FALSE;
+                state = false;
             }
         }
     }

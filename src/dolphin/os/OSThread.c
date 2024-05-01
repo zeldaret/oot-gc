@@ -1,7 +1,7 @@
 #include "dolphin/os/OSPriv.h"
 
 static vu32 RunQueueBits;
-static volatile BOOL RunQueueHint;
+static volatile bool RunQueueHint;
 static vs32 Reschedule;
 
 static OSThreadQueue RunQueue[32];
@@ -116,7 +116,7 @@ void __OSThreadInit() {
     OSClearStack(0);
 
     RunQueueBits = 0;
-    RunQueueHint = FALSE;
+    RunQueueHint = false;
     for (prio = OS_PRIORITY_MIN; prio <= OS_PRIORITY_MAX; ++prio) {
         OSInitThreadQueue(&RunQueue[prio]);
     }
@@ -132,7 +132,7 @@ void OSInitThreadQueue(OSThreadQueue* queue) { queue->head = queue->tail = NULL;
 OSThread* OSGetCurrentThread() { return __OSCurrentThread; }
 
 s32 OSDisableScheduler() {
-    BOOL enabled;
+    bool enabled;
     s32 count;
 
     enabled = OSDisableInterrupts();
@@ -142,7 +142,7 @@ s32 OSDisableScheduler() {
 }
 
 s32 OSEnableScheduler() {
-    BOOL enabled;
+    bool enabled;
     s32 count;
 
     enabled = OSDisableInterrupts();
@@ -155,7 +155,7 @@ static inline void SetRun(OSThread* thread) {
     thread->queue = &RunQueue[thread->priority];
     AddTail(thread->queue, thread, link);
     RunQueueBits |= 1u << (OS_PRIORITY_MAX - thread->priority);
-    RunQueueHint = TRUE;
+    RunQueueHint = true;
 }
 
 #pragma dont_inline on
@@ -200,7 +200,7 @@ static OSThread* SetEffectivePriority(OSThread* thread, OSPriority priority) {
             }
             break;
         case OS_THREAD_STATE_RUNNING:
-            RunQueueHint = TRUE;
+            RunQueueHint = true;
             thread->priority = priority;
             break;
     }
@@ -228,7 +228,7 @@ static inline void __OSSwitchThread(OSThread* nextThread) {
     OSLoadContext(&nextThread->context);
 }
 
-static OSThread* SelectThread(BOOL yield) {
+static OSThread* SelectThread(bool yield) {
     OSContext* currentContext;
     OSThread* currentThread;
     OSThread* nextThread;
@@ -282,7 +282,7 @@ static OSThread* SelectThread(BOOL yield) {
         OSClearContext(&IdleContext);
     }
 
-    RunQueueHint = FALSE;
+    RunQueueHint = false;
 
     priority = __cntlzw(RunQueueBits);
     queue = &RunQueue[priority];
@@ -301,18 +301,18 @@ void __OSReschedule() {
         return;
     }
 
-    SelectThread(FALSE);
+    SelectThread(false);
 }
 
-BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
+bool OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
                     OSPriority priority, u16 attr) {
-    BOOL enable;
+    bool enable;
     u32 stackThing;
     int i;
     u32 tmp[2]; // DUMB compiler smfh.
 
     if (priority < OS_PRIORITY_MIN || priority > OS_PRIORITY_MAX) {
-        return FALSE;
+        return false;
     }
 
     stackThing = ((u32)stack & 0xFFFFFFF8); // ??
@@ -354,12 +354,12 @@ BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* s
 
     AddTail(&__OSActiveThreadQueue, thread, linkActive);
     OSRestoreInterrupts(enable);
-    return TRUE;
+    return true;
 }
 
 void OSExitThread(void* val) {
     OSThread* thread;
-    BOOL enable;
+    bool enable;
 
     enable = OSDisableInterrupts();
     thread = __OSCurrentThread;
@@ -376,16 +376,16 @@ void OSExitThread(void* val) {
 
     __OSUnlockAllMutex(thread);
     OSWakeupThread(&thread->queueJoin);
-    RunQueueHint = TRUE;
-    if (RunQueueHint != FALSE) {
-        SelectThread(FALSE);
+    RunQueueHint = true;
+    if (RunQueueHint != false) {
+        SelectThread(false);
     }
 
     OSRestoreInterrupts(enable);
 }
 
 void OSCancelThread(OSThread* thread) {
-    BOOL enabled;
+    bool enabled;
 
     enabled = OSDisableInterrupts();
 
@@ -396,7 +396,7 @@ void OSCancelThread(OSThread* thread) {
             }
             break;
         case OS_THREAD_STATE_RUNNING:
-            RunQueueHint = TRUE;
+            RunQueueHint = true;
             break;
         case OS_THREAD_STATE_WAITING:
             RemoveItem(thread->queue, thread, link);
@@ -429,7 +429,7 @@ void OSCancelThread(OSThread* thread) {
 }
 
 s32 OSResumeThread(OSThread* thread) {
-    BOOL enabled;
+    bool enabled;
     s32 suspendCount;
 
     enabled = OSDisableInterrupts();
@@ -458,7 +458,7 @@ s32 OSResumeThread(OSThread* thread) {
 }
 
 s32 OSSuspendThread(OSThread* thread) {
-    BOOL enabled;
+    bool enabled;
     s32 suspendCount;
 
     enabled = OSDisableInterrupts();
@@ -466,7 +466,7 @@ s32 OSSuspendThread(OSThread* thread) {
     if (suspendCount == 0) {
         switch (thread->state) {
             case OS_THREAD_STATE_RUNNING:
-                RunQueueHint = TRUE;
+                RunQueueHint = true;
                 thread->state = OS_THREAD_STATE_READY;
                 break;
             case OS_THREAD_STATE_READY:
@@ -489,7 +489,7 @@ s32 OSSuspendThread(OSThread* thread) {
 }
 
 void OSSleepThread(OSThreadQueue* queue) {
-    BOOL enabled;
+    bool enabled;
     OSThread* currentThread;
 
     enabled = OSDisableInterrupts();
@@ -498,13 +498,13 @@ void OSSleepThread(OSThreadQueue* queue) {
     currentThread->state = OS_THREAD_STATE_WAITING;
     currentThread->queue = queue;
     AddPrio(queue, currentThread, link);
-    RunQueueHint = TRUE;
+    RunQueueHint = true;
     __OSReschedule();
     OSRestoreInterrupts(enabled);
 }
 
 void OSWakeupThread(OSThreadQueue* queue) {
-    BOOL enabled;
+    bool enabled;
     OSThread* thread;
 
     enabled = OSDisableInterrupts();

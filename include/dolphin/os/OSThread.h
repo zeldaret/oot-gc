@@ -88,7 +88,7 @@ s32 OSDisableScheduler();
 s32 OSEnableScheduler();
 OSPriority __OSGetEffectivePriority(OSThread* thread);
 void __OSReschedule();
-BOOL OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
+bool OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
                     OSPriority priority, u16 attr);
 void OSExitThread(void* val);
 void OSCancelThread(OSThread* thread);
