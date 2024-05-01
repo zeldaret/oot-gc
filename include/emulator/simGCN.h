@@ -98,8 +98,8 @@ extern u8 TexCoords_u8[];
 extern char gpErrorMessageBuffer[20480];
 
 void simulatorUnpackTexPalette(TEXDescriptorPtr pal);
-s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
-s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
+bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
+bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
 s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
 s32 simulatorReadEEPROM(u8 address, u8* data);
 s32 simulatorWriteEEPROM(u8 address, u8* data);

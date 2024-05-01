@@ -3,12 +3,12 @@
 
 #include "dolphin.h"
 
-void xlCoreBeforeRender(void);
-s32 xlCoreHiResolution(void);
-s32 xlCoreGetArgument(s32 iArgument, char** pszArgument);
-s32 xlCoreGetArgumentCount(void);
-s32 xlCoreReset(void);
-
 extern GXRenderModeObj* rmode;
+
+bool xlCoreReset(void);
+s32 xlCoreGetArgumentCount(void);
+bool xlCoreGetArgument(s32 iArgument, char** pszArgument);
+bool xlCoreHiResolution(void);
+void xlCoreBeforeRender(void);
 
 #endif

@@ -5,7 +5,7 @@
 
 typedef struct _XL_OBJECTTYPE _XL_OBJECTTYPE;
 
-typedef s32 (*EventFunc)(void* pObject, s32 nEvent, void* pArgument);
+typedef bool (*EventFunc)(void* pObject, s32 nEvent, void* pArgument);
 
 struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
@@ -19,11 +19,11 @@ typedef struct __anon_0x5062 {
     /* 0x4 */ _XL_OBJECTTYPE* pType;
 } __anon_0x5062; // size = 0x8
 
-s32 xlObjectReset(void);
-s32 xlObjectSetup(void);
-s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument);
-s32 xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType);
-s32 xlObjectFree(void** ppObject);
-s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType);
+bool xlObjectReset(void);
+bool xlObjectSetup(void);
+bool xlObjectEvent(void* pObject, s32 nEvent, void* pArgument);
+bool xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType);
+bool xlObjectFree(void** ppObject);
+bool xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType);
 
 #endif

@@ -3,8 +3,8 @@
 
 #include "dolphin.h"
 
-typedef s32 (*DVDOpenCallback)(char*, DVDFileInfo*);
-typedef s32 (*DVDReadCallback)(DVDFileInfo*, void*, s32, s32, DVDCallback);
+typedef bool (*DVDOpenCallback)(char*, DVDFileInfo*);
+typedef bool (*DVDReadCallback)(DVDFileInfo*, void*, s32, s32, DVDCallback);
 
 // __anon_0x2757
 typedef enum XlFileType {
@@ -24,13 +24,13 @@ typedef struct tXL_FILE {
     /* 0x1C */ DVDFileInfo info;
 } tXL_FILE; // size = 0x58
 
-s32 xlFileSetOpen(DVDOpenCallback pfOpen);
-s32 xlFileSetRead(DVDReadCallback pfRead);
-s32 xlFileGetSize(s32* pnSize, char* szFileName);
-s32 xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName);
-s32 xlFileClose(tXL_FILE** ppFile);
-s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes);
-s32 xlFileSetPosition(tXL_FILE* pFile, s32 nOffset);
-s32 xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument);
+bool xlFileSetOpen(DVDOpenCallback pfOpen);
+bool xlFileSetRead(DVDReadCallback pfRead);
+bool xlFileGetSize(s32* pnSize, char* szFileName);
+bool xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName);
+bool xlFileClose(tXL_FILE** ppFile);
+bool xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes);
+bool xlFileSetPosition(tXL_FILE* pFile, s32 nOffset);
+bool xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument);
 
 #endif

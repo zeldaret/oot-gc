@@ -471,7 +471,7 @@ s32 simulatorGXInit(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDVDShowError.s")
 
-s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
+bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
     s32 nStatus;
 
     while ((nStatus = DVDGetDriveStatus()) != 0) {
@@ -483,7 +483,7 @@ s32 simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
     return DVDOpen(szNameFile, pFileInfo);
 }
 
-s32 simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback) {
+bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback) {
     s32 nStatus;
     s32 bRetry;
 

@@ -3,50 +3,50 @@
 
 static tXL_LIST* gpListData;
 
-inline s32 xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
+inline bool xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
     tXL_NODE* pListNode;
 
     for (pListNode = (tXL_NODE*)gpListData->pNodeHead; pListNode != NULL; pListNode = pListNode->next) {
         *ppData = (__anon_0x5062*)pListNode->data;
         if ((*ppData)->pType == pType) {
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-inline s32 xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
+inline bool xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
     if (!xlListMakeItem(gpListData, ppData)) {
-        return 0;
+        return false;
     }
 
     (*ppData)->pType = pType;
 
     if (!xlListMake((tXL_LIST**)*ppData, pType->nSizeObject + 4)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
-    s32 bFlag;
+bool xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
+    bool bFlag;
     __anon_0x5062* pData;
     tXL_NODE* temp1;
     tXL_NODE* temp2;
 
     if (!xlObjectFindData(&pData, pType)) {
         if (!xlObjectMakeData(&pData, pType)) {
-            return 0;
+            return false;
         }
-        bFlag = 1;
+        bFlag = true;
     } else {
-        bFlag = 0;
+        bFlag = false;
     }
 
     if (!xlListMakeItem(pData->pList, ppObject)) {
-        return 0;
+        return false;
     }
 
     temp1 = (tXL_NODE*)*ppObject;
@@ -54,14 +54,14 @@ s32 xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
     *ppObject = &temp1->data;
     temp1->next = temp2;
 
-    if (bFlag != 0) {
+    if (bFlag) {
         pType->pfEvent(*ppObject, 0, NULL);
     }
 
     return pType->pfEvent(*ppObject, 2, pArgument);
 }
 
-s32 xlObjectFree(void** ppObject) {
+bool xlObjectFree(void** ppObject) {
     if (ppObject != NULL && *ppObject != NULL) {
         __anon_0x5062* pData = *(__anon_0x5062**)((u8*)*ppObject - 4);
 
@@ -69,44 +69,44 @@ s32 xlObjectFree(void** ppObject) {
         *ppObject = (void*)((u8*)*ppObject - 4);
 
         if (xlListFreeItem(pData->pList, ppObject) == 0) {
-            return 0;
+            return false;
         }
 
         *ppObject = NULL;
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType) {
+bool xlObjectTest(void* pObject, _XL_OBJECTTYPE* pType) {
     __anon_0x5062* pData;
 
     if (pObject != NULL) {
         pData = *(__anon_0x5062**)((u8*)pObject - 4);
 
         if (xlListTestItem(gpListData, pData) && pData->pType == pType) {
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-inline s32 xlObjectFindType(void* pObject, _XL_OBJECTTYPE* pType) {
+inline bool xlObjectFindType(void* pObject, _XL_OBJECTTYPE* pType) {
     if (pObject != NULL) {
         __anon_0x5062* pData = *(__anon_0x5062**)((u8*)pObject - 4);
         if (xlListTestItem(gpListData, pData)) {
             if (pData->pType == pType) {
-                return 1;
+                return true;
             }
         }
     }
 
-    return 0;
+    return false;
 }
 
-s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
+bool xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
     if (pObject != NULL) {
         __anon_0x5062* pData = *(__anon_0x5062**)((u8*)pObject - 4);
 
@@ -117,32 +117,32 @@ s32 xlObjectEvent(void* pObject, s32 nEvent, void* pArgument) {
         }
     }
 
-    return 0;
+    return false;
 }
 
-s32 xlObjectSetup(void) {
+bool xlObjectSetup(void) {
     if (!xlListMake(&gpListData, 8)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 xlObjectReset(void) {
+bool xlObjectReset(void) {
     void* pListNode;
 
     pListNode = gpListData->pNodeHead;
 
     while (pListNode != NULL) {
         if (!xlListFree((void*)((s8*)pListNode + 4))) {
-            return 0;
+            return false;
         }
         pListNode = ((tXL_NODE*)pListNode)->next;
     }
 
     if (!xlListFree(&gpListData)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }

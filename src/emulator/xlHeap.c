@@ -26,7 +26,7 @@ s32 gnSizeHeap;
 #define CHKSUM_HI(v) ((u32)((v) >> 26))
 #define CHKSUM_LO(v) ((u32)((v)&0x3F))
 
-static s32 xlHeapBlockCacheGet(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
+static bool xlHeapBlockCacheGet(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
     s32 nBlockCachedSize;
     s32 nBlock;
     s32 nBlockSize;
@@ -77,12 +77,12 @@ static s32 xlHeapBlockCacheGet(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
             gapHeapBlockCache[nBlockSize][nBlockBest] = NULL;
 
             gnHeapTakeCacheCount++;
-            return 1;
+            return true;
         }
     }
 
     *ppBlock = NULL;
-    return 0;
+    return false;
 }
 
 static s32 xlHeapBlockCacheAdd(u32* pBlock) {
@@ -94,7 +94,7 @@ static s32 xlHeapBlockCacheAdd(u32* pBlock) {
 
     nSize = BLOCK_SIZE(*pBlock);
     if (nSize == 0) {
-        return 0;
+        return false;
     }
 
     if (nSize < 8) {
@@ -125,21 +125,21 @@ static s32 xlHeapBlockCacheAdd(u32* pBlock) {
         if ((pBlockCached = gapHeapBlockCache[nBlockSize][nBlock]) == NULL ||
             (nBlockCachedSize = BLOCK_SIZE(*pBlockCached)) < nSize) {
             gapHeapBlockCache[nBlockSize][nBlock] = pBlock;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-static s32 xlHeapBlockCacheClear(u32* pBlock) {
+static bool xlHeapBlockCacheClear(u32* pBlock) {
     s32 nSize;
     s32 nBlock;
     s32 nBlockSize;
 
     nSize = BLOCK_SIZE(*pBlock);
     if (nSize == 0) {
-        return 0;
+        return false;
     }
 
     if (nSize < 8) {
@@ -169,14 +169,14 @@ static s32 xlHeapBlockCacheClear(u32* pBlock) {
     for (nBlock = 0; nBlock < 32; nBlock++) {
         if (gapHeapBlockCache[nBlockSize][nBlock] == pBlock) {
             gapHeapBlockCache[nBlockSize][nBlock] = NULL;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-static s32 xlHeapBlockCacheReset(void) {
+static bool xlHeapBlockCacheReset(void) {
     s32 nBlockSize;
     u32* pBlock;
     u32 nBlock;
@@ -199,10 +199,10 @@ static s32 xlHeapBlockCacheReset(void) {
         pBlock += nBlockSize + 1;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 xlHeapFindUpperBlock(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
+static bool xlHeapFindUpperBlock(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
     s32 nBlockSize;
     u32 nBlock;
     u32* pBlock;
@@ -216,7 +216,7 @@ static s32 xlHeapFindUpperBlock(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
         nBlock = *pBlock;
         nBlockSize = BLOCK_SIZE(nBlock) & 0xFFFFFF;
         if (CHKSUM_LO(nBlock) != CHKSUM_HI(nBlock)) {
-            return 0;
+            return false;
         }
         if (BLOCK_IS_FREE(nBlock) && nBlockSize >= nSize) {
             pBlockBest = pBlock;
@@ -225,7 +225,7 @@ static s32 xlHeapFindUpperBlock(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
     }
 
     if (pBlockBest == NULL) {
-        return 0;
+        return false;
     }
 
     nBlockSize = BLOCK_SIZE(*pBlockBest);
@@ -241,11 +241,11 @@ static s32 xlHeapFindUpperBlock(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
         *ppBlock = pBlockBest;
         *pnBlockSize = BLOCK_SIZE(*pBlockBest);
     }
-    return 1;
+    return true;
 }
 
-s32 xlHeapTake(void** ppHeap, s32 nByteCount) {
-    s32 bValid;
+bool xlHeapTake(void** ppHeap, s32 nByteCount) {
+    bool bValid;
     u32 nSizeExtra;
     u32 iTry;
     s32 nSize;
@@ -257,7 +257,7 @@ s32 xlHeapTake(void** ppHeap, s32 nByteCount) {
     u32* pBlockNext;
     u32* pBlockNextNext;
 
-    bValid = 0;
+    bValid = false;
     *ppHeap = NULL;
 
     switch (nByteCount & 0x30000000) {
@@ -276,10 +276,10 @@ s32 xlHeapTake(void** ppHeap, s32 nByteCount) {
     }
 
     if ((nSize = ((nByteCount & 0x8FFFFFFF) + nSizeExtra) >> 2) < 1) {
-        return 0;
+        return false;
     }
     if (nSize > 0x01000000) {
-        return 0;
+        return false;
     }
 
     iTry = 0;
@@ -287,7 +287,7 @@ s32 xlHeapTake(void** ppHeap, s32 nByteCount) {
         if (nByteCount & 0x40000000) {
             bValid = xlHeapFindUpperBlock(nSize, &pBlock, &nBlockSize);
         } else if (xlHeapBlockCacheGet(nSize, &pBlock, &nBlockSize)) {
-            bValid = 1;
+            bValid = true;
         } else {
             pBlock = gpHeapBlockFirst;
             while ((u32)pBlock < (u32)gpHeapBlockLast) {
@@ -295,11 +295,11 @@ s32 xlHeapTake(void** ppHeap, s32 nByteCount) {
                 nBlockSize = BLOCK_SIZE(nBlock);
 
                 if (CHKSUM_LO(nBlock) != CHKSUM_HI(nBlock)) {
-                    return 0;
+                    return false;
                 }
 
                 if (BLOCK_IS_FREE(nBlock) && nBlockSize >= nSize) {
-                    bValid = 1;
+                    bValid = true;
                     break;
                 }
 
@@ -335,25 +335,25 @@ s32 xlHeapTake(void** ppHeap, s32 nByteCount) {
             }
 
             *ppHeap = pBlock;
-            return 1;
+            return true;
         }
 
         if (!xlHeapCompact()) {
-            return 0;
+            return false;
         }
     }
 
-    return 0;
+    return false;
 }
 
-s32 xlHeapFree(void** ppHeap) {
+bool xlHeapFree(void** ppHeap) {
     s32 nBlockSize;
     s32 nBlockNextSize;
     u32* pBlock;
     u32* pBlockNext;
 
     if (ppHeap == NULL || (u32)*ppHeap < (u32)gpHeapBlockFirst || (u32)*ppHeap > (u32)gpHeapBlockLast) {
-        return 0;
+        return false;
     }
 
     pBlock = (u32*)*ppHeap - 1;
@@ -363,15 +363,15 @@ s32 xlHeapFree(void** ppHeap) {
 
     nBlockSize = BLOCK_SIZE(*pBlock);
     if (BLOCK_IS_FREE(*pBlock)) {
-        return 0;
+        return false;
     }
 
     if (!BLOCK_IS_TAKEN(*pBlock)) {
-        return 0;
+        return false;
     }
 
     if (CHKSUM_HI(*pBlock) != CHKSUM_LO(nBlockSize)) {
-        return 0;
+        return false;
     }
 
     pBlockNext = pBlock + nBlockSize + 1;
@@ -386,10 +386,10 @@ s32 xlHeapFree(void** ppHeap) {
     gnHeapFreeCount++;
     *ppHeap = NULL;
 
-    return 1;
+    return true;
 }
 
-s32 xlHeapCompact(void) {
+bool xlHeapCompact(void) {
     s32 nCount;
     s32 nBlockLarge;
     s32 nBlockSize;
@@ -435,10 +435,10 @@ s32 xlHeapCompact(void) {
     }
 
     xlHeapBlockCacheReset();
-    return 1;
+    return true;
 }
 
-s32 xlHeapCopy(void* pHeapTarget, void* pHeapSource, s32 nByteCount) {
+bool xlHeapCopy(void* pHeapTarget, void* pHeapSource, s32 nByteCount) {
     u8* pSource8;
     u8* pTarget8;
     u32* pSource32;
@@ -518,10 +518,10 @@ s32 xlHeapCopy(void* pHeapTarget, void* pHeapSource, s32 nByteCount) {
         *pTarget8++ = *pSource8++;
     }
 
-    return 1;
+    return true;
 }
 
-s32 xlHeapFill32(void* pHeap, s32 nByteCount, u32 nData) {
+bool xlHeapFill32(void* pHeap, s32 nByteCount, u32 nData) {
     u32* pnTarget = pHeap;
     s32 nWordCount = nByteCount >> 2;
 
@@ -549,10 +549,10 @@ s32 xlHeapFill32(void* pHeap, s32 nByteCount, u32 nData) {
         *pnTarget++ = nData;
     }
 
-    return 1;
+    return true;
 }
 
-s32 xlHeapGetFree(s32* pnFreeBytes) {
+bool xlHeapGetFree(s32* pnFreeBytes) {
     s32 nBlockSize;
     s32 nFree;
     s32 nCount;
@@ -560,7 +560,7 @@ s32 xlHeapGetFree(s32* pnFreeBytes) {
     u32 nBlock;
 
     if (!xlHeapCompact()) {
-        return 0;
+        return false;
     }
 
     pBlock = gpHeapBlockFirst;
@@ -570,7 +570,7 @@ s32 xlHeapGetFree(s32* pnFreeBytes) {
         nBlockSize = BLOCK_SIZE(nBlock);
 
         if (CHKSUM_LO(nBlock) != CHKSUM_HI(nBlock)) {
-            return 0;
+            return false;
         }
 
         if (BLOCK_IS_FREE(nBlock)) {
@@ -581,10 +581,10 @@ s32 xlHeapGetFree(s32* pnFreeBytes) {
     }
 
     *pnFreeBytes = nFree;
-    return 1;
+    return true;
 }
 
-s32 xlHeapSetup(void* pHeap, s32 nSizeBytes) {
+bool xlHeapSetup(void* pHeap, s32 nSizeBytes) {
     s32 nSizeWords;
 
     nSizeWords = nSizeBytes >> 2;
@@ -628,7 +628,7 @@ s32 xlHeapSetup(void* pHeap, s32 nSizeBytes) {
     return xlHeapReset();
 }
 
-s32 xlHeapReset(void) {
+bool xlHeapReset(void) {
     s32 nBlockSize = (gnSizeHeap >> 2) - 2;
 
     gpHeapBlockFirst = gpHeap;
@@ -638,5 +638,5 @@ s32 xlHeapReset(void) {
     *gpHeapBlockLast = 0;
 
     xlHeapBlockCacheReset();
-    return 1;
+    return true;
 }

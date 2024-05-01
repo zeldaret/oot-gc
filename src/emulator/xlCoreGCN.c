@@ -19,11 +19,11 @@ GXRenderModeObj* rmode;
 
 const GXColor D_80135D00 = {0};
 
-s32 xlCoreReset(void) {
+bool xlCoreReset(void) {
     OSFreeToHeap(__OSCurrHeap, gpHeap);
     OSSetArenaLo(gArenaLo);
     OSSetArenaHi(gArenaHi);
-    return 1;
+    return true;
 }
 
 static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
@@ -131,18 +131,18 @@ void xlCoreInitGX(void) {
 
 s32 xlCoreGetArgumentCount(void) { return gnCountArgument; }
 
-s32 xlCoreGetArgument(s32 iArgument, char** pszArgument) {
+bool xlCoreGetArgument(s32 iArgument, char** pszArgument) {
     if ((iArgument >= 0) && (iArgument < gnCountArgument)) {
         *pszArgument = *(gaszArgument + iArgument);
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 xlCoreHiResolution(void) { return 1; }
+bool xlCoreHiResolution(void) { return true; }
 
-s32 main(s32 nCount, char** aszArgument) {
+int main(int nCount, char** aszArgument) {
     void* pHeap;
     u32 i;
     TEXDescriptorPtr tdp;
@@ -153,7 +153,7 @@ s32 main(s32 nCount, char** aszArgument) {
     gnCountArgument = nCount;
     gaszArgument = aszArgument;
 
-    __PADDisableRecalibration(1);
+    __PADDisableRecalibration(true);
     OSInitAlarm();
 
 #ifdef __MWERKS__
@@ -217,42 +217,42 @@ s32 main(s32 nCount, char** aszArgument) {
     }
 
     if (!xlPostSetup()) {
-        return 0;
+        return false;
     }
 
     if (!xlHeapSetup(pHeap, nSize)) {
-        return 0;
+        return false;
     }
 
     if (!xlListSetup()) {
-        return 0;
+        return false;
     }
 
     if (!xlObjectSetup()) {
-        return 0;
+        return false;
     }
 
-    __PADDisableRecalibration(0);
+    __PADDisableRecalibration(false);
     xlMain();
 
     if (!xlObjectReset()) {
-        return 0;
+        return false;
     }
 
     if (!xlListReset()) {
-        return 0;
+        return false;
     }
 
     if (!xlHeapReset()) {
-        return 0;
+        return false;
     }
 
     if (!xlPostReset()) {
-        return 0;
+        return false;
     }
 
     OSPanic("xlCoreGCN.c", 577, "CORE DONE!");
-    return 0;
+    return false;
 }
 
 void xlCoreBeforeRender(void) {
