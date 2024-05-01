@@ -12,20 +12,20 @@ _XL_OBJECTTYPE gClassPeripheral = {
     (EventFunc)peripheralEvent,
 };
 
-s32 peripheralDMA_Complete(void) {
+bool peripheralDMA_Complete(void) {
     Peripheral* pPeripheral = SYSTEM_PERIPHERAL(gpSystem);
 
     pPeripheral->nStatus &= 0xFFFFFFFC;
     xlObjectEvent(pPeripheral->pHost, 0x1000, (void*)9);
-    return 1;
+    return true;
 }
 
-s32 peripheralPut8(Peripheral* pPeripheral, u32 nAddress, s8* pData) { return 0; }
+bool peripheralPut8(Peripheral* pPeripheral, u32 nAddress, s8* pData) { return false; }
 
-s32 peripheralPut16(Peripheral* pPeripheral, u32 nAddress, s16* pData) { return 0; }
+bool peripheralPut16(Peripheral* pPeripheral, u32 nAddress, s16* pData) { return false; }
 
-s32 peripheralPut32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
-    s32 bFlag = 1;
+bool peripheralPut32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
+    s32 bFlag = true;
     SystemObjectType storageDevice;
     s32 nAddressROM;
 
@@ -43,17 +43,17 @@ s32 peripheralPut32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
                 !(0x06000000 <= nAddressROM && nAddressROM <= 0x07FFFFFF)) {
                 if (0x08000000 <= nAddressROM && nAddressROM <= 0x0FFFFFFF) {
                     if (!systemGetStorageDevice((System*)pPeripheral->pHost, &storageDevice)) {
-                        return 0;
+                        return false;
                     }
                     if (storageDevice == SOT_SRAM) {
                         if (!sramTransferSRAM(SYSTEM_SRAM(pPeripheral->pHost), pPeripheral->nAddressRAM,
                                               pPeripheral->nAddressROM, pPeripheral->nSizeGet + 1)) {
-                            return 0;
+                            return false;
                         }
                     } else if (storageDevice == SOT_FLASH) {
                         if (!flashTransferFLASH(SYSTEM_FLASH(pPeripheral->pHost), pPeripheral->nAddressRAM,
                                                 pPeripheral->nAddressROM, pPeripheral->nSizeGet + 1)) {
-                            return 0;
+                            return false;
                         }
                     }
                 }
@@ -67,25 +67,25 @@ s32 peripheralPut32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
                 !(0x06000000 <= nAddressROM && nAddressROM <= 0x07FFFFFF)) {
                 if (0x08000000 <= nAddressROM && nAddressROM <= 0x0FFFFFFF) {
                     if (!systemGetStorageDevice((System*)pPeripheral->pHost, &storageDevice)) {
-                        return 0;
+                        return false;
                     }
                     if (storageDevice == SOT_SRAM) {
                         if (!sramCopySRAM(SYSTEM_SRAM(pPeripheral->pHost), pPeripheral->nAddressRAM,
                                           pPeripheral->nAddressROM, pPeripheral->nSizePut + 1)) {
-                            return 0;
+                            return false;
                         }
                     } else if (storageDevice == SOT_FLASH) {
                         if (!flashCopyFLASH(SYSTEM_FLASH(pPeripheral->pHost), pPeripheral->nAddressRAM,
                                             pPeripheral->nAddressROM, pPeripheral->nSizePut + 1)) {
-                            return 0;
+                            return false;
                         }
                     }
                 } else if (0x10000000 <= nAddressROM && nAddressROM <= 0x1FBFFFFF) {
                     pPeripheral->nStatus |= 3;
-                    bFlag = 0;
-                    if (systemCopyROM((System*)pPeripheral->pHost, pPeripheral->nAddressRAM, pPeripheral->nAddressROM,
-                                      pPeripheral->nSizePut + 1, &peripheralDMA_Complete) == 0) {
-                        return 0;
+                    bFlag = false;
+                    if (!systemCopyROM((System*)pPeripheral->pHost, pPeripheral->nAddressRAM, pPeripheral->nAddressROM,
+                                       pPeripheral->nSizePut + 1, &peripheralDMA_Complete)) {
+                        return false;
                     }
                 }
             }
@@ -123,19 +123,19 @@ s32 peripheralPut32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
             pPeripheral->nRelease2 = *pData & 1;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 peripheralPut64(Peripheral* pPeripheral, u32 nAddress, s64* pData) { return 0; }
+bool peripheralPut64(Peripheral* pPeripheral, u32 nAddress, s64* pData) { return false; }
 
-s32 peripheralGet8(Peripheral* pPeripheral, u32 nAddress, s8* pData) { return 0; }
+bool peripheralGet8(Peripheral* pPeripheral, u32 nAddress, s8* pData) { return false; }
 
-s32 peripheralGet16(Peripheral* pPeripheral, u32 nAddress, s16* pData) { return 0; }
+bool peripheralGet16(Peripheral* pPeripheral, u32 nAddress, s16* pData) { return false; }
 
-s32 peripheralGet32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
+bool peripheralGet32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
     switch (nAddress & 0x3F) {
         case 0x00:
             *pData = pPeripheral->nAddressRAM & 0xFFFFFF;
@@ -177,15 +177,15 @@ s32 peripheralGet32(Peripheral* pPeripheral, u32 nAddress, s32* pData) {
             *pData = pPeripheral->nRelease2 & 1;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 peripheralGet64(Peripheral* pPeripheral, u32 nAddress, s64* pData) { return 0; }
+bool peripheralGet64(Peripheral* pPeripheral, u32 nAddress, s64* pData) { return false; }
 
-s32 peripheralEvent(Peripheral* pPeripheral, s32 nEvent, void* pArgument) {
+bool peripheralEvent(Peripheral* pPeripheral, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pPeripheral->nStatus = 0;
@@ -195,12 +195,12 @@ s32 peripheralEvent(Peripheral* pPeripheral, s32 nEvent, void* pArgument) {
             if (!cpuSetDevicePut(SYSTEM_CPU(pPeripheral->pHost), pArgument, (Put8Func)&peripheralPut8,
                                  (Put16Func)&peripheralPut16, (Put32Func)&peripheralPut32,
                                  (Put64Func)&peripheralPut64)) {
-                return 0;
+                return false;
             }
             if (!cpuSetDeviceGet(SYSTEM_CPU(pPeripheral->pHost), pArgument, (Get8Func)&peripheralGet8,
                                  (Get16Func)&peripheralGet16, (Get32Func)&peripheralGet32,
                                  (Get64Func)&peripheralGet64)) {
-                return 0;
+                return false;
             }
             break;
         case 0:
@@ -209,7 +209,7 @@ s32 peripheralEvent(Peripheral* pPeripheral, s32 nEvent, void* pArgument) {
         case 0x1003:
             break;
         default:
-            return 0;
+            return false;
     }
-    return 1;
+    return true;
 }

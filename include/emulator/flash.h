@@ -12,9 +12,9 @@ typedef struct Flash {
     /* 0xC */ s32 flashStatus;
 } Flash; // size = 0x10
 
-s32 flashCopyFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize);
-s32 flashTransferFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize);
-s32 flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument);
+bool flashCopyFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize);
+bool flashTransferFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize);
+bool flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassFlash;
 

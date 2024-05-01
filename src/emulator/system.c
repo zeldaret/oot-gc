@@ -849,7 +849,7 @@ static s32 systemSetupGameALL(System* pSystem) {
                 pCPU->nCompileFlag = (s32)(pCPU->nCompileFlag | 0x10);
             } else if (romTestCode(pROM, "NK4E")) {
                 // Kirby 64
-                if (!audioEnable(SYSTEM_AUDIO(pSystem), 0)) {
+                if (!audioEnable(SYSTEM_AUDIO(pSystem), false)) {
                     return 0;
                 }
                 if (!cpuSetCodeHack(pCPU, 0x80020BCC, 0x8DF80034, -1)) {
