@@ -50,10 +50,10 @@ typedef struct PADStatus {
     /* 0x0A */ s8 err;
 } PADStatus;
 
-BOOL PADInit(void);
+bool PADInit(void);
 u32 PADRead(PADStatus* status);
-BOOL PADRecalibrate(u32 mask);
-BOOL PADReset(u32 mask);
+bool PADRecalibrate(u32 mask);
+bool PADReset(u32 mask);
 void PADControlMotor(s32 chan, u32 command);
 void PADSetSpec(u32 spec);
 void PADClamp(PADStatus* status);

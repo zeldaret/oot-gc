@@ -267,7 +267,7 @@ static s32 __osException(Cpu* pCPU) {
     switch ((nCause & 0x7C) >> 2) {
         case CEC_INTERRUPT:
             nS0 = nStatus & nCause;
-            while (TRUE) {
+            while (true) {
                 iBit = 0;
                 if (nS0 & 0x100) {
                     iBit = 1;

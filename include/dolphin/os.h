@@ -127,9 +127,9 @@ void OSSetSoundMode(u32 mode);
 
 void OSRegisterVersion(const char* id);
 
-BOOL OSDisableInterrupts(void);
-BOOL OSEnableInterrupts(void);
-BOOL OSRestoreInterrupts(BOOL level);
+bool OSDisableInterrupts(void);
+bool OSEnableInterrupts(void);
+bool OSRestoreInterrupts(bool level);
 
 #define OSHalt(msg) OSPanic(__FILE__, __LINE__, msg)
 

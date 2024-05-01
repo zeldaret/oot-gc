@@ -74,7 +74,7 @@ typedef struct CARDDir {
 } CARDDir;
 
 typedef struct CARDControl {
-    /* 0x00 */ BOOL attached;
+    /* 0x00 */ bool attached;
     /* 0x04 */ s32 result;
     /* 0x08 */ u16 size;
     /* 0x0A */ u16 pageSize;

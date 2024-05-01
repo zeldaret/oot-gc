@@ -26,10 +26,10 @@ typedef double f64;
 typedef volatile f32 vf32;
 typedef volatile f64 vf64;
 
-typedef int BOOL;
+typedef int bool;
 
-#define FALSE 0
-#define TRUE 1
+#define false 0
+#define true 1
 
 #define ATTRIBUTE_ALIGN(num) __attribute__((aligned(num)))
 

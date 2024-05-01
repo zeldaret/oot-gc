@@ -26,7 +26,7 @@ extern "C" {
 #define OS_RESET_PRIO_GX 127
 #define OS_RESET_PRIO_ALARM 4294967295
 
-typedef BOOL (*OSResetFunction)(BOOL final);
+typedef bool (*OSResetFunction)(bool final);
 typedef struct OSResetFunctionInfo OSResetFunctionInfo;
 
 struct OSResetFunctionInfo {

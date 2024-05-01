@@ -469,21 +469,21 @@ void movieReset(s32 IPL, s32 forceMenu) {
 }
 
 s32 CreateReadThread(OSPriority priority) {
-    if (OSCreateThread(&ReadThread, Reader, NULL, ReadThreadStack + STACK_SIZE, STACK_SIZE, priority, 1) == FALSE) {
+    if (OSCreateThread(&ReadThread, Reader, NULL, ReadThreadStack + STACK_SIZE, STACK_SIZE, priority, 1) == false) {
         OSReport("Can't create read thread\n");
-        return FALSE;
+        return false;
     }
 
     OSInitMessageQueue(&FreeReadBufferQueue, FreeReadBufferMessage, BUFFER_COUNT);
     OSInitMessageQueue(&ReadedBufferQueue, ReadedBufferMessage, BUFFER_COUNT);
     OSInitMessageQueue(&ReadedBufferQueue2, ReadedBufferMessage2, BUFFER_COUNT);
-    ReadThreadCreated = TRUE;
+    ReadThreadCreated = true;
 
-    return TRUE;
+    return true;
 }
 
 void ReadThreadStart() {
-    if (ReadThreadCreated != FALSE) {
+    if (ReadThreadCreated != false) {
         OSResumeThread(&ReadThread);
     }
 }
@@ -503,7 +503,7 @@ static void* Reader(void* ptr) {
     offset = ActivePlayer.initOffset;
     size = ActivePlayer.initReadSize;
 
-    while (TRUE) {
+    while (true) {
         readBuffer = PopFreeReadBuffer();
         movieDVDRead(&ActivePlayer.fileInfo, readBuffer->ptr, size, offset);
         readBuffer->frameNumber = readFrame;

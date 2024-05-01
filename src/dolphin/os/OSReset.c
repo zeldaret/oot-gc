@@ -46,14 +46,14 @@ void OSRegisterResetFunction(OSResetFunctionInfo* func) {
     tmp->next = func;
 }
 
-inline BOOL __OSCallResetFunctions(u32 arg0) {
+inline bool __OSCallResetFunctions(u32 arg0) {
     OSResetFunctionInfo* iter;
     s32 retCode = 0;
 
 #if DOLPHIN_REV == 2002
     for (iter = ResetFunctionQueue.first; iter != NULL; iter = iter->next)
 #else
-    for (iter = ResetFunctionQueue.first; iter != NULL && retCode == FALSE; iter = iter->next)
+    for (iter = ResetFunctionQueue.first; iter != NULL && retCode == false; iter = iter->next)
 #endif
     {
         retCode |= !iter->func(arg0);
@@ -134,9 +134,9 @@ void __OSDoHotReset(s32 arg0) {
     Reset(arg0 * 8);
 }
 
-void OSResetSystem(int reset, u32 resetCode, BOOL forceMenu) {
-    BOOL rc;
-    BOOL disableRecalibration;
+void OSResetSystem(int reset, u32 resetCode, bool forceMenu) {
+    bool rc;
+    bool disableRecalibration;
     u32 unk[3];
     OSDisableScheduler();
     __OSStopAudioSystem();
@@ -147,10 +147,10 @@ void OSResetSystem(int reset, u32 resetCode, BOOL forceMenu) {
     if (reset == OS_RESET_SHUTDOWN || (reset == OS_RESET_RESTART && bootThisDol != 0))
 #endif
     {
-        disableRecalibration = __PADDisableRecalibration(TRUE);
+        disableRecalibration = __PADDisableRecalibration(true);
     }
 
-    while (!__OSCallResetFunctions(FALSE))
+    while (!__OSCallResetFunctions(false))
         ;
 
     if (reset == OS_RESET_HOTRESET && forceMenu) {
@@ -158,14 +158,14 @@ void OSResetSystem(int reset, u32 resetCode, BOOL forceMenu) {
 
         sram = __OSLockSram();
         sram->flags |= 0x40;
-        __OSUnlockSram(TRUE);
+        __OSUnlockSram(true);
 
         while (!__OSSyncSram())
             ;
     }
 
     OSDisableInterrupts();
-    __OSCallResetFunctions(TRUE);
+    __OSCallResetFunctions(true);
     LCDisable();
 
     if (reset == OS_RESET_HOTRESET) {

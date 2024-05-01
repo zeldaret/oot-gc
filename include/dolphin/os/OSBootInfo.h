@@ -17,13 +17,13 @@ typedef struct OSBootInfo {
 } OSBootInfo;
 
 typedef struct {
-    BOOL valid;
+    bool valid;
     u32 restartCode;
     u32 bootDol;
     void* regionStart;
     void* regionEnd;
-    BOOL argsUseDefault;
-    void* argsAddr; // valid only when argsUseDefault = FALSE
+    bool argsUseDefault;
+    void* argsAddr; // valid only when argsUseDefault = false
 
 } OSExecParams;
 

@@ -604,7 +604,7 @@ void simulatorResetAndPlayMovie(void) {
     GXSetCopyClear(color, 0);
     MovieInit();
 
-    while (TRUE) {
+    while (true) {
         OSGetTick();
 
         if (gMovieErrorToggle == 1) {

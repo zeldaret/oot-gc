@@ -62,12 +62,12 @@ extern "C" {
 #define EXI_STATE_ATTACHED 0x08
 #define EXI_STATE_LOCKED 0x10
 
-BOOL EXIProbe(s32 chan);
+bool EXIProbe(s32 chan);
 s32 EXIProbeEx(s32 chan);
 
 s32 EXIGetType(s32 chan, u32 dev, u32* type);
 char* EXIGetTypeString(u32 type);
-u32 EXIClearInterrupts(s32 chan, BOOL exi, BOOL tc, BOOL ext);
+u32 EXIClearInterrupts(s32 chan, bool exi, bool tc, bool ext);
 s32 EXIGetID(s32 chan, u32 dev, u32* id);
 
 typedef void (*EXICallback)(s32 chan, OSContext* context);

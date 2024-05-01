@@ -1626,7 +1626,7 @@ s32 frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
         pRSP = SYSTEM_RSP(pRDP->pHost);
         done = 0;
 
-        while (TRUE) {
+        while (true) {
             nCommandHi = GBI_COMMAND_HI(pnGBI);
             if (nCommandHi == 0x09000000) {
                 nCommandLo = GBI_COMMAND_LO(pnGBI);

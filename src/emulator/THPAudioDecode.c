@@ -17,28 +17,28 @@ static void* AudioDecoder(void* _);
 static void* AudioDecoderForOnMemory(void* bufPtr);
 static void AudioDecode(THPReadBuffer* readBuffer);
 
-BOOL CreateAudioDecodeThread(OSPriority prio, void* param) {
-    BOOL res;
+bool CreateAudioDecodeThread(OSPriority prio, void* param) {
+    bool res;
     if (param) {
         res = OSCreateThread(&AudioDecodeThread, AudioDecoderForOnMemory, param, AudioDecodeThreadStack + STACK_SIZE,
                              STACK_SIZE, prio, OS_THREAD_ATTR_DETACH);
-        if (res == FALSE) {
+        if (res == false) {
             OSReport("Can't create audio decode thread\n");
-            return FALSE;
+            return false;
         }
     } else {
         res = OSCreateThread(&AudioDecodeThread, AudioDecoder, NULL, AudioDecodeThreadStack + STACK_SIZE, STACK_SIZE,
                              prio, OS_THREAD_ATTR_DETACH);
-        if (res == FALSE) {
+        if (res == false) {
             OSReport("Can't create audio decode thread\n");
-            return FALSE;
+            return false;
         }
     }
 
     OSInitMessageQueue(&FreeAudioBufferQueue, FreeAudioBufferMessage, BUFFER_COUNT);
     OSInitMessageQueue(&DecodedAudioBufferQueue, DecodedAudioBufferMessage, BUFFER_COUNT);
-    AudioDecodeThreadCreated = TRUE;
-    return TRUE;
+    AudioDecodeThreadCreated = true;
+    return true;
 }
 
 void AudioDecodeThreadStart() {
@@ -49,7 +49,7 @@ void AudioDecodeThreadStart() {
 
 static void* AudioDecoder(void* _) {
     THPReadBuffer* buf;
-    while (TRUE) {
+    while (true) {
         buf = (THPReadBuffer*)PopReadedBuffer();
         AudioDecode(buf);
         PushReadedBuffer2((OSMessage*)buf);
@@ -67,7 +67,7 @@ static void* AudioDecoderForOnMemory(void* ptr) {
     readBuffer.ptr = (u8*)ptr;
     readFrame = 0;
 
-    while (TRUE) {
+    while (true) {
         readBuffer.frameNumber = readFrame;
         AudioDecode(&readBuffer);
         frameNumber = (s32)((readFrame + ActivePlayer.initReadFrame) % ActivePlayer.header.numFrames);

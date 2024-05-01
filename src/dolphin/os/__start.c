@@ -10,7 +10,7 @@ static void __init_registers(void);
 
 void __check_pad3(void) {
     if ((Pad3Button & 0x0eef) == 0x0eef) {
-        OSResetSystem(OS_RESET_RESTART, 0, FALSE);
+        OSResetSystem(OS_RESET_RESTART, 0, false);
     }
     return;
 }
@@ -213,7 +213,7 @@ void __init_data(void) {
     __bss_init_info* bii;
 
     dci = _rom_copy_info;
-    while (TRUE) {
+    while (true) {
         if (dci->size == 0)
             break;
         __copy_rom_section(dci->addr, dci->rom, dci->size);
@@ -221,7 +221,7 @@ void __init_data(void) {
     }
 
     bii = _bss_init_info;
-    while (TRUE) {
+    while (true) {
         if (bii->size == 0)
             break;
         __init_bss_section(bii->addr, bii->size);

@@ -7,19 +7,19 @@
 vu16 __MEMRegs[64] AT_ADDRESS(0xCC004000);
 extern OSErrorHandler __OSErrorTable[16];
 
-static BOOL OnReset(BOOL final);
+static bool OnReset(bool final);
 
 static OSResetFunctionInfo ResetFunctionInfo = {
     OnReset,
     127,
 };
 
-static BOOL OnReset(BOOL final) {
-    if (final != FALSE) {
+static bool OnReset(bool final) {
+    if (final != false) {
         __MEMRegs[8] = 0xFF;
         __OSMaskInterrupts(0xf0000000);
     }
-    return TRUE;
+    return true;
 }
 
 inline u32 OSGetPhysicalMemSize() { return *(u32*)(OSPhysicalToCached(0x0028)); }
@@ -153,7 +153,7 @@ ASM void RealMode(register u32 addr) {
 void __OSInitMemoryProtection() {
     u32 padding[8];
     u32 simulatedSize;
-    BOOL enabled;
+    bool enabled;
     simulatedSize = OSGetConsoleSimulatedMemSize();
     enabled = OSDisableInterrupts();
 
