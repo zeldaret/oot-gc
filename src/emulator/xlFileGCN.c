@@ -13,17 +13,17 @@ _XL_OBJECTTYPE gTypeFile = {
 static DVDOpenCallback gpfOpen;
 static DVDReadCallback gpfRead;
 
-s32 xlFileSetOpen(DVDOpenCallback pfOpen) {
+bool xlFileSetOpen(DVDOpenCallback pfOpen) {
     gpfOpen = pfOpen;
-    return 1;
+    return true;
 }
 
-s32 xlFileSetRead(DVDReadCallback pfRead) {
+bool xlFileSetRead(DVDReadCallback pfRead) {
     gpfRead = pfRead;
-    return 1;
+    return true;
 }
 
-s32 xlFileGetSize(s32* pnSize, char* szFileName) {
+bool xlFileGetSize(s32* pnSize, char* szFileName) {
     tXL_FILE* pFile;
 
     if (xlFileOpen(&pFile, XLFT_BINARY, szFileName)) {
@@ -32,16 +32,16 @@ s32 xlFileGetSize(s32* pnSize, char* szFileName) {
         }
 
         if (!xlFileClose(&pFile)) {
-            return 0;
+            return false;
         }
 
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-inline s32 xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
+inline bool xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
     if (gpfOpen != NULL) {
         return gpfOpen(szFileName, &(*ppFile)->info);
     } else {
@@ -49,9 +49,9 @@ inline s32 xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
     }
 }
 
-s32 xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName) {
+bool xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName) {
     if (!xlObjectMake(ppFile, NULL, &gTypeFile)) {
-        return 0;
+        return false;
     }
 
     if (xlFileGetFile(ppFile, szFileName)) {
@@ -59,22 +59,22 @@ s32 xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName) {
         (*ppFile)->nSize = (*ppFile)->info.length;
         (*ppFile)->pData = &(*ppFile)->info;
 
-        return 1;
+        return true;
     }
 
     xlObjectFree(ppFile);
-    return 0;
+    return false;
 }
 
-s32 xlFileClose(tXL_FILE** ppFile) {
+bool xlFileClose(tXL_FILE** ppFile) {
     if (!xlObjectFree(ppFile)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
+bool xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
     s32 nOffset;
     s32 nOffsetExtra;
     s32 nSize;
@@ -87,7 +87,7 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
     }
     if (nSizeBytes == 0) {
         *(s8*)pTarget = 0xFF;
-        return 0;
+        return false;
     }
 
     while (nSizeBytes != 0) {
@@ -104,38 +104,38 @@ s32 xlFileGet(tXL_FILE* pFile, void* pTarget, s32 nSizeBytes) {
             DVDReadPrio(pFile->pData, pFile->pBuffer, nSize, nOffset, 2);
         }
         if (!xlHeapCopy(pTarget, (void*)((u8*)pFile->pBuffer + nOffsetExtra), nSizeUsed)) {
-            return 0;
+            return false;
         }
         pTarget = (void*)((s32)pTarget + nSizeUsed);
         nSizeBytes -= nSizeUsed;
         pFile->nOffset += nSizeUsed;
     }
-    return 1;
+    return true;
 }
 
-s32 xlFileSetPosition(tXL_FILE* pFile, s32 nOffset) {
+bool xlFileSetPosition(tXL_FILE* pFile, s32 nOffset) {
     if ((nOffset >= 0) && (nOffset < pFile->nSize)) {
         pFile->nOffset = nOffset;
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument) {
+bool xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pFile->nSize = 0;
             pFile->nOffset = 0;
             pFile->pData = NULL;
             if (!xlHeapTake(&pFile->pBuffer, 0x1024 | 0x30000000)) {
-                return 0;
+                return false;
             }
             break;
         case 3:
             DVDClose(&pFile->info);
             if (!xlHeapFree(&pFile->pBuffer)) {
-                return 0;
+                return false;
             }
             break;
         case 0:
@@ -143,8 +143,8 @@ s32 xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument) {
         case 4:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
