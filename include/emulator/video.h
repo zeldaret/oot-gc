@@ -7,7 +7,7 @@
 // __anon_0x75B37
 typedef struct Video {
     /* 0x00 */ s32 nScan;
-    /* 0x04 */ s32 bBlack;
+    /* 0x04 */ bool bBlack;
     /* 0x08 */ s32 nBurst;
     /* 0x0C */ s32 nSizeX;
     /* 0x10 */ void* pHost;
@@ -24,18 +24,18 @@ typedef struct Video {
     /* 0x3C */ s32 nSyncLeap;
 } Video; // size = 0x40
 
-s32 videoPut8(Video* pVideo, u32 nAddress, s8* pData);
-s32 videoPut16(Video* pVideo, u32 nAddress, s16* pData);
-s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData);
-s32 videoPut64(Video* pVideo, u32 nAddress, s64* pData);
+bool videoPut8(Video* pVideo, u32 nAddress, s8* pData);
+bool videoPut16(Video* pVideo, u32 nAddress, s16* pData);
+bool videoPut32(Video* pVideo, u32 nAddress, s32* pData);
+bool videoPut64(Video* pVideo, u32 nAddress, s64* pData);
 
-s32 videoGet8(Video* pVideo, u32 nAddress, s8* pData);
-s32 videoGet16(Video* pVideo, u32 nAddress, s16* pData);
-s32 videoGet32(Video* pVideo, u32 nAddress, s32* pData);
-s32 videoGet64(Video* pVideo, u32 nAddress, s64* pData);
+bool videoGet8(Video* pVideo, u32 nAddress, s8* pData);
+bool videoGet16(Video* pVideo, u32 nAddress, s16* pData);
+bool videoGet32(Video* pVideo, u32 nAddress, s32* pData);
+bool videoGet64(Video* pVideo, u32 nAddress, s64* pData);
 
-s32 videoForceRetrace(Video* pVideo, s32);
-s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument);
+bool videoForceRetrace(Video* pVideo, bool unknown);
+bool videoEvent(Video* pVideo, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassVideo;
 

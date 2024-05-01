@@ -22,7 +22,7 @@
 #define N64_BTN_CRIGHT (1 << 16)
 #define N64_BTN_UNSET 0
 
-typedef s32 (*SystemCopyCallbackFunc)(void);
+typedef bool (*SystemCopyCallbackFunc)(void);
 
 // note: each stick direction count as an input
 typedef enum GcnButton {

@@ -11,11 +11,11 @@ _XL_OBJECTTYPE gClassSerial = {
     (EventFunc)serialEvent,
 };
 
-s32 serialPut8(Serial* pSerial, u32 nAddress, s8* pData) { return 0; }
+bool serialPut8(Serial* pSerial, u32 nAddress, s8* pData) { return false; }
 
-s32 serialPut16(Serial* pSerial, u32 nAddress, s16* pData) { return 0; }
+bool serialPut16(Serial* pSerial, u32 nAddress, s16* pData) { return false; }
 
-s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
+bool serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
     u32 nSize;
     void* aData;
 
@@ -29,11 +29,11 @@ s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
             nSize = 0x40;
 
             if (!ramGetBuffer(SYSTEM_RAM(pSerial->pHost), &aData, pSerial->nAddress, &nSize)) {
-                return 0;
+                return false;
             }
 
             if (!pifGetData(SYSTEM_PIF(pSerial->pHost), aData)) {
-                return 0;
+                return false;
             }
 
             xlObjectEvent(pSerial->pHost, 0x1000, (void*)6);
@@ -42,11 +42,11 @@ s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
             nSize = 0x40;
 
             if (!ramGetBuffer(SYSTEM_RAM(pSerial->pHost), &aData, pSerial->nAddress, &nSize)) {
-                return 0;
+                return false;
             }
 
             if (!pifSetData(SYSTEM_PIF(pSerial->pHost), aData)) {
-                return 0;
+                return false;
             }
 
             xlObjectEvent(pSerial->pHost, 0x1000, (void*)6);
@@ -55,19 +55,19 @@ s32 serialPut32(Serial* pSerial, u32 nAddress, s32* pData) {
             xlObjectEvent(pSerial->pHost, 0x1001, (void*)6);
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 serialPut64(Serial* pSerial, u32 nAddress, s64* pData) { return 0; }
+bool serialPut64(Serial* pSerial, u32 nAddress, s64* pData) { return false; }
 
-s32 serialGet8(Serial* pSerial, u32 nAddress, s8* pData) { return 0; }
+bool serialGet8(Serial* pSerial, u32 nAddress, s8* pData) { return false; }
 
-s32 serialGet16(Serial* pSerial, u32 nAddress, s16* pData) { return 0; }
+bool serialGet16(Serial* pSerial, u32 nAddress, s16* pData) { return false; }
 
-s32 serialGet32(Serial* pSerial, u32 nAddress, s32* pData) {
+bool serialGet32(Serial* pSerial, u32 nAddress, s32* pData) {
     nAddress &= 0x1F;
 
     switch (nAddress) {
@@ -84,15 +84,15 @@ s32 serialGet32(Serial* pSerial, u32 nAddress, s32* pData) {
             *pData = 0;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 serialGet64(Serial* pSerial, u32 nAddress, s64* pData) { return 0; }
+bool serialGet64(Serial* pSerial, u32 nAddress, s64* pData) { return false; }
 
-s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
+bool serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pSerial->pHost = pArgument;
@@ -100,12 +100,12 @@ s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pSerial->pHost), pArgument, (Put8Func)serialPut8, (Put16Func)serialPut16,
                                  (Put32Func)serialPut32, (Put64Func)serialPut64)) {
-                return 0;
+                return false;
             }
 
             if (!cpuSetDeviceGet(SYSTEM_CPU(pSerial->pHost), pArgument, (Get8Func)serialGet8, (Get16Func)serialGet16,
                                  (Get32Func)serialGet32, (Get64Func)serialGet64)) {
-                return 0;
+                return false;
             }
             break;
         case 0:
@@ -114,8 +114,8 @@ s32 serialEvent(Serial* pSerial, s32 nEvent, void* pArgument) {
         case 0x1003:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }

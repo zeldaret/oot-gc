@@ -2156,7 +2156,7 @@ static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
         nCounterDelta = fTickScale * ((-1 - pCPU->nTickLast + nCount) << nTickMultiplier);
     }
     if ((pCPU->nMode & 0x40) && pCPU->nRetraceUsed != pCPU->nRetrace) {
-        if (videoForceRetrace(SYSTEM_VIDEO(pSystem), 1)) {
+        if (videoForceRetrace(SYSTEM_VIDEO(pSystem), true)) {
             nDelta = pCPU->nRetrace - pCPU->nRetraceUsed;
             if (nDelta < 0) {
                 nDelta = -nDelta;
@@ -2210,7 +2210,7 @@ inline s32 cpuCheckInterrupts(Cpu* pCPU) {
             return 0;
         }
     } else {
-        videoForceRetrace(SYSTEM_VIDEO(pSystem), 0);
+        videoForceRetrace(SYSTEM_VIDEO(pSystem), false);
     }
 
     return 1;
@@ -3728,7 +3728,7 @@ static s32 cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
     pCPU->nMode |= 0x80;
     pCPU->nPC = nAddressN64;
     if (!(pCPU->nMode & 0x40) && pROM->copy.nSize == 0) {
-        videoForceRetrace(SYSTEM_VIDEO(pCPU->pHost), 0);
+        videoForceRetrace(SYSTEM_VIDEO(pCPU->pHost), false);
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {

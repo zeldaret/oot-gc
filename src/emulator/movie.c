@@ -1,4 +1,5 @@
 #include "dolphin.h"
+#include "emulator/THPPlayer.h"
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
 #include "emulator/xlCoreGCN.h"
@@ -12,9 +13,9 @@ void MovieInit(void) {
     THPPlayerInit(0);
 
     if (!simulatorGetArgument(SAT_MOVIE, &szText)) {
-        THPPlayerOpen("final_zelda_credits_sound.thp", 0);
+        THPPlayerOpen("final_zelda_credits_sound.thp", false);
     } else {
-        THPPlayerOpen(szText, 0);
+        THPPlayerOpen(szText, false);
     }
 
     size = THPPlayerCalcNeedMemory();

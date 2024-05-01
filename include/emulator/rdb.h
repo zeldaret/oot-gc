@@ -13,7 +13,7 @@ typedef struct Rdb {
     /* 0x10C */ void* pHost;
 } Rdb; // size = 0x110
 
-s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument);
+bool rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassRdb;
 

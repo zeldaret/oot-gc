@@ -19,11 +19,11 @@ inline void rdbHandleString(Rdb* pRDB) {
     pRDB->nIndexString = 0;
 }
 
-static s32 rdbPut8(Rdb* pRDB, u32 nAddress, s8* pData) { return 0; }
+static bool rdbPut8(Rdb* pRDB, u32 nAddress, s8* pData) { return false; }
 
-static s32 rdbPut16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
+static bool rdbPut16(Rdb* pRDB, u32 nAddress, s16* pData) { return false; }
 
-static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
+static bool rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
     s32 nLength;
     s32 iCounter;
 
@@ -32,7 +32,7 @@ static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
             nLength = (*pData >> 24) & 3;
             switch ((*pData >> 26) & 0x3F) {
                 case 0:
-                    return 0;
+                    return false;
                 case 1:
                     switch (nLength) {
                         case 0:
@@ -82,54 +82,54 @@ static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
                             }
                             break;
                         default:
-                            return 0;
+                            return false;
                     }
                     xlObjectEvent(pRDB->pHost, 0x1000, (void*)4);
                     break;
                 case 2:
-                    return 0;
+                    return false;
                 case 3:
-                    return 0;
+                    return false;
                 case 4:
-                    return 0;
+                    return false;
                 case 5:
-                    return 0;
+                    return false;
                 case 6:
-                    return 0;
+                    return false;
                 case 7:
-                    return 0;
+                    return false;
                 case 8:
-                    return 0;
+                    return false;
                 case 9:
-                    return 0;
+                    return false;
                 case 10:
-                    return 0;
+                    return false;
                 case 11:
-                    return 0;
+                    return false;
                 case 12:
-                    return 0;
+                    return false;
                 case 22: // bug?
-                    return 0;
+                    return false;
                 case 13:
-                    return 0;
+                    return false;
                 case 14:
-                    return 0;
+                    return false;
                 case 15:
-                    return 0;
+                    return false;
                 case 16:
-                    return 0;
+                    return false;
                 case 17:
-                    return 0;
+                    return false;
                 case 18:
-                    return 0;
+                    return false;
                 case 19:
-                    return 0;
+                    return false;
                 case 20:
-                    return 0;
+                    return false;
                 case 21:
-                    return 0;
+                    return false;
                 default:
-                    return 0;
+                    return false;
             }
             break;
         case 0x8:
@@ -138,34 +138,34 @@ static s32 rdbPut32(Rdb* pRDB, u32 nAddress, s32* pData) {
             xlObjectEvent(pRDB->pHost, 0x1001, (void*)4);
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 rdbPut64(Rdb* pRDB, u32 nAddress, s64* pData) { return 0; }
+static bool rdbPut64(Rdb* pRDB, u32 nAddress, s64* pData) { return false; }
 
-static s32 rdbGet8(Rdb* pRDB, u32 nAddress, s8* pData) { return 0; }
+static bool rdbGet8(Rdb* pRDB, u32 nAddress, s8* pData) { return false; }
 
-static s32 rdbGet16(Rdb* pRDB, u32 nAddress, s16* pData) { return 0; }
+static bool rdbGet16(Rdb* pRDB, u32 nAddress, s16* pData) { return false; }
 
-static s32 rdbGet32(Rdb* pRDB, u32 nAddress, s32* pData) {
+static bool rdbGet32(Rdb* pRDB, u32 nAddress, s32* pData) {
     switch (nAddress & 0xF) {
         case 0x0:
         case 0x8:
         case 0xC:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 rdbGet64(Rdb* pRDB, u32 nAddress, s64* pData) { return 0; }
+static bool rdbGet64(Rdb* pRDB, u32 nAddress, s64* pData) { return false; }
 
-s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
+bool rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pRDB->pHost = pArgument;
@@ -174,11 +174,11 @@ s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pRDB->pHost), pArgument, (Put8Func)rdbPut8, (Put16Func)rdbPut16,
                                  (Put32Func)rdbPut32, (Put64Func)rdbPut64)) {
-                return 0;
+                return false;
             }
             if (!cpuSetDeviceGet(SYSTEM_CPU(pRDB->pHost), pArgument, (Get8Func)rdbGet8, (Get16Func)rdbGet16,
                                  (Get32Func)rdbGet32, (Get64Func)rdbGet64)) {
-                return 0;
+                return false;
             }
         case 0:
         case 1:
@@ -186,8 +186,8 @@ s32 rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
         case 0x1003:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }

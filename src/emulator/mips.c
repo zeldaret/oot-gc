@@ -8,7 +8,7 @@ _XL_OBJECTTYPE gClassMips = {
     (EventFunc)mipsEvent,
 };
 
-s32 mipsSetInterrupt(Mips* pMips, MipsInterruptType eType) {
+bool mipsSetInterrupt(Mips* pMips, MipsInterruptType eType) {
     s32 nInterrupt = pMips->nInterrupt;
 
     switch (eType) {
@@ -43,17 +43,17 @@ s32 mipsSetInterrupt(Mips* pMips, MipsInterruptType eType) {
             }
             break;
         default:
-            return 0;
+            return false;
     }
 
     if (nInterrupt != pMips->nInterrupt) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType) {
+bool mipsResetInterrupt(Mips* pMips, MipsInterruptType eType) {
     s32 nInterrupt = pMips->nInterrupt;
 
     switch (eType) {
@@ -76,21 +76,21 @@ s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType) {
             pMips->nInterrupt = nInterrupt & ~0x20;
             break;
         default:
-            return 0;
+            return false;
     }
 
     if (nInterrupt != pMips->nInterrupt) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 mipsPut8(Mips* pMips, u32 nAddress, s8* pData) { return 0; }
+bool mipsPut8(Mips* pMips, u32 nAddress, s8* pData) { return false; }
 
-s32 mipsPut16(Mips* pMips, u32 nAddress, s16* pData) { return 0; }
+bool mipsPut16(Mips* pMips, u32 nAddress, s16* pData) { return false; }
 
-s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
+bool mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
     s32 nData;
 
     switch (nAddress & 0xF) {
@@ -164,19 +164,19 @@ s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData) {
         case 0x8:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 mipsPut64(Mips* pMips, u32 nAddress, s64* pData) { return 0; }
+bool mipsPut64(Mips* pMips, u32 nAddress, s64* pData) { return false; }
 
-s32 mipsGet8(Mips* pMips, u32 nAddress, s8* pData) { return 0; }
+bool mipsGet8(Mips* pMips, u32 nAddress, s8* pData) { return false; }
 
-s32 mipsGet16(Mips* pMips, u32 nAddress, s16* pData) { return 0; }
+bool mipsGet16(Mips* pMips, u32 nAddress, s16* pData) { return false; }
 
-s32 mipsGet32(Mips* pMips, u32 nAddress, s32* pData) {
+bool mipsGet32(Mips* pMips, u32 nAddress, s32* pData) {
     switch (nAddress & 0xF) {
         case 0x0:
             *pData = pMips->nMode;
@@ -191,15 +191,15 @@ s32 mipsGet32(Mips* pMips, u32 nAddress, s32* pData) {
             *pData = pMips->nMask;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 mipsGet64(Mips* pMips, u32 nAddress, s64* pData) { return 0; }
+bool mipsGet64(Mips* pMips, u32 nAddress, s64* pData) { return false; }
 
-s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument) {
+bool mipsEvent(Mips* pMips, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pMips->nMode = 0;
@@ -210,11 +210,11 @@ s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument) {
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pMips->pHost), pArgument, (Put8Func)mipsPut8, (Put16Func)mipsPut16,
                                  (Put32Func)mipsPut32, (Put64Func)mipsPut64)) {
-                return 0;
+                return false;
             }
             if (!cpuSetDeviceGet(SYSTEM_CPU(pMips->pHost), pArgument, (Get8Func)mipsGet8, (Get16Func)mipsGet16,
                                  (Get32Func)mipsGet32, (Get64Func)mipsGet64)) {
-                return 0;
+                return false;
             }
         case 0:
         case 1:
@@ -222,8 +222,8 @@ s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument) {
         case 0x1003:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }

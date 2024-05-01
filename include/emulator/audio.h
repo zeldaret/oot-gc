@@ -7,7 +7,7 @@
 // __anon_0x753E7
 typedef struct Audio {
     /* 0x00 */ s32 nSize;
-    /* 0x04 */ s32 bEnable;
+    /* 0x04 */ bool bEnable;
     /* 0x08 */ void* pHost;
     /* 0x0C */ s32 nControl;
     /* 0x10 */ s32 nAddress;
@@ -16,18 +16,18 @@ typedef struct Audio {
     /* 0x1C */ s32 nStatus;
 } Audio; // size = 0x20
 
-s32 audioPut8(Audio* pAudio, u32 nAddress, s8* pData);
-s32 audioPut16(Audio* pAudio, u32 nAddress, s16* pData);
-s32 audioPut32(Audio* pAudio, u32 nAddress, s32* pData);
-s32 audioPut64(Audio* pAudio, u32 nAddress, s64* pData);
+bool audioPut8(Audio* pAudio, u32 nAddress, s8* pData);
+bool audioPut16(Audio* pAudio, u32 nAddress, s16* pData);
+bool audioPut32(Audio* pAudio, u32 nAddress, s32* pData);
+bool audioPut64(Audio* pAudio, u32 nAddress, s64* pData);
 
-s32 audioGet8(Audio* pAudio, u32 nAddress, s8* pData);
-s32 audioGet16(Audio* pAudio, u32 nAddress, s16* pData);
-s32 audioGet32(Audio* pAudio, u32 nAddress, s32* pData);
-s32 audioGet64(Audio* pAudio, u32 nAddress, s64* pData);
+bool audioGet8(Audio* pAudio, u32 nAddress, s8* pData);
+bool audioGet16(Audio* pAudio, u32 nAddress, s16* pData);
+bool audioGet32(Audio* pAudio, u32 nAddress, s32* pData);
+bool audioGet64(Audio* pAudio, u32 nAddress, s64* pData);
 
-s32 audioEnable(Audio* pAudio, s32 bEnable);
-s32 audioEvent(Audio* pAudio, s32 nEvent, void* pArgument);
+bool audioEnable(Audio* pAudio, bool bEnable);
+bool audioEvent(Audio* pAudio, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassAudio;
 

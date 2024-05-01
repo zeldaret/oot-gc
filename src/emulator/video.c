@@ -10,11 +10,11 @@ _XL_OBJECTTYPE gClassVideo = {
     (EventFunc)videoEvent,
 };
 
-s32 videoPut8(Video* pVideo, u32 nAddress, s8* pData) { return 0; }
+bool videoPut8(Video* pVideo, u32 nAddress, s8* pData) { return false; }
 
-s32 videoPut16(Video* pVideo, u32 nAddress, s16* pData) { return 0; }
+bool videoPut16(Video* pVideo, u32 nAddress, s16* pData) { return false; }
 
-s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
+bool videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
     void* pRAM;
     Frame* pFrame;
     FrameBuffer* pBuffer;
@@ -29,7 +29,7 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
             pBuffer = &pFrame->aBuffer[2];
 
             if (!ramGetBuffer(SYSTEM_RAM(pVideo->pHost), &pRAM, pVideo->nAddress, NULL)) {
-                return 0;
+                return false;
             }
 
             if (pBuffer->pData != pRAM) {
@@ -39,7 +39,7 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
                 pBuffer->pData = pRAM;
 
                 if (!frameSetBuffer(pFrame, 2)) {
-                    return 0;
+                    return false;
                 }
             }
             break;
@@ -67,12 +67,12 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
             break;
         case 0x24:
             if ((pVideo->nStartH = *pData & 0x03FF03FF) == 0) {
-                if (pVideo->bBlack != 1) {
-                    pVideo->bBlack = 1;
+                if (pVideo->bBlack != true) {
+                    pVideo->bBlack = true;
                 }
             } else {
-                if (pVideo->bBlack != 0) {
-                    pVideo->bBlack = 0;
+                if (pVideo->bBlack != false) {
+                    pVideo->bBlack = false;
                 }
             }
             break;
@@ -85,29 +85,29 @@ s32 videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
         case 0x30:
             pVideo->nScaleX = *pData & 0xFFF;
             if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 240) / 1024)) {
-                return 0;
+                return false;
             }
             break;
         case 0x34:
             pVideo->nScaleY = *pData & 0xFFF;
             if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 240) / 1024)) {
-                return 0;
+                return false;
             }
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 videoPut64(Video* pVideo, u32 nAddress, s64* pData) { return 0; }
+bool videoPut64(Video* pVideo, u32 nAddress, s64* pData) { return false; }
 
-s32 videoGet8(Video* pVideo, u32 nAddress, s8* pData) { return 0; }
+bool videoGet8(Video* pVideo, u32 nAddress, s8* pData) { return false; }
 
-s32 videoGet16(Video* pVideo, u32 nAddress, s16* pData) { return 0; }
+bool videoGet16(Video* pVideo, u32 nAddress, s16* pData) { return false; }
 
-s32 videoGet32(Video* pVideo, u32 nAddress, s32* pData) {
+bool videoGet32(Video* pVideo, u32 nAddress, s32* pData) {
     switch (nAddress & 0x3F) {
         case 0x0:
             *pData = pVideo->nStatus;
@@ -153,25 +153,25 @@ s32 videoGet32(Video* pVideo, u32 nAddress, s32* pData) {
             *pData = pVideo->nScaleY;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 videoGet64(Video* pVideo, u32 nAddress, s64* pData) { return 0; }
+bool videoGet64(Video* pVideo, u32 nAddress, s64* pData) { return false; }
 
-s32 videoForceRetrace(Video* pVideo, s32 unknown) {
+bool videoForceRetrace(Video* pVideo, bool unknown) {
     if (!systemExceptionPending(pVideo->pHost, SIT_VI) && (pVideo->nStatus & 3)) {
         pVideo->nScan = pVideo->nScanInterrupt;
         xlObjectEvent(pVideo->pHost, 0x1000, (void*)8);
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
+bool videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pVideo->nScan = 0;
@@ -187,7 +187,7 @@ s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
             pVideo->nSyncH = 0;
             pVideo->nSyncV = 0;
             pVideo->nSyncLeap = 0;
-            pVideo->bBlack = 0;
+            pVideo->bBlack = false;
             pVideo->nScanInterrupt = 0x10000;
             pVideo->pHost = pArgument;
         case 0:
@@ -199,16 +199,16 @@ s32 videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pVideo->pHost), pArgument, (Put8Func)videoPut8, (Put16Func)videoPut16,
                                  (Put32Func)videoPut32, (Put64Func)videoPut64)) {
-                return 0;
+                return false;
             }
             if (!cpuSetDeviceGet(SYSTEM_CPU(pVideo->pHost), pArgument, (Get8Func)videoGet8, (Get16Func)videoGet16,
                                  (Get32Func)videoGet32, (Get64Func)videoGet64)) {
-                return 0;
+                return false;
             }
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }

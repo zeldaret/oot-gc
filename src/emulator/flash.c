@@ -12,11 +12,11 @@ _XL_OBJECTTYPE gClassFlash = {
     (EventFunc)flashEvent,
 };
 
-s32 flashCopyFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize) {
+bool flashCopyFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize) {
     void* pTarget;
 
     if (!ramGetBuffer(SYSTEM_RAM(pFLASH->pHost), &pTarget, nOffsetRAM, (u32*)&nSize)) {
-        return 0;
+        return false;
     }
 
     // ``((s32*)pTarget)[0]`` fake?
@@ -28,7 +28,7 @@ s32 flashCopyFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize) {
             break;
         case 0xF0000000:
             if (!simulatorReadFLASH((nOffsetFLASH * 2) & 0x01FFFFFE, pTarget, nSize)) {
-                return 0;
+                return false;
             }
             break;
         case 0x0:
@@ -42,16 +42,16 @@ s32 flashCopyFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize) {
             break;
     }
 
-    return 1;
+    return true;
 }
 
 // ``nOffsetFLASH`` is assumed based on the function above
-s32 flashTransferFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize) {
+bool flashTransferFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSize) {
     void* pTarget;
     s32 i;
 
     if (!ramGetBuffer(SYSTEM_RAM(pFLASH->pHost), &pTarget, nOffsetRAM, (u32*)&nSize)) {
-        return 0;
+        return false;
     }
 
     switch (pFLASH->flashCommand & 0xFF000000) {
@@ -72,14 +72,14 @@ s32 flashTransferFLASH(Flash* pFLASH, s32 nOffsetRAM, s32 nOffsetFLASH, s32 nSiz
             break;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 flashPut8(Flash* pFLASH, u32 nAddress, s8* pData) { return 1; }
+static bool flashPut8(Flash* pFLASH, u32 nAddress, s8* pData) { return true; }
 
-static s32 flashPut16(Flash* pFLASH, u32 nAddress, s16* pData) { return 1; }
+static bool flashPut16(Flash* pFLASH, u32 nAddress, s16* pData) { return true; }
 
-static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
+static bool flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
     s32 i;
     char buffer[128];
 
@@ -102,14 +102,14 @@ static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
             if ((pFLASH->flashCommand & 0xFF000000) == 0x3C000000) {
                 for (i = 0; i < 1024; i++) {
                     if (!simulatorWriteFLASH(i << 7, (u8*)buffer, ARRAY_COUNT(buffer))) {
-                        return 0;
+                        return false;
                     }
                 }
             } else {
                 if ((pFLASH->flashCommand & 0xFF000000) == 0x4B000000) {
                     if (!simulatorWriteFLASH((pFLASH->flashCommand << 7) & 0x7FFFFF80, (u8*)buffer,
                                              ARRAY_COUNT(buffer))) {
-                        return 0;
+                        return false;
                     }
                 }
             }
@@ -117,7 +117,7 @@ static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
         case 0xA5000000:
             pFLASH->flashStatus = 0x11118004;
             if (!simulatorWriteFLASH((*pData << 7) & 0x7FFFFF80, (u8*)pFLASH->flashBuffer, 128)) {
-                return 0;
+                return false;
             }
             break;
         case 0xF0000000:
@@ -126,16 +126,16 @@ static s32 flashPut32(Flash* pFLASH, u32 nAddress, s32* pData) {
     }
 
     pFLASH->flashCommand = *pData;
-    return 1;
+    return true;
 }
 
-static s32 flashPut64(Flash* pFLASH, u32 nAddress, s64* pData) { return 1; }
+static bool flashPut64(Flash* pFLASH, u32 nAddress, s64* pData) { return true; }
 
-static s32 flashGet8(Flash* pFLASH, u32 nAddress, s8* pData) { return 1; }
+static bool flashGet8(Flash* pFLASH, u32 nAddress, s8* pData) { return true; }
 
-static s32 flashGet16(Flash* pFLASH, u32 nAddress, s16* pData) { return 1; }
+static bool flashGet16(Flash* pFLASH, u32 nAddress, s16* pData) { return true; }
 
-static s32 flashGet32(Flash* pFLASH, u32 nAddress, s32* pData) {
+static bool flashGet32(Flash* pFLASH, u32 nAddress, s32* pData) {
     switch (pFLASH->flashCommand & 0xFF000000) {
         case 0x0:
         case 0x3C000000:
@@ -152,12 +152,12 @@ static s32 flashGet32(Flash* pFLASH, u32 nAddress, s32* pData) {
             break;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 flashGet64(Flash* pFLASH, u32 nAddress, s64* pData) { return 1; }
+static bool flashGet64(Flash* pFLASH, u32 nAddress, s64* pData) { return true; }
 
-s32 flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument) {
+bool flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pFLASH->pHost = pArgument;
@@ -170,19 +170,19 @@ s32 flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument) {
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pFLASH->pHost), pArgument, (Put8Func)flashPut8, (Put16Func)flashPut16,
                                  (Put32Func)flashPut32, (Put64Func)flashPut64)) {
-                return 0;
+                return false;
             }
             if (!cpuSetDeviceGet(SYSTEM_CPU(pFLASH->pHost), pArgument, (Get8Func)flashGet8, (Get16Func)flashGet16,
                                  (Get32Func)flashGet32, (Get64Func)flashGet64)) {
-                return 0;
+                return false;
             }
         case 0:
         case 1:
         case 0x1003:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }

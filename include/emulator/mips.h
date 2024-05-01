@@ -23,20 +23,20 @@ typedef struct Mips {
     /* 0xC */ s32 nInterrupt;
 } Mips; // size = 0x10
 
-s32 mipsSetInterrupt(Mips* pMips, MipsInterruptType eType);
-s32 mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
+bool mipsSetInterrupt(Mips* pMips, MipsInterruptType eType);
+bool mipsResetInterrupt(Mips* pMips, MipsInterruptType eType);
 
-s32 mipsPut8(Mips* pMips, u32 nAddress, s8* pData);
-s32 mipsPut16(Mips* pMips, u32 nAddress, s16* pData);
-s32 mipsPut32(Mips* pMips, u32 nAddress, s32* pData);
-s32 mipsPut64(Mips* pMips, u32 nAddress, s64* pData);
+bool mipsPut8(Mips* pMips, u32 nAddress, s8* pData);
+bool mipsPut16(Mips* pMips, u32 nAddress, s16* pData);
+bool mipsPut32(Mips* pMips, u32 nAddress, s32* pData);
+bool mipsPut64(Mips* pMips, u32 nAddress, s64* pData);
 
-s32 mipsGet8(Mips* pMips, u32 nAddress, s8* pData);
-s32 mipsGet16(Mips* pMips, u32 nAddress, s16* pData);
-s32 mipsGet32(Mips* pMips, u32 nAddress, s32* pData);
-s32 mipsGet64(Mips* pMips, u32 nAddress, s64* pData);
+bool mipsGet8(Mips* pMips, u32 nAddress, s8* pData);
+bool mipsGet16(Mips* pMips, u32 nAddress, s16* pData);
+bool mipsGet32(Mips* pMips, u32 nAddress, s32* pData);
+bool mipsGet64(Mips* pMips, u32 nAddress, s64* pData);
 
-s32 mipsEvent(Mips* pMips, s32 nEvent, void* pArgument);
+bool mipsEvent(Mips* pMips, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassMips;
 

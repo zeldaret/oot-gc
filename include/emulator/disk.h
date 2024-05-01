@@ -9,7 +9,7 @@ typedef struct Disk {
     /* 0x00 */ void* pHost;
 } Disk; // size = 0x04
 
-s32 diskEvent(Disk* pDisk, s32 nEvent, void* pArgument);
+bool diskEvent(Disk* pDisk, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassDisk;
 
