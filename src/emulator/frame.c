@@ -2137,6 +2137,19 @@ bool frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bPu
     return true;
 }
 
+inline void s8tof32Scaled(register s8* in, register f32* out) {
+#ifdef __MWERKS__
+    // clang-format off
+    asm {
+        psq_l f1, 0(in), 1, 6
+        stfs  f1, 0(out)
+    }
+    // clang-format on
+#else
+    *out = (f32)*in / 128.0f;
+#endif
+}
+
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadVertex.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCullDL.s")
@@ -2152,7 +2165,27 @@ bool frameSetLightCount(Frame* pFrame, s32 nCount) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLight.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLookAt.s")
+bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
+    switch (iLookAt) {
+        case 0:
+            s8tof32Scaled(&pData[8], &pFrame->lookAt.rSRaw.x);
+            s8tof32Scaled(&pData[9], &pFrame->lookAt.rSRaw.y);
+            s8tof32Scaled(&pData[10], &pFrame->lookAt.rSRaw.z);
+            pFrame->nMode |= 0x01000000;
+            break;
+        case 1:
+            s8tof32Scaled(&pData[8], &pFrame->lookAt.rTRaw.x);
+            s8tof32Scaled(&pData[9], &pFrame->lookAt.rTRaw.y);
+            s8tof32Scaled(&pData[10], &pFrame->lookAt.rTRaw.z);
+            pFrame->nMode |= 0x02000000;
+            break;
+        default:
+            return false;
+    }
+
+    pFrame->lookAt.bTransformed = false;
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetViewport.s")
 

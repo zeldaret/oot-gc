@@ -133,16 +133,16 @@ typedef struct FrameBuffer {
 } FrameBuffer; // size = 0x14
 
 // __anon_0x274AD
-typedef struct Vect3F {
+typedef struct Vec3f {
     /* 0x0 */ f32 x;
     /* 0x4 */ f32 y;
     /* 0x8 */ f32 z;
-} Vect3F; // size = 0xC
+} Vec3f; // size = 0xC
 
 // __anon_0x23CAB
 typedef struct Light {
     /* 0x00 */ bool bTransformed;
-    /* 0x04 */ Vect3F rVecOrigTowards;
+    /* 0x04 */ Vec3f rVecOrigTowards;
     /* 0x10 */ f32 rColorR;
     /* 0x14 */ f32 rColorG;
     /* 0x18 */ f32 rColorB;
@@ -160,10 +160,10 @@ typedef struct Light {
 // __anon_0x23EDB
 typedef struct LookAt {
     /* 0x00 */ bool bTransformed;
-    /* 0x04 */ Vect3F rS;
-    /* 0x10 */ Vect3F rT;
-    /* 0x1C */ Vect3F rSRaw;
-    /* 0x28 */ Vect3F rTRaw;
+    /* 0x04 */ Vec3f rS;
+    /* 0x10 */ Vec3f rT;
+    /* 0x1C */ Vec3f rSRaw;
+    /* 0x28 */ Vec3f rTRaw;
 } LookAt; // size = 0x34
 
 // __anon_0x23FC4
@@ -171,7 +171,7 @@ typedef struct Vertex {
     /* 0x00 */ f32 rSum;
     /* 0x04 */ f32 rS;
     /* 0x08 */ f32 rT;
-    /* 0x0C */ Vect3F vec;
+    /* 0x0C */ Vec3f vec;
     /* 0x18 */ u8 anColor[4];
 } Vertex; // size = 0x1C
 
