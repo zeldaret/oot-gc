@@ -2199,7 +2199,7 @@ inline void s16tof32Scaled32Pair(register s16* src, register f32* dst) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadVertex.s")
 #else
-s32 frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
+bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
     f32 mag;
     s32 iLight;
     s32 nLight;
@@ -2234,7 +2234,7 @@ s32 frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
     pnData16 = pBuffer;
     iVertex1 = iVertex0 + nCount - 1;
     if (iVertex0 < 0 || iVertex0 >= 80 || iVertex1 < 0 || iVertex1 >= 80) {
-        return 0;
+        return false;
     }
 
     matrixModel = pFrame->aMatrixModel[pFrame->iMatrixModel];
@@ -2254,7 +2254,7 @@ s32 frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
         // TODO: volatile hacks
     } else if (!(*(volatile u32*)&pFrame->nMode & 0x400000) && pFrame->iHintProjection != -1) {
         if (!frameScaleMatrix(pFrame->matrixView, matrixModel, pFrame->aMatrixHint[pFrame->iHintProjection].rScale)) {
-            return 0;
+            return false;
         }
         pFrame->nMode |= 0x400000;
         matrixView = pFrame->matrixView;
