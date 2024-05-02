@@ -616,7 +616,14 @@ static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEnableABI.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFrameComplete.s")
+bool rspFrameComplete(Rsp* pRSP) {
+    if (pRSP->yield.bValid) {
+        OSReport(D_800EE27C);
+    }
+
+    pRSP->nMode |= 4;
+    return true;
+}
 
 bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode) {
     RspTask* pTask;
