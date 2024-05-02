@@ -2138,9 +2138,7 @@ bool frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bPu
 
 // TODO: move these paired-single/quantization functions to a separate header
 // along with the GQR initialization in xlMain()?
-inline void s16tof32(register s16* in, register f32* out) {
-    OSs16tof32(in, out);
-}
+inline void s16tof32(register s16* in, register f32* out) { OSs16tof32(in, out); }
 
 inline void s16tof32Pair(register s16* in, register f32* out) {
 #ifdef __MWERKS__
@@ -2595,7 +2593,7 @@ bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nA
     }
 
     if (eProjection == 1) {
-        rScale = 0.0f;
+        rNear = 0.0f;
     }
 
     pFrame->aMatrixHint[iHint].nCount = 4;

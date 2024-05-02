@@ -3,6 +3,7 @@
 #include "emulator/ram.h"
 #include "emulator/rdp.h"
 #include "emulator/rsp_jumptables.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassRSP = {
     "RSP",
