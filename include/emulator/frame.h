@@ -21,7 +21,7 @@
 #define ZELDA2_CAMERA_WIDTH 160
 #define ZELDA2_CAMERA_HEIGHT 128
 
-typedef s32 (*FrameDrawFunc)(void*, void*);
+typedef bool (*FrameDrawFunc)(void*, void*);
 
 // __anon_0x27B8C
 typedef enum FrameMatrixType {
@@ -111,7 +111,7 @@ typedef struct Viewport {
 
 // __anon_0x2D2B6
 typedef struct Scissor {
-    /* 0x00 */ s32 bFlip;
+    /* 0x00 */ bool bFlip;
     /* 0x04 */ s32 iTile;
     /* 0x08 */ s32 nX0;
     /* 0x0C */ s32 nY0;
@@ -141,7 +141,7 @@ typedef struct Vect3F {
 
 // __anon_0x23CAB
 typedef struct Light {
-    /* 0x00 */ s32 bTransformed;
+    /* 0x00 */ bool bTransformed;
     /* 0x04 */ Vect3F rVecOrigTowards;
     /* 0x10 */ f32 rColorR;
     /* 0x14 */ f32 rColorG;
@@ -159,7 +159,7 @@ typedef struct Light {
 
 // __anon_0x23EDB
 typedef struct LookAt {
-    /* 0x00 */ s32 bTransformed;
+    /* 0x00 */ bool bTransformed;
     /* 0x04 */ Vect3F rS;
     /* 0x10 */ Vect3F rT;
     /* 0x1C */ Vect3F rSRaw;
@@ -254,7 +254,7 @@ typedef struct MatrixHint {
 } MatrixHint; // size = 0x24
 
 typedef struct Rectangle {
-    /* 0x00 */ s32 bFlip;
+    /* 0x00 */ bool bFlip;
     /* 0x04 */ s32 iTile;
     /* 0x08 */ s32 nX0;
     /* 0x0C */ s32 nY0;
@@ -320,27 +320,27 @@ typedef union __anon_0x2ACA3 {
 typedef struct Frame {
     /* 0x00000 */ u32 anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
-    /* 0x00024 */ s32 bBlurOn;
-    /* 0x00028 */ s32 bHackPause;
+    /* 0x00024 */ bool bBlurOn;
+    /* 0x00028 */ bool bHackPause;
     /* 0x0002C */ s32 nHackCount;
     /* 0x00030 */ s32 nFrameCounter;
-    /* 0x00034 */ s32 bPauseThisFrame;
-    /* 0x00038 */ s32 bCameFromBomberNotes;
-    /* 0x0003C */ s32 bInBomberNotes;
-    /* 0x00040 */ s32 bShrinking;
-    /* 0x00044 */ s32 bSnapShot;
-    /* 0x00048 */ s32 bUsingLens;
+    /* 0x00034 */ bool bPauseThisFrame;
+    /* 0x00038 */ bool bCameFromBomberNotes;
+    /* 0x0003C */ bool bInBomberNotes;
+    /* 0x00040 */ s32 bShrinking; // bitfield (not a bool)
+    /* 0x00044 */ bool bSnapShot;
+    /* 0x00048 */ bool bUsingLens;
     /* 0x0004C */ u8 cBlurAlpha;
-    /* 0x00050 */ s32 bBlurredThisFrame;
+    /* 0x00050 */ bool bBlurredThisFrame;
     /* 0x00054 */ s32 nFrameCIMGCalls;
-    /* 0x00058 */ s32 bModifyZBuffer;
-    /* 0x0005C */ s32 bOverrideDepth;
+    /* 0x00058 */ bool bModifyZBuffer;
+    /* 0x0005C */ bool bOverrideDepth;
     /* 0x00060 */ s32 nZBufferSets;
     /* 0x00064 */ s32 nLastFrameZSets;
-    /* 0x00068 */ s32 bPauseBGDrawn;
-    /* 0x0006C */ s32 bFrameOn;
-    /* 0x00070 */ s32 bBackBufferDrawn;
-    /* 0x00074 */ s32 bGrabbedFrame;
+    /* 0x00068 */ bool bPauseBGDrawn;
+    /* 0x0006C */ bool bFrameOn;
+    /* 0x00070 */ bool bBackBufferDrawn;
+    /* 0x00074 */ bool bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
     /* 0x0007C */ u32 nFlag;
     /* 0x00080 */ f32 rScaleX;
@@ -410,28 +410,28 @@ typedef struct Frame {
     /* 0x3D148 */ u16* nCameraBuffer;
 } Frame; // size = 0x3D150
 
-s32 _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
-s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
-s32 frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive);
+bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
+bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
+bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive);
 
-s32 frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
-s32 frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
+bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
-s32 frameDrawSetup2D(Frame* pFrame);
-s32 frameDrawReset(Frame* pFrame, s32 nFlag);
-s32 frameSetBuffer(Frame* pFrame, FrameBufferType eType);
-s32 frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
-s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
-                       f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
+bool frameDrawSetup2D(Frame* pFrame);
+bool frameDrawReset(Frame* pFrame, s32 nFlag);
+bool frameSetBuffer(Frame* pFrame, FrameBufferType eType);
+bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
+bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
+                        f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 
 extern _XL_OBJECTTYPE gClassFrame;
 

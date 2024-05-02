@@ -70,8 +70,8 @@ typedef enum SimArgumentType {
     SAT_COUNT = 8
 } SimArgumentType;
 
-extern s32 gDVDResetToggle;
-extern s32 gbDisplayedError;
+extern bool gDVDResetToggle;
+extern bool gbDisplayedError;
 
 extern void* gpFrame;
 extern void* gpSound;
@@ -100,18 +100,18 @@ extern char gpErrorMessageBuffer[20480];
 void simulatorUnpackTexPalette(TEXDescriptorPtr pal);
 bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
 bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
-s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
-s32 simulatorReadEEPROM(u8 address, u8* data);
-s32 simulatorWriteEEPROM(u8 address, u8* data);
-s32 simulatorReadSRAM(u32 address, u8* data, s32 size);
-s32 simulatorWriteSRAM(u32 address, u8* data, s32 size);
-s32 simulatorReadFLASH(u32 address, u8* data, s32 size);
-s32 simulatorWriteFLASH(u32 address, u8* data, s32 size);
-s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
-s32 simulatorSetControllerMap(u32* mapData, s32 channel);
+bool simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress);
+bool simulatorReadEEPROM(u8 address, u8* data);
+bool simulatorWriteEEPROM(u8 address, u8* data);
+bool simulatorReadSRAM(u32 address, u8* data, s32 size);
+bool simulatorWriteSRAM(u32 address, u8* data, s32 size);
+bool simulatorReadFLASH(u32 address, u8* data, s32 size);
+bool simulatorWriteFLASH(u32 address, u8* data, s32 size);
+bool simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
+bool simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie();
-s32 simulatorDVDShowError(s32 nStatus, void*, s32, u32);
-s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument);
-s32 simulatorPlayMovie(void);
+bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
+bool simulatorGetArgument(SimArgumentType eType, char** pszArgument);
+bool simulatorPlayMovie(void);
 
 #endif

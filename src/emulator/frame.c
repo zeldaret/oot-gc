@@ -24,15 +24,15 @@ _XL_OBJECTTYPE gClassFrame = {
     (EventFunc)frameEvent,
 };
 
-static s32 gbFrameValid;
-static s32 gbFrameBegin;
-static s32 snScissorChanged;
+static bool gbFrameValid;
+static bool gbFrameBegin;
+static bool snScissorChanged;
 static u32 snScissorXOrig;
 static u32 snScissorYOrig;
 static u32 snScissorWidth;
 static u32 snScissorHeight;
 
-static volatile s32 sCopyFrameSyncReceived;
+static volatile bool sCopyFrameSyncReceived;
 
 static u8 sSpecialZeldaHackON;
 static u32 sDestinationBuffer;
@@ -92,10 +92,10 @@ FrameDrawFunc gapfDrawLine[6] = {
 
 s32 nCopyFrame;
 s32 nLastFrame;
-s32 bSkip;
+bool bSkip;
 s32 nCounter;
 s32 gnCountMapHack;
-s32 gNoSwapBuffer;
+bool gNoSwapBuffer;
 static u16 sTempZBuf[N64_FRAME_WIDTH * N64_FRAME_HEIGHT / 16][4][4] ALIGNAS(32);
 
 s32 sZBufShift[] = {
@@ -418,16 +418,16 @@ const f64 D_80135F88 = 8.44;
 // TODO: caused by inline asm somewhere, remove when that function is matched
 #pragma peephole off
 
-static s32 frameDrawSetupSP(Frame* pFrame, s32* pnColors, s32* pbFlag, s32 nVertexCount);
-static s32 frameDrawSetupDP(Frame* pFrame, s32* pnColors, s32* pbFlag, s32);
-static s32 frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
-static s32 frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
-static s32 frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
-inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
-static inline s32 frameResetCache(Frame* pFrame);
-static s32 frameSetupCache(Frame* pFrame);
+static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
+static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32);
+static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
+inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
+static inline bool frameResetCache(Frame* pFrame);
+static bool frameSetupCache(Frame* pFrame);
 
-inline s32 frameSetProjection(Frame* pFrame, s32 iHint) {
+inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
 
     pFrame->nMode |= 0x24000000;
@@ -440,11 +440,11 @@ inline s32 frameSetProjection(Frame* pFrame, s32 iHint) {
         C_MTXOrtho(pFrame->matrixProjection, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f,
                    pHint->rClipNear, pHint->rClipFar);
     } else {
-        return 0;
+        return false;
     }
 
     pFrame->eTypeProjection = pHint->eProjection;
-    return 1;
+    return true;
 }
 
 static inline void CopyCFB(u16* srcP) {
@@ -452,7 +452,7 @@ static inline void CopyCFB(u16* srcP) {
     GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
     DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
     GXCopyTex(srcP, GX_FALSE);
-    sCopyFrameSyncReceived = 0;
+    sCopyFrameSyncReceived = false;
     GXSetDrawSync(FRAME_SYNC_TOKEN);
     while (!sCopyFrameSyncReceived) {}
 }
@@ -463,14 +463,14 @@ static inline void CopyCFB(u16* srcP) {
 
 static void frameDrawSyncCallback(u16 nToken) {
     if (nToken == FRAME_SYNC_TOKEN) {
-        sCopyFrameSyncReceived = 1;
+        sCopyFrameSyncReceived = true;
     }
 }
 
 static void frameDrawDone() {
-    if (gbFrameValid != 0) {
-        gbFrameValid = 0;
-        if (gNoSwapBuffer == 0) {
+    if (gbFrameValid) {
+        gbFrameValid = false;
+        if (!gNoSwapBuffer) {
             VISetNextFrameBuffer(DemoCurrentBuffer);
             VIFlush();
             if (DemoCurrentBuffer == DemoFrameBuffer1) {
@@ -480,7 +480,7 @@ static void frameDrawDone() {
             }
         } else {
             VIFlush();
-            gNoSwapBuffer = 0;
+            gNoSwapBuffer = false;
         }
     }
 }
@@ -499,7 +499,7 @@ static void frameDrawDone() {
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetCombineColor.s")
 #else
-static s32 frameGetCombineColor(Frame* pFrame, GXTevColorArg* pnColorTEV, s32 nColorN64) {
+static bool frameGetCombineColor(Frame* pFrame, GXTevColorArg* pnColorTEV, s32 nColorN64) {
     switch (nColorN64) {
         case 0:
             *pnColorTEV = GX_CC_TEXC;
@@ -553,10 +553,10 @@ static s32 frameGetCombineColor(Frame* pFrame, GXTevColorArg* pnColorTEV, s32 nC
             *pnColorTEV = GX_CC_ZERO;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 #endif
 
@@ -564,7 +564,7 @@ static s32 frameGetCombineColor(Frame* pFrame, GXTevColorArg* pnColorTEV, s32 nC
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetCombineAlpha.s")
 #else
-static s32 frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nAlphaN64) {
+static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nAlphaN64) {
     switch (nAlphaN64) {
         case 0:
             *pnAlphaTEV = GX_CA_TEXA;
@@ -591,10 +591,10 @@ static s32 frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nA
             *pnAlphaTEV = GX_CA_ZERO;
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 #endif
 
@@ -616,7 +616,7 @@ static s32 frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 nA
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T3.s")
 #else
-s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
+bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
     u32 pad[20];
 
     if (gpSystem->eTypeROM == SRT_ZELDA1 && pPrimitive->nCount == 3 && (pFrame->aMode[4] & 0xC00) == 0xC00) {
@@ -625,9 +625,9 @@ s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
         if ((vtx->rSum == 53.0f && pMatrix[3][0] == -3080.0f && pMatrix[3][2] == 6067.0f) ||
             (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f)) {
             if (pMatrix[3][0] == -31.0f && pMatrix[3][2] == 1669.0f) {
-                gHackCreditsColor = 1;
+                gHackCreditsColor = true;
             }
-            return 1;
+            return true;
         }
     }
 
@@ -643,7 +643,7 @@ s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
     }
 
     frameCheckTriangleDivide(pFrame, pPrimitive);
-    return 1;
+    return true;
 }
 #endif
 
@@ -661,63 +661,63 @@ s32 frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T2.s")
 
-static s32 frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
-    s32 bFlag;
+static bool frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
+    bool bFlag;
     s32 nColors;
 
     if (!frameDrawSetupSP(pFrame, &nColors, &bFlag, 2)) {
-        return 0;
+        return false;
     }
 
     if (!frameDrawSetupDP(pFrame, &nColors, &bFlag, 0)) {
-        return 0;
+        return false;
     }
 
     pFrame->aDraw[0] = (FrameDrawFunc)gapfDrawLine[nColors + (bFlag ? 3 : 0)];
     if (!pFrame->aDraw[0](pFrame, pPrimitive)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectFill.s")
 
-static s32 frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
-    s32 bFlag;
+static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
+    bool bFlag;
     s32 nColors;
 
     if (!frameDrawSetup2D(pFrame)) {
-        return 0;
+        return false;
     }
 
-    bFlag = 0;
+    bFlag = false;
     nColors = 0;
 
     if (!frameDrawSetupDP(pFrame, &nColors, &bFlag, 1)) {
-        return 0;
+        return false;
     }
 
     pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill;
 
     if (!pFrame->aDraw[2](pFrame, pRectangle)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
 
-s32 frameShow() { return 1; }
+bool frameShow(void) { return true; }
 
 #ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetScissor.s")
 #else
-s32 frameSetScissor(Frame* pFrame, Scissor* pScissor) {
+bool frameSetScissor(Frame* pFrame, Scissor* pScissor) {
     s32 nTemp;
     s32 nX0;
     s32 nY0;
@@ -742,17 +742,17 @@ s32 frameSetScissor(Frame* pFrame, Scissor* pScissor) {
     }
 
     GXSetScissor(nX0, nY0, nX1 - nX0, nY1 - nY0);
-    return 1;
+    return true;
 }
 #endif
 
-s32 frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
+bool frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta) {
     pFrame->rDepth = rDepth;
     pFrame->rDelta = rDelta;
-    return 1;
+    return true;
 }
 
-s32 frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA) {
+bool frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA) {
     pFrame->aColor[eType].r = (nRGBA >> 24) & 0xFF;
     pFrame->aColor[eType].g = (nRGBA >> 16) & 0xFF;
     pFrame->aColor[eType].b = (nRGBA >> 8) & 0xFF;
@@ -765,14 +765,14 @@ s32 frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA) {
     }
 
     frameDrawReset(pFrame, (eType == FCT_FOG ? 0x20 : 0x0) | 0x7F00);
-    return 1;
+    return true;
 }
 
-s32 frameBeginOK(void) {
+bool frameBeginOK(void) {
     if (gbFrameValid) {
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
 
 inline void frameClearModes(Frame* pFrame) {
@@ -783,23 +783,23 @@ inline void frameClearModes(Frame* pFrame) {
     }
 }
 
-s32 frameBegin(Frame* pFrame, s32 nCountVertex) {
+bool frameBegin(Frame* pFrame, s32 nCountVertex) {
     s32 i;
     Mtx matrix;
 
     if (gbFrameBegin) {
-        gbFrameBegin = 0;
+        gbFrameBegin = false;
 
         while (gbFrameValid) {
             OSReport(D_800EB1F8);
         }
 
-        if (!simulatorTestReset(0, 0, 1, 0)) {
-            return 0;
+        if (!simulatorTestReset(false, false, true, false)) {
+            return false;
         }
 
         if (!frameUpdateCache(pFrame)) {
-            return 0;
+            return false;
         }
 
         xlCoreBeforeRender();
@@ -837,10 +837,10 @@ s32 frameBegin(Frame* pFrame, s32 nCountVertex) {
 
     pFrame->nModeVtx = -1;
     pFrame->nAddressLoad = -1;
-    return 1;
+    return true;
 }
 
-s32 frameEnd(Frame* pFrame) {
+bool frameEnd(Frame* pFrame) {
     Cpu* pCPU;
     s32 iHint;
     void* pData;
@@ -850,7 +850,7 @@ s32 frameEnd(Frame* pFrame) {
     if (gbFrameBegin) {
         OSReport(D_800EB1B8);
     }
-    gbFrameBegin = 1;
+    gbFrameBegin = true;
 
     for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
         if (pFrame->aMatrixHint[iHint].nCount >= 0) {
@@ -859,7 +859,7 @@ s32 frameEnd(Frame* pFrame) {
     }
 
     pFrame->nCountFrames++;
-    gbFrameValid = 1;
+    gbFrameValid = true;
 
     if (pFrame->aBuffer[0].nAddress != 0) {
         pData = &sTempZBuf;
@@ -873,7 +873,7 @@ s32 frameEnd(Frame* pFrame) {
     if (gpSystem->eTypeROM == SRT_DRMARIO && pFrame->bGrabbedFrame) {
         pData = pFrame->nTempBuffer;
         CopyCFB(pData);
-        pFrame->bGrabbedFrame = 0;
+        pFrame->bGrabbedFrame = false;
     }
 
     GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
@@ -885,31 +885,31 @@ s32 frameEnd(Frame* pFrame) {
     if (gpSystem->eTypeROM == SRT_ZELDA2) {
         pFrame->nHackCount = 0;
         pFrame->nFrameCounter++;
-        pFrame->bBlurredThisFrame = 0;
+        pFrame->bBlurredThisFrame = false;
         pFrame->nFrameCIMGCalls = 0;
-        pFrame->bUsingLens = 0;
-        pFrame->bModifyZBuffer = 0;
-        pFrame->bOverrideDepth = 0;
+        pFrame->bUsingLens = false;
+        pFrame->bModifyZBuffer = false;
+        pFrame->bOverrideDepth = false;
 
         pFrame->nLastFrameZSets = pFrame->nZBufferSets;
         pFrame->nZBufferSets = 0;
 
-        pFrame->bPauseBGDrawn = 0;
+        pFrame->bPauseBGDrawn = false;
         GXSetZTexture(GX_ZT_DISABLE, GX_TF_Z24X8, 0);
 
         if ((pFrame->bShrinking & 0xF) == 0) {
             pFrame->bShrinking &= ~0xFFFF;
         }
         pFrame->bShrinking &= ~0xFF;
-        pFrame->bSnapShot = 0;
+        pFrame->bSnapShot = false;
     }
 
     if (gpSystem->eTypeROM == SRT_DRMARIO) {
-        pFrame->bBackBufferDrawn = 0;
+        pFrame->bBackBufferDrawn = false;
     }
 
     pCPU->gTree->kill_number = 0;
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/_frameDrawRectangle.s")
@@ -1111,7 +1111,7 @@ void CopyAndConvertCFB(u16* srcP) {
     DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
     GXCopyTex(srcP, GX_FALSE);
 
-    sCopyFrameSyncReceived = 0;
+    sCopyFrameSyncReceived = false;
     GXSetDrawSync(FRAME_SYNC_TOKEN);
     while (!sCopyFrameSyncReceived) {};
 
@@ -1152,7 +1152,7 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     GXPixModeSync();
     frameDrawSetup2D(pFrame);
 
-    if (gHackCreditsColor != 0) {
+    if (gHackCreditsColor) {
         GXSetNumTevStages(1);
         GXSetNumChans(0);
         GXSetNumTexGens(1);
@@ -1414,7 +1414,7 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
 #endif
 
 //! TODO: make sCommandCodes a static variable in the function
-s32 frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi) {
+bool frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi) {
     u32 i;
 
     if ((*pnCommandLo == 0x0F000000) && (*pnCommandHi == 0xFD500000)) {
@@ -1440,10 +1440,10 @@ s32 frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCom
         *pnGBI += 8;
     }
 
-    return 1;
+    return true;
 }
 
-s32 frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
+bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
     u32 i;
     u32* pGBI;
     s32 pad[4];
@@ -1467,7 +1467,7 @@ s32 frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
                 nCopyFrame = 1;
             }
         } else {
-            pFrame->bPauseThisFrame = 0;
+            pFrame->bPauseThisFrame = false;
         }
     }
 
@@ -1485,21 +1485,21 @@ s32 frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
                     pFrame->nCopyBuffer[i] = pFrame->nTempBuffer[i];
                 }
             }
-            pFrame->bHackPause = 1;
+            pFrame->bHackPause = true;
             pFrame->nHackCount = 0;
             pFrame->bPauseThisFrame = 1;
             nCopyFrame = 0;
         } else {
-            pFrame->bPauseThisFrame = 0;
+            pFrame->bPauseThisFrame = false;
         }
     }
 
     if (pFrame->bHackPause) {
         if ((pFrame->nFrameCounter - nLastFrame) >= 2) {
             nLastFrame = pFrame->nFrameCounter;
-            gNoSwapBuffer = 1;
+            gNoSwapBuffer = true;
         }
-        pFrame->bHackPause = 0;
+        pFrame->bHackPause = false;
     } else {
         if (pFrame->bShrinking & 0xFFFF) {
             if (pFrame->bBlurOn) {
@@ -1517,13 +1517,13 @@ s32 frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI) {
         pFrame->bBlurOn && !pFrame->bBlurredThisFrame) {
         ZeldaDrawFrameBlur(pFrame, pFrame->nTempBuffer);
         CopyCFB(pFrame->nTempBuffer);
-        pFrame->bBlurredThisFrame = 1;
+        pFrame->bBlurredThisFrame = true;
     }
 
-    return 1;
+    return true;
 }
 
-s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo) {
+bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo) {
     u32 i;
     u32 low2;
     u32 high2;
@@ -1541,13 +1541,13 @@ s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCo
         if (high2 == 0xFD10013F) {
             low2 = SYSTEM_RSP(gpSystem)->anBaseSegment[(low2 >> 24) & 0xF] + (low2 & 0xFFFFFF);
             if (!ramGetBuffer(SYSTEM_RAM(gpSystem), &srcP, low2, NULL)) {
-                return 0;
+                return false;
             }
             sDestinationBuffer = low2;
             sSrcBuffer = pBuffer->nAddress;
             CopyAndConvertCFB(srcP);
             gnCountMapHack = -1;
-            gNoSwapBuffer = 1;
+            gNoSwapBuffer = true;
         }
     }
 
@@ -1557,7 +1557,7 @@ s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCo
             sConstantBufAddr[sNumAddr++] =
                 nCommandLo + ZELDA_PAUSE_EQUIP_PLAYER_WIDTH * ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT * sizeof(u16);
         } else if (pBuffer->nWidth == ZELDA_PAUSE_EQUIP_PLAYER_WIDTH) {
-            gNoSwapBuffer = 1;
+            gNoSwapBuffer = true;
             if (pBuffer->nSize == 2) {
                 u16* val = pBuffer->pData;
                 u16* valEnd = val + ZELDA_PAUSE_EQUIP_PLAYER_WIDTH * ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT;
@@ -1571,7 +1571,7 @@ s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCo
                                   ZELDA_PAUSE_EQUIP_PLAYER_WIDTH * ZELDA_PAUSE_EQUIP_PLAYER_HEIGHT * sizeof(u16));
                 GXCopyTex(pBuffer->pData, GX_FALSE);
 
-                sCopyFrameSyncReceived = 0;
+                sCopyFrameSyncReceived = false;
                 GXSetDrawSync(FRAME_SYNC_TOKEN);
                 while (!sCopyFrameSyncReceived) {}
 
@@ -1600,10 +1600,10 @@ s32 frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCo
 
     PAD_STACK();
     PAD_STACK();
-    return 1;
+    return true;
 }
 
-s32 frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
+bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
     u64* pnGBI;
     s32 count;
     s32 nAddress;
@@ -1649,11 +1649,11 @@ s32 frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
             pnGBI++;
         };
     } else {
-        return 0;
+        return false;
     }
 
     *ppnGBI = ++pnGBI;
-    return 1;
+    return true;
 }
 
 static inline void ZeldaCopyCamera(u16* buffer) {
@@ -1664,19 +1664,19 @@ static inline void ZeldaCopyCamera(u16* buffer) {
     GXPixModeSync();
 }
 
-s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nCommandHi, u32 nCommandLo) {
+bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nCommandHi, u32 nCommandLo) {
     if (pBuffer != NULL) {
         if (pBuffer->nAddress == 0x00784600) {
             pFrame->bSnapShot |= 0x10;
-            return 1;
+            return true;
         }
 
         if ((pFrame->bSnapShot & 0xF00) != 0) {
             ZeldaDrawFrameCamera(pFrame, pFrame->nCameraBuffer);
             pFrame->bSnapShot &= ~0xF00;
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     if ((nCommandHi == 0xF63EC25C) && (nCommandLo == 0x00118058)) {
@@ -1688,10 +1688,10 @@ s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComman
             pFrame->bSnapShot &= ~0xF00;
         }
 
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawBG8.s")
@@ -1710,7 +1710,7 @@ s32 frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComman
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameEvent.s")
 #else
-s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
+bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
     s32 temp_r4;
 
     switch (nEvent) {
@@ -1719,35 +1719,35 @@ s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->nMode = 0x20000;
             pFrame->iHintMatrix = 0;
             pFrame->nCountFrames = 0;
-            gbFrameBegin = 1;
-            gbFrameValid = 0;
+            gbFrameBegin = true;
+            gbFrameValid = false;
             gnCountMapHack = 0;
             if (!frameSetupCache(pFrame)) {
-                return 0;
+                return false;
             }
             pFrame->nOffsetDepth0 = -1;
             pFrame->nOffsetDepth1 = -1;
             pFrame->viewport.rX = 0.0f;
             pFrame->viewport.rY = 0.0f;
             pFrame->nHackCount = 0;
-            pFrame->bBlurOn = 0;
-            pFrame->bHackPause = 0;
+            pFrame->bBlurOn = false;
+            pFrame->bHackPause = false;
             pFrame->nFrameCounter = 0;
             pFrame->nNumCIMGAddresses = 0;
-            pFrame->bPauseThisFrame = 0;
-            pFrame->bCameFromBomberNotes = 0;
-            pFrame->bInBomberNotes = 0;
+            pFrame->bPauseThisFrame = false;
+            pFrame->bCameFromBomberNotes = false;
+            pFrame->bInBomberNotes = false;
             pFrame->bShrinking = 0;
-            pFrame->bUsingLens = 0;
+            pFrame->bUsingLens = false;
             pFrame->cBlurAlpha = 170;
-            pFrame->bBlurredThisFrame = 0;
+            pFrame->bBlurredThisFrame = false;
             pFrame->nFrameCIMGCalls = 0;
             pFrame->nZBufferSets = 0;
             pFrame->nLastFrameZSets = 0;
-            pFrame->bPauseBGDrawn = 0;
-            pFrame->bFrameOn = 0;
-            pFrame->bModifyZBuffer = 0;
-            pFrame->bOverrideDepth = 0;
+            pFrame->bPauseBGDrawn = false;
+            pFrame->bFrameOn = false;
+            pFrame->bModifyZBuffer = false;
+            pFrame->bOverrideDepth = false;
             pFrame->viewport.rSizeX = GC_FRAME_WIDTH;
             pFrame->viewport.rSizeY = GC_FRAME_HEIGHT;
             pFrame->anSizeX[0] = N64_FRAME_WIDTH;
@@ -1766,7 +1766,7 @@ s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             break;
         case 3:
             if (!frameResetCache(pFrame)) {
-                return 0;
+                return false;
             }
             break;
         case 0x1003:
@@ -1777,17 +1777,17 @@ s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             if (((gpSystem->eTypeROM == SRT_PANEL) || (gpSystem->eTypeROM == SRT_ZELDA2) ||
                  (gpSystem->eTypeROM == SRT_DRMARIO)) &&
                 !xlHeapTake(&pFrame->nTempBuffer, 0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
-                return 0;
+                return false;
             }
             if ((gpSystem->eTypeROM == SRT_ZELDA2) &&
                 !xlHeapTake(&pFrame->nCopyBuffer, 0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
-                return 0;
+                return false;
             }
             if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nLensBuffer, 0x30000000 | 0x4B000)) {
-                return 0;
+                return false;
             }
             if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake(&pFrame->nCameraBuffer, 0x30000000 | 0xA000)) {
-                return 0;
+                return false;
             }
             break;
         case 0:
@@ -1796,14 +1796,14 @@ s32 frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
         case 6:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 #endif
 
-inline s32 frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
+inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     matrixTarget[0][0] = matrixSource[0][0];
     matrixTarget[0][1] = matrixSource[0][1];
     matrixTarget[0][2] = matrixSource[0][2];
@@ -1820,7 +1820,7 @@ inline s32 frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     matrixTarget[3][1] = matrixSource[3][1];
     matrixTarget[3][2] = matrixSource[3][2];
     matrixTarget[3][3] = matrixSource[3][3];
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameScaleMatrix.s")
@@ -1829,7 +1829,7 @@ inline s32 frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/packTakeBlocks.s")
 
-static s32 packFreeBlocks(s32* piPack, u32* anPack) {
+static bool packFreeBlocks(s32* piPack, u32* anPack) {
     s32 iPack;
     u32 nMask;
 
@@ -1838,7 +1838,7 @@ static s32 packFreeBlocks(s32* piPack, u32* anPack) {
     iPack = *piPack;
 
     if (iPack == -1) {
-        return 1;
+        return true;
     }
 
     nMask = ((1 << (iPack >> 16)) - 1) << (iPack & 0x1F);
@@ -1847,15 +1847,15 @@ static s32 packFreeBlocks(s32* piPack, u32* anPack) {
     if (nMask == (nMask & anPack[temp_r6])) {
         anPack[temp_r6] &= ~nMask;
         *piPack = -1;
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTexture.s")
 
-static s32 frameSetupCache(Frame* pFrame) {
+static bool frameSetupCache(Frame* pFrame) {
     s32 iTexture;
 
     pFrame->nBlocksMaxPixel = 0;
@@ -1878,7 +1878,7 @@ static s32 frameSetupCache(Frame* pFrame) {
     }
 
     if (!xlHeapTake(&pFrame->aPixelData, 0x30000000 | 0x00300000)) {
-        return 0;
+        return false;
     }
 
     for (iTexture = 0; iTexture < ARRAY_COUNT(pFrame->anPackColor); iTexture++) {
@@ -1886,44 +1886,44 @@ static s32 frameSetupCache(Frame* pFrame) {
     }
 
     if (!xlHeapTake(&pFrame->aColorData, 0x30000000 | (N64_FRAME_WIDTH * 1024))) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-static inline s32 frameResetCache(Frame* pFrame) {
+static inline bool frameResetCache(Frame* pFrame) {
     if (!xlHeapFree(&pFrame->aColorData)) {
-        return 0;
+        return false;
     }
 
     if (!xlHeapFree(&pFrame->aPixelData)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameUpdateCache.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTile.s")
 
-s32 frameDrawReset(Frame* pFrame, s32 nFlag) {
+bool frameDrawReset(Frame* pFrame, s32 nFlag) {
     pFrame->nFlag |= nFlag;
     pFrame->aDraw[0] = (FrameDrawFunc)frameDrawLine_Setup;
     pFrame->aDraw[1] = (FrameDrawFunc)frameDrawTriangle_Setup;
     pFrame->aDraw[2] = (FrameDrawFunc)frameDrawRectFill_Setup;
     pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture_Setup;
-    return 1;
+    return true;
 }
 
-s32 frameSetFill(Frame* pFrame, s32 bFill) {
+bool frameSetFill(Frame* pFrame, bool bFill) {
     if (bFill) {
         pFrame->nMode |= 0x20000;
     } else {
         pFrame->nMode &= ~0x20000;
     }
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
@@ -1932,7 +1932,7 @@ s32 frameSetFill(Frame* pFrame, s32 bFill) {
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMode.s")
 #else
-s32 frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
+bool frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
     u32 nFlag;
     u32 nModeChanged;
 
@@ -2009,22 +2009,22 @@ s32 frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
     }
 
     pFrame->aMode[eType] = nMode;
-    return 1;
+    return true;
 }
 #endif
 
-s32 frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
+bool frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
     *pnMode = pFrame->aMode[eType];
-    return 1;
+    return true;
 }
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrix.s")
 #else
-s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad, s32 bPush, s32 nAddressN64) {
+bool frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bLoad, bool bPush, s32 nAddressN64) {
     s32 pad1;
-    s32 bFlag;
+    bool bFlag;
     Mtx44Ptr matrixTarget;
     Mtx44 matrixResult;
     s32 pad2[9];
@@ -2034,10 +2034,10 @@ s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad
     switch (eType) {
         case FMT_MODELVIEW:
             if (!bLoad && (pFrame->nMode & 0x800000)) {
-                bFlag = 1;
+                bFlag = true;
                 PSMTX44Concat(matrix, pFrame->aMatrixModel[pFrame->iMatrixModel], matrixResult);
             } else {
-                bFlag = 0;
+                bFlag = false;
             }
 
             if (bPush && pFrame->iMatrixModel < ARRAY_COUNT(pFrame->aMatrixModel) - 1) {
@@ -2059,9 +2059,9 @@ s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad
             pFrame->nMode &= ~0x20000000;
             if (gpSystem->eTypeROM == SRT_1080 && (matrix[0][0] < 0.006240f || matrix[0][0] > 0.006242f)) {
                 if (!frameSetProjection(pFrame, pFrame->iHintHack)) {
-                    return 0;
+                    return false;
                 }
-                bLoad = 0;
+                bLoad = false;
             }
 
             // TODO: fake volatile
@@ -2097,19 +2097,19 @@ s32 frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bLoad
             frameDrawReset(pFrame, 0x40000);
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 #endif
 
-s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bPull) {
+bool frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bPull) {
     switch (eType) {
         case FMT_MODELVIEW:
             if (matrix != NULL) {
                 if (!xlHeapCopy(matrix, pFrame->aMatrixModel[pFrame->iMatrixModel], sizeof(Mtx44))) {
-                    return 0;
+                    return false;
                 }
             }
             if (bPull) {
@@ -2125,16 +2125,16 @@ s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bPull
                     PSMTX44Concat(pFrame->matrixProjectionExtra, pFrame->matrixProjection, matrix);
                 } else {
                     if (!xlHeapCopy(matrix, pFrame->matrixProjection, sizeof(Mtx44))) {
-                        return 0;
+                        return false;
                     }
                 }
             }
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadVertex.s")
@@ -2145,9 +2145,9 @@ s32 frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, s32 bPull
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTMEM.s")
 
-s32 frameSetLightCount(Frame* pFrame, s32 nCount) {
+bool frameSetLightCount(Frame* pFrame, s32 nCount) {
     pFrame->nCountLight = nCount;
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLight.s")
@@ -2158,15 +2158,15 @@ s32 frameSetLightCount(Frame* pFrame, s32 nCount) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameResetUCode.s")
 
-s32 frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
+bool frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
     if (((u32)(eType - 2) > 1) && (eType == FBT_DEPTH)) {
         pFrame->nOffsetDepth0 = pFrame->aBuffer[0].nAddress & 0x03FFFFFF;
         pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
     }
-    return 1;
+    return true;
 }
 
-s32 frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed) {
+bool frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed) {
     s32 iHint;
     s32 iHintTest;
 
@@ -2182,32 +2182,32 @@ s32 frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed) {
                 }
             }
 
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-inline s32 frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
+inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) {
     s32 iHint;
 
     for (iHint = 0; iHint < pFrame->iHintMatrix; iHint++) {
         if (pFrame->aMatrixHint[iHint].nAddressFixed == nAddress && pFrame->aMatrixHint[iHint].nCount >= 0) {
             pFrame->aMatrixHint[iHint].nCount = 4;
             *piHint = iHint;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrixHint.s")
 #else
-s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
-                       f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
+bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
+                        f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale) {
     s32 iHint;
 
     if (nAddressFloat != 0) {
@@ -2251,7 +2251,7 @@ s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAd
     }
 
     pFrame->iHintLast = iHint;
-    return 1;
+    return true;
 }
 #endif
 
@@ -2261,7 +2261,7 @@ s32 frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAd
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetTextureInfo.s")
 #else
-s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
+bool frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
     FrameTexture* pTexture;
     s32 iTexture;
     s32 nCount;
@@ -2296,7 +2296,7 @@ s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
                     break;
                 default:
                     OSReport("GetTextureInfo: Unknown texture-format: %d\n", pTexture->eFormat);
-                    return 0;
+                    return false;
             }
             pTexture = pTexture->pTextureNext;
         }
@@ -2304,7 +2304,7 @@ s32 frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
 
     pInfo->nSizeTextures = nSize + (nCount * sizeof(FrameTexture));
     pInfo->nCountTextures = nCount;
-    return 1;
+    return true;
 }
 #endif
 

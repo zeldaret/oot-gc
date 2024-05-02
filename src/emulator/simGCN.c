@@ -284,7 +284,7 @@ u32 gz_iconSize = 0x00001840;
 
 s32 gHighlightChoice = 0x00000001;
 __anon_0x61D7 simulatorMessageCurrent = S_M_NONE;
-s32 gResetBeginFlag = 0x00000001;
+s32 gResetBeginFlag = true;
 
 char D_80134D9C[8] = "yes.raw";
 char D_80134DA4[7] = "no.raw";
@@ -296,22 +296,22 @@ void* gpSound;
 System* gpSystem;
 
 static char gpErrorMessageBuffer[20480];
-s32 gbDisplayedError;
-s32 gPreviousAllowResetSetting;
-s32 gPreviousForceMenuSetting;
-s32 gPreviousIPLSetting;
+bool gbDisplayedError;
+bool gPreviousAllowResetSetting;
+bool gPreviousForceMenuSetting;
+bool gPreviousIPLSetting;
 
 // TODO: make static (doesn't match .sbss currently)
 u32 gnTickReset;
-s32 gbReset;
+bool gbReset;
 
 // TODO: make in-function static (doesn't match .sbss currently)
 u32 nCurrButton;
 u32 nPrevButton;
-s32 toggle;
+bool toggle;
 
-s32 gDVDResetToggle;
-s32 gButtonDownToggle;
+bool gDVDResetToggle;
+bool gButtonDownToggle;
 
 const s32 D_80135D18 = 0;
 const s32 D_80135D1C = 0;
@@ -337,7 +337,7 @@ const f32 D_80135D6C = 120.0;
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorGXInit.s")
 #else
-s32 simulatorGXInit(void) {
+bool simulatorGXInit(void) {
     s32 i;
     GXColor GX_DEFAULT_BG = {0};
     GXColor BLACK = {0};
@@ -463,7 +463,7 @@ s32 simulatorGXInit(void) {
     GXSetGPMetric(GX_PERF0_NONE, GX_PERF0_TRIANGLES_7TEX);
     GXClearGPMetric();
 
-    return 1;
+    return true;
 }
 #endif
 
@@ -476,7 +476,7 @@ bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
 
     while ((nStatus = DVDGetDriveStatus()) != 0) {
         if (!simulatorDVDShowError(nStatus, NULL, 0, 0)) {
-            return 0;
+            return false;
         }
     }
 
@@ -485,36 +485,36 @@ bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo) {
 
 bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback) {
     s32 nStatus;
-    s32 bRetry;
+    bool bRetry;
 
     if (callback == NULL) {
         do {
-            bRetry = 0;
+            bRetry = false;
             DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
 
             while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
                 if (!simulatorDVDShowError(nStatus, anData, nSizeRead, nOffset)) {
-                    return 0;
+                    return false;
                 }
 
                 if ((nStatus == 11) || (nStatus == -1)) {
                     DVDCancel(&pFileInfo->cb);
-                    bRetry = 1;
+                    bRetry = true;
                     break;
                 }
             }
         } while (bRetry);
     } else {
         DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, callback, 2);
-        return 1;
+        return true;
     }
 
-    return 1;
+    return true;
 }
 
-s32 simulatorPlayMovie(void) {
+bool simulatorPlayMovie(void) {
     simulatorResetAndPlayMovie();
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawImage.s")
@@ -544,19 +544,18 @@ inline void simulatorResetInit() {
     VIWaitForRetrace();
 }
 
-void simulatorReset(s32 IPL, s32 forceMenu) {
+void simulatorReset(bool IPL, bool forceMenu) {
     simulatorResetInit();
 
-    if (IPL == 1) {
-        if (forceMenu == 1) {
-            OSResetSystem(1, 0, 1);
+    if (IPL == true) {
+        if (forceMenu == true) {
+            OSResetSystem(OS_RESET_HOTRESET, 0, true);
         } else {
-            OSResetSystem(1, 0, 0);
+            OSResetSystem(OS_RESET_HOTRESET, 0, false);
         }
-        return;
+    } else {
+        OSResetSystem(OS_RESET_RESTART, 0, false);
     }
-
-    OSResetSystem(0, 0, 0);
     NO_INLINE();
 }
 
@@ -620,43 +619,43 @@ void simulatorResetAndPlayMovie(void) {
     }
 }
 
-s32 simulatorSetControllerMap(u32* mapData, s32 channel) {
+bool simulatorSetControllerMap(u32* mapData, s32 channel) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(gContMap[channel]); i++) {
         gContMap[channel][i] = mapData[i];
     }
 
-    return 1;
+    return true;
 }
 
-s32 simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
+bool simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
     int i;
 
     for (i = 0; i < 20; i++) {
         mapDataOutput[i] = mapDataInput[i];
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadController.s")
 
-s32 simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress) { return 1; }
+bool simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress) { return true; }
 
-s32 simulatorDetectController(s32 channel) {
+bool simulatorDetectController(s32 channel) {
     PADStatus status[4];
 
     PADRead(status);
 
     if (status[channel].err == -1) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 simulatorReadPak(s32 channel, u16 address, u8* data) {
+bool simulatorReadPak(s32 channel, u16 address, u8* data) {
     ControllerType type;
 
     pifGetEControllerType(SYSTEM_PIF(gpSystem), channel, &type);
@@ -665,10 +664,10 @@ s32 simulatorReadPak(s32 channel, u16 address, u8* data) {
         pifReadRumble(SYSTEM_PIF(gpSystem), channel, address, data);
     }
 
-    return 1;
+    return true;
 }
 
-s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
+bool simulatorWritePak(s32 channel, u16 address, u8* data) {
     ControllerType type;
 
     pifGetEControllerType(SYSTEM_PIF(gpSystem), channel, &type);
@@ -677,71 +676,71 @@ s32 simulatorWritePak(s32 channel, u16 address, u8* data) {
         pifWriteRumble(SYSTEM_PIF(gpSystem), channel, address, data);
     }
 
-    return 1;
+    return true;
 }
 
-s32 simulatorReadEEPROM(u8 address, u8* data) {
+bool simulatorReadEEPROM(u8 address, u8* data) {
     s32 size;
 
     if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
-        return 0;
+        return false;
     }
 
     mcardRead(&mCard, (address * 8) & 0x7F8, 8, (char*)data);
-    return 1;
+    return true;
 }
 
-s32 simulatorWriteEEPROM(u8 address, u8* data) {
+bool simulatorWriteEEPROM(u8 address, u8* data) {
     s32 size;
 
     if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
-        return 0;
+        return false;
     }
 
     mcardWrite(&mCard, (address * 8) & 0x7F8, 8, (char*)data);
-    return 1;
+    return true;
 }
 
-s32 simulatorReadSRAM(u32 address, u8* data, s32 size) {
+bool simulatorReadSRAM(u32 address, u8* data, s32 size) {
     mcardRead(&mCard, address, size, (char*)data);
-    return 1;
+    return true;
 }
 
-s32 simulatorWriteSRAM(u32 address, u8* data, s32 size) {
+bool simulatorWriteSRAM(u32 address, u8* data, s32 size) {
     mcardWrite(&mCard, address, size, (char*)data);
-    return 1;
+    return true;
 }
 
-s32 simulatorReadFLASH(u32 address, u8* data, s32 size) {
+bool simulatorReadFLASH(u32 address, u8* data, s32 size) {
     mcardRead(&mCard, address, size, (char*)data);
-    return 1;
+    return true;
 }
 
-s32 simulatorWriteFLASH(u32 address, u8* data, s32 size) {
+bool simulatorWriteFLASH(u32 address, u8* data, s32 size) {
     mcardWrite(&mCard, address, size, (char*)data);
-    return 1;
+    return true;
 }
 
-s32 simulatorRumbleStart(s32 channel) {
+bool simulatorRumbleStart(s32 channel) {
     PADControlMotor(channel, 1);
-    return 1;
+    return true;
 }
 
-s32 simulatorRumbleStop(s32 channel) {
+bool simulatorRumbleStop(s32 channel) {
     PADControlMotor(channel, 0);
-    return 1;
+    return true;
 }
 
 // matches but data doesn't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorTestReset.s")
 #else
-s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSettings) {
+bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings) {
     u32 bFlag;
     u32 nTick;
-    s32 prevIPLSetting;
-    s32 prevForceMenuSetting;
-    s32 prevAllowResetSetting;
+    bool prevIPLSetting;
+    bool prevForceMenuSetting;
+    bool prevAllowResetSetting;
     s32 pad;
 
     nTick = OSGetTick();
@@ -762,10 +761,10 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
     DEMOPadRead();
     bFlag = OSGetResetButtonState();
 
-    if ((gResetBeginFlag == 1) && ((DemoPad[0].pst.button & 0x1600) == 0x1600)) {
-        if ((gbReset == 0) || bFlag) {
+    if ((gResetBeginFlag == true) && ((DemoPad[0].pst.button & 0x1600) == 0x1600)) {
+        if (!gbReset || bFlag) {
             gbReset = bFlag;
-            return 1;
+            return true;
         }
 
         if (allowReset == 1) {
@@ -776,14 +775,14 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
             }
         }
     } else {
-        gResetBeginFlag = 0;
+        gResetBeginFlag = false;
     }
 
     if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
         gnTickReset = nTick;
-        if ((gbReset == 0) || (bFlag != 0)) {
+        if (!gbReset || bFlag) {
             gbReset = bFlag;
-            return 1;
+            return true;
         }
 
         if (allowReset == 1) {
@@ -803,7 +802,7 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
         }
     }
 
-    return 1;
+    return true;
 }
 #endif
 
@@ -817,7 +816,7 @@ s32 simulatorTestReset(s32 IPL, s32 forceMenu, s32 allowReset, s32 usePreviousSe
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawCursor.s")
 #else
-static s32 simulatorDrawCursor(s32 nX, s32 nY) {
+static bool simulatorDrawCursor(s32 nX, s32 nY) {
     GXColor color;
     s32 nTick;
     u8 var_r5;
@@ -883,7 +882,7 @@ static s32 simulatorDrawCursor(s32 nX, s32 nY) {
     GXWGFifo.s16 = nX;
     GXWGFifo.s16 = nY + 8;
 
-    return 1;
+    return true;
 }
 #endif
 
@@ -891,7 +890,7 @@ static s32 simulatorDrawCursor(s32 nX, s32 nY) {
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorParseArguments.s")
 #else
-static s32 simulatorParseArguments(void) {
+static bool simulatorParseArguments(void) {
     s32 iArgument;
     char* szText;
     char* szValue;
@@ -953,17 +952,17 @@ static s32 simulatorParseArguments(void) {
             gaszArgument[SAT_NAME] = szText;
         }
     }
-    return 1;
+    return true;
 }
 #endif
 
-s32 simulatorGetArgument(SimArgumentType eType, char** pszArgument) {
+bool simulatorGetArgument(SimArgumentType eType, char** pszArgument) {
     if (eType != SAT_NONE && pszArgument != NULL && gaszArgument[eType] != NULL) {
         *pszArgument = gaszArgument[eType];
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
 inline s32 simulatorRun(SystemMode* peMode) {
@@ -979,7 +978,7 @@ inline s32 simulatorRun(SystemMode* peMode) {
     return 1;
 }
 
-s32 xlMain(void) {
+bool xlMain(void) {
     GXColor color;
     SystemMode eMode;
     s32 nSize0;
@@ -990,15 +989,15 @@ s32 xlMain(void) {
     // s32 rumbleYes;
 
     simulatorParseArguments();
-    gDVDResetToggle = 0;
+    gDVDResetToggle = false;
 
     if (!xlHeapGetFree(&nSize0)) {
-        return 0;
+        return false;
     }
     if (nSize0 > 0x01800000) {
         OSReport(D_800E9B34);
         OSReport(D_800E9B80);
-        while (1) {}
+        while (true) {}
     }
 
 #ifdef __MWERKS__
@@ -1015,9 +1014,9 @@ s32 xlMain(void) {
     color.r = color.g = color.b = 0;
     color.a = 0xFF;
 
-    gbDisplayedError = 0;
-    gButtonDownToggle = 0;
-    gResetBeginFlag = 1;
+    gbDisplayedError = false;
+    gButtonDownToggle = false;
+    gResetBeginFlag = true;
 
     GXSetCopyClear(color, 0xFFFFFF);
     VISetBlack(1);
@@ -1049,7 +1048,7 @@ s32 xlMain(void) {
     gnTickReset = OSGetTick();
 
     if (!xlHeapGetFree(&nSize0)) {
-        return 0;
+        return false;
     }
 
     mCard.bufferCreated = 0;
@@ -1079,23 +1078,23 @@ s32 xlMain(void) {
     gpSystem = NULL;
 
     if (!xlObjectMake(&gpCode, NULL, &gClassCode)) {
-        return 0;
+        return false;
     }
     if (!xlObjectMake(&gpFrame, NULL, &gClassFrame)) {
-        return 0;
+        return false;
     }
     if (!xlObjectMake(&gpSound, NULL, &gClassSound)) {
-        return 0;
+        return false;
     }
     if (!xlObjectMake(&gpSystem, NULL, &gClassSystem)) {
-        return 0;
+        return false;
     }
 
     if (!xlFileSetOpen(&simulatorDVDOpen)) {
-        return 0;
+        return false;
     }
     if (!xlFileSetRead(&simulatorDVDRead)) {
-        return 0;
+        return false;
     }
 
     soundLoadBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_ACCEPT, D_80134D9C);
@@ -1103,35 +1102,35 @@ s32 xlMain(void) {
     soundLoadBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_SELECT, D_800E9BDC);
 
     if (!romSetImage(SYSTEM_ROM(gpSystem), acNameROM)) {
-        return 0;
+        return false;
     }
     if (!systemReset(gpSystem)) {
-        return 0;
+        return false;
     }
     if (!frameShow(gpFrame)) {
-        return 0;
+        return false;
     }
     if (!xlHeapGetFree(&nSize1)) {
-        return 0;
+        return false;
     }
     if (!systemSetMode(gpSystem, SM_RUNNING)) {
-        return 0;
+        return false;
     }
 
     simulatorRun(&eMode);
 
     if (!xlObjectFree(&gpSystem)) {
-        return 0;
+        return false;
     }
     if (!xlObjectFree(&gpSound)) {
-        return 0;
+        return false;
     }
     if (!xlObjectFree(&gpFrame)) {
-        return 0;
+        return false;
     }
     if (!xlObjectFree(&gpCode)) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }

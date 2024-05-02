@@ -14,12 +14,12 @@
 #include "libc/math.h"
 #include "macros.h"
 
-static s32 cpuSetTLB(Cpu* pCPU, s32 iEntry);
-inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
+static bool cpuSetTLB(Cpu* pCPU, s32 iEntry);
+inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
 static void treeCallerInit(CpuCallerID* block, s32 total);
-static s32 treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
-inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
-static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
+static bool treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -620,13 +620,13 @@ const f64 D_80135FB0 = 3.0;
 const f32 D_80135FB8 = 0.5f;
 const f64 D_80135FC0 = 4503601774854144.0;
 
-static s32 cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 16;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -651,16 +651,16 @@ static s32 cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_DSRLV(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DSRLV(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 16;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -685,16 +685,16 @@ static s32 cpuCompile_DSRLV(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_DSRAV(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DSRAV(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 17;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -720,16 +720,16 @@ static s32 cpuCompile_DSRAV(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_DMULT(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DMULT(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 53;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -791,16 +791,16 @@ static s32 cpuCompile_DMULT(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_DMULTU(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DMULTU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 28;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -837,16 +837,16 @@ static s32 cpuCompile_DMULTU(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_DDIV(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DDIV(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 64;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -919,16 +919,16 @@ static s32 cpuCompile_DDIV(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_DDIVU(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_DDIVU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 43;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -980,16 +980,16 @@ static s32 cpuCompile_DDIVU(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
+inline bool cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1001,16 +1001,16 @@ inline s32 cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
+inline bool cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1022,16 +1022,16 @@ inline s32 cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
+inline bool cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1043,16 +1043,16 @@ inline s32 cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
+inline bool cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1064,16 +1064,16 @@ inline s32 cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_S_SQRT(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_S_SQRT(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 36;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1118,16 +1118,16 @@ static s32 cpuCompile_S_SQRT(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_D_SQRT(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_D_SQRT(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 48;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1184,16 +1184,16 @@ static s32 cpuCompile_D_SQRT(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_W_CVT_SD(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_W_CVT_SD(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 14;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1216,16 +1216,16 @@ static s32 cpuCompile_W_CVT_SD(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_L_CVT_SD(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_L_CVT_SD(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 56;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1290,16 +1290,16 @@ static s32 cpuCompile_L_CVT_SD(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_CEIL_W(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_CEIL_W(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 13;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1321,16 +1321,16 @@ static s32 cpuCompile_CEIL_W(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 13;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1352,16 +1352,16 @@ static s32 cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuCompile_ROUND_W(s32* addressGCN) {
+inline bool cpuCompile_ROUND_W(s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1373,16 +1373,16 @@ inline s32 cpuCompile_ROUND_W(s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuCompile_TRUNC_W(s32* addressGCN) {
+inline bool cpuCompile_TRUNC_W(s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 3;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1394,16 +1394,16 @@ inline s32 cpuCompile_TRUNC_W(s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LB(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LB(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 11;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1422,16 +1422,16 @@ static s32 cpuCompile_LB(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LH(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LH(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 11;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1450,16 +1450,16 @@ static s32 cpuCompile_LH(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LW(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LW(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 10;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1477,16 +1477,16 @@ static s32 cpuCompile_LW(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LBU(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LBU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 10;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1504,16 +1504,16 @@ static s32 cpuCompile_LBU(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LHU(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LHU(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 10;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1531,16 +1531,16 @@ static s32 cpuCompile_LHU(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_SB(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_SB(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 10;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1558,16 +1558,16 @@ static s32 cpuCompile_SB(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_SH(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_SH(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 10;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1585,16 +1585,16 @@ static s32 cpuCompile_SH(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_SW(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_SW(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 10;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1612,16 +1612,16 @@ static s32 cpuCompile_SW(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LDC(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LDC(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 12;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1641,16 +1641,16 @@ static s32 cpuCompile_LDC(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_SDC(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_SDC(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 12;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1670,16 +1670,16 @@ static s32 cpuCompile_SDC(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LWL(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LWL(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 12;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1700,16 +1700,16 @@ static s32 cpuCompile_LWL(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
-static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
+static bool cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
     s32* compile;
     s32 count = 0;
     s32 nSize = 12;
 
     if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
-        return 0;
+        return false;
     }
     *addressGCN = (s32)compile;
 
@@ -1730,18 +1730,18 @@ static s32 cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
     DCStoreRange(compile, nSize * sizeof(s32));
     ICInvalidateRange(compile, nSize * sizeof(s32));
 
-    return 1;
+    return true;
 }
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCheckDelaySlot.s")
 #else
-static s32 cpuCheckDelaySlot(u32 opcode) {
+static bool cpuCheckDelaySlot(u32 opcode) {
     s32 flag = 0;
 
     if (opcode == 0) {
-        return 0;
+        return false;
     }
 
     switch (MIPS_OP(opcode)) {
@@ -1853,10 +1853,10 @@ inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
     }
 }
 
-static s32 cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* anCode, s32* piCode, s32 bSlot);
+static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* anCode, s32* piCode, bool bSlot);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetPPC.s")
 
-s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
+bool cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
     s32 iCode;
     s32 iCode0;
     s32 pad;
@@ -1875,7 +1875,7 @@ s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
 
     firstTime = 1;
     if (!cpuFindFunction(pCPU, nAddressN64, &pFunction)) {
-        return 0;
+        return false;
     }
 
     if (pFunction->pfCode == NULL) {
@@ -1892,8 +1892,8 @@ s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
         iCode = 0;
         nAddress = pFunction->nAddress0;
         while (nAddress <= pFunction->nAddress1) {
-            if (!cpuGetPPC(pCPU, &nAddress, pFunction, NULL, &iCode, 0)) {
-                return 0;
+            if (!cpuGetPPC(pCPU, &nAddress, pFunction, NULL, &iCode, false)) {
+                return false;
             }
         }
 
@@ -1948,8 +1948,8 @@ s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
         iCode = 0;
         nAddress = pFunction->nAddress0;
         while (nAddress <= pFunction->nAddress1) {
-            if (!cpuGetPPC(pCPU, &nAddress, pFunction, anCode, &iCode, 0)) {
-                return 0;
+            if (!cpuGetPPC(pCPU, &nAddress, pFunction, anCode, &iCode, false)) {
+                return false;
             }
         }
         cpuCompileNOP(anCode, &iCode, iCode0);
@@ -1961,7 +1961,7 @@ s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
 
         if (pFunction->nCountJump > 0) {
             if (pFunction->nCountJump >= 0x400) {
-                return 0;
+                return false;
             }
 
             pFunction->aJump = (CpuJump*)((u8*)chunkMemory + codeMemory + blockMemory);
@@ -1981,10 +1981,10 @@ s32 cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
         *ppFunction = pFunction;
     }
 
-    return 1;
+    return true;
 }
 
-static s32 cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
+static bool cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
     s32 iJump;
     s32 iCode;
     s32 nAddress;
@@ -1996,13 +1996,13 @@ static s32 cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
     }
 
     if (cpuFindCachedAddress(pCPU, nAddressN64, pnAddressGCN)) {
-        return 1;
+        return true;
     }
 
     if ((pFunction = pCPU->pFunctionLast) == NULL || nAddressN64 < pFunction->nAddress0 ||
         pFunction->nAddress1 < nAddressN64) {
         if (!cpuMakeFunction(pCPU, &pFunction, nAddressN64)) {
-            return 0;
+            return false;
         }
     }
 
@@ -2013,7 +2013,7 @@ static s32 cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
                 pFunction->timeToLive = pCPU->survivalTimer;
             }
             cpuMakeCachedAddress(pCPU, nAddressN64, *pnAddressGCN, pFunction);
-            return 1;
+            return true;
         }
     }
 
@@ -2033,50 +2033,50 @@ static s32 cpuFindAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressGCN) {
                 pFunction->timeToLive = pCPU->survivalTimer;
             }
             cpuMakeCachedAddress(pCPU, nAddressN64, *pnAddressGCN, pFunction);
-            return 1;
+            return true;
         }
-        if (!cpuGetPPC(pCPU, &nAddress, pFunction, NULL, &iCode, 0)) {
-            return 0;
+        if (!cpuGetPPC(pCPU, &nAddress, pFunction, NULL, &iCode, false)) {
+            return false;
         }
     }
 
-    return 0;
+    return false;
 }
 
-inline s32 cpuNoBranchTo(CpuFunction* pFunction, s32 addressN64) {
+inline bool cpuNoBranchTo(CpuFunction* pFunction, s32 addressN64) {
     s32 i;
 
     for (i = 0; i < pFunction->nCountJump; i++) {
         if (pFunction->aJump[i].nAddressN64 == addressN64) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
-static s32 cpuNextInstruction(Cpu* pCPU, s32 addressN64, s32 opcode, s32* anCode, s32* iCode) {
+static bool cpuNextInstruction(Cpu* pCPU, s32 addressN64, s32 opcode, s32* anCode, s32* iCode) {
     if (anCode == NULL) {
-        return 0;
+        return false;
     }
     if (pCPU->nOptimize.validCheck == 0) {
-        return 0;
+        return false;
     }
     if (pCPU->nOptimize.checkNext != addressN64 - 4) {
         pCPU->nOptimize.checkNext = 0;
-        return 0;
+        return false;
     }
     pCPU->nOptimize.checkNext = 0;
 
     if (!cpuNoBranchTo(pCPU->pFunctionLast, addressN64)) {
-        return 0;
+        return false;
     }
 
     switch (MIPS_OP(opcode)) {
         case 0x0D: // ori
             if (pCPU->nOptimize.destGPR == MIPS_RS(opcode) && MIPS_RS(opcode) == MIPS_RT(opcode)) {
                 if (pCPU->nOptimize.checkType != 0x3E8) {
-                    return 0;
+                    return false;
                 }
                 anCode[*iCode - 1] = 0x60000000;
                 anCode[(*iCode)++] = 0x60000000 | (pCPU->nOptimize.destGPR_mapping << 21) |
@@ -2085,13 +2085,13 @@ static s32 cpuNextInstruction(Cpu* pCPU, s32 addressN64, s32 opcode, s32* anCode
                 anCode[(*iCode)++] = (0x90030000 | (pCPU->nOptimize.destGPR_mapping << 21)) +
                                      (OFFSETOF(pCPU, aGPR[MIPS_RT(opcode)]) + 4);
                 pCPU->nOptimize.destGPR_check = 2;
-                return 1;
+                return true;
             }
-            return 0;
+            return false;
         case 0x09: // addiu
             if (pCPU->nOptimize.destGPR == MIPS_RS(opcode) && MIPS_RS(opcode) == MIPS_RT(opcode)) {
                 if (pCPU->nOptimize.checkType != 0x3E8) {
-                    return 0;
+                    return false;
                 }
                 anCode[*iCode - 1] = 0x60000000;
                 anCode[(*iCode)++] = 0x38000000 | (pCPU->nOptimize.destGPR_mapping << 21) |
@@ -2100,21 +2100,21 @@ static s32 cpuNextInstruction(Cpu* pCPU, s32 addressN64, s32 opcode, s32* anCode
                 anCode[(*iCode)++] = (0x90030000 | (pCPU->nOptimize.destGPR_mapping << 21)) +
                                      (OFFSETOF(pCPU, aGPR[MIPS_RT(opcode)]) + 4);
                 pCPU->nOptimize.destGPR_check = 2;
-                return 1;
+                return true;
             }
-            return 0;
+            return false;
         default:
             OSReport(D_800EC94C, opcode, addressN64);
             OSPanic(D_800EC1E0, 3621, D_8013525C);
             break;
     }
 
-    return 0;
+    return false;
 }
 
 void cpuRetraceCallback(u32 nCount) { SYSTEM_CPU(gpSystem)->nRetrace = nCount; }
 
-static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
+static bool cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
     RspUpdateMode eModeUpdate;
     System* pSystem;
     s32 nDelta;
@@ -2127,7 +2127,7 @@ static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
     pSystem = (System*)pCPU->pHost;
 
     if (!romUpdate(SYSTEM_ROM(pSystem))) {
-        return 0;
+        return false;
     }
 
     if (pSystem->eTypeROM == SRT_DRMARIO) {
@@ -2136,7 +2136,7 @@ static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
         eModeUpdate = ((pCPU->nMode & 0x80) && !pSystem->bException) ? RUM_IDLE : RUM_NONE;
     }
     if (!rspUpdate(SYSTEM_RSP(pSystem), eModeUpdate)) {
-        return 0;
+        return false;
     }
 
     root = pCPU->gTree;
@@ -2183,40 +2183,40 @@ static s32 cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
 
     if ((pCPU->nMode & 8) && !(pCPU->nMode & 4) && gpSystem->bException) {
         if (!systemCheckInterrupts(gpSystem)) {
-            return 0;
+            return false;
         }
     }
 
     if (pCPU->nMode & 4) {
         pCPU->nMode &= ~0x84;
         if (!cpuFindAddress(pCPU, pCPU->nPC, pnAddressGCN)) {
-            return 0;
+            return false;
         }
     }
-    return 1;
+    return true;
 }
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
-static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
+static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteOpcode.s")
 #else
-inline s32 cpuCheckInterrupts(Cpu* pCPU) {
+inline bool cpuCheckInterrupts(Cpu* pCPU) {
     System* pSystem;
 
     pSystem = (System*)pCPU->pHost;
     if (pSystem->bException) {
         if (!systemCheckInterrupts(pSystem)) {
-            return 0;
+            return false;
         }
     } else {
         videoForceRetrace(SYSTEM_VIDEO(pSystem), false);
     }
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuTLBRandom(Cpu* pCPU) {
+inline bool cpuTLBRandom(Cpu* pCPU) {
     s32 iEntry;
     s32 nCount;
 
@@ -2230,21 +2230,21 @@ inline s32 cpuTLBRandom(Cpu* pCPU) {
     return nCount;
 }
 
-inline s32 cpuExecuteCacheInstruction(Cpu* pCPU) {
+inline bool cpuExecuteCacheInstruction(Cpu* pCPU) {
     s32* pBuffer;
 
     if (!cpuGetAddressBuffer(pCPU, (void**)&pBuffer, pCPU->nPC)) {
-        return 0;
+        return false;
     }
     pBuffer[-1] = 0;
     pBuffer -= (pCPU->nPC - pCPU->nCallLast) >> 2;
     pBuffer[0] = 0x03E00008;
     pBuffer[1] = 0;
 
-    return 1;
+    return true;
 }
 
-static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddressGCN) {
+static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddressGCN) {
     s32 pad1[2];
     u64 save;
     s32 restore;
@@ -2587,7 +2587,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             pCPU->nWaitPC = (pCPU->nPC & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
             if (pCPU->nWaitPC == pCPU->nPC - 4) {
                 if (!cpuCheckInterrupts(pCPU)) {
-                    return 0;
+                    return false;
                 }
             }
             break;
@@ -2602,7 +2602,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             }
             if (pCPU->nWaitPC == pCPU->nPC - 4) {
                 if (!cpuCheckInterrupts(pCPU)) {
-                    return 0;
+                    return false;
                 }
                 break;
             }
@@ -3487,7 +3487,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             break;
         case 0x1F: // library call
             if (!libraryCall(SYSTEM_LIBRARY(pCPU->pHost), pCPU, MIPS_IMM_S16(nOpcode))) {
-                return 0;
+                return false;
             }
             break;
         case 0x1A: // ldl
@@ -3626,7 +3626,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             break;
         case 0x2F: // cache
             if (!cpuExecuteCacheInstruction(pCPU)) {
-                return 0;
+                return false;
             }
             break;
         case 0x30: // ll
@@ -3696,7 +3696,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nTick + 1)) {
-        return 0;
+        return false;
     }
     if (restore) {
         pCPU->aGPR[31].u64 = save;
@@ -3710,12 +3710,12 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
 }
 #endif
 
-static s32 cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static bool cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     Rom* pROM;
 
     pROM = SYSTEM_ROM(pCPU->pHost);
-    if (!simulatorTestReset(0, 0, 0, 1)) {
-        return 0;
+    if (!simulatorTestReset(false, false, false, true)) {
+        return false;
     }
 
     nCount = OSGetTick();
@@ -3732,14 +3732,14 @@ static s32 cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
-        return 0;
+        return false;
     }
 
     pCPU->nTickLast = OSGetTick();
     return nAddressGCN;
 }
 
-static s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static bool cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     nCount = OSGetTick();
 
     if (pCPU->nWaitPC != 0) {
@@ -3756,14 +3756,14 @@ static s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
-        return 0;
+        return false;
     }
 
     pCPU->nTickLast = OSGetTick();
     return nAddressGCN;
 }
 
-static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static bool cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     s32 pad;
     s32 nReg;
     s32 count;
@@ -3813,7 +3813,7 @@ static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
         ICInvalidateRange(anCode, 8);
     }
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
-        return 0;
+        return false;
     }
 
     nDeltaAddress = (u8*)nAddressGCN - (u8*)&anCode[3];
@@ -3834,10 +3834,10 @@ static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
-static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
+static bool cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStore.s")
 #else
-static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static bool cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     u32* opcode;
     s32 address;
     s32 iRegisterA;
@@ -4111,10 +4111,10 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
-static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
+static bool cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStoreF.s")
 #else
-static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static bool cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     u32* opcode;
     s32 address;
     s32 iRegisterA;
@@ -4328,14 +4328,14 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
 }
 #endif
 
-static s32 cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFunction) {
+static bool cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFunction) {
     s32 iGPR;
     s32* pnCode;
     s32 nData;
     s32 pad;
 
     if (!xlHeapTake(&pnCode, 0x200 | 0x30000000)) {
-        return 0;
+        return false;
     }
     *ppfLink = (CpuExecuteFunc)pnCode;
 
@@ -4377,19 +4377,19 @@ static s32 cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFunc
 
     DCStoreRange(*ppfLink, 0x200);
     ICInvalidateRange(*ppfLink, 0x200);
-    return 1;
+    return true;
 }
 
-inline s32 cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
+inline bool cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
     if (!xlHeapFree(&ppfLink)) {
-        return 0;
+        return false;
     } else {
         *ppfLink = NULL;
-        return 1;
+        return true;
     }
 }
 
-s32 cpuExecute(Cpu* pCPU) {
+bool cpuExecute(Cpu* pCPU) {
     s32 pad1;
     s32 iGPR;
     s32* pnCode;
@@ -4403,22 +4403,22 @@ s32 cpuExecute(Cpu* pCPU) {
     }
 
     if (!cpuMakeLink(pCPU, &pCPU->pfStep, &cpuExecuteOpcode)) {
-        return 0;
+        return false;
     }
     if (!cpuMakeLink(pCPU, &pCPU->pfJump, &cpuExecuteJump)) {
-        return 0;
+        return false;
     }
     if (!cpuMakeLink(pCPU, &pCPU->pfCall, &cpuExecuteCall)) {
-        return 0;
+        return false;
     }
     if (!cpuMakeLink(pCPU, &pCPU->pfIdle, &cpuExecuteIdle)) {
-        return 0;
+        return false;
     }
     if (!cpuMakeLink(pCPU, &pCPU->pfRam, &cpuExecuteLoadStore)) {
-        return 0;
+        return false;
     }
     if (!cpuMakeLink(pCPU, &pCPU->pfRamF, &cpuExecuteLoadStoreF)) {
-        return 0;
+        return false;
     }
 
     cpuCompile_DSLLV(pCPU, &cpuCompile_DSLLV_function);
@@ -4455,7 +4455,7 @@ s32 cpuExecute(Cpu* pCPU) {
 
     if (cpuMakeFunction(pCPU, &pFunction, pCPU->nPC)) {
         if (!xlHeapTake(&pnCode, 0x100 | 0x30000000)) {
-            return 0;
+            return false;
         }
 
         pfCode = (void (*)(void))pnCode;
@@ -4496,120 +4496,120 @@ s32 cpuExecute(Cpu* pCPU) {
         pfCode();
 
         if (!xlHeapFree(&pfCode)) {
-            return 0;
+            return false;
         }
 
         if (!cpuFreeLink(pCPU, &pCPU->pfIdle)) {
-            return 0;
+            return false;
         }
         if (!cpuFreeLink(pCPU, &pCPU->pfCall)) {
-            return 0;
+            return false;
         }
         if (!cpuFreeLink(pCPU, &pCPU->pfJump)) {
-            return 0;
+            return false;
         }
         if (!cpuFreeLink(pCPU, &pCPU->pfStep)) {
-            return 0;
+            return false;
         }
         if (!cpuFreeLink(pCPU, &pCPU->pfRam)) {
-            return 0;
+            return false;
         }
         if (!cpuFreeLink(pCPU, &pCPU->pfRamF)) {
-            return 0;
+            return false;
         }
 
         if (!xlHeapFree((void**)&cpuCompile_DSLLV_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DSRLV_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DSRAV_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DMULT_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DMULTU_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DDIV_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DDIVU_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DADD_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DADDU_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DSUB_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_DSUBU_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_S_SQRT_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_D_SQRT_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_W_CVT_SD_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_L_CVT_SD_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_CEIL_W_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_FLOOR_W_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_TRUNC_W_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_ROUND_W_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LB_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LH_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LW_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LBU_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LHU_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_SB_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_SH_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_SW_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LDC_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_SDC_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LWL_function)) {
-            return 0;
+            return false;
         }
         if (!xlHeapFree((void**)&cpuCompile_LWR_function)) {
-            return 0;
+            return false;
         }
 
         PAD_STACK();
@@ -4617,12 +4617,12 @@ s32 cpuExecute(Cpu* pCPU) {
         PAD_STACK();
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHackHandler.s")
 
-inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction) {
+inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction) {
     s32 iAddress;
     CpuAddress* aAddressCache;
 
@@ -4640,7 +4640,7 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
     aAddressCache[0].nN64 = nAddressN64;
     aAddressCache[0].nHost = nAddressHost;
     aAddressCache[0].pFunction = pFunction;
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFreeCachedAddress.s")
@@ -4651,12 +4651,13 @@ inline s32 cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, Cp
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
 
-static s32 cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1, s32 nType);
+static bool cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1,
+                          s32 nType);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
 
-s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
+bool cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
     if (!xlHeapFree((void**)&pCPU->apDevice[iDevice])) {
-        return 0;
+        return false;
     } else {
         s32 iAddress;
 
@@ -4666,11 +4667,11 @@ s32 cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
                 pCPU->aiDevice[iAddress] = pCPU->iDeviceDefault;
             }
         }
-        return 1;
+        return true;
     }
 }
 
-static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
+static bool cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
     s32 iDeviceTarget;
     s32 iDeviceSource;
     u32 nAddressVirtual0;
@@ -4691,7 +4692,7 @@ static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, 
     if (!cpuMakeDevice(pCPU, &iDeviceTarget, pCPU->apDevice[iDeviceSource]->pObject, nPhysical - nVirtual,
                        pCPU->apDevice[iDeviceSource]->nAddressPhysical0,
                        pCPU->apDevice[iDeviceSource]->nAddressPhysical1, pCPU->apDevice[iDeviceSource]->nType)) {
-        return 0;
+        return false;
     }
 
     nAddressVirtual0 = nVirtual;
@@ -4705,15 +4706,15 @@ static s32 cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, 
         *piDevice = iDeviceTarget;
     }
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
 
-static s32 cpuGetMode(u64 nStatus, CpuMode* peMode) {
+static bool cpuGetMode(u64 nStatus, CpuMode* peMode) {
     if (nStatus & 2) {
         *peMode = CM_KERNEL;
-        return 1;
+        return true;
     }
 
     if (!(nStatus & 4)) {
@@ -4728,16 +4729,16 @@ static s32 cpuGetMode(u64 nStatus, CpuMode* peMode) {
                 *peMode = CM_KERNEL;
                 break;
             default:
-                return 0;
+                return false;
         }
-        return 1;
+        return true;
     }
 
     NO_INLINE();
-    return 0;
+    return false;
 }
 
-static s32 cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
+static bool cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
     CpuMode eMode;
 
     *peSize = CS_NONE;
@@ -4757,44 +4758,44 @@ static s32 cpuGetSize(u64 nStatus, CpuSize* peSize, CpuMode* peMode) {
                 *peSize = nStatus & 0x80 ? CS_64BIT : CS_32BIT;
                 break;
             default:
-                return 0;
+                return false;
         }
 
         if (peMode != NULL) {
             *peMode = eMode;
         }
 
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-static s32 cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32) {
+static bool cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32) {
     CpuMode eMode;
     CpuMode eModeLast;
     CpuSize eSize;
     CpuSize eSizeLast;
 
     if (!cpuGetSize(nStatus, &eSize, &eMode)) {
-        return 0;
+        return false;
     }
     if (!cpuGetSize(pCPU->anCP0[12], &eSizeLast, &eModeLast)) {
-        return 0;
+        return false;
     }
 
     pCPU->anCP0[12] = nStatus;
-    return 1;
+    return true;
 }
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
-s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
+bool cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetRegisterCP0.s")
 #else
-s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
+bool cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
     s32 pad;
-    s32 bFlag = 0;
+    s32 bFlag = false;
 
     switch (iRegister) {
         case 1:
@@ -4802,10 +4803,10 @@ s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
         case 8:
             break;
         case 9:
-            bFlag = 1;
+            bFlag = true;
             break;
         case 11:
-            bFlag = 1;
+            bFlag = true;
             xlObjectEvent(pCPU->pHost, 0x1001, (void*)3);
             if (pCPU->nMode & 1 || (nData & ganMaskSetCP0[iRegister]) == 0) {
                 pCPU->nMode &= ~1;
@@ -4819,10 +4820,10 @@ s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
         case 13:
             xlObjectEvent(pCPU->pHost, (nData & 0x100) ? 0x1000 : 0x1001, (void*)0);
             xlObjectEvent(pCPU->pHost, (nData & 0x200) ? 0x1000 : 0x1001, (void*)1);
-            bFlag = 1;
+            bFlag = true;
             break;
         case 14:
-            bFlag = 1;
+            bFlag = true;
             break;
         case 16:
             pCPU->anCP0[16] = (u32)(nData & ganMaskSetCP0[iRegister]);
@@ -4836,7 +4837,7 @@ s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
         case 31:
             break;
         default:
-            bFlag = 1;
+            bFlag = true;
             break;
     }
 
@@ -4844,36 +4845,36 @@ s32 cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
         pCPU->anCP0[iRegister] = nData & ganMaskSetCP0[iRegister];
     }
 
-    return 1;
+    return true;
 }
 #endif
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
-s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
+bool cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetRegisterCP0.s")
 #else
-s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData) {
-    s32 bFlag = 0;
+bool cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData) {
+    s32 bFlag = false;
 
     switch (iRegister) {
         case 1:
             *pnData = cpuTLBRandom(pCPU);
             break;
         case 9:
-            bFlag = 1;
+            bFlag = true;
             break;
         case 11:
-            bFlag = 1;
+            bFlag = true;
             break;
         case 14:
-            bFlag = 1;
+            bFlag = true;
             break;
         case 7:
             *pnData = 0;
             break;
         case 8:
-            bFlag = 1;
+            bFlag = true;
             break;
         case 21:
             *pnData = 0;
@@ -4894,7 +4895,7 @@ s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData) {
             *pnData = 0;
             break;
         default:
-            bFlag = 1;
+            bFlag = true;
             break;
     }
 
@@ -4902,11 +4903,11 @@ s32 cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData) {
         *pnData = pCPU->anCP0[iRegister] & ganMaskGetCP0[iRegister];
     }
 
-    return 1;
+    return true;
 }
 #endif
 
-s32 __cpuERET(Cpu* pCPU) {
+bool __cpuERET(Cpu* pCPU) {
     if (pCPU->anCP0[12] & 4) {
         pCPU->nPC = pCPU->anCP0[30];
         pCPU->anCP0[12] &= ~4;
@@ -4918,12 +4919,12 @@ s32 __cpuERET(Cpu* pCPU) {
     pCPU->nMode |= 4;
     pCPU->nMode |= 0x20;
 
-    return 1;
+    return true;
 }
 
-s32 __cpuBreak(Cpu* pCPU) {
+bool __cpuBreak(Cpu* pCPU) {
     pCPU->nMode |= 2;
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapObject.s")
@@ -4932,12 +4933,12 @@ s32 __cpuBreak(Cpu* pCPU) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetDevicePut.s")
 
-s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
+bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
     s32 iHack;
 
     for (iHack = 0; iHack < pCPU->nCountCodeHack; iHack++) {
         if (pCPU->aCodeHack[iHack].nAddress == nAddress) {
-            return 0;
+            return false;
         }
     }
 
@@ -4945,14 +4946,14 @@ s32 cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
     pCPU->aCodeHack[iHack].nOpcodeOld = nOpcodeOld;
     pCPU->aCodeHack[iHack].nOpcodeNew = nOpcodeNew;
     pCPU->nCountCodeHack++;
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuReset.s")
 
-s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
+bool cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
     if (!xlObjectTest(pCPU, &gClassCPU)) {
-        return 0;
+        return false;
     }
 
     pCPU->nMode |= 4;
@@ -4960,47 +4961,47 @@ s32 cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
     pCPU->nLo = nLo;
     pCPU->nHi = nHi;
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuInitAllDevices(Cpu* pCPU) {
+inline bool cpuInitAllDevices(Cpu* pCPU) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
         pCPU->apDevice[i] = NULL;
     }
 
-    return 1;
+    return true;
 }
 
-inline s32 cpuFreeAllDevices(Cpu* pCPU) {
+inline bool cpuFreeAllDevices(Cpu* pCPU) {
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(pCPU->apDevice); i++) {
         if (pCPU->apDevice[i] != NULL) {
             if (!cpuFreeDevice(pCPU, i)) {
-                return 0;
+                return false;
             }
         } else {
             pCPU->apDevice[i] = NULL;
         }
     }
 
-    return 1;
+    return true;
 }
 
-s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
+bool cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pCPU->pHost = pArgument;
             cpuInitAllDevices(pCPU);
             if (!cpuReset(pCPU)) {
-                return 0;
+                return false;
             }
             break;
         case 3:
             if (!cpuFreeAllDevices(pCPU)) {
-                return 0;
+                return false;
             }
             break;
         case 0:
@@ -5008,13 +5009,13 @@ s32 cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
         case 0x1003:
             break;
         default:
-            return 0;
+            return false;
     }
 
-    return 1;
+    return true;
 }
 
-s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
+bool cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
     s32 iDevice;
 
     if (0x80000000 <= nAddress && nAddress < 0xC0000000) {
@@ -5025,27 +5026,27 @@ s32 cpuGetAddressOffset(Cpu* pCPU, s32* pnOffset, u32 nAddress) {
         if (pCPU->apDevice[iDevice]->nType & 0x100) {
             *pnOffset = nAddress + pCPU->apDevice[iDevice]->nOffsetAddress & 0x7FFFFF;
         } else {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
-s32 cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress) {
+bool cpuGetAddressBuffer(Cpu* pCPU, void** ppBuffer, u32 nAddress) {
     CpuDevice* pDevice = pCPU->apDevice[pCPU->aiDevice[nAddress >> 0x10]];
 
     if ((Ram*)pDevice->pObject == SYSTEM_RAM(pCPU->pHost)) {
         if (!ramGetBuffer(SYSTEM_RAM(pCPU->pHost), ppBuffer, nAddress + pDevice->nOffsetAddress, NULL)) {
-            return 0;
+            return false;
         }
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-s32 cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u32 nSize) {
+bool cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u32 nSize) {
     s32 iEntry;
     s32 iAddress = 0;
     u32 nAddress;
@@ -5082,7 +5083,7 @@ s32 cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u3
                     nSizeMapped = 16 * 1024 * 1024;
                     break;
                 default:
-                    return 0;
+                    return false;
             }
 
             nAddress = ((u32)(pCPU->aTLB[iEntry][0] & ~0x3F) << 6) + (nOffset & nMask);
@@ -5094,23 +5095,23 @@ s32 cpuGetOffsetAddress(Cpu* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u3
     }
 
     *pnCount = iAddress;
-    return 1;
+    return true;
 }
 
-s32 cpuInvalidateCache(Cpu* pCPU, s32 nAddress0, s32 nAddress1) {
+bool cpuInvalidateCache(Cpu* pCPU, s32 nAddress0, s32 nAddress1) {
     if ((nAddress0 & 0xF0000000) == 0xA0000000) {
-        return 1;
+        return true;
     }
 
     if (!cpuFreeCachedAddress(pCPU, nAddress0, nAddress1)) {
-        return 0;
+        return false;
     }
 
     cpuDMAUpdateFunction(pCPU, nAddress0, nAddress1);
-    return 1;
+    return true;
 }
 
-s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
+bool cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
     s32 nSize;
     u32* pnBuffer;
     u32 nChecksum;
@@ -5119,11 +5120,11 @@ s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
 
     if (pFunction->nChecksum != 0) {
         *pnChecksum = pFunction->nChecksum;
-        return 1;
+        return true;
     }
 
     if (!cpuGetAddressBuffer(pCPU, (void**)&pnBuffer, pFunction->nAddress0)) {
-        return 0;
+        return false;
     }
 
     nChecksum = 0;
@@ -5141,20 +5142,20 @@ s32 cpuGetFunctionChecksum(Cpu* pCPU, u32* pnChecksum, CpuFunction* pFunction) {
     *pnChecksum = nChecksum;
     pFunction->nChecksum = nChecksum;
 
-    return 1;
+    return true;
 }
 
-static s32 cpuHeapReset(u32* array, s32 count) {
+static bool cpuHeapReset(u32* array, s32 count) {
     s32 i;
 
     for (i = 0; i < count; i++) {
         array[i] = 0;
     }
 
-    return 1;
+    return true;
 }
 
-s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) {
+bool cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) {
     s32 done;
     s32 second;
     u32* anPack;
@@ -5194,9 +5195,9 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
                 pFunction->heapID = 3;
                 pFunction->heapWhere = -1;
                 if (!xlHeapTake(heap, memory_size)) {
-                    return 0;
+                    return false;
                 }
-                return 1;
+                return true;
             }
         } else if (pFunction->heapID == 2) {
             pFunction->heapID = 2;
@@ -5209,9 +5210,9 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
             pFunction->heapID = 3;
             pFunction->heapWhere = -1;
             if (!xlHeapTake(heap, memory_size)) {
-                return 0;
+                return false;
             }
-            return 1;
+            return true;
         }
 
         nCount = 33 - nBlockCount;
@@ -5244,7 +5245,7 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
         if (second) {
             pFunction->heapID = -1;
             pFunction->heapWhere = -1;
-            return 0;
+            return false;
         }
     }
 
@@ -5254,10 +5255,10 @@ s32 cpuHeapTake(void* heap, Cpu* pCPU, CpuFunction* pFunction, int memory_size) 
         *((s32*)heap) = (s32)pCPU->gHeap2 + (pFunction->heapWhere & 0xFFFF) * 0xA00;
     }
 
-    return 1;
+    return true;
 }
 
-s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
+bool cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
     u32* anPack;
     s32 iPack;
     u32 nMask;
@@ -5269,19 +5270,19 @@ s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
     } else {
         if (pFunction->pnBase != NULL) {
             if (!xlHeapFree(&pFunction->pnBase)) {
-                return 0;
+                return false;
             }
         } else {
             if (!xlHeapFree(&pFunction->pfCode)) {
-                return 0;
+                return false;
             }
         }
 
-        return 1;
+        return true;
     }
 
     if (pFunction->heapWhere == -1) {
-        return 0;
+        return false;
     }
 
     nMask = ((1 << (pFunction->heapWhere >> 16)) - 1) << (pFunction->heapWhere & 0x1F);
@@ -5291,13 +5292,13 @@ s32 cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
         anPack[iPack] &= ~nMask;
         pFunction->heapID = -1;
         pFunction->heapWhere = -1;
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-static s32 cpuTreeTake(void* heap, s32* where) {
+static bool cpuTreeTake(void* heap, s32* where) {
     s32 done;
     s32 nOffset;
     s32 nCount;
@@ -5330,23 +5331,23 @@ static s32 cpuTreeTake(void* heap, s32* where) {
 
     if (done == 0) {
         *where = -1;
-        return 0;
+        return false;
     }
 
     *((s32*)heap) = (s32)gHeapTree + ((*where & 0xFFFF) * 0x48);
 
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
 
-static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
+static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
     CpuTreeRoot* root = pCPU->gTree;
     s32 count;
     s32 cancel;
 
     if (root == NULL) {
-        return 1;
+        return true;
     }
 
     if ((start < root->root_address) && (end > root->root_address)) {
@@ -5385,7 +5386,7 @@ static s32 cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
         } while (count != 0);
     }
 
-    return 1;
+    return true;
 }
 
 inline void treeCallerInit(CpuCallerID* block, s32 total) {
@@ -5429,7 +5430,7 @@ inline void treeCallerInit(CpuCallerID* block, s32 total) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCleanNodes.s")
 
-inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
+inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
     CpuTreeRoot* root = pCPU->gTree;
 
     root->kill_limit = 0;
@@ -5448,7 +5449,7 @@ inline s32 treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
         }
     }
     root->side ^= 1;
-    return 1;
+    return true;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/treeForceCleanNodes.s")
