@@ -2163,7 +2163,41 @@ bool frameSetLightCount(Frame* pFrame, s32 nCount) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLight.s")
+#else
+bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData) {
+    Light* pLight;
+
+    if (iLight >= 0 && iLight < 8) {
+        pLight = &pFrame->aLight[iLight];
+        pLight->bTransformed = false;
+
+        if (pData[3] != 0) {
+            pLight->kc = (u8)pData[3] * 0.0078125f + 0.0625f;
+            pLight->kl = (u8)pData[7] / 4096.0f;
+            pLight->kq = (u8)pData[14] / 4194304.0f;
+            pLight->coordX = *(s16*)&pData[8];
+            pLight->coordY = *(s16*)&pData[10];
+            pLight->coordZ = *(s16*)&pData[12];
+        } else {
+            pLight->kc = 0.0f;
+        }
+
+        OSu8tof32((u8*)&pData[0], &pLight->rColorR);
+        OSu8tof32((u8*)&pData[1], &pLight->rColorG);
+        OSu8tof32((u8*)&pData[2], &pLight->rColorB);
+
+        s8tof32Scaled(&pData[8], &pLight->rVecOrigTowards.x);
+        s8tof32Scaled(&pData[9], &pLight->rVecOrigTowards.y);
+        s8tof32Scaled(&pData[10], &pLight->rVecOrigTowards.z);
+        return true;
+    } else {
+        return false;
+    }
+}
+#endif
 
 bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
     switch (iLookAt) {
