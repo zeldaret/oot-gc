@@ -155,23 +155,7 @@ int main(int nCount, char** aszArgument) {
 
     __PADDisableRecalibration(true);
     OSInitAlarm();
-
-#ifdef __MWERKS__
-    asm {
-        li      r3, 4
-        oris    r3, r3, 4
-        mtspr   GQR2, r3
-        li      r3, 5
-        oris    r3, r3, 5
-        mtspr   GQR3, r3
-        li      r3, 6
-        oris    r3, r3, 6
-        mtspr   GQR4, r3
-        li      r3, 7
-        oris    r3, r3, 7
-        mtspr   GQR5, r3
-    }
-#endif
+    OSInitFastCast();
 
     nSizeHeap = 0;
 

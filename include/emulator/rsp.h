@@ -64,7 +64,7 @@ typedef struct __anon_0x575BD {
 
 typedef struct __anon_0x57890 {
     /* 0x00 */ s32 iDL;
-    /* 0x04 */ s32 bValid;
+    /* 0x04 */ bool bValid;
     /* 0x08 */ struct __anon_0x575BD task;
     /* 0x48 */ s32 nCountVertex;
     /* 0x4C */ __anon_0x60B3F eTypeUCode;
@@ -107,9 +107,9 @@ typedef struct __anon_0x57E56 {
     /* 0x0 */ u8 nRed;
     /* 0x1 */ u8 nGreen;
     /* 0x2 */ u8 nBlue;
-    /* 0x3 */ char rVectorX;
-    /* 0x4 */ char rVectorY;
-    /* 0x5 */ char rVectorZ;
+    /* 0x3 */ s8 rVectorX;
+    /* 0x4 */ s8 rVectorY;
+    /* 0x5 */ s8 rVectorZ;
 } __anon_0x57E56; // size = 0x6
 
 typedef struct __anon_0x58107 {
@@ -215,11 +215,11 @@ typedef struct Rsp {
     /* 0x39C8 */ s32* dctBuf;
 } Rsp; // size = 0x39CC
 
-s32 rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);
-s32 rspEnableABI(Rsp* pRSP, s32 bFlag);
-s32 rspFrameComplete(Rsp* pRSP);
-s32 rspUpdate(Rsp* pRSP, RspUpdateMode eMode);
-s32 rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
+bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);
+bool rspEnableABI(Rsp* pRSP, bool bFlag);
+bool rspFrameComplete(Rsp* pRSP);
+bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode);
+bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassRSP;
 
