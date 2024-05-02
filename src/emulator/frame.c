@@ -2388,11 +2388,11 @@ bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
                      arNormal[2] * pFrame->lookAt.rT.z;
                 if (nTexGen & 0x100) {
                     colorS = rS * rS * rS;
-                    colorS = (D_80135E50 * colorS) + colorS;
-                    rS = (D_80135E54 * rS) + colorS;
+                    colorS = (0.22673f * colorS) + colorS;
+                    rS = ((1.0f / (f32)M_PI) * rS) + colorS;
                     colorT = rT * rT * rT;
-                    colorT = (D_80135E50 * colorT) + colorT;
-                    rT = (D_80135E54 * rT) + colorT;
+                    colorT = (0.22673f * colorT) + colorT;
+                    rT = ((1.0f / (f32)M_PI) * rT) + colorT;
                 } else {
                     rS *= 0.5f;
                     rT *= 0.5f;
@@ -2417,11 +2417,11 @@ bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
 
                 if (nTexGen & 0x100) {
                     colorS = rS * rS * rS;
-                    colorS = (D_80135E50 * colorS) + colorS;
-                    rS = (D_80135E54 * rS) + colorS;
+                    colorS = (0.22673f * colorS) + colorS;
+                    rS = ((1.0f / (f32)M_PI) * rS) + colorS;
                     colorT = rT * rT * rT;
-                    colorT = (D_80135E50 * colorT) + colorT;
-                    rT = (D_80135E54 * rT) + colorT;
+                    colorT = (0.22673f * colorT) + colorT;
+                    rT = ((1.0f / (f32)M_PI) * rT) + colorT;
                 } else {
                     rS *= 0.5f;
                     rT *= 0.5f;
