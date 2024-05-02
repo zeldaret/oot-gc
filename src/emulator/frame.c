@@ -9,6 +9,7 @@
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
 #include "macros.h"
+#include "math.h"
 
 const s32 D_800D31C0[] = {
     0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
@@ -423,6 +424,7 @@ static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
 static inline bool frameResetCache(Frame* pFrame);
 static bool frameSetupCache(Frame* pFrame);
+void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
 
 inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
@@ -2134,7 +2136,27 @@ bool frameGetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bPu
     return true;
 }
 
-inline void s8tof32Scaled(register s8* in, register f32* out) {
+// TODO: move these paired-single/quantization functions to a separate header
+// along with the GQR initialization in xlMain()?
+inline void s16tof32(register s16* in, register f32* out) {
+    OSs16tof32(in, out);
+}
+
+inline void s16tof32Pair(register s16* in, register f32* out) {
+#ifdef __MWERKS__
+    // clang-format off
+    asm {
+        psq_l f1, 0(in), 0, OS_FASTCAST_S16
+        psq_st f1, 0(out), 0, 0
+    }
+    // clang-format on
+#else
+    out[0] = (f32)in[0];
+    out[1] = (f32)in[1];
+#endif
+}
+
+inline void s8tof32Scaled128(register s8* in, register f32* out) {
 #ifdef __MWERKS__
     // clang-format off
     asm {
@@ -2147,7 +2169,283 @@ inline void s8tof32Scaled(register s8* in, register f32* out) {
 #endif
 }
 
+inline void s8tof32Scaled128Pair(register s8* in, register f32* out) {
+#ifdef __MWERKS__
+    // clang-format off
+    asm {
+        psq_l f1, 0(in), 0, 6
+        psq_st f1, 0(out), 0, 0
+    }
+    // clang-format on
+#else
+    out[0] = (f32)in[0] / 128.0f;
+    out[1] = (f32)in[1] / 128.0f;
+#endif
+}
+
+inline void s16tof32Scaled32Pair(register s16* src, register f32* dst) {
+#ifdef __MWERKS__
+    // clang-format off
+    asm {
+        psq_l f1, 0(src), 0, 7
+        psq_st f1, 0(dst), 0, 0
+    }
+    // clang-format on
+#else
+    dst[0] = (f32)src[0] / 32.0f;
+    dst[1] = (f32)src[1] / 32.0f;
+#endif
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadVertex.s")
+#else
+s32 frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
+    f32 mag;
+    s32 iLight;
+    s32 nLight;
+    s32 nTexGen;
+    f32 colorS;
+    f32 colorT;
+    f32 rS;
+    f32 rT;
+    f32 arNormal[3];
+    f32 arPosition[3];
+    Vertex* pVertex;
+    u32 nData32;
+    Light* aLight;
+    Light* pLight;
+    s32 iVertex1;
+    // f32 rScale;
+    // f32 rScaleST;
+    s8* pnData8;
+    s16* pnData16;
+    Mtx44Ptr matrixView;
+    Mtx44Ptr matrixModel;
+    f32 rColorR;
+    f32 rColorG;
+    f32 rColorB;
+    f32 rDiffuse;
+    f32 rInverseW;
+    f32 rInverseLength;
+    Vec3f vec;
+    f32 distance;
+
+    pnData8 = pBuffer;
+    pnData16 = pBuffer;
+    iVertex1 = iVertex0 + nCount - 1;
+    if (iVertex0 < 0 || iVertex0 >= 80 || iVertex1 < 0 || iVertex1 >= 80) {
+        return 0;
+    }
+
+    matrixModel = pFrame->aMatrixModel[pFrame->iMatrixModel];
+    if (pFrame->nMode & 0x08000000) {
+        // TODO: volatile hacks
+        if (!(*(volatile u32*)&pFrame->nMode & 0x400000)) {
+            PSMTX44Concat(matrixModel, pFrame->matrixProjectionExtra, pFrame->matrixView);
+            pFrame->nMode |= 0x400000;
+            if (pFrame->iHintProjection != -1) {
+                if (!frameScaleMatrix(pFrame->matrixView, pFrame->matrixView,
+                                      pFrame->aMatrixHint[pFrame->iHintProjection].rScale)) {
+                    return false;
+                }
+            }
+        }
+        matrixView = pFrame->matrixView;
+        // TODO: volatile hacks
+    } else if (!(*(volatile u32*)&pFrame->nMode & 0x400000) && pFrame->iHintProjection != -1) {
+        if (!frameScaleMatrix(pFrame->matrixView, matrixModel, pFrame->aMatrixHint[pFrame->iHintProjection].rScale)) {
+            return 0;
+        }
+        pFrame->nMode |= 0x400000;
+        matrixView = pFrame->matrixView;
+    } else {
+        matrixView = matrixModel;
+    }
+
+    if (pFrame->aMode[1] & 0x20) {
+        nLight = pFrame->nCountLight;
+        nTexGen = pFrame->aMode[1] & 0x180;
+        aLight = pFrame->aLight;
+
+        for (iLight = 0; iLight < nLight; iLight++) {
+            pLight = &aLight[iLight];
+            if (!pLight->bTransformed || !(pFrame->nMode & 0x200000)) {
+                PSMTX44MultVecNoW(matrixModel, &pLight->rVecOrigTowards, &vec);
+                rInverseLength = _inv_sqrtf(SQ(vec.x) + SQ(vec.y) + SQ(vec.z));
+                pLight->rVectorX = vec.x * rInverseLength;
+                pLight->rVectorY = vec.y * rInverseLength;
+                pLight->rVectorZ = vec.z * rInverseLength;
+                pLight->bTransformed = true;
+            }
+        }
+
+        if (nTexGen != 0 && (!pFrame->lookAt.bTransformed || !(pFrame->nMode & 0x200000))) {
+            if (!(pFrame->nMode & 0x01000000)) {
+                pFrame->lookAt.rSRaw.x = 0.0f;
+                pFrame->lookAt.rSRaw.y = 1.0f;
+                pFrame->lookAt.rSRaw.z = 0.0f;
+            }
+            if (!(pFrame->nMode & 0x02000000)) {
+                pFrame->lookAt.rTRaw.x = 1.0f;
+                pFrame->lookAt.rTRaw.y = 0.0f;
+                pFrame->lookAt.rTRaw.z = 0.0f;
+            }
+            PSMTX44MultVecNoW(matrixModel, &pFrame->lookAt.rSRaw, &pFrame->lookAt.rS);
+            PSMTX44MultVecNoW(matrixModel, &pFrame->lookAt.rTRaw, &pFrame->lookAt.rT);
+
+            mag = SQ(pFrame->lookAt.rS.x) + SQ(pFrame->lookAt.rS.y) + SQ(pFrame->lookAt.rS.z);
+            if (mag > 0.0f) {
+                rInverseLength = _inv_sqrtf(mag);
+                pFrame->lookAt.rS.x *= rInverseLength;
+                pFrame->lookAt.rS.y *= rInverseLength;
+                pFrame->lookAt.rS.z *= rInverseLength;
+            }
+
+            mag = SQ(pFrame->lookAt.rT.x) + SQ(pFrame->lookAt.rT.y) + SQ(pFrame->lookAt.rT.z);
+            if (mag > 0.0f) {
+                rInverseLength = _inv_sqrtf(mag);
+                pFrame->lookAt.rT.x *= rInverseLength;
+                pFrame->lookAt.rT.y *= rInverseLength;
+                pFrame->lookAt.rT.z *= rInverseLength;
+            }
+
+            pFrame->lookAt.bTransformed = true;
+        }
+        pFrame->nMode |= 0x200000;
+    } else {
+        nTexGen = 0;
+        nLight = 0;
+    }
+
+    pVertex = &pFrame->aVertex[iVertex0];
+    while (nCount-- != 0) {
+        s16tof32Pair(&pnData16[0], &arPosition[0]);
+        s16tof32(&pnData16[2], &arPosition[2]);
+
+        pVertex->rSum = arPosition[0] + arPosition[1] + arPosition[2];
+        rInverseW = 1.0f / (matrixView[0][3] * arPosition[0] + matrixView[1][3] * arPosition[1] +
+                            matrixView[2][3] * arPosition[2] + matrixView[3][3]);
+        pVertex->vec.x = rInverseW * (arPosition[0] * matrixView[0][0] + arPosition[1] * matrixView[1][0] +
+                                      arPosition[2] * matrixView[2][0] + matrixView[3][0]);
+        pVertex->vec.y = rInverseW * (arPosition[0] * matrixView[0][1] + arPosition[1] * matrixView[1][1] +
+                                      arPosition[2] * matrixView[2][1] + matrixView[3][1]);
+        pVertex->vec.z = rInverseW * (arPosition[0] * matrixView[0][2] + arPosition[1] * matrixView[1][2] +
+                                      arPosition[2] * matrixView[2][2] + matrixView[3][2]);
+
+        if (nLight != 0) {
+            s8tof32Scaled128Pair(&pnData8[12], &arNormal[0]);
+            s8tof32Scaled128(&pnData8[14], &arNormal[2]);
+
+            iLight = nLight;
+            pLight = &aLight[iLight];
+            if (gpSystem->eTypeROM == SRT_STARFOX) {
+                while ((rColorR = pLight->rColorR) + (rColorG = pLight->rColorG) + (rColorB = pLight->rColorB) ==
+                       0.0f) {
+                    pLight++;
+                }
+                pLight = &aLight[iLight];
+            } else {
+                rColorR = pLight->rColorR;
+                rColorG = pLight->rColorG;
+                rColorB = pLight->rColorB;
+            }
+
+            while (--iLight >= 0) {
+                pLight--;
+                if ((pFrame->aMode[1] & 0x800) && pLight->kc != 0.0f) {
+                    distance = sqrtf(SQ(pLight->coordX - arPosition[0]) + SQ(pLight->coordY - arPosition[1]) +
+                                     SQ(pLight->coordZ - arPosition[2]));
+                    pLight->rVectorX = (pLight->coordX - arPosition[0]) / distance;
+                    pLight->rVectorY = (pLight->coordY - arPosition[1]) / distance;
+                    pLight->rVectorZ = (pLight->coordZ - arPosition[2]) / distance;
+                    rDiffuse = (pLight->rVectorX * arNormal[0] + pLight->rVectorY * arNormal[1] +
+                                pLight->rVectorZ * arNormal[2]) /
+                               (pLight->kc + pLight->kl * distance + pLight->kq * distance * distance);
+                    if (rDiffuse > 1.0f) {
+                        rDiffuse = 1.0f;
+                    }
+                } else {
+                    rDiffuse = pLight->rVectorX * arNormal[0] + pLight->rVectorY * arNormal[1] +
+                               pLight->rVectorZ * arNormal[2];
+                }
+
+                if (rDiffuse > 0.0f) {
+                    rColorR += pLight->rColorR * rDiffuse;
+                    rColorG += pLight->rColorG * rDiffuse;
+                    rColorB += pLight->rColorB * rDiffuse;
+                }
+            }
+
+            OSf32tou8(&rColorR, &pVertex->anColor[0]);
+            OSf32tou8(&rColorG, &pVertex->anColor[1]);
+            OSf32tou8(&rColorB, &pVertex->anColor[2]);
+            pVertex->anColor[3] = pnData8[15];
+
+            if (nTexGen != 0) {
+                rS = arNormal[0] * pFrame->lookAt.rS.x + arNormal[1] * pFrame->lookAt.rS.y +
+                     arNormal[2] * pFrame->lookAt.rS.z;
+                rT = arNormal[0] * pFrame->lookAt.rT.x + arNormal[1] * pFrame->lookAt.rT.y +
+                     arNormal[2] * pFrame->lookAt.rT.z;
+                if (nTexGen & 0x100) {
+                    colorS = rS * rS * rS;
+                    colorS = (D_80135E50 * colorS) + colorS;
+                    rS = (D_80135E54 * rS) + colorS;
+                    colorT = rT * rT * rT;
+                    colorT = (D_80135E50 * colorT) + colorT;
+                    rT = (D_80135E54 * rT) + colorT;
+                } else {
+                    rS *= 0.5f;
+                    rT *= 0.5f;
+                }
+                pVertex->rS = rS + 0.5f;
+                pVertex->rT = rT + 0.5f;
+            }
+        } else {
+            nData32 = *(u32*)&pnData8[12];
+            pVertex->anColor[0] = nData32 >> 24;
+            pVertex->anColor[1] = nData32 >> 16;
+            pVertex->anColor[2] = nData32 >> 8;
+            pVertex->anColor[3] = nData32;
+            if (nTexGen != 0) {
+                s8tof32Scaled128Pair(&pnData8[12], &arNormal[0]);
+                s8tof32Scaled128(&pnData8[14], &arNormal[2]);
+
+                rS = arNormal[0] * pFrame->lookAt.rS.x + arNormal[1] * pFrame->lookAt.rS.y +
+                     arNormal[2] * pFrame->lookAt.rS.z;
+                rT = arNormal[0] * pFrame->lookAt.rT.x + arNormal[1] * pFrame->lookAt.rT.y +
+                     arNormal[2] * pFrame->lookAt.rT.z;
+
+                if (nTexGen & 0x100) {
+                    colorS = rS * rS * rS;
+                    colorS = (D_80135E50 * colorS) + colorS;
+                    rS = (D_80135E54 * rS) + colorS;
+                    colorT = rT * rT * rT;
+                    colorT = (D_80135E50 * colorT) + colorT;
+                    rT = (D_80135E54 * rT) + colorT;
+                } else {
+                    rS *= 0.5f;
+                    rT *= 0.5f;
+                }
+
+                pVertex->rS = rS + 0.5f;
+                pVertex->rT = rT + 0.5f;
+            }
+        }
+
+        if (nTexGen == 0) {
+            s16tof32Scaled32Pair(&pnData16[4], &pVertex->rS);
+        }
+
+        pVertex++;
+        pnData8 += 0x10;
+        pnData16 += 0x8;
+    }
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCullDL.s")
 
@@ -2186,9 +2484,9 @@ bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData) {
         OSu8tof32((u8*)&pData[1], &pLight->rColorG);
         OSu8tof32((u8*)&pData[2], &pLight->rColorB);
 
-        s8tof32Scaled(&pData[8], &pLight->rVecOrigTowards.x);
-        s8tof32Scaled(&pData[9], &pLight->rVecOrigTowards.y);
-        s8tof32Scaled(&pData[10], &pLight->rVecOrigTowards.z);
+        s8tof32Scaled128(&pData[8], &pLight->rVecOrigTowards.x);
+        s8tof32Scaled128(&pData[9], &pLight->rVecOrigTowards.y);
+        s8tof32Scaled128(&pData[10], &pLight->rVecOrigTowards.z);
         return true;
     } else {
         return false;
@@ -2199,15 +2497,15 @@ bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData) {
 bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
     switch (iLookAt) {
         case 0:
-            s8tof32Scaled(&pData[8], &pFrame->lookAt.rSRaw.x);
-            s8tof32Scaled(&pData[9], &pFrame->lookAt.rSRaw.y);
-            s8tof32Scaled(&pData[10], &pFrame->lookAt.rSRaw.z);
+            s8tof32Scaled128(&pData[8], &pFrame->lookAt.rSRaw.x);
+            s8tof32Scaled128(&pData[9], &pFrame->lookAt.rSRaw.y);
+            s8tof32Scaled128(&pData[10], &pFrame->lookAt.rSRaw.z);
             pFrame->nMode |= 0x01000000;
             break;
         case 1:
-            s8tof32Scaled(&pData[8], &pFrame->lookAt.rTRaw.x);
-            s8tof32Scaled(&pData[9], &pFrame->lookAt.rTRaw.y);
-            s8tof32Scaled(&pData[10], &pFrame->lookAt.rTRaw.z);
+            s8tof32Scaled128(&pData[8], &pFrame->lookAt.rTRaw.x);
+            s8tof32Scaled128(&pData[9], &pFrame->lookAt.rTRaw.y);
+            s8tof32Scaled128(&pData[10], &pFrame->lookAt.rTRaw.z);
             pFrame->nMode |= 0x02000000;
             break;
         default:

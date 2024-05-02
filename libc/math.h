@@ -121,6 +121,8 @@ _MATH_INLINE float powf(float __x, float __y) { return pow(__x, __y); }
 #define FP_NORMAL 4
 #define FP_SUBNORMAL 5
 
+double __frsqrte(double x);
+
 static inline int __fpclassifyf(float x) {
   switch ((*(_INT32*)&x) & 0x7f800000) {
   case 0x7f800000: {
@@ -174,13 +176,10 @@ extern inline float sqrtf(float x) {
   volatile float y;
 
   if (x > 0.0f) {
-    double guess = __frsqrte((double)x);                  /* returns an approximation to	*/
-    guess = _half * guess * (_three - guess * guess * x); /* now have 12 sig bits
-                                                           */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 24 sig bits
-                                                           */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 32 sig bits
-                                                           */
+    double guess = __frsqrte((double)x);                  /* returns an approximation to  */
+    guess = _half * guess * (_three - guess * guess * x); /* now have 12 sig bits         */
+    guess = _half * guess * (_three - guess * guess * x); /* now have 24 sig bits         */
+    guess = _half * guess * (_three - guess * guess * x); /* now have 32 sig bits         */
     y = (float)(x * guess);
     return y;
   }
@@ -197,6 +196,22 @@ _MATH_INLINE double sqrt(double x) {
     return x * guess;
   } else if (x == 0.0) {
     return 0;
+  } else if (x) {
+    return NAN;
+  }
+  return INFINITY;
+}
+
+_MATH_INLINE float _inv_sqrtf(float x) {
+  const float _half = .5f;
+  const float _three = 3.0f;
+
+  if (x > 0.0f) {
+    float guess = __frsqrte((double)x);                   /* returns an approximation to  */
+    guess = _half * guess * (_three - guess * guess * x); /* now have 8  sig bits         */
+    guess = _half * guess * (_three - guess * guess * x); /* now have 16 sig bits         */
+    guess = _half * guess * (_three - guess * guess * x); /* now have >24 sig bits        */
+    return guess;
   } else if (x) {
     return NAN;
   }
