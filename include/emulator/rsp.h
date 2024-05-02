@@ -43,7 +43,7 @@ typedef enum RspUpdateMode {
     RUM_IDLE = 1,
 } RspUpdateMode;
 
-typedef struct __anon_0x575BD {
+typedef struct RspTask {
     /* 0x00 */ s32 nType;
     /* 0x04 */ s32 nFlag;
     /* 0x08 */ s32 nOffsetBoot;
@@ -60,12 +60,12 @@ typedef struct __anon_0x575BD {
     /* 0x34 */ s32 nLengthMBI;
     /* 0x38 */ s32 nOffsetYield;
     /* 0x3C */ s32 nLengthYield;
-} __anon_0x575BD; // size = 0x40
+} RspTask; // size = 0x40
 
 typedef struct __anon_0x57890 {
     /* 0x00 */ s32 iDL;
     /* 0x04 */ bool bValid;
-    /* 0x08 */ struct __anon_0x575BD task;
+    /* 0x08 */ RspTask task;
     /* 0x48 */ s32 nCountVertex;
     /* 0x4C */ RspUCodeType eTypeUCode;
     /* 0x50 */ u32 n2TriMult;

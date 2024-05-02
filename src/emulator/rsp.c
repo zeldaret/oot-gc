@@ -1,5 +1,6 @@
 #include "emulator/rsp.h"
 #include "emulator/cpu.h"
+#include "emulator/frame.h"
 #include "emulator/ram.h"
 #include "emulator/rdp.h"
 #include "emulator/rsp_jumptables.h"
@@ -468,6 +469,7 @@ inline s32 rspPopDL(Rsp* pRSP) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadYield.s")
 
+static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_Setup.s")
 
 // Matches but data doesn't
@@ -568,6 +570,65 @@ static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFrameComplete.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspUpdate.s")
+bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode) {
+    RspTask* pTask;
+    bool bDone;
+    s32 nCount = 0;
+    Frame* pFrame = SYSTEM_FRAME(pRSP->pHost);
+
+    if ((pRSP->nMode & 4) && (pRSP->nMode & 8)) {
+        if (pRSP->nMode & 0x10) {
+            gNoSwapBuffer = true;
+            pRSP->nMode |= 0x20;
+        }
+        if (!frameEnd(pFrame)) {
+            return false;
+        }
+        pRSP->nMode &= ~0xC;
+    }
+
+    if (!(pRSP->nStatus & 1)) {
+        if (pRSP->nMode & 0x20) {
+            pRSP->nMode &= ~0x30;
+            pRSP->nStatus |= 0x201;
+            xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+            xlObjectEvent(pRSP->pHost, 0x1000, (void*)10);
+        } else {
+            if (pRSP->nMode & 2) {
+                if (frameBeginOK(pFrame) && eMode == RUM_IDLE) {
+                    pRSP->nMode &= ~0x2;
+                    pRSP->nMode |= 0x10;
+
+                    pTask = (RspTask*)((u8*)pRSP->pDMEM + 0xFC0);
+                    if (!rspParseGBI_Setup(pRSP, pTask)) {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            }
+
+            if (eMode == RUM_IDLE) {
+                nCount = -1;
+            }
+
+            if (nCount != 0) {
+                if (rspParseGBI(pRSP, &bDone, nCount)) {
+                    if (bDone) {
+                        pRSP->nMode &= ~0x10;
+                        pRSP->nStatus |= 0x201;
+                        xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                        xlObjectEvent(pRSP->pHost, 0x1000, (void*)10);
+                    }
+                } else {
+                    __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                }
+                pRSP->nTickLast = OSGetTick();
+            }
+        }
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEvent.s")
