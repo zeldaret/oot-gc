@@ -387,6 +387,7 @@ bool frameBeginOK(Frame* pFrame);
 bool frameBegin(Frame* pFrame, s32 nCountVertex);
 bool frameEnd(Frame* pFrame);
 bool frameDrawReset(Frame* pFrame, s32 nFlag);
+
 bool frameSetFill(Frame* pFrame, bool bFill);
 bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
 bool frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode);

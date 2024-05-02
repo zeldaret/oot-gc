@@ -454,7 +454,24 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
 }
 #endif
 
-inline s32 rspPopDL(Rsp* pRSP) {
+inline bool rspSetDL(Rsp* pRSP, s32 nOffsetRDRAM, bool bPush) {
+    s32 nAddress;
+    s32* pDL;
+
+    nAddress = SEGMENT_ADDRESS(pRSP, nOffsetRDRAM);
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pDL, nAddress, NULL)) {
+        return false;
+    }
+
+    if (bPush && ++pRSP->iDL >= ARRAY_COUNT(pRSP->apDL)) {
+        return false;
+    }
+
+    pRSP->apDL[pRSP->iDL] = (u64*)pDL;
+    return true;
+}
+
+inline bool rspPopDL(Rsp* pRSP) {
     if (pRSP->iDL == 0) {
         return false;
     } else {
@@ -463,17 +480,48 @@ inline s32 rspPopDL(Rsp* pRSP) {
     }
 }
 
+static bool rspFindUCode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSaveYield.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadYield.s")
 
-static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_Setup.s")
+static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask) {
+    s32 iSegment;
+
+    if (pRSP->yield.bValid) {
+        pRSP->yield.bValid = false;
+    }
+
+    pRSP->nGeometryMode = 0;
+    pRSP->iDL = 0;
+
+    if (!rspSetDL(pRSP, pTask->nOffsetMBI & 0x7FFFFF, false)) {
+        return false;
+    }
+
+    for (iSegment = 0; iSegment < ARRAY_COUNT(pRSP->anBaseSegment); iSegment++) {
+        pRSP->anBaseSegment[iSegment] = 0;
+    }
+
+    if (!rspFindUCode(pRSP, pTask)) {
+        return false;
+    }
+
+    if (pRSP->eTypeUCode != RUT_ZSORT || pRSP->nPass == 1) {
+        if (!frameBegin(SYSTEM_FRAME(pRSP->pHost), pRSP->nCountVertex)) {
+            return false;
+        }
+    }
+
+    PAD_STACK();
+    return true;
+}
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
+static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI.s")
 #else
 static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
