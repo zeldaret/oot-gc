@@ -4796,7 +4796,58 @@ static bool cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical,
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
+static bool cpuSetTLB(Cpu* pCPU, s32 iEntry) {
+    s32 iDevice;
+    u32 nMask;
+    u32 nVirtual;
+    u32 nPhysical;
+
+    if ((pCPU->anCP0[10] & 0xFFFFE000) == 0x80000000) {
+        pCPU->aTLB[iEntry][0] &= ~2;
+        ;
+        if ((iDevice = pCPU->aTLB[iEntry][4]) != -1) {
+            if (!cpuFreeDevice(pCPU, iDevice)) {
+                return false;
+            }
+            pCPU->aTLB[iEntry][4] = -1;
+        }
+
+        return true;
+    }
+
+    if ((iDevice = pCPU->aTLB[iEntry][4]) != -1) {
+        if (!cpuFreeDevice(pCPU, iDevice)) {
+            return false;
+        }
+    }
+
+    pCPU->aTLB[iEntry][0] = pCPU->anCP0[2] | 2;
+    pCPU->aTLB[iEntry][1] = pCPU->anCP0[3];
+    pCPU->aTLB[iEntry][2] = pCPU->anCP0[10];
+    pCPU->aTLB[iEntry][3] = pCPU->anCP0[5];
+
+    nMask = pCPU->aTLB[iEntry][3] | 0x1FFF;
+    nVirtual = pCPU->aTLB[iEntry][2] & 0xFFFFE000;
+    nPhysical = ((s32)(pCPU->aTLB[iEntry][0] & 0xFFFFFFC0) << 6) + (nVirtual & nMask);
+    if (nVirtual == 0xC0000000 && nPhysical == 0x80000000) {
+        nPhysical = 0x04900000;
+    }
+    if (nVirtual < 0x80000000 || 0xC0000000 <= nVirtual) {
+        if (!cpuMapAddress(pCPU, &iDevice, nVirtual, nPhysical, nMask + 1)) {
+            return false;
+        }
+        if (nVirtual == 0x70000000 && nPhysical == 0 && nMask == 0x007FFFFF) {
+            if (!cpuMapAddress(pCPU, NULL, 0x7F000000, 0x10034B30, 0x01000000)) {
+                return false;
+            }
+        }
+    } else {
+        iDevice = -1;
+    }
+
+    pCPU->aTLB[iEntry][4] = iDevice;
+    return true;
+}
 
 static bool cpuGetMode(u64 nStatus, CpuMode* peMode) {
     if (nStatus & 2) {
