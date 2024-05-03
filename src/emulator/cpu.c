@@ -4708,8 +4708,39 @@ static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost)
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
 
 static bool cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1,
-                          s32 nType);
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
+                          s32 nType) {
+    CpuDevice* pDevice;
+    s32 iDevice;
+    s32 pad;
+
+    iDevice = (nType & 0x100) ? (ARRAY_COUNT(pCPU->apDevice) / 2) : 0;
+    for (; iDevice < ARRAY_COUNT(pCPU->apDevice); iDevice++) {
+        if (pCPU->apDevice[iDevice] == NULL) {
+            break;
+        }
+    }
+    if (iDevice == ARRAY_COUNT(pCPU->apDevice)) {
+        return false;
+    }
+
+    *piDevice = iDevice;
+    if (!xlHeapTake(&pDevice, sizeof(CpuDevice))) {
+        return false;
+    }
+
+    pCPU->apDevice[iDevice] = pDevice;
+    pDevice->nType = nType;
+    pDevice->pObject = pObject;
+    pDevice->nOffsetAddress = nOffset;
+    pDevice->nAddressPhysical0 = nAddress0;
+    pDevice->nAddressPhysical1 = nAddress1;
+
+    if (!xlObjectEvent(pObject, 0x1002, pDevice)) {
+        return false;
+    }
+
+    return true;
+}
 
 bool cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
     if (!xlHeapFree((void**)&pCPU->apDevice[iDevice])) {
