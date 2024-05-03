@@ -1,5 +1,9 @@
 #include "emulator/rsp.h"
+#include "emulator/cpu.h"
+#include "emulator/ram.h"
+#include "emulator/rdp.h"
 #include "emulator/rsp_jumptables.h"
+#include "emulator/system.h"
 
 _XL_OBJECTTYPE gClassRSP = {
     "RSP",
@@ -315,7 +319,132 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX2.s")
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadMatrix.s")
+#else
+static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
+    s32* pMtx;
+    s32 nDataA;
+    s32 nDataB;
+    f32 rScale;
+    f32 rUpper;
+    f32 rLower;
+    u16 nUpper;
+    u16 nLower;
+
+    rScale = 1.0f / 65536.0f;
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pMtx, nAddress, NULL)) {
+        return false;
+    }
+
+    nDataA = pMtx[0];
+    nDataB = pMtx[8];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[0][0] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[0][1] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[1];
+    nDataB = pMtx[9];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[0][2] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[0][3] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[2];
+    nDataB = pMtx[10];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[1][0] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[1][1] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[3];
+    nDataB = pMtx[11];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[1][2] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[1][3] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[4];
+    nDataB = pMtx[12];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[2][0] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[2][1] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[5];
+    nDataB = pMtx[13];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[2][2] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[2][3] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[6];
+    nDataB = pMtx[14];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[3][0] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[3][1] = rUpper + rLower * rScale;
+
+    nDataA = pMtx[7];
+    nDataB = pMtx[15];
+    nUpper = nDataA >> 16;
+    nLower = nDataB >> 16;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[3][2] = rUpper + rLower * rScale;
+    nUpper = nDataA & 0xFFFF;
+    nLower = nDataB & 0xFFFF;
+    OSs16tof32((s16*)&nUpper, &rUpper);
+    OSu16tof32(&nLower, &rLower);
+    matrix[3][3] = rUpper + rLower * rScale;
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
