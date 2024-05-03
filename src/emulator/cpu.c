@@ -4652,9 +4652,56 @@ static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddress
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFreeCachedAddress.s")
+bool cpuFreeCachedAddress(Cpu* pCPU, s32 nAddress0, s32 nAddress1) {
+    s32 iAddress;
+    s32 iAddressNext;
+    s32 nAddressN64;
+    CpuAddress* aAddressCache = pCPU->aAddressCache;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindCachedAddress.s")
+    iAddress = 0;
+    while (iAddress < pCPU->nCountAddress) {
+        nAddressN64 = aAddressCache[iAddress].nN64;
+        if (nAddress0 <= nAddressN64 && nAddressN64 <= nAddress1) {
+            for (iAddressNext = iAddress; iAddressNext < pCPU->nCountAddress - 1; iAddressNext++) {
+                aAddressCache[iAddressNext] = aAddressCache[iAddressNext + 1];
+            }
+            pCPU->nCountAddress--;
+        } else {
+            iAddress++;
+        }
+    }
+
+    return true;
+}
+
+static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost) {
+    s32 iAddress;
+    CpuFunction* pFunction;
+    CpuAddress addressFound;
+    CpuAddress* aAddressCache = pCPU->aAddressCache;
+
+    for (iAddress = 0; iAddress < pCPU->nCountAddress; iAddress++) {
+        if (nAddressN64 == aAddressCache[iAddress].nN64) {
+            if (iAddress > ARRAY_COUNT(pCPU->aAddressCache) / 2) {
+                addressFound = aAddressCache[iAddress];
+                for (; iAddress > 0; iAddress--) {
+                    aAddressCache[iAddress] = aAddressCache[iAddress - 1];
+                }
+                aAddressCache[iAddress] = addressFound;
+            }
+
+            pFunction = aAddressCache[iAddress].pFunction;
+            if (pFunction->timeToLive > 0) {
+                pFunction->timeToLive = pCPU->survivalTimer;
+            }
+
+            *pnAddressHost = aAddressCache[iAddress].nHost;
+            return true;
+        }
+    }
+
+    return false;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuTestInterrupt.s")
 
