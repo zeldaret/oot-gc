@@ -30,6 +30,8 @@ static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 static inline void CopyCFB(u16* srcP);
 static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount);
 static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount);
@@ -608,7 +610,41 @@ static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTexture
 }
 #endif
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetup2D.s")
+#else
+bool frameDrawSetup2D(Frame* pFrame) {
+    Mtx44 matrix44;
+
+    if (!(*(volatile u32*)&pFrame->nMode & 0x40000000)) {
+        pFrame->nMode |= 0x40000000;
+
+        GXSetViewport(0.0f, 0.0f, pFrame->anSizeX[1], pFrame->anSizeY[1], 0.0f, 1.0f);
+        pFrame->nFlag |= 0x10000;
+
+        if (snScissorChanged) {
+            GXSetScissor(snScissorXOrig, snScissorYOrig, snScissorWidth, snScissorHeight);
+            snScissorChanged = false;
+        }
+
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+        pFrame->nFlag |= 0x20;
+
+        C_MTXOrtho(matrix44, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f, 0.0f, 1001.0f);
+        GXSetProjection(matrix44, GX_ORTHOGRAPHIC);
+        pFrame->nFlag |= 0x40000;
+
+        GXSetCullMode(GX_CULL_NONE);
+        pFrame->nFlag |= 8;
+
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_TRUE);
+        pFrame->nFlag |= 4;
+    }
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupSP.s")
 
