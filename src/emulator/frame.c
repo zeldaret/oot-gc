@@ -9,6 +9,7 @@
 #include "emulator/xlCoreGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
+#include "emulator/xlPostGCN.h"
 #include "macros.h"
 #include "math.h"
 
@@ -2885,7 +2886,38 @@ static bool packFreeBlocks(s32* piPack, u32* anPack) {
     return false;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTexture.s")
+static bool frameMakeTexture(Frame* pFrame, FrameTexture** ppTexture) {
+    u32 nMask;
+    s32 iTexture;
+    s32 iTextureUsed;
+
+    iTextureUsed = 0;
+    while (iTextureUsed < ARRAY_COUNTU(pFrame->anTextureUsed) && (nMask = pFrame->anTextureUsed[iTextureUsed]) == -1) {
+        iTextureUsed++;
+    }
+
+    if (iTextureUsed == ARRAY_COUNTU(pFrame->anTextureUsed)) {
+        xlPostText(D_800EB2D4, D_80134E58, 554);
+        return false;
+    }
+
+    iTexture = 0;
+    while (nMask & 1) {
+        iTexture++;
+        nMask >>= 1;
+    }
+
+    pFrame->anTextureUsed[iTextureUsed] |= (1 << iTexture);
+    *ppTexture = &pFrame->aTexture[(iTextureUsed << 5) + iTexture];
+    (*ppTexture)->iPackPixel = -1;
+    (*ppTexture)->iPackColor = -1;
+    (*ppTexture)->pTextureNext = NULL;
+
+    if (++pFrame->nBlocksTexture > pFrame->nBlocksMaxTexture) {
+        pFrame->nBlocksMaxTexture = pFrame->nBlocksTexture;
+    }
+    return 1;
+}
 
 static bool frameSetupCache(Frame* pFrame) {
     s32 iTexture;
