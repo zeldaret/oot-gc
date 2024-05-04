@@ -5199,11 +5199,69 @@ bool __cpuBreak(Cpu* pCPU) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapObject.s")
+bool cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nType) {
+    s32 iDevice;
+    s32 iAddress;
+    u32 nAddressVirtual0;
+    u32 nAddressVirtual1;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetDeviceGet.s")
+    if (nAddress0 == 0 && nAddress1 == 0xFFFFFFFF) {
+        if (!cpuMakeDevice(pCPU, &iDevice, pObject, 0, nAddress0, nAddress1, nType)) {
+            return false;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetDevicePut.s")
+        pCPU->iDeviceDefault = iDevice;
+        for (iAddress = 0; iAddress < ARRAY_COUNT(pCPU->aiDevice); iAddress++) {
+            pCPU->aiDevice[iAddress] = iDevice;
+        }
+    } else {
+        if (!cpuMakeDevice(pCPU, &iDevice, pObject, nAddress0 + 0x80000000, nAddress0, nAddress1, nType)) {
+            return false;
+        }
+
+        nAddressVirtual0 = nAddress0 | 0x80000000;
+        nAddressVirtual1 = nAddress1 | 0x80000000;
+        iAddress = nAddressVirtual0 >> 16;
+        while (nAddressVirtual0 < nAddressVirtual1) {
+            pCPU->aiDevice[iAddress] = iDevice;
+            nAddressVirtual0 += 0x10000;
+            iAddress++;
+        }
+
+        if (!cpuMakeDevice(pCPU, &iDevice, pObject, nAddress0 + 0x60000000, nAddress0, nAddress1, nType)) {
+            return false;
+        }
+
+        nAddressVirtual0 = nAddress0 | 0xA0000000;
+        nAddressVirtual1 = nAddress1 | 0xA0000000;
+        iAddress = nAddressVirtual0 >> 16;
+        while (nAddressVirtual0 < nAddressVirtual1) {
+            pCPU->aiDevice[iAddress] = iDevice;
+            nAddressVirtual0 += 0x10000;
+            iAddress++;
+        }
+    }
+
+    return true;
+}
+
+bool cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
+                     Get64Func pfGet64) {
+    pDevice->pfGet8 = pfGet8;
+    pDevice->pfGet16 = pfGet16;
+    pDevice->pfGet32 = pfGet32;
+    pDevice->pfGet64 = pfGet64;
+    return true;
+}
+
+bool cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
+                     Put64Func pfPut64) {
+    pDevice->pfPut8 = pfPut8;
+    pDevice->pfPut16 = pfPut16;
+    pDevice->pfPut32 = pfPut32;
+    pDevice->pfPut64 = pfPut64;
+    return true;
+}
 
 bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
     s32 iHack;
