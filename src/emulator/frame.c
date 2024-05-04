@@ -705,7 +705,38 @@ static void frameDrawDone(void) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTLUT.s")
+static bool frameMakeTLUT(Frame* pFrame, FrameTexture* pTexture, s32 nCount, s32 nOffsetTMEM, bool bReload) {
+    s32 iColor;
+    u16* anColor;
+    u16 nData16;
+
+    if (bReload) {
+        if (pTexture->iPackColor == -1) {
+            return true;
+        }
+        anColor = (u16*)((u8*)pFrame->aColorData + ((pTexture->iPackColor & 0xFFFF) << 5));
+    } else {
+        if (!packTakeBlocks(&pTexture->iPackColor, pFrame->anPackColor, ARRAY_COUNT(pFrame->anPackColor),
+                            (nCount * sizeof(u16)) >> 5)) {
+            return false;
+        }
+        anColor = (u16*)((u8*)pFrame->aColorData + ((pTexture->iPackColor & 0xFFFF) << 5));
+    }
+
+    for (iColor = 0; iColor < nCount; iColor++) {
+        nData16 = pFrame->TMEM.data.u64[nOffsetTMEM + 0x100 + iColor] & 0xFFFF;
+        if (nData16 & 1) {
+            anColor[iColor] =
+                (((nData16 >> 11) & 0x1F) << 10) | (((nData16 >> 6) & 0x1F) << 5) | ((nData16 >> 1) & 0x1F) | 0x8000;
+        } else {
+            anColor[iColor] = (((nData16 >> 12) & 0xF) << 8) | (((nData16 >> 7) & 0xF) << 4) | ((nData16 >> 2) & 0xF);
+        }
+    }
+
+    DCStoreRange(anColor, nCount * sizeof(u16));
+
+    return true;
+}
 
 static inline bool frameFreeTLUT(Frame* pFrame, FrameTexture* pTexture) {
     if (!packFreeBlocks(&pTexture->iPackColor, pFrame->anPackColor, ARRAY_COUNT(pFrame->anPackColor))) {
