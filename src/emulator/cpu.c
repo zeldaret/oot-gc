@@ -7033,4 +7033,129 @@ static inline s32 treeMemory(Cpu* pCPU) {
     }
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuOpcodeChecksum.s")
+#else
+s32 cpuOpcodeChecksum(u32 opcode) {
+    s32 nChecksum = 0x20;
+
+    if (opcode == 0) {
+        return 0;
+    }
+
+    switch (MIPS_OP(opcode)) {
+        case 0x01:
+            switch (MIPS_RT(opcode)) {
+                case 0x00:
+                case 0x01:
+                case 0x02:
+                case 0x03:
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13:
+                    nChecksum = 4;
+                    break;
+            }
+            break;
+        case 0x10:
+            switch (MIPS_FUNCT(opcode)) {
+                case 0x01:
+                case 0x02:
+                case 0x05:
+                case 0x08:
+                case 0x18:
+                    break;
+                default:
+                case 0x00:
+                case 0x03:
+                case 0x04:
+                case 0x06:
+                case 0x07:
+                case 0x09:
+                case 0x0A:
+                case 0x0B:
+                case 0x0C:
+                case 0x0D:
+                case 0x0E:
+                case 0x0F:
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13:
+                case 0x14:
+                case 0x15:
+                case 0x16:
+                case 0x17:
+                    switch (MIPS_FMT(opcode)) {
+                        case 8:
+                            switch (MIPS_FT(opcode)) {
+                                case 0x00:
+                                case 0x01:
+                                case 0x02:
+                                case 0x03:
+                                    nChecksum = 4;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+            break;
+        case 0x11:
+            if (MIPS_RS(opcode) == 0x08) {
+                switch (MIPS_RT(opcode)) {
+                    case 0x00:
+                    case 0x01:
+                    case 0x02:
+                    case 0x03:
+                        nChecksum = 4;
+                        break;
+                }
+            }
+            break;
+        case 0x02:
+            nChecksum = 1;
+            break;
+        case 0x03:
+            nChecksum = 1;
+            break;
+        case 0x04:
+        case 0x05:
+        case 0x06:
+        case 0x07:
+        case 0x14:
+        case 0x15:
+        case 0x16:
+        case 0x17:
+            nChecksum = 4;
+            break;
+        case 0x09:
+        case 0x0D:
+        case 0x0F:
+            nChecksum = 0x10;
+            break;
+        case 0x20:
+        case 0x21:
+        case 0x22:
+        case 0x23:
+        case 0x24:
+        case 0x25:
+        case 0x26:
+        case 0x28:
+        case 0x29:
+        case 0x2B:
+        case 0x31:
+        case 0x35:
+        case 0x37:
+        case 0x39:
+        case 0x3D:
+        case 0x3F:
+            nChecksum = 0x10;
+            break;
+    }
+
+    return nChecksum;
+}
+#endif
