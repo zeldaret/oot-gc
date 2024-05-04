@@ -11,6 +11,7 @@
 #include "emulator/video.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
+#include "emulator/xlPostGCN.h"
 #include "macros.h"
 #include "math.h"
 
@@ -4764,9 +4765,81 @@ static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost)
     return false;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuTestInterrupt.s")
+bool cpuTestInterrupt(Cpu* pCPU, s32 nMaskIP) {
+    pCPU->anCP0[13] |= (nMaskIP & 0xFF) << 8;
+    if ((pCPU->anCP0[12] & 6) != 0) {
+        return false;
+    }
+    if ((pCPU->anCP0[12] & 1) == 0) {
+        return false;
+    }
+    if ((((pCPU->anCP0[12] & 0xFF00) >> 8) & (nMaskIP & 0xFF)) == 0) {
+        return false;
+    }
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
+bool cpuException(Cpu* pCPU, CpuExceptionCode eCode, s32 nMaskIP) {
+    s32 pad[2];
+
+    if ((pCPU->anCP0[12] & 6) != 0) {
+        return false;
+    }
+    nMaskIP &= 0xFF;
+    if (eCode == CEC_NONE) {
+        return false;
+    }
+    if ((eCode >= CEC_RESERVED_16 && eCode <= CEC_RESERVED_22) ||
+        (eCode >= CEC_RESERVED_24 && eCode <= CEC_RESERVED_30)) {
+        return false;
+    }
+    if (eCode == CEC_RESERVED) {
+        return false;
+    }
+
+    if (eCode == CEC_INTERRUPT) {
+        if (!cpuTestInterrupt(pCPU, nMaskIP)) {
+            return 0;
+        }
+    } else {
+        pCPU->nPC -= 4;
+        pCPU->nMode |= 4;
+    }
+
+    pCPU->nMode &= ~8;
+    if (!(pCPU->nMode & 0x10)) {
+        if (!cpuHackHandler(pCPU)) {
+            xlPostText(D_800ED674, D_80135260, 923);
+        }
+        pCPU->nMode |= 0x10;
+    }
+    if (pCPU->nWaitPC != 0xFFFFFFFF) {
+        pCPU->nWaitPC = -1;
+        pCPU->anCP0[14] = pCPU->nPC - 4;
+        pCPU->anCP0[13] |= 0x80000000;
+    } else {
+        pCPU->anCP0[14] = pCPU->nPC;
+    }
+
+    pCPU->nMode &= ~0x80;
+    pCPU->anCP0[12] |= 2;
+    pCPU->anCP0[13] = (pCPU->anCP0[13] & ~0x7C) | (eCode << 2);
+
+    if (eCode - 1 <= 2U) {
+        pCPU->nPC = 0x80000000;
+    } else {
+        pCPU->nPC = 0x80000180;
+    }
+
+    pCPU->nMode |= 4;
+    pCPU->nMode |= 0x20;
+
+    if (!libraryCall(SYSTEM_LIBRARY(pCPU->pHost), pCPU, -1)) {
+        return false;
+    }
+
+    return true;
+}
 
 static bool cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1,
                           s32 nType) {
