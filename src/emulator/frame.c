@@ -502,8 +502,10 @@ static void frameDrawDone(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTLUT.s")
 
+static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, bool bReload);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakePixels.s")
 
+static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTexture.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetup2D.s")
@@ -2862,7 +2864,7 @@ static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockC
     return false;
 }
 
-static bool packFreeBlocks(s32* piPack, u32* anPack) {
+static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount) {
     s32 iPack;
     u32 nMask;
 
@@ -2970,7 +2972,106 @@ static inline bool frameResetCache(Frame* pFrame) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameUpdateCache.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTile.s")
+static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode) {
+    bool bFlag;
+    Tile* pTile;
+    FrameTexture* pTexture;
+    FrameTexture* pTextureLast;
+    u32 nData0;
+    u32 nData1;
+    u32 nData2;
+    u32 nData3;
+    s32 iTexture;
+    s32 nShift;
+    s32 pad;
+
+    pTile = &pFrame->aTile[iTileCode & 0xF];
+    if (pTile->nX0 == 0 && pTile->nY0 == 0 && pTile->nX1 == 0 && pTile->nY1 == 0) {
+        bFlag = true;
+        pTile->nX0 = pFrame->aTile[pFrame->iTileLoad].nX0;
+        pTile->nY0 = pFrame->aTile[pFrame->iTileLoad].nY0;
+        pTile->nX1 = pFrame->aTile[pFrame->iTileLoad].nX1;
+        pTile->nY1 = pFrame->aTile[pFrame->iTileLoad].nY1;
+        nShift = pFrame->aTile[pFrame->iTileLoad].nSize - pTile->nSize;
+        if (nShift < 0) {
+            nShift = -nShift;
+            pTile->nX0 >>= nShift;
+            pTile->nX1 >>= nShift;
+        } else {
+            pTile->nX0 <<= nShift;
+            pTile->nX1 <<= nShift;
+        }
+        pTile->nModeS = 2;
+        pTile->nModeT = 2;
+    } else {
+        bFlag = false;
+    }
+
+    nData0 = (pTile->nX0 & 0xFFFF) | ((pTile->nX1 & 0xFFFF) << 16);
+    nData1 = (pTile->nY0 & 0xFFFF) | ((pTile->nY1 & 0xFFFF) << 16);
+    nData2 = ((pTile->nMaskS & 0xF) << 0) | ((pTile->nMaskT & 0xF) << 4) | ((pTile->nModeS & 7) << 8) |
+             ((pTile->nModeT & 7) << 11) | ((pTile->nShiftS & 0xF) << 14) | ((pTile->nShiftT & 0xF) << 18) |
+             ((pTile->nSize & 7) << 22) | ((pTile->nFormat & 7) << 25) | ((pTile->iTLUT & 0xF) << 28);
+    nData3 = (pTile->nTMEM & 0xFFFF) | ((pTile->nSizeX & 0xFFFF) << 16);
+    if (pFrame->nAddressLoad == -1) {
+        iTexture = 0;
+    } else {
+        iTexture = pFrame->nAddressLoad >> 11;
+    }
+
+    pTextureLast = pTexture = pFrame->apTextureCached[iTexture];
+    while (pTexture != NULL) {
+        if (pTexture->nData0 == nData0 && pTexture->nData1 == nData1 && pTexture->nData2 == nData2 &&
+            pTexture->nData3 == nData3 && pTexture->nCodePixel == pTile->nCodePixel &&
+            pTexture->nAddress == pFrame->nAddressLoad) {
+            break;
+        }
+        pTextureLast = pTexture;
+        pTexture = pTexture->pTextureNext;
+    }
+
+    if (pTexture == NULL) {
+        if (!frameMakeTexture(pFrame, &pTexture)) {
+            return false;
+        }
+
+        frameMakePixels(pFrame, pTexture, pTile, false);
+        pTexture->nData0 = nData0;
+        pTexture->nData1 = nData1;
+        pTexture->nData2 = nData2;
+        pTexture->nData3 = nData3;
+
+        if (pFrame->nAddressLoad == -1) {
+            pTexture->nAddress = 0;
+        } else {
+            pTexture->nAddress = pFrame->nAddressLoad;
+        }
+        if (pTextureLast == NULL) {
+            pFrame->apTextureCached[iTexture] = pTexture;
+        } else {
+            pTextureLast->pTextureNext = pTexture;
+        }
+    } else if (pTexture->iPackColor != -1 && pTexture->nCodeColor != pFrame->nTlutCode[pTile->iTLUT]) {
+        frameMakePixels(pFrame, pTexture, pTile, true);
+    }
+
+    pTexture->nFrameLast = pFrame->nCountFrames;
+    pTexture->nCodeColor = pFrame->nTlutCode[pTile->iTLUT];
+    pTexture->nCodePixel = pTile->nCodePixel;
+
+    if (!frameLoadTexture(pFrame, pTexture, iTileCode, pTile)) {
+        return false;
+    }
+
+    if (ppTexture != NULL) {
+        *ppTexture = pTexture;
+    }
+
+    if (bFlag) {
+        pTile->nX0 = pTile->nY0 = pTile->nX1 = pTile->nY1 = 0;
+    }
+    return true;
+}
 
 bool frameDrawReset(Frame* pFrame, s32 nFlag) {
     pFrame->nFlag |= nFlag;

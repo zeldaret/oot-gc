@@ -309,7 +309,7 @@ typedef struct Frame {
     /* 0x01C30 */ s32 nBlocksTexture;
     /* 0x01C34 */ s32 nBlocksMaxTexture;
     /* 0x01C38 */ u32 anPackPixel[48];
-    /* 0x01CF8 */ u32 anPackColor[N64_FRAME_WIDTH];
+    /* 0x01CF8 */ u32 anPackColor[320];
     /* 0x021F8 */ u32 nAddressLoad;
     /* 0x021FC */ u32 nCodePixel;
     /* 0x02200 */ u32 nTlutCode[16];
