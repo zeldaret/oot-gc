@@ -119,17 +119,22 @@ s64 ganMaskSetCP0[] = {
 };
 
 u8 Opcode[] = {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+    true, true, true, true,  true, true, true, true, true, true, true, true,  true,  true,  true,  true,
+    true, true, true, false, true, true, true, true, true, true, true, true,  false, false, false, true,
+    true, true, true, true,  true, true, true, true, true, true, true, true,  true,  true,  true,  true,
+    true, true, true, false, true, true, true, true, true, true, true, false, true,  true,  true,  true,
 };
 
 u8 SpecialOpcode[] = {
-    1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1,
+    true, false, true, true, true, false, true, true,  true,  true,  false, false, true, true,  false, true,
+    true, true,  true, true, true, false, true, true,  true,  true,  true,  true,  true, true,  true,  true,
+    true, true,  true, true, true, true,  true, true,  false, false, true,  true,  true, true,  true,  true,
+    true, true,  true, true, true, false, true, false, true,  false, true,  true,  true, false, true,  true,
 };
 
 u8 RegimmOpcode[] = {
-    1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    true, true, true, true, false, false, false, false, true,  true,  true,  true,  true,  false, true,  false,
+    true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
 };
 
 s32 ganOpcodeSaveFP1[] = {
