@@ -137,3 +137,39 @@ lbl_80035724:
 /* 030190 80035730 38210038 */  addi    r1, r1, 0x38
 /* 030194 80035734 7C0803A6 */  mtlr    r0
 /* 030198 80035738 4E800020 */  blr     
+
+.section .data
+
+jtbl_800ED5F4:
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800355BC
+    .word lbl_800356F4
+    .word lbl_800355C4
+    .word lbl_8003562C
+    .word lbl_80035654
+    .word lbl_800356CC
+    .word lbl_800356F8
+    .word lbl_800356D4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F8

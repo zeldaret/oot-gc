@@ -54,3 +54,15 @@ lbl_80029844:
 /* 0242A4 80029844 38600001 */  li      r3, 1
 lbl_80029848:
 /* 0242A8 80029848 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EB20C:
+    .word lbl_800297DC
+    .word lbl_800297E8
+    .word lbl_800297F4
+    .word lbl_80029800
+    .word lbl_8002980C
+    .word lbl_80029818
+    .word lbl_80029824
+    .word lbl_80029830

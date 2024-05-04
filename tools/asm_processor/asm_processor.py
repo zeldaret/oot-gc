@@ -506,6 +506,8 @@ class GlobalAsmBlock:
             self.text_glabels.append(line.split()[1])
         if not line:
             pass # empty line
+        elif self.cur_section == '.data':
+            pass # Skip data section entirely (used for jumptables)
         elif line.startswith('glabel ') or (' ' not in line and line.endswith(':')):
             pass # label
         elif line.startswith('.global'):
@@ -584,7 +586,7 @@ class GlobalAsmBlock:
                 self.late_rodata_asm_conts.append(real_line)
                 if emitting_double:
                     self.late_rodata_asm_conts.append(".align 2")
-        else:
+        elif self.cur_section != '.data': # Ignore jump tables in .data
             self.asm_conts.append(real_line)
 
     def finish(self, state):

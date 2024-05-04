@@ -94,3 +94,98 @@ lbl_80030F78:
 lbl_80030F7C:
 /* 02B9DC 80030F7C 7CA32B78 */  mr      r3, r5
 /* 02B9E0 80030F80 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EBEF0:
+    .word lbl_80030EFC
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030F7C
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030F7C
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030EFC
+    .word lbl_80030F7C
+
+jtbl_800EBF54:
+    .word lbl_80030F7C
+    .word lbl_80030EA8
+    .word lbl_80030F58
+    .word lbl_80030F60
+    .word lbl_80030F68
+    .word lbl_80030F68
+    .word lbl_80030F68
+    .word lbl_80030F68
+    .word lbl_80030F7C
+    .word lbl_80030F70
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F70
+    .word lbl_80030F7C
+    .word lbl_80030F70
+    .word lbl_80030ED8
+    .word lbl_80030F2C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F68
+    .word lbl_80030F68
+    .word lbl_80030F68
+    .word lbl_80030F68
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F7C
+    .word lbl_80030F78
+    .word lbl_80030F7C
+    .word lbl_80030F78

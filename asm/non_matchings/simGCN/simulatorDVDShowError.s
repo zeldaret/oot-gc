@@ -153,3 +153,20 @@ lbl_8000F00C:
 /* 009A74 8000F014 38210030 */  addi    r1, r1, 0x30
 /* 009A78 8000F018 7C0803A6 */  mtlr    r0
 /* 009A7C 8000F01C 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EA194:
+    .word lbl_8000EEA8
+    .word lbl_8000EEEC
+    .word lbl_8000EEEC
+    .word lbl_8000EEEC
+    .word lbl_8000EEEC
+    .word lbl_8000EEB0
+    .word lbl_8000EEB8
+    .word lbl_8000EEC0
+    .word lbl_8000EEEC
+    .word lbl_8000EEEC
+    .word lbl_8000EEEC
+    .word lbl_8000EEEC
+    .word lbl_8000EEC8

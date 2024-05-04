@@ -841,3 +841,78 @@ lbl_80033E74:
 /* 02E8DC 80033E7C 382100A8 */  addi    r1, r1, 0xa8
 /* 02E8E0 80033E80 7C0803A6 */  mtlr    r0
 /* 02E8E4 80033E84 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EC0CC:
+    .word lbl_8003381C
+    .word lbl_80033A68
+    .word lbl_80033A68
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_80033A68
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_80033A68
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_800337F0
+
+jtbl_800EC130:
+    .word lbl_800334D8
+    .word lbl_800335A0
+    .word lbl_80033564
+    .word lbl_80033A5C
+    .word lbl_80033644
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_800337D0
+    .word lbl_800338AC
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033644
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_8003394C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033938

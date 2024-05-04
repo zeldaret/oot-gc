@@ -154,3 +154,14 @@ lbl_8000D560:
 /* 007FE0 8000D580 38210028 */  addi    r1, r1, 0x28
 /* 007FE4 8000D584 7C0803A6 */  mtlr    r0
 /* 007FE8 8000D588 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EA150:
+    .word lbl_8000D3B8
+    .word lbl_8000D3F4
+    .word lbl_8000D434
+    .word lbl_8000D4B0
+    .word lbl_8000D474
+    .word lbl_8000D4EC
+    .word lbl_8000D528

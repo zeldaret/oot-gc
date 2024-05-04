@@ -38,3 +38,20 @@ lbl_800700CC:
 lbl_800700D4:
 /* 06AB34 800700D4 38600001 */  li      r3, 1
 /* 06AB38 800700D8 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EDF5C:
+    .word lbl_80070090
+    .word lbl_800700CC
+    .word lbl_800700CC
+    .word lbl_800700CC
+    .word lbl_800700A0
+    .word lbl_800700CC
+    .word lbl_800700CC
+    .word lbl_800700CC
+    .word lbl_800700B0
+    .word lbl_800700CC
+    .word lbl_800700CC
+    .word lbl_800700CC
+    .word lbl_800700C0

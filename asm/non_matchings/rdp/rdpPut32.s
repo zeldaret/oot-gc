@@ -81,3 +81,36 @@ lbl_80070320:
 /* 06AD84 80070324 38210008 */  addi    r1, r1, 8
 /* 06AD88 80070328 7C0803A6 */  mtlr    r0
 /* 06AD8C 8007032C 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EE038:
+    .word lbl_8007025C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007026C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007031C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007028C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007031C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007031C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007031C
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_80070314
+    .word lbl_8007031C

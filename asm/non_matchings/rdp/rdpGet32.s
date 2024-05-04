@@ -59,3 +59,36 @@ lbl_80070204:
 lbl_8007020C:
 /* 06AC6C 8007020C 38600001 */  li      r3, 1
 /* 06AC70 80070210 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EDFC4:
+    .word lbl_80070194
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701A0
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701AC
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701B8
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701C4
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701D4
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701E4
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_80070204
+    .word lbl_800701F4

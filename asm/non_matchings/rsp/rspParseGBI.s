@@ -128,3 +128,18 @@ lbl_80072BFC:
 /* 06D664 80072C04 38210030 */  addi    r1, r1, 0x30
 /* 06D668 80072C08 7C0803A6 */  mtlr    r0
 /* 06D66C 80072C0C 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EE3AC:
+    .word lbl_80072AC0
+    .word lbl_80072AC0
+    .word lbl_80072AC0
+    .word lbl_80072AD4
+    .word lbl_80072AE8
+    .word lbl_80072AC0
+    .word lbl_80072AD4
+    .word lbl_80072AC0
+    .word lbl_80072AD4
+    .word lbl_80072AC0
+    .word lbl_80072AD4

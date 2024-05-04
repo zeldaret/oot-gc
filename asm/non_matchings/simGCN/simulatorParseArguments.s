@@ -109,3 +109,61 @@ lbl_800086B8:
 /* 003130 800086D0 38210040 */  addi    r1, r1, 0x40
 /* 003134 800086D4 7C0803A6 */  mtlr    r0
 /* 003138 800086D8 4E800020 */  blr     
+
+.section .data
+
+jtbl_800E9BE8:
+    .word lbl_80008684
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008678
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008690
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_8000866C
+    .word lbl_800086B8
+    .word lbl_8000869C
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008660
+    .word lbl_800086B8
+    .word lbl_800086A8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008684
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008678
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008690
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_8000866C
+    .word lbl_800086B8
+    .word lbl_8000869C
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_800086B8
+    .word lbl_80008660
+    .word lbl_800086B8
+    .word lbl_800086A8

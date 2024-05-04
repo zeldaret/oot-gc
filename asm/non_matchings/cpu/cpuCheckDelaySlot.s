@@ -101,3 +101,58 @@ lbl_8006835C:
 lbl_80068360:
 /* 062DC0 80068360 7CA32B78 */  mr      r3, r5
 /* 062DC4 80068364 4E800020 */  blr     
+
+.section .data
+
+jtbl_800ED4B0:
+    .word lbl_800682F0
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_80068360
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_80068360
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_800682F0
+    .word lbl_80068360
+
+jtbl_800ED514:
+    .word lbl_80068270
+    .word lbl_8006829C
+    .word lbl_8006834C
+    .word lbl_80068354
+    .word lbl_8006835C
+    .word lbl_8006835C
+    .word lbl_8006835C
+    .word lbl_8006835C
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_800682CC
+    .word lbl_80068320
+    .word lbl_80068360
+    .word lbl_80068360
+    .word lbl_8006835C
+    .word lbl_8006835C
+    .word lbl_8006835C
+    .word lbl_8006835C

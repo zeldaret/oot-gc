@@ -268,3 +268,37 @@ lbl_8000CF0C:
 /* 007978 8000CF18 7C0803A6 */  mtlr    r0
 /* 00797C 8000CF1C 38210058 */  addi    r1, r1, 0x58
 /* 007980 8000CF20 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EA09C:
+    .word lbl_8000CBC8
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CC30
+    .word lbl_8000CC98
+    .word lbl_8000CD00
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CD68
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CDD0
+    .word lbl_8000CE38
+    .word lbl_8000CF08
+    .word lbl_8000CEA0

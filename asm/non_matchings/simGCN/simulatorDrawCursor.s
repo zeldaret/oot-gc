@@ -146,3 +146,14 @@ lbl_80008874:
 /* 003338 800088D8 38210028 */  addi    r1, r1, 0x28
 /* 00333C 800088DC 7C0803A6 */  mtlr    r0
 /* 003340 800088E0 4E800020 */  blr     
+
+.section .data
+
+jtbl_800E9CC0:
+    .word lbl_8000882C
+    .word lbl_80008834
+    .word lbl_8000883C
+    .word lbl_80008844
+    .word lbl_80008850
+    .word lbl_8000885C
+    .word lbl_80008868

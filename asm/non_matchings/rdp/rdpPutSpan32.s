@@ -34,3 +34,20 @@ lbl_80070148:
 lbl_80070150:
 /* 06ABB0 80070150 38600001 */  li      r3, 1
 /* 06ABB4 80070154 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EDF90:
+    .word lbl_80070118
+    .word lbl_80070150
+    .word lbl_80070150
+    .word lbl_80070150
+    .word lbl_80070128
+    .word lbl_80070150
+    .word lbl_80070150
+    .word lbl_80070150
+    .word lbl_80070138
+    .word lbl_80070150
+    .word lbl_80070150
+    .word lbl_80070150
+    .word lbl_80070148

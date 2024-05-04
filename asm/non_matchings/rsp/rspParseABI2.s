@@ -502,3 +502,31 @@ lbl_80084970:
 /* 07F3D8 80084978 38210070 */  addi    r1, r1, 0x70
 /* 07F3DC 8008497C 7C0803A6 */  mtlr    r0
 /* 07F3E0 80084980 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EE630:
+    .word lbl_80084950
+    .word lbl_80084338
+    .word lbl_80084360
+    .word lbl_8008437C
+    .word lbl_8008438C
+    .word lbl_8008439C
+    .word lbl_800843AC
+    .word lbl_80084514
+    .word lbl_80084524
+    .word lbl_80084550
+    .word lbl_80084590
+    .word lbl_800845BC
+    .word lbl_80084620
+    .word lbl_80084630
+    .word lbl_80084640
+    .word lbl_80084650
+    .word lbl_8008466C
+    .word lbl_800846AC
+    .word lbl_80084810
+    .word lbl_8008485C
+    .word lbl_8008486C
+    .word lbl_800848B8
+    .word lbl_80084904
+    .word lbl_80084930

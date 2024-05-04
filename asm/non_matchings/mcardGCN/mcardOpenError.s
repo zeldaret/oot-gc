@@ -77,3 +77,31 @@ lbl_80016E60:
 /* 0118C4 80016E64 38210008 */  addi    r1, r1, 8
 /* 0118C8 80016E68 7C0803A6 */  mtlr    r0
 /* 0118CC 80016E6C 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EA608:
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016DE8
+    .word lbl_80016DC8
+    .word lbl_80016E28
+    .word lbl_80016DD8
+    .word lbl_80016E08
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016E08
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016DF8
+    .word lbl_80016E54
+    .word lbl_80016E44
+    .word lbl_80016E18
+    .word lbl_80016E18
+    .word lbl_80016E54
+    .word lbl_80016E54
+    .word lbl_80016E34

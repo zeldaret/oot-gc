@@ -988,3 +988,19 @@ lbl_80039124:
 /* 033BAC 8003914C 38210048 */  addi    r1, r1, 0x48
 /* 033BB0 80039150 7C0803A6 */  mtlr    r0
 /* 033BB4 80039154 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EC228:
+    .word lbl_800383F4
+    .word lbl_800386AC
+    .word lbl_80038E70
+    .word lbl_80038964
+    .word lbl_80038560
+    .word lbl_80038818
+    .word lbl_80038E70
+    .word lbl_80038E70
+    .word lbl_80038AB0
+    .word lbl_80038BF0
+    .word lbl_80038E70
+    .word lbl_80038D30

@@ -124,3 +124,17 @@ lbl_80020194:
 /* 01ABFC 8002019C 90A30090 */  stw     r5, 0x90(r3)
 /* 01AC00 800201A0 38600001 */  li      r3, 1
 /* 01AC04 800201A4 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EB190:
+    .word lbl_80020074
+    .word lbl_80020084
+    .word lbl_800200C8
+    .word lbl_800200D8
+    .word lbl_800200E8
+    .word lbl_80020134
+    .word lbl_80020144
+    .word lbl_80020144
+    .word lbl_80020144
+    .word lbl_80020144

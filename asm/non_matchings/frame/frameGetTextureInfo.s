@@ -89,3 +89,17 @@ lbl_8001D4A8:
 /* 017F0C 8001D4AC 38210008 */  addi    r1, r1, 8
 /* 017F10 8001D4B0 7C0803A6 */  mtlr    r0
 /* 017F14 8001D4B4 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EB168:
+    .word lbl_8001D3FC
+    .word lbl_8001D418
+    .word lbl_8001D418
+    .word lbl_8001D42C
+    .word lbl_8001D42C
+    .word lbl_8001D42C
+    .word lbl_8001D444
+    .word lbl_8001D45C
+    .word lbl_8001D3FC
+    .word lbl_8001D418

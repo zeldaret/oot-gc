@@ -100,3 +100,39 @@ lbl_80029940:
 /* 0243A0 80029940 38600001 */  li      r3, 1
 lbl_80029944:
 /* 0243A4 80029944 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EB22C:
+    .word lbl_8002986C
+    .word lbl_80029878
+    .word lbl_80029884
+    .word lbl_80029890
+    .word lbl_8002989C
+    .word lbl_800298A8
+    .word lbl_80029920
+    .word lbl_800298B4
+    .word lbl_800298C0
+    .word lbl_800298CC
+    .word lbl_800298D8
+    .word lbl_800298E4
+    .word lbl_800298F0
+    .word lbl_800298FC
+    .word lbl_80029908
+    .word lbl_80029914
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_80029938
+    .word lbl_8002992C

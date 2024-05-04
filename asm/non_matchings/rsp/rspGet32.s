@@ -110,3 +110,36 @@ lbl_80072260:
 lbl_80072268:
 /* 06CCC8 80072268 38600001 */  li      r3, 1
 /* 06CCCC 8007226C 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EE2A4:
+    .word lbl_800721A4
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_800721B0
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_800721BC
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_800721C8
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_800721D4
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_800721E4
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_800721F4
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072218
+    .word lbl_80072204

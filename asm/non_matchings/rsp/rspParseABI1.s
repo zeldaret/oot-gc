@@ -254,3 +254,23 @@ lbl_80088B28:
 /* 08359C 80088B3C 83810030 */  lwz     r28, 0x30(r1)
 /* 0835A0 80088B40 38210040 */  addi    r1, r1, 0x40
 /* 0835A4 80088B44 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EE690:
+    .word lbl_80088B18
+    .word lbl_80088890
+    .word lbl_8008889C
+    .word lbl_80088AD8
+    .word lbl_800888C4
+    .word lbl_80088AE4
+    .word lbl_80088914
+    .word lbl_80088970
+    .word lbl_80088984
+    .word lbl_80088AF0
+    .word lbl_80088990
+    .word lbl_800889CC
+    .word lbl_80088A38
+    .word lbl_80088A44
+    .word lbl_80088AFC
+    .word lbl_80088ABC

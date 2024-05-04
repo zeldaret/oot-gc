@@ -3331,3 +3331,47 @@ lbl_8000CB68:
 /* 0075D0 8000CB70 382100D8 */  addi    r1, r1, 0xd8
 /* 0075D4 8000CB74 7C0803A6 */  mtlr    r0
 /* 0075D8 8000CB78 4E800020 */  blr     
+
+.section .data
+
+jtbl_800E9F5C:
+    .word lbl_80009A74
+    .word lbl_80009C24
+    .word lbl_80009DD4
+    .word lbl_80009F84
+    .word lbl_8000A134
+    .word lbl_8000CB64
+    .word lbl_8000A2E4
+    .word lbl_8000A494
+    .word lbl_8000A644
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000A7F4
+    .word lbl_8000A9A4
+    .word lbl_8000AB54
+    .word lbl_8000AD04
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000AEB4
+    .word lbl_8000B064
+    .word lbl_8000B214
+    .word lbl_8000B3C4
+    .word lbl_8000B574
+    .word lbl_8000B724
+    .word lbl_8000B8D4
+    .word lbl_8000BA84
+    .word lbl_8000BC34
+    .word lbl_8000BDE4
+    .word lbl_8000BF94
+    .word lbl_8000C144
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000C2F4
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000C4A4
+    .word lbl_8000C654
+    .word lbl_8000C804
+    .word lbl_8000C9B4
