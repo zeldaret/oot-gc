@@ -451,8 +451,8 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
         C_MTXPerspective(pFrame->matrixProjection, pHint->rFieldOfViewY, pHint->rAspect, pHint->rClipNear,
                          pHint->rClipFar);
     } else if (pHint->eProjection == FMP_ORTHOGRAPHIC) {
-        C_MTXOrtho(pFrame->matrixProjection, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f,
-                   pHint->rClipNear, pHint->rClipFar);
+        C_MTXOrtho(pFrame->matrixProjection, 0.0f, pFrame->anSizeY[FS_SOURCE] - 1.0f, 0.0f,
+                   pFrame->anSizeX[FS_SOURCE] - 1.0f, pHint->rClipNear, pHint->rClipFar);
     } else {
         return false;
     }
@@ -1755,7 +1755,7 @@ bool frameBegin(Frame* pFrame, s32 nCountVertex) {
             GXSetTexCoordGen(ganNameTexCoord[i], GX_TG_MTX2x4, GX_TG_TEX0, ganNameTexMtx[i]);
         }
 
-        GXSetScissor(0, 0, pFrame->anSizeX[1], pFrame->anSizeY[1]);
+        GXSetScissor(0, 0, pFrame->anSizeX[FS_TARGET], pFrame->anSizeY[FS_TARGET]);
     }
 
     pFrame->iMatrixModel = 0;
@@ -2628,17 +2628,17 @@ bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->bOverrideDepth = false;
             pFrame->viewport.rSizeX = GC_FRAME_WIDTH;
             pFrame->viewport.rSizeY = GC_FRAME_HEIGHT;
-            pFrame->anSizeX[0] = N64_FRAME_WIDTH;
-            pFrame->anSizeY[0] = N64_FRAME_HEIGHT;
-            pFrame->rScaleX = (f32)pFrame->anSizeX[1] / (f32)N64_FRAME_WIDTH;
-            pFrame->rScaleY = (f32)pFrame->anSizeY[1] / (f32)N64_FRAME_HEIGHT;
+            pFrame->anSizeX[FS_SOURCE] = N64_FRAME_WIDTH;
+            pFrame->anSizeY[FS_SOURCE] = N64_FRAME_HEIGHT;
+            pFrame->rScaleX = (f32)pFrame->anSizeX[FS_TARGET] / (f32)N64_FRAME_WIDTH;
+            pFrame->rScaleY = (f32)pFrame->anSizeY[FS_TARGET] / (f32)N64_FRAME_HEIGHT;
 
             temp_r4 = GC_FRAME_HEIGHT >> (xlCoreHiResolution() ? 0 : 1);
             if (temp_r4 > 0) {
-                pFrame->anSizeX[1] = GC_FRAME_WIDTH;
-                pFrame->anSizeY[1] = temp_r4;
-                pFrame->rScaleX = GC_FRAME_WIDTH / (f32)pFrame->anSizeX[0];
-                pFrame->rScaleY = temp_r4 / (f32)pFrame->anSizeY[0];
+                pFrame->anSizeX[FS_TARGET] = GC_FRAME_WIDTH;
+                pFrame->anSizeY[FS_TARGET] = temp_r4;
+                pFrame->rScaleX = GC_FRAME_WIDTH / (f32)pFrame->anSizeX[FS_SOURCE];
+                pFrame->rScaleY = temp_r4 / (f32)pFrame->anSizeY[FS_SOURCE];
             }
             GXSetDrawDoneCallback(&frameDrawDone);
             break;
@@ -2805,7 +2805,26 @@ bool frameSetFill(Frame* pFrame, bool bFill) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
+#else
+bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY) {
+    if (nSizeX > 0 && nSizeY > 0) {
+        pFrame->anSizeX[eSize] = nSizeX;
+        pFrame->anSizeY[eSize] = nSizeY;
+        if (eSize == FS_SOURCE) {
+            pFrame->rScaleX = (f32)pFrame->anSizeX[FS_TARGET] / nSizeX;
+            pFrame->rScaleY = (f32)pFrame->anSizeY[FS_TARGET] / nSizeY;
+        } else if (eSize == FS_TARGET) {
+            pFrame->rScaleX = (f32)nSizeX / pFrame->anSizeX[FS_SOURCE];
+            pFrame->rScaleY = (f32)nSizeY / pFrame->anSizeY[FS_SOURCE];
+        }
+    }
+
+    return true;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't

@@ -323,8 +323,8 @@ typedef struct Frame {
     /* 0x3C350 */ s32 nLastX1;
     /* 0x3C354 */ s32 nLastY1;
     /* 0x3C358 */ Tile aTile[8];
-    /* 0x3C4B8 */ s32 anSizeX[2];
-    /* 0x3C4C0 */ s32 anSizeY[2];
+    /* 0x3C4B8 */ s32 anSizeX[FS_COUNT];
+    /* 0x3C4C0 */ s32 anSizeY[FS_COUNT];
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
