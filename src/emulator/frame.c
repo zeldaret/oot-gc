@@ -1847,7 +1847,31 @@ bool frameEnd(Frame* pFrame) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/_frameDrawRectangle.s")
+bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY) {
+    s32 iY;
+    s32 iX;
+    u32* pnPixel;
+    s32 nSizeTargetX = pFrame->anSizeX[FS_TARGET];
+
+    nX = (nX + 1) & ~1;
+    nSizeX = (nSizeX + 1) & ~1;
+    if (DemoCurrentBuffer == DemoFrameBuffer1) {
+        pnPixel = (u32*)((s16*)DemoFrameBuffer2 + (nY * nSizeTargetX) + nX);
+    } else {
+        pnPixel = (u32*)((s16*)DemoFrameBuffer1 + (nY * nSizeTargetX) + nX);
+    }
+
+    pnPixel = (u32*)((u8*)pnPixel + 0x40000000);
+
+    for (iY = 0; iY < nSizeY; iY++) {
+        for (iX = 0; iX < (nSizeX >> 1); iX++) {
+            pnPixel[iX] = nColor;
+        }
+        pnPixel += (nSizeTargetX >> 1);
+    }
+
+    return 1;
+}
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
