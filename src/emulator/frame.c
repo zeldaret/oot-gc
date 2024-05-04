@@ -2606,7 +2606,56 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Panel.s")
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetDepth.s")
+#else
+// See "Z Image Foramt", https://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro15/index15.5.html
+bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
+    u32 nX;
+    u32 nY;
+    u32 nOffset;
+    s32 n64CalcValue;
+    s32 exp;
+    s32 mantissa;
+    s32 compare;
+    s32 val;
+    s32 pad[2];
+
+    struct {
+        s32 shift;
+        s32 add;
+    } z_format[8] = {
+        {6, 0x00000}, {5, 0x20000}, {4, 0x30000}, {3, 0x38000}, {2, 0x3C000}, {1, 0x3E000}, {0, 0x3F000}, {0, 0x3F800},
+    };
+
+    nAddress &= 0x03FFFFFF;
+    if (pFrame->nOffsetDepth0 <= nAddress && nAddress <= pFrame->nOffsetDepth1) {
+        nOffset = (nAddress - pFrame->nOffsetDepth0) / 2;
+        nX = nOffset % N64_FRAME_WIDTH;
+        nY = nOffset / N64_FRAME_WIDTH;
+
+        val = sTempZBuf[(nY >> 2) * (N64_FRAME_WIDTH / 4) + (nX >> 2)][nY & 3][nX & 3];
+        n64CalcValue = 43.52 * ((((val & 0xFF) << 8) | (val >> 8)) - 0x10000 + 1) + 262143.0;
+
+        compare = 0x3F800;
+        for (exp = 7; exp >= 0; exp--) {
+            if ((n64CalcValue & compare) == compare) {
+                break;
+            }
+            compare = (compare << 1) & 0x3FFFF;
+        }
+
+        mantissa = ((n64CalcValue - z_format[exp].add) >> z_format[exp].shift) & 0x7FF;
+
+        *pnData = 0;
+        *pnData = ((exp << 13) & 0xE000) | ((mantissa << 2) & 0x1FFC);
+        return true;
+    }
+
+    return false;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
