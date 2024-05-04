@@ -2827,7 +2827,39 @@ static bool frameConvertYUVtoRGB(u32* YUV, u32* RGB) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/packTakeBlocks.s")
+static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount) {
+    s32 nOffset;
+    s32 nCount;
+    s32 iPack;
+    u32 nPack;
+    u32 nMask;
+    u32 nMask0;
+
+    if (nBlockCount >= 32 || nBlockCount < 0) {
+        return false;
+    }
+
+    nCount = 33 - nBlockCount;
+    for (iPack = 0; iPack < nPackCount; iPack++) {
+        nPack = anPack[iPack];
+        if (nPack != -1) {
+            nMask = (1 << nBlockCount) - 1;
+            nOffset = nCount;
+            do {
+                if ((nPack & nMask) == 0) {
+                    anPack[iPack] |= nMask;
+                    *piPack = (nBlockCount << 16) | ((iPack << 5) + (nCount - nOffset));
+                    return true;
+                }
+                nOffset -= 1;
+                nMask <<= 1;
+            } while (nOffset != 0);
+        }
+    }
+
+    *piPack = -1;
+    return false;
+}
 
 static bool packFreeBlocks(s32* piPack, u32* anPack) {
     s32 iPack;
