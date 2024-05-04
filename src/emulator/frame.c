@@ -2794,7 +2794,38 @@ bool frameScaleMatrix(Mtx44 matrixResult, Mtx44 matrix, f32 rScale) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameConvertYUVtoRGB.s")
+static bool frameConvertYUVtoRGB(u32* YUV, u32* RGB) {
+    s32 Yl;
+    s32 R;
+    s32 G;
+    s32 B;
+
+    Yl = YUV[0] - 16;
+    B = (s32)((YUV[1] - 128) * 20830 + Yl * 12014) >> 16;
+    G = (s32)(Yl * 11079 + ((YUV[2] - 128) * -6480 - B * 12729)) >> 16;
+    R = (s32)(Yl * 31026 - B * 24987 - G * 128660) >> 16;
+
+    if (R > 31) {
+        R = 31;
+    } else if (R < 0) {
+        R = 0;
+    }
+    if (G > 31) {
+        G = 31;
+    } else if (G < 0) {
+        G = 0;
+    }
+    if (B > 31) {
+        B = 31;
+    } else if (B < 0) {
+        B = 0;
+    }
+
+    RGB[0] = R;
+    RGB[1] = G;
+    RGB[2] = B;
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/packTakeBlocks.s")
 
