@@ -508,6 +508,8 @@ class GlobalAsmBlock:
             pass # empty line
         elif line.startswith('glabel ') or (' ' not in line and line.endswith(':')):
             pass # label
+        elif line.startswith('.global'):
+            pass # global
         elif line.startswith('.section') or line in ['.text', '.init', '.data', '.rdata', '.rodata', '.sdata', '.sdata2', '.bss','.sbss', '.late_rodata']:
             # section change
             self.cur_section = '.rodata' if line == '.rdata' else line.split(',')[0].split()[-1]

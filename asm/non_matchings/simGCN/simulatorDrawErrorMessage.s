@@ -22,7 +22,8 @@ glabel simulatorDrawErrorMessage
 /* 007E0C 8000D3AC 7C03002E */  lwzx    r0, r3, r0
 /* 007E10 8000D3B0 7C0903A6 */  mtctr   r0
 /* 007E14 8000D3B4 4E800420 */  bctr    
-glabel lbl_8000D3B8
+.global lbl_8000D3B8
+lbl_8000D3B8:
 /* 007E18 8000D3B8 809E0008 */  lwz     r4, 8(r30)
 /* 007E1C 8000D3BC 387E0000 */  addi    r3, r30, 0
 /* 007E20 8000D3C0 38DD0000 */  addi    r6, r29, 0
@@ -38,7 +39,8 @@ glabel lbl_8000D3B8
 /* 007E48 8000D3E8 20A00078 */  subfic  r5, r0, 0x78
 /* 007E4C 8000D3EC 48001099 */  bl      simulatorDrawImage
 /* 007E50 8000D3F0 48000170 */  b       lbl_8000D560
-glabel lbl_8000D3F4
+.global lbl_8000D3F4
+lbl_8000D3F4:
 /* 007E54 8000D3F4 3C7E0001 */  addis   r3, r30, 1
 /* 007E58 8000D3F8 80839F68 */  lwz     r4, -0x6098(r3)
 /* 007E5C 8000D3FC 7FA6EB78 */  mr      r6, r29
@@ -55,7 +57,8 @@ glabel lbl_8000D3F4
 /* 007E88 8000D428 20A00078 */  subfic  r5, r0, 0x78
 /* 007E8C 8000D42C 48001059 */  bl      simulatorDrawImage
 /* 007E90 8000D430 48000130 */  b       lbl_8000D560
-glabel lbl_8000D434
+.global lbl_8000D434
+lbl_8000D434:
 /* 007E94 8000D434 3C7E0001 */  addis   r3, r30, 1
 /* 007E98 8000D438 8083BE88 */  lwz     r4, -0x4178(r3)
 /* 007E9C 8000D43C 7FA6EB78 */  mr      r6, r29
@@ -72,7 +75,8 @@ glabel lbl_8000D434
 /* 007EC8 8000D468 20A00078 */  subfic  r5, r0, 0x78
 /* 007ECC 8000D46C 48001019 */  bl      simulatorDrawImage
 /* 007ED0 8000D470 480000F0 */  b       lbl_8000D560
-glabel lbl_8000D474
+.global lbl_8000D474
+lbl_8000D474:
 /* 007ED4 8000D474 807E4808 */  lwz     r3, 0x4808(r30)
 /* 007ED8 8000D478 38DD0000 */  addi    r6, r29, 0
 /* 007EDC 8000D47C 38FF0000 */  addi    r7, r31, 0
@@ -88,7 +92,8 @@ glabel lbl_8000D474
 /* 007F04 8000D4A4 20A00078 */  subfic  r5, r0, 0x78
 /* 007F08 8000D4A8 48000FDD */  bl      simulatorDrawImage
 /* 007F0C 8000D4AC 480000B4 */  b       lbl_8000D560
-glabel lbl_8000D4B0
+.global lbl_8000D4B0
+lbl_8000D4B0:
 /* 007F10 8000D4B0 807E6C68 */  lwz     r3, 0x6c68(r30)
 /* 007F14 8000D4B4 38DD0000 */  addi    r6, r29, 0
 /* 007F18 8000D4B8 38FF0000 */  addi    r7, r31, 0
@@ -104,7 +109,8 @@ glabel lbl_8000D4B0
 /* 007F40 8000D4E0 20A00078 */  subfic  r5, r0, 0x78
 /* 007F44 8000D4E4 48000FA1 */  bl      simulatorDrawImage
 /* 007F48 8000D4E8 48000078 */  b       lbl_8000D560
-glabel lbl_8000D4EC
+.global lbl_8000D4EC
+lbl_8000D4EC:
 /* 007F4C 8000D4EC 807E28E8 */  lwz     r3, 0x28e8(r30)
 /* 007F50 8000D4F0 38DD0000 */  addi    r6, r29, 0
 /* 007F54 8000D4F4 38FF0000 */  addi    r7, r31, 0
@@ -120,7 +126,8 @@ glabel lbl_8000D4EC
 /* 007F7C 8000D51C 20A00078 */  subfic  r5, r0, 0x78
 /* 007F80 8000D520 48000F65 */  bl      simulatorDrawImage
 /* 007F84 8000D524 4800003C */  b       lbl_8000D560
-glabel lbl_8000D528
+.global lbl_8000D528
+lbl_8000D528:
 /* 007F88 8000D528 807E6C68 */  lwz     r3, 0x6c68(r30)
 /* 007F8C 8000D52C 38DD0000 */  addi    r6, r29, 0
 /* 007F90 8000D530 38FF0000 */  addi    r7, r31, 0

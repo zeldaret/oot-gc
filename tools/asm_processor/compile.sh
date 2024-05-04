@@ -9,7 +9,7 @@ shift
 mkdir -p tools/asm_processor/tmp
 temp="$(mktemp -d tools/asm_processor/tmp/XXXXXX)"
 
-tools/asm_processor/asm_processor.py "$2" --assembler "$AS" > "$temp.c" &&
+tools/asm_processor/asm_processor.py "$2" > "$temp.c" &&
 $CC "$temp.c" -c -o "$temp.o" &&
-tools/asm_processor/asm_processor.py "$2" --post-process "$temp.o" --assembler "$AS" --asm-prelude include/macros.inc
+tools/asm_processor/asm_processor.py "$2" --post-process "$temp.o" --assembler "$AS" --asm-prelude include/macros.inc &&
 tools/binutils/powerpc-eabi-objcopy --remove-section .mwcats.text --remove-section .comment "$temp.o" "$1"

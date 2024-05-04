@@ -14,21 +14,27 @@ glabel movieDVDShowError
 /* 00C9A0 80011F40 7C04002E */  lwzx    r0, r4, r0
 /* 00C9A4 80011F44 7C0903A6 */  mtctr   r0
 /* 00C9A8 80011F48 4E800420 */  bctr    
-glabel lbl_80011F4C
+.global lbl_80011F4C
+lbl_80011F4C:
 /* 00C9AC 80011F4C 3BE00003 */  li      r31, 3
 /* 00C9B0 80011F50 48000020 */  b       lbl_80011F70
-glabel lbl_80011F54
+.global lbl_80011F54
+lbl_80011F54:
 /* 00C9B4 80011F54 3BE00005 */  li      r31, 5
 /* 00C9B8 80011F58 48000018 */  b       lbl_80011F70
-glabel lbl_80011F5C
+.global lbl_80011F5C
+lbl_80011F5C:
 /* 00C9BC 80011F5C 3BE00000 */  li      r31, 0
 /* 00C9C0 80011F60 48000010 */  b       lbl_80011F70
-glabel lbl_80011F64
+.global lbl_80011F64
+lbl_80011F64:
 /* 00C9C4 80011F64 3BE00001 */  li      r31, 1
 /* 00C9C8 80011F68 48000008 */  b       lbl_80011F70
-glabel lbl_80011F6C
+.global lbl_80011F6C
+lbl_80011F6C:
 /* 00C9CC 80011F6C 3BE00004 */  li      r31, 4
-glabel lbl_80011F70
+.global lbl_80011F70
+lbl_80011F70:
 /* 00C9D0 80011F70 2C030001 */  cmpwi   r3, 1
 /* 00C9D4 80011F74 41820044 */  beq     lbl_80011FB8
 /* 00C9D8 80011F78 2C030000 */  cmpwi   r3, 0

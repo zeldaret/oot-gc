@@ -10,7 +10,8 @@ glabel movieDrawErrorMessage
 /* 00CBF0 80012190 7C04002E */  lwzx    r0, r4, r0
 /* 00CBF4 80012194 7C0903A6 */  mtctr   r0
 /* 00CBF8 80012198 4E800420 */  bctr    
-glabel lbl_8001219C
+.global lbl_8001219C
+lbl_8001219C:
 /* 00CBFC 8001219C 3C60800E */  lis     r3, gcoverOpen@ha
 /* 00CC00 800121A0 3863B800 */  addi    r3, r3, gcoverOpen@l
 /* 00CC04 800121A4 80830008 */  lwz     r4, 8(r3)
@@ -25,7 +26,8 @@ glabel lbl_8001219C
 /* 00CC28 800121C8 20A00078 */  subfic  r5, r0, 0x78
 /* 00CC2C 800121CC 48000169 */  bl      movieDrawImage
 /* 00CC30 800121D0 48000150 */  b       lbl_80012320
-glabel lbl_800121D4
+.global lbl_800121D4
+lbl_800121D4:
 /* 00CC34 800121D4 3C60800E */  lis     r3, gwrongDisk@ha
 /* 00CC38 800121D8 38635760 */  addi    r3, r3, gwrongDisk@l
 /* 00CC3C 800121DC 80830008 */  lwz     r4, 8(r3)
@@ -40,7 +42,8 @@ glabel lbl_800121D4
 /* 00CC60 80012200 20A00078 */  subfic  r5, r0, 0x78
 /* 00CC64 80012204 48000131 */  bl      movieDrawImage
 /* 00CC68 80012208 48000118 */  b       lbl_80012320
-glabel lbl_8001220C
+.global lbl_8001220C
+lbl_8001220C:
 /* 00CC6C 8001220C 3C60800E */  lis     r3, greadingDisk@ha
 /* 00CC70 80012210 38637680 */  addi    r3, r3, greadingDisk@l
 /* 00CC74 80012214 80830008 */  lwz     r4, 8(r3)
@@ -55,7 +58,8 @@ glabel lbl_8001220C
 /* 00CC98 80012238 20A00078 */  subfic  r5, r0, 0x78
 /* 00CC9C 8001223C 480000F9 */  bl      movieDrawImage
 /* 00CCA0 80012240 480000E0 */  b       lbl_80012320
-glabel lbl_80012244
+.global lbl_80012244
+lbl_80012244:
 /* 00CCA4 80012244 3C60800E */  lis     r3, gretryErr@ha
 /* 00CCA8 80012248 38630000 */  addi    r3, r3, gretryErr@l
 /* 00CCAC 8001224C 80830008 */  lwz     r4, 8(r3)
@@ -70,7 +74,8 @@ glabel lbl_80012244
 /* 00CCD0 80012270 20A00078 */  subfic  r5, r0, 0x78
 /* 00CCD4 80012274 480000C1 */  bl      movieDrawImage
 /* 00CCD8 80012278 480000A8 */  b       lbl_80012320
-glabel lbl_8001227C
+.global lbl_8001227C
+lbl_8001227C:
 /* 00CCDC 8001227C 3C60800E */  lis     r3, gfatalErr@ha
 /* 00CCE0 80012280 38632460 */  addi    r3, r3, gfatalErr@l
 /* 00CCE4 80012284 80830008 */  lwz     r4, 8(r3)
@@ -85,7 +90,8 @@ glabel lbl_8001227C
 /* 00CD08 800122A8 20A00078 */  subfic  r5, r0, 0x78
 /* 00CD0C 800122AC 48000089 */  bl      movieDrawImage
 /* 00CD10 800122B0 48000070 */  b       lbl_80012320
-glabel lbl_800122B4
+.global lbl_800122B4
+lbl_800122B4:
 /* 00CD14 800122B4 3C60800E */  lis     r3, gnoDisk@ha
 /* 00CD18 800122B8 3863E0E0 */  addi    r3, r3, gnoDisk@l
 /* 00CD1C 800122BC 80830008 */  lwz     r4, 8(r3)
@@ -100,7 +106,8 @@ glabel lbl_800122B4
 /* 00CD40 800122E0 20A00078 */  subfic  r5, r0, 0x78
 /* 00CD44 800122E4 48000051 */  bl      movieDrawImage
 /* 00CD48 800122E8 48000038 */  b       lbl_80012320
-glabel lbl_800122EC
+.global lbl_800122EC
+lbl_800122EC:
 /* 00CD4C 800122EC 3C60800E */  lis     r3, gfatalErr@ha
 /* 00CD50 800122F0 38632460 */  addi    r3, r3, gfatalErr@l
 /* 00CD54 800122F4 80830008 */  lwz     r4, 8(r3)

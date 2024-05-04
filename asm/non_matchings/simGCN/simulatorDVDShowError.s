@@ -38,19 +38,24 @@ lbl_8000EE8C:
 /* 0098FC 8000EE9C 7C1D002E */  lwzx    r0, r29, r0
 /* 009900 8000EEA0 7C0903A6 */  mtctr   r0
 /* 009904 8000EEA4 4E800420 */  bctr    
-glabel lbl_8000EEA8
+.global lbl_8000EEA8
+lbl_8000EEA8:
 /* 009908 8000EEA8 3B600003 */  li      r27, 3
 /* 00990C 8000EEAC 48000040 */  b       lbl_8000EEEC
-glabel lbl_8000EEB0
+.global lbl_8000EEB0
+lbl_8000EEB0:
 /* 009910 8000EEB0 3B600005 */  li      r27, 5
 /* 009914 8000EEB4 48000038 */  b       lbl_8000EEEC
-glabel lbl_8000EEB8
+.global lbl_8000EEB8
+lbl_8000EEB8:
 /* 009918 8000EEB8 3B600000 */  li      r27, 0
 /* 00991C 8000EEBC 48000030 */  b       lbl_8000EEEC
-glabel lbl_8000EEC0
+.global lbl_8000EEC0
+lbl_8000EEC0:
 /* 009920 8000EEC0 3B600001 */  li      r27, 1
 /* 009924 8000EEC4 48000028 */  b       lbl_8000EEEC
-glabel lbl_8000EEC8
+.global lbl_8000EEC8
+lbl_8000EEC8:
 /* 009928 8000EEC8 3B600004 */  li      r27, 4
 /* 00992C 8000EECC 48000020 */  b       lbl_8000EEEC
 lbl_8000EED0:
@@ -61,7 +66,8 @@ lbl_8000EED0:
 /* 009940 8000EEE0 3B600006 */  li      r27, 6
 /* 009944 8000EEE4 38A002FB */  li      r5, 0x2fb
 /* 009948 8000EEE8 4BFF6F2D */  bl      xlPostText
-glabel lbl_8000EEEC
+.global lbl_8000EEEC
+lbl_8000EEEC:
 /* 00994C 8000EEEC 2C1A0001 */  cmpwi   r26, 1
 /* 009950 8000EEF0 41820040 */  beq     lbl_8000EF30
 /* 009954 8000EEF4 2C1A0000 */  cmpwi   r26, 0
