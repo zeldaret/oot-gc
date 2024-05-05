@@ -18,10 +18,12 @@ glabel cpuSetRegisterCP0
 /* 030010 800355B0 7C03002E */  lwzx    r0, r3, r0
 /* 030014 800355B4 7C0903A6 */  mtctr   r0
 /* 030018 800355B8 4E800420 */  bctr    
-glabel lbl_800355BC
+.global lbl_800355BC
+lbl_800355BC:
 /* 03001C 800355BC 3BC00001 */  li      r30, 1
 /* 030020 800355C0 48000138 */  b       lbl_800356F8
-glabel lbl_800355C4
+.global lbl_800355C4
+lbl_800355C4:
 /* 030024 800355C4 807A0008 */  lwz     r3, 8(r26)
 /* 030028 800355C8 3BC00001 */  li      r30, 1
 /* 03002C 800355CC 38801001 */  li      r4, 0x1001
@@ -50,7 +52,8 @@ lbl_80035620:
 /* 030080 80035620 60C00001 */  ori     r0, r6, 1
 /* 030084 80035624 901A0000 */  stw     r0, 0(r26)
 /* 030088 80035628 480000D0 */  b       lbl_800356F8
-glabel lbl_8003562C
+.global lbl_8003562C
+lbl_8003562C:
 /* 03008C 8003562C 57601838 */  slwi    r0, r27, 3
 /* 030090 80035630 7C9F0214 */  add     r4, r31, r0
 /* 030094 80035634 80040630 */  lwz     r0, 0x630(r4)
@@ -61,7 +64,8 @@ glabel lbl_8003562C
 /* 0300A8 80035648 7F862038 */  and     r6, r28, r4
 /* 0300AC 8003564C 480000F1 */  bl      cpuSetCP0_Status
 /* 0300B0 80035650 480000A8 */  b       lbl_800356F8
-glabel lbl_80035654
+.global lbl_80035654
+lbl_80035654:
 /* 0300B4 80035654 38000100 */  li      r0, 0x100
 /* 0300B8 80035658 38800000 */  li      r4, 0
 /* 0300BC 8003565C 7F830038 */  and     r3, r28, r0
@@ -96,10 +100,12 @@ lbl_800356B8:
 /* 030120 800356C0 4BFD25AD */  bl      xlObjectEvent
 /* 030124 800356C4 3BC00001 */  li      r30, 1
 /* 030128 800356C8 48000030 */  b       lbl_800356F8
-glabel lbl_800356CC
+.global lbl_800356CC
+lbl_800356CC:
 /* 03012C 800356CC 3BC00001 */  li      r30, 1
 /* 030130 800356D0 48000028 */  b       lbl_800356F8
-glabel lbl_800356D4
+.global lbl_800356D4
+lbl_800356D4:
 /* 030134 800356D4 57601838 */  slwi    r0, r27, 3
 /* 030138 800356D8 7C7F0214 */  add     r3, r31, r0
 /* 03013C 800356DC 80630634 */  lwz     r3, 0x634(r3)
@@ -108,9 +114,11 @@ glabel lbl_800356D4
 /* 030148 800356E8 907A0AC4 */  stw     r3, 0xac4(r26)
 /* 03014C 800356EC 901A0AC0 */  stw     r0, 0xac0(r26)
 /* 030150 800356F0 48000008 */  b       lbl_800356F8
-glabel lbl_800356F4
+.global lbl_800356F4
+lbl_800356F4:
 /* 030154 800356F4 3BC00001 */  li      r30, 1
-glabel lbl_800356F8
+.global lbl_800356F8
+lbl_800356F8:
 /* 030158 800356F8 2C1E0000 */  cmpwi   r30, 0
 /* 03015C 800356FC 41820028 */  beq     lbl_80035724
 /* 030160 80035700 57631838 */  slwi    r3, r27, 3
@@ -129,3 +137,39 @@ lbl_80035724:
 /* 030190 80035730 38210038 */  addi    r1, r1, 0x38
 /* 030194 80035734 7C0803A6 */  mtlr    r0
 /* 030198 80035738 4E800020 */  blr     
+
+.section .data
+
+jtbl_800ED5F4:
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800355BC
+    .word lbl_800356F4
+    .word lbl_800355C4
+    .word lbl_8003562C
+    .word lbl_80035654
+    .word lbl_800356CC
+    .word lbl_800356F8
+    .word lbl_800356D4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F8
+    .word lbl_800356F4
+    .word lbl_800356F8
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F4
+    .word lbl_800356F8

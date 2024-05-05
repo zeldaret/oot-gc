@@ -36,7 +36,8 @@ lbl_80016ED0:
 /* 01194C 80016EEC 7C03002E */  lwzx    r0, r3, r0
 /* 011950 80016EF0 7C0903A6 */  mtctr   r0
 /* 011954 80016EF4 4E800420 */  bctr    
-glabel lbl_80016EF8
+.global lbl_80016EF8
+lbl_80016EF8:
 /* 011958 80016EF8 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 01195C 80016EFC 38600007 */  li      r3, 7
 /* 011960 80016F00 4BFF2B31 */  bl      simulatorDrawErrorMessageWait
@@ -48,7 +49,8 @@ glabel lbl_80016EF8
 /* 011978 80016F18 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 01197C 80016F1C 93FE0000 */  stw     r31, 0(r30)
 /* 011980 80016F20 480008D4 */  b       lbl_800177F4
-glabel lbl_80016F24
+.global lbl_80016F24
+lbl_80016F24:
 /* 011984 80016F24 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011988 80016F28 38600008 */  li      r3, 8
 /* 01198C 80016F2C 4BFF2B05 */  bl      simulatorDrawErrorMessageWait
@@ -61,7 +63,8 @@ glabel lbl_80016F24
 /* 0119A8 80016F48 93FD07B0 */  stw     r31, 0x7b0(r29)
 /* 0119AC 80016F4C 93FE0000 */  stw     r31, 0(r30)
 /* 0119B0 80016F50 480008A4 */  b       lbl_800177F4
-glabel lbl_80016F54
+.global lbl_80016F54
+lbl_80016F54:
 /* 0119B4 80016F54 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 0119B8 80016F58 38600009 */  li      r3, 9
 /* 0119BC 80016F5C 4BFF2AD5 */  bl      simulatorDrawErrorMessageWait
@@ -73,7 +76,8 @@ glabel lbl_80016F54
 /* 0119D4 80016F74 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 0119D8 80016F78 93FE0000 */  stw     r31, 0(r30)
 /* 0119DC 80016F7C 48000878 */  b       lbl_800177F4
-glabel lbl_80016F80
+.global lbl_80016F80
+lbl_80016F80:
 /* 0119E0 80016F80 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 0119E4 80016F84 3860000A */  li      r3, 0xa
 /* 0119E8 80016F88 4BFF2AA9 */  bl      simulatorDrawErrorMessageWait
@@ -85,7 +89,8 @@ glabel lbl_80016F80
 /* 011A00 80016FA0 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011A04 80016FA4 93FE0000 */  stw     r31, 0(r30)
 /* 011A08 80016FA8 4800084C */  b       lbl_800177F4
-glabel lbl_80016FAC
+.global lbl_80016FAC
+lbl_80016FAC:
 /* 011A0C 80016FAC 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011A10 80016FB0 3860000B */  li      r3, 0xb
 /* 011A14 80016FB4 4BFF2A7D */  bl      simulatorDrawErrorMessageWait
@@ -97,7 +102,8 @@ glabel lbl_80016FAC
 /* 011A2C 80016FCC 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011A30 80016FD0 93FE0000 */  stw     r31, 0(r30)
 /* 011A34 80016FD4 48000820 */  b       lbl_800177F4
-glabel lbl_80016FD8
+.global lbl_80016FD8
+lbl_80016FD8:
 /* 011A38 80016FD8 3860000C */  li      r3, 0xc
 /* 011A3C 80016FDC 388D8984 */  addi    r4, r13, yes@sda21
 /* 011A40 80016FE0 4BFF5B9D */  bl      simulatorDrawYesNoMessage
@@ -117,7 +123,8 @@ lbl_80017010:
 /* 011A74 80017014 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011A78 80017018 93FE0000 */  stw     r31, 0(r30)
 /* 011A7C 8001701C 480007D8 */  b       lbl_800177F4
-glabel lbl_80017020
+.global lbl_80017020
+lbl_80017020:
 /* 011A80 80017020 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011A84 80017024 3860000D */  li      r3, 0xd
 /* 011A88 80017028 4BFF2A09 */  bl      simulatorDrawErrorMessageWait
@@ -132,7 +139,8 @@ lbl_80017044:
 /* 011AA8 80017048 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011AAC 8001704C 93FE0000 */  stw     r31, 0(r30)
 /* 011AB0 80017050 480007A4 */  b       lbl_800177F4
-glabel lbl_80017054
+.global lbl_80017054
+lbl_80017054:
 /* 011AB4 80017054 3860000E */  li      r3, 0xe
 /* 011AB8 80017058 4BFF29D9 */  bl      simulatorDrawErrorMessageWait
 /* 011ABC 8001705C 2C030001 */  cmpwi   r3, 1
@@ -141,7 +149,8 @@ glabel lbl_80017054
 /* 011AC8 80017068 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011ACC 8001706C 93FE0000 */  stw     r31, 0(r30)
 /* 011AD0 80017070 48000784 */  b       lbl_800177F4
-glabel lbl_80017074
+.global lbl_80017074
+lbl_80017074:
 /* 011AD4 80017074 3860000F */  li      r3, 0xf
 /* 011AD8 80017078 4BFF29B9 */  bl      simulatorDrawErrorMessageWait
 /* 011ADC 8001707C 2C030001 */  cmpwi   r3, 1
@@ -152,7 +161,8 @@ glabel lbl_80017074
 /* 011AF0 80017090 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011AF4 80017094 93FE0000 */  stw     r31, 0(r30)
 /* 011AF8 80017098 4800075C */  b       lbl_800177F4
-glabel lbl_8001709C
+.global lbl_8001709C
+lbl_8001709C:
 /* 011AFC 8001709C 38600010 */  li      r3, 0x10
 /* 011B00 800170A0 388D8984 */  addi    r4, r13, yes@sda21
 /* 011B04 800170A4 4BFF5AD9 */  bl      simulatorDrawYesNoMessage
@@ -173,7 +183,8 @@ lbl_800170D0:
 /* 011B3C 800170DC 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011B40 800170E0 93FE0000 */  stw     r31, 0(r30)
 /* 011B44 800170E4 48000710 */  b       lbl_800177F4
-glabel lbl_800170E8
+.global lbl_800170E8
+lbl_800170E8:
 /* 011B48 800170E8 38600011 */  li      r3, 0x11
 /* 011B4C 800170EC 388D8984 */  addi    r4, r13, yes@sda21
 /* 011B50 800170F0 4BFF5A8D */  bl      simulatorDrawYesNoMessage
@@ -194,7 +205,8 @@ glabel lbl_800170E8
 lbl_8001712C:
 /* 011B8C 8001712C 93FE0000 */  stw     r31, 0(r30)
 /* 011B90 80017130 480006C4 */  b       lbl_800177F4
-glabel lbl_80017134
+.global lbl_80017134
+lbl_80017134:
 /* 011B94 80017134 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011B98 80017138 3860001D */  li      r3, 0x1d
 /* 011B9C 8001713C 4BFF28F5 */  bl      simulatorDrawErrorMessageWait
@@ -204,7 +216,8 @@ glabel lbl_80017134
 /* 011BAC 8001714C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011BB0 80017150 93FE0000 */  stw     r31, 0(r30)
 /* 011BB4 80017154 480006A0 */  b       lbl_800177F4
-glabel lbl_80017158
+.global lbl_80017158
+lbl_80017158:
 /* 011BB8 80017158 3860001E */  li      r3, 0x1e
 /* 011BBC 8001715C 4BFF28D5 */  bl      simulatorDrawErrorMessageWait
 /* 011BC0 80017160 2C030001 */  cmpwi   r3, 1
@@ -215,7 +228,8 @@ glabel lbl_80017158
 /* 011BD4 80017174 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011BD8 80017178 93FE0000 */  stw     r31, 0(r30)
 /* 011BDC 8001717C 48000678 */  b       lbl_800177F4
-glabel lbl_80017180
+.global lbl_80017180
+lbl_80017180:
 /* 011BE0 80017180 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011BE4 80017184 3860001F */  li      r3, 0x1f
 /* 011BE8 80017188 4BFF28A9 */  bl      simulatorDrawErrorMessageWait
@@ -226,7 +240,8 @@ glabel lbl_80017180
 /* 011BFC 8001719C 93FD07B0 */  stw     r31, 0x7b0(r29)
 /* 011C00 800171A0 93FE0000 */  stw     r31, 0(r30)
 /* 011C04 800171A4 48000650 */  b       lbl_800177F4
-glabel lbl_800171A8
+.global lbl_800171A8
+lbl_800171A8:
 /* 011C08 800171A8 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011C0C 800171AC 38600020 */  li      r3, 0x20
 /* 011C10 800171B0 4BFF2881 */  bl      simulatorDrawErrorMessageWait
@@ -236,7 +251,8 @@ glabel lbl_800171A8
 /* 011C20 800171C0 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011C24 800171C4 93FE0000 */  stw     r31, 0(r30)
 /* 011C28 800171C8 4800062C */  b       lbl_800177F4
-glabel lbl_800171CC
+.global lbl_800171CC
+lbl_800171CC:
 /* 011C2C 800171CC 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011C30 800171D0 38600021 */  li      r3, 0x21
 /* 011C34 800171D4 4BFF285D */  bl      simulatorDrawErrorMessageWait
@@ -246,7 +262,8 @@ glabel lbl_800171CC
 /* 011C44 800171E4 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011C48 800171E8 93FE0000 */  stw     r31, 0(r30)
 /* 011C4C 800171EC 48000608 */  b       lbl_800177F4
-glabel lbl_800171F0
+.global lbl_800171F0
+lbl_800171F0:
 /* 011C50 800171F0 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011C54 800171F4 38600022 */  li      r3, 0x22
 /* 011C58 800171F8 4BFF2839 */  bl      simulatorDrawErrorMessageWait
@@ -258,7 +275,8 @@ glabel lbl_800171F0
 /* 011C70 80017210 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011C74 80017214 93FE0000 */  stw     r31, 0(r30)
 /* 011C78 80017218 480005DC */  b       lbl_800177F4
-glabel lbl_8001721C
+.global lbl_8001721C
+lbl_8001721C:
 /* 011C7C 8001721C 3860000C */  li      r3, 0xc
 /* 011C80 80017220 388D8984 */  addi    r4, r13, yes@sda21
 /* 011C84 80017224 4BFF5959 */  bl      simulatorDrawYesNoMessage
@@ -278,7 +296,8 @@ lbl_80017254:
 /* 011CB8 80017258 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011CBC 8001725C 93FE0000 */  stw     r31, 0(r30)
 /* 011CC0 80017260 48000594 */  b       lbl_800177F4
-glabel lbl_80017264
+.global lbl_80017264
+lbl_80017264:
 /* 011CC4 80017264 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011CC8 80017268 38600023 */  li      r3, 0x23
 /* 011CCC 8001726C 4BFF27C5 */  bl      simulatorDrawErrorMessageWait
@@ -288,7 +307,8 @@ glabel lbl_80017264
 /* 011CDC 8001727C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011CE0 80017280 93FE0000 */  stw     r31, 0(r30)
 /* 011CE4 80017284 48000570 */  b       lbl_800177F4
-glabel lbl_80017288
+.global lbl_80017288
+lbl_80017288:
 /* 011CE8 80017288 38600024 */  li      r3, 0x24
 /* 011CEC 8001728C 4BFF27A5 */  bl      simulatorDrawErrorMessageWait
 /* 011CF0 80017290 2C030001 */  cmpwi   r3, 1
@@ -297,7 +317,8 @@ glabel lbl_80017288
 /* 011CFC 8001729C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011D00 800172A0 93FE0000 */  stw     r31, 0(r30)
 /* 011D04 800172A4 48000550 */  b       lbl_800177F4
-glabel lbl_800172A8
+.global lbl_800172A8
+lbl_800172A8:
 /* 011D08 800172A8 38600025 */  li      r3, 0x25
 /* 011D0C 800172AC 4BFF2785 */  bl      simulatorDrawErrorMessageWait
 /* 011D10 800172B0 2C030001 */  cmpwi   r3, 1
@@ -308,7 +329,8 @@ glabel lbl_800172A8
 /* 011D24 800172C4 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011D28 800172C8 93FE0000 */  stw     r31, 0(r30)
 /* 011D2C 800172CC 48000528 */  b       lbl_800177F4
-glabel lbl_800172D0
+.global lbl_800172D0
+lbl_800172D0:
 /* 011D30 800172D0 38600026 */  li      r3, 0x26
 /* 011D34 800172D4 388D8984 */  addi    r4, r13, yes@sda21
 /* 011D38 800172D8 4BFF58A5 */  bl      simulatorDrawYesNoMessage
@@ -330,7 +352,8 @@ lbl_80017308:
 /* 011D74 80017314 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011D78 80017318 93FE0000 */  stw     r31, 0(r30)
 /* 011D7C 8001731C 480004D8 */  b       lbl_800177F4
-glabel lbl_80017320
+.global lbl_80017320
+lbl_80017320:
 /* 011D80 80017320 38600027 */  li      r3, 0x27
 /* 011D84 80017324 388D8984 */  addi    r4, r13, yes@sda21
 /* 011D88 80017328 4BFF5855 */  bl      simulatorDrawYesNoMessage
@@ -351,7 +374,8 @@ lbl_80017354:
 /* 011DC0 80017360 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011DC4 80017364 93FE0000 */  stw     r31, 0(r30)
 /* 011DC8 80017368 4800048C */  b       lbl_800177F4
-glabel lbl_8001736C
+.global lbl_8001736C
+lbl_8001736C:
 /* 011DCC 8001736C 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011DD0 80017370 38600028 */  li      r3, 0x28
 /* 011DD4 80017374 4BFF26BD */  bl      simulatorDrawErrorMessageWait
@@ -363,14 +387,16 @@ glabel lbl_8001736C
 /* 011DEC 8001738C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011DF0 80017390 93FE0000 */  stw     r31, 0(r30)
 /* 011DF4 80017394 48000460 */  b       lbl_800177F4
-glabel lbl_80017398
+.global lbl_80017398
+lbl_80017398:
 /* 011DF8 80017398 3860001A */  li      r3, 0x1a
 /* 011DFC 8001739C 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011E00 800173A0 38000000 */  li      r0, 0
 /* 011E04 800173A4 906D898C */  stw     r3, nextMenuEntry@sda21(r13)
 /* 011E08 800173A8 900D8984 */  stw     r0, yes@sda21(r13)
 /* 011E0C 800173AC 48000448 */  b       lbl_800177F4
-glabel lbl_800173B0
+.global lbl_800173B0
+lbl_800173B0:
 /* 011E10 800173B0 38600029 */  li      r3, 0x29
 /* 011E14 800173B4 388D8984 */  addi    r4, r13, yes@sda21
 /* 011E18 800173B8 4BFF57C5 */  bl      simulatorDrawYesNoMessage
@@ -389,14 +415,16 @@ lbl_800173DC:
 /* 011E48 800173E8 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011E4C 800173EC 93FE0000 */  stw     r31, 0(r30)
 /* 011E50 800173F0 48000404 */  b       lbl_800177F4
-glabel lbl_800173F4
+.global lbl_800173F4
+lbl_800173F4:
 /* 011E54 800173F4 3860001C */  li      r3, 0x1c
 /* 011E58 800173F8 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011E5C 800173FC 38000000 */  li      r0, 0
 /* 011E60 80017400 906D898C */  stw     r3, nextMenuEntry@sda21(r13)
 /* 011E64 80017404 900D8984 */  stw     r0, yes@sda21(r13)
 /* 011E68 80017408 480003EC */  b       lbl_800177F4
-glabel lbl_8001740C
+.global lbl_8001740C
+lbl_8001740C:
 /* 011E6C 8001740C 38600029 */  li      r3, 0x29
 /* 011E70 80017410 388D8984 */  addi    r4, r13, yes@sda21
 /* 011E74 80017414 4BFF5769 */  bl      simulatorDrawYesNoMessage
@@ -417,7 +445,8 @@ lbl_80017440:
 /* 011EAC 8001744C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011EB0 80017450 93FE0000 */  stw     r31, 0(r30)
 /* 011EB4 80017454 480003A0 */  b       lbl_800177F4
-glabel lbl_80017458
+.global lbl_80017458
+lbl_80017458:
 /* 011EB8 80017458 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 011EBC 8001745C 3860002B */  li      r3, 0x2b
 /* 011EC0 80017460 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
@@ -431,7 +460,8 @@ glabel lbl_80017458
 /* 011EE0 80017480 900D8988 */  stw     r0, prevMenuEntry@sda21(r13)
 /* 011EE4 80017484 93FE0000 */  stw     r31, 0(r30)
 /* 011EE8 80017488 4800036C */  b       lbl_800177F4
-glabel lbl_8001748C
+.global lbl_8001748C
+lbl_8001748C:
 /* 011EEC 8001748C 3860002C */  li      r3, 0x2c
 /* 011EF0 80017490 4BFF25A1 */  bl      simulatorDrawErrorMessageWait
 /* 011EF4 80017494 2C030001 */  cmpwi   r3, 1
@@ -440,7 +470,8 @@ glabel lbl_8001748C
 /* 011F00 800174A0 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011F04 800174A4 93FE0000 */  stw     r31, 0(r30)
 /* 011F08 800174A8 4800034C */  b       lbl_800177F4
-glabel lbl_800174AC
+.global lbl_800174AC
+lbl_800174AC:
 /* 011F0C 800174AC 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 011F10 800174B0 3860002D */  li      r3, 0x2d
 /* 011F14 800174B4 93FD07AC */  stw     r31, 0x7ac(r29)
@@ -453,7 +484,8 @@ glabel lbl_800174AC
 /* 011F30 800174D0 906D8988 */  stw     r3, prevMenuEntry@sda21(r13)
 /* 011F34 800174D4 901E0000 */  stw     r0, 0(r30)
 /* 011F38 800174D8 4800031C */  b       lbl_800177F4
-glabel lbl_800174DC
+.global lbl_800174DC
+lbl_800174DC:
 /* 011F3C 800174DC 3860002E */  li      r3, 0x2e
 /* 011F40 800174E0 4BFF2551 */  bl      simulatorDrawErrorMessageWait
 /* 011F44 800174E4 2C030001 */  cmpwi   r3, 1
@@ -464,7 +496,8 @@ glabel lbl_800174DC
 /* 011F58 800174F8 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011F5C 800174FC 93FE0000 */  stw     r31, 0(r30)
 /* 011F60 80017500 480002F4 */  b       lbl_800177F4
-glabel lbl_80017504
+.global lbl_80017504
+lbl_80017504:
 /* 011F64 80017504 38600018 */  li      r3, 0x18
 /* 011F68 80017508 388D8984 */  addi    r4, r13, yes@sda21
 /* 011F6C 8001750C 4BFF5671 */  bl      simulatorDrawYesNoMessage
@@ -483,7 +516,8 @@ lbl_80017538:
 /* 011F9C 8001753C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011FA0 80017540 93FE0000 */  stw     r31, 0(r30)
 /* 011FA4 80017544 480002B0 */  b       lbl_800177F4
-glabel lbl_80017548
+.global lbl_80017548
+lbl_80017548:
 /* 011FA8 80017548 38600018 */  li      r3, 0x18
 /* 011FAC 8001754C 388D8984 */  addi    r4, r13, yes@sda21
 /* 011FB0 80017550 4BFF562D */  bl      simulatorDrawYesNoMessage
@@ -503,7 +537,8 @@ lbl_80017580:
 /* 011FE4 80017584 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 011FE8 80017588 93FE0000 */  stw     r31, 0(r30)
 /* 011FEC 8001758C 48000268 */  b       lbl_800177F4
-glabel lbl_80017590
+.global lbl_80017590
+lbl_80017590:
 /* 011FF0 80017590 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 011FF4 80017594 3860001A */  li      r3, 0x1a
 /* 011FF8 80017598 4BFF2499 */  bl      simulatorDrawErrorMessageWait
@@ -515,7 +550,8 @@ glabel lbl_80017590
 /* 012010 800175B0 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 012014 800175B4 93FE0000 */  stw     r31, 0(r30)
 /* 012018 800175B8 4800023C */  b       lbl_800177F4
-glabel lbl_800175BC
+.global lbl_800175BC
+lbl_800175BC:
 /* 01201C 800175BC 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 012020 800175C0 3860001B */  li      r3, 0x1b
 /* 012024 800175C4 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
@@ -527,7 +563,8 @@ glabel lbl_800175BC
 /* 01203C 800175DC 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 012040 800175E0 93FE0000 */  stw     r31, 0(r30)
 /* 012044 800175E4 48000210 */  b       lbl_800177F4
-glabel lbl_800175E8
+.global lbl_800175E8
+lbl_800175E8:
 /* 012048 800175E8 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 01204C 800175EC 3860001B */  li      r3, 0x1b
 /* 012050 800175F0 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
@@ -539,7 +576,8 @@ glabel lbl_800175E8
 /* 012068 80017608 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 01206C 8001760C 93FE0000 */  stw     r31, 0(r30)
 /* 012070 80017610 480001E4 */  b       lbl_800177F4
-glabel lbl_80017614
+.global lbl_80017614
+lbl_80017614:
 /* 012074 80017614 3860001C */  li      r3, 0x1c
 /* 012078 80017618 4BFF2419 */  bl      simulatorDrawErrorMessageWait
 /* 01207C 8001761C 2C030001 */  cmpwi   r3, 1
@@ -550,14 +588,16 @@ glabel lbl_80017614
 /* 012090 80017630 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 012094 80017634 93FE0000 */  stw     r31, 0(r30)
 /* 012098 80017638 480001BC */  b       lbl_800177F4
-glabel lbl_8001763C
+.global lbl_8001763C
+lbl_8001763C:
 /* 01209C 8001763C 38600000 */  li      r3, 0
 /* 0120A0 80017640 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 0120A4 80017644 38000029 */  li      r0, 0x29
 /* 0120A8 80017648 906D8984 */  stw     r3, yes@sda21(r13)
 /* 0120AC 8001764C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 0120B0 80017650 480001A4 */  b       lbl_800177F4
-glabel lbl_80017654
+.global lbl_80017654
+lbl_80017654:
 /* 0120B4 80017654 38600012 */  li      r3, 0x12
 /* 0120B8 80017658 388D8984 */  addi    r4, r13, yes@sda21
 /* 0120BC 8001765C 4BFF5521 */  bl      simulatorDrawYesNoMessage
@@ -577,14 +617,16 @@ lbl_8001768C:
 /* 0120F0 80017690 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 0120F4 80017694 93FE0000 */  stw     r31, 0(r30)
 /* 0120F8 80017698 4800015C */  b       lbl_800177F4
-glabel lbl_8001769C
+.global lbl_8001769C
+lbl_8001769C:
 /* 0120FC 8001769C 38600000 */  li      r3, 0
 /* 012100 800176A0 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
 /* 012104 800176A4 3800002B */  li      r0, 0x2b
 /* 012108 800176A8 906D8984 */  stw     r3, yes@sda21(r13)
 /* 01210C 800176AC 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 012110 800176B0 48000144 */  b       lbl_800177F4
-glabel lbl_800176B4
+.global lbl_800176B4
+lbl_800176B4:
 /* 012114 800176B4 38600012 */  li      r3, 0x12
 /* 012118 800176B8 388D8984 */  addi    r4, r13, yes@sda21
 /* 01211C 800176BC 4BFF54C1 */  bl      simulatorDrawYesNoMessage
@@ -604,7 +646,8 @@ lbl_800176EC:
 /* 012150 800176F0 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 012154 800176F4 93FE0000 */  stw     r31, 0(r30)
 /* 012158 800176F8 480000FC */  b       lbl_800177F4
-glabel lbl_800176FC
+.global lbl_800176FC
+lbl_800176FC:
 /* 01215C 800176FC 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 012160 80017700 38600014 */  li      r3, 0x14
 /* 012164 80017704 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
@@ -619,7 +662,8 @@ glabel lbl_800176FC
 /* 012188 80017728 906D898C */  stw     r3, nextMenuEntry@sda21(r13)
 /* 01218C 8001772C 901E0000 */  stw     r0, 0(r30)
 /* 012190 80017730 480000C4 */  b       lbl_800177F4
-glabel lbl_80017734
+.global lbl_80017734
+lbl_80017734:
 /* 012194 80017734 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 012198 80017738 38600015 */  li      r3, 0x15
 /* 01219C 8001773C 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
@@ -633,7 +677,8 @@ glabel lbl_80017734
 /* 0121BC 8001775C 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 0121C0 80017760 93FE0000 */  stw     r31, 0(r30)
 /* 0121C4 80017764 48000090 */  b       lbl_800177F4
-glabel lbl_80017768
+.global lbl_80017768
+lbl_80017768:
 /* 0121C8 80017768 93FD07AC */  stw     r31, 0x7ac(r29)
 /* 0121CC 8001776C 38600015 */  li      r3, 0x15
 /* 0121D0 80017770 908D8988 */  stw     r4, prevMenuEntry@sda21(r13)
@@ -647,7 +692,8 @@ glabel lbl_80017768
 /* 0121F0 80017790 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 0121F4 80017794 93FE0000 */  stw     r31, 0(r30)
 /* 0121F8 80017798 4800005C */  b       lbl_800177F4
-glabel lbl_8001779C
+.global lbl_8001779C
+lbl_8001779C:
 /* 0121FC 8001779C 38600016 */  li      r3, 0x16
 /* 012200 800177A0 4BFF2291 */  bl      simulatorDrawErrorMessageWait
 /* 012204 800177A4 2C030001 */  cmpwi   r3, 1
@@ -658,7 +704,8 @@ glabel lbl_8001779C
 /* 012218 800177B8 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 01221C 800177BC 93FE0000 */  stw     r31, 0(r30)
 /* 012220 800177C0 48000034 */  b       lbl_800177F4
-glabel lbl_800177C4
+.global lbl_800177C4
+lbl_800177C4:
 /* 012224 800177C4 38600017 */  li      r3, 0x17
 /* 012228 800177C8 4BFF2269 */  bl      simulatorDrawErrorMessageWait
 /* 01222C 800177CC 2C030001 */  cmpwi   r3, 1
@@ -669,7 +716,8 @@ glabel lbl_800177C4
 /* 012240 800177E0 900D898C */  stw     r0, nextMenuEntry@sda21(r13)
 /* 012244 800177E4 93FE0000 */  stw     r31, 0(r30)
 /* 012248 800177E8 4800000C */  b       lbl_800177F4
-glabel lbl_800177EC
+.global lbl_800177EC
+lbl_800177EC:
 /* 01224C 800177EC 38600000 */  li      r3, 0
 /* 012250 800177F0 48000008 */  b       lbl_800177F8
 lbl_800177F4:
@@ -682,3 +730,57 @@ lbl_800177F8:
 /* 012268 80017808 83A1001C */  lwz     r29, 0x1c(r1)
 /* 01226C 8001780C 38210028 */  addi    r1, r1, 0x28
 /* 012270 80017810 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EA668:
+    .word lbl_800177EC
+    .word lbl_80016EF8
+    .word lbl_80016F24
+    .word lbl_80016F54
+    .word lbl_80016F80
+    .word lbl_80016FAC
+    .word lbl_80016FD8
+    .word lbl_80017020
+    .word lbl_80017054
+    .word lbl_80017074
+    .word lbl_8001709C
+    .word lbl_800170E8
+    .word lbl_80017134
+    .word lbl_80017158
+    .word lbl_80017180
+    .word lbl_800171A8
+    .word lbl_800171CC
+    .word lbl_800171F0
+    .word lbl_8001721C
+    .word lbl_80017264
+    .word lbl_80017288
+    .word lbl_800172A8
+    .word lbl_800172D0
+    .word lbl_80017320
+    .word lbl_8001736C
+    .word lbl_80017398
+    .word lbl_800173B0
+    .word lbl_800173F4
+    .word lbl_8001740C
+    .word lbl_80017458
+    .word lbl_8001748C
+    .word lbl_800174AC
+    .word lbl_800174DC
+    .word lbl_80017504
+    .word lbl_80017548
+    .word lbl_800177EC
+    .word lbl_80017590
+    .word lbl_800175BC
+    .word lbl_800175E8
+    .word lbl_80017614
+    .word lbl_8001763C
+    .word lbl_80017654
+    .word lbl_8001769C
+    .word lbl_800176B4
+    .word lbl_800177EC
+    .word lbl_800176FC
+    .word lbl_80017734
+    .word lbl_80017768
+    .word lbl_8001779C
+    .word lbl_800177C4

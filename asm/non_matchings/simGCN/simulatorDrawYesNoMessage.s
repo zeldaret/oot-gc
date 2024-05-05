@@ -18,7 +18,8 @@ glabel simulatorDrawYesNoMessage
 /* 00761C 8000CBBC 7C04002E */  lwzx    r0, r4, r0
 /* 007620 8000CBC0 7C0903A6 */  mtctr   r0
 /* 007624 8000CBC4 4E800420 */  bctr    
-glabel lbl_8000CBC8
+.global lbl_8000CBC8
+lbl_8000CBC8:
 /* 007628 8000CBC8 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 00762C 8000CBCC 7C001800 */  cmpw    r0, r3
 /* 007630 8000CBD0 41820050 */  beq     lbl_8000CC20
@@ -47,7 +48,8 @@ lbl_8000CC20:
 /* 007684 8000CC24 389E0000 */  addi    r4, r30, 0
 /* 007688 8000CC28 480002FD */  bl      simulatorDrawYesNoMessageLoop
 /* 00768C 8000CC2C 480002E0 */  b       lbl_8000CF0C
-glabel lbl_8000CC30
+.global lbl_8000CC30
+lbl_8000CC30:
 /* 007690 8000CC30 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007694 8000CC34 7C001800 */  cmpw    r0, r3
 /* 007698 8000CC38 41820050 */  beq     lbl_8000CC88
@@ -76,7 +78,8 @@ lbl_8000CC88:
 /* 0076EC 8000CC8C 389E0000 */  addi    r4, r30, 0
 /* 0076F0 8000CC90 48000295 */  bl      simulatorDrawYesNoMessageLoop
 /* 0076F4 8000CC94 48000278 */  b       lbl_8000CF0C
-glabel lbl_8000CC98
+.global lbl_8000CC98
+lbl_8000CC98:
 /* 0076F8 8000CC98 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0076FC 8000CC9C 7C001800 */  cmpw    r0, r3
 /* 007700 8000CCA0 41820050 */  beq     lbl_8000CCF0
@@ -105,7 +108,8 @@ lbl_8000CCF0:
 /* 007754 8000CCF4 389E0000 */  addi    r4, r30, 0
 /* 007758 8000CCF8 4800022D */  bl      simulatorDrawYesNoMessageLoop
 /* 00775C 8000CCFC 48000210 */  b       lbl_8000CF0C
-glabel lbl_8000CD00
+.global lbl_8000CD00
+lbl_8000CD00:
 /* 007760 8000CD00 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007764 8000CD04 7C001800 */  cmpw    r0, r3
 /* 007768 8000CD08 41820050 */  beq     lbl_8000CD58
@@ -134,7 +138,8 @@ lbl_8000CD58:
 /* 0077BC 8000CD5C 389E0000 */  addi    r4, r30, 0
 /* 0077C0 8000CD60 480001C5 */  bl      simulatorDrawYesNoMessageLoop
 /* 0077C4 8000CD64 480001A8 */  b       lbl_8000CF0C
-glabel lbl_8000CD68
+.global lbl_8000CD68
+lbl_8000CD68:
 /* 0077C8 8000CD68 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0077CC 8000CD6C 7C001800 */  cmpw    r0, r3
 /* 0077D0 8000CD70 41820050 */  beq     lbl_8000CDC0
@@ -163,7 +168,8 @@ lbl_8000CDC0:
 /* 007824 8000CDC4 389E0000 */  addi    r4, r30, 0
 /* 007828 8000CDC8 4800015D */  bl      simulatorDrawYesNoMessageLoop
 /* 00782C 8000CDCC 48000140 */  b       lbl_8000CF0C
-glabel lbl_8000CDD0
+.global lbl_8000CDD0
+lbl_8000CDD0:
 /* 007830 8000CDD0 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007834 8000CDD4 7C001800 */  cmpw    r0, r3
 /* 007838 8000CDD8 41820050 */  beq     lbl_8000CE28
@@ -192,7 +198,8 @@ lbl_8000CE28:
 /* 00788C 8000CE2C 389E0000 */  addi    r4, r30, 0
 /* 007890 8000CE30 480000F5 */  bl      simulatorDrawYesNoMessageLoop
 /* 007894 8000CE34 480000D8 */  b       lbl_8000CF0C
-glabel lbl_8000CE38
+.global lbl_8000CE38
+lbl_8000CE38:
 /* 007898 8000CE38 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 00789C 8000CE3C 7C001800 */  cmpw    r0, r3
 /* 0078A0 8000CE40 41820050 */  beq     lbl_8000CE90
@@ -221,7 +228,8 @@ lbl_8000CE90:
 /* 0078F4 8000CE94 389E0000 */  addi    r4, r30, 0
 /* 0078F8 8000CE98 4800008D */  bl      simulatorDrawYesNoMessageLoop
 /* 0078FC 8000CE9C 48000070 */  b       lbl_8000CF0C
-glabel lbl_8000CEA0
+.global lbl_8000CEA0
+lbl_8000CEA0:
 /* 007900 8000CEA0 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007904 8000CEA4 7C001800 */  cmpw    r0, r3
 /* 007908 8000CEA8 41820050 */  beq     lbl_8000CEF8
@@ -250,7 +258,8 @@ lbl_8000CEF8:
 /* 00795C 8000CEFC 389E0000 */  addi    r4, r30, 0
 /* 007960 8000CF00 48000025 */  bl      simulatorDrawYesNoMessageLoop
 /* 007964 8000CF04 48000008 */  b       lbl_8000CF0C
-glabel lbl_8000CF08
+.global lbl_8000CF08
+lbl_8000CF08:
 /* 007968 8000CF08 38600000 */  li      r3, 0
 lbl_8000CF0C:
 /* 00796C 8000CF0C 8001005C */  lwz     r0, 0x5c(r1)
@@ -259,3 +268,37 @@ lbl_8000CF0C:
 /* 007978 8000CF18 7C0803A6 */  mtlr    r0
 /* 00797C 8000CF1C 38210058 */  addi    r1, r1, 0x58
 /* 007980 8000CF20 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EA09C:
+    .word lbl_8000CBC8
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CC30
+    .word lbl_8000CC98
+    .word lbl_8000CD00
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CD68
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CF08
+    .word lbl_8000CDD0
+    .word lbl_8000CE38
+    .word lbl_8000CF08
+    .word lbl_8000CEA0

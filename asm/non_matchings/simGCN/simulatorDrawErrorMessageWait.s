@@ -16,7 +16,8 @@ glabel simulatorDrawErrorMessageWait
 /* 0044C8 80009A68 7C04002E */  lwzx    r0, r4, r0
 /* 0044CC 80009A6C 7C0903A6 */  mtctr   r0
 /* 0044D0 80009A70 4E800420 */  bctr    
-glabel lbl_80009A74
+.global lbl_80009A74
+lbl_80009A74:
 /* 0044D4 80009A74 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0044D8 80009A78 7C001800 */  cmpw    r0, r3
 /* 0044DC 80009A7C 41820050 */  beq     lbl_80009ACC
@@ -129,7 +130,8 @@ lbl_80009B6C:
 lbl_80009C1C:
 /* 00467C 80009C1C 38600000 */  li      r3, 0
 /* 004680 80009C20 48002F48 */  b       lbl_8000CB68
-glabel lbl_80009C24
+.global lbl_80009C24
+lbl_80009C24:
 /* 004684 80009C24 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004688 80009C28 7C001800 */  cmpw    r0, r3
 /* 00468C 80009C2C 41820050 */  beq     lbl_80009C7C
@@ -242,7 +244,8 @@ lbl_80009D1C:
 lbl_80009DCC:
 /* 00482C 80009DCC 38600000 */  li      r3, 0
 /* 004830 80009DD0 48002D98 */  b       lbl_8000CB68
-glabel lbl_80009DD4
+.global lbl_80009DD4
+lbl_80009DD4:
 /* 004834 80009DD4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004838 80009DD8 7C001800 */  cmpw    r0, r3
 /* 00483C 80009DDC 41820050 */  beq     lbl_80009E2C
@@ -355,7 +358,8 @@ lbl_80009ECC:
 lbl_80009F7C:
 /* 0049DC 80009F7C 38600000 */  li      r3, 0
 /* 0049E0 80009F80 48002BE8 */  b       lbl_8000CB68
-glabel lbl_80009F84
+.global lbl_80009F84
+lbl_80009F84:
 /* 0049E4 80009F84 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0049E8 80009F88 7C001800 */  cmpw    r0, r3
 /* 0049EC 80009F8C 41820050 */  beq     lbl_80009FDC
@@ -468,7 +472,8 @@ lbl_8000A07C:
 lbl_8000A12C:
 /* 004B8C 8000A12C 38600000 */  li      r3, 0
 /* 004B90 8000A130 48002A38 */  b       lbl_8000CB68
-glabel lbl_8000A134
+.global lbl_8000A134
+lbl_8000A134:
 /* 004B94 8000A134 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004B98 8000A138 7C001800 */  cmpw    r0, r3
 /* 004B9C 8000A13C 41820050 */  beq     lbl_8000A18C
@@ -581,7 +586,8 @@ lbl_8000A22C:
 lbl_8000A2DC:
 /* 004D3C 8000A2DC 38600000 */  li      r3, 0
 /* 004D40 8000A2E0 48002888 */  b       lbl_8000CB68
-glabel lbl_8000A2E4
+.global lbl_8000A2E4
+lbl_8000A2E4:
 /* 004D44 8000A2E4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004D48 8000A2E8 7C001800 */  cmpw    r0, r3
 /* 004D4C 8000A2EC 41820050 */  beq     lbl_8000A33C
@@ -694,7 +700,8 @@ lbl_8000A3DC:
 lbl_8000A48C:
 /* 004EEC 8000A48C 38600000 */  li      r3, 0
 /* 004EF0 8000A490 480026D8 */  b       lbl_8000CB68
-glabel lbl_8000A494
+.global lbl_8000A494
+lbl_8000A494:
 /* 004EF4 8000A494 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 004EF8 8000A498 7C001800 */  cmpw    r0, r3
 /* 004EFC 8000A49C 41820050 */  beq     lbl_8000A4EC
@@ -807,7 +814,8 @@ lbl_8000A58C:
 lbl_8000A63C:
 /* 00509C 8000A63C 38600000 */  li      r3, 0
 /* 0050A0 8000A640 48002528 */  b       lbl_8000CB68
-glabel lbl_8000A644
+.global lbl_8000A644
+lbl_8000A644:
 /* 0050A4 8000A644 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0050A8 8000A648 7C001800 */  cmpw    r0, r3
 /* 0050AC 8000A64C 41820050 */  beq     lbl_8000A69C
@@ -920,7 +928,8 @@ lbl_8000A73C:
 lbl_8000A7EC:
 /* 00524C 8000A7EC 38600000 */  li      r3, 0
 /* 005250 8000A7F0 48002378 */  b       lbl_8000CB68
-glabel lbl_8000A7F4
+.global lbl_8000A7F4
+lbl_8000A7F4:
 /* 005254 8000A7F4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005258 8000A7F8 7C001800 */  cmpw    r0, r3
 /* 00525C 8000A7FC 41820050 */  beq     lbl_8000A84C
@@ -1033,7 +1042,8 @@ lbl_8000A8EC:
 lbl_8000A99C:
 /* 0053FC 8000A99C 38600000 */  li      r3, 0
 /* 005400 8000A9A0 480021C8 */  b       lbl_8000CB68
-glabel lbl_8000A9A4
+.global lbl_8000A9A4
+lbl_8000A9A4:
 /* 005404 8000A9A4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005408 8000A9A8 7C001800 */  cmpw    r0, r3
 /* 00540C 8000A9AC 41820050 */  beq     lbl_8000A9FC
@@ -1146,7 +1156,8 @@ lbl_8000AA9C:
 lbl_8000AB4C:
 /* 0055AC 8000AB4C 38600000 */  li      r3, 0
 /* 0055B0 8000AB50 48002018 */  b       lbl_8000CB68
-glabel lbl_8000AB54
+.global lbl_8000AB54
+lbl_8000AB54:
 /* 0055B4 8000AB54 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0055B8 8000AB58 7C001800 */  cmpw    r0, r3
 /* 0055BC 8000AB5C 41820050 */  beq     lbl_8000ABAC
@@ -1259,7 +1270,8 @@ lbl_8000AC4C:
 lbl_8000ACFC:
 /* 00575C 8000ACFC 38600000 */  li      r3, 0
 /* 005760 8000AD00 48001E68 */  b       lbl_8000CB68
-glabel lbl_8000AD04
+.global lbl_8000AD04
+lbl_8000AD04:
 /* 005764 8000AD04 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005768 8000AD08 7C001800 */  cmpw    r0, r3
 /* 00576C 8000AD0C 41820050 */  beq     lbl_8000AD5C
@@ -1372,7 +1384,8 @@ lbl_8000ADFC:
 lbl_8000AEAC:
 /* 00590C 8000AEAC 38600000 */  li      r3, 0
 /* 005910 8000AEB0 48001CB8 */  b       lbl_8000CB68
-glabel lbl_8000AEB4
+.global lbl_8000AEB4
+lbl_8000AEB4:
 /* 005914 8000AEB4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005918 8000AEB8 7C001800 */  cmpw    r0, r3
 /* 00591C 8000AEBC 41820050 */  beq     lbl_8000AF0C
@@ -1485,7 +1498,8 @@ lbl_8000AFAC:
 lbl_8000B05C:
 /* 005ABC 8000B05C 38600000 */  li      r3, 0
 /* 005AC0 8000B060 48001B08 */  b       lbl_8000CB68
-glabel lbl_8000B064
+.global lbl_8000B064
+lbl_8000B064:
 /* 005AC4 8000B064 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005AC8 8000B068 7C001800 */  cmpw    r0, r3
 /* 005ACC 8000B06C 41820050 */  beq     lbl_8000B0BC
@@ -1598,7 +1612,8 @@ lbl_8000B15C:
 lbl_8000B20C:
 /* 005C6C 8000B20C 38600000 */  li      r3, 0
 /* 005C70 8000B210 48001958 */  b       lbl_8000CB68
-glabel lbl_8000B214
+.global lbl_8000B214
+lbl_8000B214:
 /* 005C74 8000B214 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005C78 8000B218 7C001800 */  cmpw    r0, r3
 /* 005C7C 8000B21C 41820050 */  beq     lbl_8000B26C
@@ -1711,7 +1726,8 @@ lbl_8000B30C:
 lbl_8000B3BC:
 /* 005E1C 8000B3BC 38600000 */  li      r3, 0
 /* 005E20 8000B3C0 480017A8 */  b       lbl_8000CB68
-glabel lbl_8000B3C4
+.global lbl_8000B3C4
+lbl_8000B3C4:
 /* 005E24 8000B3C4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005E28 8000B3C8 7C001800 */  cmpw    r0, r3
 /* 005E2C 8000B3CC 41820050 */  beq     lbl_8000B41C
@@ -1824,7 +1840,8 @@ lbl_8000B4BC:
 lbl_8000B56C:
 /* 005FCC 8000B56C 38600000 */  li      r3, 0
 /* 005FD0 8000B570 480015F8 */  b       lbl_8000CB68
-glabel lbl_8000B574
+.global lbl_8000B574
+lbl_8000B574:
 /* 005FD4 8000B574 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 005FD8 8000B578 7C001800 */  cmpw    r0, r3
 /* 005FDC 8000B57C 41820050 */  beq     lbl_8000B5CC
@@ -1937,7 +1954,8 @@ lbl_8000B66C:
 lbl_8000B71C:
 /* 00617C 8000B71C 38600000 */  li      r3, 0
 /* 006180 8000B720 48001448 */  b       lbl_8000CB68
-glabel lbl_8000B724
+.global lbl_8000B724
+lbl_8000B724:
 /* 006184 8000B724 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006188 8000B728 7C001800 */  cmpw    r0, r3
 /* 00618C 8000B72C 41820050 */  beq     lbl_8000B77C
@@ -2050,7 +2068,8 @@ lbl_8000B81C:
 lbl_8000B8CC:
 /* 00632C 8000B8CC 38600000 */  li      r3, 0
 /* 006330 8000B8D0 48001298 */  b       lbl_8000CB68
-glabel lbl_8000B8D4
+.global lbl_8000B8D4
+lbl_8000B8D4:
 /* 006334 8000B8D4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006338 8000B8D8 7C001800 */  cmpw    r0, r3
 /* 00633C 8000B8DC 41820050 */  beq     lbl_8000B92C
@@ -2163,7 +2182,8 @@ lbl_8000B9CC:
 lbl_8000BA7C:
 /* 0064DC 8000BA7C 38600000 */  li      r3, 0
 /* 0064E0 8000BA80 480010E8 */  b       lbl_8000CB68
-glabel lbl_8000BA84
+.global lbl_8000BA84
+lbl_8000BA84:
 /* 0064E4 8000BA84 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0064E8 8000BA88 7C001800 */  cmpw    r0, r3
 /* 0064EC 8000BA8C 41820050 */  beq     lbl_8000BADC
@@ -2276,7 +2296,8 @@ lbl_8000BB7C:
 lbl_8000BC2C:
 /* 00668C 8000BC2C 38600000 */  li      r3, 0
 /* 006690 8000BC30 48000F38 */  b       lbl_8000CB68
-glabel lbl_8000BC34
+.global lbl_8000BC34
+lbl_8000BC34:
 /* 006694 8000BC34 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006698 8000BC38 7C001800 */  cmpw    r0, r3
 /* 00669C 8000BC3C 41820050 */  beq     lbl_8000BC8C
@@ -2389,7 +2410,8 @@ lbl_8000BD2C:
 lbl_8000BDDC:
 /* 00683C 8000BDDC 38600000 */  li      r3, 0
 /* 006840 8000BDE0 48000D88 */  b       lbl_8000CB68
-glabel lbl_8000BDE4
+.global lbl_8000BDE4
+lbl_8000BDE4:
 /* 006844 8000BDE4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006848 8000BDE8 7C001800 */  cmpw    r0, r3
 /* 00684C 8000BDEC 41820050 */  beq     lbl_8000BE3C
@@ -2502,7 +2524,8 @@ lbl_8000BEDC:
 lbl_8000BF8C:
 /* 0069EC 8000BF8C 38600000 */  li      r3, 0
 /* 0069F0 8000BF90 48000BD8 */  b       lbl_8000CB68
-glabel lbl_8000BF94
+.global lbl_8000BF94
+lbl_8000BF94:
 /* 0069F4 8000BF94 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0069F8 8000BF98 7C001800 */  cmpw    r0, r3
 /* 0069FC 8000BF9C 41820050 */  beq     lbl_8000BFEC
@@ -2615,7 +2638,8 @@ lbl_8000C08C:
 lbl_8000C13C:
 /* 006B9C 8000C13C 38600000 */  li      r3, 0
 /* 006BA0 8000C140 48000A28 */  b       lbl_8000CB68
-glabel lbl_8000C144
+.global lbl_8000C144
+lbl_8000C144:
 /* 006BA4 8000C144 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006BA8 8000C148 7C001800 */  cmpw    r0, r3
 /* 006BAC 8000C14C 41820050 */  beq     lbl_8000C19C
@@ -2728,7 +2752,8 @@ lbl_8000C23C:
 lbl_8000C2EC:
 /* 006D4C 8000C2EC 38600000 */  li      r3, 0
 /* 006D50 8000C2F0 48000878 */  b       lbl_8000CB68
-glabel lbl_8000C2F4
+.global lbl_8000C2F4
+lbl_8000C2F4:
 /* 006D54 8000C2F4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006D58 8000C2F8 7C001800 */  cmpw    r0, r3
 /* 006D5C 8000C2FC 41820050 */  beq     lbl_8000C34C
@@ -2841,7 +2866,8 @@ lbl_8000C3EC:
 lbl_8000C49C:
 /* 006EFC 8000C49C 38600000 */  li      r3, 0
 /* 006F00 8000C4A0 480006C8 */  b       lbl_8000CB68
-glabel lbl_8000C4A4
+.global lbl_8000C4A4
+lbl_8000C4A4:
 /* 006F04 8000C4A4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 006F08 8000C4A8 7C001800 */  cmpw    r0, r3
 /* 006F0C 8000C4AC 41820050 */  beq     lbl_8000C4FC
@@ -2954,7 +2980,8 @@ lbl_8000C59C:
 lbl_8000C64C:
 /* 0070AC 8000C64C 38600000 */  li      r3, 0
 /* 0070B0 8000C650 48000518 */  b       lbl_8000CB68
-glabel lbl_8000C654
+.global lbl_8000C654
+lbl_8000C654:
 /* 0070B4 8000C654 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 0070B8 8000C658 7C001800 */  cmpw    r0, r3
 /* 0070BC 8000C65C 41820050 */  beq     lbl_8000C6AC
@@ -3067,7 +3094,8 @@ lbl_8000C74C:
 lbl_8000C7FC:
 /* 00725C 8000C7FC 38600000 */  li      r3, 0
 /* 007260 8000C800 48000368 */  b       lbl_8000CB68
-glabel lbl_8000C804
+.global lbl_8000C804
+lbl_8000C804:
 /* 007264 8000C804 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007268 8000C808 7C001800 */  cmpw    r0, r3
 /* 00726C 8000C80C 41820050 */  beq     lbl_8000C85C
@@ -3180,7 +3208,8 @@ lbl_8000C8FC:
 lbl_8000C9AC:
 /* 00740C 8000C9AC 38600000 */  li      r3, 0
 /* 007410 8000C9B0 480001B8 */  b       lbl_8000CB68
-glabel lbl_8000C9B4
+.global lbl_8000C9B4
+lbl_8000C9B4:
 /* 007414 8000C9B4 800D80B4 */  lwz     r0, simulatorMessageCurrent@sda21(r13)
 /* 007418 8000C9B8 7C001800 */  cmpw    r0, r3
 /* 00741C 8000C9BC 41820050 */  beq     lbl_8000CA0C
@@ -3293,7 +3322,8 @@ lbl_8000CAAC:
 lbl_8000CB5C:
 /* 0075BC 8000CB5C 38600000 */  li      r3, 0
 /* 0075C0 8000CB60 48000008 */  b       lbl_8000CB68
-glabel lbl_8000CB64
+.global lbl_8000CB64
+lbl_8000CB64:
 /* 0075C4 8000CB64 38600000 */  li      r3, 0
 lbl_8000CB68:
 /* 0075C8 8000CB68 BB6100C4 */  lmw     r27, 0xc4(r1)
@@ -3301,3 +3331,47 @@ lbl_8000CB68:
 /* 0075D0 8000CB70 382100D8 */  addi    r1, r1, 0xd8
 /* 0075D4 8000CB74 7C0803A6 */  mtlr    r0
 /* 0075D8 8000CB78 4E800020 */  blr     
+
+.section .data
+
+jtbl_800E9F5C:
+    .word lbl_80009A74
+    .word lbl_80009C24
+    .word lbl_80009DD4
+    .word lbl_80009F84
+    .word lbl_8000A134
+    .word lbl_8000CB64
+    .word lbl_8000A2E4
+    .word lbl_8000A494
+    .word lbl_8000A644
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000A7F4
+    .word lbl_8000A9A4
+    .word lbl_8000AB54
+    .word lbl_8000AD04
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000AEB4
+    .word lbl_8000B064
+    .word lbl_8000B214
+    .word lbl_8000B3C4
+    .word lbl_8000B574
+    .word lbl_8000B724
+    .word lbl_8000B8D4
+    .word lbl_8000BA84
+    .word lbl_8000BC34
+    .word lbl_8000BDE4
+    .word lbl_8000BF94
+    .word lbl_8000C144
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000C2F4
+    .word lbl_8000CB64
+    .word lbl_8000CB64
+    .word lbl_8000C4A4
+    .word lbl_8000C654
+    .word lbl_8000C804
+    .word lbl_8000C9B4

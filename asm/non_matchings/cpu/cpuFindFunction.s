@@ -124,7 +124,8 @@ lbl_800334A8:
 /* 02DF2C 800334CC 7C63202E */  lwzx    r3, r3, r4
 /* 02DF30 800334D0 7C6903A6 */  mtctr   r3
 /* 02DF34 800334D4 4E800420 */  bctr    
-glabel lbl_800334D8
+.global lbl_800334D8
+lbl_800334D8:
 /* 02DF38 800334D8 540306BE */  clrlwi  r3, r0, 0x1a
 /* 02DF3C 800334DC 540006BE */  clrlwi  r0, r0, 0x1a
 /* 02DF40 800334E0 2C00000D */  cmpwi   r0, 0xd
@@ -167,7 +168,8 @@ lbl_80033554:
 /* 02DFB8 80033558 7C601A14 */  add     r3, r0, r3
 /* 02DFBC 8003355C 8A030770 */  lbz     r16, 0x770(r3)
 /* 02DFC0 80033560 48000508 */  b       lbl_80033A68
-glabel lbl_80033564
+.global lbl_80033564
+lbl_80033564:
 /* 02DFC4 80033564 57E30006 */  rlwinm  r3, r31, 0, 0, 3
 /* 02DFC8 80033568 5003113A */  rlwimi  r3, r0, 2, 4, 0x1d
 /* 02DFCC 8003356C 7C03F800 */  cmpw    r3, r31
@@ -184,7 +186,8 @@ lbl_80033590:
 /* 02DFF4 80033594 408104D4 */  ble     lbl_80033A68
 /* 02DFF8 80033598 7C781B78 */  mr      r24, r3
 /* 02DFFC 8003359C 480004CC */  b       lbl_80033A68
-glabel lbl_800335A0
+.global lbl_800335A0
+lbl_800335A0:
 /* 02E000 800335A0 540486FE */  rlwinm  r4, r0, 0x10, 0x1b, 0x1f
 /* 02E004 800335A4 540386FE */  rlwinm  r3, r0, 0x10, 0x1b, 0x1f
 /* 02E008 800335A8 2C030010 */  cmpwi   r3, 0x10
@@ -231,7 +234,8 @@ lbl_80033634:
 /* 02E098 80033638 7C602214 */  add     r3, r0, r4
 /* 02E09C 8003363C 8A0307B0 */  lbz     r16, 0x7b0(r3)
 /* 02E0A0 80033640 48000428 */  b       lbl_80033A68
-glabel lbl_80033644
+.global lbl_80033644
+lbl_80033644:
 /* 02E0A4 80033644 5400043E */  clrlwi  r0, r0, 0x10
 /* 02E0A8 80033648 7C000734 */  extsh   r0, r0
 /* 02E0AC 8003364C 5403103B */  rlwinm. r3, r0, 2, 0, 0x1d
@@ -312,7 +316,8 @@ lbl_80033754:
 /* 02E1BC 8003375C 4081030C */  ble     lbl_80033A68
 /* 02E1C0 80033760 7C1D0378 */  mr      r29, r0
 /* 02E1C4 80033764 48000304 */  b       lbl_80033A68
-glabel lbl_80033768
+.global lbl_80033768
+lbl_80033768:
 /* 02E1C8 80033768 5400043E */  clrlwi  r0, r0, 0x10
 /* 02E1CC 8003376C 7C000734 */  extsh   r0, r0
 /* 02E1D0 80033770 5403103B */  rlwinm. r3, r0, 2, 0, 0x1d
@@ -341,7 +346,8 @@ lbl_800337BC:
 /* 02E224 800337C4 408102A4 */  ble     lbl_80033A68
 /* 02E228 800337C8 7C1D0378 */  mr      r29, r0
 /* 02E22C 800337CC 4800029C */  b       lbl_80033A68
-glabel lbl_800337D0
+.global lbl_800337D0
+lbl_800337D0:
 /* 02E230 800337D0 540306BE */  clrlwi  r3, r0, 0x1a
 /* 02E234 800337D4 28030018 */  cmplwi  r3, 0x18
 /* 02E238 800337D8 41810044 */  bgt     lbl_8003381C
@@ -350,7 +356,8 @@ glabel lbl_800337D0
 /* 02E244 800337E4 7C63202E */  lwzx    r3, r3, r4
 /* 02E248 800337E8 7C6903A6 */  mtctr   r3
 /* 02E24C 800337EC 4E800420 */  bctr    
-glabel lbl_800337F0
+.global lbl_800337F0
+lbl_800337F0:
 /* 02E250 800337F0 2C1D0000 */  cmpwi   r29, 0
 /* 02E254 800337F4 4182000C */  beq     lbl_80033800
 /* 02E258 800337F8 7C1FE800 */  cmpw    r31, r29
@@ -364,7 +371,8 @@ lbl_80033810:
 /* 02E270 80033810 3A4000DE */  li      r18, 0xde
 /* 02E274 80033814 39C00000 */  li      r14, 0
 /* 02E278 80033818 48000250 */  b       lbl_80033A68
-glabel lbl_8003381C
+.global lbl_8003381C
+lbl_8003381C:
 /* 02E27C 8003381C 54035EFE */  rlwinm  r3, r0, 0xb, 0x1b, 0x1f
 /* 02E280 80033820 2C030008 */  cmpwi   r3, 8
 /* 02E284 80033824 41820008 */  beq     lbl_8003382C
@@ -405,7 +413,8 @@ lbl_80033898:
 /* 02E300 800338A0 408101C8 */  ble     lbl_80033A68
 /* 02E304 800338A4 7C1D0378 */  mr      r29, r0
 /* 02E308 800338A8 480001C0 */  b       lbl_80033A68
-glabel lbl_800338AC
+.global lbl_800338AC
+lbl_800338AC:
 /* 02E30C 800338AC 54035EFE */  rlwinm  r3, r0, 0xb, 0x1b, 0x1f
 /* 02E310 800338B0 28030008 */  cmplwi  r3, 8
 /* 02E314 800338B4 408201B4 */  bne     lbl_80033A68
@@ -444,13 +453,15 @@ lbl_80033924:
 /* 02E38C 8003392C 4081013C */  ble     lbl_80033A68
 /* 02E390 80033930 7C1D0378 */  mr      r29, r0
 /* 02E394 80033934 48000134 */  b       lbl_80033A68
-glabel lbl_80033938
+.global lbl_80033938
+lbl_80033938:
 /* 02E398 80033938 540086FE */  rlwinm  r0, r0, 0x10, 0x1b, 0x1f
 /* 02E39C 8003393C 2800001F */  cmplwi  r0, 0x1f
 /* 02E3A0 80033940 40820128 */  bne     lbl_80033A68
 /* 02E3A4 80033944 39C00001 */  li      r14, 1
 /* 02E3A8 80033948 48000120 */  b       lbl_80033A68
-glabel lbl_8003394C
+.global lbl_8003394C
+lbl_8003394C:
 /* 02E3AC 8003394C 540086FE */  rlwinm  r0, r0, 0x10, 0x1b, 0x1f
 /* 02E3B0 80033950 2800001F */  cmplwi  r0, 0x1f
 /* 02E3B4 80033954 40820114 */  bne     lbl_80033A68
@@ -526,11 +537,13 @@ lbl_80033A40:
 /* 02E4B0 80033A50 3BF50000 */  addi    r31, r21, 0
 /* 02E4B4 80033A54 39E00000 */  li      r15, 0
 /* 02E4B8 80033A58 48000354 */  b       lbl_80033DAC
-glabel lbl_80033A5C
+.global lbl_80033A5C
+lbl_80033A5C:
 /* 02E4BC 80033A5C 80010040 */  lwz     r0, 0x40(r1)
 /* 02E4C0 80033A60 7C602A14 */  add     r3, r0, r5
 /* 02E4C4 80033A64 8A030730 */  lbz     r16, 0x730(r3)
-glabel lbl_80033A68
+.global lbl_80033A68
+lbl_80033A68:
 /* 02E4C8 80033A68 5640063F */  clrlwi. r0, r18, 0x18
 /* 02E4CC 80033A6C 41820330 */  beq     lbl_80033D9C
 /* 02E4D0 80033A70 2800006F */  cmplwi  r0, 0x6f
@@ -828,3 +841,78 @@ lbl_80033E74:
 /* 02E8DC 80033E7C 382100A8 */  addi    r1, r1, 0xa8
 /* 02E8E0 80033E80 7C0803A6 */  mtlr    r0
 /* 02E8E4 80033E84 4E800020 */  blr     
+
+.section .data
+
+jtbl_800EC0CC:
+    .word lbl_8003381C
+    .word lbl_80033A68
+    .word lbl_80033A68
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_80033A68
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_80033A68
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_8003381C
+    .word lbl_800337F0
+
+jtbl_800EC130:
+    .word lbl_800334D8
+    .word lbl_800335A0
+    .word lbl_80033564
+    .word lbl_80033A5C
+    .word lbl_80033644
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_800337D0
+    .word lbl_800338AC
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033644
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033768
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_8003394C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033A5C
+    .word lbl_80033938
