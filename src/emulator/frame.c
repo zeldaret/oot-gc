@@ -683,7 +683,77 @@ static bool frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectFill.s")
+#else
+static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle) {
+    bool bFlag;
+    f32 rDepth;
+    f32 rX0;
+    f32 rY0;
+    f32 rX1;
+    f32 rY1;
+
+    if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 && pRectangle->nX0 <= 16 && pRectangle->nY0 <= 32 &&
+        pRectangle->nX1 >= N64_FRAME_WIDTH - 16 && pRectangle->nY1 >= N64_FRAME_WIDTH - 32) {
+        bFlag = false;
+        if (pFrame->aColor[FCT_FILL].r == 0xFF && pFrame->aColor[FCT_FILL].g == 0xFC &&
+            pFrame->aColor[FCT_FILL].b == 0xFF && pFrame->aColor[FCT_FILL].a == 0xFC) {
+            bFlag = true;
+        }
+        if (pFrame->aColor[FCT_FILL].r == 0xF8 && pFrame->aColor[FCT_FILL].g == 0xF8 &&
+            pFrame->aColor[FCT_FILL].b == 0xF0 && pFrame->aColor[FCT_FILL].a == 0) {
+            bFlag = true;
+        }
+        if (bFlag && !(*(volatile u32*)&pFrame->nMode & 0x100000)) {
+            pFrame->nMode |= 0x100000;
+            return true;
+        }
+    }
+
+    rX0 = pRectangle->nX0;
+    rX1 = pRectangle->nX1;
+    rY0 = pRectangle->nY0;
+    rY1 = pRectangle->nY1;
+    if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 || (pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x200000) {
+        rX1 += 1.0f;
+        rY1 += 1.0f;
+    }
+    if ((pFrame->aMode[FMT_OTHER0] & 4) == 4) {
+        rDepth = pFrame->rDepth;
+    } else {
+        rDepth = 0.0f;
+    }
+    if (pFrame->nModeVtx != 0xB) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_TRUE);
+        GXSetVtxDesc(GX_VA_CLR0, GX_TRUE);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0xB;
+    }
+
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXWGFifo.f32 = rX0;
+    GXWGFifo.f32 = rY0;
+    GXWGFifo.f32 = rDepth;
+    GXWGFifo.s32 = 0;
+    GXWGFifo.f32 = rX1;
+    GXWGFifo.f32 = rY0;
+    GXWGFifo.f32 = rDepth;
+    GXWGFifo.s32 = 0;
+    GXWGFifo.f32 = rX1;
+    GXWGFifo.f32 = rY1;
+    GXWGFifo.f32 = rDepth;
+    GXWGFifo.s32 = 0;
+    GXWGFifo.f32 = rX0;
+    GXWGFifo.f32 = rY1;
+    GXWGFifo.f32 = rDepth;
+    GXWGFifo.s32 = 0;
+    return true;
+}
+#endif
 
 static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
     bool bFlag;
