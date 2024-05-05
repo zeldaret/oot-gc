@@ -649,7 +649,25 @@ bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_Setup.s")
+static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive) {
+    bool bFlag;
+    s32 nColors;
+
+    if (!frameDrawSetupSP(pFrame, &nColors, &bFlag, 3)) {
+        return false;
+    }
+
+    if (!frameDrawSetupDP(pFrame, &nColors, &bFlag, 0)) {
+        return false;
+    }
+
+    pFrame->aDraw[1] = (FrameDrawFunc)gapfDrawTriangle[nColors + (bFlag ? 4 : 0)];
+    if (!pFrame->aDraw[1](pFrame, pPrimitive)) {
+        return false;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T0.s")
 
