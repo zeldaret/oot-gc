@@ -1,5 +1,9 @@
 #include "emulator/xlCoreGCN.h"
+#include "dolphin.h"
 #include "emulator/simGCN.h"
+#include "emulator/xlHeap.h"
+#include "emulator/xlList.h"
+#include "emulator/xlPostGCN.h"
 #include "macros.h"
 
 u8 gTgPcTPL[32897] = {
@@ -95,7 +99,7 @@ static void xlCoreInitMem(void) {
     OSSetArenaLo(arenaHi);
 }
 
-inline void xlCoreInitFilter(u8* pFilter, s32 size, f32 factor) {
+static inline void xlCoreInitFilter(u8* pFilter, s32 size, f32 factor) {
     s32 iFilter;
 
     for (iFilter = 0; iFilter < size; iFilter++) {

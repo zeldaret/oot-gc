@@ -117,7 +117,7 @@ typedef struct _MCARD {
     /* 0x000 */ __anon_0x1AEB5 file;
     /* 0x35C */ MemCardError error;
     /* 0x360 */ s32 slot;
-    /* 0x364 */ s32 (*pPollFunction)();
+    /* 0x364 */ s32 (*pPollFunction)(void);
     /* 0x368 */ s32 pollPrevBytes;
     /* 0x36C */ s32 pollSize;
     /* 0x370 */ char pollMessage[256];
@@ -146,6 +146,7 @@ typedef struct _MCARD {
 
 extern MemCard mCard;
 
+s32 mcardWriteGameDataReset(MemCard* pMCard);
 s32 mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);
 s32 mcardRead(MemCard* pMCard, s32 address, s32 size, char* data);
 s32 mcardInit(MemCard* pMCard);

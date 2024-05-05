@@ -6,6 +6,7 @@
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
 #include "emulator/xlCoreGCN.h"
+#include "emulator/xlHeap.h"
 #include "macros.h"
 
 static bool romMakeFreeCache(Rom* pROM, s32* piCache, RomCacheType eType);
@@ -141,7 +142,7 @@ static bool romFindOldestBlock(Rom* pROM, s32* piBlock, RomCacheType eTypeCache,
     return false;
 }
 
-inline void romMarkBlockAsFree(Rom* pROM, s32 iBlock) {
+static inline void romMarkBlockAsFree(Rom* pROM, s32 iBlock) {
     RomBlock* pBlock;
     s32 iCache;
 
@@ -658,7 +659,7 @@ static bool romCopyUpdate(Rom* pROM) {
     return true;
 }
 
-inline bool romLoadFullOrPartLoop(Rom* pROM) {
+static inline bool romLoadFullOrPartLoop(Rom* pROM) {
     s32 i;
     s32 iCache;
     u32 temp_r27;
@@ -904,7 +905,7 @@ static bool romGetDebug64(Rom* pROM, u32 nAddress, s64* pData) {
     return true;
 }
 
-inline bool romCopyLoad(Rom* pROM) {
+static inline bool romCopyLoad(Rom* pROM) {
     if (!romLoadFullOrPart(pROM)) {
         return false;
     }
@@ -917,7 +918,7 @@ inline bool romCopyLoad(Rom* pROM) {
     return true;
 }
 
-inline bool romCopyLoop(Rom* pROM, u8* pTarget, u32 nOffset, u32 nSize, UnknownCallbackFunc* pCallback) {
+static inline bool romCopyLoop(Rom* pROM, u8* pTarget, u32 nOffset, u32 nSize, UnknownCallbackFunc* pCallback) {
     s32 i;
 
     pROM->copy.bWait = false;
@@ -1153,7 +1154,7 @@ bool romSetCacheSize(Rom* pROM, s32 nSize) {
     return true;
 }
 
-inline void romOpen(Rom* pROM, char* szNameFile) {
+static inline void romOpen(Rom* pROM, char* szNameFile) {
     bool var_r30 = false;
     bool bFlip;
 

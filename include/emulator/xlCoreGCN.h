@@ -5,10 +5,11 @@
 
 extern GXRenderModeObj* rmode;
 
-bool xlCoreReset(void);
-s32 xlCoreGetArgumentCount(void);
-bool xlCoreGetArgument(s32 iArgument, char** pszArgument);
+void xlCoreBeforeRender(void);
 bool xlCoreHiResolution(void);
+bool xlCoreGetArgument(s32 iArgument, char** pszArgument);
+s32 xlCoreGetArgumentCount(void);
+bool xlCoreReset(void);
 void xlCoreBeforeRender(void);
 
 #endif

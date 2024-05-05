@@ -81,13 +81,13 @@ OSThread* __OSCurrentThread AT_ADDRESS(OS_BASE_CACHED | 0x00E4);
 OSThreadQueue __OSActiveThreadQueue AT_ADDRESS(OS_BASE_CACHED | 0x00DC);
 volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED | 0x00D8);
 
-void __OSThreadInit();
+void __OSThreadInit(void);
 void OSInitThreadQueue(OSThreadQueue* queue);
-OSThread* OSGetCurrentThread();
-s32 OSDisableScheduler();
-s32 OSEnableScheduler();
+OSThread* OSGetCurrentThread(void);
+s32 OSDisableScheduler(void);
+s32 OSEnableScheduler(void);
 OSPriority __OSGetEffectivePriority(OSThread* thread);
-void __OSReschedule();
+void __OSReschedule(void);
 bool OSCreateThread(OSThread* thread, void* (*func)(void*), void* param, void* stack, u32 stackSize,
                     OSPriority priority, u16 attr);
 void OSExitThread(void* val);

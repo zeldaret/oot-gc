@@ -12,10 +12,11 @@
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
 #include "emulator/video.h"
+#include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
-#include "libc/math.h"
-#include "libc/string.h"
 #include "macros.h"
+#include "math.h"
+#include "string.h"
 
 static bool send_mesg(Cpu* pCPU);
 static bool __osEnqueueThread(Cpu* pCPU);
@@ -801,7 +802,7 @@ bool __osRestoreInt(Cpu* pCPU) {
 bool __osSpSetStatus(Cpu* pCPU) {
     u32 nData32 = pCPU->aGPR[4].u32;
 
-    if (!rspPut32(SYSTEM_RSP(pCPU->pHost), 0x04040010, &nData32)) {
+    if (!rspPut32(SYSTEM_RSP(pCPU->pHost), 0x04040010, (s32*)&nData32)) {
         return false;
     }
 
@@ -2737,7 +2738,7 @@ bool __osEepStatus(Cpu* pCPU) {
         return false;
     }
 
-    if (pifGetEEPROMSize(SYSTEM_PIF(pCPU->pHost), &nSize) != 0) {
+    if (pifGetEEPROMSize(SYSTEM_PIF(pCPU->pHost), (u32*)&nSize)) {
         status[0] = 0x80 | (nSize == 0x800 ? 0x40 : 0);
         status[1] = 0;
         status[2] = 0;
@@ -3715,7 +3716,7 @@ static bool librarySearch(Library* pLibrary, CpuFunction* pFunction) {
     return true;
 }
 
-inline bool libraryUpdate(Library* pLibrary) {
+static inline bool libraryUpdate(Library* pLibrary) {
     Cpu* pCPU;
     CpuFunction* pFunction;
 

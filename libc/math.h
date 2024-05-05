@@ -11,33 +11,6 @@ extern "C" {
 #define _MATH_INLINE static inline
 #endif
 
-#ifdef __MWERKS__
-
-/* Metrowerks */
-#if __option(little_endian)
-#define __IEEE_LITTLE_ENDIAN
-#else
-#define __IEEE_BIG_ENDIAN
-#endif
-
-#else
-
-/* GCC */
-#ifdef __BIG_ENDIAN__
-#define __IEEE_BIG_ENDIAN
-#endif
-#ifdef __LITTLE_ENDIAN__
-#define __IEEE_LITTLE_ENDIAN
-#endif
-
-#endif
-
-#ifndef __IEEE_BIG_ENDIAN
-#ifndef __IEEE_LITTLE_ENDIAN
-#error Must define endianness
-#endif
-#endif
-
 #ifndef _INT32
 typedef int _INT32;
 typedef unsigned int _UINT32;
@@ -103,72 +76,7 @@ _MATH_INLINE float powf(float __x, float __y) { return pow(__x, __y); }
 #pragma cplusplus on
 #endif
 
-#ifdef __IEEE_LITTLE_ENDIAN
-#define __HI(x) (sizeof(x) == 8 ? *(1 + (_INT32*)&x) : (*(_INT32*)&x))
-#define __LO(x) (*(_INT32*)&x)
-#define __UHI(x) (sizeof(x) == 8 ? *(1 + (_UINT32*)&x) : (*(_UINT32*)&x))
-#define __ULO(x) (*(_UINT32*)&x)
-#else
-#define __LO(x) (sizeof(x) == 8 ? *(1 + (_INT32*)&x) : (*(_INT32*)&x))
-#define __HI(x) (*(_INT32*)&x)
-#define __ULO(x) (sizeof(x) == 8 ? *(1 + (_UINT32*)&x) : (*(_UINT32*)&x))
-#define __UHI(x) (*(_UINT32*)&x)
-#endif
-
-#define FP_NAN 1
-#define FP_INFINITE 2
-#define FP_ZERO 3
-#define FP_NORMAL 4
-#define FP_SUBNORMAL 5
-
 double __frsqrte(double x);
-
-static inline int __fpclassifyf(float x) {
-  switch ((*(_INT32*)&x) & 0x7f800000) {
-  case 0x7f800000: {
-    if ((*(_INT32*)&x) & 0x007fffff)
-      return FP_NAN;
-    else
-      return FP_INFINITE;
-    break;
-  }
-  case 0: {
-    if ((*(_INT32*)&x) & 0x007fffff)
-      return FP_SUBNORMAL;
-    else
-      return FP_ZERO;
-    break;
-  }
-  }
-  return FP_NORMAL;
-}
-
-static inline int __fpclassifyd(double x) {
-  switch (__HI(x) & 0x7ff00000) {
-  case 0x7ff00000: {
-    if ((__HI(x) & 0x000fffff) || (__LO(x) & 0xffffffff))
-      return FP_NAN;
-    else
-      return FP_INFINITE;
-    break;
-  }
-  case 0: {
-    if ((__HI(x) & 0x000fffff) || (__LO(x) & 0xffffffff))
-      return FP_SUBNORMAL;
-    else
-      return FP_ZERO;
-    break;
-  }
-  }
-  return FP_NORMAL;
-}
-
-#define fpclassify(x)                                                                              \
-  (sizeof(x) == sizeof(float) ? __fpclassifyf((float)(x)) : __fpclassifyd((double)(x)))
-#define isnormal(x) (fpclassify(x) == FP_NORMAL)
-#define isnan(x) (fpclassify(x) == FP_NAN)
-#define isinf(x) (fpclassify(x) == FP_INFINITE)
-#define isfinite(x) ((fpclassify(x) > FP_INFINITE))
 
 extern inline float sqrtf(float x) {
   const double _half = .5;

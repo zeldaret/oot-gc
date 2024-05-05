@@ -121,7 +121,7 @@ typedef struct Rsp {
     /* 0x0000 */ s32 nMode;
     /* 0x0004 */ struct __anon_0x57890 yield;
     /* 0x00DC */ u32 nTickLast;
-    /* 0x00E0 */ s32 (*pfUpdateWaiting)();
+    /* 0x00E0 */ s32 (*pfUpdateWaiting)(void);
     /* 0x00E4 */ u32 n2TriMult;
     /* 0x00E8 */ s32 aStatus[4];
     /* 0x00F8 */ f32 aMatrixOrtho[4][4];
@@ -215,6 +215,59 @@ typedef struct Rsp {
     /* 0x39C8 */ s32* dctBuf;
 } Rsp; // size = 0x39CC
 
+typedef struct __anon_0x5ED4F {
+    /* 0x00 */ u16 imageX;
+    /* 0x02 */ u16 imageW;
+    /* 0x04 */ s16 frameX;
+    /* 0x06 */ u16 frameW;
+    /* 0x08 */ u16 imageY;
+    /* 0x0A */ u16 imageH;
+    /* 0x0C */ s16 frameY;
+    /* 0x0E */ u16 frameH;
+    /* 0x10 */ u32 imagePtr;
+    /* 0x14 */ u16 imageLoad;
+    /* 0x16 */ u8 imageFmt;
+    /* 0x17 */ u8 imageSiz;
+    /* 0x18 */ u16 imagePal;
+    /* 0x1A */ u16 imageFlip;
+    /* 0x1C */ u16 tmemW;
+    /* 0x1E */ u16 tmemH;
+    /* 0x20 */ u16 tmemLoadSH;
+    /* 0x22 */ u16 tmemLoadTH;
+    /* 0x24 */ u16 tmemSizeW;
+    /* 0x26 */ u16 tmemSize;
+} __anon_0x5ED4F; // size = 0x28
+
+typedef struct __anon_0x5F05A {
+    /* 0x00 */ u16 imageX;
+    /* 0x02 */ u16 imageW;
+    /* 0x04 */ s16 frameX;
+    /* 0x06 */ u16 frameW;
+    /* 0x08 */ u16 imageY;
+    /* 0x0A */ u16 imageH;
+    /* 0x0C */ s16 frameY;
+    /* 0x0E */ u16 frameH;
+    /* 0x10 */ u32 imagePtr;
+    /* 0x14 */ u16 imageLoad;
+    /* 0x16 */ u8 imageFmt;
+    /* 0x17 */ u8 imageSiz;
+    /* 0x18 */ u16 imagePal;
+    /* 0x1A */ u16 imageFlip;
+    /* 0x1C */ u16 scaleW;
+    /* 0x1E */ u16 scaleH;
+    /* 0x20 */ s32 imageYorig;
+    /* 0x24 */ u8 padding[4];
+} __anon_0x5F05A; // size = 0x28
+
+typedef union __anon_0x5F2FB {
+    /* 0x0 */ struct __anon_0x5ED4F b;
+    /* 0x0 */ struct __anon_0x5F05A s;
+    /* 0x0 */ s64 force_structure_alignment;
+} __anon_0x5F2FB;
+
+bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, union __anon_0x5F2FB* pBg);
+bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData);
+bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData);
 bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);
 bool rspEnableABI(Rsp* pRSP, bool bFlag);
 bool rspFrameComplete(Rsp* pRSP);

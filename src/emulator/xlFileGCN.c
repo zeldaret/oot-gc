@@ -41,7 +41,7 @@ bool xlFileGetSize(s32* pnSize, char* szFileName) {
     return false;
 }
 
-inline bool xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
+static inline bool xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
     if (gpfOpen != NULL) {
         return gpfOpen(szFileName, &(*ppFile)->info);
     } else {

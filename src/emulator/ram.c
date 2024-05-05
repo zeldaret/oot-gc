@@ -1,6 +1,7 @@
 #include "emulator/ram.h"
 #include "emulator/cpu.h"
 #include "emulator/system.h"
+#include "emulator/xlHeap.h"
 
 _XL_OBJECTTYPE gClassRAM = {
     "RAM",

@@ -2,6 +2,7 @@
 #define _FRAME_H
 
 #include "dolphin.h"
+#include "emulator/rdp.h"
 #include "emulator/xlObject.h"
 
 #define FRAME_SYNC_TOKEN 0x7D00
@@ -108,20 +109,6 @@ typedef struct Viewport {
     /* 0x8 */ f32 rSizeX;
     /* 0xC */ f32 rSizeY;
 } Viewport; // size = 0x10
-
-// __anon_0x2D2B6
-typedef struct Scissor {
-    /* 0x00 */ bool bFlip;
-    /* 0x04 */ s32 iTile;
-    /* 0x08 */ s32 nX0;
-    /* 0x0C */ s32 nY0;
-    /* 0x10 */ s32 nX1;
-    /* 0x14 */ s32 nY1;
-    /* 0x18 */ f32 rS;
-    /* 0x1C */ f32 rT;
-    /* 0x20 */ f32 rDeltaS;
-    /* 0x24 */ f32 rDeltaT;
-} Scissor; // size = 0x28
 
 // __anon_0x23B9E
 typedef struct FrameBuffer {
@@ -266,56 +253,6 @@ typedef struct Rectangle {
     /* 0x24 */ f32 rDeltaT;
 } Rectangle; // size = 0x28
 
-typedef struct __anon_0x2A6F7 {
-    /* 0x00 */ u16 imageX;
-    /* 0x02 */ u16 imageW;
-    /* 0x04 */ s16 frameX;
-    /* 0x06 */ u16 frameW;
-    /* 0x08 */ u16 imageY;
-    /* 0x0A */ u16 imageH;
-    /* 0x0C */ s16 frameY;
-    /* 0x0E */ u16 frameH;
-    /* 0x10 */ u32 imagePtr;
-    /* 0x14 */ u16 imageLoad;
-    /* 0x16 */ u8 imageFmt;
-    /* 0x17 */ u8 imageSiz;
-    /* 0x18 */ u16 imagePal;
-    /* 0x1A */ u16 imageFlip;
-    /* 0x1C */ u16 tmemW;
-    /* 0x1E */ u16 tmemH;
-    /* 0x20 */ u16 tmemLoadSH;
-    /* 0x22 */ u16 tmemLoadTH;
-    /* 0x24 */ u16 tmemSizeW;
-    /* 0x26 */ u16 tmemSize;
-} __anon_0x2A6F7; // size = 0x28
-
-typedef struct __anon_0x2AA02 {
-    /* 0x00 */ u16 imageX;
-    /* 0x02 */ u16 imageW;
-    /* 0x04 */ s16 frameX;
-    /* 0x06 */ u16 frameW;
-    /* 0x08 */ u16 imageY;
-    /* 0x0A */ u16 imageH;
-    /* 0x0C */ s16 frameY;
-    /* 0x0E */ u16 frameH;
-    /* 0x10 */ u32 imagePtr;
-    /* 0x14 */ u16 imageLoad;
-    /* 0x16 */ u8 imageFmt;
-    /* 0x17 */ u8 imageSiz;
-    /* 0x18 */ u16 imagePal;
-    /* 0x1A */ u16 imageFlip;
-    /* 0x1C */ u16 scaleW;
-    /* 0x1E */ u16 scaleH;
-    /* 0x20 */ s32 imageYorig;
-    /* 0x24 */ u8 padding[4];
-} __anon_0x2AA02; // size = 0x28
-
-typedef union __anon_0x2ACA3 {
-    /* 0x0 */ struct __anon_0x2A6F7 b;
-    /* 0x0 */ struct __anon_0x2AA02 s;
-    /* 0x0 */ s64 force_structure_alignment;
-} __anon_0x2ACA3;
-
 // __anon_0x24C38
 typedef struct Frame {
     /* 0x00000 */ u32 anCIMGAddresses[8];
@@ -410,8 +347,13 @@ typedef struct Frame {
     /* 0x3D148 */ u16* nCameraBuffer;
 } Frame; // size = 0x3D150
 
+extern _XL_OBJECTTYPE gClassFrame;
+extern bool gNoSwapBuffer;
+
+bool frameDrawSetup2D(Frame* pFrame);
 bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
 bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
+
 bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
 bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
 bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);
@@ -426,13 +368,29 @@ bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
 bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
 bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 
-bool frameDrawSetup2D(Frame* pFrame);
+bool frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi);
+bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi);
+bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi);
+bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI);
+bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nCommandHi, u32 nCommandLo);
+bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer);
+bool frameHackCIMG_Panel(Rdp* pRDP, Frame* pFrame, FrameBuffer* pBuffer, u64** ppnGBI);
+
+bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress);
+bool frameShow(Frame* pFrame);
+bool frameSetScissor(Frame* pFrame, Rectangle* pScissor);
+bool frameSetDepth(Frame* pFrame, f32 rDepth, f32 rDelta);
+bool frameSetColor(Frame* pFrame, FrameColorType eType, u32 nRGBA);
+
+bool frameBeginOK(Frame* pFrame);
+bool frameBegin(Frame* pFrame, s32 nCountVertex);
+bool frameEnd(Frame* pFrame);
 bool frameDrawReset(Frame* pFrame, s32 nFlag);
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType);
 bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY);
+bool frameFixMatrixHint(Frame* pFrame, u32 nAddressFloat, u32 nAddressFixed);
 bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
                         f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
-
-extern _XL_OBJECTTYPE gClassFrame;
+bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1);
 
 #endif

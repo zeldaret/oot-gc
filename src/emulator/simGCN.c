@@ -11,8 +11,10 @@
 #include "emulator/soundGCN.h"
 #include "emulator/system.h"
 #include "emulator/xlCoreGCN.h"
+#include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
 #include "macros.h"
+#include "string.h"
 
 const f32 D_800D2FE0[3][4] = {
     {1.0, 0.0, 0.0, 0.0},
@@ -295,7 +297,7 @@ void* gpFrame;
 void* gpSound;
 System* gpSystem;
 
-static char gpErrorMessageBuffer[20480];
+char gpErrorMessageBuffer[20480];
 bool gbDisplayedError;
 bool gPreviousAllowResetSetting;
 bool gPreviousForceMenuSetting;
@@ -460,7 +462,7 @@ bool simulatorGXInit(void) {
     GXPokeAlphaRead(GX_READ_FF);
     GXPokeDstAlpha(GX_DISABLE, 0);
     GXPokeZMode(GX_ENABLE, GX_ALWAYS, GX_ENABLE);
-    GXSetGPMetric(GX_PERF0_NONE, GX_PERF0_TRIANGLES_7TEX);
+    GXSetGPMetric(GX_PERF0_NONE, GX_PERF1_NONE);
     GXClearGPMetric();
 
     return true;
@@ -533,7 +535,7 @@ bool simulatorPlayMovie(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorDrawErrorMessageWait.s")
 
-inline void simulatorResetInit() {
+static inline void simulatorResetInit(void) {
     mcardWriteGameDataReset(&mCard);
     VISetBlack(1);
     VIFlush();
@@ -559,7 +561,7 @@ void simulatorReset(bool IPL, bool forceMenu) {
     NO_INLINE();
 }
 
-inline void simulatorUnknownInline() {
+static inline void simulatorUnknownInline(void) {
     if (DemoStatEnable != 0) {
         GXDrawDone();
         DEMOUpdateStats(1);
@@ -641,7 +643,7 @@ bool simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorReadController.s")
 
-bool simulatorShowLoad(s32 /* unknown */, char* szNameFile, f32 rProgress) { return true; }
+bool simulatorShowLoad(s32 unknown, char* szNameFile, f32 rProgress) { return true; }
 
 bool simulatorDetectController(s32 channel) {
     PADStatus status[4];
@@ -682,7 +684,7 @@ bool simulatorWritePak(s32 channel, u16 address, u8* data) {
 bool simulatorReadEEPROM(u8 address, u8* data) {
     s32 size;
 
-    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
+    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), (u32*)&size)) {
         return false;
     }
 
@@ -693,7 +695,7 @@ bool simulatorReadEEPROM(u8 address, u8* data) {
 bool simulatorWriteEEPROM(u8 address, u8* data) {
     s32 size;
 
-    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), &size, gpSystem)) {
+    if (!pifGetEEPROMSize(SYSTEM_PIF(gpSystem), (u32*)&size)) {
         return false;
     }
 
@@ -832,7 +834,7 @@ static bool simulatorDrawCursor(s32 nX, s32 nY) {
     GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
     GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
     GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
-    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXCOORD_NULL, GX_TEXCOORD_NULL);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP0, GX_COLOR0);
 
     nTick = OSGetTick() >> 14;
     if (nTick & 0x100) {
@@ -888,6 +890,7 @@ static bool simulatorDrawCursor(s32 nX, s32 nY) {
 
 // matches but data doesn't
 #ifndef NON_MATCHING
+s32 simulatorParseArguments(void);
 #pragma GLOBAL_ASM("asm/non_matchings/simGCN/simulatorParseArguments.s")
 #else
 static bool simulatorParseArguments(void) {
@@ -965,7 +968,7 @@ bool simulatorGetArgument(SimArgumentType eType, char** pszArgument) {
     return false;
 }
 
-inline s32 simulatorRun(SystemMode* peMode) {
+static inline s32 simulatorRun(SystemMode* peMode) {
     int nResult;
 
     while (systemGetMode(gpSystem, peMode) && *peMode == SM_RUNNING) {

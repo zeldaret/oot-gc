@@ -22,7 +22,7 @@ bool audioPut32(Audio* pAudio, u32 nAddress, s32* pData) {
 
     switch (nAddress & 0x1F) {
         case 0x0:
-            if (pAudio->nAddress = (*pData & 0xFFFFFF)) {
+            if ((pAudio->nAddress = (*pData & 0xFFFFFF)) != 0) {
                 if (!ramGetBuffer(SYSTEM_RAM(pAudio->pHost), &pBuffer, pAudio->nAddress, NULL)) {
                     return false;
                 }
@@ -73,7 +73,7 @@ bool audioGet32(Audio* pAudio, u32 nAddress, s32* pData) {
             xlPostText("Get: DRAM Address: WRITE-ONLY?", "audio.c", 0xDA);
             break;
         case 4:
-            if (!soundGetDMABuffer(SYSTEM_SOUND(pAudio->pHost), pData)) {
+            if (!soundGetDMABuffer(SYSTEM_SOUND(pAudio->pHost), (u32*)pData)) {
                 *pData = pAudio->nSize;
             }
             break;

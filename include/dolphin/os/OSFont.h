@@ -56,7 +56,7 @@ typedef enum {
 #define OS_FONT_PROPORTIONAL false
 #define OS_FONT_FIXED true
 
-u16 OSGetFontEncode();
+u16 OSGetFontEncode(void);
 
 #ifdef __cplusplus
 }
