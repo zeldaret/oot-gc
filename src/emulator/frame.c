@@ -3632,7 +3632,56 @@ bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameCullDL.s")
+bool frameCullDL(Frame* pFrame, s32 nVertexStart, s32 nVertexEnd) {
+    f32 rX;
+    f32 rY;
+    f32 rZ;
+    f32 rW;
+    Mtx44Ptr matrix;
+    Vertex* vtxP;
+    Vertex* endVtxP;
+    s32 nCode;
+    s32 nCodeFull;
+
+    matrix = pFrame->matrixProjection;
+    vtxP = &pFrame->aVertex[nVertexStart];
+    endVtxP = &pFrame->aVertex[nVertexEnd];
+    nCodeFull = 0xFF;
+
+    for (; vtxP <= endVtxP; vtxP++) {
+        rX = vtxP->vec.x * matrix[0][0] + vtxP->vec.y * matrix[1][0] + vtxP->vec.z * matrix[2][0] + matrix[3][0];
+        rY = vtxP->vec.x * matrix[0][1] + vtxP->vec.y * matrix[1][1] + vtxP->vec.z * matrix[2][1] + matrix[3][1];
+        rZ = vtxP->vec.x * matrix[0][2] + vtxP->vec.y * matrix[1][2] + vtxP->vec.z * matrix[2][2] + matrix[3][2];
+        rW = vtxP->vec.x * matrix[0][3] + vtxP->vec.y * matrix[1][3] + vtxP->vec.z * matrix[2][3] + matrix[3][3];
+
+        nCode = 0;
+        if (rX < -rW) {
+            nCode |= 0x01;
+        }
+        if (rX > rW) {
+            nCode |= 0x02;
+        }
+        if (rY < -rW) {
+            nCode |= 0x04;
+        }
+        if (rY > rW) {
+            nCode |= 0x08;
+        }
+        if (rZ < -rW) {
+            nCode |= 0x10;
+        }
+        if (rZ > rW) {
+            nCode |= 0x20;
+        }
+
+        nCodeFull &= nCode;
+        if (nCodeFull == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTLUT.s")
 
