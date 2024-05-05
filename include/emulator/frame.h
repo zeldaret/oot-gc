@@ -340,7 +340,7 @@ typedef struct Frame {
     /* 0x3D121 */ u8 primLODfrac;
     /* 0x3D122 */ u8 lastTile;
     /* 0x3D123 */ u8 iTileDrawn;
-    /* 0x3D124 */ GXColor aColor[5];
+    /* 0x3D124 */ GXColor aColor[FCT_COUNT];
     /* 0x3D138 */ u32 nModeVtx;
     /* 0x3D13C */ u16* nTempBuffer;
     /* 0x3D140 */ u16* nCopyBuffer;
@@ -399,8 +399,9 @@ bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nA
                         f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1);
 
+// _frameGCNcc.c
 void SetNumTexGensChans(Frame* pFrame, s32 numCycles);
-void SetTevStages(Frame* pFrame, s32 cycle);
-bool SetTevStageTable(Frame* pFrame, s32 numCycles);
+void SetTevStages(Frame* pFrame, s32 cycle, s32 numCycles);
+s32 SetTevStageTable(Frame* pFrame, s32 numCycles);
 
 #endif

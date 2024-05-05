@@ -467,8 +467,10 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     return true;
 }
 
+static bool frameDrawSetupFog_Zelda1(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
 
+static bool frameDrawSetupFog_Default(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
 
 static void frameDrawSyncCallback(u16 nToken) {
@@ -628,7 +630,7 @@ bool frameDrawSetup2D(Frame* pFrame) {
             snScissorChanged = false;
         }
 
-        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[FCT_FOG]);
         pFrame->nFlag |= 0x20;
 
         C_MTXOrtho(matrix44, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f, 0.0f, 1001.0f);
@@ -751,7 +753,152 @@ static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 n
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupDP.s")
+#else
+static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 vertexCount) {
+    u32 nMode;
+    s32 numCycles;
+    u32 mode;
+    u32 cycle;
+    s32 pad[2];
+
+    if (pFrame->nFlag & 0x100) {
+        pFrame->nFlag &= ~0x100;
+        if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000) {
+            *pnColors = 0;
+            *pbFlag = false;
+            GXSetNumTevStages(1);
+            GXSetNumChans(1);
+            GXSetNumTexGens(0);
+            GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_C2);
+            GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A2);
+            GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+            GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+            GXSetTevColor(GX_TEVREG2, pFrame->aColor[FCT_FILL]);
+            GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        } else if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x200000) {
+            GXSetNumTevStages(1);
+            GXSetNumChans(0);
+            GXSetNumTexGens(1);
+            GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+            GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        } else {
+            numCycles = ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x100000) + 1;
+            if (!SetTevStageTable(pFrame, numCycles)) {
+                GXSetNumTevStages(numCycles * 5);
+                SetNumTexGensChans(pFrame, numCycles);
+                SetTevStages(pFrame, 0, numCycles);
+                if (numCycles == 2) {
+                    SetTevStages(pFrame, 1, numCycles);
+                }
+            }
+        }
+    }
+
+    if (pFrame->nFlag & 0x220) {
+        pFrame->nFlag &= ~0x20;
+        if ((pFrame->aMode[FMT_GEOMETRY] & 0x10)) {
+            switch (gpSystem->eTypeROM) {
+                case SRT_ZELDA1:
+                case SRT_ZELDA2:
+                    if (!frameDrawSetupFog_Zelda1(pFrame)) {
+                        return false;
+                    }
+                    break;
+                default:
+                    if (!frameDrawSetupFog_Default(pFrame)) {
+                        return false;
+                    }
+                    break;
+            }
+        } else {
+            GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[FCT_FOG]);
+        }
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->nFlag & 0x200) {
+        pFrame->nFlag &= ~0x200;
+        mode = pFrame->aMode[FMT_OTHER0];
+
+        if ((mode & 0xFFFF0000) == 0xAF500000) {
+            GXSetColorUpdate(GX_FALSE);
+        } else {
+            GXSetColorUpdate(GX_TRUE);
+        }
+
+        cycle = pFrame->aMode[FMT_OTHER1] & 0x300000;
+        if (((mode & 0x33330000) == 0x100000 && cycle == 0x100000) || (mode & 0xCCCC0000) == 0x400000) {
+            GXSetZCompLoc(GX_FALSE);
+            GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+            if ((mode & 3) == 1) {
+                GXSetAlphaCompare(GX_GREATER, pFrame->aColor[FCT_BLEND].a, GX_AOP_AND, GX_GREATER,
+                                  pFrame->aColor[FCT_BLEND].a);
+            } else if (mode & 0x1000) {
+                GXSetAlphaCompare(GX_GREATER, 16, GX_AOP_AND, GX_GREATER, 16);
+            } else {
+                GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+            }
+        } else if ((mode & 0x1000) || (mode & 1)) {
+            GXSetZCompLoc(GX_FALSE);
+            GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+            if ((mode & 3) == 1) {
+                GXSetAlphaCompare(GX_GREATER, pFrame->aColor[FCT_BLEND].a, GX_AOP_AND, GX_GREATER,
+                                  pFrame->aColor[FCT_BLEND].a);
+            } else {
+                GXSetAlphaCompare(GX_GREATER, 16, GX_AOP_AND, GX_GREATER, 16);
+            }
+        } else {
+            if ((mode & 3) == 1) {
+                GXSetZCompLoc(GX_FALSE);
+                GXSetAlphaCompare(GX_GREATER, pFrame->aColor[FCT_BLEND].a, GX_AOP_AND, GX_GREATER,
+                                  pFrame->aColor[FCT_BLEND].a);
+            } else {
+                GXSetZCompLoc(GX_TRUE);
+                GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+            }
+            GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+        }
+
+        mode = pFrame->aMode[FMT_OTHER0];
+        if (pFrame->aMode[FMT_GEOMETRY] & 1) {
+            if (mode & 0x10) {
+                if (mode & 0x20) {
+                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+                } else {
+                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+                }
+            } else {
+                if (mode & 0x20) {
+                    GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
+                } else {
+                    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+                }
+            }
+        } else if (pFrame->bModifyZBuffer) {
+            if (mode & 0x10) {
+                if (mode & 0x20) {
+                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+                } else {
+                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+                }
+            } else {
+                if (mode & 0x20) {
+                    GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
+                } else {
+                    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+                }
+            }
+        } else {
+            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        }
+    }
+
+    return true;
+}
+#endif
 
 static bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive) {
     s32 iData;
