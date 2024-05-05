@@ -19,13 +19,20 @@ static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost)
 static bool cpuSetTLB(Cpu* pCPU, s32 iEntry);
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 static void treeCallerInit(CpuCallerID* block, s32 total);
+static bool treeKillNodes(Cpu* pCPU, CpuFunction* tree);
 static bool treeAdjustRoot(Cpu* pCPU, s32 new_start, s32 new_end);
+static bool treeSearchNode(CpuFunction* tree, s32 target, CpuFunction** node);
+static bool treeInsertNode(CpuFunction** tree, s32 start, s32 end, CpuFunction** ppFunction);
+static bool treeBalance(CpuTreeRoot* root);
 static bool treeKillReason(Cpu* pCPU, s32* value);
 static bool treeKillRange(Cpu* pCPU, CpuFunction* tree, s32 start, s32 end);
 static bool treeTimerCheck(Cpu* pCPU);
 static bool treeCleanUp(Cpu* pCPU, CpuTreeRoot* root);
+static bool treeCleanNodes(Cpu* pCPU, CpuFunction* top);
 static inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
 static bool treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit);
+static bool treePrintNode(Cpu* pCPU, CpuFunction* tree, s32 print_flag, s32* left, s32* right);
+static inline s32 treeMemory(Cpu* pCPU);
 
 _XL_OBJECTTYPE gClassCPU = {
     "CPU",
@@ -5300,8 +5307,8 @@ bool cpuHeapFree(Cpu* pCPU, CpuFunction* pFunction) {
     return false;
 }
 
-static bool cpuTreeTake(void* heap, s32* where) {
-    s32 done;
+static bool cpuTreeTake(void* heap, s32* where, s32 size) {
+    bool done;
     s32 nOffset;
     s32 nCount;
     s32 iPack;
@@ -5309,7 +5316,7 @@ static bool cpuTreeTake(void* heap, s32* where) {
     u32 nMask;
     u32 nMask0;
 
-    done = 0;
+    done = false;
     for (iPack = 0; iPack < 125; iPack++) {
         if ((nPack = aHeapTreeFlag[iPack]) != -1) {
             nMask = 1;
@@ -5318,7 +5325,7 @@ static bool cpuTreeTake(void* heap, s32* where) {
                 if (!(nPack & nMask)) {
                     aHeapTreeFlag[iPack] |= nMask;
                     *where = (1 << 16) | ((iPack << 5) + (32 - nOffset));
-                    done = 1;
+                    done = true;
                     break;
                 }
                 nMask = nMask << 1;
@@ -5331,14 +5338,34 @@ static bool cpuTreeTake(void* heap, s32* where) {
         }
     }
 
-    if (done == 0) {
+    if (!done) {
         *where = -1;
         return false;
     }
 
-    *((s32*)heap) = (s32)gHeapTree + ((*where & 0xFFFF) * 0x48);
+    *((s32*)heap) = (s32)gHeapTree + ((*where & 0xFFFF) * sizeof(CpuFunction));
 
     return true;
+}
+
+static inline bool cpuTreeFree(CpuFunction* pFunction) {
+    u32* anPack;
+    s32 iPack;
+    u32 nMask;
+
+    if (pFunction->treeheapWhere == -1) {
+        return false;
+    }
+
+    anPack = aHeapTreeFlag;
+    nMask = ((1 << (pFunction->treeheapWhere >> 16)) - 1) << (pFunction->treeheapWhere & 0x1F);
+    iPack = (pFunction->treeheapWhere & 0xFFFF) >> 5;
+    if ((anPack[iPack] & nMask) == nMask) {
+        anPack[iPack] &= ~nMask;
+        return true;
+    }
+
+    return false;
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
@@ -5346,7 +5373,7 @@ static bool cpuTreeTake(void* heap, s32* where) {
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
     CpuTreeRoot* root = pCPU->gTree;
     s32 count;
-    s32 cancel;
+    bool cancel;
 
     if (root == NULL) {
         return true;
@@ -5358,18 +5385,18 @@ static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
 
     if (root->kill_limit != 0) {
         if (root->restore != NULL) {
-            cancel = 0;
+            cancel = false;
             if (start <= root->restore->nAddress0) {
                 if ((end >= root->restore->nAddress1) || (end >= root->restore->nAddress0)) {
-                    cancel = 1;
+                    cancel = true;
                 }
             } else {
                 if ((end >= root->restore->nAddress1) &&
                     ((start <= root->restore->nAddress0) || (start <= root->restore->nAddress1))) {
-                    cancel = 1;
+                    cancel = true;
                 }
             }
-            if (cancel != 0) {
+            if (cancel) {
                 root->restore = NULL;
                 root->restore_side = 0;
             }
@@ -5400,37 +5427,1026 @@ static inline void treeCallerInit(CpuCallerID* block, s32 total) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCallerCheck.s")
+static inline bool treeCallerKill(Cpu* pCPU, CpuFunction* kill) {
+    s32 left;
+    s32 right;
+    CpuTreeRoot* root;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeInit.s")
+    if (kill->pfCode != NULL) {
+        root = pCPU->gTree;
+        left = kill->nAddress0;
+        right = kill->nAddress1;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeInitNode.s")
+        if (root->left != NULL) {
+            treePrintNode(pCPU, root->left, 0x10, &left, &right);
+        }
+        if (root->right != NULL) {
+            treePrintNode(pCPU, root->right, 0x10, &left, &right);
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeKill.s")
+    pCPU->gTree->total_memory -= kill->memory_size + sizeof(CpuFunction);
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeKillNodes.s")
+static bool treeCallerCheck(Cpu* pCPU, CpuFunction* tree, bool flag, s32 nAddress0, s32 nAddress1) {
+    s32 count;
+    s32 saveGCN;
+    s32 saveN64;
+    s32* addr_function;
+    s32* addr_call;
+    s32 pad;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeDeleteNode.s")
+    if (tree->callerID_total == 0) {
+        return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeInsert.s")
+    if (tree->block != NULL) {
+        CpuCallerID* block = tree->block;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeInsertNode.s")
+        for (count = 0; count < tree->callerID_total; count++) {
+            saveN64 = block[count].N64address;
+            saveGCN = block[count].GCNaddress;
+            if (saveN64 >= nAddress0 && saveN64 <= nAddress1 && saveGCN != 0) {
+                addr_function = (s32*)saveGCN;
+                addr_call = addr_function - (flag ? 3 : 2);
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeBalance.s")
+                addr_call[0] = 0x3CA00000 | ((u32)saveN64 >> 16);
+                addr_call[1] = 0x60A50000 | ((u32)saveN64 & 0xFFFF);
+                addr_function[0] = 0x48000000 | (((u32)pCPU->pfCall - saveGCN) & 0x03FFFFFC) | 1;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeAdjustRoot.s")
+                block[count].GCNaddress = 0;
+                DCStoreRange(addr_call, 16);
+                ICInvalidateRange(addr_call, 16);
+            }
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeSearchNode.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeKillRange.s")
+s32 treeInit(Cpu* pCPU, s32 root_address) {
+    CpuTreeRoot* root = pCPU->gTree;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeKillReason.s")
+    if (root == NULL) {
+        return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeTimerCheck.s")
+    root->total = 0;
+    root->total_memory = 0;
+    root->root_address = root_address;
+    root->start_range = 0;
+    root->end_range = 0x80000000;
+    root->left = NULL;
+    root->right = NULL;
+    root->kill_limit = 0;
+    root->kill_number = 0;
+    root->side = 0;
+    root->restore = NULL;
+    root->restore_side = 0;
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCleanUp.s")
+static bool treeInitNode(CpuFunction** tree, CpuFunction* prev, s32 start, s32 end) {
+    CpuFunction* node;
+    s32 where;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeCleanNodes.s")
+    if (!cpuTreeTake(&node, &where, sizeof(CpuFunction))) {
+        return false;
+    }
+
+    node->nAddress0 = start;
+    node->nAddress1 = end;
+    node->block = NULL;
+    node->callerID_total = 0;
+    node->callerID_flag = 0x21;
+    node->pnBase = NULL;
+    node->pfCode = NULL;
+    node->nCountJump = 0;
+    node->aJump = NULL;
+    node->nChecksum = 0;
+    node->timeToLive = 1;
+    node->memory_size = 0;
+    node->heapID = -1;
+    node->heapWhere = -1;
+    node->treeheapWhere = where;
+    node->prev = prev;
+    node->left = NULL;
+    node->right = NULL;
+
+    *tree = node;
+    return true;
+}
+
+static bool treeKill(Cpu* pCPU) {
+    CpuTreeRoot* root;
+    s32 count;
+
+    count = 0;
+    root = pCPU->gTree;
+    if (root->left != NULL) {
+        count += treeKillNodes(pCPU, root->left);
+        treeCallerKill(pCPU, root->left);
+        if (root->left->pfCode != NULL) {
+            cpuHeapFree(pCPU, root->left);
+        }
+        if (!cpuTreeFree(root->left)) {
+            return false;
+        }
+        PAD_STACK();
+        PAD_STACK();
+
+        count++;
+    }
+
+    if (root->right != NULL) {
+        count += treeKillNodes(pCPU, root->right);
+        treeCallerKill(pCPU, root->right);
+        if (root->right->pfCode != NULL) {
+            cpuHeapFree(pCPU, root->right);
+        }
+        if (!cpuTreeFree(root->right)) {
+            return false;
+        }
+        PAD_STACK();
+        PAD_STACK();
+
+        count++;
+    }
+
+    root->total -= count;
+    if (!xlHeapFree(&pCPU->gTree)) {
+        return false;
+    }
+
+    pCPU->gTree = NULL;
+    return true;
+}
+
+static bool treeKillNodes(Cpu* pCPU, CpuFunction* tree) {
+    CpuFunction* current;
+    CpuFunction* kill;
+    s32 count;
+
+    count = 0;
+    if (tree == NULL) {
+        return false;
+    }
+    current = tree;
+
+    do {
+        while (current->left != NULL) {
+            current = current->left;
+        }
+
+        do {
+            if (current->right != NULL) {
+                current = current->right;
+                break;
+            }
+
+            if (current == tree) {
+                return count;
+            }
+
+            while (current != current->prev->left) {
+                kill = current;
+                current = current->prev;
+
+                treeCallerKill(pCPU, kill);
+                if (kill->pfCode != NULL) {
+                    cpuHeapFree(pCPU, kill);
+                }
+
+                // TODO: regalloc hacks
+                (void)kill->treeheapWhere;
+                if (!cpuTreeFree(kill)) {
+                    return false;
+                }
+                PAD_STACK();
+                PAD_STACK();
+
+                count += 1;
+                if (current == tree) {
+                    return count;
+                }
+            }
+
+            kill = current;
+            current = current->prev;
+
+            treeCallerKill(pCPU, kill);
+            if (kill->pfCode != NULL) {
+                cpuHeapFree(pCPU, kill);
+            }
+            // TODO: regalloc hacks
+            (void)kill->treeheapWhere;
+            if (!cpuTreeFree(kill)) {
+                return false;
+            }
+            PAD_STACK();
+            PAD_STACK();
+
+            count += 1;
+        } while (current != NULL);
+    } while (current != NULL);
+
+    return count;
+}
+
+static bool treeDeleteNode(Cpu* pCPU, CpuFunction** top, CpuFunction* kill) {
+    CpuTreeRoot* root;
+    CpuFunction* save1;
+    CpuFunction* save2;
+    CpuFunction* connect;
+
+    root = pCPU->gTree;
+    if (kill == NULL) {
+        return false;
+    }
+
+    root->total--;
+    connect = kill->prev;
+    save1 = kill->left;
+    save2 = kill->right;
+
+    if (connect != NULL) {
+        if (save1 != NULL) {
+            if (connect->left == kill) {
+                connect->left = save1;
+            } else {
+                connect->right = save1;
+            }
+            save1->prev = connect;
+            if (save2 != NULL) {
+                while (save1->right != NULL) {
+                    save1 = save1->right;
+                }
+                save1->right = save2;
+                save2->prev = save1;
+            }
+        } else if (save2 != NULL) {
+            if (connect->left == kill) {
+                connect->left = save2;
+            } else {
+                connect->right = save2;
+            }
+            save2->prev = connect;
+        } else if (connect->left == kill) {
+            connect->left = NULL;
+        } else {
+            connect->right = NULL;
+        }
+    } else if (save1 != NULL) {
+        *top = save1;
+        if (root->left == kill) {
+            root->left = save1;
+        } else {
+            root->right = save1;
+        }
+        save1->prev = NULL;
+        if (save2 != NULL) {
+            while (save1->right != NULL) {
+                save1 = save1->right;
+            }
+            save1->right = save2;
+            save2->prev = save1;
+        }
+    } else if (save2 != NULL) {
+        *top = save2;
+        if (root->left == kill) {
+            root->left = save2;
+        } else {
+            root->right = save2;
+        }
+        save2->prev = NULL;
+    } else {
+        *top = NULL;
+        if (root->left == kill) {
+            root->left = NULL;
+        } else {
+            root->right = NULL;
+        }
+    }
+
+    if (root->start_range == kill->nAddress0) {
+        if (save2 != NULL) {
+            while (save2->left != NULL) {
+                save2 = save2->left;
+            }
+            root->start_range = save2->nAddress0;
+        } else if (connect != NULL) {
+            root->start_range = connect->nAddress0;
+        } else {
+            root->start_range = root->root_address;
+        }
+    }
+
+    if (root->end_range == kill->nAddress1) {
+        if (save1 != NULL) {
+            while (save1->right != NULL) {
+                save1 = save1->right;
+            }
+            root->end_range = save1->nAddress1;
+        } else if (connect != NULL) {
+            root->end_range = connect->nAddress1;
+        } else {
+            root->end_range = root->root_address;
+        }
+    }
+
+    treeCallerKill(pCPU, kill);
+    if (kill->pfCode != NULL) {
+        cpuHeapFree(pCPU, kill);
+    }
+    // TODO: regalloc hacks
+    (void)kill->treeheapWhere;
+    if (!cpuTreeFree(kill)) {
+        return false;
+    }
+    PAD_STACK();
+    PAD_STACK();
+
+    return true;
+}
+
+s32 treeInsert(Cpu* pCPU, s32 start, s32 end) {
+    CpuTreeRoot* root;
+    CpuFunction* current;
+    s32 flag;
+
+    root = pCPU->gTree;
+    if (root == NULL) {
+        return false;
+    }
+    if (start < root->root_address && end > root->root_address) {
+        treeAdjustRoot(pCPU, start, end);
+    }
+    root->total++;
+    root->total_memory += sizeof(CpuFunction);
+    if (start != 0x80000180) {
+        if (start < root->start_range) {
+            root->start_range = start;
+        }
+        if (end > root->end_range) {
+            root->end_range = end;
+        }
+    }
+    if (start < root->root_address) {
+        flag = treeInsertNode(&root->left, start, end, &current);
+    } else if (start > root->root_address) {
+        flag = treeInsertNode(&root->right, start, end, &current);
+    } else {
+        return false;
+    }
+
+    if (flag != 0) {
+        return treeBalance(root);
+    }
+    return false;
+}
+
+static bool treeInsertNode(CpuFunction** tree, s32 start, s32 end, CpuFunction** ppFunction) {
+    CpuFunction** current;
+    CpuFunction* prev;
+
+    current = tree;
+    if (*tree == NULL) {
+        if (treeInitNode(current, NULL, start, end)) {
+            *ppFunction = *current;
+            return true;
+        }
+        return false;
+    }
+
+    do {
+        if (start < (*current)->nAddress0) {
+            prev = *current;
+            current = &(*current)->left;
+        } else if (start > (*current)->nAddress0) {
+            prev = *current;
+            current = &(*current)->right;
+        } else {
+            return false;
+        }
+    } while (*current != NULL);
+
+    if (treeInitNode(current, prev, start, end)) {
+        *ppFunction = *current;
+        return true;
+    }
+    return false;
+}
+
+static bool treeBalance(CpuTreeRoot* root) {
+    CpuFunction* tree;
+    CpuFunction* current;
+    CpuFunction* save;
+    s32 total;
+    s32 count;
+
+    for (total = 0; total < 2; total++) {
+        if (total == 0) {
+            tree = root->left;
+        } else {
+            tree = root->right;
+        }
+
+        if (tree != NULL) {
+            current = tree;
+            count = 0;
+
+            while (current->right != NULL) {
+                current = current->right;
+                count++;
+            }
+
+            if (count >= 12) {
+                current = tree;
+                save = tree->right;
+                count = count / 2;
+
+                while (count-- != 0) {
+                    current = current->right;
+                }
+
+                current->prev->right = NULL;
+                tree->right = current;
+                current->prev = tree;
+
+                while (current->left != NULL) {
+                    current = current->left;
+                }
+
+                current->left = save;
+                save->prev = current;
+            }
+
+            current = tree;
+            count = 0;
+
+            while (current->left != NULL) {
+                current = current->left;
+                count++;
+            }
+
+            if (count >= 12) {
+                current = tree;
+                save = tree->left;
+                count = count / 2;
+
+                while (count-- != 0) {
+                    current = current->left;
+                }
+
+                current->prev->left = NULL;
+                tree->left = current;
+                current->prev = tree;
+
+                while (current->right != NULL) {
+                    current = current->right;
+                }
+
+                current->right = save;
+                save->prev = current;
+            }
+        }
+    }
+
+    return true;
+}
+
+static bool treeAdjustRoot(Cpu* pCPU, s32 new_start, s32 new_end) {
+    s32 old_root;
+    s32 new_root = new_end + 2;
+    s32 kill_start = 0;
+    s32 check1 = 0;
+    s32 check2 = 0;
+    u16 total;
+    s32 total_memory;
+    s32 address;
+    CpuTreeRoot* root = pCPU->gTree;
+    CpuFunction* node = NULL;
+    CpuFunction* change = NULL;
+
+    old_root = root->root_address;
+    total = root->total;
+    total_memory = root->total_memory;
+    address = old_root + 2;
+
+    do {
+        node = NULL;
+        treeSearchNode(root->right, address, &node);
+        if (node != NULL) {
+            if (kill_start == 0) {
+                kill_start = address;
+            }
+
+            root->root_address = new_root;
+            if (!treeInsert(pCPU, node->nAddress0, node->nAddress1)) {
+                return false;
+            }
+            if (!treeSearchNode(root->left, address, &change)) {
+                return false;
+            }
+
+            change->timeToLive = node->timeToLive;
+            change->memory_size = node->memory_size;
+            if (node->pfCode != NULL) {
+                change->pfCode = node->pfCode;
+                node->pfCode = NULL;
+            }
+            change->nCountJump = node->nCountJump;
+            if (node->aJump != NULL) {
+                change->aJump = node->aJump;
+                node->aJump = NULL;
+            }
+            change->nChecksum = node->nChecksum;
+            change->callerID_flag = node->callerID_flag;
+            change->callerID_total = node->callerID_total;
+            if (node->callerID_total != 0) {
+                change->block = node->block;
+                node->block = NULL;
+            }
+
+            address = node->nAddress1;
+            root->root_address = old_root;
+            check2 += treeKillRange(pCPU, root->right, node->nAddress0, node->nAddress1 - 4);
+        }
+
+        address += 4;
+    } while (address <= new_end);
+
+    root->root_address = new_root;
+    root->total = total;
+    root->total_memory = total_memory;
+    return true;
+}
+
+static bool treeSearchNode(CpuFunction* tree, s32 target, CpuFunction** node) {
+    CpuFunction* current;
+
+    current = tree;
+    if (current == NULL) {
+        return false;
+    }
+
+    do {
+        if (target >= current->nAddress0 && target < current->nAddress1) {
+            *node = current;
+            return true;
+        }
+        if (target < current->nAddress0) {
+            current = current->left;
+        } else if (target > current->nAddress0) {
+            current = current->right;
+        } else {
+            current = NULL;
+        }
+    } while (current != NULL);
+
+    return false;
+}
+
+static bool treeKillRange(Cpu* pCPU, CpuFunction* tree, s32 start, s32 end) {
+    CpuTreeRoot* root = pCPU->gTree;
+    CpuFunction* node1 = NULL;
+    CpuFunction* node2 = NULL;
+    CpuFunction* save1;
+    CpuFunction* save2;
+    CpuFunction* connect;
+    bool update = false;
+    s32 count = 0;
+
+    if (start < root->start_range && end < root->start_range) {
+        return false;
+    }
+    if (start > root->end_range && end > root->end_range) {
+        return false;
+    }
+
+    do {
+        treeSearchNode(tree, start, &node1);
+        if (node1 != NULL) {
+            break;
+        }
+        start += 4;
+    } while (start < end);
+
+    if (node1 != NULL) {
+        connect = node1->prev;
+        node1->prev = NULL;
+        save1 = node1->left;
+        node1->left = NULL;
+        save2 = node1->right;
+
+        while (save2 != NULL) {
+            if (save2->nAddress0 < end) {
+                if (save2->nAddress1 == root->end_range) {
+                    update = true;
+                }
+                save2 = save2->right;
+            } else if (save2 == NULL) {
+                break;
+            } else {
+                save2->prev->right = NULL;
+                break;
+            }
+        }
+
+        if (connect != NULL) {
+            if (save1 != NULL) {
+                if (connect->left == node1) {
+                    connect->left = save1;
+                } else {
+                    connect->right = save1;
+                }
+                save1->prev = connect;
+                if (save2 != NULL) {
+                    while (save1->right != NULL) {
+                        save1 = save1->right;
+                    }
+                    save1->right = save2;
+                    save2->prev = save1;
+                }
+            } else if (save2 != NULL) {
+                if (connect->left == node1) {
+                    connect->left = save2;
+                } else {
+                    connect->right = save2;
+                }
+                save2->prev = connect;
+            } else if (connect->left == node1) {
+                connect->left = NULL;
+            } else {
+                connect->right = NULL;
+            }
+        } else if (save1 != NULL) {
+            tree = save1;
+            if (root->left == node1) {
+                root->left = save1;
+            } else {
+                root->right = save1;
+            }
+            save1->prev = NULL;
+            if (save2 != NULL) {
+                while (save1->right != NULL) {
+                    save1 = save1->right;
+                }
+                save1->right = save2;
+                save2->prev = save1;
+            }
+        } else if (save2 != NULL) {
+            tree = save2;
+            if (root->left == node1) {
+                root->left = save2;
+            } else {
+                root->right = save2;
+            }
+            save2->prev = NULL;
+        } else {
+            tree = NULL;
+            if (root->left == node1) {
+                root->left = NULL;
+            } else {
+                root->right = NULL;
+            }
+        }
+        if (root->start_range == node1->nAddress0) {
+            if (save2 != NULL) {
+                while (save2->left != NULL) {
+                    save2 = save2->left;
+                }
+                root->start_range = save2->nAddress0;
+            } else if (connect != NULL) {
+                root->start_range = connect->nAddress0;
+            } else {
+                root->start_range = root->root_address;
+            }
+        }
+
+        if (update) {
+            if (save1 != NULL) {
+                while (save1->right != NULL) {
+                    save1 = save1->right;
+                }
+                root->end_range = save1->nAddress1;
+            } else if (connect != NULL) {
+                root->end_range = connect->nAddress1;
+            } else {
+                root->end_range = root->root_address;
+            }
+        }
+
+        count += treeKillNodes(pCPU, node1);
+        treeCallerKill(pCPU, node1);
+        if (node1->pfCode != NULL) {
+            cpuHeapFree(pCPU, node1);
+        }
+        if (!cpuTreeFree(node1)) {
+            return false;
+        }
+        PAD_STACK();
+        PAD_STACK();
+
+        count++;
+    }
+
+    do {
+        treeSearchNode(tree, end, &node2);
+        if (node2 != NULL) {
+            break;
+        }
+        end -= 4;
+    } while (start < end);
+
+    if (node2 != NULL) {
+        connect = node2->prev;
+        node2->prev = NULL;
+        save1 = node2->left;
+        save2 = node2->right;
+        node2->right = NULL;
+
+        while (save1 != NULL) {
+            if (save1->nAddress0 > start) {
+                save1 = save1->left;
+            } else if (save1 != NULL) {
+                save1->prev->left = NULL;
+                break;
+            } else {
+                break;
+            }
+        }
+
+        if (connect != NULL) {
+            if (save2 != NULL) {
+                if (connect->left == node2) {
+                    connect->left = save2;
+                } else {
+                    connect->right = save2;
+                }
+                save2->prev = connect;
+                if (save1 != NULL) {
+                    while (save2->left != NULL) {
+                        save2 = save2->left;
+                    }
+                    save2->left = save1;
+                    save1->prev = save2;
+                }
+            } else if (save1 != NULL) {
+                if (connect->left == node2) {
+                    connect->left = save1;
+                } else {
+                    connect->right = save1;
+                }
+                save1->prev = connect;
+            } else if (connect->left == node2) {
+                connect->left = NULL;
+            } else {
+                connect->right = NULL;
+            }
+        } else if (save2 != NULL) {
+            if (root->left == node2) {
+                root->left = save2;
+            } else {
+                root->right = save2;
+            }
+            save2->prev = NULL;
+            if (save1 != NULL) {
+                while (save2->left != NULL) {
+                    save2 = save2->left;
+                }
+                save2->left = save1;
+                save1->prev = save2;
+            }
+        } else if (save1 != NULL) {
+            if (root->left == node2) {
+                root->left = save1;
+            } else {
+                root->right = save1;
+            }
+            save1->prev = NULL;
+        } else if (root->left == node2) {
+            root->left = NULL;
+        } else {
+            root->right = NULL;
+        }
+
+        if (root->end_range == node2->nAddress1) {
+            if (save1 != NULL) {
+                while (save1->right != NULL) {
+                    save1 = save1->right;
+                }
+                root->end_range = save1->nAddress1;
+            } else if (connect != NULL) {
+                root->end_range = connect->nAddress1;
+            } else {
+                root->end_range = root->root_address;
+            }
+        }
+
+        count += treeKillNodes(pCPU, node2);
+        treeCallerKill(pCPU, node2);
+        if (node2->pfCode != NULL) {
+            cpuHeapFree(pCPU, node2);
+        }
+        if (!cpuTreeFree(node2)) {
+            return false;
+        }
+        PAD_STACK();
+        PAD_STACK();
+
+        count++;
+    }
+
+    return count;
+}
+
+static bool treeKillReason(Cpu* pCPU, s32* value) {
+    if (pCPU->survivalTimer < 300) {
+        return false;
+    }
+    if (pCPU->survivalTimer == 300) {
+        *value = 1;
+        return true;
+    }
+    if (pCPU->survivalTimer % 400 == 0 && treeMemory(pCPU) > 3250000) {
+        *value = pCPU->survivalTimer - 200;
+        return true;
+    }
+
+    NO_INLINE();
+    return false;
+}
+
+static bool treeTimerCheck(Cpu* pCPU) {
+    CpuTreeRoot* root;
+    s32 begin;
+    s32 end;
+
+    if (pCPU->survivalTimer > 0x7FFFF000) {
+        root = pCPU->gTree;
+        if (root->kill_limit != 0) {
+            return false;
+        }
+        begin = 0;
+        end = 0x7FFFF000;
+        if (root->left != NULL) {
+            treePrintNode(pCPU, root->left, 0x100, &begin, &end);
+        }
+        if (root->right != NULL) {
+            treePrintNode(pCPU, root->right, 0x100, &begin, &end);
+        }
+        begin = end - 3;
+        if (root->left != NULL) {
+            treePrintNode(pCPU, root->left, 0x1000, &begin, &end);
+        }
+        if (root->right != NULL) {
+            treePrintNode(pCPU, root->right, 0x1000, &begin, &end);
+        }
+        pCPU->survivalTimer -= begin;
+        return true;
+    }
+    return false;
+}
+
+static bool treeCleanUp(Cpu* pCPU, CpuTreeRoot* root) {
+    bool done = false;
+    bool complete = false;
+    s32 pad;
+
+    if (root->side == 0) {
+        done = treeCleanNodes(pCPU, root->left);
+    }
+    if ((root->side != 0 || done) && treeCleanNodes(pCPU, root->right)) {
+        complete = true;
+    }
+    if (!complete) {
+        return false;
+    }
+
+    if (treeMemory(pCPU) > 0x400000) {
+        root->kill_limit = pCPU->survivalTimer - 10;
+    } else if (treeMemory(pCPU) > 3250000) {
+        root->kill_limit += 95;
+        if (root->kill_limit > pCPU->survivalTimer - 10) {
+            root->kill_limit = pCPU->survivalTimer - 10;
+        }
+    } else {
+        root->kill_limit = 0;
+        root->restore = NULL;
+        root->restore_side = 0;
+    }
+
+    return true;
+}
+
+static bool treeCleanNodes(Cpu* pCPU, CpuFunction* top) {
+    CpuFunction** current;
+    CpuFunction* kill = NULL;
+    CpuTreeRoot* root = pCPU->gTree;
+    s32 kill_limit = root->kill_limit;
+    CpuFunction* temp;
+
+    if (top == NULL) {
+        root->side ^= 1;
+        return true;
+    }
+
+    current = &root->restore;
+    if (root->restore == NULL) {
+        *current = top;
+    }
+
+    while (*current != NULL) {
+        if (pCPU->nRetrace != pCPU->nRetraceUsed || root->kill_number >= 12) {
+            break;
+        }
+
+        if (root->restore_side == 0) {
+            while ((*current)->left != NULL) {
+                *current = (*current)->left;
+            }
+            root->restore_side = 1;
+        }
+
+        while (*current != NULL) {
+            if (pCPU->nRetrace != pCPU->nRetraceUsed || root->kill_number >= 12) {
+                break;
+            }
+
+            if (kill != NULL) {
+                if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+                    return false;
+                }
+                if (!treeDeleteNode(pCPU, &top, kill)) {
+                    return false;
+                }
+                kill = NULL;
+                root->kill_number++;
+            }
+
+            temp = *current;
+            if (temp->timeToLive > 0 && temp->timeToLive <= kill_limit) {
+                kill = *current;
+            }
+
+            if ((*current)->right != NULL) {
+                *current = (*current)->right;
+                root->restore_side = 0;
+                break;
+            }
+
+            if (*current == top) {
+                if (kill != NULL) {
+                    if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+                        return false;
+                    }
+                    if (!treeDeleteNode(pCPU, &top, kill)) {
+                        return false;
+                    }
+                }
+
+                root->side ^= 1;
+                *current = NULL;
+                root->restore_side = 0;
+                return true;
+            }
+
+            while (*current != (*current)->prev->left) {
+                *current = (*current)->prev;
+                if (*current == top) {
+                    if (kill != NULL) {
+                        if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+                            return false;
+                        }
+                        if (!treeDeleteNode(pCPU, &top, kill)) {
+                            return false;
+                        }
+                    }
+
+                    root->side ^= 1;
+                    *current = NULL;
+                    root->restore_side = 0;
+                    return true;
+                }
+            }
+
+            *current = (*current)->prev;
+            root->restore_side = 1;
+        }
+    }
+
+    if (kill != NULL) {
+        if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+            return false;
+        }
+        if (!treeDeleteNode(pCPU, &top, kill)) {
+            return false;
+        }
+    }
+    return false;
+}
 
 static inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
     CpuTreeRoot* root = pCPU->gTree;
@@ -5454,8 +6470,158 @@ static inline bool treeForceCleanUp(Cpu* pCPU, CpuFunction* tree, s32 kill_limit
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treeForceCleanNodes.s")
+static bool treeForceCleanNodes(Cpu* pCPU, CpuFunction* tree, s32 kill_limit) {
+    CpuFunction* current;
+    CpuFunction* kill = NULL;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/treePrintNode.s")
+    if (tree == NULL) {
+        return false;
+    }
+    current = tree;
+
+    do {
+        while (current->left != NULL) {
+            current = current->left;
+        }
+
+        do {
+            if (kill != NULL) {
+                if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+                    return false;
+                }
+                if (!treeDeleteNode(pCPU, &tree, kill)) {
+                    return false;
+                }
+                kill = NULL;
+            }
+
+            if (current->timeToLive > 0 && current->timeToLive <= kill_limit) {
+                kill = current;
+            }
+
+            if (current->right != NULL) {
+                current = current->right;
+                break;
+            }
+
+            if (current == tree) {
+                if (kill != NULL) {
+                    if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+                        return false;
+                    }
+                    if (!treeDeleteNode(pCPU, &tree, kill)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            while (current != current->prev->left) {
+                current = current->prev;
+                if (current == tree) {
+                    if (kill != NULL) {
+                        if (!cpuFreeCachedAddress(pCPU, kill->nAddress0, kill->nAddress1)) {
+                            return false;
+                        }
+                        if (!treeDeleteNode(pCPU, &tree, kill)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            current = current->prev;
+        } while (current != NULL);
+    } while (current != NULL);
+
+    return false;
+}
+
+static bool treePrintNode(Cpu* pCPU, CpuFunction* tree, s32 print_flag, s32* left, s32* right) {
+    CpuFunction* current;
+    bool flag;
+    s32 level;
+
+    level = 0;
+    if (tree == NULL) {
+        return false;
+    }
+
+    flag = ganMapGPR[31] & 0x100 ? true : false;
+    current = tree;
+
+    while (true) {
+        while (current->left != NULL) {
+            current = current->left;
+            level++;
+            if (print_flag & 1) {
+                if (level > *left) {
+                    (*left)++;
+                }
+            }
+        }
+
+        do {
+            if (print_flag & 0x10) {
+                treeCallerCheck(pCPU, current, flag, *left, *right);
+            } else if (print_flag & 0x100) {
+                if (current->timeToLive > 0) {
+                    if (current->timeToLive > *left) {
+                        *left = current->timeToLive;
+                    }
+                    if (current->timeToLive < *right) {
+                        *right = current->timeToLive;
+                    }
+                }
+            } else if (print_flag & 0x1000) {
+                if (current->timeToLive > 0) {
+                    current->timeToLive -= *left;
+                }
+            } else if (print_flag & 1) {
+                OSReport(D_800EC054, current->nAddress0, current->nAddress1, current->timeToLive, current->memory_size);
+            }
+
+            if (current->right != NULL) {
+                current = current->right;
+                level++;
+                if (print_flag & 1) {
+                    if (level > *right) {
+                        (*right)++;
+                    }
+                }
+                break;
+            }
+
+            if (current == tree) {
+                return true;
+            }
+
+            while (current != current->prev->left) {
+                current = current->prev;
+                level -= 1;
+                if (current == tree) {
+                    return true;
+                }
+            }
+
+            current = current->prev;
+        } while (current != NULL);
+
+        if (current == NULL) {
+            return false;
+        }
+    }
+
+    return false;
+}
+
+static inline s32 treeMemory(Cpu* pCPU) {
+    if (pCPU->gTree == NULL) {
+        return 0;
+    } else {
+        return pCPU->gTree->total_memory;
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuOpcodeChecksum.s")
