@@ -1,5 +1,3 @@
-WINDOWS := $(shell which wine ; echo $$?)
-
 NON_MATCHING := 0
 RUN_CC_CHECK := 1
 
@@ -40,7 +38,7 @@ MWCC_VERSION := GC/1.1
 DOLPHIN_REVISION := 2003
 
 # Programs
-ifeq ($(WINDOWS),1)
+ifeq ($(OS),Windows_NT)
 	WINE := 
 else
 	UNAME_S := $(shell uname -s)
@@ -48,6 +46,8 @@ else
 		WINE := wibo
 	else ifeq ($(UNAME_S),Darwin)
 		WINE := wine
+	else
+		$(error Unknown OS: $(OS))
 	endif
 endif
 
