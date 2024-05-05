@@ -4496,7 +4496,35 @@ bool frameCullDL(Frame* pFrame, s32 nVertexStart, s32 nVertexEnd) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTLUT.s")
+bool frameLoadTLUT(Frame* pFrame, s32 nCount, s32 iTile) {
+    s32 iTMEM = pFrame->aTile[iTile].nTMEM & 0x1FF;
+    s32 nSize = nCount + 1;
+    u32 nSum = 0;
+    u64 nData64;
+    u16 nData16;
+    u16* pSource = pFrame->aBuffer[FBT_IMAGE].pData;
+    s32 tileNum;
+
+    while (nSize-- != 0) {
+        nData16 = *pSource;
+        pSource++;
+
+        nSum += nData16 ^ iTMEM;
+        nData64 = (nData16 << 16) | nData16;
+        nData64 = (nData64 << 32) | nData64;
+        pFrame->TMEM.data.u64[iTMEM] = nData64;
+        iTMEM = (iTMEM + 1) & 0x1FF;
+    }
+
+    tileNum = pFrame->aTile[iTile].nTMEM & 0x1FF;
+    tileNum -= 0x100;
+    tileNum /= 16;
+    tileNum &= 0xF;
+
+    pFrame->nTlutCode[tileNum] = nSum;
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTMEM.s")
 
