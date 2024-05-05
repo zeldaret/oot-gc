@@ -3811,7 +3811,7 @@ static bool cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressG
         }
     }
 
-    saveGCN = (ganMapGPR[31] & 0x100) ? 1 : 0;
+    saveGCN = (ganMapGPR[31] & 0x100) ? true : false;
     anCode = (s32*)nAddressGCN - (saveGCN ? 4 : 3);
     if (saveGCN) {
         anCode[0] = 0x3CA00000 | ((u32)nAddressGCN >> 16); // lis r5,nAddressGCN@h
@@ -3825,6 +3825,17 @@ static bool cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressG
         DCStoreRange(anCode, 8);
         ICInvalidateRange(anCode, 8);
     }
+
+    // bug: If cpuExecuteUpdate decides to delete the function we're trying to
+    // call here, our lis/ori will be reverted by treeCallerCheck since we've
+    // already marked this call site in the callerID for-loop above. The
+    // reverted lis/ori will store the return N64 address instead of a GCN
+    // address, so the next time this recompiled call is executed, the CPU will
+    // jump to that N64 return address in GCN address space and bad things
+    // happen (usually an invalid instruction or invalid load/store). This is
+    // known as a "VC crash".
+    //
+    // For more details, see https://pastebin.com/V6ANmXt8
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
         return false;
     }
