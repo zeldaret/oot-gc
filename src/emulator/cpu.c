@@ -5486,7 +5486,7 @@ static bool treeCallerCheck(Cpu* pCPU, CpuFunction* tree, bool flag, s32 nAddres
 }
 
 s32 treeInit(Cpu* pCPU, s32 root_address) {
-    struct CpuTreeRoot* root = pCPU->gTree;
+    CpuTreeRoot* root = pCPU->gTree;
 
     if (root == NULL) {
         return false;
