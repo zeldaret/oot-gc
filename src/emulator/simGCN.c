@@ -317,21 +317,21 @@ const s32 D_80135D18 = 0;
 const s32 D_80135D1C = 0;
 const s32 D_80135D20 = 0;
 
-const f32 D_80135D24 = 0.0;
-const f32 D_80135D28 = 1.0;
-const f32 D_80135D2C = 0.10000000149011612;
-const f32 D_80135D30 = 100.0;
+const f32 D_80135D24 = 0.0f;
+const f32 D_80135D28 = 1.0f;
+const f32 D_80135D2C = 0.1f;
+const f32 D_80135D30 = 100.0f;
 const f64 D_80135D38 = 4503601774854144.0;
-const f32 D_80135D40 = 0.5;
+const f32 D_80135D40 = 0.5f;
 const f64 D_80135D48 = 4503599627370496.0;
 const f32 D_80135D50 = -1.0;
-const f32 D_80135D54 = 1.100000023841858;
-const f32 D_80135D58 = 0.9090908765792847;
-const f32 D_80135D5C = 240.0;
-const f32 D_80135D60 = 320.0;
-const f32 D_80135D64 = 10000.0;
-const f32 D_80135D68 = 160.0;
-const f32 D_80135D6C = 120.0;
+const f32 D_80135D54 = 1.1f;
+const f32 D_80135D58 = 0.9090908765792847f;
+const f32 D_80135D5C = 240.0f;
+const f32 D_80135D60 = 320.0f;
+const f32 D_80135D64 = 10000.0f;
+const f32 D_80135D68 = 160.0f;
+const f32 D_80135D6C = 120.0f;
 
 // matches but data doesn't
 #ifndef NON_MATCHING

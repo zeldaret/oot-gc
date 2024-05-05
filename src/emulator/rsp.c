@@ -149,18 +149,18 @@ static u16 imagePtrX0;
 static s32 imageTop;
 static u16 tmemSrcLines;
 
-const f32 D_80136038 = 0.25;
-const f32 D_8013603C = 1024.0;
-const f32 D_80136040 = 0.03125;
+const f32 D_80136038 = 0.25f;
+const f32 D_8013603C = 1024.0f;
+const f32 D_80136040 = 0.03125f;
 const f64 D_80136048 = 4503601774854144.0;
 const f64 D_80136050 = 4503599627370496.0;
-const f32 D_80136058 = 1.0;
-const f32 D_8013605C = 0.0;
-const f32 D_80136060 = 0.5;
-const f32 D_80136064 = 2.0;
+const f32 D_80136058 = 1.0f;
+const f32 D_8013605C = 0.0f;
+const f32 D_80136060 = 0.5f;
+const f32 D_80136064 = 2.0f;
 const f32 D_80136068 = -1.0;
-const f32 D_8013606C = 65536.0;
-const f32 D_80136070 = 0.0009765625;
+const f32 D_8013606C = 65536.0f;
+const f32 D_80136070 = 0.0009765625f;
 const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspVMUDN.s")

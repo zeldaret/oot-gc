@@ -15,12 +15,12 @@ s32 gVolumeCurve[257] ALIGNAS(32);
 
 s32 D_80134DD0 = 0x0000000A;
 
-const f32 D_80135DD8 = 65536.0;
-const f32 D_80135DDC = 20.0;
-const f32 D_80135DE0 = 256.0;
+const f32 D_80135DD8 = 65536.0f;
+const f32 D_80135DDC = 20.0f;
+const f32 D_80135DE0 = 256.0f;
 const f64 D_80135DE8 = 256.0;
 const f64 D_80135DF0 = 4503601774854144.0;
-const f32 D_80135DF8 = 0.5;
+const f32 D_80135DF8 = 0.5f;
 
 #pragma GLOBAL_ASM("asm/non_matchings/soundGCN/soundWipeBuffers.s")
 

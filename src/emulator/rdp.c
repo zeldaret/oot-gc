@@ -59,13 +59,13 @@ static s32 nNoteCount;
 static s32 nZCount;
 static s32 nZBufferCount;
 
-const f32 D_80136008 = 32768.0;
-const f32 D_8013600C = 65536.0;
-const f32 D_80136010 = 0.03125;
-const f32 D_80136014 = 0.0009765625;
-const f32 D_80136018 = 0.0;
-const f32 D_8013601C = 320.0;
-const f32 D_80136020 = 240.0;
+const f32 D_80136008 = 32768.0f;
+const f32 D_8013600C = 65536.0f;
+const f32 D_80136010 = 0.03125f;
+const f32 D_80136014 = 0.0009765625f;
+const f32 D_80136018 = 0.0f;
+const f32 D_8013601C = 320.0f;
+const f32 D_80136020 = 240.0f;
 const f64 D_80136028 = 4503599627370496.0;
 const f64 D_80136030 = 4503601774854144.0;
 
