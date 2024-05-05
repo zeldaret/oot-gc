@@ -183,7 +183,7 @@ extern void *lbl_80009A74, *lbl_80009C24, *lbl_80009DD4, *lbl_80009F84, *lbl_800
     *lbl_8000BDE4, *lbl_8000BF94, *lbl_8000C144, *lbl_8000CB64, *lbl_8000CB64, *lbl_8000C2F4, *lbl_8000CB64,
     *lbl_8000CB64, *lbl_8000C4A4, *lbl_8000C654, *lbl_8000C804, *lbl_8000C9B4;
 
-void* jtbl_800E9F5C[] = {
+void* jtbl_800E9F5C[40] = {
     &lbl_80009A74, &lbl_80009C24, &lbl_80009DD4, &lbl_80009F84, &lbl_8000A134, &lbl_8000CB64, &lbl_8000A2E4,
     &lbl_8000A494, &lbl_8000A644, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000A7F4,
     &lbl_8000A9A4, &lbl_8000AB54, &lbl_8000AD04, &lbl_8000CB64, &lbl_8000CB64, &lbl_8000AEB4, &lbl_8000B064,
@@ -207,7 +207,7 @@ extern void *lbl_8000CBC8, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_800
     *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CF08, *lbl_8000CDD0, *lbl_8000CE38,
     *lbl_8000CF08, *lbl_8000CEA0;
 
-void* jtbl_800EA09C[] = {
+void* jtbl_800EA09C[30] = {
     &lbl_8000CBC8, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CC30, &lbl_8000CC98,
     &lbl_8000CD00, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08,
     &lbl_8000CD68, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08, &lbl_8000CF08,
@@ -221,7 +221,7 @@ char D_800EA13C[] = "TPL/msg_gf02.tpl";
 
 extern void *lbl_8000D3B8, *lbl_8000D3F4, *lbl_8000D434, *lbl_8000D4B0, *lbl_8000D474, *lbl_8000D4EC, *lbl_8000D528;
 
-void* jtbl_800EA150[] = {
+void* jtbl_800EA150[7] = {
     &lbl_8000D3B8, &lbl_8000D3F4, &lbl_8000D434, &lbl_8000D4B0, &lbl_8000D474, &lbl_8000D4EC, &lbl_8000D528,
 };
 
@@ -230,7 +230,7 @@ char D_800EA16C[] = "ShowError: Unknown FileInfoStatus: %d";
 extern void *lbl_8000EEA8, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEB0, *lbl_8000EEB8,
     *lbl_8000EEC0, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEEC, *lbl_8000EEC8;
 
-void* jtbl_800EA194[] = {
+void* jtbl_800EA194[13] = {
     &lbl_8000EEA8, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEB0, &lbl_8000EEB8,
     &lbl_8000EEC0, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEEC, &lbl_8000EEC8,
 };

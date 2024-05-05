@@ -141,14 +141,14 @@ s32 ganMapGPR[] = {
     0x0000001B, 0x0000001C, 0x0000001D, 0x0000001E, 0x0000011C, 0x0000001F, 0x0000011E, 0x0000011F,
 };
 
-void* jtbl_800EBEF0[] = {
+void* jtbl_800EBEF0[25] = {
     &lbl_80030EFC, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030F7C, &lbl_80030EFC,
     &lbl_80030EFC, &lbl_80030F7C, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC,
     &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC,
     &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030F7C,
 };
 
-void* jtbl_800EBF54[] = {
+void* jtbl_800EBF54[64] = {
     &lbl_80030F7C, &lbl_80030EA8, &lbl_80030F58, &lbl_80030F60, &lbl_80030F68, &lbl_80030F68, &lbl_80030F68,
     &lbl_80030F68, &lbl_80030F7C, &lbl_80030F70, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F70,
     &lbl_80030F7C, &lbl_80030F70, &lbl_80030ED8, &lbl_80030F2C, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F68,
@@ -166,14 +166,14 @@ char D_800EC078[] = "tree range (%p - %p)\n";
 char D_800EC090[] = "total nodes: %d (tree height: %d %d)\n";
 char D_800EC0B8[] = "total memory: %d\n";
 
-void* jtbl_800EC0CC[] = {
+void* jtbl_800EC0CC[25] = {
     &lbl_8003381C, &lbl_80033A68, &lbl_80033A68, &lbl_8003381C, &lbl_8003381C, &lbl_80033A68, &lbl_8003381C,
     &lbl_8003381C, &lbl_80033A68, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C,
     &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C,
     &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_800337F0,
 };
 
-void* jtbl_800EC130[] = {
+void* jtbl_800EC130[44] = {
     &lbl_800334D8, &lbl_800335A0, &lbl_80033564, &lbl_80033A5C, &lbl_80033644, &lbl_80033768, &lbl_80033768,
     &lbl_80033768, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C,
     &lbl_80033A5C, &lbl_80033A5C, &lbl_800337D0, &lbl_800338AC, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033644,
@@ -422,7 +422,7 @@ char D_800ECDB0[] = "ERROR: C.NGE_L\n";
 char D_800ECDC0[] = "ERROR: C.LE_L\n";
 char D_800ECDD0[] = "ERROR: C.NGT_L\n";
 
-void* jtbl_800ECDE0[] = {
+void* jtbl_800ECDE0[64] = {
     &lbl_8005A1E0, &lbl_8005A204, &lbl_8005A228, &lbl_8005A24C, &lbl_8005A270, &lbl_8005A280, &lbl_8005A2A4,
     &lbl_8005A2B4, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_8005A2D8, &lbl_8005A2E8,
     &lbl_8005A2F8, &lbl_8005A308, &lbl_8005A688, &lbl_8005A688, &lbl_8005A688, &lbl_8005A688, &lbl_8005A688,
@@ -435,7 +435,7 @@ void* jtbl_800ECDE0[] = {
     &lbl_8005A678,
 };
 
-void* jtbl_800ECEE0[] = {
+void* jtbl_800ECEE0[64] = {
     &lbl_80059DC0, &lbl_80059DE4, &lbl_80059E08, &lbl_80059E2C, &lbl_80059E50, &lbl_80059E60, &lbl_80059E84,
     &lbl_80059E94, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80059EB8, &lbl_80059EC8,
     &lbl_80059ED8, &lbl_80059EE8, &lbl_8005A1B4, &lbl_8005A1B4, &lbl_8005A1B4, &lbl_8005A1B4, &lbl_8005A1B4,
@@ -448,7 +448,7 @@ void* jtbl_800ECEE0[] = {
     &lbl_8005A1A4,
 };
 
-void* jtbl_800ECFE0[] = {
+void* jtbl_800ECFE0[64] = {
     &lbl_80054BD4, &lbl_80054EF0, &lbl_80055204, &lbl_80055520, &lbl_80055834, &lbl_800559F0, &lbl_80055BC8,
     &lbl_80055C54, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80055E2C, &lbl_80055FEC,
     &lbl_800561AC, &lbl_8005637C, &lbl_80059D94, &lbl_80059D94, &lbl_80059D94, &lbl_80059D94, &lbl_80059D94,
@@ -461,7 +461,7 @@ void* jtbl_800ECFE0[] = {
     &lbl_80059974,
 };
 
-void* jtbl_800ED0E0[] = {
+void* jtbl_800ED0E0[64] = {
     &lbl_8004F91C, &lbl_8004FC44, &lbl_8004FF64, &lbl_8005028C, &lbl_800505AC, &lbl_80050770, &lbl_80050950,
     &lbl_800509E4, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80050BC4, &lbl_80050D88,
     &lbl_80050F4C, &lbl_80051120, &lbl_80054BA8, &lbl_80054BA8, &lbl_80054BA8, &lbl_80054BA8, &lbl_80054BA8,
@@ -474,24 +474,24 @@ void* jtbl_800ED0E0[] = {
     &lbl_80054780,
 };
 
-void* jtbl_800ED1E0[] = {
+void* jtbl_800ED1E0[7] = {
     &lbl_8004E8E8, &lbl_8004EA44, &lbl_8004EBC0, &lbl_8004F0A8, &lbl_8004ECB0, &lbl_8004EE70, &lbl_8004EFE4,
 };
 
-void* jtbl_800ED1FC[] = {
+void* jtbl_800ED1FC[25] = {
     &lbl_8004E810, &lbl_80067F34, &lbl_80067F34, &lbl_8004E810, &lbl_8004E810, &lbl_80067F34, &lbl_8004E810,
     &lbl_8004E810, &lbl_80067F34, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810,
     &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810,
     &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_80067F34,
 };
 
-void* jtbl_800ED260[] = {
+void* jtbl_800ED260[20] = {
     &lbl_800496CC, &lbl_80049998, &lbl_80049C64, &lbl_80049F5C, &lbl_8004B55C, &lbl_8004B55C, &lbl_8004B55C,
     &lbl_8004B55C, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_8004B55C,
     &lbl_80067F34, &lbl_8004B55C, &lbl_8004A254, &lbl_8004A700, &lbl_8004ABAC, &lbl_8004B084,
 };
 
-void* jtbl_800ED2B0[] = {
+void* jtbl_800ED2B0[64] = {
     &lbl_8003F290, &lbl_800496A0, &lbl_8003F524, &lbl_8003F780, &lbl_8003F9D0, &lbl_800496A0, &lbl_8003FDBC,
     &lbl_800401A8, &lbl_80040594, &lbl_800407BC, &lbl_800496A0, &lbl_800496A0, &lbl_80067F34, &lbl_80067F34,
     &lbl_800496A0, &lbl_80067F34, &lbl_80040D64, &lbl_80040F68, &lbl_80041154, &lbl_80041358, &lbl_80041544,
@@ -504,7 +504,7 @@ void* jtbl_800ED2B0[] = {
     &lbl_800493D4,
 };
 
-void* jtbl_800ED3B0[] = {
+void* jtbl_800ED3B0[64] = {
     &lbl_8003F268, &lbl_800496A8, &lbl_8004B564, &lbl_8004B80C, &lbl_8004BD30, &lbl_8004C2FC, &lbl_8004C730,
     &lbl_8004C9FC, &lbl_8004CCC8, &lbl_8004D2D4, &lbl_8004D900, &lbl_8004DC14, &lbl_8004DF58, &lbl_8004E1A0,
     &lbl_8004E430, &lbl_8004E69C, &lbl_8004E7EC, &lbl_8004E8B0, &lbl_8005A690, &lbl_8005A698, &lbl_8005A6A0,
