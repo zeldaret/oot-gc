@@ -30,6 +30,8 @@ static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount);
+static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount);
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
 static bool frameUpdateCache(Frame* pFrame);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
@@ -502,8 +504,25 @@ static void frameDrawDone(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTLUT.s")
 
+static inline bool frameFreeTLUT(Frame* pFrame, FrameTexture* pTexture) {
+    if (!packFreeBlocks(&pTexture->iPackColor, pFrame->anPackColor, ARRAY_COUNT(pFrame->anPackColor))) {
+        return false;
+    }
+    return true;
+}
+
 static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, bool bReload);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakePixels.s")
+
+static inline bool frameFreePixels(Frame* pFrame, FrameTexture* pTexture) {
+    if (!frameFreeTLUT(pFrame, pTexture)) {
+        return false;
+    }
+    if (!packFreeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel))) {
+        return false;
+    }
+    return true;
+}
 
 static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTexture.s")
@@ -2921,6 +2940,19 @@ static bool frameMakeTexture(Frame* pFrame, FrameTexture** ppTexture) {
     return 1;
 }
 
+static inline bool frameFreeTexture(Frame* pFrame, FrameTexture* pTexture) {
+    s32 iTexture = (u8*)pTexture - (u8*)&pFrame->aTexture[0];
+
+    if (!frameFreePixels(pFrame, pTexture)) {
+        return false;
+    }
+
+    iTexture /= sizeof(FrameTexture);
+    pFrame->anTextureUsed[iTexture >> 5] &= ~(1 << (iTexture & 0x1F));
+    pFrame->nBlocksTexture--;
+    return true;
+}
+
 static bool frameSetupCache(Frame* pFrame) {
     s32 iTexture;
 
@@ -2970,7 +3002,55 @@ static inline bool frameResetCache(Frame* pFrame) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameUpdateCache.s")
+static bool frameUpdateCache(Frame* pFrame) {
+    // s32 nCount;
+    // s32 nCountFree;
+    u32 nMask;
+    s32 nFrameCount;
+    s32 nFrameDelta;
+    s32 iTexture;
+    s32 iTextureUsed;
+    s32 iTextureCached;
+    FrameTexture* pTexture;
+    FrameTexture* pTextureCached;
+    FrameTexture* pTextureLast;
+
+    nFrameCount = pFrame->nCountFrames;
+    for (iTextureUsed = 0; iTextureUsed < ARRAY_COUNTU(pFrame->anTextureUsed); iTextureUsed++) {
+        if ((nMask = pFrame->anTextureUsed[iTextureUsed]) != 0) {
+            for (iTexture = 0; nMask != 0; iTexture++, nMask >>= 1) {
+                if (nMask & 1) {
+                    pTexture = &pFrame->aTexture[(iTextureUsed << 5) + iTexture];
+                    nFrameDelta = pTexture->nFrameLast - nFrameCount;
+                    if (nFrameDelta < 0) {
+                        nFrameDelta = -nFrameDelta;
+                    }
+                    if (nFrameDelta > 1) {
+                        pTextureLast = NULL;
+                        iTextureCached = pTexture->nAddress >> 11;
+                        pTextureCached = pFrame->apTextureCached[iTextureCached];
+
+                        while (pTextureCached != NULL && pTextureCached != pTexture) {
+                            pTextureLast = pTextureCached;
+                            pTextureCached = pTextureCached->pTextureNext;
+                        }
+
+                        if (pTextureLast == NULL) {
+                            pFrame->apTextureCached[iTextureCached] = pTextureCached->pTextureNext;
+                        } else {
+                            pTextureLast->pTextureNext = pTextureCached->pTextureNext;
+                        }
+                        if (!frameFreeTexture(pFrame, pTexture)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}
 
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode) {
     bool bFlag;
@@ -3868,7 +3948,29 @@ bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nA
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameInvalidateCache.s")
+bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1) {
+    s32 iTexture0;
+    s32 iTexture1;
+    FrameTexture* pTexture;
+    FrameTexture* pTextureNext;
+
+    iTexture0 = (nOffset0 & 0x7FFFFF) / 2048;
+    iTexture1 = (nOffset1 & 0x7FFFFF) / 2048;
+    while (iTexture0 <= iTexture1) {
+        pTexture = pFrame->apTextureCached[iTexture0];
+        while (pTexture != NULL) {
+            pTextureNext = pTexture->pTextureNext;
+            if (!frameFreeTexture(pFrame, pTexture)) {
+                return false;
+            }
+            pTexture = pTextureNext;
+        }
+        pFrame->apTextureCached[iTexture0] = NULL;
+        iTexture0 += 1;
+    }
+
+    return true;
+}
 
 #ifndef NON_MATCHING
 // matches but data doesn't
