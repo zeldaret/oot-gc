@@ -349,7 +349,7 @@ void* jtbl_800EB22C[32] = {0};
 #endif
 
 char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
-char D_800EB2D4[] = "MakeTexture: 'aTexture' is exhausted!\0\0";
+char D_800EB2D4[] = "MakeTexture: 'aTexture' is exhausted!";
 
 static char D_80134E58[] = "frame.c";
 
@@ -524,8 +524,98 @@ static inline bool frameFreePixels(Frame* pFrame, FrameTexture* pTexture) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTexture.s")
+#else
+static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile) {
+    void* pData;
+    s32 iName;
+    s32 nFilter;
+    GXTexWrapMode eWrapS;
+    GXTexWrapMode eWrapT;
+    s32 pad;
+
+    pTexture->nFrameLast = pFrame->nCountFrames;
+    iName = iTextureCode >> 4;
+    pTile->nModeS = pTile->nModeS;
+
+    if (((pTile->nModeS & 2) || pTile->nMaskS == 0) && !(pTexture->nMode & 1)) {
+        eWrapS = GX_CLAMP;
+    } else if (pTile->nModeS & 1) {
+        eWrapS = GX_MIRROR;
+    } else {
+        eWrapS = GX_REPEAT;
+    }
+    pTile->nModeT = pTile->nModeT;
+    if (((pTile->nModeT & 2) || pTile->nMaskT == 0) && !(pTexture->nMode & 2)) {
+        eWrapT = GX_CLAMP;
+    } else if (pTile->nModeT & 1) {
+        eWrapT = GX_MIRROR;
+    } else {
+        eWrapT = GX_REPEAT;
+    }
+    if (pTexture->eWrapS != eWrapS || pTexture->eWrapT != eWrapT) {
+        pTexture->eWrapS = eWrapS;
+        pTexture->eWrapT = eWrapT;
+
+        if ((GXCITexFmt)pTexture->eFormat == GX_TF_C4 || (GXCITexFmt)pTexture->eFormat == GX_TF_C8) {
+            if (pTexture->iPackColor == -1) {
+                pData = NULL;
+            } else {
+                pData = (u8*)pFrame->aColorData + ((pTexture->iPackColor & 0xFFFF) << 5);
+            }
+            GXInitTlutObj(&pTexture->objectTLUT, pData, GX_TL_RGB5A3,
+                          (GXCITexFmt)pTexture->eFormat == GX_TF_C4 ? 16 : 256);
+
+            if (pTexture->iPackPixel == -1) {
+                pData = NULL;
+            } else {
+                pData = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+            GXInitTexObjCI(&pTexture->objectTexture, pData, pTexture->nSizeX, pTexture->nSizeY,
+                           (GXCITexFmt)pTexture->eFormat, eWrapS, eWrapT, GX_FALSE, 0);
+        } else {
+            if (pTexture->iPackPixel == -1) {
+                pData = NULL;
+            } else {
+                pData = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+            GXInitTexObj(&pTexture->objectTexture, pData, pTexture->nSizeX, pTexture->nSizeY, pTexture->eFormat, eWrapS,
+                         eWrapT, 0);
+        }
+    }
+
+    nFilter = pFrame->aMode[FMT_OTHER1] & 0x3000;
+    if ((pTexture->nMode & 0x3000) != nFilter) {
+        pTexture->nMode &= ~0x3000;
+        pTexture->nMode |= nFilter;
+        switch (nFilter) {
+            case 0x0000:
+                GXInitTexObjLOD(&pTexture->objectTexture, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE,
+                                GX_ANISO_1);
+                break;
+            case 0x2000:
+            case 0x3000:
+                GXInitTexObjLOD(&pTexture->objectTexture, GX_LINEAR, GX_LINEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE,
+                                GX_ANISO_1);
+                break;
+            default:
+                OSReport("LoadTexture: Unknown FILTER mode (%d)\n", nFilter);
+                break;
+        }
+    }
+
+    if ((GXCITexFmt)pTexture->eFormat == GX_TF_C4 || (GXCITexFmt)pTexture->eFormat == GX_TF_C8) {
+        GXLoadTlut(&pTexture->objectTLUT, ganNameColor[iName]);
+    }
+
+    GXLoadTexObj(&pTexture->objectTexture, ganNamePixel[iName]);
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetup2D.s")
 
@@ -3993,12 +4083,12 @@ bool frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
             nCount++;
             switch ((s32)pTexture->eFormat) {
                 case GX_TF_I4:
-                case 8: // GX_TF_CI4?
+                case GX_TF_C4:
                     nSize += ((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;
                     break;
                 case GX_TF_I8:
                 case GX_TF_IA4:
-                case 9: // GX_TF_CI8?
+                case GX_TF_C8:
                     nSize += pTexture->nSizeX * pTexture->nSizeY;
                     break;
                 case GX_TF_IA8:
