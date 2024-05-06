@@ -12,6 +12,32 @@
 #include "macros.h"
 #include "math.h"
 
+static bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive);
+
+static bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
+
+static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
+static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
+static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
+static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
+static bool frameUpdateCache(Frame* pFrame);
+static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
+static inline bool frameResetCache(Frame* pFrame);
+static bool frameSetupCache(Frame* pFrame);
+void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
+
 const s32 D_800D31C0[] = {
     0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
     0x00000002, 0x0003C000, 0x00000001, 0x0003E000, 0x00000000, 0x0003F000, 0x00000000, 0x0003F800,
@@ -417,17 +443,6 @@ const f32 D_80135F7C = 0.26f;
 const f32 D_80135F80 = 8.44f;
 const f64 D_80135F88 = 8.44;
 
-static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
-static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32);
-static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
-static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
-static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
-static bool frameUpdateCache(Frame* pFrame);
-static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
-static inline bool frameResetCache(Frame* pFrame);
-static bool frameSetupCache(Frame* pFrame);
-void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
-
 static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
 
@@ -601,15 +616,175 @@ static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 n
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupDP.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C0T0.s")
+static bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C1T0.s")
+    if (pFrame->nModeVtx != 0x11) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        pFrame->nModeVtx = 0x11;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T0.s")
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+    }
+    GXEnd();
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C0T3.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C1T3.s")
+static bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
+
+    if (pFrame->nModeVtx != 0x13) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x13;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+
+    if (pFrame->nModeVtx != 0x13) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x13;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static bool frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+
+    if (pFrame->nModeVtx != 0x15) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x15;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
+
+    if (pFrame->nModeVtx != 0x17) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x17;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
 
 static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
@@ -638,9 +813,9 @@ bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
         GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
         GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
         GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
         pFrame->nModeVtx = 0x17;
     }
 
@@ -669,17 +844,245 @@ static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T0.s")
+#else
+static bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x21) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        pFrame->nModeVtx = 0x21;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C1T0.s")
+#else
+static bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x23) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x23;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T0.s")
+#else
+static bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x23) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x23;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T2.s")
+#else
+static bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x25) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x25;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C1T2.s")
+#else
+static bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x27) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x27;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T2.s")
+#else
+static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x27) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x27;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
 
 static bool frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
     bool bFlag;
