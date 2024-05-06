@@ -71,36 +71,36 @@ const f64 D_80136030 = 4503601774854144.0;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpParseGBI.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPut8.s")
+static bool rdpPut8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPut16.s")
+static bool rdpPut16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPut32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPut64.s")
+static bool rdpPut64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGet8.s")
+static bool rdpGet8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGet16.s")
+static bool rdpGet16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGet32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGet64.s")
+static bool rdpGet64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPutSpan8.s")
+static bool rdpPutSpan8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPutSpan16.s")
+static bool rdpPutSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPutSpan32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPutSpan64.s")
+static bool rdpPutSpan64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGetSpan8.s")
+static bool rdpGetSpan8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGetSpan16.s")
+static bool rdpGetSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGetSpan32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGetSpan64.s")
+static bool rdpGetSpan64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
 
 #pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpEvent.s")
