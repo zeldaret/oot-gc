@@ -786,8 +786,231 @@ static bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive) {
     return true;
 }
 
+static inline void vertexDraw(Vertex* pVertex) {
+    GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+    GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+    GXTexCoord2f32(pVertex->rS, pVertex->rT);
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
+#else
+static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive) {
+    s32 pad1[3];
+    Vertex* v0;
+    Vertex* v1;
+    Vertex* v2;
+    s32 iData;
+    u8* anData;
+    Vertex aNewVertArray[8];
+    f32 fInterp;
+    f32 fTempColor1;
+    f32 fTempColor2;
+    u32 nNewVertCount;
+    u32 bInFront;
+    u32 bBehind;
+    u32 aSide[3];
+
+    iData = 0;
+    anData = pPrimitive->anData;
+    while (iData < pPrimitive->nCount) {
+        aSide[0] = 3;
+        aSide[1] = 3;
+        aSide[2] = 3;
+        bInFront = false;
+        bBehind = false;
+
+        v0 = &pFrame->aVertex[anData[iData + 0]];
+        if (v0->vec.z < 0.0f) {
+            aSide[0] = 0;
+            bBehind = true;
+        } else if (v0->vec.z > 0.0f) {
+            aSide[0] = 1;
+            bInFront = true;
+        }
+
+        v1 = &pFrame->aVertex[anData[iData + 1]];
+        if (v1->vec.z < 0.0f) {
+            aSide[1] = 0;
+            bBehind = true;
+        } else if (v1->vec.z > 0.0f) {
+            aSide[1] = 1;
+            bInFront = true;
+        }
+
+        v2 = &pFrame->aVertex[anData[iData + 2]];
+        if (v2->vec.z < 0.0f) {
+            aSide[2] = 0;
+            bBehind = true;
+        } else if (v2->vec.z > 0.0f) {
+            aSide[2] = 1;
+            bInFront = true;
+        }
+
+        if (!bBehind || !bInFront) {
+            GXBegin(GX_TRIANGLES, GX_VTXFMT0, 3);
+            vertexDraw(v0);
+            vertexDraw(v1);
+            vertexDraw(v2);
+            GXEnd();
+            iData += 3;
+        } else {
+            nNewVertCount = 0;
+            aNewVertArray[nNewVertCount++] = *v0;
+            if ((aSide[0] == 0 && aSide[1] == 1) || (aSide[0] == 1 && aSide[1] == 0)) {
+                fInterp = -v0->vec.z / (v1->vec.z - v0->vec.z);
+
+                aNewVertArray[1].vec.z = 0.0f;
+                if (v0->vec.y == v1->vec.y) {
+                    aNewVertArray[1].vec.y = v0->vec.y;
+                } else {
+                    aNewVertArray[1].vec.y = v0->vec.y + fInterp * (v1->vec.y - v0->vec.y);
+                }
+                if (v0->vec.x == v1->vec.x) {
+                    aNewVertArray[1].vec.x = v0->vec.x;
+                } else {
+                    aNewVertArray[1].vec.x = v0->vec.x + fInterp * (v1->vec.x - v0->vec.x);
+                }
+
+                aNewVertArray[1].rS = v0->rS + fInterp * (v1->rS - v0->rS);
+                aNewVertArray[1].rT = v0->rT + fInterp * (v1->rT - v0->rT);
+
+                fTempColor1 = v1->anColor[0];
+                fTempColor2 = v0->anColor[0];
+                aNewVertArray[1].anColor[0] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v1->anColor[1];
+                fTempColor2 = v0->anColor[1];
+                aNewVertArray[1].anColor[1] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v1->anColor[2];
+                fTempColor2 = v0->anColor[2];
+                aNewVertArray[1].anColor[2] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v1->anColor[3];
+                fTempColor2 = v0->anColor[3];
+                aNewVertArray[1].anColor[3] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+
+                nNewVertCount++;
+            }
+
+            aNewVertArray[nNewVertCount++] = *v1;
+            if ((aSide[1] == 1 && aSide[2] == 0) || (aSide[1] == 0 && aSide[2] == 1)) {
+                fInterp = -v1->vec.z / (v2->vec.z - v1->vec.z);
+
+                aNewVertArray[nNewVertCount].vec.z = 0.0f;
+                if (v1->vec.y == v2->vec.y) {
+                    aNewVertArray[nNewVertCount].vec.y = v1->vec.y;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.y = v1->vec.y + fInterp * (v2->vec.y - v1->vec.y);
+                }
+                if (v1->vec.x == v2->vec.x) {
+                    aNewVertArray[nNewVertCount].vec.x = v1->vec.x;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.x = v1->vec.x + fInterp * (v2->vec.x - v1->vec.x);
+                }
+
+                aNewVertArray[nNewVertCount].rS = v1->rS + fInterp * (v2->rS - v1->rS);
+                aNewVertArray[nNewVertCount].rT = v1->rT + fInterp * (v2->rT - v1->rT);
+
+                fTempColor1 = v2->anColor[0];
+                fTempColor2 = v1->anColor[0];
+                aNewVertArray[nNewVertCount].anColor[0] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[1];
+                fTempColor2 = v1->anColor[1];
+                aNewVertArray[nNewVertCount].anColor[1] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[2];
+                fTempColor2 = v1->anColor[2];
+                aNewVertArray[nNewVertCount].anColor[2] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[3];
+                fTempColor2 = v1->anColor[3];
+                aNewVertArray[nNewVertCount].anColor[3] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+
+                nNewVertCount++;
+            }
+
+            aNewVertArray[nNewVertCount++] = *v2;
+            if ((aSide[0] == 0 && aSide[2] == 1) || (aSide[0] == 1 && aSide[2] == 0)) {
+                fInterp = -v0->vec.z / (v2->vec.z - v0->vec.z);
+
+                aNewVertArray[nNewVertCount].vec.z = 0.0f;
+                if (v0->vec.y == v2->vec.y) {
+                    aNewVertArray[nNewVertCount].vec.y = v0->vec.y;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.y = v0->vec.y + fInterp * (v2->vec.y - v0->vec.y);
+                }
+                if (v0->vec.x == v2->vec.x) {
+                    aNewVertArray[nNewVertCount].vec.x = v0->vec.x;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.x = v0->vec.x + fInterp * (v2->vec.x - v0->vec.x);
+                }
+
+                aNewVertArray[nNewVertCount].rS = v0->rS + fInterp * (v2->rS - v0->rS);
+                aNewVertArray[nNewVertCount].rT = v0->rT + fInterp * (v2->rT - v0->rT);
+
+                fTempColor1 = v2->anColor[0];
+                fTempColor2 = v0->anColor[0];
+                aNewVertArray[nNewVertCount].anColor[0] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[1];
+                fTempColor2 = v0->anColor[1];
+                aNewVertArray[nNewVertCount].anColor[1] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[2];
+                fTempColor2 = v0->anColor[2];
+                aNewVertArray[nNewVertCount].anColor[2] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[3];
+                fTempColor2 = v0->anColor[3];
+                aNewVertArray[nNewVertCount].anColor[3] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+
+                nNewVertCount++;
+            }
+
+            if (nNewVertCount == 5) {
+                if (v1->vec.x == aNewVertArray[1].vec.x && v1->vec.y == aNewVertArray[1].vec.y &&
+                    v1->vec.z == aNewVertArray[1].vec.z) {
+                    GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
+                    vertexDraw(&aNewVertArray[0]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[2]);
+                    vertexDraw(&aNewVertArray[0]);
+                    vertexDraw(&aNewVertArray[2]);
+                    vertexDraw(&aNewVertArray[4]);
+                    vertexDraw(&aNewVertArray[4]);
+                    vertexDraw(&aNewVertArray[2]);
+                    vertexDraw(&aNewVertArray[3]);
+                    GXEnd();
+                } else if (v2->vec.x == aNewVertArray[3].vec.x && v2->vec.y == aNewVertArray[3].vec.y &&
+                           v2->vec.z == aNewVertArray[3].vec.z) {
+                    GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
+                    vertexDraw(&aNewVertArray[0]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[4]);
+                    vertexDraw(&aNewVertArray[4]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[3]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[2]);
+                    vertexDraw(&aNewVertArray[3]);
+                    GXEnd();
+                } else {
+                    GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
+                    vertexDraw(&aNewVertArray[0]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[4]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[3]);
+                    vertexDraw(&aNewVertArray[4]);
+                    vertexDraw(&aNewVertArray[1]);
+                    vertexDraw(&aNewVertArray[2]);
+                    vertexDraw(&aNewVertArray[3]);
+                    GXEnd();
+                }
+            }
+            iData += 3;
+        }
+    }
+
+    return true;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
