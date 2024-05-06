@@ -2,7 +2,6 @@
 #include "dolphin.h"
 #include "emulator/frame.h"
 #include "emulator/ram.h"
-#include "emulator/rdp_jumptables.h"
 #include "emulator/rsp.h"
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
@@ -16,82 +15,6 @@ _XL_OBJECTTYPE gClassRDP = {
     (EventFunc)rdpEvent,
 };
 
-#ifndef NON_MATCHING
-// rdpParseGBI
-static u32 sCommandCodes[] = {
-    0xED000000,
-    0x005003C0,
-    0xDE010000,
-};
-#endif
-
-void* jtbl_800EDF5C[13] = {
-    &lbl_80070090, &lbl_800700CC, &lbl_800700CC, &lbl_800700CC, &lbl_800700A0, &lbl_800700CC, &lbl_800700CC,
-    &lbl_800700CC, &lbl_800700B0, &lbl_800700CC, &lbl_800700CC, &lbl_800700CC, &lbl_800700C0,
-};
-
-void* jtbl_800EDF90[13] = {
-    &lbl_80070118, &lbl_80070150, &lbl_80070150, &lbl_80070150, &lbl_80070128, &lbl_80070150, &lbl_80070150,
-    &lbl_80070150, &lbl_80070138, &lbl_80070150, &lbl_80070150, &lbl_80070150, &lbl_80070148,
-};
-
-void* jtbl_800EDFC4[29] = {
-    &lbl_80070194, &lbl_80070204, &lbl_80070204, &lbl_80070204, &lbl_800701A0, &lbl_80070204,
-    &lbl_80070204, &lbl_80070204, &lbl_800701AC, &lbl_80070204, &lbl_80070204, &lbl_80070204,
-    &lbl_800701B8, &lbl_80070204, &lbl_80070204, &lbl_80070204, &lbl_800701C4, &lbl_80070204,
-    &lbl_80070204, &lbl_80070204, &lbl_800701D4, &lbl_80070204, &lbl_80070204, &lbl_80070204,
-    &lbl_800701E4, &lbl_80070204, &lbl_80070204, &lbl_80070204, &lbl_800701F4,
-};
-
-void* jtbl_800EE038[29] = {
-    &lbl_8007025C, &lbl_80070314, &lbl_80070314, &lbl_80070314, &lbl_8007026C, &lbl_80070314,
-    &lbl_80070314, &lbl_80070314, &lbl_8007031C, &lbl_80070314, &lbl_80070314, &lbl_80070314,
-    &lbl_8007028C, &lbl_80070314, &lbl_80070314, &lbl_80070314, &lbl_8007031C, &lbl_80070314,
-    &lbl_80070314, &lbl_80070314, &lbl_8007031C, &lbl_80070314, &lbl_80070314, &lbl_80070314,
-    &lbl_8007031C, &lbl_80070314, &lbl_80070314, &lbl_80070314, &lbl_8007031C,
-};
-
-#ifndef NON_MATCHING
-// rdpParseGBI
-void* jtbl_800EE0AC[64] = {
-    &lbl_800715A8, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0,
-    &lbl_800715A0, &lbl_800715A8, &lbl_800715A8, &lbl_800715A8, &lbl_800715A8, &lbl_800715A8, &lbl_800715A8,
-    &lbl_800715A8, &lbl_800715A8, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0,
-    &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0,
-    &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0, &lbl_800715A0,
-    &lbl_800715A0, &lbl_80070F90, &lbl_80070F90, &lbl_800715A8, &lbl_800715A8, &lbl_800715A8, &lbl_800715A8,
-    &lbl_800715A8, &lbl_800715A8, &lbl_800715A8, &lbl_80070F50, &lbl_80070EF4, &lbl_80070EB4, &lbl_80070E90,
-    &lbl_800715A0, &lbl_80070E30, &lbl_80070DCC, &lbl_80070D1C, &lbl_80070C58, &lbl_80070BD4, &lbl_80070BA0,
-    &lbl_80070B80, &lbl_80070B60, &lbl_80070B2C, &lbl_80070B0C, &lbl_80070924, &lbl_80070808, &lbl_8007077C,
-    &lbl_800703CC,
-};
-#else
-void* jtbl_800EE0AC[64] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rdpParseGBI
-static s32 nCount;
-static s32 nBlurCount;
-static s32 nNoteCount;
-static s32 nZCount;
-static s32 nZBufferCount;
-
-const f32 D_80136008 = 32768.0f;
-const f32 D_8013600C = 65536.0f;
-const f32 D_80136010 = 0.03125f;
-const f32 D_80136014 = 0.0009765625f;
-const f32 D_80136018 = 0.0f;
-const f32 D_8013601C = 320.0f;
-const f32 D_80136020 = 240.0f;
-const f64 D_80136028 = 4503599627370496.0;
-const f64 D_80136030 = 4503601774854144.0;
-#endif
-
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpParseGBI.s")
-#else
 bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode) {
     u32 nA;
     u32 nB;
@@ -661,38 +584,189 @@ bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode) {
 
     return true;
 }
-#endif
 
-static bool rdpPut8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPut8(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-static bool rdpPut16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPut16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPut32.s")
+static bool rdpPut32(Rdp* pRDP, u32 nAddress, s32* pData) {
+    s32 nData;
 
-static bool rdpPut64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+    switch (nAddress & 0x1F) {
+        case 0:
+            pRDP->nAddress0 = *pData & 0xFFFFFF;
+            break;
+        case 4:
+            pRDP->nAddress1 = *pData & 0xFFFFFF;
+            xlObjectEvent(pRDP->pHost, 0x1000, (void*)10);
+            break;
+        case 8:
+            break;
+        case 12:
+            nData = *pData & 0x3FF;
+            if (nData & 1) {
+                pRDP->nStatus &= ~1;
+            }
+            if (nData & 0x10) {
+                pRDP->nStatus &= ~0x4;
+            }
+            if (nData & 0x20) {
+                pRDP->nStatus |= 4;
+            }
+            if (nData & 0x40) {
+                pRDP->nClockTMEM = 0;
+            }
+            if (nData & 0x80) {
+                pRDP->nClockPipe = 0;
+            }
+            if (nData & 0x100) {
+                pRDP->nClockCmd = 0;
+            }
+            if (nData & 0x200) {
+                pRDP->nClock = 0;
+            }
+            break;
+        case 16:
+        case 20:
+        case 24:
+        case 28:
+            break;
+        default:
+            return false;
+    }
 
-static bool rdpGet8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+    return true;
+}
 
-static bool rdpGet16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPut64(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGet32.s")
+static bool rdpGet8(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-static bool rdpGet64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpGet16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-static bool rdpPutSpan8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpGet32(Rdp* pRDP, u32 nAddress, s32* pData) {
+    switch (nAddress & 0x1F) {
+        case 0:
+            *pData = pRDP->nAddress0;
+            break;
+        case 4:
+            *pData = pRDP->nAddress1;
+            break;
+        case 8:
+            *pData = pRDP->nAddress1;
+            break;
+        case 12:
+            *pData = pRDP->nStatus;
+            break;
+        case 16:
+            *pData = pRDP->nClock & 0xFFFFFF;
+            break;
+        case 20:
+            *pData = pRDP->nClockCmd & 0xFFFFFF;
+            break;
+        case 24:
+            *pData = pRDP->nClockPipe & 0xFFFFFF;
+            break;
+        case 28:
+            *pData = pRDP->nClockTMEM & 0xFFFFFF;
+            break;
+        default:
+            return false;
+    }
 
-static bool rdpPutSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpPutSpan32.s")
+static bool rdpGet64(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-static bool rdpPutSpan64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPutSpan8(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-static bool rdpGetSpan8(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPutSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-static bool rdpGetSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPutSpan32(Rdp* pRDP, u32 nAddress, s32* pData) {
+    switch (nAddress & 0xF) {
+        case 0:
+            pRDP->nBIST = *pData & 0x7FF;
+            break;
+        case 4:
+            pRDP->nModeTest = *pData & 1;
+            break;
+        case 8:
+            pRDP->nAddressTest = *pData & 0x7F;
+            break;
+        case 12:
+            pRDP->nDataTest = *pData;
+            break;
+        default:
+            break;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpGetSpan32.s")
+    return true;
+}
 
-static bool rdpGetSpan64(Rdp* pRDP, u32 nAddress, s32* pData) { return 0; }
+static bool rdpPutSpan64(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rdp/rdpEvent.s")
+static bool rdpGetSpan8(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
+
+static bool rdpGetSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
+
+static bool rdpGetSpan32(Rdp* pRDP, u32 nAddress, s32* pData) {
+    switch (nAddress & 0xF) {
+        case 0:
+            *pData = pRDP->nBIST & 0x7FF;
+            break;
+        case 4:
+            *pData = pRDP->nModeTest & 1;
+            break;
+        case 8:
+            *pData = pRDP->nAddressTest & 0x7F;
+            break;
+        case 12:
+            *pData = pRDP->nDataTest;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+static bool rdpGetSpan64(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
+
+bool rdpEvent(Rdp* pRDP, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pRDP->pHost = pArgument;
+            pRDP->nStatus = 0;
+            break;
+        case 0x1002:
+            switch (((CpuDevice*)pArgument)->nType) {
+                case 0:
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpPut8, (Get16Func)rdpPut16, (Get32Func)rdpPut32, (Get64Func)rdpPut64)) {
+                        return false;
+                    }
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpGet8, (Get16Func)rdpGet16, (Get32Func)rdpGet32, (Get64Func)rdpGet64)) {
+                        return false;
+                    }
+                    break;
+                case 1:
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpPutSpan8, (Get16Func)rdpPutSpan16, (Get32Func)rdpPutSpan32, (Get64Func)rdpPutSpan64)) {
+                        return false;
+                    }
+                    if (!cpuSetDeviceGet(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpGetSpan8, (Get16Func)rdpGetSpan16, (Get32Func)rdpGetSpan32, (Get64Func)rdpGetSpan64)) {
+                        return false;
+                    }
+                    break;
+            }
+            break;
+        case 0:
+        case 1:
+        case 3:
+        case 0x1003:
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
