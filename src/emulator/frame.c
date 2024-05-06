@@ -3329,11 +3329,66 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
     return false;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawBG8.s")
+void PanelDrawBG8(u16* BG, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool flip) {
+    s32 i;
+    s32 j;
+    u16 color;
+    s32 pad[3];
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawBG16.s")
+    for (i = 0; i < sizeY; i++) {
+        for (j = 0; j < sizeX; j++) {
+            color = LUT[bitmap[i * sizeX + j]];
+            if (color & 1) {
+                if (!flip) {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+                } else {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + (sizeX - j)] = color;
+                }
+            }
+        }
+    }
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawFR3D.s")
+void PanelDrawBG16(u16* BG, u16* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool flip) {
+    s32 i;
+    s32 j;
+    u16 color;
+    s32 pad[2];
+
+    for (i = 0; i < sizeY; i++) {
+        for (j = 0; j < sizeX; j++) {
+            color = bitmap[i * sizeX + j];
+            if (color & 1) {
+                if (!flip) {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+                } else {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + (sizeX - j)] = color;
+                }
+            }
+        }
+    }
+}
+
+void PanelDrawFR3D(u16* FR, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool first) {
+    s32 i;
+    s32 j;
+    u16 color;
+    s32 pad[3];
+
+    for (i = 0; i < sizeY; i++) {
+        for (j = 0; j < sizeX; j++) {
+            color = LUT[bitmap[i * sizeX + j]];
+            if (first) {
+                if (color == 0x6D3F) {
+                    color = 0x6D3E;
+                }
+                FR[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+            } else if (color & 1) {
+                FR[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+            }
+        }
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackTIMG_Panel.s")
 
