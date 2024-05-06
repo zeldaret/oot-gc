@@ -192,21 +192,14 @@ bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA6, 0);
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
 
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 320.0f;
-    GXWGFifo.f32 = 240.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 240.0f;
-    GXWGFifo.f32 = 0.0f;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition3f32(0.0f, 0.0f, 0.0f);
+    GXPosition3f32(320.0f, 0.0f, 0.0f);
+    GXPosition3f32(320.0f, 240.0f, 0.0f);
+    GXPosition3f32(0.0f, 240.0f, 0.0f);
+    GXEnd();
 
     movieGXInit();
     Vert_s16[0] = nX0;
@@ -219,7 +212,7 @@ bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     Vert_s16[10] = nY0 + tpl->descriptorArray->textureHeader->height;
     DCStoreRange(&Vert_s16, 24);
 
-    C_MTXOrtho(gOrthoMtx, 0.0f, 240.0f, 0.0f, 320.0f, 0.10000000149011612f, 10000.0f);
+    C_MTXOrtho(gOrthoMtx, 0.0f, 240.0f, 0.0f, 320.0f, 0.1f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
     GXSetNumChans(1);
 
@@ -235,26 +228,28 @@ bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
     GXSetArray(GX_VA_POS, Vert_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
     TEXGetGXTexObjFromPalette(tpl, &texObj, 0);
     GXLoadTexObj(&texObj, GX_TEXMAP0);
     GXSetTevOp(0, 1);
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
+
     DEMODoneRender();
 
     PAD_STACK();

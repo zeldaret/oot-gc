@@ -2120,14 +2120,12 @@ static bool simulatorDrawCursor(s32 nX, s32 nY) {
     }
 
     GXSetTevColor(GX_TEVREG0, color);
-    GXBegin(GX_TRIANGLES, GX_VTXFMT7, 3);
 
-    GXWGFifo.s16 = nX;
-    GXWGFifo.s16 = nY;
-    GXWGFifo.s16 = nX + 8;
-    GXWGFifo.s16 = nY + 4;
-    GXWGFifo.s16 = nX;
-    GXWGFifo.s16 = nY + 8;
+    GXBegin(GX_TRIANGLES, GX_VTXFMT7, 3);
+    GXPosition2s16(nX, nY);
+    GXPosition2s16(nX + 8, nY + 4);
+    GXPosition2s16(nX, nY + 8);
+    GXEnd();
 
     return true;
 }
