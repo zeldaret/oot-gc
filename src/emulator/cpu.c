@@ -11,14 +11,17 @@
 #include "emulator/video.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
+#include "emulator/xlPostGCN.h"
 #include "macros.h"
 #include "math.h"
 
 static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
 static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost);
 static bool cpuSetTLB(Cpu* pCPU, s32 iEntry);
+static bool cpuHeapReset(u32* array, s32 count);
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 static void treeCallerInit(CpuCallerID* block, s32 total);
+static bool treeKill(Cpu* pCPU);
 static bool treeKillNodes(Cpu* pCPU, CpuFunction* tree);
 static bool treeAdjustRoot(Cpu* pCPU, s32 new_start, s32 new_end);
 static bool treeSearchNode(CpuFunction* tree, s32 target, CpuFunction** node);
@@ -116,17 +119,22 @@ s64 ganMaskSetCP0[] = {
 };
 
 u8 Opcode[] = {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+    true, true, true, true,  true, true, true, true, true, true, true, true,  true,  true,  true,  true,
+    true, true, true, false, true, true, true, true, true, true, true, true,  false, false, false, true,
+    true, true, true, true,  true, true, true, true, true, true, true, true,  true,  true,  true,  true,
+    true, true, true, false, true, true, true, true, true, true, true, false, true,  true,  true,  true,
 };
 
 u8 SpecialOpcode[] = {
-    1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1,
+    true, false, true, true, true, false, true, true,  true,  true,  false, false, true, true,  false, true,
+    true, true,  true, true, true, false, true, true,  true,  true,  true,  true,  true, true,  true,  true,
+    true, true,  true, true, true, true,  true, true,  false, false, true,  true,  true, true,  true,  true,
+    true, true,  true, true, true, false, true, false, true,  false, true,  true,  true, false, true,  true,
 };
 
 u8 RegimmOpcode[] = {
-    1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    true, true, true, true, false, false, false, false, true,  true,  true,  true,  true,  false, true,  false,
+    true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false,
 };
 
 s32 ganOpcodeSaveFP1[] = {
@@ -4629,7 +4637,68 @@ bool cpuExecute(Cpu* pCPU, u64 nAddressBreak) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuHackHandler.s")
+static bool cpuHackHandler(Cpu* pCPU) {
+    u32 nSize;
+    u32* pnCode;
+    s32 iCode;
+    s32 iSave1;
+    s32 iSave2;
+    s32 iLoad;
+
+    iSave1 = iSave2 = iLoad = 0;
+
+    if (xlObjectTest(SYSTEM_RAM(pCPU->pHost), &gClassRAM) && ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &pnCode, 0, NULL)) {
+        if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), (s32*)&nSize)) {
+            return false;
+        }
+
+        for (iCode = 0; iCode < (nSize >> 2) && (iSave1 != -1 || iSave2 != -1 || iLoad != -1); iCode++) {
+            if (iSave1 != -1) {
+                if (pnCode[iCode] == ganOpcodeSaveFP1[iSave1]) {
+                    iSave1 += 1;
+                    if (iSave1 == 5U) {
+                        pnCode[iCode - 3] = 0;
+                        iSave1 = -1;
+                    }
+                } else {
+                    iSave1 = 0;
+                }
+            }
+
+            if (iSave2 != -1) {
+                if (pnCode[iCode] == ganOpcodeSaveFP2_0[iSave2]) {
+                    iSave2 += 1;
+                    if (iSave2 == 5U) {
+                        pnCode[iCode - 3] = 0;
+                        iSave2 = -1;
+                    }
+                } else if (pnCode[iCode] == ganOpcodeSaveFP2_1[iSave2]) {
+                    iSave2 += 1;
+                    if (iSave2 == 3U) {
+                        pnCode[iCode - 2] = 0;
+                        iSave2 = -1;
+                    }
+                } else {
+                    iSave2 = 0;
+                }
+            }
+
+            if (iLoad != -1) {
+                if (pnCode[iCode] == ganOpcodeLoadFP[iLoad]) {
+                    iLoad += 1;
+                    if (iLoad == 5U) {
+                        pnCode[iCode - 3] = 0;
+                        iLoad = -1;
+                    }
+                } else {
+                    iLoad = 0;
+                }
+            }
+        }
+    }
+
+    return (iSave1 == -1 && iSave2 == -1 && iLoad == -1) ? true : false;
+}
 
 static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction) {
     s32 iAddress;
@@ -4652,17 +4721,167 @@ static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddress
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFreeCachedAddress.s")
+bool cpuFreeCachedAddress(Cpu* pCPU, s32 nAddress0, s32 nAddress1) {
+    s32 iAddress;
+    s32 iAddressNext;
+    s32 nAddressN64;
+    CpuAddress* aAddressCache = pCPU->aAddressCache;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindCachedAddress.s")
+    iAddress = 0;
+    while (iAddress < pCPU->nCountAddress) {
+        nAddressN64 = aAddressCache[iAddress].nN64;
+        if (nAddress0 <= nAddressN64 && nAddressN64 <= nAddress1) {
+            for (iAddressNext = iAddress; iAddressNext < pCPU->nCountAddress - 1; iAddressNext++) {
+                aAddressCache[iAddressNext] = aAddressCache[iAddressNext + 1];
+            }
+            pCPU->nCountAddress--;
+        } else {
+            iAddress++;
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuTestInterrupt.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuException.s")
+static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost) {
+    s32 iAddress;
+    CpuFunction* pFunction;
+    CpuAddress addressFound;
+    CpuAddress* aAddressCache = pCPU->aAddressCache;
+
+    for (iAddress = 0; iAddress < pCPU->nCountAddress; iAddress++) {
+        if (nAddressN64 == aAddressCache[iAddress].nN64) {
+            if (iAddress > ARRAY_COUNT(pCPU->aAddressCache) / 2) {
+                addressFound = aAddressCache[iAddress];
+                for (; iAddress > 0; iAddress--) {
+                    aAddressCache[iAddress] = aAddressCache[iAddress - 1];
+                }
+                aAddressCache[iAddress] = addressFound;
+            }
+
+            pFunction = aAddressCache[iAddress].pFunction;
+            if (pFunction->timeToLive > 0) {
+                pFunction->timeToLive = pCPU->survivalTimer;
+            }
+
+            *pnAddressHost = aAddressCache[iAddress].nHost;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool cpuTestInterrupt(Cpu* pCPU, s32 nMaskIP) {
+    pCPU->anCP0[13] |= (nMaskIP & 0xFF) << 8;
+    if ((pCPU->anCP0[12] & 6) != 0) {
+        return false;
+    }
+    if ((pCPU->anCP0[12] & 1) == 0) {
+        return false;
+    }
+    if ((((pCPU->anCP0[12] & 0xFF00) >> 8) & (nMaskIP & 0xFF)) == 0) {
+        return false;
+    }
+    return true;
+}
+
+bool cpuException(Cpu* pCPU, CpuExceptionCode eCode, s32 nMaskIP) {
+    s32 pad[2];
+
+    if ((pCPU->anCP0[12] & 6) != 0) {
+        return false;
+    }
+    nMaskIP &= 0xFF;
+    if (eCode == CEC_NONE) {
+        return false;
+    }
+    if ((eCode >= CEC_RESERVED_16 && eCode <= CEC_RESERVED_22) ||
+        (eCode >= CEC_RESERVED_24 && eCode <= CEC_RESERVED_30)) {
+        return false;
+    }
+    if (eCode == CEC_RESERVED) {
+        return false;
+    }
+
+    if (eCode == CEC_INTERRUPT) {
+        if (!cpuTestInterrupt(pCPU, nMaskIP)) {
+            return 0;
+        }
+    } else {
+        pCPU->nPC -= 4;
+        pCPU->nMode |= 4;
+    }
+
+    pCPU->nMode &= ~8;
+    if (!(pCPU->nMode & 0x10)) {
+        if (!cpuHackHandler(pCPU)) {
+            xlPostText(D_800ED674, D_80135260, 923);
+        }
+        pCPU->nMode |= 0x10;
+    }
+    if (pCPU->nWaitPC != 0xFFFFFFFF) {
+        pCPU->nWaitPC = -1;
+        pCPU->anCP0[14] = pCPU->nPC - 4;
+        pCPU->anCP0[13] |= 0x80000000;
+    } else {
+        pCPU->anCP0[14] = pCPU->nPC;
+    }
+
+    pCPU->nMode &= ~0x80;
+    pCPU->anCP0[12] |= 2;
+    pCPU->anCP0[13] = (pCPU->anCP0[13] & ~0x7C) | (eCode << 2);
+
+    if (eCode - 1 <= 2U) {
+        pCPU->nPC = 0x80000000;
+    } else {
+        pCPU->nPC = 0x80000180;
+    }
+
+    pCPU->nMode |= 4;
+    pCPU->nMode |= 0x20;
+
+    if (!libraryCall(SYSTEM_LIBRARY(pCPU->pHost), pCPU, -1)) {
+        return false;
+    }
+
+    return true;
+}
 
 static bool cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1,
-                          s32 nType);
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMakeDevice.s")
+                          s32 nType) {
+    CpuDevice* pDevice;
+    s32 iDevice;
+    s32 pad;
+
+    iDevice = (nType & 0x100) ? (ARRAY_COUNT(pCPU->apDevice) / 2) : 0;
+    for (; iDevice < ARRAY_COUNT(pCPU->apDevice); iDevice++) {
+        if (pCPU->apDevice[iDevice] == NULL) {
+            break;
+        }
+    }
+    if (iDevice == ARRAY_COUNT(pCPU->apDevice)) {
+        return false;
+    }
+
+    *piDevice = iDevice;
+    if (!xlHeapTake(&pDevice, sizeof(CpuDevice))) {
+        return false;
+    }
+
+    pCPU->apDevice[iDevice] = pDevice;
+    pDevice->nType = nType;
+    pDevice->pObject = pObject;
+    pDevice->nOffsetAddress = nOffset;
+    pDevice->nAddressPhysical0 = nAddress0;
+    pDevice->nAddressPhysical1 = nAddress1;
+
+    if (!xlObjectEvent(pObject, 0x1002, pDevice)) {
+        return false;
+    }
+
+    return true;
+}
 
 bool cpuFreeDevice(Cpu* pCPU, s32 iDevice) {
     if (!xlHeapFree((void**)&pCPU->apDevice[iDevice])) {
@@ -4718,7 +4937,58 @@ static bool cpuMapAddress(Cpu* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical,
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetTLB.s")
+static bool cpuSetTLB(Cpu* pCPU, s32 iEntry) {
+    s32 iDevice;
+    u32 nMask;
+    u32 nVirtual;
+    u32 nPhysical;
+
+    if ((pCPU->anCP0[10] & 0xFFFFE000) == 0x80000000) {
+        pCPU->aTLB[iEntry][0] &= ~2;
+        ;
+        if ((iDevice = pCPU->aTLB[iEntry][4]) != -1) {
+            if (!cpuFreeDevice(pCPU, iDevice)) {
+                return false;
+            }
+            pCPU->aTLB[iEntry][4] = -1;
+        }
+
+        return true;
+    }
+
+    if ((iDevice = pCPU->aTLB[iEntry][4]) != -1) {
+        if (!cpuFreeDevice(pCPU, iDevice)) {
+            return false;
+        }
+    }
+
+    pCPU->aTLB[iEntry][0] = pCPU->anCP0[2] | 2;
+    pCPU->aTLB[iEntry][1] = pCPU->anCP0[3];
+    pCPU->aTLB[iEntry][2] = pCPU->anCP0[10];
+    pCPU->aTLB[iEntry][3] = pCPU->anCP0[5];
+
+    nMask = pCPU->aTLB[iEntry][3] | 0x1FFF;
+    nVirtual = pCPU->aTLB[iEntry][2] & 0xFFFFE000;
+    nPhysical = ((s32)(pCPU->aTLB[iEntry][0] & 0xFFFFFFC0) << 6) + (nVirtual & nMask);
+    if (nVirtual == 0xC0000000 && nPhysical == 0x80000000) {
+        nPhysical = 0x04900000;
+    }
+    if (nVirtual < 0x80000000 || 0xC0000000 <= nVirtual) {
+        if (!cpuMapAddress(pCPU, &iDevice, nVirtual, nPhysical, nMask + 1)) {
+            return false;
+        }
+        if (nVirtual == 0x70000000 && nPhysical == 0 && nMask == 0x007FFFFF) {
+            if (!cpuMapAddress(pCPU, NULL, 0x7F000000, 0x10034B30, 0x01000000)) {
+                return false;
+            }
+        }
+    } else {
+        iDevice = -1;
+    }
+
+    pCPU->aTLB[iEntry][4] = iDevice;
+    return true;
+}
 
 static bool cpuGetMode(u64 nStatus, CpuMode* peMode) {
     if (nStatus & 2) {
@@ -4794,6 +5064,8 @@ static bool cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32 unknown) {
     }
 
     pCPU->anCP0[12] = nStatus;
+
+    NO_INLINE();
     return true;
 }
 
@@ -4936,11 +5208,69 @@ bool __cpuBreak(Cpu* pCPU) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuMapObject.s")
+bool cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nType) {
+    s32 iDevice;
+    s32 iAddress;
+    u32 nAddressVirtual0;
+    u32 nAddressVirtual1;
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetDeviceGet.s")
+    if (nAddress0 == 0 && nAddress1 == 0xFFFFFFFF) {
+        if (!cpuMakeDevice(pCPU, &iDevice, pObject, 0, nAddress0, nAddress1, nType)) {
+            return false;
+        }
 
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetDevicePut.s")
+        pCPU->iDeviceDefault = iDevice;
+        for (iAddress = 0; iAddress < ARRAY_COUNT(pCPU->aiDevice); iAddress++) {
+            pCPU->aiDevice[iAddress] = iDevice;
+        }
+    } else {
+        if (!cpuMakeDevice(pCPU, &iDevice, pObject, nAddress0 + 0x80000000, nAddress0, nAddress1, nType)) {
+            return false;
+        }
+
+        nAddressVirtual0 = nAddress0 | 0x80000000;
+        nAddressVirtual1 = nAddress1 | 0x80000000;
+        iAddress = nAddressVirtual0 >> 16;
+        while (nAddressVirtual0 < nAddressVirtual1) {
+            pCPU->aiDevice[iAddress] = iDevice;
+            nAddressVirtual0 += 0x10000;
+            iAddress++;
+        }
+
+        if (!cpuMakeDevice(pCPU, &iDevice, pObject, nAddress0 + 0x60000000, nAddress0, nAddress1, nType)) {
+            return false;
+        }
+
+        nAddressVirtual0 = nAddress0 | 0xA0000000;
+        nAddressVirtual1 = nAddress1 | 0xA0000000;
+        iAddress = nAddressVirtual0 >> 16;
+        while (nAddressVirtual0 < nAddressVirtual1) {
+            pCPU->aiDevice[iAddress] = iDevice;
+            nAddressVirtual0 += 0x10000;
+            iAddress++;
+        }
+    }
+
+    return true;
+}
+
+bool cpuSetDeviceGet(Cpu* pCPU, CpuDevice* pDevice, Get8Func pfGet8, Get16Func pfGet16, Get32Func pfGet32,
+                     Get64Func pfGet64) {
+    pDevice->pfGet8 = pfGet8;
+    pDevice->pfGet16 = pfGet16;
+    pDevice->pfGet32 = pfGet32;
+    pDevice->pfGet64 = pfGet64;
+    return true;
+}
+
+bool cpuSetDevicePut(Cpu* pCPU, CpuDevice* pDevice, Put8Func pfPut8, Put16Func pfPut16, Put32Func pfPut32,
+                     Put64Func pfPut64) {
+    pDevice->pfPut8 = pfPut8;
+    pDevice->pfPut16 = pfPut16;
+    pDevice->pfPut32 = pfPut32;
+    pDevice->pfPut64 = pfPut64;
+    return true;
+}
 
 bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
     s32 iHack;
@@ -4958,7 +5288,90 @@ bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuReset.s")
+#else
+bool cpuReset(Cpu* pCPU) {
+    s32 iRegister;
+    s32 iTLB;
+
+    pCPU->nTick = 0;
+    pCPU->nCountCodeHack = 0;
+    pCPU->nMode = 0x40;
+    pCPU->pfStep = NULL;
+
+    for (iTLB = 0; iTLB < ARRAY_COUNT(pCPU->aTLB); iTLB++) {
+        for (iRegister = 0; iRegister < 5; iRegister++) {
+            pCPU->aTLB[iTLB][iRegister] = 0;
+        }
+        pCPU->aTLB[iTLB][4] = -1;
+    }
+
+    pCPU->nLo = 0;
+    pCPU->nHi = 0;
+    pCPU->nPC = 0x80000400;
+    pCPU->nWaitPC = -1;
+
+    for (iRegister = 0; iRegister < ARRAY_COUNT(pCPU->aGPR); iRegister++) {
+        pCPU->aGPR[iRegister].u64 = 0;
+    }
+
+    for (iRegister = 0; iRegister < ARRAY_COUNT(pCPU->aFPR); iRegister++) {
+        pCPU->aFPR[iRegister].f64 = 0.0;
+    }
+
+    for (iRegister = 0; iRegister < ARRAY_COUNT(pCPU->anFCR); iRegister++) {
+        pCPU->anFCR[iRegister] = 0;
+    }
+
+    pCPU->aGPR[20].u64 = 1;
+    pCPU->aGPR[22].u64 = 0x3F;
+    pCPU->aGPR[29].u64 = 0xA4001FF0;
+
+    for (iRegister = 0; iRegister < ARRAY_COUNT(pCPU->anCP0); iRegister++) {
+        pCPU->anCP0[iRegister] = 0;
+    }
+
+    pCPU->anCP0[15] = 0xB00;
+    pCPU->anCP0[9] = 0x10000000;
+    cpuSetCP0_Status(pCPU, 0x2000FF01, 1);
+    pCPU->anCP0[16] = 0x6E463;
+
+    pCPU->nCountAddress = 0;
+    if (cpuHackHandler(pCPU)) {
+        pCPU->nMode |= 0x10;
+    }
+
+    if (!cpuHeapReset(pCPU->aHeap1Flag, ARRAY_COUNT(pCPU->aHeap1Flag))) {
+        return false;
+    }
+    if (pCPU->gHeap1 == NULL && !xlHeapTake(&pCPU->gHeap1, 0x300000 | 0x30000000)) {
+        return false;
+    }
+
+    if (!cpuHeapReset(pCPU->aHeap2Flag, ARRAY_COUNT(pCPU->aHeap2Flag))) {
+        return false;
+    }
+    if (pCPU->gHeap2 == NULL && !xlHeapTake(&pCPU->gHeap2, 0x104000 | 0x30000000)) {
+        return false;
+    }
+
+    if (!cpuHeapReset(aHeapTreeFlag, ARRAY_COUNT(aHeapTreeFlag))) {
+        return false;
+    }
+    if (gHeapTree == NULL && !xlHeapTake(&gHeapTree, 0x46500 | 0x30000000)) {
+        return false;
+    }
+
+    if (pCPU->gTree != NULL) {
+        treeKill(pCPU);
+    }
+
+    pCPU->nCompileFlag = 1;
+    return true;
+}
+#endif
 
 bool cpuSetXPC(Cpu* pCPU, s64 nPC, s64 nLo, s64 nHi) {
     if (!xlObjectTest(pCPU, &gClassCPU)) {
@@ -5161,6 +5574,7 @@ static bool cpuHeapReset(u32* array, s32 count) {
         array[i] = 0;
     }
 
+    NO_INLINE();
     return true;
 }
 
@@ -6624,4 +7038,129 @@ static inline s32 treeMemory(Cpu* pCPU) {
     }
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuOpcodeChecksum.s")
+#else
+s32 cpuOpcodeChecksum(u32 opcode) {
+    s32 nChecksum = 0x20;
+
+    if (opcode == 0) {
+        return 0;
+    }
+
+    switch (MIPS_OP(opcode)) {
+        case 0x01:
+            switch (MIPS_RT(opcode)) {
+                case 0x00:
+                case 0x01:
+                case 0x02:
+                case 0x03:
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13:
+                    nChecksum = 4;
+                    break;
+            }
+            break;
+        case 0x10:
+            switch (MIPS_FUNCT(opcode)) {
+                case 0x01:
+                case 0x02:
+                case 0x05:
+                case 0x08:
+                case 0x18:
+                    break;
+                default:
+                case 0x00:
+                case 0x03:
+                case 0x04:
+                case 0x06:
+                case 0x07:
+                case 0x09:
+                case 0x0A:
+                case 0x0B:
+                case 0x0C:
+                case 0x0D:
+                case 0x0E:
+                case 0x0F:
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13:
+                case 0x14:
+                case 0x15:
+                case 0x16:
+                case 0x17:
+                    switch (MIPS_FMT(opcode)) {
+                        case 8:
+                            switch (MIPS_FT(opcode)) {
+                                case 0x00:
+                                case 0x01:
+                                case 0x02:
+                                case 0x03:
+                                    nChecksum = 4;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+            break;
+        case 0x11:
+            if (MIPS_RS(opcode) == 0x08) {
+                switch (MIPS_RT(opcode)) {
+                    case 0x00:
+                    case 0x01:
+                    case 0x02:
+                    case 0x03:
+                        nChecksum = 4;
+                        break;
+                }
+            }
+            break;
+        case 0x02:
+            nChecksum = 1;
+            break;
+        case 0x03:
+            nChecksum = 1;
+            break;
+        case 0x04:
+        case 0x05:
+        case 0x06:
+        case 0x07:
+        case 0x14:
+        case 0x15:
+        case 0x16:
+        case 0x17:
+            nChecksum = 4;
+            break;
+        case 0x09:
+        case 0x0D:
+        case 0x0F:
+            nChecksum = 0x10;
+            break;
+        case 0x20:
+        case 0x21:
+        case 0x22:
+        case 0x23:
+        case 0x24:
+        case 0x25:
+        case 0x26:
+        case 0x28:
+        case 0x29:
+        case 0x2B:
+        case 0x31:
+        case 0x35:
+        case 0x37:
+        case 0x39:
+        case 0x3D:
+        case 0x3F:
+            nChecksum = 0x10;
+            break;
+    }
+
+    return nChecksum;
+}
+#endif
