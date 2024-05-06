@@ -593,16 +593,16 @@ static bool rdpPut32(Rdp* pRDP, u32 nAddress, s32* pData) {
     s32 nData;
 
     switch (nAddress & 0x1F) {
-        case 0:
+        case 0x00:
             pRDP->nAddress0 = *pData & 0xFFFFFF;
             break;
-        case 4:
+        case 0x04:
             pRDP->nAddress1 = *pData & 0xFFFFFF;
             xlObjectEvent(pRDP->pHost, 0x1000, (void*)10);
             break;
-        case 8:
+        case 0x08:
             break;
-        case 12:
+        case 0x0C:
             nData = *pData & 0x3FF;
             if (nData & 1) {
                 pRDP->nStatus &= ~1;
@@ -626,10 +626,10 @@ static bool rdpPut32(Rdp* pRDP, u32 nAddress, s32* pData) {
                 pRDP->nClock = 0;
             }
             break;
-        case 16:
-        case 20:
-        case 24:
-        case 28:
+        case 0x10:
+        case 0x14:
+        case 0x18:
+        case 0x1C:
             break;
         default:
             return false;
@@ -646,28 +646,28 @@ static bool rdpGet16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
 static bool rdpGet32(Rdp* pRDP, u32 nAddress, s32* pData) {
     switch (nAddress & 0x1F) {
-        case 0:
+        case 0x00:
             *pData = pRDP->nAddress0;
             break;
-        case 4:
+        case 0x04:
             *pData = pRDP->nAddress1;
             break;
-        case 8:
+        case 0x08:
             *pData = pRDP->nAddress1;
             break;
-        case 12:
+        case 0x0C:
             *pData = pRDP->nStatus;
             break;
-        case 16:
+        case 0x10:
             *pData = pRDP->nClock & 0xFFFFFF;
             break;
-        case 20:
+        case 0x14:
             *pData = pRDP->nClockCmd & 0xFFFFFF;
             break;
-        case 24:
+        case 0x18:
             *pData = pRDP->nClockPipe & 0xFFFFFF;
             break;
-        case 28:
+        case 0x1C:
             *pData = pRDP->nClockTMEM & 0xFFFFFF;
             break;
         default:
@@ -685,16 +685,16 @@ static bool rdpPutSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
 static bool rdpPutSpan32(Rdp* pRDP, u32 nAddress, s32* pData) {
     switch (nAddress & 0xF) {
-        case 0:
+        case 0x00:
             pRDP->nBIST = *pData & 0x7FF;
             break;
-        case 4:
+        case 0x04:
             pRDP->nModeTest = *pData & 1;
             break;
-        case 8:
+        case 0x08:
             pRDP->nAddressTest = *pData & 0x7F;
             break;
-        case 12:
+        case 0x0C:
             pRDP->nDataTest = *pData;
             break;
         default:
@@ -712,16 +712,16 @@ static bool rdpGetSpan16(Rdp* pRDP, u32 nAddress, s32* pData) { return false; }
 
 static bool rdpGetSpan32(Rdp* pRDP, u32 nAddress, s32* pData) {
     switch (nAddress & 0xF) {
-        case 0:
+        case 0x00:
             *pData = pRDP->nBIST & 0x7FF;
             break;
-        case 4:
+        case 0x04:
             *pData = pRDP->nModeTest & 1;
             break;
-        case 8:
+        case 0x08:
             *pData = pRDP->nAddressTest & 0x7F;
             break;
-        case 12:
+        case 0x0C:
             *pData = pRDP->nDataTest;
             break;
         default:
