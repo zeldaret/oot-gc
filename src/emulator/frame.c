@@ -29,8 +29,6 @@ static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
-static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
-static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
 static bool frameUpdateCache(Frame* pFrame);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
@@ -1554,7 +1552,99 @@ static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
+#else
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
+    Mtx matrix;
+    Mtx matrixA;
+    Mtx matrixB;
+    FrameTexture* pTexture[8];
+    f32 rScaleS;
+    f32 rScaleT;
+    f32 rSlideS;
+    f32 rSlideT;
+    u32 bFlag;
+    u32 nColors;
+    s32 iTile;
+    s32 firstTile;
+    s32 nCount;
+    s32 iIndex;
+    s8 cTempAlpha;
+
+    iTile = firstTile = pRectangle->iTile;
+    if (sSpecialZeldaHackON) {
+        return true;
+    }
+
+    if (!frameDrawSetup2D(pFrame)) {
+        return false;
+    }
+
+    nColors = 0;
+    bFlag = true;
+    if (!frameDrawSetupDP(pFrame, (s32*)&nColors, (bool*)&bFlag, 1)) {
+        return false;
+    }
+
+    nCount = iTile + (iTile < 7 && pFrame->aTile[iTile + 1].nSizeX != 0 ? 1 : 0);
+    if (bFlag) {
+        for (iIndex = 0; iTile <= nCount; iTile++, iIndex++) {
+            if (frameLoadTile(pFrame, &pTexture[iTile], iTile | (iIndex << 4))) {
+                if (gpSystem->eTypeROM == SRT_ZELDA2 && pTexture[iTile]->nAddress == 0x784600 &&
+                    pRectangle->nX1 == 1280) {
+                    bSkip = true;
+                    if (!pFrame->bPauseBGDrawn) {
+                        cTempAlpha = pFrame->cBlurAlpha;
+                        pFrame->cBlurAlpha = 220;
+                        ZeldaDrawFrame(pFrame, pFrame->nCopyBuffer);
+                        pFrame->cBlurAlpha = cTempAlpha;
+                        pFrame->bPauseBGDrawn = true;
+                        bSkip = true;
+                    }
+                }
+                if (bSkip) {
+                    if (pRectangle->nY1 == 960) {
+                        bSkip = false;
+                        return true;
+                    }
+                    return true;
+                }
+
+                rScaleS = 1.0f / pTexture[iTile]->nSizeX;
+                if (pFrame->aTile[iTile].nShiftS < 11) {
+                    rScaleS /= (1 << pFrame->aTile[iTile].nShiftS);
+                } else {
+                    rScaleS *= (1 << (16 - pFrame->aTile[iTile].nShiftS));
+                }
+
+                rScaleT = 1.0f / pTexture[iTile]->nSizeY;
+                if (pFrame->aTile[iTile].nShiftT < 11) {
+                    rScaleT /= (1 << pFrame->aTile[iTile].nShiftT);
+                } else {
+                    rScaleT *= (1 << (16 - pFrame->aTile[iTile].nShiftT));
+                }
+
+                rSlideS = (pFrame->aTile[iTile].nX0 / 4.0f) / pTexture[iTile]->nSizeX;
+                rSlideT = (pFrame->aTile[iTile].nY0 / 4.0f) / pTexture[iTile]->nSizeY;
+                PSMTXTrans(matrixA, -rSlideS, -rSlideT, 0.0f);
+                PSMTXScale(matrixB, rScaleS, rScaleT, 0.0f);
+                PSMTXConcat(matrixA, matrixB, matrix);
+                GXLoadTexMtxImm(matrix, ganNameTexMtx[iIndex], 1);
+            }
+        }
+
+        pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture;
+        if (!pFrame->aDraw[3](pFrame, pRectangle)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+#endif
 
 bool frameShow(Frame* pFrame) { return true; }
 
