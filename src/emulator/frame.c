@@ -3390,7 +3390,20 @@ void PanelDrawFR3D(u16* FR, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX
     }
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackTIMG_Panel.s")
+bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer) {
+    if (!pFrame->bFrameOn) {
+        return false;
+    }
+    if (pBuffer->nAddress >= 0x358800 && pBuffer->nAddress <= 0x37B800) {
+        if (pBuffer->nFormat == 0 && pBuffer->nWidth == 1 && pBuffer->nSize == 2) {
+            pBuffer->pData = pFrame->nTempBuffer + ((((s32)(pBuffer->nAddress + 0xFFCA7800) / 2) + 0x8C0));
+            return true;
+        }
+        pFrame->bFrameOn = false;
+        return false;
+    }
+    return false;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Panel.s")
 
