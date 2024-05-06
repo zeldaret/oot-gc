@@ -1417,7 +1417,142 @@ static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture.s")
+#else
+static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
+    s32 bCopy;
+    f32 rDepth;
+    f32 rDeltaS;
+    f32 rDeltaT;
+    f32 rX0;
+    f32 rY0;
+    f32 rX1;
+    f32 rY1;
+    f32 rS0;
+    f32 rT0;
+    f32 rS1;
+    f32 rT1;
+    s32 pad;
+
+    if (gpSystem->eTypeROM == SRT_DRMARIO) {
+        if (pRectangle->nX0 == 0 && pRectangle->nY0 == 0 && pRectangle->nX1 == 1208 && pRectangle->nY1 == 20) {
+            if (pFrame->aBuffer[FBT_IMAGE].nAddress != 0x3B5000 && pFrame->aBuffer[FBT_IMAGE].nAddress != 0x3DA800 &&
+                !pFrame->bBackBufferDrawn) {
+                ZeldaDrawFrameNoBlend(pFrame, pFrame->nTempBuffer);
+                pFrame->bBackBufferDrawn = true;
+                nCounter = 0;
+            }
+        }
+        if (pFrame->bBackBufferDrawn == true) {
+            nCounter += 1;
+            if (nCounter < 40) {
+                return true;
+            }
+        }
+    }
+
+    if (sSpecialZeldaHackON) {
+        return true;
+    }
+
+    if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 || (pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x200000) {
+        bCopy = true;
+    } else {
+        bCopy = false;
+    }
+
+    rDeltaS = bCopy ? pRectangle->rDeltaS / 4.0f : pRectangle->rDeltaS;
+    rDeltaT = pRectangle->rDeltaT;
+
+    rX0 = (pRectangle->nX0 + 3) >> 2;
+    rX1 = (pRectangle->nX1 + 3) >> 2;
+    rY0 = (pRectangle->nY0 + 3) >> 2;
+    rY1 = (pRectangle->nY1 + 3) >> 2;
+
+    // TODO: regalloc hacks
+    (void)pRectangle->nY0;
+    if (gpSystem->eTypeROM == SRT_ZELDA1) {
+        if (pRectangle->nX0 == 816 && pRectangle->nY0 == 560) {
+            if (gnCountMapHack < 0 && ++gnCountMapHack == 0) {
+                gnCountMapHack = 1;
+            } else if (gnCountMapHack > 0) {
+                gnCountMapHack--;
+                return true;
+            }
+        }
+    }
+
+    if (pRectangle->bFlip) {
+        rS0 = pRectangle->rS;
+        rT0 = pRectangle->rT;
+        rS1 = pRectangle->rS + rDeltaS * (rY1 - rY0);
+        rT1 = pRectangle->rT + rDeltaT * (rX1 - rX0);
+    } else {
+        rS0 = pRectangle->rS;
+        rT0 = pRectangle->rT;
+        rS1 = pRectangle->rS + rDeltaS * (rX1 - rX0);
+        rT1 = pRectangle->rT + rDeltaT * (rY1 - rY0);
+    }
+
+    if (bCopy) {
+        rX1 += 1.0f;
+        rS1 += 1.0f;
+        rY1 += 1.0f;
+        rT1 += 1.0f;
+    }
+
+    rDepth = 0.0f;
+    if (pFrame->bOverrideDepth) {
+        rDepth = -1001.0;
+    }
+
+    if (pFrame->nModeVtx != 0xF) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0xF;
+    }
+
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    if (pRectangle->bFlip) {
+        GXPosition3f32(rX0, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT0);
+        GXPosition3f32(rX0, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT0);
+        GXPosition3f32(rX1, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT1);
+        GXPosition3f32(rX1, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT1);
+    } else {
+        GXPosition3f32(rX0, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT0);
+        GXPosition3f32(rX1, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT0);
+        GXPosition3f32(rX1, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT1);
+        GXPosition3f32(rX0, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT1);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
 
