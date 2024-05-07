@@ -609,8 +609,76 @@ static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 static bool frameDrawSetupFog_Default(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
+#else
+static s32 frameDrawSetupFog_Default(Frame* pFrame) {
+    s32 iHint;
+    f32 rNear;
+    f32 rFar;
+    f32 rFOVY;
+    Mtx44 matrixProjection;
+    GXFogAdjTable fogTable;
+    f32 rMax;
+    f32 rMin;
+    f32 rIntpV;
+    f32 rMinimum;
+    f32 rMultiplier;
+    f32 rOffset;
+    s32 pad;
+
+    rMultiplier = (s16)(pFrame->aMode[0] >> 16);
+    rOffset = (s16)(pFrame->aMode[0] & 0xFFFF);
+    iHint = pFrame->iHintProjection;
+
+    if (iHint != -1) {
+        rFar = pFrame->aMatrixHint[pFrame->iHintProjection].rClipFar;
+        rNear = pFrame->aMatrixHint[pFrame->iHintProjection].rClipNear;
+        rFOVY = pFrame->aMatrixHint[pFrame->iHintProjection].rFieldOfViewY;
+    } else {
+        rFar = 32000.0f;
+        rNear = 1.0f;
+        rFOVY = 30.0f;
+    }
+    if (rMultiplier == 0.0f) {
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+    } else {
+        rMinimum = 500.0f * (1.0f - rOffset / rMultiplier);
+        C_MTXPerspective(matrixProjection, 30.0f, 4.0f / 3.0f, 0.1f * rNear, rFar);
+        GXInitFogAdjTable(&fogTable, GC_FRAME_WIDTH, matrixProjection);
+        GXSetFogRangeAdj(GX_TRUE, pFrame->viewport.rX + pFrame->viewport.rSizeX / 2.0f, &fogTable);
+        if (rMinimum > 970.0f) {
+            if (rFOVY > 59.0f || rMinimum > 990.0f) {
+                rMin = 0.21f * (rFar - 0.35f * rNear);
+                rMin = MAX(rMin, 0.35f * rNear);
+                if (rFOVY < 59.0f && rFar >= 12800.0f) {
+                    rMax = 0.6f * rFar;
+                } else {
+                    rMax = 0.7f * rFar;
+                }
+            } else if (rFOVY > 44.0f) {
+                rMin = 0.13f * (rFar - 0.35f * rNear);
+                rMin = MAX(rMin, 0.35f * rNear);
+                rIntpV = MAX(rFOVY - 45.0f, 0.0f) / 15.0f;
+                rMax = rFar * (0.6f * (1.0f - rIntpV) + 0.7f * rIntpV);
+            } else {
+                rMin = 0.1f * (rFar - 0.35f * rNear);
+                rMin = MAX(rMin, 0.35f * rNear);
+                rMax = 0.37f * rFar;
+            }
+            GXSetFog(GX_FOG_LIN, rMin, rMax, 0.35f * rNear, rFar, pFrame->aColor[0]);
+        } else if (rMinimum > 900.0f) {
+            GXSetFog(GX_FOG_LIN, 350.0f, 500.0f, 10.0f, 500.0f, pFrame->aColor[0]);
+        } else {
+            GXSetFog(GX_FOG_LIN, 10.0f, 200.0f, 10.0f, 200.0f, pFrame->aColor[0]);
+        }
+    }
+
+    return true;
+}
+#endif
 
 static void frameDrawSyncCallback(u16 nToken) {
     if (nToken == FRAME_SYNC_TOKEN) {
