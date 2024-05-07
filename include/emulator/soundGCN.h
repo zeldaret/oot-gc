@@ -49,6 +49,7 @@ bool soundSetAddress(Sound* pSound, void* pData);
 bool soundGetDMABuffer(Sound* pSound, u32* pnSize);
 bool soundSetBufferSize(Sound* pSound, s32 nSize);
 bool soundLoadBeep(Sound* pSound, SoundBeep iBeep, char* szNameFile);
+bool soundPlayBeep(Sound* pSound, SoundBeep iBeep);
 bool soundEvent(Sound* pSound, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassSound;

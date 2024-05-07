@@ -15,7 +15,7 @@
 #include "emulator/xlPostGCN.h"
 #include "macros.h"
 #include "string.h"
-
+ 
 u8 gcoverOpen[0x28C1] ALIGNAS(32) = {
 #pragma INCBIN("SIM_original.elf", 0x000D8880, 0x28C1)
 };
@@ -152,8 +152,6 @@ bool gPreviousIPLSetting;
 u32 gnTickReset;
 bool gbReset;
 
-
-
 bool simulatorGXInit(void) {
     s32 i;
     GXColor GX_DEFAULT_BG = {0};
@@ -252,7 +250,7 @@ bool simulatorGXInit(void) {
     GXSetIndTexCoordScale(GX_INDTEXSTAGE2, GX_ITS_1, GX_ITS_1);
     GXSetIndTexCoordScale(GX_INDTEXSTAGE3, GX_ITS_1, GX_ITS_1);
 
-    GXSetFog(GX_FOG_NONE, 0.0f, 1.0f, 0.10000000149011612f, 1.0f, BLACK);
+    GXSetFog(GX_FOG_NONE, 0.0f, 1.0f, 0.1f, 1.0f, BLACK);
     GXSetFogRangeAdj(GX_DISABLE, 0, NULL);
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
     GXSetColorUpdate(GX_ENABLE);
@@ -319,10 +317,10 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
 
     do {
         if ((nStatus != 1) && (nStatus != 0) && (nStatus != 2) && (nStatus != 3) && (nStatus != 7) && (nStatus != 8) &&
-            (nStatus != 0xA)) {
-            continueToggle = 1;
+            (nStatus != 10)) {
+            continueToggle = true;
         } else {
-            continueToggle = 0;
+            continueToggle = false;
         }
 
         switch (nStatus) {
@@ -359,9 +357,9 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
 
         if ((nStatus != 1) && (nStatus != 0) && (nStatus != 2) && (nStatus != 3) && (nStatus != 7) && (nStatus != 8) &&
             (nStatus != 0xA)) {
-            toggle = 1;
-        } else if (toggle == 1) {
-            toggle = 0;
+            toggle = true;
+        } else if (toggle == true) {
+            toggle = false;
             nMessage = S_M_DISK_READING_DISK;
         }
 
@@ -374,14 +372,13 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
         }
 
         if (nMessage != S_M_NONE) {
-            while (frameBeginOK(gpSystem->pFrame) == 0)
-                ;
-            PADControlMotor(PAD_MOTOR_STOP, 0);
+            while (frameBeginOK(gpSystem->pFrame) == 0);
+            PADControlMotor(0, PAD_MOTOR_STOP);
             simulatorDrawErrorMessage(nMessage, 0, 0);
         }
 
         nStatus = DVDGetDriveStatus();
-    } while (continueToggle == 1);
+    } while (continueToggle == true);
 
     return true;
 }
@@ -461,7 +458,7 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     GXSetNumChans(1U);
     GXSetNumTexGens(0U);
 
-    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.10000000149011612f, 10000.0f);
+    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.1f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
     GXSetNumChans(1);
 
@@ -512,7 +509,7 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     DCStoreRange(Vert_s16, sizeof(Vert_s16));
 
     simulatorGXInit();
-    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.10000000149011612f, 10000.0f);
+    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.1f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
     GXSetNumChans(1);
 
@@ -656,7 +653,7 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
 
     simulatorGXInit();
 
-    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.10000000149011612f, 10000.0f);
+    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.1f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
     GXSetNumChans(1);
 
@@ -888,7 +885,7 @@ s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Messag
 
     simulatorGXInit();
 
-    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.10000000149011612f, 10000.0f);
+    C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.1f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
     GXSetNumChans(1);
 
@@ -1069,6 +1066,10 @@ bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar,
                 N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gfatalErr)->descriptorArray->textureHeader->height / 2, drawBar,
                 percent);
             break;
+
+        default:
+
+            break;
     }
     gbDisplayedError = 1;
     return true;
@@ -1113,6 +1114,10 @@ s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
             }
 
             break; 
+
+        default: 
+            
+            break;
     }
     return true;
 }
@@ -1292,6 +1297,9 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
             }
 
             return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+
+        default:
+            break;
     }
 
     return false; 
@@ -2027,7 +2035,7 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
     return true;
 }
 
-bool simulatorDrawMCardText() {
+bool simulatorDrawMCardText(void) {
     if ((s32)(((TEXPalettePtr)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
@@ -2038,7 +2046,7 @@ bool simulatorDrawMCardText() {
     return true;
 }
 
-s32 simulatorMCardPollDrawBar() {
+s32 simulatorMCardPollDrawBar(void) {
     // Local variables
     f32 rate; // r1+0x8
     s32 nBytes; // r1+0x8
@@ -2046,9 +2054,9 @@ s32 simulatorMCardPollDrawBar() {
     nBytes = CARDGetXferredBytes(mCard.slot) - mCard.pollPrevBytes;
     rate = nBytes / (f32) mCard.pollSize;
 
-    rate = (rate > 1.0f) ? 1.0f : rate;
+    rate = (rate > 0.0f) ? 0.0f : rate;
 
-    rate  = (rate < 0.0f) ? 0.0f : rate;
+    rate  = (rate < 1.0f) ? 1.0f : rate;
     
     if ((s32)(((TEXPalettePtr)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
@@ -2060,7 +2068,7 @@ s32 simulatorMCardPollDrawBar() {
     return true;
 } 
 
-s32 simulatorMCardPollDrawFormatBar() {
+s32 simulatorMCardPollDrawFormatBar(void) {
     // Local variables
     f32 rate; // r1+0x8
     s32 nBytes; // r1+0x8
@@ -2068,9 +2076,9 @@ s32 simulatorMCardPollDrawFormatBar() {
     nBytes = CARDGetXferredBytes(mCard.slot) - mCard.pollPrevBytes;
     rate = nBytes / (f32) mCard.pollSize;
 
-    rate = (rate > 1.0f) ? 1.0f : rate;
+    rate = (rate > 0.0f) ? 0.0f : rate;
 
-    rate  = (rate < 0.0f) ? 0.0f : rate;
+    rate  = (rate < 1.0f) ? 1.0f : rate;
     
     if ((s32)(((TEXPalettePtr)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);

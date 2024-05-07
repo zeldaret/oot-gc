@@ -6,6 +6,7 @@
 void GXSetVtxDesc(GXAttr attr, GXAttrType type);
 void GXClearVtxDesc(void);
 void GXSetVtxAttrFmt(GXVtxFmt vtxfmt, GXAttr attr, GXCompCnt cnt, GXCompType type, u8 frac);
+void GXSetArray(GXAttr attr, const void *base_ptr, u8 stride);
 void GXInvalidateVtxCache(void);
 void GXSetNumTexGens(u8 nTexGens);
 void GXBegin(GXPrimitive type, GXVtxFmt vtxfmt, u16 nverts);
