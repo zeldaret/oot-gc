@@ -159,8 +159,6 @@ bool gPreviousIPLSetting;
 u32 gnTickReset;
 bool gbReset;
 
-bool gDVDResetToggle;
-bool gButtonDownToggle;
 
 
 bool simulatorGXInit(void) {
@@ -314,6 +312,10 @@ void simulatorUnpackTexPalette(TEXPalettePtr pal) {
     }
 }
 bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent);
+
+
+bool gDVDResetToggle = false;
+bool gButtonDownToggle = false;
 
 bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset) {
 
