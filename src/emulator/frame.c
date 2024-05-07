@@ -467,8 +467,147 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     return true;
 }
 
+#ifndef NON_MATCHING
 static bool frameDrawSetupFog_Zelda1(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
+#else
+static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
+    GXFogType nFogType;
+    f32 rNear;
+    f32 rFar;
+    u32 nMode;
+    u32 iHint;
+    f32 rFogNear;
+    f32 rFogFar;
+    f32 rFogMin;
+    f32 rFogMax;
+    f32 rMultiplier;
+    f32 rOffset;
+    f32 rMinimum;
+    f32 rMaximum;
+    s32 pad[4];
+
+    nMode = pFrame->aMode[0];
+    iHint = pFrame->iHintProjection;
+    rMultiplier = (s16)(nMode >> 16);
+    rOffset = rMinimum = (s16)(nMode & 0xFFFF);
+
+    if (iHint != -1) {
+        rFar = pFrame->aMatrixHint[pFrame->iHintProjection].rClipFar;
+        rNear = 0.1f * pFrame->aMatrixHint[pFrame->iHintProjection].rClipNear;
+    } else {
+        rFar = 32000.0f;
+        rNear = 1.0f;
+    }
+
+    if (rMultiplier == 0.0f) {
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+    } else {
+        if (rOffset == rMultiplier) {
+            nFogType = GX_FOG_LIN;
+            rFogNear = 500.0f;
+            rFogFar = 1000.0f;
+            rFogMin = rFogNear * (1.0f - (rOffset / rMultiplier));
+            rFogMax = (128000.0f / rMultiplier) + rFogMin;
+        } else if (rOffset == -25344.0f && rMultiplier == 25600.0f && rFar == 2200.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.575f * dplane + rNear;
+            rFogMax = 0.75f * dplane + rNear;
+        } else if (rOffset == -21077.0f && rMultiplier == 21333.0f && rFar == 12800.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.1f * dplane + rNear;
+            rFogMax = dplane + rNear;
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2 && rOffset == -90.0f && rMultiplier == 258.0f && rFar == 12800.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.45f * dplane + rNear;
+            rFogMax = dplane + rNear;
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2 && rOffset == -667.0f && rMultiplier == 688.0f &&
+                   rFar == 12800.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.45f * dplane + rNear;
+            rFogMax = dplane + rNear;
+        } else {
+            f32 dplane = rFar - rNear;
+            f32 rFarScale;
+            f32 rNearScale;
+
+            rMultiplier = 128000.0f / rMultiplier;
+            rMultiplier = rOffset * rMultiplier;
+            rFogFar = 1.0f / 256.0f;
+            rFogNear = 500.0f - rMultiplier * rFogFar;
+
+            if (rFogNear <= 860.0f) {
+                rMinimum = 0.0f;
+                rMaximum = 0.15f;
+            } else {
+                rMinimum = (rFogNear - 860.0f) / 140.0f;
+                rMaximum = 0.72f * rMinimum * rMinimum * rMinimum * rMinimum + 0.28f;
+                rMinimum = 0.26f * rMinimum * rMinimum * rMinimum * rMinimum;
+            }
+
+            rFarScale = rFar / 12800.0f;
+            rFarScale = 1.0f - rFarScale;
+            rFarScale = rFarScale * rFarScale;
+            rFarScale = rFarScale * rFarScale;
+            rFarScale = rFarScale * rFarScale;
+
+            rNearScale = rNear * rNear;
+            rNearScale *= 0.1f * rFarScale;
+
+            rFarScale *= 8.44f;
+            rNearScale *= 8.44; // bug? should be 8.44f
+
+            rFarScale += 1.0f;
+            rNearScale += 1.0f;
+
+            rMaximum *= rFarScale;
+            if (rMaximum > 1.0f) {
+                rMaximum = 1.0f;
+            }
+
+            rMinimum *= rNearScale;
+            if (rMinimum > 1.0f) {
+                rMinimum = 1.0f;
+            }
+
+            if (rMinimum > rMaximum) {
+                rMinimum = rMaximum;
+            }
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = rMinimum * dplane + rNear;
+            rFogMax = rMaximum * dplane + rNear;
+        }
+
+        nMode = pFrame->aMode[4];
+        if (((nMode >> 26) & 3) == 1 || (nMode >> 30) == 3 || ((nMode >> 22) & 3) == 3) {
+            GXSetFog(nFogType, rFogMin, rFogMax, rFogNear, rFogFar, pFrame->aColor[0]);
+        } else {
+            GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+        }
+    }
+
+    return true;
+}
+#endif
 
 static bool frameDrawSetupFog_Default(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
