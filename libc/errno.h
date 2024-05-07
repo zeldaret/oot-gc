@@ -12,7 +12,7 @@ extern int errno;
 #define ERANGE 34
 #define ESIGPARM 36
 #define EFPOS 40
-#define	EILSEQ		84
+#define EILSEQ 84
 
 #ifdef __cplusplus
 }
