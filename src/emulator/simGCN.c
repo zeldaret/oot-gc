@@ -86,13 +86,6 @@ u8 TexCoords_u8[] ALIGNAS(32) = {
     0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x01,
 };
 
-char D_800E9A28[] = "Play Delay";
-char D_800E9A34[] = "Silence Count";
-char D_800E9A44[] = "Fade Up Count";
-char D_800E9A54[] = "How many audio frames the\ngame must be playing before it\nconsiders the sound stable";
-char D_800E9AA8[] = "How many audio frames the\ngame must NOT play before it\nconsiders itself unstable";
-char D_800E9AFC[] = "How many audio frames to\nperform a fade up on the audio";
-
 static f32 gOrthoMtx[4][4] ALIGNAS(32);
 static u32 gContMap[4][GCN_BTN_COUNT];
 static char* gaszArgument[8];
@@ -2165,13 +2158,6 @@ static bool simulatorParseArguments(void) {
     s32 pad1;
     s32 pad2;
 
-    (void) "Play Delay";
-    (void) "Silence Count";
-    (void) "Fade Up Count";
-    (void) "How many audio frames the\ngame must be playing before it\nconsiders the sound stable";
-    (void) "How many audio frames the\ngame must NOT play before it\nconsiders itself unstable";
-    (void) "How many audio frames to\nperform a fade up on the audio";
-
     gaszArgument[SAT_NAME] = NULL;
     gaszArgument[SAT_PROGRESSIVE] = NULL;
     gaszArgument[SAT_VIBRATION] = NULL;
@@ -2268,6 +2254,14 @@ bool xlMain(void) {
     if (!xlHeapGetFree(&nSize0)) {
         return false;
     }
+
+    (void) "Play Delay";
+    (void) "Silence Count";
+    (void) "Fade Up Count";
+    (void) "How many audio frames the\ngame must be playing before it\nconsiders the sound stable";
+    (void) "How many audio frames the\ngame must NOT play before it\nconsiders itself unstable";
+    (void) "How many audio frames to\nperform a fade up on the audio";
+    
     if (nSize0 > 0x01800000) {
         OSReport("\n\nERROR: This program MUST be run on a system with 24MB (or less) memory!\n");
         OSReport("       Please reduce memory-size to 24MB (using 'setsmemsize 0x1800000')...\n");
