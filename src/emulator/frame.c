@@ -30,6 +30,7 @@ static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static inline void CopyCFB(u16* srcP);
 static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount);
 static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount);
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
@@ -462,16 +463,6 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
 
     pFrame->eTypeProjection = pHint->eProjection;
     return true;
-}
-
-static inline void CopyCFB(u16* srcP) {
-    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
-    GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
-    DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
-    GXCopyTex(srcP, GX_FALSE);
-    sCopyFrameSyncReceived = false;
-    GXSetDrawSync(FRAME_SYNC_TOKEN);
-    while (!sCopyFrameSyncReceived) {}
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
@@ -2142,6 +2133,16 @@ void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
     frameDrawReset(pFrame, 0x47F2D);
 }
 #endif
+
+static inline void CopyCFB(u16* srcP) {
+    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
+    GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
+    DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
+    GXCopyTex(srcP, GX_FALSE);
+    sCopyFrameSyncReceived = false;
+    GXSetDrawSync(FRAME_SYNC_TOKEN);
+    while (!sCopyFrameSyncReceived) {}
+}
 
 void CopyAndConvertCFB(u16* srcP) {
     u16* dataEndP;
