@@ -183,7 +183,7 @@ int main(int nCount, char** aszArgument) {
         VIWaitForRetrace();
     }
 
-    simulatorUnpackTexPalette((TEXDescriptorPtr)gTgPcTPL);
+    simulatorUnpackTexPalette((TEXPalettePtr)gTgPcTPL);
 
     black = D_80135D00;
     for (i = 0; i < 2; i++) {
