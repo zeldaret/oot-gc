@@ -5,6 +5,8 @@
 #include "emulator/rdp.h"
 #include "emulator/rsp_jumptables.h"
 #include "emulator/system.h"
+#include "emulator/xlHeap.h"
+#include "emulator/xlList.h"
 
 _XL_OBJECTTYPE gClassRSP = {
     "RSP",
@@ -596,25 +598,106 @@ static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut8.s")
+bool rspPut8(Rsp* pRSP, u32 nAddress, s8* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case 0:
+            *((s8*)pRSP->pDMEM + (nAddress & 0xFFF)) = *pData;
+            break;
+        case 1:
+            *((s8*)pRSP->pIMEM + (nAddress & 0xFFF)) = *pData;
+            break;
+        default:
+            return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut16.s")
+    return true;
+}
+
+bool rspPut16(Rsp* pRSP, u32 nAddress, s16* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case 0:
+            *((s16*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 1)) = *pData;
+            break;
+        case 1:
+            *((s16*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 1)) = *pData;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut64.s")
+bool rspPut64(Rsp* pRSP, u32 nAddress, s64* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case 0:
+            *((s64*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 3)) = *pData;
+            break;
+        case 1:
+            *((s64*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 3)) = *pData;
+            break;
+        default:
+            return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet8.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet16.s")
+bool rspGet8(Rsp* pRSP, u32 nAddress, s8* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case 0:
+            *pData = *((s8*)pRSP->pDMEM + (nAddress & 0xFFF));
+            break;
+        case 1:
+            *pData = *((s8*)pRSP->pIMEM + (nAddress & 0xFFF));
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+bool rspGet16(Rsp* pRSP, u32 nAddress, s16* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case 0:
+            *pData = *((s16*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 1));
+            break;
+        case 1:
+            *pData = *((s16*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 1));
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet32.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet64.s")
+bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case 0:
+            *pData = *((s64*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 3));
+            break;
+        case 1:
+            *pData = *((s64*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 3));
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspInvalidateCache.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEnableABI.s")
+bool rspEnableABI(Rsp* pRSP, bool bFlag) {
+    pRSP->eTypeAudioUCode = bFlag ? RUT_NOCODE : RUT_UNKNOWN;
+    return true;
+}
 
 bool rspFrameComplete(Rsp* pRSP) {
     if (pRSP->yield.bValid) {
@@ -686,4 +769,57 @@ bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEvent.s")
+bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pRSP->nPC = 0;
+            pRSP->pHost = pArgument;
+            pRSP->nPass = 1;
+            pRSP->nMode = 0;
+            pRSP->yield.bValid = 0;
+            pRSP->nStatus = 1;
+            pRSP->pfUpdateWaiting = NULL;
+            if (!xlListMake(&pRSP->pListUCode, 0x60)) {
+                return false;
+            }
+            if (!xlHeapTake(&pRSP->pDMEM, 0x1000)) {
+                return false;
+            }
+            if (!xlHeapTake(&pRSP->pIMEM, 0x1000)) {
+                return false;
+            }
+            if (!rspSetupS2DEX(pRSP)) {
+                return false;
+            }
+            if (!rspInitAudioDMEM1(pRSP)) {
+                return false;
+            }
+            pRSP->eTypeAudioUCode = RUT_NOCODE;
+            break;
+        case 3:
+            xlHeapFree(&pRSP->pIMEM);
+            xlHeapFree(&pRSP->pDMEM);
+            if (!xlListFree(&pRSP->pListUCode)) {
+                return false;
+            }
+            break;
+        case 0x1002:
+            if (!cpuSetDevicePut(SYSTEM_CPU(pRSP->pHost), pArgument, (Put8Func)rspPut8, (Put16Func)rspPut16,
+                                 (Put32Func)rspPut32, (Put64Func)rspPut64)) {
+                return false;
+            }
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pRSP->pHost), pArgument, (Get8Func)rspGet8, (Get16Func)rspGet16,
+                                 (Get32Func)rspGet32, (Get64Func)rspGet64)) {
+                return false;
+            }
+            break;
+        case 0:
+        case 1:
+        case 0x1003:
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
