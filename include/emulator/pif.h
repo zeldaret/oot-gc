@@ -4,6 +4,9 @@
 #include "dolphin.h"
 #include "emulator/xlObject.h"
 
+#define PIF_RAM_START 0x7C0
+#define PIF_RAM_END 0x7FF
+
 // __anon_0x3C277
 typedef enum ControllerType {
     CT_NONE = 0,

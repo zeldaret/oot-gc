@@ -12,13 +12,23 @@ _XL_OBJECTTYPE gClassPIF = {
 
 static u8 pifContDataCrc(Pif* pPIF, u8* data);
 
-// Erased
-static bool pifGetControllerInput(s32 channel, u32* controllerInput);
-static bool pifGetControllerType(Pif* pPIF, s32 channel, u16* type, s8* status);
-
 #pragma GLOBAL_ASM("asm/non_matchings/pif/pifReadRumble.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/pif/pifWriteRumble.s")
+bool pifWriteRumble(Pif* pPIF, s32 channel, u16 address, u8* data) {
+    switch (address) {
+        case 0x600:
+            if (*data == 1) {
+                simulatorRumbleStart(channel);
+            } else if (*data == 0) {
+                simulatorRumbleStop(channel);
+            }
+            break;
+        default:
+            break;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/pif/pifContDataCrc.s")
 
@@ -121,72 +131,72 @@ static inline bool pifReadController(Pif* pPIF, u8* buffer, u8* prx, s32 channel
 }
 
 bool pifPut8(Pif* pPIF, u32 nAddress, s8* pData) {
-    if ((nAddress & 0x7FF) >= 0x7C0) {
-        *((s8*)(pPIF->pRAM) + ((nAddress & 0x7FF) - 0x7C0)) = *pData;
+    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
+        *((s8*)(pPIF->pRAM) + ((nAddress & PIF_RAM_END) - PIF_RAM_START)) = *pData;
     }
 
     return true;
 }
 
 bool pifPut16(Pif* pPIF, u32 nAddress, s16* pData) {
-    if ((nAddress & 0x7FF) >= 0x7C0) {
-        *((s16*)(pPIF->pRAM) + (((nAddress & 0x7FF) - 0x7C0) >> 1)) = *pData;
+    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
+        *((s16*)(pPIF->pRAM) + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 1)) = *pData;
     }
 
     return true;
 }
 
 bool pifPut32(Pif* pPIF, u32 nAddress, s32* pData) {
-    if ((nAddress & 0x7FF) >= 0x7C0) {
-        *((s32*)(pPIF->pRAM) + (((nAddress & 0x7FF) - 0x7C0) >> 2)) = *pData;
+    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
+        *((s32*)(pPIF->pRAM) + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 2)) = *pData;
     }
 
     return true;
 }
 
 bool pifPut64(Pif* pPIF, u32 nAddress, s64* pData) {
-    if ((nAddress & 0x7FF) >= 0x7C0) {
-        *((s64*)(pPIF->pRAM) + (((nAddress & 0x7FF) - 0x7C0) >> 3)) = *pData;
+    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
+        *((s64*)(pPIF->pRAM) + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 3)) = *pData;
     }
 
     return true;
 }
 
 bool pifGet8(Pif* pPIF, u32 nAddress, s8* pData) {
-    if ((nAddress & 0x7FF) < 0x7C0) {
-        *pData = *((s8*)pPIF->pROM + (nAddress & 0x7FF));
+    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
+        *pData = *((s8*)pPIF->pROM + (nAddress & PIF_RAM_END));
     } else {
-        *pData = *((s8*)pPIF->pROM + ((nAddress & 0x7FF) - 0x7C0));
+        *pData = *((s8*)pPIF->pROM + ((nAddress & PIF_RAM_END) - PIF_RAM_START));
     }
 
     return true;
 }
 
 bool pifGet16(Pif* pPIF, u32 nAddress, s16* pData) {
-    if ((nAddress & 0x7FF) < 0x7C0) {
-        *pData = *((s16*)pPIF->pROM + ((nAddress & 0x7FF) >> 1));
+    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
+        *pData = *((s16*)pPIF->pROM + ((nAddress & PIF_RAM_END) >> 1));
     } else {
-        *pData = *((s16*)pPIF->pROM + (((nAddress & 0x7FF) - 0x7C0) >> 1));
+        *pData = *((s16*)pPIF->pROM + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 1));
     }
 
     return true;
 }
 
 bool pifGet32(Pif* pPIF, u32 nAddress, s32* pData) {
-    if ((nAddress & 0x7FF) < 0x7C0) {
-        *pData = *((s32*)pPIF->pROM + ((nAddress & 0x7FF) >> 2));
+    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
+        *pData = *((s32*)pPIF->pROM + ((nAddress & PIF_RAM_END) >> 2));
     } else {
-        *pData = *((s32*)pPIF->pROM + (((nAddress & 0x7FF) - 0x7C0) >> 2));
+        *pData = *((s32*)pPIF->pROM + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 2));
     }
 
     return true;
 }
 
 bool pifGet64(Pif* pPIF, u32 nAddress, s64* pData) {
-    if ((nAddress & 0x7FF) < 0x7C0) {
-        *pData = *((s64*)pPIF->pROM + ((nAddress & 0x7FF) >> 3));
+    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
+        *pData = *((s64*)pPIF->pROM + ((nAddress & PIF_RAM_END) >> 3));
     } else {
-        *pData = *((s64*)pPIF->pROM + (((nAddress & 0x7FF) - 0x7C0) >> 3));
+        *pData = *((s64*)pPIF->pROM + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 3));
     }
 
     return true;
