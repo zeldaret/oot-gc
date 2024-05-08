@@ -26,7 +26,7 @@ bool videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
         case 0x4:
             pVideo->nAddress = *pData & 0xFFFFFF;
             pFrame = SYSTEM_FRAME(pVideo->pHost);
-            pBuffer = &pFrame->aBuffer[2];
+            pBuffer = &pFrame->aBuffer[FBT_COLOR_SHOW];
 
             if (!ramGetBuffer(SYSTEM_RAM(pVideo->pHost), &pRAM, pVideo->nAddress, NULL)) {
                 return false;

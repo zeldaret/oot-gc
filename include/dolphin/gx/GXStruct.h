@@ -15,10 +15,10 @@ typedef struct _GXRenderModeObj {
     /* 0x10 */ u16 viHeight;
     /* 0x14 */ VIXFBMode xFBmode;
     /* 0x18 */ u8 field_rendering;
-    /* 0x?? */ u8 aa;
-    /* 0x?? */ u8 sample_pattern[12][2];
-    /* 0x?? */ u8 vfilter[7];
-} GXRenderModeObj;
+    /* 0x19 */ u8 aa;
+    /* 0x1A */ u8 sample_pattern[12][2];
+    /* 0x32 */ u8 vfilter[7];
+} GXRenderModeObj; // size = 0x3C
 
 typedef struct _GXColor {
     u8 r;

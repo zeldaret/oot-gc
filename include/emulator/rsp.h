@@ -19,7 +19,7 @@ typedef enum __anon_0x581E7 {
     RUT_UNKNOWN = 4,
 } __anon_0x581E7;
 
-typedef enum __anon_0x60B3F {
+typedef enum RspUCodeType {
     RUT_NONE = -1,
     RUT_TURBO = 0,
     RUT_SPRITE2D = 1,
@@ -35,7 +35,7 @@ typedef enum __anon_0x60B3F {
     RUT_AUDIO1 = 11,
     RUT_AUDIO2 = 12,
     RUT_JPEG = 13,
-} __anon_0x60B3F;
+} RspUCodeType;
 
 // __anon_0x44829
 typedef enum RspUpdateMode {
@@ -43,7 +43,7 @@ typedef enum RspUpdateMode {
     RUM_IDLE = 1,
 } RspUpdateMode;
 
-typedef struct __anon_0x575BD {
+typedef struct RspTask {
     /* 0x00 */ s32 nType;
     /* 0x04 */ s32 nFlag;
     /* 0x08 */ s32 nOffsetBoot;
@@ -60,19 +60,19 @@ typedef struct __anon_0x575BD {
     /* 0x34 */ s32 nLengthMBI;
     /* 0x38 */ s32 nOffsetYield;
     /* 0x3C */ s32 nLengthYield;
-} __anon_0x575BD; // size = 0x40
+} RspTask; // size = 0x40
 
-typedef struct __anon_0x57890 {
+typedef struct RspYield {
     /* 0x00 */ s32 iDL;
     /* 0x04 */ bool bValid;
-    /* 0x08 */ struct __anon_0x575BD task;
+    /* 0x08 */ RspTask task;
     /* 0x48 */ s32 nCountVertex;
-    /* 0x4C */ __anon_0x60B3F eTypeUCode;
+    /* 0x4C */ RspUCodeType eTypeUCode;
     /* 0x50 */ u32 n2TriMult;
     /* 0x54 */ u32 nVersionUCode;
     /* 0x58 */ s32 anBaseSegment[16];
     /* 0x98 */ u64* apDL[16];
-} __anon_0x57890; // size = 0xD8
+} RspYield; // size = 0xD8
 
 typedef struct __anon_0x57AB1 {
     /* 0x00 */ f32 aRotations[2][2];
@@ -119,7 +119,7 @@ typedef struct __anon_0x58107 {
 // __anon_0x5845E
 typedef struct Rsp {
     /* 0x0000 */ s32 nMode;
-    /* 0x0004 */ struct __anon_0x57890 yield;
+    /* 0x0004 */ RspYield yield;
     /* 0x00DC */ u32 nTickLast;
     /* 0x00E0 */ s32 (*pfUpdateWaiting)(void);
     /* 0x00E4 */ u32 n2TriMult;
@@ -200,7 +200,7 @@ typedef struct Rsp {
     /* 0x3914 */ s32 nAddressRDRAM;
     /* 0x3918 */ struct tXL_LIST* pListUCode;
     /* 0x391C */ s32 nCountVertex;
-    /* 0x3920 */ enum __anon_0x60B3F eTypeUCode;
+    /* 0x3920 */ RspUCodeType eTypeUCode;
     /* 0x3924 */ u32 nVersionUCode;
     /* 0x3928 */ s32 anBaseSegment[16];
     /* 0x3968 */ u64* apDL[16];
