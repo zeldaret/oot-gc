@@ -476,29 +476,22 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     color.a = 255;
 
     GXSetTevColor(GX_TEVREG0, color);
-    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, 0U, GX_TEVPREV);
-    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, 0U, GX_TEVPREV);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
     GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_C0);
     GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_KONST);
     GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA6, 0U);
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
 
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition3f32(0.0f, 0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, 0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 0.0f);
+    GXPosition3f32(0.0f, N64_FRAME_HEIGHT, 0.0f);
+    GXEnd();
 
     Vert_s16[0] = nX0;
     Vert_s16[1] = nY0;
@@ -527,27 +520,27 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     GXSetArray(GX_VA_POS, Vert_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
-
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
     TEXGetGXTexObjFromPalette(tpl, &texObj, 0);
     GXLoadTexObj(&texObj, 0);
     GXSetTevOp(GX_TEVSTAGE0, GX_DECAL);
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
 
     if (drawBar == true) {
         GXLoadPosMtxImm(g2DviewMtx, false);
@@ -573,25 +566,26 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
         GXSetArray(GX_VA_POS, Vert_s16Bar, 6);
         GXSetArray(GX_VA_CLR0, Colors_u32, 4);
         GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
-        TEXGetGXTexObjFromPalette((void*)gbar, &texObj2, 0U);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
+        TEXGetGXTexObjFromPalette((TEXPalettePtr)gbar, &texObj2, 0);
         GXLoadTexObj(&texObj2, GX_TEXMAP0);
-        GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
 
-        GXWGFifo.u8 = 0;
-        GXWGFifo.u8 = 0;
-        GXWGFifo.u8 = 0;
-        GXWGFifo.u8 = 1;
-        GXWGFifo.u8 = 1;
-        GXWGFifo.u8 = 1;
-        GXWGFifo.u8 = 2;
-        GXWGFifo.u8 = 2;
-        GXWGFifo.u8 = 2;
-        GXWGFifo.u8 = 3;
-        GXWGFifo.u8 = 3;
-        GXWGFifo.u8 = 3;
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition1x8(0);
+        GXColor1x8(0);
+        GXTexCoord1x8(0);
+        GXPosition1x8(1);
+        GXColor1x8(1);
+        GXTexCoord1x8(1);
+        GXPosition1x8(2);
+        GXColor1x8(2);
+        GXTexCoord1x8(2);
+        GXPosition1x8(3);
+        GXColor1x8(3);
+        GXTexCoord1x8(3);
+        GXEnd();
     }
     if (DemoStatEnable != 0) {
         GXDrawDone();
@@ -673,28 +667,28 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     GXSetArray(GX_VA_POS, Vert_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
-
-    TEXGetGXTexObjFromPalette(tplMessage, &texObj, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
+    TEXGetGXTexObjFromPalette(tplMessage, &texObj, 0);
     GXLoadTexObj(&texObj, GX_TEXMAP0);
     GXSetTevOp(GX_TEVSTAGE0, GX_DECAL);
     xlCoreBeforeRender();
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
 
     VertYes_s16[0] = nX0Yes;
     VertYes_s16[1] = nY0Yes;
@@ -714,10 +708,10 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     GXSetArray(GX_VA_POS, VertYes_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
-    TEXGetGXTexObjFromPalette(tplYes, &texObj, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
+    TEXGetGXTexObjFromPalette(tplYes, &texObj, 0);
     GXLoadTexObj(&texObj, 0);
 
     if (gHighlightChoice == 1) {
@@ -743,20 +737,21 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     }
 
     xlCoreBeforeRender();
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
 
     VertNo_s16[0] = nX0No;
     VertNo_s16[1] = nY0No;
@@ -776,10 +771,10 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     GXSetArray(GX_VA_POS, VertNo_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
-    TEXGetGXTexObjFromPalette(tplNo, &texObj, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0);
+    TEXGetGXTexObjFromPalette(tplNo, &texObj, 0);
     GXLoadTexObj(&texObj, GX_TEXMAP0);
 
     if (gHighlightChoice == true) {
@@ -805,20 +800,21 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     }
 
     xlCoreBeforeRender();
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
 
     if (DemoStatEnable != 0) {
         GXDrawDone();
@@ -900,28 +896,28 @@ s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Messag
     GXSetArray(GX_VA_POS, Vert_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
-
-    TEXGetGXTexObjFromPalette(tplMessage, &texObj, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
+    TEXGetGXTexObjFromPalette(tplMessage, &texObj, 0);
     GXLoadTexObj(&texObj, GX_TEXMAP0);
     GXSetTevOp(GX_TEVSTAGE0, GX_DECAL);
     xlCoreBeforeRender();
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
 
     VertYes_s16[0] = nX0OK;
     VertYes_s16[1] = nY0OK;
@@ -941,9 +937,9 @@ s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Messag
     GXSetArray(GX_VA_POS, VertYes_s16, 6);
     GXSetArray(GX_VA_CLR0, Colors_u32, 4);
     GXSetArray(GX_VA_TEX0, TexCoords_u8, 2);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA4, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_TEX_ST, GX_RGB8, 0U);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGB565, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
     TEXGetGXTexObjFromPalette(tplOK, &texObj, 0U);
 
     color0.r = 0;
@@ -958,28 +954,27 @@ s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Messag
 
     GXSetTevColor(GX_TEVREG0, color0);
     GXSetTevColor(GX_TEVREG1, color1);
-
     GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_C0, GX_CC_C1, GX_CC_TEXC, GX_CC_ZERO);
     GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_A0, GX_CA_A1, GX_CA_TEXA, GX_CA_ZERO);
     GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, 1U, GX_TEVPREV);
     GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, 1U, GX_TEVPREV);
-
     GXLoadTexObj(&texObj, 0);
     xlCoreBeforeRender();
-    GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
 
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 0;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 1;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 2;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
-    GXWGFifo.u8 = 3;
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition1x8(0);
+    GXColor1x8(0);
+    GXTexCoord1x8(0);
+    GXPosition1x8(1);
+    GXColor1x8(1);
+    GXTexCoord1x8(1);
+    GXPosition1x8(2);
+    GXColor1x8(2);
+    GXTexCoord1x8(2);
+    GXPosition1x8(3);
+    GXColor1x8(3);
+    GXTexCoord1x8(3);
+    GXEnd();
 
     if (DemoStatEnable != 0) {
         GXDrawDone();
