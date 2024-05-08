@@ -149,72 +149,72 @@ static inline bool pifReadController(Pif* pPIF, u8* buffer, u8* prx, s32 channel
 }
 
 bool pifPut8(Pif* pPIF, u32 nAddress, s8* pData) {
-    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
-        *((s8*)(pPIF->pRAM) + ((nAddress & PIF_RAM_END) - PIF_RAM_START)) = *pData;
+    if ((nAddress & 0x7FF) >= PIF_RAM_START) {
+        *((s8*)(pPIF->pRAM) + ((nAddress & 0x7FF) - PIF_RAM_START)) = *pData;
     }
 
     return true;
 }
 
 bool pifPut16(Pif* pPIF, u32 nAddress, s16* pData) {
-    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
-        *((s16*)(pPIF->pRAM) + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 1)) = *pData;
+    if ((nAddress & 0x7FF) >= PIF_RAM_START) {
+        *((s16*)(pPIF->pRAM) + (((nAddress & 0x7FF) - PIF_RAM_START) >> 1)) = *pData;
     }
 
     return true;
 }
 
 bool pifPut32(Pif* pPIF, u32 nAddress, s32* pData) {
-    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
-        *((s32*)(pPIF->pRAM) + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 2)) = *pData;
+    if ((nAddress & 0x7FF) >= PIF_RAM_START) {
+        *((s32*)(pPIF->pRAM) + (((nAddress & 0x7FF) - PIF_RAM_START) >> 2)) = *pData;
     }
 
     return true;
 }
 
 bool pifPut64(Pif* pPIF, u32 nAddress, s64* pData) {
-    if ((nAddress & PIF_RAM_END) >= PIF_RAM_START) {
-        *((s64*)(pPIF->pRAM) + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 3)) = *pData;
+    if ((nAddress & 0x7FF) >= PIF_RAM_START) {
+        *((s64*)(pPIF->pRAM) + (((nAddress & 0x7FF) - PIF_RAM_START) >> 3)) = *pData;
     }
 
     return true;
 }
 
 bool pifGet8(Pif* pPIF, u32 nAddress, s8* pData) {
-    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
-        *pData = *((s8*)pPIF->pROM + (nAddress & PIF_RAM_END));
+    if ((nAddress & 0x7FF) < PIF_RAM_START) {
+        *pData = *((s8*)pPIF->pROM + (nAddress & 0x7FF));
     } else {
-        *pData = *((s8*)pPIF->pROM + ((nAddress & PIF_RAM_END) - PIF_RAM_START));
+        *pData = *((s8*)pPIF->pROM + ((nAddress & 0x7FF) - PIF_RAM_START));
     }
 
     return true;
 }
 
 bool pifGet16(Pif* pPIF, u32 nAddress, s16* pData) {
-    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
-        *pData = *((s16*)pPIF->pROM + ((nAddress & PIF_RAM_END) >> 1));
+    if ((nAddress & 0x7FF) < PIF_RAM_START) {
+        *pData = *((s16*)pPIF->pROM + ((nAddress & 0x7FF) >> 1));
     } else {
-        *pData = *((s16*)pPIF->pROM + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 1));
+        *pData = *((s16*)pPIF->pROM + (((nAddress & 0x7FF) - PIF_RAM_START) >> 1));
     }
 
     return true;
 }
 
 bool pifGet32(Pif* pPIF, u32 nAddress, s32* pData) {
-    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
-        *pData = *((s32*)pPIF->pROM + ((nAddress & PIF_RAM_END) >> 2));
+    if ((nAddress & 0x7FF) < PIF_RAM_START) {
+        *pData = *((s32*)pPIF->pROM + ((nAddress & 0x7FF) >> 2));
     } else {
-        *pData = *((s32*)pPIF->pROM + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 2));
+        *pData = *((s32*)pPIF->pROM + (((nAddress & 0x7FF) - PIF_RAM_START) >> 2));
     }
 
     return true;
 }
 
 bool pifGet64(Pif* pPIF, u32 nAddress, s64* pData) {
-    if ((nAddress & PIF_RAM_END) < PIF_RAM_START) {
-        *pData = *((s64*)pPIF->pROM + ((nAddress & PIF_RAM_END) >> 3));
+    if ((nAddress & 0x7FF) < PIF_RAM_START) {
+        *pData = *((s64*)pPIF->pROM + ((nAddress & 0x7FF) >> 3));
     } else {
-        *pData = *((s64*)pPIF->pROM + (((nAddress & PIF_RAM_END) - PIF_RAM_START) >> 3));
+        *pData = *((s64*)pPIF->pROM + (((nAddress & 0x7FF) - PIF_RAM_START) >> 3));
     }
 
     return true;
@@ -240,24 +240,24 @@ bool pifExecuteCommand(Pif* pPIF, u8* buffer, s32 unused, u8* prx, s32 channel) 
             break;
         }
         case 0x02:
-            if (simulatorReadPak(channel, ((buffer[1] & 0xFF) << 3) | (buffer[2] >> 5), buffer + 3) == 0) {
+            if (!simulatorReadPak(channel, (buffer[1] << 3) | (buffer[2] >> 5), buffer + 3)) {
                 return false;
             }
             buffer[0x23] = pifContDataCrc(pPIF, buffer + 3);
             break;
         case 0x03:
-            if (simulatorWritePak(channel, ((buffer[1] & 0xFF) << 3) | (buffer[2] >> 5), buffer + 3) == 0) {
+            if (!simulatorWritePak(channel, (buffer[1] << 3) | (buffer[2] >> 5), buffer + 3)) {
                 return false;
             }
             buffer[0x23] = pifContDataCrc(pPIF, buffer + 3);
             break;
         case 0x04:
-            if (simulatorReadEEPROM(buffer[1], buffer + 2) == 0) {
+            if (!simulatorReadEEPROM(buffer[1], buffer + 2)) {
                 return false;
             }
             break;
         case 0x05:
-            if (simulatorWriteEEPROM(buffer[1], buffer + 2) == 0) {
+            if (!simulatorWriteEEPROM(buffer[1], buffer + 2)) {
                 return false;
             }
             break;
@@ -315,17 +315,21 @@ bool pifEvent(Pif* pPIF, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pPIF->pHost = pArgument;
+
             if (!xlHeapTake(&pPIF->pROM, 0x800)) {
                 return false;
             }
+
             if (!xlHeapTake(&pPIF->pRAM, 0x40)) {
                 return false;
             }
+
             for (i = 0; i < ARRAY_COUNT(pPIF->controllerType); i++) {
                 if (!pifSetControllerType(pPIF, i, CT_NONE)) {
                     return false;
                 }
             }
+
             if (!pifSetEEPROMType(pPIF, CT_NONE)) {
                 return false;
             }
@@ -336,16 +340,25 @@ bool pifEvent(Pif* pPIF, s32 nEvent, void* pArgument) {
                     return false;
                 }
             }
+
             if (!pifSetEEPROMType(pPIF, CT_NONE)) {
                 return false;
             }
-            if (pPIF->pROM != NULL && !xlHeapFree(&pPIF->pROM)) {
-                return false;
+
+            if (pPIF->pROM != NULL) {
+                if (!xlHeapFree(&pPIF->pROM)) {
+                    return false;
+                }
             }
+
             pPIF->pROM = NULL;
-            if (pPIF->pRAM != NULL && !xlHeapFree(&pPIF->pRAM)) {
-                return false;
+
+            if (pPIF->pRAM != NULL) {
+                if (!xlHeapFree(&pPIF->pRAM)) {
+                    return false;
+                }
             }
+
             pPIF->pRAM = NULL;
             break;
         case 0x1002:
@@ -353,6 +366,7 @@ bool pifEvent(Pif* pPIF, s32 nEvent, void* pArgument) {
                                  (Put32Func)pifPut32, (Put64Func)pifPut64)) {
                 return false;
             }
+
             if (!cpuSetDeviceGet(SYSTEM_CPU(pPIF->pHost), pArgument, (Get8Func)pifGet8, (Get16Func)pifGet16,
                                  (Get32Func)pifGet32, (Get64Func)pifGet64)) {
                 return false;
