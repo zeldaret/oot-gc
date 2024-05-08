@@ -3,7 +3,10 @@
 
 #include "stdio.h"
 
-enum { __align_buffer, __dont_align_buffer };
+enum {
+    __align_buffer,
+    __dont_align_buffer
+};
 
 void __convert_from_newlines(unsigned char* p, size_t* n);
 void __convert_to_newlines(unsigned char* p, size_t* n);

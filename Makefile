@@ -136,7 +136,7 @@ distclean:
 	$(MAKE) -C tools clean
 
 format:
-	find include src -name '*.h' -o -name '*.c' | xargs clang-format -i
+	find include libc src -name '*.h' -o -name '*.c' | xargs clang-format -i
 
 # Note: this is meant for testing/modding purposes as a dol is easier to package and run than the original elf
 dol: all $(DOL)
