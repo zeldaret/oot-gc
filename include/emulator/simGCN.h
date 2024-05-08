@@ -110,6 +110,7 @@ bool simulatorWriteFLASH(u32 address, u8* data, s32 size);
 bool simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
 bool simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie(void);
+bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent);
 bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings);
 bool simulatorGetArgument(SimArgumentType eType, char** pszArgument);

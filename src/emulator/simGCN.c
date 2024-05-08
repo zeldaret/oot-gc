@@ -157,10 +157,10 @@ bool simulatorGXInit(void) {
     GXColor GX_DEFAULT_BG = {0};
     GXColor BLACK = {0};
     GXColor WHITE = {0};
-    f32 identity_mtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx identity_mtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
 
     // possible bug? GX_TG_MTX3x4 vs GX_TG_MTX2x4 (see identity_mtx)
@@ -188,10 +188,10 @@ bool simulatorGXInit(void) {
     GXEnableTexOffsets(GX_TEXCOORD6, GX_DISABLE, GX_DISABLE);
     GXEnableTexOffsets(GX_TEXCOORD7, GX_DISABLE, GX_DISABLE);
 
-    GXLoadPosMtxImm(identity_mtx, 0);
-    GXLoadNrmMtxImm(identity_mtx, 0);
-    GXSetCurrentMtx(0);
-    GXLoadTexMtxImm(identity_mtx, 60, 0);
+    GXLoadPosMtxImm(identity_mtx, GX_PNMTX0);
+    GXLoadNrmMtxImm(identity_mtx, GX_PNMTX0);
+    GXSetCurrentMtx(GX_PNMTX0);
+    GXLoadTexMtxImm(identity_mtx, GX_IDENTITY, GX_MTX3x4);
 
     GXSetCoPlanar(GX_DISABLE);
     GXSetCullMode(GX_CULL_BACK);
@@ -304,7 +304,6 @@ void simulatorUnpackTexPalette(TEXPalettePtr pal) {
         }
     }
 }
-bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent);
 
 bool gButtonDownToggle = false;
 bool gDVDResetToggle = false;
@@ -365,18 +364,15 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
         }
 
         if ((gDVDResetToggle == 1) && ((nStatus <= 3U) || ((nStatus - 7) <= 1U) || (nStatus == 10))) {
-            if (simulatorTestReset(false, false, true, false) == false) {
+            if (!simulatorTestReset(false, false, true, false)) {
                 return false;
-                ;
             }
-        } else if ((nStatus != -1) && (simulatorTestReset(true, false, true, false) == false)) {
+        } else if ((nStatus != -1) && (!simulatorTestReset(true, false, true, false))) {
             return false;
-            ;
         }
 
         if (nMessage != S_M_NONE) {
-            while (frameBeginOK(gpSystem->pFrame) == false)
-                ;
+            while (!(frameBeginOK(gpSystem->pFrame)));
             PADControlMotor(0, PAD_MOTOR_STOP);
             simulatorDrawErrorMessage(nMessage, 0, 0);
         }
@@ -408,7 +404,7 @@ bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 n
             bRetry = false;
             DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, NULL, 2);
 
-            while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != 0) {
+            while ((nStatus = DVDGetCommandBlockStatus(&pFileInfo->cb)) != DVD_STATE_END) {
                 if (!simulatorDVDShowError(nStatus, anData, nSizeRead, nOffset)) {
                     return false;
                 }
@@ -421,7 +417,7 @@ bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 n
             }
         } while (bRetry);
     } else {
-        DVDReadAsyncPrio(pFileInfo, anData, nSizeRead, nOffset, callback, 2);
+        DVDReadAsync(pFileInfo, anData, nSizeRead, nOffset, callback);
         return true;
     }
 
@@ -438,29 +434,29 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     GXTexObj texObj2;
     u32 pad2;
     GXColor color;
-    f32 identity_mtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx identity_mtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
-    f32 g2DviewMtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx g2DviewMtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
 
-    f32 g2[3][4];
+    Mtx g2;
 
     do {
-    } while (frameBeginOK(gpFrame) != 1);
+    } while (frameBeginOK(gpFrame) != true);
 
     simulatorGXInit();
     xlCoreBeforeRender();
     GXSetZMode(GX_DISABLE, GX_LEQUAL, GX_DISABLE);
     GXSetZCompLoc(GX_TRUE);
-    GXSetNumTevStages(1U);
-    GXSetNumChans(1U);
-    GXSetNumTexGens(0U);
+    GXSetNumTevStages(1);
+    GXSetNumChans(1);
+    GXSetNumTexGens(0);
 
     C_MTXOrtho(gOrthoMtx, 0.0f, N64_FRAME_HEIGHT, 0.0f, N64_FRAME_WIDTH, 0.1f, 10000.0f);
     GXSetProjection(gOrthoMtx, GX_ORTHOGRAPHIC);
@@ -469,8 +465,8 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     PSMTXTransApply(g2DviewMtx, g2, N64_FRAME_WIDTH / 2, N64_FRAME_HEIGHT / 2, 0.0f);
     PSMTXScaleApply(g2, g2, 0.5f, 0.5f, 1.0f);
 
-    GXLoadPosMtxImm(g2, 0);
-    GXLoadTexMtxImm(identity_mtx, 60, GX_MTX3x4);
+    GXLoadPosMtxImm(g2, GX_PNMTX0);
+    GXLoadTexMtxImm(identity_mtx, GX_IDENTITY, GX_MTX3x4);
 
     color.r = 0;
     color.g = 0;
@@ -519,8 +515,8 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
 
     PSMTXTransApply(g2DviewMtx, g2, N64_FRAME_WIDTH / 2, N64_FRAME_HEIGHT / 2, 0.0f);
     PSMTXScaleApply(g2, g2, 0.5f, 0.5f, 1.0f);
-    GXLoadPosMtxImm(g2, 0);
-    GXLoadTexMtxImm(identity_mtx, 60, GX_MTX3x4);
+    GXLoadPosMtxImm(g2, GX_PNMTX0);
+    GXLoadTexMtxImm(identity_mtx, GX_IDENTITY, GX_MTX3x4);
     GXSetNumChans(1);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_INDEX8);
@@ -629,15 +625,15 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     GXColor color0;
     GXColor color1;
 
-    f32 identity_mtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx identity_mtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
-    f32 g2DviewMtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx g2DviewMtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
 
     do {
@@ -663,10 +659,10 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     PSMTXTransApply(g2DviewMtx, g2DviewMtx, N64_FRAME_WIDTH / 2, N64_FRAME_HEIGHT / 2, 0.0f);
     PSMTXScaleApply(g2DviewMtx, g2DviewMtx, 0.5f, 0.5f, 1.0f);
 
-    GXLoadPosMtxImm(g2DviewMtx, 0);
-    GXLoadTexMtxImm(identity_mtx, 60, GX_MTX3x4);
+    GXLoadPosMtxImm(g2DviewMtx, GX_PNMTX0);
+    GXLoadTexMtxImm(identity_mtx, GX_IDENTITY, GX_MTX3x4);
 
-    GXSetNumChans(1U);
+    GXSetNumChans(1);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_INDEX8);
     GXSetVtxDesc(GX_VA_CLR0, GX_INDEX8);
@@ -856,15 +852,15 @@ s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Messag
     GXColor color0;
     GXColor color1;
     u32 pad;
-    f32 identity_mtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx identity_mtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
-    f32 g2DviewMtx[3][4] = {
-        {1.0, 0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0, -1.0},
+    Mtx g2DviewMtx = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, -1.0f},
     };
 
     do {
@@ -890,10 +886,10 @@ s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Messag
     PSMTXTransApply(g2DviewMtx, g2DviewMtx, N64_FRAME_WIDTH / 2, N64_FRAME_HEIGHT / 2, 0.0f);
     PSMTXScaleApply(g2DviewMtx, g2DviewMtx, 0.5f, 0.5f, 1.0f);
 
-    GXLoadPosMtxImm(g2DviewMtx, 0);
-    GXLoadTexMtxImm(identity_mtx, 60, GX_MTX3x4);
+    GXLoadPosMtxImm(g2DviewMtx, GX_PNMTX0);
+    GXLoadTexMtxImm(identity_mtx, GX_IDENTITY, GX_MTX3x4);
 
-    GXSetNumChans(1U);
+    GXSetNumChans(1);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_INDEX8);
     GXSetVtxDesc(GX_VA_CLR0, GX_INDEX8);
@@ -1075,9 +1071,7 @@ bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar,
 s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
     DVDFileInfo fileInfo;
     switch (simulatorErrorMessage) {
-
         case S_M_CARD_IN02:
-
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
                 if (DVDOpen("TPL/msg_in02.tpl", &fileInfo) == 1) {
@@ -1112,7 +1106,6 @@ s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
             break;
 
         default:
-
             break;
     }
     return true;
@@ -1176,10 +1169,10 @@ bool simulatorDrawYesNoMessageLoop(TEXPalettePtr simulatorQuestion, s32* yes) {
             *yes = 0;
             return true;
         }
-        if (((s8)(u8)DemoPad->pst.stickX < 0) && ((s32)*yes == 0)) {
+        if ((DemoPad->pst.stickX < 0) && (*yes == 0)) {
             soundPlayBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_SELECT);
             *yes = 1;
-        } else if (((s8)(u8)DemoPad->pst.stickX > 0) && ((s32)*yes == 1)) {
+        } else if ((DemoPad->pst.stickX > 0) && (*yes == 1)) {
             soundPlayBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_SELECT);
             *yes = 0;
         }
@@ -1192,7 +1185,6 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
     DVDFileInfo fileInfo;
     switch (simulatorMessage) {
         case S_M_CARD_LD05_2:
-
             if (simulatorMessageCurrent != simulatorMessage) {
                 simulatorMessageCurrent = simulatorMessage;
                 if (DVDOpen("TPL/msg_ld05_2.tpl", &fileInfo) == 1) {
@@ -1296,7 +1288,7 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalettePtr simulatorMessage) {
         N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
         N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
         simulatorMessage, N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2);
+        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); //bug, copy paste error?
 
     if (gButtonDownToggle == true) {
         DEMOPadRead();
@@ -1313,16 +1305,16 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalettePtr simulatorMessage) {
         N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
         N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
         simulatorMessage, N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2);
+        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); //bug, copy paste error?
 
-    if ((DemoPad->pst.err == 0) && (DemoPad->pst.button & 0x1100)) {
+    if ((DemoPad->pst.err == PAD_ERR_NONE) && (DemoPad->pst.button & ( PAD_BUTTON_START | PAD_BUTTON_A))) {
         soundPlayBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_ACCEPT);
         gButtonDownToggle = true;
         return true;
     }
 
     PAD_STACK();
-    return 0;
+    return false;
 }
 
 bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
@@ -1369,7 +1361,6 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                 simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
             }
             return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
-
         case S_M_CARD_LD05_1:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1620,7 +1611,6 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                 simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
             }
             return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
-
         default:
             break;
     }
@@ -1745,13 +1735,13 @@ inline void UnkInlineReadController(s32 stickValue, s32* val) {
     } else if (stickValue >= 0x48) {
         ret = 0x5A;
     } else {
-        ret = -0x5AU;
+        ret = -0x5A;
     }
 
     *val = ret;
 }
 
-s32 simulatorReadController(s32 channel, u32* anData, u32 unused) {
+bool simulatorReadController(s32 channel, u32* anData, u32 unused) {
     static u32 nPrevButton;
     static u32 nCurrButton;
 
@@ -1768,7 +1758,7 @@ s32 simulatorReadController(s32 channel, u32* anData, u32 unused) {
 
     *anData = 0;
 
-    if (DemoPad[channel].pst.err == 0) {
+    if (DemoPad[channel].pst.err == PAD_ERR_NONE) {
         UnkInlineReadController(DemoPad[channel].pst.stickX, &stickX);
         *anData |= (stickX & 0xFF) << 8;
         UnkInlineReadController(DemoPad[channel].pst.stickY, &stickY);
@@ -1779,14 +1769,14 @@ s32 simulatorReadController(s32 channel, u32* anData, u32 unused) {
         subStickY = DemoPad[channel].pst.substickY;
         if (gButtonDownToggle == true) {
             if (DemoPad->pst.button != 0) {
-                return 1;
+                return true;
             } else {
                 gButtonDownToggle = false;
             }
         }
         nCurrButton = DemoPad[channel].pst.button;
 
-        if ((nCurrButton & 0x1600) == 0x1600) {
+        if ((nCurrButton & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) == (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) {
             gButtonDownToggle = true;
             return true;
         }
@@ -1798,7 +1788,7 @@ s32 simulatorReadController(s32 channel, u32* anData, u32 unused) {
         if (subStickTest < 0.0f) {
             subStickTest *= -1.0f;
         }
-        if ((subStickTest > 1.1f) || (subStickTest < 0.9090908765792847f)) {
+        if ((subStickTest > 1.1f) || (subStickTest < (1.0f / 1.1f))) {
             if (nDirButton & 0x100) {
                 *anData |= gContMap[channel][GCN_BTN_CSTICK_UP];
             }
@@ -1812,10 +1802,10 @@ s32 simulatorReadController(s32 channel, u32* anData, u32 unused) {
                 *anData |= gContMap[channel][GCN_BTN_CSTICK_RIGHT];
             }
         }
-        if (nCurrButton & 0x1000) {
+        if (nCurrButton & PAD_BUTTON_START) {
             *anData |= gContMap[channel][GCN_BTN_START];
         }
-        if (nCurrButton & 0x10) {
+        if (nCurrButton & PAD_TRIGGER_Z) {
             *anData |= gContMap[channel][GCN_BTN_Z];
         }
         if (DemoPad[channel].pst.triggerRight > 30) {
@@ -1824,29 +1814,29 @@ s32 simulatorReadController(s32 channel, u32* anData, u32 unused) {
         if (DemoPad[channel].pst.triggerLeft > 30) {
             *anData |= gContMap[channel][GCN_BTN_L];
         }
-        if (nCurrButton & 0x100) {
+        if (nCurrButton & PAD_BUTTON_A) {
             *anData |= gContMap[channel][GCN_BTN_A];
         }
-        if (nCurrButton & 0x200) {
+        if (nCurrButton & PAD_BUTTON_B) {
             *anData |= gContMap[channel][GCN_BTN_B];
         }
-        if (nCurrButton & 0x400) {
+        if (nCurrButton & PAD_BUTTON_X) {
             *anData |= gContMap[channel][GCN_BTN_X];
         }
-        if (nCurrButton & 0x800) {
+        if (nCurrButton & PAD_BUTTON_Y) {
             *anData |= gContMap[channel][GCN_BTN_Y];
             return true;
         }
-        if (nCurrButton & 8) {
+        if (nCurrButton & PAD_BUTTON_UP) {
             *anData |= gContMap[channel][GCN_BTN_DPAD_UP];
         }
-        if (nCurrButton & 4) {
+        if (nCurrButton & PAD_BUTTON_DOWN) {
             *anData |= gContMap[channel][GCN_BTN_DPAD_DOWN];
         }
-        if (nCurrButton & 1) {
+        if (nCurrButton & PAD_BUTTON_LEFT) {
             *anData |= gContMap[channel][GCN_BTN_DPAD_LEFT];
         }
-        if (nCurrButton & 2) {
+        if (nCurrButton & PAD_BUTTON_RIGHT) {
             *anData |= gContMap[channel][GCN_BTN_DPAD_RIGHT];
         }
     }
@@ -1969,7 +1959,7 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
     DEMOPadRead();
     bFlag = OSGetResetButtonState();
 
-    if ((gResetBeginFlag == true) && ((DemoPad[0].pst.button & 0x1600) == 0x1600)) {
+    if ((gResetBeginFlag == true) && ((DemoPad[0].pst.button & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) == (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X))) {
         if (!gbReset || bFlag) {
             gbReset = bFlag;
             return true;
@@ -1986,7 +1976,7 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
         gResetBeginFlag = false;
     }
 
-    if ((DemoPad[0].pst.button & 0x1600) != 0x1600) {
+    if ((DemoPad[0].pst.button & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) != (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) {
         gnTickReset = nTick;
         if (!gbReset || bFlag) {
             gbReset = bFlag;
@@ -2248,9 +2238,9 @@ bool xlMain(void) {
         return false;
     }
 
+    // Necessary to match .sdata2 usage order
     (void)0.0f;
     (void)1.0f;
-
     (void)0.1f;
 
     if (nSize0 > 0x01800000) {
