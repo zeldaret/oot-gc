@@ -181,6 +181,16 @@ const f32 D_8013606C = 65536.0f;
 const f32 D_80136070 = 0.0009765625f;
 const f32 D_80136074 = 1.52587890625e-05;
 
+static bool rspInitAudioDMEM1(Rsp* pRSP);
+static bool rspInitAudioDMEM2(Rsp* pRSP);
+static bool rspInitAudioDMEM3(Rsp* pRSP);
+static bool rspInitAudioDMEM4(Rsp* pRSP);
+
+static bool rspParseABI1(Rsp* pRSP, RspTask* pTask);
+static bool rspParseABI2(Rsp* pRSP, RspTask* pTask);
+static bool rspParseABI3(Rsp* pRSP, RspTask* pTask);
+static bool rspParseABI4(Rsp* pRSP, RspTask* pTask);
+
 static bool rspVMUDN(Rsp* pRSP, s16* pVec1, s16* pVec2, s16* pVecResult, u32 nElement, s64* pAcc) {
     s32 i;
     s64 taccum;
@@ -1108,8 +1118,85 @@ static bool rspAADPCMDec1Fast(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetVolume1.s")
 
-static bool rspParseABI(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI.s")
+static bool rspParseABI(Rsp* pRSP, RspTask* pTask) {
+    u8* pFUCode;
+    u32 nCheckSum;
+    s32 pad[3];
+
+    if (!(pRSP->eTypeAudioUCode == RUT_ABI1 || pRSP->eTypeAudioUCode == RUT_ABI2 ||
+          pRSP->eTypeAudioUCode == RUT_UNKNOWN)) {
+        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pFUCode, pTask->nOffsetCode, NULL)) {
+            return false;
+        }
+
+        nCheckSum = 0;
+        nCheckSum += pFUCode[0];
+        nCheckSum += pFUCode[1];
+        nCheckSum += pFUCode[2];
+        nCheckSum += pFUCode[3];
+        nCheckSum += pFUCode[4];
+        nCheckSum += pFUCode[5];
+        nCheckSum += pFUCode[6];
+        nCheckSum += pFUCode[7];
+
+        switch (nCheckSum) {
+            case 0x171:
+                pRSP->eTypeAudioUCode = RUT_ABI1;
+                pRSP->nAudioMemOffset = 0x5C0;
+                pRSP->nAudioADPCMOffset = 0x4C0;
+                pRSP->nAudioParBase = 0x360;
+                pRSP->nAudioScratchOffset = 0xF90;
+                rspInitAudioDMEM1(pRSP);
+                break;
+            case 0x1F4:
+                pRSP->eTypeAudioUCode = RUT_ABI2;
+                pRSP->nAudioMemOffset = 0x3B0;
+                pRSP->nAudioADPCMOffset = 0x330;
+                pRSP->nAudioParBase = 0;
+                pRSP->nAudioScratchOffset = 0xFB0;
+                rspInitAudioDMEM2(pRSP);
+                break;
+            case 0x151:
+                pRSP->eTypeAudioUCode = RUT_ABI3;
+                pRSP->nAudioMemOffset = 0x450;
+                pRSP->nAudioADPCMOffset = 0x3D0;
+                pRSP->nAudioParBase = 0x330;
+                pRSP->nAudioScratchOffset = 0xFA0;
+                rspInitAudioDMEM3(pRSP);
+                break;
+            case 0x131:
+                pRSP->eTypeAudioUCode = RUT_ABI4;
+                pRSP->nAudioMemOffset = 0x450;
+                pRSP->nAudioADPCMOffset = 0x3C0;
+                pRSP->nAudioParBase = 0x320;
+                pRSP->nAudioScratchOffset = 0xF90;
+                rspInitAudioDMEM4(pRSP);
+                break;
+            default:
+                pRSP->eTypeAudioUCode = RUT_UNKNOWN;
+                break;
+        }
+    }
+
+    switch (pRSP->eTypeAudioUCode) {
+        case RUT_ABI1:
+            rspParseABI1(pRSP, pTask);
+            break;
+        case RUT_ABI2:
+            rspParseABI2(pRSP, pTask);
+            break;
+        case RUT_ABI3:
+            rspParseABI3(pRSP, pTask);
+            break;
+        case RUT_ABI4:
+            rspParseABI4(pRSP, pTask);
+            break;
+        default:
+            break;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI1.s")
 

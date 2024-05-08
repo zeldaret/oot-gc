@@ -35,14 +35,14 @@
 #define AUDIO_SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
     (pRSP->anAudioBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM) & 0xFFFFFF))
 
-typedef enum __anon_0x581E7 {
+typedef enum RspAudioUCodeType {
     RUT_NOCODE = -1,
     RUT_ABI1 = 0,
     RUT_ABI2 = 1,
     RUT_ABI3 = 2,
     RUT_ABI4 = 3,
     RUT_UNKNOWN = 4,
-} __anon_0x581E7;
+} RspAudioUCodeType;
 
 typedef enum RspUCodeType {
     RUT_NONE = -1,
@@ -227,7 +227,7 @@ typedef struct Rsp {
     /* 0x38C8 */ s16 nVCC;
     /* 0x38CA */ s16 nVC0;
     /* 0x38CC */ char nVCE;
-    /* 0x38D0 */ __anon_0x581E7 eTypeAudioUCode;
+    /* 0x38D0 */ RspAudioUCodeType eTypeAudioUCode;
     /* 0x38D4 */ u16 nAudioMemOffset;
     /* 0x38D6 */ u16 nAudioADPCMOffset;
     /* 0x38D8 */ u16 nAudioScratchOffset;
