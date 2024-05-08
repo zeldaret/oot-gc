@@ -1,5 +1,6 @@
 #include "emulator/rsp.h"
 #include "emulator/cpu.h"
+#include "emulator/frame.h"
 #include "emulator/ram.h"
 #include "emulator/rdp.h"
 #include "emulator/rsp_jumptables.h"
@@ -47,10 +48,15 @@ void* jtbl_800EE338[29] = {
     &lbl_80072998, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007293C,
 };
 
+#ifndef NON_MATCHING
+// rspParseGBI
 void* jtbl_800EE3AC[11] = {
     &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AE8, &lbl_80072AC0,
     &lbl_80072AD4, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AC0, &lbl_80072AD4,
 };
+#else
+void* jtbl_800EE3AC[11] = {0};
+#endif
 
 void* jtbl_800EE3D8[13] = {
     &lbl_80075608, &lbl_8007600C, &lbl_8007600C, &lbl_8007600C, &lbl_80075630, &lbl_8007600C, &lbl_8007600C,
@@ -313,10 +319,12 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetGeometryMode1.s")
 
+static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX1.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGeometryMode.s")
 
+static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX2.s")
 
 // Matches but data doesn't
@@ -446,15 +454,147 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
 }
 #endif
 
+inline bool rspSetDL(Rsp* pRSP, s32 nOffsetRDRAM, bool bPush) {
+    s32 nAddress;
+    s32* pDL;
+
+    nAddress = SEGMENT_ADDRESS(pRSP, nOffsetRDRAM);
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pDL, nAddress, NULL)) {
+        return false;
+    }
+
+    if (bPush && ++pRSP->iDL >= ARRAY_COUNT(pRSP->apDL)) {
+        return false;
+    }
+
+    pRSP->apDL[pRSP->iDL] = (u64*)pDL;
+    return true;
+}
+
+inline bool rspPopDL(Rsp* pRSP) {
+    if (pRSP->iDL == 0) {
+        return false;
+    } else {
+        pRSP->iDL--;
+        return true;
+    }
+}
+
+static bool rspFindUCode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSaveYield.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadYield.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_Setup.s")
+static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask) {
+    s32 iSegment;
 
+    if (pRSP->yield.bValid) {
+        pRSP->yield.bValid = false;
+    }
+
+    pRSP->nGeometryMode = 0;
+    pRSP->iDL = 0;
+
+    if (!rspSetDL(pRSP, pTask->nOffsetMBI & 0x7FFFFF, false)) {
+        return false;
+    }
+
+    for (iSegment = 0; iSegment < ARRAY_COUNT(pRSP->anBaseSegment); iSegment++) {
+        pRSP->anBaseSegment[iSegment] = 0;
+    }
+
+    if (!rspFindUCode(pRSP, pTask)) {
+        return false;
+    }
+
+    if (pRSP->eTypeUCode != RUT_ZSORT || pRSP->nPass == 1) {
+        if (!frameBegin(SYSTEM_FRAME(pRSP->pHost), pRSP->nCountVertex)) {
+            return false;
+        }
+    }
+
+    PAD_STACK();
+    return true;
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI.s")
+#else
+static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
+    bool bDone;
+    s32 nStatus;
+    u64* pDL;
+    Cpu* pCPU;
+
+    pCPU = SYSTEM_CPU(pRSP->pHost);
+    bDone = false;
+
+    while (!bDone) {
+        pDL = pRSP->apDL[pRSP->iDL];
+        switch (pRSP->eTypeUCode) {
+            case RUT_TURBO:
+            case RUT_SPRITE2D:
+            case RUT_FAST3D:
+            case RUT_F3DEX1:
+            case RUT_S2DEX1:
+            case RUT_L3DEX1:
+                nStatus = rspParseGBI_F3DEX1(pRSP, &pRSP->apDL[pRSP->iDL], &bDone);
+                break;
+            case RUT_ZSORT:
+            case RUT_F3DEX2:
+            case RUT_S2DEX2:
+            case RUT_L3DEX2:
+                nStatus = rspParseGBI_F3DEX2(pRSP, &pRSP->apDL[pRSP->iDL], &bDone);
+                break;
+            default:
+                return false;
+        }
+
+        if (nStatus == 0) {
+            pRSP->apDL[pRSP->iDL] = pDL;
+            if (!rdpParseGBI(SYSTEM_RDP(pRSP->pHost), &pRSP->apDL[pRSP->iDL], pRSP->eTypeUCode)) {
+                if (!rspPopDL(pRSP)) {
+                    bDone = true;
+                }
+            }
+        }
+
+        if (nCount == -1) {
+            if (pCPU->nRetrace != pCPU->nRetraceUsed) {
+                break;
+            }
+        } else if (nCount != 0) {
+            if (--nCount == 0) {
+                break;
+            }
+        }
+    }
+
+    if (pRSP->eTypeUCode == RUT_ZSORT) {
+        if (pRSP->nPass == 1) {
+            pRSP->nPass = 2;
+        } else {
+            pRSP->nPass = 1;
+        }
+    } else {
+        pRSP->nPass = 2;
+    }
+
+    if (bDone) {
+        pRSP->nMode |= 8;
+    }
+
+    if (pbDone != NULL) {
+        *pbDone = bDone;
+    }
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut8.s")
 
@@ -476,8 +616,74 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEnableABI.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFrameComplete.s")
+bool rspFrameComplete(Rsp* pRSP) {
+    if (pRSP->yield.bValid) {
+        OSReport(D_800EE27C);
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspUpdate.s")
+    pRSP->nMode |= 4;
+    return true;
+}
+
+bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode) {
+    RspTask* pTask;
+    bool bDone;
+    s32 nCount = 0;
+    Frame* pFrame = SYSTEM_FRAME(pRSP->pHost);
+
+    if ((pRSP->nMode & 4) && (pRSP->nMode & 8)) {
+        if (pRSP->nMode & 0x10) {
+            gNoSwapBuffer = true;
+            pRSP->nMode |= 0x20;
+        }
+        if (!frameEnd(pFrame)) {
+            return false;
+        }
+        pRSP->nMode &= ~0xC;
+    }
+
+    if (!(pRSP->nStatus & 1)) {
+        if (pRSP->nMode & 0x20) {
+            pRSP->nMode &= ~0x30;
+            pRSP->nStatus |= 0x201;
+            xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+            xlObjectEvent(pRSP->pHost, 0x1000, (void*)10);
+        } else {
+            if (pRSP->nMode & 2) {
+                if (frameBeginOK(pFrame) && eMode == RUM_IDLE) {
+                    pRSP->nMode &= ~0x2;
+                    pRSP->nMode |= 0x10;
+
+                    pTask = (RspTask*)((u8*)pRSP->pDMEM + 0xFC0);
+                    if (!rspParseGBI_Setup(pRSP, pTask)) {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            }
+
+            if (eMode == RUM_IDLE) {
+                nCount = -1;
+            }
+
+            if (nCount != 0) {
+                if (rspParseGBI(pRSP, &bDone, nCount)) {
+                    if (bDone) {
+                        pRSP->nMode &= ~0x10;
+                        pRSP->nStatus |= 0x201;
+                        xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                        xlObjectEvent(pRSP->pHost, 0x1000, (void*)10);
+                    }
+                } else {
+                    __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                }
+                pRSP->nTickLast = OSGetTick();
+            }
+        }
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEvent.s")
