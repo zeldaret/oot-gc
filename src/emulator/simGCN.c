@@ -372,7 +372,8 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
         }
 
         if (nMessage != S_M_NONE) {
-            while (!(frameBeginOK(gpSystem->pFrame)));
+            while (!(frameBeginOK(gpSystem->pFrame)))
+                ;
             PADControlMotor(0, PAD_MOTOR_STOP);
             simulatorDrawErrorMessage(nMessage, 0, 0);
         }
@@ -1288,7 +1289,7 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalettePtr simulatorMessage) {
         N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
         N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
         simulatorMessage, N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); //bug, copy paste error?
+        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
 
     if (gButtonDownToggle == true) {
         DEMOPadRead();
@@ -1305,9 +1306,9 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalettePtr simulatorMessage) {
         N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
         N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
         simulatorMessage, N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); //bug, copy paste error?
+        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
 
-    if ((DemoPad->pst.err == PAD_ERR_NONE) && (DemoPad->pst.button & ( PAD_BUTTON_START | PAD_BUTTON_A))) {
+    if ((DemoPad->pst.err == PAD_ERR_NONE) && (DemoPad->pst.button & (PAD_BUTTON_START | PAD_BUTTON_A))) {
         soundPlayBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_ACCEPT);
         gButtonDownToggle = true;
         return true;
@@ -1776,7 +1777,8 @@ bool simulatorReadController(s32 channel, u32* anData, u32 unused) {
         }
         nCurrButton = DemoPad[channel].pst.button;
 
-        if ((nCurrButton & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) == (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) {
+        if ((nCurrButton & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) ==
+            (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) {
             gButtonDownToggle = true;
             return true;
         }
@@ -1959,7 +1961,8 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
     DEMOPadRead();
     bFlag = OSGetResetButtonState();
 
-    if ((gResetBeginFlag == true) && ((DemoPad[0].pst.button & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) == (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X))) {
+    if ((gResetBeginFlag == true) && ((DemoPad[0].pst.button & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) ==
+                                      (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X))) {
         if (!gbReset || bFlag) {
             gbReset = bFlag;
             return true;
@@ -1976,7 +1979,8 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
         gResetBeginFlag = false;
     }
 
-    if ((DemoPad[0].pst.button & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) != (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) {
+    if ((DemoPad[0].pst.button & (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) !=
+        (PAD_BUTTON_START | PAD_BUTTON_B | PAD_BUTTON_X)) {
         gnTickReset = nTick;
         if (!gbReset || bFlag) {
             gbReset = bFlag;
