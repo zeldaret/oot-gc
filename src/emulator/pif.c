@@ -12,7 +12,25 @@ _XL_OBJECTTYPE gClassPIF = {
 
 static u8 pifContDataCrc(Pif* pPIF, u8* data);
 
-#pragma GLOBAL_ASM("asm/non_matchings/pif/pifReadRumble.s")
+bool pifReadRumble(Pif* pPIF, s32 channel, u16 address, u8* data) {
+    int i;
+
+    for (i = 0; i < 0x20; i++) {
+        data[i] = 0;
+    }
+
+    switch (address) {
+        case 0x400:
+            for (i = 0; i < 0x20; i++) {
+                data[i] = 0x80;
+            }
+            break;
+        default:
+            break;
+    }
+
+    return true;
+}
 
 bool pifWriteRumble(Pif* pPIF, s32 channel, u16 address, u8* data) {
     switch (address) {
