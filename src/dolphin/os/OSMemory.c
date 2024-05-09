@@ -1,10 +1,10 @@
+#include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "macros.h"
 
 #define TRUNC(n, a) (((u32)(n)) & ~((a)-1))
 #define ROUND(n, a) (((u32)(n) + (a)-1) & ~((a)-1))
 
-vu16 __MEMRegs[64] AT_ADDRESS(0xCC004000);
 extern OSErrorHandler __OSErrorTable[16];
 
 static bool OnReset(bool final);
