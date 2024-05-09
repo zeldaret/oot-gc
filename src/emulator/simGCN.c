@@ -76,10 +76,11 @@ s16 Vert_s16Bar[12] ALIGNAS(32) = {
     0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
 };
 
+// rgba
 u32 Colors_u32[3] ALIGNAS(32) = {
-    255,
-    255,
-    255,
+    0x000000FF,
+    0x000000FF,
+    0x000000FF,
 };
 
 u8 TexCoords_u8[] ALIGNAS(32) = {
