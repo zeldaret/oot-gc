@@ -162,13 +162,20 @@ s32 ganMapGPR[] = {
     0x0000001B, 0x0000001C, 0x0000001D, 0x0000001E, 0x0000011C, 0x0000001F, 0x0000011E, 0x0000011F,
 };
 
+#ifndef NON_MATCHING
+// cpuOpcodeChecksum
 void* jtbl_800EBEF0[25] = {
     &lbl_80030EFC, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030F7C, &lbl_80030EFC,
     &lbl_80030EFC, &lbl_80030F7C, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC,
     &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC,
     &lbl_80030EFC, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030F7C,
 };
+#else
+void* jtbl_800EBEF0[25] = {0};
+#endif
 
+#ifndef NON_MATCHING
+// cpuOpcodeChecksum
 void* jtbl_800EBF54[64] = {
     &lbl_80030F7C, &lbl_80030EA8, &lbl_80030F58, &lbl_80030F60, &lbl_80030F68, &lbl_80030F68, &lbl_80030F68,
     &lbl_80030F68, &lbl_80030F7C, &lbl_80030F70, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F70,
@@ -181,6 +188,9 @@ void* jtbl_800EBF54[64] = {
     &lbl_80030F7C, &lbl_80030F78, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030F78, &lbl_80030F7C,
     &lbl_80030F78,
 };
+#else
+void* jtbl_800EBF54[64] = {0};
+#endif
 
 char D_800EC054[] = "start=%p, end=%p (%d) (size: %d)\n";
 char D_800EC078[] = "tree range (%p - %p)\n";
