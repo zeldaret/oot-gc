@@ -79,51 +79,51 @@ _MATH_INLINE float powf(float __x, float __y) { return pow(__x, __y); }
 double __frsqrte(double x);
 
 extern inline float sqrtf(float x) {
-  const double _half = .5;
-  const double _three = 3.0;
-  volatile float y;
+    const double _half = .5;
+    const double _three = 3.0;
+    volatile float y;
 
-  if (x > 0.0f) {
-    double guess = __frsqrte((double)x);                  /* returns an approximation to  */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 12 sig bits         */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 24 sig bits         */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 32 sig bits         */
-    y = (float)(x * guess);
-    return y;
-  }
-  return x;
+    if (x > 0.0f) {
+        double guess = __frsqrte((double)x); /* returns an approximation to  */
+        guess = _half * guess * (_three - guess * guess * x); /* now have 12 sig bits         */
+        guess = _half * guess * (_three - guess * guess * x); /* now have 24 sig bits         */
+        guess = _half * guess * (_three - guess * guess * x); /* now have 32 sig bits         */
+        y = (float)(x * guess);
+        return y;
+    }
+    return x;
 }
 
 _MATH_INLINE double sqrt(double x) {
-  if (x > 0.0) {
-    double guess = __frsqrte(x);                    /* returns an approximation to  */
-    guess = .5 * guess * (3.0 - guess * guess * x); /* now have 8 sig bits          */
-    guess = .5 * guess * (3.0 - guess * guess * x); /* now have 16 sig bits         */
-    guess = .5 * guess * (3.0 - guess * guess * x); /* now have 32 sig bits         */
-    guess = .5 * guess * (3.0 - guess * guess * x); /* now have > 53 sig bits       */
-    return x * guess;
-  } else if (x == 0.0) {
-    return 0;
-  } else if (x) {
-    return NAN;
-  }
-  return INFINITY;
+    if (x > 0.0) {
+        double guess = __frsqrte(x); /* returns an approximation to  */
+        guess = .5 * guess * (3.0 - guess * guess * x); /* now have 8 sig bits          */
+        guess = .5 * guess * (3.0 - guess * guess * x); /* now have 16 sig bits         */
+        guess = .5 * guess * (3.0 - guess * guess * x); /* now have 32 sig bits         */
+        guess = .5 * guess * (3.0 - guess * guess * x); /* now have > 53 sig bits       */
+        return x * guess;
+    } else if (x == 0.0) {
+        return 0;
+    } else if (x) {
+        return NAN;
+    }
+    return INFINITY;
 }
 
 _MATH_INLINE float _inv_sqrtf(float x) {
-  const float _half = .5f;
-  const float _three = 3.0f;
+    const float _half = .5f;
+    const float _three = 3.0f;
 
-  if (x > 0.0f) {
-    float guess = __frsqrte((double)x);                   /* returns an approximation to  */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 8  sig bits         */
-    guess = _half * guess * (_three - guess * guess * x); /* now have 16 sig bits         */
-    guess = _half * guess * (_three - guess * guess * x); /* now have >24 sig bits        */
-    return guess;
-  } else if (x) {
-    return NAN;
-  }
-  return INFINITY;
+    if (x > 0.0f) {
+        float guess = __frsqrte((double)x); /* returns an approximation to  */
+        guess = _half * guess * (_three - guess * guess * x); /* now have 8  sig bits         */
+        guess = _half * guess * (_three - guess * guess * x); /* now have 16 sig bits         */
+        guess = _half * guess * (_three - guess * guess * x); /* now have >24 sig bits        */
+        return guess;
+    } else if (x) {
+        return NAN;
+    }
+    return INFINITY;
 }
 
 static inline float ldexpf(float x, int exp) { return (float)ldexp((double)x, exp); }

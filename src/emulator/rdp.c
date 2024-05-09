@@ -742,8 +742,8 @@ bool rdpEvent(Rdp* pRDP, s32 nEvent, void* pArgument) {
         case 0x1002:
             switch (((CpuDevice*)pArgument)->nType) {
                 case 0:
-                    if (!cpuSetDevicePut(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpPut8,
-                                         (Get16Func)rdpPut16, (Get32Func)rdpPut32, (Get64Func)rdpPut64)) {
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Put8Func)rdpPut8,
+                                         (Put16Func)rdpPut16, (Put32Func)rdpPut32, (Put64Func)rdpPut64)) {
                         return false;
                     }
                     if (!cpuSetDeviceGet(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpGet8,
@@ -752,8 +752,8 @@ bool rdpEvent(Rdp* pRDP, s32 nEvent, void* pArgument) {
                     }
                     break;
                 case 1:
-                    if (!cpuSetDevicePut(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpPutSpan8,
-                                         (Get16Func)rdpPutSpan16, (Get32Func)rdpPutSpan32, (Get64Func)rdpPutSpan64)) {
+                    if (!cpuSetDevicePut(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Put8Func)rdpPutSpan8,
+                                         (Put16Func)rdpPutSpan16, (Put32Func)rdpPutSpan32, (Put64Func)rdpPutSpan64)) {
                         return false;
                     }
                     if (!cpuSetDeviceGet(SYSTEM_CPU(pRDP->pHost), (CpuDevice*)pArgument, (Get8Func)rdpGetSpan8,
