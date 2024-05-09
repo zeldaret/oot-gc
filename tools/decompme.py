@@ -48,7 +48,7 @@ def find_include_file(filename: str) -> Path:
     raise FileNotFoundError(f"Could not find include file {filename}")
 
 
-def process_file(path: Path) -> str:
+def process_c_file(path: Path) -> str:
     lines = path.read_text().splitlines()
     out_text = ""
     for i, line in enumerate(lines):
@@ -72,7 +72,7 @@ def process_file(path: Path) -> str:
             elif match := INCLUDE_PATTERN.match(line.strip()):
                 include_file = find_include_file(match[1])
                 out_text += f'/* "{path}" line {i + 1} "{include_file}" */\n'
-                out_text += process_file(include_file)
+                out_text += process_c_file(include_file)
                 out_text += f'/* end "{include_file}" */\n'
             elif INCBIN_PATTERN.match(line.strip()):
                 out_text += "    0"
@@ -80,6 +80,18 @@ def process_file(path: Path) -> str:
             else:
                 out_text += line
                 out_text += "\n"
+
+    return out_text
+
+
+def process_asm_file(path: Path) -> str:
+    lines = path.read_text().splitlines()
+    out_text = ""
+    for line in lines:
+        if line.startswith(".global "):
+            continue
+        out_text += line
+        out_text += "\n"
 
     return out_text
 
@@ -95,8 +107,8 @@ def main():
     args = parser.parse_args()
 
     func_name = args.asm_file.stem
-    asm_cont = args.asm_file.read_text()
-    context = process_file(args.c_file)
+    context = process_c_file(args.c_file)
+    asm_cont = process_asm_file(args.asm_file)
     source_code = ""  # TODO: separate source code from context automatically
 
     if args.print_context:
