@@ -784,7 +784,7 @@ static bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive) {
     return true;
 }
 
-static inline void vertexDraw(Vertex* pVertex) {
+static inline void frameWriteVertex(Vertex* pVertex) {
     GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
     GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
     GXTexCoord2f32(pVertex->rS, pVertex->rT);
@@ -849,9 +849,9 @@ static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive) {
 
         if (!bBehind || !bInFront) {
             GXBegin(GX_TRIANGLES, GX_VTXFMT0, 3);
-            vertexDraw(v0);
-            vertexDraw(v1);
-            vertexDraw(v2);
+            frameWriteVertex(v0);
+            frameWriteVertex(v1);
+            frameWriteVertex(v2);
             GXEnd();
             iData += 3;
         } else {
@@ -965,40 +965,40 @@ static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive) {
                 if (v1->vec.x == aNewVertArray[1].vec.x && v1->vec.y == aNewVertArray[1].vec.y &&
                     v1->vec.z == aNewVertArray[1].vec.z) {
                     GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
-                    vertexDraw(&aNewVertArray[0]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[2]);
-                    vertexDraw(&aNewVertArray[0]);
-                    vertexDraw(&aNewVertArray[2]);
-                    vertexDraw(&aNewVertArray[4]);
-                    vertexDraw(&aNewVertArray[4]);
-                    vertexDraw(&aNewVertArray[2]);
-                    vertexDraw(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[3]);
                     GXEnd();
                 } else if (v2->vec.x == aNewVertArray[3].vec.x && v2->vec.y == aNewVertArray[3].vec.y &&
                            v2->vec.z == aNewVertArray[3].vec.z) {
                     GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
-                    vertexDraw(&aNewVertArray[0]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[4]);
-                    vertexDraw(&aNewVertArray[4]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[3]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[2]);
-                    vertexDraw(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[3]);
                     GXEnd();
                 } else {
                     GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
-                    vertexDraw(&aNewVertArray[0]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[4]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[3]);
-                    vertexDraw(&aNewVertArray[4]);
-                    vertexDraw(&aNewVertArray[1]);
-                    vertexDraw(&aNewVertArray[2]);
-                    vertexDraw(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[3]);
                     GXEnd();
                 }
             }
