@@ -1754,8 +1754,35 @@ static inline bool rspALoadADPCM2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
 static bool rspAMix2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAMix2.s")
 
-static bool rspAInterleave2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAInterleave2.s")
+static bool rspAInterleave2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    s32 outp;
+    s32 inpr;
+    s32 inpl;
+    s32 count;
+    s32 i;
+
+    outp = (s32)(nCommandHi & 0xFFFF) >> 1;
+    inpr = (s32)(nCommandLo & 0xFFFF) >> 1;
+    inpl = (s32)(nCommandLo >> 16) >> 1;
+    count = (nCommandHi >> 12) & 0xFF0;
+
+    outp += 8;
+    for (i = 0; i < count; i += 8) {
+        pRSP->anAudioBuffer[outp - 8] = pRSP->anAudioBuffer[inpl + 0];
+        pRSP->anAudioBuffer[outp - 7] = pRSP->anAudioBuffer[inpr + 0];
+        pRSP->anAudioBuffer[outp - 6] = pRSP->anAudioBuffer[inpl + 1];
+        pRSP->anAudioBuffer[outp - 5] = pRSP->anAudioBuffer[inpr + 1];
+        pRSP->anAudioBuffer[outp - 4] = pRSP->anAudioBuffer[inpl + 2];
+        pRSP->anAudioBuffer[outp - 3] = pRSP->anAudioBuffer[inpr + 2];
+        pRSP->anAudioBuffer[outp - 2] = pRSP->anAudioBuffer[inpl + 3];
+        pRSP->anAudioBuffer[outp - 1] = pRSP->anAudioBuffer[inpr + 3];
+        outp += 8;
+        inpl += 4;
+        inpr += 4;
+    }
+
+    return true;
+}
 
 static bool rspADistFilter2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspADistFilter2.s")
