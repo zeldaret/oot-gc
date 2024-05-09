@@ -34,8 +34,19 @@ ELSE_PATTERN = re.compile(r"^#else")
 ENDIF_PATTERN = re.compile(r"^#endif")
 INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)")
 
-# Defined preprocessor macros
-defines = {"__MWERKS__"}
+MACROS = [
+    (re.compile(r"\bAT_ADDRESS\b\(.*\)"), ""),
+    (re.compile(r"\b_GX_TF_CTF\b"), "0x20"),
+    (re.compile(r"\b_GX_TF_ZTF\b"), "0x10"),
+    (re.compile(r"\bOS_THREAD_SPECIFIC_MAX\b"), "2"),
+    (re.compile(r"\bCARD_FILENAME_MAX\b"), "32"),
+    (re.compile(r"\bCARD_ICON_MAX\b"), "8"),
+    (re.compile(r"\bN64_FRAME_WIDTH\b"), "320"),
+    (re.compile(r"\bN64_FRAME_HEIGHT\b"), "240"),
+]
+
+# Defined preprocessor macros (for conditions)
+defines = set()
 # Stack of preprocessor conditions
 condition_stack = [True]
 
@@ -74,10 +85,12 @@ def process_c_file(path: Path) -> str:
                 out_text += f'/* "{path}" line {i + 1} "{include_file}" */\n'
                 out_text += process_c_file(include_file)
                 out_text += f'/* end "{include_file}" */\n'
-            elif INCBIN_PATTERN.match(line.strip()):
+            elif match := INCBIN_PATTERN.match(line.strip()):
                 out_text += "    0"
                 out_text += "\n"
             else:
+                for pattern, replacement in MACROS:
+                    line = pattern.sub(replacement, line)
                 out_text += line
                 out_text += "\n"
 
