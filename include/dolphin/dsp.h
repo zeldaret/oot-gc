@@ -1,13 +1,8 @@
 #ifndef _DOLPHIN_DSP_H_
 #define _DOLPHIN_DSP_H_
 
+#include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
-
-#ifdef __MWERKS__
-volatile u16 __DSPRegs[] : 0xCC005000;
-#else
-#define __DSPRegs ((volatile u16*)0xCC005000)
-#endif
 
 typedef void (*DSPCallback)(void* task);
 
