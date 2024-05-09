@@ -97,7 +97,7 @@ extern u8 TexCoords_u8[];
 
 extern char gpErrorMessageBuffer[20480];
 
-void simulatorUnpackTexPalette(TEXDescriptorPtr pal);
+void simulatorUnpackTexPalette(TEXPalettePtr pal);
 bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
 bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
 bool simulatorShowLoad(s32 unknown, char* szNameFile, f32 rProgress);
@@ -110,12 +110,13 @@ bool simulatorWriteFLASH(u32 address, u8* data, s32 size);
 bool simulatorRumbleStart(s32 channel);
 bool simulatorRumbleStop(s32 channel);
 bool simulatorCopyControllerMap(u32* mapDataOutput, u32* mapDataInput);
-bool simulatorReadController(s32 channel, u32* anData, s32 unused);
+bool simulatorReadController(s32 channel, u32* anData, u32 unused);
 bool simulatorDetectController(s32 channel);
 bool simulatorReadPak(s32 channel, u16 address, u8* data);
 bool simulatorWritePak(s32 channel, u16 address, u8* data);
 bool simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie(void);
+bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent);
 bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings);
 bool simulatorGetArgument(SimArgumentType eType, char** pszArgument);
