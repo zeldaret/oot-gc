@@ -31,7 +31,7 @@
 
 // Adds a stack variable in an inline function, which can be used to pad the
 // stack after other functions have been inlined
-inline void padStack(void) { s32 pad = 0; }
+inline void padStack(void) { int pad = 0; }
 #define PAD_STACK() padStack()
 
 #ifdef __MWERKS__
