@@ -11,8 +11,8 @@ bool xlListMake(tXL_LIST** ppList, s32 nItemSize) {
     if (xlListMakeItem(&gListList, ppList)) {
         (*ppList)->nItemCount = 0;
         (*ppList)->nItemSize = nItemSize;
-        (*ppList)->pNodeNext = (void*)0;
-        (*ppList)->pNodeHead = (void*)0;
+        (*ppList)->pNodeNext = NULL;
+        (*ppList)->pNodeHead = NULL;
         return true;
     }
 
@@ -21,13 +21,13 @@ bool xlListMake(tXL_LIST** ppList, s32 nItemSize) {
 }
 
 static inline bool xlListWipe(tXL_LIST* pList) {
-    tXL_NODE* pNode;
-    tXL_NODE* pNodeNext;
+    void* pNode;
+    void* pNodeNext;
 
     pNode = pList->pNodeHead;
     while (pNode != NULL) {
-        pNodeNext = pNode->next;
-        if (!xlHeapFree((void**)&pNode)) {
+        pNodeNext = NODE_NEXT(pNode);
+        if (!xlHeapFree(&pNode)) {
             return false;
         }
         pNode = pNodeNext;
@@ -53,22 +53,22 @@ bool xlListFree(tXL_LIST** ppList) {
 
 bool xlListMakeItem(tXL_LIST* pList, void** ppItem) {
     s32 nSize;
-    tXL_NODE* pListNode;
-    tXL_NODE* pNode;
-    tXL_NODE* pNodeNext;
+    void* pListNode;
+    void* pNode;
+    void* pNodeNext;
 
     nSize = pList->nItemSize + 4;
-    if (!xlHeapTake((void**)&pListNode, nSize)) {
+    if (!xlHeapTake(&pListNode, nSize)) {
         return false;
     }
 
-    pListNode->next = NULL;
-    *ppItem = (void*)pListNode->data;
-    pNode = (tXL_NODE*)&pList->pNodeHead;
+    NODE_NEXT(pListNode) = NULL;
+    *ppItem = NODE_DATA(pListNode);
+    pNode = &pList->pNodeHead;
     while (pNode != NULL) {
-        pNodeNext = pNode->next;
+        pNodeNext = NODE_NEXT(pNode);
         if (pNodeNext == NULL) {
-            pNode->next = pListNode;
+            NODE_NEXT(pNode) = pListNode;
             pList->nItemCount++;
             return true;
         }
@@ -79,20 +79,20 @@ bool xlListMakeItem(tXL_LIST* pList, void** ppItem) {
 }
 
 bool xlListFreeItem(tXL_LIST* pList, void** ppItem) {
-    tXL_NODE* pNode;
-    tXL_NODE* pNodeNext;
+    void* pNode;
+    void* pNodeNext;
 
     if (pList->pNodeHead == NULL) {
         return false;
     }
 
-    pNode = (tXL_NODE*)&pList->pNodeHead;
+    pNode = &pList->pNodeHead;
     while (pNode != NULL) {
-        pNodeNext = pNode->next;
-        if (*ppItem == (void*)pNodeNext->data) {
-            pNode->next = pNodeNext->next;
+        pNodeNext = NODE_NEXT(pNode);
+        if (*ppItem == NODE_DATA(pNodeNext)) {
+            NODE_NEXT(pNode) = NODE_NEXT(pNodeNext);
             *ppItem = NULL;
-            if (!xlHeapFree((void**)&pNodeNext)) {
+            if (!xlHeapFree(&pNodeNext)) {
                 return false;
             }
             pList->nItemCount--;
@@ -106,7 +106,7 @@ bool xlListFreeItem(tXL_LIST* pList, void** ppItem) {
 }
 
 static inline bool xlListTest(tXL_LIST* pList) {
-    tXL_NODE* pNode;
+    void* pNode;
 
     if (pList == &gListList) {
         return true;
@@ -114,17 +114,17 @@ static inline bool xlListTest(tXL_LIST* pList) {
 
     pNode = gListList.pNodeHead;
     while (pNode != NULL) {
-        if (pList == (tXL_LIST*)pNode->data) {
+        if (pList == (tXL_LIST*)NODE_DATA(pNode)) {
             return true;
         }
-        pNode = pNode->next;
+        pNode = NODE_NEXT(pNode);
     }
 
     return false;
 }
 
 bool xlListTestItem(tXL_LIST* pList, void* pItem) {
-    tXL_NODE* pListNode;
+    void* pListNode;
 
     if (!xlListTest(pList) || pItem == NULL) {
         return false;
@@ -132,10 +132,10 @@ bool xlListTestItem(tXL_LIST* pList, void* pItem) {
 
     pListNode = pList->pNodeHead;
     while (pListNode != NULL) {
-        if (pItem == pListNode->data) {
+        if (pItem == NODE_DATA(pListNode)) {
             return true;
         }
-        pListNode = pListNode->next;
+        pListNode = NODE_NEXT(pListNode);
     }
 
     return false;

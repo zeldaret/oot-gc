@@ -3,12 +3,9 @@
 
 #include "dolphin.h"
 
-typedef struct tXL_NODE tXL_NODE;
-
-struct tXL_NODE {
-    /* 0x0 */ tXL_NODE* next;
-    /* 0x4 */ u8 data[];
-}; // size = 0x4
+// List nodes consist of a pointer to the next node followed by an arbitrary amount of data.
+#define NODE_NEXT(pNode) (*(void**)(pNode))
+#define NODE_DATA(pNode) (((u8*)(pNode) + 4))
 
 typedef struct tXL_LIST {
     /* 0x0 */ s32 nItemSize;
