@@ -698,7 +698,145 @@ bool rspDotProduct8x15MatrixBy15x1Vector(Rsp* pRSP, s16* matrix, s16* vectorIn, 
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspMultPolef.s")
+bool rspMultPolef(Rsp* pRSP, s16 (*matrix)[8], s16* vectorIn, s16* vectorOut) {
+    s32 sum;
+    s32 vec0 = vectorIn[0];
+    s32 vec1 = vectorIn[1];
+    s32 vec2 = vectorIn[2];
+    s32 vec3 = vectorIn[3];
+    s32 vec4 = vectorIn[4];
+    s32 vec5 = vectorIn[5];
+    s32 vec6 = vectorIn[6];
+    s32 vec7 = vectorIn[7];
+    s32 vec8 = vectorIn[8];
+    s32 vec9 = vectorIn[9];
+
+    sum = matrix[0][0] * vec0;
+    sum += matrix[1][0] * vec1;
+    sum += matrix[9][0] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[0] = sum;
+
+    sum = matrix[0][1] * vec0;
+    sum += matrix[1][1] * vec1;
+    sum += matrix[2][1] * vec2;
+    sum += matrix[9][1] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[1] = sum;
+
+    sum = matrix[0][2] * vec0;
+    sum += matrix[1][2] * vec1;
+    sum += matrix[2][2] * vec2;
+    sum += matrix[3][2] * vec3;
+    sum += matrix[9][2] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[2] = sum;
+
+    sum = matrix[0][3] * vec0;
+    sum += matrix[1][3] * vec1;
+    sum += matrix[2][3] * vec2;
+    sum += matrix[3][3] * vec3;
+    sum += matrix[4][3] * vec4;
+    sum += matrix[9][3] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[3] = sum;
+
+    sum = matrix[0][4] * vec0;
+    sum += matrix[1][4] * vec1;
+    sum += matrix[2][4] * vec2;
+    sum += matrix[3][4] * vec3;
+    sum += matrix[4][4] * vec4;
+    sum += matrix[5][4] * vec5;
+    sum += matrix[9][4] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[4] = sum;
+
+    sum = matrix[0][5] * vec0;
+    sum += matrix[1][5] * vec1;
+    sum += matrix[2][5] * vec2;
+    sum += matrix[3][5] * vec3;
+    sum += matrix[4][5] * vec4;
+    sum += matrix[5][5] * vec5;
+    sum += matrix[6][5] * vec6;
+    sum += matrix[9][5] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[5] = sum;
+
+    sum = matrix[0][6] * vec0;
+    sum += matrix[1][6] * vec1;
+    sum += matrix[2][6] * vec2;
+    sum += matrix[3][6] * vec3;
+    sum += matrix[4][6] * vec4;
+    sum += matrix[5][6] * vec5;
+    sum += matrix[6][6] * vec6;
+    sum += matrix[7][6] * vec7;
+    sum += matrix[9][6] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[6] = sum;
+
+    sum = matrix[0][7] * vec0;
+    sum += matrix[1][7] * vec1;
+    sum += matrix[2][7] * vec2;
+    sum += matrix[3][7] * vec3;
+    sum += matrix[4][7] * vec4;
+    sum += matrix[5][7] * vec5;
+    sum += matrix[6][7] * vec6;
+    sum += matrix[7][7] * vec7;
+    sum += matrix[8][7] * vec8;
+    sum += matrix[9][7] * vec9;
+    sum >>= 16;
+    sum <<= 2;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[7] = sum;
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadADPCMCoefTable1.s")
 
