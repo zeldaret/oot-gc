@@ -5,6 +5,9 @@
 #include "emulator/xlList.h"
 #include "emulator/xlObject.h"
 
+#define RSP_DMEM_SIZE 0x1000
+#define RSP_TASK(pRSP) ((RspTask*)((u8*)pRSP->pDMEM + (RSP_DMEM_SIZE - sizeof(RspTask))))
+
 #define GBI_COMMAND_HI(p) (((u32*)(p))[0])
 #define GBI_COMMAND_LO(p) (((u32*)(p))[1])
 
@@ -129,6 +132,17 @@ typedef struct __anon_0x583EE {
     /* 0x2 */ s16 u;
     /* 0x4 */ s16 v;
 } __anon_0x583EE; // size = 0x6
+
+typedef struct __anon_0x5B8F2 {
+    /* 0x00 */ s32 nOffsetCode;
+    /* 0x04 */ s32 nLengthCode;
+    /* 0x08 */ s32 nOffsetData;
+    /* 0x0C */ s32 nLengthData;
+    /* 0x10 */ char acUCodeName[64];
+    /* 0x50 */ u64 nUCodeCheckSum;
+    /* 0x58 */ s32 nCountVertex;
+    /* 0x5C */ RspUCodeType eType;
+} __anon_0x5B8F2; // size = 0x60
 
 // __anon_0x5845E
 typedef struct Rsp {
