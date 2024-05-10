@@ -982,7 +982,41 @@ bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspInvalidateCache.s")
+bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
+    __anon_0x5B8F2* pUCode;
+    void* pListNode;
+    s32 nOffsetUCode0;
+    s32 nOffsetUCode1;
+
+    nOffsetUCode0 = nOffset1 & 0x7FFFFF;
+    nOffsetUCode1 = nOffset0 & 0x7FFFFF;
+    pListNode = pRSP->pListUCode->pNodeHead;
+
+    while (pListNode != NULL) {
+        s32 offset0;
+        s32 offset1;
+
+        pUCode = (__anon_0x5B8F2*)NODE_DATA(pListNode);
+        pListNode = NODE_NEXT(pListNode);
+
+        if (pUCode->nOffsetCode < pUCode->nOffsetData) {
+            offset0 = pUCode->nOffsetCode;
+            offset1 = pUCode->nOffsetData + pUCode->nLengthData;
+        } else {
+            offset0 = pUCode->nOffsetData;
+            offset1 = pUCode->nOffsetCode + pUCode->nLengthCode;
+        }
+
+        if ((nOffsetUCode1 <= offset0 && offset0 <= nOffsetUCode0) ||
+            (nOffsetUCode1 <= offset1 && offset1 <= nOffsetUCode0)) {
+            if (!xlListFreeItem(pRSP->pListUCode, &pUCode)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
 
 bool rspEnableABI(Rsp* pRSP, bool bFlag) {
     pRSP->eTypeAudioUCode = bFlag ? RUT_NOCODE : RUT_UNKNOWN;
