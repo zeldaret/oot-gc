@@ -549,7 +549,154 @@ static bool rspInitAudioDMEM1(Rsp* pRSP) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspDotProduct8x15MatrixBy15x1Vector.s")
+bool rspDotProduct8x15MatrixBy15x1Vector(Rsp* pRSP, s16* matrix, s16* vectorIn, s16* vectorOut) {
+    s32 sum;
+    s32 vec0 = vectorIn[0];
+    s32 vec1 = vectorIn[1];
+    s32 vec2 = vectorIn[2];
+    s32 vec3 = vectorIn[3];
+    s32 vec4 = vectorIn[4];
+    s32 vec5 = vectorIn[5];
+    s32 vec6 = vectorIn[6];
+    s32 vec7 = vectorIn[7];
+    s32 vec8 = vectorIn[8];
+    s32 vec9 = vectorIn[9];
+    s32 vec10 = vectorIn[10];
+    s32 vec11 = vectorIn[11];
+    s32 vec12 = vectorIn[12];
+    s32 vec13 = vectorIn[13];
+    s32 vec14 = vectorIn[14];
+
+    sum = matrix[0] * vec0;
+    sum += matrix[1] * vec1;
+    sum += matrix[2] * vec2;
+    sum += matrix[3] * vec3;
+    sum += matrix[4] * vec4;
+    sum += matrix[5] * vec5;
+    sum += matrix[6] * vec6;
+    sum += matrix[7] * vec7;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[0] = sum;
+
+    sum = matrix[0] * vec1;
+    sum += matrix[1] * vec2;
+    sum += matrix[2] * vec3;
+    sum += matrix[3] * vec4;
+    sum += matrix[4] * vec5;
+    sum += matrix[5] * vec6;
+    sum += matrix[6] * vec7;
+    sum += matrix[7] * vec8;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[1] = sum;
+
+    sum = matrix[0] * vec2;
+    sum += matrix[1] * vec3;
+    sum += matrix[2] * vec4;
+    sum += matrix[3] * vec5;
+    sum += matrix[4] * vec6;
+    sum += matrix[5] * vec7;
+    sum += matrix[6] * vec8;
+    sum += matrix[7] * vec9;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[2] = sum;
+
+    sum = matrix[0] * vec3;
+    sum += matrix[1] * vec4;
+    sum += matrix[2] * vec5;
+    sum += matrix[3] * vec6;
+    sum += matrix[4] * vec7;
+    sum += matrix[5] * vec8;
+    sum += matrix[6] * vec9;
+    sum += matrix[7] * vec10;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[3] = sum;
+
+    sum = matrix[0] * vec4;
+    sum += matrix[1] * vec5;
+    sum += matrix[2] * vec6;
+    sum += matrix[3] * vec7;
+    sum += matrix[4] * vec8;
+    sum += matrix[5] * vec9;
+    sum += matrix[6] * vec10;
+    sum += matrix[7] * vec11;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[4] = sum;
+
+    sum = matrix[0] * vec5;
+    sum += matrix[1] * vec6;
+    sum += matrix[2] * vec7;
+    sum += matrix[3] * vec8;
+    sum += matrix[4] * vec9;
+    sum += matrix[5] * vec10;
+    sum += matrix[6] * vec11;
+    sum += matrix[7] * vec12;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[5] = sum;
+
+    sum = matrix[0] * vec6;
+    sum += matrix[1] * vec7;
+    sum += matrix[2] * vec8;
+    sum += matrix[3] * vec9;
+    sum += matrix[4] * vec10;
+    sum += matrix[5] * vec11;
+    sum += matrix[6] * vec12;
+    sum += matrix[7] * vec13;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[6] = sum;
+
+    sum = matrix[0] * vec7;
+    sum += matrix[1] * vec8;
+    sum += matrix[2] * vec9;
+    sum += matrix[3] * vec10;
+    sum += matrix[4] * vec11;
+    sum += matrix[5] * vec12;
+    sum += matrix[6] * vec13;
+    sum += matrix[7] * vec14;
+    sum >>= 15;
+    if (sum > 0x7FFF) {
+        sum = 0x7FFF;
+    } else if (sum < -0x8000) {
+        sum = -0x8000;
+    }
+    vectorOut[7] = sum;
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspMultPolef.s")
 
