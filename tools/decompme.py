@@ -34,8 +34,19 @@ ELSE_PATTERN = re.compile(r"^#else")
 ENDIF_PATTERN = re.compile(r"^#endif")
 INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)")
 
-# Defined preprocessor macros
-defines = {"__MWERKS__"}
+MACROS = [
+    (re.compile(r"\bAT_ADDRESS\b\(.*\)"), ""),
+    (re.compile(r"\b_GX_TF_CTF\b"), "0x20"),
+    (re.compile(r"\b_GX_TF_ZTF\b"), "0x10"),
+    (re.compile(r"\bOS_THREAD_SPECIFIC_MAX\b"), "2"),
+    (re.compile(r"\bCARD_FILENAME_MAX\b"), "32"),
+    (re.compile(r"\bCARD_ICON_MAX\b"), "8"),
+    (re.compile(r"\bN64_FRAME_WIDTH\b"), "320"),
+    (re.compile(r"\bN64_FRAME_HEIGHT\b"), "240"),
+]
+
+# Defined preprocessor macros (for conditions)
+defines = set()
 # Stack of preprocessor conditions
 condition_stack = [True]
 
@@ -48,7 +59,7 @@ def find_include_file(filename: str) -> Path:
     raise FileNotFoundError(f"Could not find include file {filename}")
 
 
-def process_file(path: Path) -> str:
+def process_c_file(path: Path) -> str:
     lines = path.read_text().splitlines()
     out_text = ""
     for i, line in enumerate(lines):
@@ -72,14 +83,28 @@ def process_file(path: Path) -> str:
             elif match := INCLUDE_PATTERN.match(line.strip()):
                 include_file = find_include_file(match[1])
                 out_text += f'/* "{path}" line {i + 1} "{include_file}" */\n'
-                out_text += process_file(include_file)
+                out_text += process_c_file(include_file)
                 out_text += f'/* end "{include_file}" */\n'
-            elif INCBIN_PATTERN.match(line.strip()):
+            elif match := INCBIN_PATTERN.match(line.strip()):
                 out_text += "    0"
                 out_text += "\n"
             else:
+                for pattern, replacement in MACROS:
+                    line = pattern.sub(replacement, line)
                 out_text += line
                 out_text += "\n"
+
+    return out_text
+
+
+def process_asm_file(path: Path) -> str:
+    lines = path.read_text().splitlines()
+    out_text = ""
+    for line in lines:
+        if line.startswith(".global "):
+            continue
+        out_text += line
+        out_text += "\n"
 
     return out_text
 
@@ -95,8 +120,8 @@ def main():
     args = parser.parse_args()
 
     func_name = args.asm_file.stem
-    asm_cont = args.asm_file.read_text()
-    context = process_file(args.c_file)
+    context = process_c_file(args.c_file)
+    asm_cont = process_asm_file(args.asm_file)
     source_code = ""  # TODO: separate source code from context automatically
 
     if args.print_context:

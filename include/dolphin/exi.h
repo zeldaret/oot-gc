@@ -1,6 +1,7 @@
 #ifndef _DOLPHIN_EXI_H_
 #define _DOLPHIN_EXI_H_
 
+#include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "dolphin/types.h"
 
@@ -57,12 +58,6 @@
 #define EXI_STATE_SELECTED 0x04
 #define EXI_STATE_ATTACHED 0x08
 #define EXI_STATE_LOCKED 0x10
-
-#ifdef __MWERKS__
-u32 OS_EXI[0x40] : 0xCC006800;
-#else
-#define OS_EXI ((u32*)0xCC006800)
-#endif
 
 typedef void (*EXICallback)(s32 chan, OSContext* context);
 

@@ -4,10 +4,10 @@
 static tXL_LIST* gpListData;
 
 static inline bool xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
-    tXL_NODE* pListNode;
+    void* pListNode;
 
-    for (pListNode = (tXL_NODE*)gpListData->pNodeHead; pListNode != NULL; pListNode = pListNode->next) {
-        *ppData = (__anon_0x5062*)pListNode->data;
+    for (pListNode = gpListData->pNodeHead; pListNode != NULL; pListNode = NODE_NEXT(pListNode)) {
+        *ppData = (__anon_0x5062*)NODE_DATA(pListNode);
         if ((*ppData)->pType == pType) {
             return true;
         }
@@ -33,8 +33,8 @@ static inline bool xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pTyp
 bool xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
     bool bFlag;
     __anon_0x5062* pData;
-    tXL_NODE* temp1;
-    tXL_NODE* temp2;
+    void* temp1;
+    void* temp2;
 
     if (!xlObjectFindData(&pData, pType)) {
         if (!xlObjectMakeData(&pData, pType)) {
@@ -49,10 +49,10 @@ bool xlObjectMake(void** ppObject, void* pArgument, _XL_OBJECTTYPE* pType) {
         return false;
     }
 
-    temp1 = (tXL_NODE*)*ppObject;
-    temp2 = (tXL_NODE*)pData;
-    *ppObject = &temp1->data;
-    temp1->next = temp2;
+    temp1 = *ppObject;
+    temp2 = pData;
+    *ppObject = ((u8*)*ppObject + 4);
+    NODE_NEXT(temp1) = temp2;
 
     if (bFlag) {
         pType->pfEvent(*ppObject, 0, NULL);
@@ -66,7 +66,7 @@ bool xlObjectFree(void** ppObject) {
         __anon_0x5062* pData = *(__anon_0x5062**)((u8*)*ppObject - 4);
 
         pData->pType->pfEvent(*ppObject, 3, NULL);
-        *ppObject = (void*)((u8*)*ppObject - 4);
+        *ppObject = ((u8*)*ppObject - 4);
 
         if (xlListFreeItem(pData->pList, ppObject) == 0) {
             return false;
@@ -134,10 +134,10 @@ bool xlObjectReset(void) {
     pListNode = gpListData->pNodeHead;
 
     while (pListNode != NULL) {
-        if (!xlListFree((void*)((s8*)pListNode + 4))) {
+        if (!xlListFree((void*)((u8*)pListNode + 4))) {
             return false;
         }
-        pListNode = ((tXL_NODE*)pListNode)->next;
+        pListNode = NODE_NEXT(pListNode);
     }
 
     if (!xlListFree(&gpListData)) {
