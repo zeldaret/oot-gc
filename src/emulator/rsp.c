@@ -921,9 +921,37 @@ bool rspMultPolef(Rsp* pRSP, s16 (*matrix)[8], s16* vectorIn, s16* vectorOut) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadADPCMCoefTable1.s")
+static bool rspLoadADPCMCoefTable1(Rsp* pRSP) {
+    u32 i;
+    u32 j;
+    u32 nCoefIndex;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadADPCMCoefTable2.s")
+    nCoefIndex = (s32)pRSP->nAudioADPCMOffset / 2;
+    for (j = 0; j < 4; j++, nCoefIndex += 16) {
+        for (i = 0; i < 8; i++) {
+            pRSP->anADPCMCoef[j][0][i] = pRSP->anAudioBuffer[nCoefIndex + i];
+            pRSP->anADPCMCoef[j][1][i] = pRSP->anAudioBuffer[nCoefIndex + 8 + i];
+        }
+    }
+
+    return true;
+}
+
+static bool rspLoadADPCMCoefTable2(Rsp* pRSP) {
+    u32 i;
+    u32 j;
+    u32 nCoefIndex;
+
+    nCoefIndex = (s32)pRSP->nAudioADPCMOffset / 2;
+    for (j = 0; j < 4; j++, nCoefIndex += 16) {
+        for (i = 0; i < 8; i++) {
+            pRSP->anADPCMCoef[j][0][i] = pRSP->anAudioBuffer[nCoefIndex + i];
+            pRSP->anADPCMCoef[j][1][i] = pRSP->anAudioBuffer[nCoefIndex + 8 + i];
+        }
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAADPCMDec1Fast.s")
 
