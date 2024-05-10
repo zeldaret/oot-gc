@@ -1,5 +1,7 @@
 #include "dolphin.h"
 #include "emulator/_buildtev.h"
+#include "emulator/frame.h"
+#include "emulator/simGCN.h"
 
 GXTevColorArg gCombinedColor[] = {
     0x00000000, 0x00000008, 0x00000008, 0x00000006, 0x0000000A, 0x0000000E, 0x0000000C, 0x00000001,
@@ -58,10 +60,41 @@ static char* strings[] = {
 
 char D_800F0450[] = "0x%08x = ( ";
 
+static void SetTableTevStages(Frame* pFrame, CombineModeTev* ctP);
+
 #pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetTableTevStages.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetNumTexGensChans.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetTevStages.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetTevStageTable.s")
+bool SetTevStageTable(Frame* pFrame, s32 numCycles) {
+    u32 tempColor1;
+    u32 tempAlpha1;
+    u32 tempColor2;
+    u32 tempAlpha2;
+    CombineModeTev* ctP;
+
+    if (gpSystem->eTypeROM == SRT_ZELDA2) {
+        if (pFrame->aMode[FMT_COMBINE_COLOR1] == 0x1F040501 && pFrame->aMode[FMT_COMBINE_ALPHA1] == 0x07030701) {
+            if (pFrame->aMode[FMT_COMBINE_COLOR2] == 0x04040300 && pFrame->aMode[FMT_COMBINE_ALPHA2] == 0x07050706) {
+                pFrame->aMode[FMT_COMBINE_COLOR2] = 0x1F040300;
+            }  
+        }
+    }
+
+    tempColor1 = pFrame->aMode[FMT_COMBINE_COLOR1];
+    tempAlpha1 = pFrame->aMode[FMT_COMBINE_ALPHA1];
+
+    if (numCycles == 2) {
+        tempColor2 = pFrame->aMode[FMT_COMBINE_COLOR2];
+        tempAlpha2 = pFrame->aMode[FMT_COMBINE_ALPHA2];
+    } else {
+        tempAlpha2 = 0;
+        tempColor2 = 0;
+    }
+
+    ctP = BuildCombineModeTev(tempColor1, tempAlpha1, tempColor2, tempAlpha2, numCycles);
+    SetTableTevStages(pFrame, ctP);
+    return true;
+}

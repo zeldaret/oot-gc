@@ -409,4 +409,8 @@ bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nA
                         f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1);
 
+void SetNumTexGensChans(Frame* pFrame, s32 numCycles);
+void SetTevStages(Frame* pFrame, s32 cycle);
+bool SetTevStageTable(Frame* pFrame, s32 numCycles);
+
 #endif

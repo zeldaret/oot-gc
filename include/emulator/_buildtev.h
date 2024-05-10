@@ -36,4 +36,6 @@ typedef struct CombineModeTev {
 extern GXTevAlphaArg gAlphaArgs[10];
 extern GXTevColorArg gColorArgs[16];
 
+CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alpha2, u32 numCycles);
+
 #endif
