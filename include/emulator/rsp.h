@@ -2,6 +2,7 @@
 #define _RSP_H
 
 #include "dolphin.h"
+#include "emulator/xlList.h"
 #include "emulator/xlObject.h"
 
 #define GBI_COMMAND_HI(p) (((u32*)(p))[0])
@@ -115,6 +116,19 @@ typedef struct __anon_0x57E56 {
 typedef struct __anon_0x58107 {
     /* 0x0 */ s16 anSlice[8];
 } __anon_0x58107; // size = 0x10
+
+typedef struct __anon_0x58360 {
+    /* 0x0 */ s16 r;
+    /* 0x2 */ s16 g;
+    /* 0x4 */ s16 b;
+    /* 0x6 */ s16 a;
+} __anon_0x58360; // size = 0x8
+
+typedef struct __anon_0x583EE {
+    /* 0x0 */ s16 y;
+    /* 0x2 */ s16 u;
+    /* 0x4 */ s16 v;
+} __anon_0x583EE; // size = 0x6
 
 // __anon_0x5845E
 typedef struct Rsp {
