@@ -6,13 +6,24 @@
 #include "emulator/xlObject.h"
 
 #define RSP_DMEM_SIZE 0x1000
-#define RSP_TASK(pRSP) ((RspTask*)((u8*)pRSP->pDMEM + (RSP_DMEM_SIZE - sizeof(RspTask))))
+
+#define RSP_MEM_ADDR_REG 0x00
+#define RSP_DRAM_ADDR_REG 0x04
+#define RSP_RD_LEN_REG 0x08
+#define RSP_WR_LEN_REG 0x0C
+#define RSP_STATUS_REG 0x10
+#define RSP_DMA_FULL_REG 0x14
+#define RSP_DMA_BUSY_REG 0x18
+#define RSP_SEMAPHORE_REG 0x1C
+#define RSP_PC_REG 0x20
+
+#define RSP_TASK(pRSP) ((RspTask*)((u8*)(pRSP)->pDMEM + (RSP_DMEM_SIZE - sizeof(RspTask))))
 
 #define GBI_COMMAND_HI(p) (((u32*)(p))[0])
 #define GBI_COMMAND_LO(p) (((u32*)(p))[1])
 
 #define SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
-    (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM)&0xFFFFFF))
+    (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM) & 0xFFFFFF))
 
 typedef enum __anon_0x581E7 {
     RUT_NOCODE = -1,

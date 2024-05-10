@@ -640,7 +640,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
     void* pSource;
     s32 nLength;
 
-    switch ((nAddress >> 0xC) & 0xFFF) {
+    switch ((nAddress >> 12) & 0xFFF) {
         case 0x0:
             *((s32*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 2)) = *pData;
             break;
@@ -649,13 +649,13 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
             break;
         case 0x40:
             switch (nAddress & 0x1F) {
-                case 0:
+                case RSP_MEM_ADDR_REG:
                     pRSP->nAddressSP = *pData & 0x1FFF;
                     break;
-                case 4:
+                case RSP_DRAM_ADDR_REG:
                     pRSP->nAddressRDRAM = *pData & 0x03FFFFFF;
                     break;
-                case 8:
+                case RSP_RD_LEN_REG:
                     pRSP->nSizeGet = *pData;
                     nLength = pRSP->nSizeGet & 0xFFF;
                     if (pRSP->nAddressSP & 0x1000) {
@@ -668,7 +668,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                         return false;
                     }
                     break;
-                case 12:
+                case RSP_WR_LEN_REG:
                     pRSP->nSizePut = *pData;
                     nLength = pRSP->nSizePut & 0xFFF;
                     if (pRSP->nAddressSP & 0x1000) {
@@ -684,7 +684,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                         return false;
                     }
                     break;
-                case 16:
+                case RSP_STATUS_REG:
                     nData = *pData & 0xFFFF;
                     if (nData & 1) {
                         OSGetTick();
@@ -694,7 +694,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                             case 0:
                                 break;
                             case 1:
-                                if ((s32)pRSP->yield.bValid != 0) {
+                                if (pRSP->yield.bValid) {
                                     if (!rspLoadYield(pRSP)) {
                                         return false;
                                     }
@@ -718,8 +718,10 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                                     if (!rspParseJPEG_Decode(pRSP, pTask)) {
                                         __cpuBreak(SYSTEM_CPU(pRSP->pHost));
                                     }
-                                } else if (!rspParseJPEG_DecodeZ(pRSP, pTask)) {
-                                    __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                } else {
+                                    if (!rspParseJPEG_DecodeZ(pRSP, pTask)) {
+                                        __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                    }
                                 }
                                 pRSP->nStatus |= 0x201;
                                 xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
@@ -729,8 +731,10 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                                     if (!rspParseJPEG_Encode(pRSP, pTask)) {
                                         __cpuBreak(SYSTEM_CPU(pRSP->pHost));
                                     }
-                                } else if (!rspParseJPEG_EncodeZ(pRSP, pTask)) {
-                                    __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                } else {
+                                    if (!rspParseJPEG_EncodeZ(pRSP, pTask)) {
+                                        __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                    }
                                 }
                                 pRSP->nStatus |= 0x201;
                                 xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
@@ -1100,7 +1104,7 @@ bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument) {
             pRSP->pHost = pArgument;
             pRSP->nPass = 1;
             pRSP->nMode = 0;
-            pRSP->yield.bValid = 0;
+            pRSP->yield.bValid = false;
             pRSP->nStatus = 1;
             pRSP->pfUpdateWaiting = NULL;
             if (!xlListMake(&pRSP->pListUCode, 0x60)) {
