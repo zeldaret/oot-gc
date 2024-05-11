@@ -402,7 +402,8 @@ bool pifProcessOutputData(Pif* pPIF) {
         }
 
         prx = PIF_GET_RAM_ADDR(pPIF, iData++);
-        if (PIF_GET_RAM_DATA(pPIF, iData) == 1 && !pifExecuteCommand(pPIF, PIF_GET_RAM_ADDR(pPIF, iData), ptx, prx, channel)) {
+        if (PIF_GET_RAM_DATA(pPIF, iData) == 1 &&
+            !pifExecuteCommand(pPIF, PIF_GET_RAM_ADDR(pPIF, iData), ptx, prx, channel)) {
             return false;
         }
 
