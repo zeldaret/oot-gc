@@ -20,7 +20,7 @@ typedef f32 Mtx44[4][4];
 typedef f32 (*Mtx44Ptr)[4];
 
 void PSMTXIdentity(Mtx m);
-void SMTXConcat(const Mtx a, const Mtx b, Mtx ab);
+void PSMTXConcat(const Mtx a, const Mtx b, Mtx ab);
 void PSMTXTrans(Mtx m, f32 xT, f32 yT, f32 zT);
 void PSMTXTransApply(const Mtx src, Mtx dst, f32 xT, f32 yT, f32 zT);
 void PSMTXScale(Mtx m, f32 xS, f32 yS, f32 zS);

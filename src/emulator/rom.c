@@ -378,29 +378,22 @@ static bool romCacheGame_ZELDA(f32 rProgress) {
         GXSetTevOp(0, 3);
         GXSetTevOrder(0, 0, 0, 0xFF);
         GXClearVtxDesc();
-        GXSetVtxDesc(9, 1);
-        GXSetVtxDesc(0xD, 1);
-        GXSetVtxAttrFmt(0, 9, 0, 4, 0);
-        GXSetVtxAttrFmt(0, 0xD, 1, 0, 0);
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XY, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
         GXLoadTexObj(&textureObject, 0);
-        GXBegin(0x80, 0, 4);
 
-        GXWGFifo.f32 = 0.0f;
-        GXWGFifo.f32 = 0.0f;
-        GXWGFifo.s8 = 0;
-        GXWGFifo.s8 = 0;
-        GXWGFifo.f32 = 640.0f;
-        GXWGFifo.f32 = 0.0f;
-        GXWGFifo.s8 = 1;
-        GXWGFifo.s8 = 0;
-        GXWGFifo.f32 = 640.0f;
-        GXWGFifo.f32 = 480.0f;
-        GXWGFifo.s8 = 1;
-        GXWGFifo.s8 = 1;
-        GXWGFifo.f32 = 0.0f;
-        GXWGFifo.f32 = 480.0f;
-        GXWGFifo.s8 = 0;
-        GXWGFifo.s8 = 1;
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition2f32(0.0f, 0.0f);
+        GXTexCoord2u8(0, 0);
+        GXPosition2f32(640.0f, 0.0f);
+        GXTexCoord2u8(1, 0);
+        GXPosition2f32(640.0f, 480.0f);
+        GXTexCoord2u8(1, 1);
+        GXPosition2f32(0.0f, 480.0f);
+        GXTexCoord2u8(0, 1);
+        GXEnd();
 
         DEMODoneRender();
     }

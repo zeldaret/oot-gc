@@ -355,20 +355,8 @@ bool frameDrawSetup2D(Frame* pFrame);
 bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
 bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
 
-bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive);
-
-bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
-bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
-
+void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData);
+void ZeldaDrawFrame(Frame* pFrame, u16* pData);
 bool frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi);
 bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi);
 bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi);

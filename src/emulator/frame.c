@@ -12,6 +12,30 @@
 #include "macros.h"
 #include "math.h"
 
+static bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive);
+
+static bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
+
+static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
+static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
+static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
+static bool frameUpdateCache(Frame* pFrame);
+static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
+static inline bool frameResetCache(Frame* pFrame);
+static bool frameSetupCache(Frame* pFrame);
+void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
+
 const s32 D_800D31C0[] = {
     0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
     0x00000002, 0x0003C000, 0x00000001, 0x0003E000, 0x00000000, 0x0003F000, 0x00000000, 0x0003F800,
@@ -417,17 +441,6 @@ const f32 D_80135F7C = 0.26f;
 const f32 D_80135F80 = 8.44f;
 const f64 D_80135F88 = 8.44;
 
-static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
-static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32);
-static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
-static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
-static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
-static bool frameUpdateCache(Frame* pFrame);
-static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
-static inline bool frameResetCache(Frame* pFrame);
-static bool frameSetupCache(Frame* pFrame);
-void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
-
 static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
 
@@ -601,18 +614,401 @@ static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 n
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupDP.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C0T0.s")
+static bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C1T0.s")
+    if (pFrame->nModeVtx != 0x11) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        pFrame->nModeVtx = 0x11;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T0.s")
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+    }
+    GXEnd();
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C0T3.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C1T3.s")
+static bool frameDrawTriangle_C1T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
 
+    if (pFrame->nModeVtx != 0x13) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x13;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static bool frameDrawTriangle_C3T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+
+    if (pFrame->nModeVtx != 0x13) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x13;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static bool frameDrawTriangle_C0T3(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+
+    if (pFrame->nModeVtx != 0x15) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x15;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static bool frameDrawTriangle_C1T3(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
+
+    if (pFrame->nModeVtx != 0x17) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x17;
+    }
+
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, pPrimitive->nCount);
+    anData = pPrimitive->anData;
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 2]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+
+static inline void frameWriteVertex(Vertex* pVertex) {
+    GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+    GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+    GXTexCoord2f32(pVertex->rS, pVertex->rT);
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
+#else
+static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive) {
+    s32 pad1[3];
+    Vertex* v0;
+    Vertex* v1;
+    Vertex* v2;
+    s32 iData;
+    u8* anData;
+    Vertex aNewVertArray[8];
+    f32 fInterp;
+    f32 fTempColor1;
+    f32 fTempColor2;
+    u32 nNewVertCount;
+    u32 bInFront;
+    u32 bBehind;
+    u32 aSide[3];
+
+    iData = 0;
+    anData = pPrimitive->anData;
+    while (iData < pPrimitive->nCount) {
+        aSide[0] = 3;
+        aSide[1] = 3;
+        aSide[2] = 3;
+        bInFront = false;
+        bBehind = false;
+
+        v0 = &pFrame->aVertex[anData[iData + 0]];
+        if (v0->vec.z < 0.0f) {
+            aSide[0] = 0;
+            bBehind = true;
+        } else if (v0->vec.z > 0.0f) {
+            aSide[0] = 1;
+            bInFront = true;
+        }
+
+        v1 = &pFrame->aVertex[anData[iData + 1]];
+        if (v1->vec.z < 0.0f) {
+            aSide[1] = 0;
+            bBehind = true;
+        } else if (v1->vec.z > 0.0f) {
+            aSide[1] = 1;
+            bInFront = true;
+        }
+
+        v2 = &pFrame->aVertex[anData[iData + 2]];
+        if (v2->vec.z < 0.0f) {
+            aSide[2] = 0;
+            bBehind = true;
+        } else if (v2->vec.z > 0.0f) {
+            aSide[2] = 1;
+            bInFront = true;
+        }
+
+        if (!bBehind || !bInFront) {
+            GXBegin(GX_TRIANGLES, GX_VTXFMT0, 3);
+            frameWriteVertex(v0);
+            frameWriteVertex(v1);
+            frameWriteVertex(v2);
+            GXEnd();
+            iData += 3;
+        } else {
+            nNewVertCount = 0;
+            aNewVertArray[nNewVertCount++] = *v0;
+            if ((aSide[0] == 0 && aSide[1] == 1) || (aSide[0] == 1 && aSide[1] == 0)) {
+                fInterp = -v0->vec.z / (v1->vec.z - v0->vec.z);
+
+                aNewVertArray[1].vec.z = 0.0f;
+                if (v0->vec.y == v1->vec.y) {
+                    aNewVertArray[1].vec.y = v0->vec.y;
+                } else {
+                    aNewVertArray[1].vec.y = v0->vec.y + fInterp * (v1->vec.y - v0->vec.y);
+                }
+                if (v0->vec.x == v1->vec.x) {
+                    aNewVertArray[1].vec.x = v0->vec.x;
+                } else {
+                    aNewVertArray[1].vec.x = v0->vec.x + fInterp * (v1->vec.x - v0->vec.x);
+                }
+
+                aNewVertArray[1].rS = v0->rS + fInterp * (v1->rS - v0->rS);
+                aNewVertArray[1].rT = v0->rT + fInterp * (v1->rT - v0->rT);
+
+                fTempColor1 = v1->anColor[0];
+                fTempColor2 = v0->anColor[0];
+                aNewVertArray[1].anColor[0] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v1->anColor[1];
+                fTempColor2 = v0->anColor[1];
+                aNewVertArray[1].anColor[1] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v1->anColor[2];
+                fTempColor2 = v0->anColor[2];
+                aNewVertArray[1].anColor[2] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v1->anColor[3];
+                fTempColor2 = v0->anColor[3];
+                aNewVertArray[1].anColor[3] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+
+                nNewVertCount++;
+            }
+
+            aNewVertArray[nNewVertCount++] = *v1;
+            if ((aSide[1] == 1 && aSide[2] == 0) || (aSide[1] == 0 && aSide[2] == 1)) {
+                fInterp = -v1->vec.z / (v2->vec.z - v1->vec.z);
+
+                aNewVertArray[nNewVertCount].vec.z = 0.0f;
+                if (v1->vec.y == v2->vec.y) {
+                    aNewVertArray[nNewVertCount].vec.y = v1->vec.y;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.y = v1->vec.y + fInterp * (v2->vec.y - v1->vec.y);
+                }
+                if (v1->vec.x == v2->vec.x) {
+                    aNewVertArray[nNewVertCount].vec.x = v1->vec.x;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.x = v1->vec.x + fInterp * (v2->vec.x - v1->vec.x);
+                }
+
+                aNewVertArray[nNewVertCount].rS = v1->rS + fInterp * (v2->rS - v1->rS);
+                aNewVertArray[nNewVertCount].rT = v1->rT + fInterp * (v2->rT - v1->rT);
+
+                fTempColor1 = v2->anColor[0];
+                fTempColor2 = v1->anColor[0];
+                aNewVertArray[nNewVertCount].anColor[0] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[1];
+                fTempColor2 = v1->anColor[1];
+                aNewVertArray[nNewVertCount].anColor[1] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[2];
+                fTempColor2 = v1->anColor[2];
+                aNewVertArray[nNewVertCount].anColor[2] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[3];
+                fTempColor2 = v1->anColor[3];
+                aNewVertArray[nNewVertCount].anColor[3] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+
+                nNewVertCount++;
+            }
+
+            aNewVertArray[nNewVertCount++] = *v2;
+            if ((aSide[0] == 0 && aSide[2] == 1) || (aSide[0] == 1 && aSide[2] == 0)) {
+                fInterp = -v0->vec.z / (v2->vec.z - v0->vec.z);
+
+                aNewVertArray[nNewVertCount].vec.z = 0.0f;
+                if (v0->vec.y == v2->vec.y) {
+                    aNewVertArray[nNewVertCount].vec.y = v0->vec.y;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.y = v0->vec.y + fInterp * (v2->vec.y - v0->vec.y);
+                }
+                if (v0->vec.x == v2->vec.x) {
+                    aNewVertArray[nNewVertCount].vec.x = v0->vec.x;
+                } else {
+                    aNewVertArray[nNewVertCount].vec.x = v0->vec.x + fInterp * (v2->vec.x - v0->vec.x);
+                }
+
+                aNewVertArray[nNewVertCount].rS = v0->rS + fInterp * (v2->rS - v0->rS);
+                aNewVertArray[nNewVertCount].rT = v0->rT + fInterp * (v2->rT - v0->rT);
+
+                fTempColor1 = v2->anColor[0];
+                fTempColor2 = v0->anColor[0];
+                aNewVertArray[nNewVertCount].anColor[0] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[1];
+                fTempColor2 = v0->anColor[1];
+                aNewVertArray[nNewVertCount].anColor[1] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[2];
+                fTempColor2 = v0->anColor[2];
+                aNewVertArray[nNewVertCount].anColor[2] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+                fTempColor1 = v2->anColor[3];
+                fTempColor2 = v0->anColor[3];
+                aNewVertArray[nNewVertCount].anColor[3] = fTempColor2 + fInterp * (fTempColor1 - fTempColor2);
+
+                nNewVertCount++;
+            }
+
+            if (nNewVertCount == 5) {
+                if (v1->vec.x == aNewVertArray[1].vec.x && v1->vec.y == aNewVertArray[1].vec.y &&
+                    v1->vec.z == aNewVertArray[1].vec.z) {
+                    GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    GXEnd();
+                } else if (v2->vec.x == aNewVertArray[3].vec.x && v2->vec.y == aNewVertArray[3].vec.y &&
+                           v2->vec.z == aNewVertArray[3].vec.z) {
+                    GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    GXEnd();
+                } else {
+                    GXBegin(GX_TRIANGLES, GX_VTXFMT0, 9);
+                    frameWriteVertex(&aNewVertArray[0]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    frameWriteVertex(&aNewVertArray[4]);
+                    frameWriteVertex(&aNewVertArray[1]);
+                    frameWriteVertex(&aNewVertArray[2]);
+                    frameWriteVertex(&aNewVertArray[3]);
+                    GXEnd();
+                }
+            }
+            iData += 3;
+        }
+    }
+
+    return true;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
@@ -638,9 +1034,9 @@ bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
         GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
         GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
         GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
         pFrame->nModeVtx = 0x17;
     }
 
@@ -649,19 +1045,265 @@ bool frameDrawTriangle_C3T3(Frame* pFrame, Primitive* pPrimitive) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_Setup.s")
+static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive) {
+    bool bFlag;
+    s32 nColors;
 
+    if (!frameDrawSetupSP(pFrame, &nColors, &bFlag, 3)) {
+        return false;
+    }
+
+    if (!frameDrawSetupDP(pFrame, &nColors, &bFlag, 0)) {
+        return false;
+    }
+
+    pFrame->aDraw[1] = (FrameDrawFunc)gapfDrawTriangle[nColors + (bFlag ? 4 : 0)];
+    if (!pFrame->aDraw[1](pFrame, pPrimitive)) {
+        return false;
+    }
+
+    return true;
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T0.s")
+#else
+static bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x21) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        pFrame->nModeVtx = 0x21;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C1T0.s")
+#else
+static bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x23) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x23;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T0.s")
+#else
+static bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x23) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0x23;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T2.s")
+#else
+static bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x25) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x25;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C1T2.s")
+#else
+static bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+    Vertex* pVertexColor;
 
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x27) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x27;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertexColor = &pFrame->aVertex[anData[iData + 0]];
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertexColor->anColor[0], pVertexColor->anColor[1], pVertexColor->anColor[2],
+                   pVertexColor->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T2.s")
+#else
+static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive) {
+    s32 iData;
+    u8* anData;
+    Vertex* pVertex;
+
+    anData = pPrimitive->anData;
+    if (pFrame->nWidthLine != anData[2]) {
+        pFrame->nWidthLine = anData[2];
+        GXSetLineWidth(anData[2] * 3 * (s32)(pFrame->rScaleX / 2.0f), GX_TO_ZERO);
+    }
+    if (pFrame->nModeVtx != 0x27) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0x27;
+    }
+
+    GXBegin(GX_LINES, GX_VTXFMT0, pPrimitive->nCount * 2 / 3);
+    for (iData = 0; iData < pPrimitive->nCount; iData += 3) {
+        pVertex = &pFrame->aVertex[anData[iData + 0]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+        pVertex = &pFrame->aVertex[anData[iData + 1]];
+        GXPosition3f32(pVertex->vec.x, pVertex->vec.y, pVertex->vec.z);
+        GXColor4u8(pVertex->anColor[0], pVertex->anColor[1], pVertex->anColor[2], pVertex->anColor[3]);
+        GXTexCoord2f32(pVertex->rS, pVertex->rT);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
 
 static bool frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
     bool bFlag;
@@ -683,7 +1325,71 @@ static bool frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectFill.s")
+#else
+static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle) {
+    bool bFlag;
+    f32 rDepth;
+    f32 rX0;
+    f32 rY0;
+    f32 rX1;
+    f32 rY1;
+
+    if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 && pRectangle->nX0 <= 16 && pRectangle->nY0 <= 32 &&
+        pRectangle->nX1 >= N64_FRAME_WIDTH - 16 && pRectangle->nY1 >= N64_FRAME_WIDTH - 32) {
+        bFlag = false;
+        if (pFrame->aColor[FCT_FILL].r == 0xFF && pFrame->aColor[FCT_FILL].g == 0xFC &&
+            pFrame->aColor[FCT_FILL].b == 0xFF && pFrame->aColor[FCT_FILL].a == 0xFC) {
+            bFlag = true;
+        }
+        if (pFrame->aColor[FCT_FILL].r == 0xF8 && pFrame->aColor[FCT_FILL].g == 0xF8 &&
+            pFrame->aColor[FCT_FILL].b == 0xF0 && pFrame->aColor[FCT_FILL].a == 0) {
+            bFlag = true;
+        }
+        if (bFlag && !(*(volatile u32*)&pFrame->nMode & 0x100000)) {
+            pFrame->nMode |= 0x100000;
+            return true;
+        }
+    }
+
+    rX0 = pRectangle->nX0;
+    rX1 = pRectangle->nX1;
+    rY0 = pRectangle->nY0;
+    rY1 = pRectangle->nY1;
+    if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 || (pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x200000) {
+        rX1 += 1.0f;
+        rY1 += 1.0f;
+    }
+    if ((pFrame->aMode[FMT_OTHER0] & 4) == 4) {
+        rDepth = pFrame->rDepth;
+    } else {
+        rDepth = 0.0f;
+    }
+    if (pFrame->nModeVtx != 0xB) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        pFrame->nModeVtx = 0xB;
+    }
+
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition3f32(rX0, rY0, rDepth);
+    GXColor1u32(0);
+    GXPosition3f32(rX1, rY0, rDepth);
+    GXColor1u32(0);
+    GXPosition3f32(rX1, rY1, rDepth);
+    GXColor1u32(0);
+    GXPosition3f32(rX0, rY1, rDepth);
+    GXColor1u32(0);
+    GXEnd();
+
+    return true;
+}
+#endif
 
 static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
     bool bFlag;
@@ -709,9 +1415,236 @@ static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture.s")
+#else
+static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
+    s32 bCopy;
+    f32 rDepth;
+    f32 rDeltaS;
+    f32 rDeltaT;
+    f32 rX0;
+    f32 rY0;
+    f32 rX1;
+    f32 rY1;
+    f32 rS0;
+    f32 rT0;
+    f32 rS1;
+    f32 rT1;
+    s32 pad;
 
+    if (gpSystem->eTypeROM == SRT_DRMARIO) {
+        if (pRectangle->nX0 == 0 && pRectangle->nY0 == 0 && pRectangle->nX1 == 1208 && pRectangle->nY1 == 20) {
+            if (pFrame->aBuffer[FBT_IMAGE].nAddress != 0x3B5000 && pFrame->aBuffer[FBT_IMAGE].nAddress != 0x3DA800 &&
+                !pFrame->bBackBufferDrawn) {
+                ZeldaDrawFrameNoBlend(pFrame, pFrame->nTempBuffer);
+                pFrame->bBackBufferDrawn = true;
+                nCounter = 0;
+            }
+        }
+        if (pFrame->bBackBufferDrawn == true) {
+            nCounter += 1;
+            if (nCounter < 40) {
+                return true;
+            }
+        }
+    }
+
+    if (sSpecialZeldaHackON) {
+        return true;
+    }
+
+    if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 || (pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x200000) {
+        bCopy = true;
+    } else {
+        bCopy = false;
+    }
+
+    rDeltaS = bCopy ? pRectangle->rDeltaS / 4.0f : pRectangle->rDeltaS;
+    rDeltaT = pRectangle->rDeltaT;
+
+    rX0 = (pRectangle->nX0 + 3) >> 2;
+    rX1 = (pRectangle->nX1 + 3) >> 2;
+    rY0 = (pRectangle->nY0 + 3) >> 2;
+    rY1 = (pRectangle->nY1 + 3) >> 2;
+
+    // TODO: regalloc hacks
+    (void)pRectangle->nY0;
+    if (gpSystem->eTypeROM == SRT_ZELDA1) {
+        if (pRectangle->nX0 == 816 && pRectangle->nY0 == 560) {
+            if (gnCountMapHack < 0 && ++gnCountMapHack == 0) {
+                gnCountMapHack = 1;
+            } else if (gnCountMapHack > 0) {
+                gnCountMapHack--;
+                return true;
+            }
+        }
+    }
+
+    if (pRectangle->bFlip) {
+        rS0 = pRectangle->rS;
+        rT0 = pRectangle->rT;
+        rS1 = pRectangle->rS + rDeltaS * (rY1 - rY0);
+        rT1 = pRectangle->rT + rDeltaT * (rX1 - rX0);
+    } else {
+        rS0 = pRectangle->rS;
+        rT0 = pRectangle->rT;
+        rS1 = pRectangle->rS + rDeltaS * (rX1 - rX0);
+        rT1 = pRectangle->rT + rDeltaT * (rY1 - rY0);
+    }
+
+    if (bCopy) {
+        rX1 += 1.0f;
+        rS1 += 1.0f;
+        rY1 += 1.0f;
+        rT1 += 1.0f;
+    }
+
+    rDepth = 0.0f;
+    if (pFrame->bOverrideDepth) {
+        rDepth = -1001.0;
+    }
+
+    if (pFrame->nModeVtx != 0xF) {
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        pFrame->nModeVtx = 0xF;
+    }
+
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    if (pRectangle->bFlip) {
+        GXPosition3f32(rX0, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT0);
+        GXPosition3f32(rX0, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT0);
+        GXPosition3f32(rX1, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT1);
+        GXPosition3f32(rX1, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT1);
+    } else {
+        GXPosition3f32(rX0, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT0);
+        GXPosition3f32(rX1, rY0, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT0);
+        GXPosition3f32(rX1, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS1, rT1);
+        GXPosition3f32(rX0, rY1, rDepth);
+        GXColor4u8(0, 0, 0, 0);
+        GXTexCoord2f32(rS0, rT1);
+    }
+    GXEnd();
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
+#else
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
+    Mtx matrix;
+    Mtx matrixA;
+    Mtx matrixB;
+    FrameTexture* pTexture[8];
+    f32 rScaleS;
+    f32 rScaleT;
+    f32 rSlideS;
+    f32 rSlideT;
+    u32 bFlag;
+    u32 nColors;
+    s32 iTile;
+    s32 firstTile;
+    s32 nCount;
+    s32 iIndex;
+    s8 cTempAlpha;
+
+    iTile = firstTile = pRectangle->iTile;
+    if (sSpecialZeldaHackON) {
+        return true;
+    }
+
+    if (!frameDrawSetup2D(pFrame)) {
+        return false;
+    }
+
+    nColors = 0;
+    bFlag = true;
+    if (!frameDrawSetupDP(pFrame, (s32*)&nColors, (bool*)&bFlag, 1)) {
+        return false;
+    }
+
+    nCount = iTile + (iTile < 7 && pFrame->aTile[iTile + 1].nSizeX != 0 ? 1 : 0);
+    if (bFlag) {
+        for (iIndex = 0; iTile <= nCount; iTile++, iIndex++) {
+            if (frameLoadTile(pFrame, &pTexture[iTile], iTile | (iIndex << 4))) {
+                if (gpSystem->eTypeROM == SRT_ZELDA2 && pTexture[iTile]->nAddress == 0x784600 &&
+                    pRectangle->nX1 == 1280) {
+                    bSkip = true;
+                    if (!pFrame->bPauseBGDrawn) {
+                        cTempAlpha = pFrame->cBlurAlpha;
+                        pFrame->cBlurAlpha = 220;
+                        ZeldaDrawFrame(pFrame, pFrame->nCopyBuffer);
+                        pFrame->cBlurAlpha = cTempAlpha;
+                        pFrame->bPauseBGDrawn = true;
+                        bSkip = true;
+                    }
+                }
+                if (bSkip) {
+                    if (pRectangle->nY1 == 960) {
+                        bSkip = false;
+                        return true;
+                    }
+                    return true;
+                }
+
+                rScaleS = 1.0f / pTexture[iTile]->nSizeX;
+                if (pFrame->aTile[iTile].nShiftS < 11) {
+                    rScaleS /= (1 << pFrame->aTile[iTile].nShiftS);
+                } else {
+                    rScaleS *= (1 << (16 - pFrame->aTile[iTile].nShiftS));
+                }
+
+                rScaleT = 1.0f / pTexture[iTile]->nSizeY;
+                if (pFrame->aTile[iTile].nShiftT < 11) {
+                    rScaleT /= (1 << pFrame->aTile[iTile].nShiftT);
+                } else {
+                    rScaleT *= (1 << (16 - pFrame->aTile[iTile].nShiftT));
+                }
+
+                rSlideS = (pFrame->aTile[iTile].nX0 / 4.0f) / pTexture[iTile]->nSizeX;
+                rSlideT = (pFrame->aTile[iTile].nY0 / 4.0f) / pTexture[iTile]->nSizeY;
+                PSMTXTrans(matrixA, -rSlideS, -rSlideT, 0.0f);
+                PSMTXScale(matrixB, rScaleS, rScaleT, 0.0f);
+                PSMTXConcat(matrixA, matrixB, matrix);
+                GXLoadTexMtxImm(matrix, ganNameTexMtx[iIndex], 1);
+            }
+        }
+
+        pFrame->aDraw[3] = (FrameDrawFunc)frameDrawRectTexture;
+        if (!pFrame->aDraw[3](pFrame, pRectangle)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+#endif
 
 bool frameShow(Frame* pFrame) { return true; }
 
@@ -943,29 +1876,19 @@ void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
+    GXPosition3f32(0.0f, 0.0f, 0.0f);
+    GXTexCoord2f32(0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, 0.0f, 0.0f);
+    GXTexCoord2f32(1.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 0.0f);
+    GXTexCoord2f32(1.0f, 1.0f);
+    GXPosition3f32(0.0f, N64_FRAME_HEIGHT, 0.0f);
+    GXTexCoord2f32(0.0f, 1.0f);
+    GXEnd();
 }
 #endif
 
@@ -1007,29 +1930,20 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = -1.0f;
-    GXWGFifo.f32 = -1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH - 1;
-    GXWGFifo.f32 = -1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH - 1;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT - 1;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = -1.0f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT - 1;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
+    GXPosition3f32(-1.0f, -1.0f, 0.0f);
+    GXTexCoord2f32(0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH - 1, -1.0f, 0.0f);
+    GXTexCoord2f32(1.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH - 1, N64_FRAME_HEIGHT - 1, 0.0f);
+    GXTexCoord2f32(1.0f, 1.0f);
+    GXPosition3f32(-1.0f, N64_FRAME_HEIGHT - 1, 0.0f);
+    GXTexCoord2f32(0.0f, 1.0f);
+    GXEnd();
+
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
     frameDrawReset(pFrame, 0x47F2D);
@@ -1073,29 +1987,20 @@ void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
+    GXPosition3f32(0.0f, 0.0f, 0.0f);
+    GXTexCoord2f32(0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, 0.0f, 0.0f);
+    GXTexCoord2f32(1.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 0.0f);
+    GXTexCoord2f32(1.0f, 1.0f);
+    GXPosition3f32(0.0f, N64_FRAME_HEIGHT, 0.0f);
+    GXTexCoord2f32(0.0f, 1.0f);
+    GXEnd();
+
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
     frameDrawReset(pFrame, 0x47F2D);
@@ -1190,29 +2095,20 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
+    GXPosition3f32(0.0f, 0.0f, 0.0f);
+    GXTexCoord2f32(0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, 0.0f, 0.0f);
+    GXTexCoord2f32(1.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 0.0f);
+    GXTexCoord2f32(1.0f, 1.0f);
+    GXPosition3f32(0.0f, N64_FRAME_HEIGHT, 0.0f);
+    GXTexCoord2f32(0.0f, 1.0f);
+    GXEnd();
+
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
     frameDrawReset(pFrame, 0x47F2D);
@@ -1283,20 +2179,15 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_WIDTH;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 0.0f;
+    GXPosition3f32(0.0f, 0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, 0.0f, 0.0f);
+    GXPosition3f32(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, 0.0f);
+    GXPosition3f32(0.0f, N64_FRAME_HEIGHT, 0.0f);
+    GXEnd();
+
     color.r = 255;
     color.g = 255;
     color.b = 255;
@@ -1323,29 +2214,20 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = nX0;
-    GXWGFifo.f32 = nY0;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = nX1;
-    GXWGFifo.f32 = nY0;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = nX1;
-    GXWGFifo.f32 = nY1;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = nX0;
-    GXWGFifo.f32 = nY1;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
+    GXPosition3f32(nX0, nY0, 0.0f);
+    GXTexCoord2f32(0.0f, 0.0f);
+    GXPosition3f32(nX1, nY0, 0.0f);
+    GXTexCoord2f32(1.0f, 0.0f);
+    GXPosition3f32(nX1, nY1, 0.0f);
+    GXTexCoord2f32(1.0f, 1.0f);
+    GXPosition3f32(nX0, nY1, 0.0f);
+    GXTexCoord2f32(0.0f, 1.0f);
+    GXEnd();
+
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
     frameDrawReset(pFrame, 0x47F2D);
@@ -1390,29 +2272,20 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_RGBA6, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_RGBA6, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXWGFifo.f32 = 80.0f;
-    GXWGFifo.f32 = 31.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.015625f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 31.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.015625f;
-    GXWGFifo.f32 = N64_FRAME_HEIGHT;
-    GXWGFifo.f32 = 143.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 1.0f;
-    GXWGFifo.f32 = 0.859375;
-    GXWGFifo.f32 = 80.0f;
-    GXWGFifo.f32 = 143.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.0f;
-    GXWGFifo.f32 = 0.859375;
+    GXPosition3f32(80.0f, 31.0f, 0.0f);
+    GXTexCoord2f32(0.0f, 0.015625f);
+    GXPosition3f32(240.0f, 31.0f, 0.0f);
+    GXTexCoord2f32(1.0f, 0.015625f);
+    GXPosition3f32(240.0f, 143.0f, 0.0f);
+    GXTexCoord2f32(1.0f, 0.859375f);
+    GXPosition3f32(80.0f, 143.0f, 0.0f);
+    GXTexCoord2f32(0.0f, 0.859375f);
+    GXEnd();
+
     pFrame->nMode = 0;
     pFrame->nModeVtx = -1;
     frameDrawReset(pFrame, 0x47F2D);

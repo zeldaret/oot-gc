@@ -53,7 +53,7 @@ void THPGXYuv2RgbSetup(GXRenderModeObj* rmode) {
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
     GXSetVtxAttrFmt(GX_VTXFMT7, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
-    GXSetVtxAttrFmt(GX_VTXFMT7, GX_VA_TEX0, GX_POS_XYZ, GX_U16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT7, GX_VA_TEX0, GX_TEX_ST, GX_U16, 0);
     GXSetNumTevStages(4);
     GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
     GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_KONST, GX_CC_C0);
@@ -110,14 +110,13 @@ void THPGXYuv2RgbDraw(u32* y_data, u32* u_data, u32* v_data, s16 x, s16 y, s16 t
     GXLoadTexObj(&texV, GX_TEXMAP2);
 
     GXBegin(GX_QUADS, GX_VTXFMT7, 4);
-
-    // Fifo Writes
     GXPosition3s16(x, y, 0);
     GXTexCoord2u16(0, 0);
-    GXPosition3s16((s16)(x + polygonWidth), y, 0);
+    GXPosition3s16(x + polygonWidth, y, 0);
     GXTexCoord2u16(1, 0);
-    GXPosition3s16((s16)(x + polygonWidth), (s16)(y + polygonHeight), 0);
+    GXPosition3s16(x + polygonWidth, y + polygonHeight, 0);
     GXTexCoord2u16(1, 1);
-    GXPosition3s16(x, (s16)(y + polygonHeight), 0);
+    GXPosition3s16(x, y + polygonHeight, 0);
     GXTexCoord2u16(0, 1);
+    GXEnd();
 }
