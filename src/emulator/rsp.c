@@ -200,7 +200,7 @@ static bool rspInitAudioDMEM1(Rsp* pRSP);
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetVolume1.s")
 
-static bool rspParseABI(Rsp* pRSP, RspTask* pTask);
+static bool rspParseABI(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI1.s")
@@ -492,7 +492,7 @@ inline bool rspPopDL(Rsp* pRSP) {
 static bool rspFindUCode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
-static bool rspLSaveYield(Rsp* pRSP);
+static bool rspSaveYield(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSaveYield.s")
 
 static bool rspLoadYield(Rsp* pRSP);
