@@ -1738,7 +1738,7 @@ inline void UnkInlineReadController(s32 stickValue, s32* val) {
     *val = ret;
 }
 
-bool simulatorReadController(s32 channel, u32* anData, u32 unused) {
+bool simulatorReadController(s32 channel, u32* anData, u8* ptx) {
     static u32 nPrevButton;
     static u32 nCurrButton;
 
