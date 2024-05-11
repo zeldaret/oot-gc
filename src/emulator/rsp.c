@@ -1107,7 +1107,167 @@ static bool rspAADPCMDec1Fast(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAPoleFilter1.s")
+static bool rspAPoleFilter1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u8 nFlags;
+    u16 nScale;
+    s16 anCoef[10][8];
+    s16 anEntries[8];
+    s16 nVTemp[8];
+    s16 nTempScale;
+    s16 anIData0[8];
+    s16 anOData0[8];
+    s16 anInputVec[10];
+    s16* pStateAddress;
+    s16* pDMEM16;
+    s32 nDMEMIn;
+    s32 nDMEMOut;
+    s32 nCount;
+    s32 nSrcAddress;
+    int i;
+
+    nCount = pRSP->nAudioCount[0];
+    if ((int)nCount == 0) {
+        return true;
+    }
+
+    for (i = 0; i < 4; i++) {
+        anOData0[i] = 0;
+    }
+    nFlags = (nCommandHi >> 16) & 0xFF;
+    nScale = nCommandHi & 0xFFFF;
+    nDMEMIn = pRSP->nAudioDMEMIn[0];
+    nDMEMOut = pRSP->nAudioDMEMOut[0];
+    pDMEM16 = pRSP->anAudioBuffer;
+    nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pStateAddress, nSrcAddress, NULL)) {
+        return false;
+    }
+
+    pDMEM16[(s32)pRSP->nAudioScratchOffset / 2 + 0] = 0;
+    pDMEM16[(s32)pRSP->nAudioScratchOffset / 2 + 1] = 0;
+
+    if (!(nFlags & 1)) {
+        for (i = 0; i < 4; i++) {
+            pDMEM16[(s32)pRSP->nAudioScratchOffset / 2 + i] = pStateAddress[i];
+        }
+    }
+
+    nTempScale = (nScale & 0x3FFF) << 2;
+    for (i = 0; i < 8; i++) {
+        anCoef[1][i] = pDMEM16[(s32)pRSP->nAudioADPCMOffset / 2 + 8 + i];
+        nVTemp[i] = ((s32)anCoef[1][i] * (s32)nTempScale) >> 16;
+    }
+
+    for (i = 4; i < 8; i++) {
+        anOData0[i] = pDMEM16[(s32)pRSP->nAudioScratchOffset / 2 + i - 4];
+    }
+
+    for (i = 0; i < 8; i++) {
+        pDMEM16[(s32)pRSP->nAudioADPCMOffset / 2 + 8 + i] = nVTemp[i];
+    }
+
+    for (i = 0; i < 8; i++) {
+        anCoef[0][i] = pDMEM16[(s32)pRSP->nAudioADPCMOffset / 2 + i];
+        anEntries[i] = pDMEM16[(s32)pRSP->nAudioADPCMOffset / 2 + 8 + i];
+    }
+
+    anCoef[2][0] = 0;
+    anCoef[2][1] = anEntries[0];
+    anCoef[2][2] = anEntries[1];
+    anCoef[2][3] = anEntries[2];
+    anCoef[2][4] = anEntries[3];
+    anCoef[2][5] = anEntries[4];
+    anCoef[2][6] = anEntries[5];
+    anCoef[2][7] = anEntries[6];
+    anCoef[3][0] = 0;
+    anCoef[3][1] = 0;
+    anCoef[3][2] = anEntries[0];
+    anCoef[3][3] = anEntries[1];
+    anCoef[3][4] = anEntries[2];
+    anCoef[3][5] = anEntries[3];
+    anCoef[3][6] = anEntries[4];
+    anCoef[3][7] = anEntries[5];
+    anCoef[4][0] = 0;
+    anCoef[4][1] = 0;
+    anCoef[4][2] = 0;
+    anCoef[4][3] = anEntries[0];
+    anCoef[4][4] = anEntries[1];
+    anCoef[4][5] = anEntries[2];
+    anCoef[4][6] = anEntries[3];
+    anCoef[4][7] = anEntries[4];
+    anCoef[5][0] = 0;
+    anCoef[5][1] = 0;
+    anCoef[5][2] = 0;
+    anCoef[5][3] = 0;
+    anCoef[5][4] = anEntries[0];
+    anCoef[5][5] = anEntries[1];
+    anCoef[5][6] = anEntries[2];
+    anCoef[5][7] = anEntries[3];
+    anCoef[6][0] = 0;
+    anCoef[6][1] = 0;
+    anCoef[6][2] = 0;
+    anCoef[6][3] = 0;
+    anCoef[6][4] = 0;
+    anCoef[6][5] = anEntries[0];
+    anCoef[6][6] = anEntries[1];
+    anCoef[6][7] = anEntries[2];
+    anCoef[7][0] = 0;
+    anCoef[7][1] = 0;
+    anCoef[7][2] = 0;
+    anCoef[7][3] = 0;
+    anCoef[7][4] = 0;
+    anCoef[7][5] = 0;
+    anCoef[7][6] = anEntries[0];
+    anCoef[7][7] = anEntries[1];
+    anCoef[8][0] = 0;
+    anCoef[8][1] = 0;
+    anCoef[8][2] = 0;
+    anCoef[8][3] = 0;
+    anCoef[8][4] = 0;
+    anCoef[8][5] = 0;
+    anCoef[8][6] = 0;
+    anCoef[8][7] = anEntries[0];
+
+    for (i = 0; i < 8; i++) {
+        anIData0[i] = pDMEM16[nDMEMIn + i];
+    }
+
+    anInputVec[9] = nScale;
+
+    while (nCount > 0) {
+        for (i = 0; i < 8; i++) {
+            anCoef[9][i] = anIData0[i];
+        }
+
+        anInputVec[0] = anOData0[6];
+        anInputVec[1] = anOData0[7];
+        anInputVec[2] = anIData0[0];
+        anInputVec[3] = anIData0[1];
+        anInputVec[4] = anIData0[2];
+        anInputVec[5] = anIData0[3];
+        anInputVec[6] = anIData0[4];
+        anInputVec[7] = anIData0[5];
+        anInputVec[8] = anIData0[6];
+
+        rspMultPolef(pRSP, anCoef, anInputVec, anOData0);
+
+        nDMEMIn += 8;
+        for (i = 0; i < 8; i++) {
+            pDMEM16[nDMEMOut + i] = anOData0[i];
+            anIData0[i] = pDMEM16[nDMEMIn + i];
+        }
+
+        nDMEMOut += 8;
+        nCount -= 8;
+    }
+
+    for (i = 0; i < 4; i++) {
+        pStateAddress[i] = pDMEM16[nDMEMOut - 4 + i];
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAEnvMixer1.s")
 
