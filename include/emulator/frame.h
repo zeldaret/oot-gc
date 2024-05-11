@@ -401,4 +401,7 @@ void SetNumTexGensChans(Frame* pFrame, s32 numCycles);
 void SetTevStages(Frame* pFrame, s32 cycle);
 bool SetTevStageTable(Frame* pFrame, s32 numCycles);
 
+extern GXTexMapID ganNamePixel[];
+extern GXTexCoordID ganNameTexCoord[];
+
 #endif
