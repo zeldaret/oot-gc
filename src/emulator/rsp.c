@@ -5,6 +5,8 @@
 #include "emulator/rdp.h"
 #include "emulator/rsp_jumptables.h"
 #include "emulator/system.h"
+#include "emulator/xlHeap.h"
+#include "emulator/xlList.h"
 
 _XL_OBJECTTYPE gClassRSP = {
     "RSP",
@@ -596,25 +598,434 @@ static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut8.s")
+bool rspPut8(Rsp* pRSP, u32 nAddress, s8* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *((s8*)pRSP->pDMEM + (nAddress & 0xFFF)) = *pData;
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *((s8*)pRSP->pIMEM + (nAddress & 0xFFF)) = *pData;
+            break;
+        default:
+            return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut16.s")
+    return true;
+}
 
+bool rspPut16(Rsp* pRSP, u32 nAddress, s16* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *((s16*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 1)) = *pData;
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *((s16*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 1)) = *pData;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut32.s")
+#else
+bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
+    RspTask* pTask;
+    s32 nData;
+    s32 nSize;
+    void* pTarget;
+    void* pSource;
+    s32 nLength;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut64.s")
+    switch ((nAddress >> 12) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START): 
+            *((s32*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 2)) = *pData;
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *((s32*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 2)) = *pData;
+            break;
+        case RSP_REG_ADDR_HI(SP_BASE_REG):
+            switch (nAddress & 0x1F) {
+                case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG): 
+                    pRSP->nAddressSP = *pData & 0x1FFF;
+                    break;
+                case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG): 
+                    pRSP->nAddressRDRAM = *pData & 0x03FFFFFF;
+                    break;
+                case RSP_REG_ADDR_LO(SP_RD_LEN_REG): 
+                    pRSP->nSizeGet = *pData;
+                    nLength = pRSP->nSizeGet & 0xFFF;
+                    if (pRSP->nAddressSP & 0x1000) {
+                        pTarget = (u8*)pRSP->pIMEM + (pRSP->nAddressSP & 0xFFF);
+                    } else {
+                        pTarget = (u8*)pRSP->pDMEM + (pRSP->nAddressSP & 0xFFF);
+                    }
+                    if (!xlHeapCopy(pTarget, (s8*)SYSTEM_RAM(pRSP->pHost)->pBuffer + pRSP->nAddressRDRAM, nLength + 1)) {
+                        return false;
+                    }
+                    break;
+                case RSP_REG_ADDR_LO(SP_WR_LEN_REG):
+                    pRSP->nSizePut = *pData;
+                    nLength = pRSP->nSizePut & 0xFFF;
+                    if (pRSP->nAddressSP & 0x1000) {
+                        pSource = (u8*)pRSP->pIMEM + (pRSP->nAddressSP & 0xFFF);
+                    } else {
+                        pSource = (u8*)pRSP->pDMEM + (pRSP->nAddressSP & 0xFFF);
+                    }
+                    nSize = nLength + 1;
+                    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pTarget, pRSP->nAddressRDRAM, (u32*)&nSize)) {
+                        return false;
+                    }
+                    if (!xlHeapCopy(pTarget, pSource, nSize)) {
+                        return false;
+                    }
+                    break;
+                case RSP_REG_ADDR_LO(SP_STATUS_REG):
+                    nData = *pData & 0xFFFF;
+                    if (nData & 1) {
+                        OSGetTick();
+                        pRSP->nStatus &= ~0x1;
+                        pTask = RSP_TASK(pRSP);
+                        switch (pTask->nType) {
+                            case 0:
+                                break;
+                            case 1:
+                                if (pRSP->yield.bValid) {
+                                    if (!rspLoadYield(pRSP)) {
+                                        return false;
+                                    }
+                                    break;
+                                }
+                                pRSP->nMode |= 2;
+                                break;
+                            case 2:
+                                if (pRSP->eTypeAudioUCode != RUT_UNKNOWN) {
+                                    rspParseABI(pRSP);
+                                }
+                                pRSP->nStatus |= 0x201;
+                                xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                                break;
+                            case 3:
+                                pRSP->nStatus |= 0x201;
+                                xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                                break;
+                            case 4:
+                                if (pTask->nOffsetYield == 0) {
+                                    if (!rspParseJPEG_Decode(pRSP, pTask)) {
+                                        __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                    }
+                                } else {
+                                    if (!rspParseJPEG_DecodeZ(pRSP, pTask)) {
+                                        __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                    }
+                                }
+                                pRSP->nStatus |= 0x201;
+                                xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                                break;
+                            case 5:
+                                if (pTask->nOffsetYield == 0) {
+                                    if (!rspParseJPEG_Encode(pRSP, pTask)) {
+                                        __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                    }
+                                } else {
+                                    if (!rspParseJPEG_EncodeZ(pRSP, pTask)) {
+                                        __cpuBreak(SYSTEM_CPU(pRSP->pHost));
+                                    }
+                                }
+                                pRSP->nStatus |= 0x201;
+                                xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                                break;
+                            case 6:
+                                pRSP->nStatus |= 0x201;
+                                xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                                break;
+                            case 7:
+                                pRSP->nStatus |= 0x201;
+                                xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                                break;
+                            default:
+                                return false;
+                        }
+                    }
+                    if (nData & 2) {
+                        pRSP->nStatus |= 1;
+                    }
+                    if (nData & 4) {
+                        pRSP->nStatus &= ~0x2;
+                    }
+                    if (nData & 8) {
+                        xlObjectEvent(pRSP->pHost, 0x1001, (void*)5);
+                    }
+                    if (nData & 0x10) {
+                        xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                    }
+                    if (nData & 0x20) {
+                        pRSP->nStatus &= ~0x20;
+                    }
+                    if (nData & 0x40) {
+                        pRSP->nStatus |= 0x20;
+                    }
+                    if (nData & 0x80) {
+                        pRSP->nStatus &= ~0x40;
+                    }
+                    if (nData & 0x100) {
+                        pRSP->nStatus |= 0x40;
+                    }
+                    if (nData & 0x200) {
+                        pRSP->nStatus &= ~0x180;
+                    }
+                    if (nData & 0x400) {
+                        if (!(pRSP->nStatus & 1)) {
+                            pRSP->nStatus = pRSP->nStatus | 0x101;
+                            if (!rspSaveYield(pRSP)) {
+                                return false;
+                            }
+                            xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
+                        }
+                    }
+                    if (nData & 0x800) {
+                        pRSP->nStatus &= ~0x100;
+                    }
+                    if (nData & 0x1000) {
+                        pRSP->nStatus |= 0x100;
+                    }
+                    if (nData & 0x2000) {
+                        pRSP->nStatus &= ~0x200;
+                    }
+                    if (nData & 0x4000) {
+                        pRSP->nStatus |= 0x200;
+                    }
+                    if (nData & 0x8000) {
+                        pRSP->nStatus &= ~0x400;
+                    }
+                    if (nData & 0x10000) {
+                        pRSP->nStatus |= 0x400;
+                    }
+                    if (nData & 0x20000) {
+                        pRSP->nStatus &= ~0x800;
+                    }
+                    if (nData & 0x40000) {
+                        pRSP->nStatus |= 0x800;
+                    }
+                    if (nData & 0x80000) {
+                        pRSP->nStatus &= ~0x1000;
+                    }
+                    if (nData & 0x100000) {
+                        pRSP->nStatus |= 0x1000;
+                    }
+                    if (nData & 0x200000) {
+                        pRSP->nStatus &= ~0x2000;
+                    }
+                    if (nData & 0x400000) {
+                        pRSP->nStatus |= 0x2000;
+                    }
+                    if (nData & 0x800000) {
+                        pRSP->nStatus &= ~0x4000;
+                    }
+                    if (nData & 0x01000000) {
+                        pRSP->nStatus |= 0x4000;
+                    }
+                    break;
+                case RSP_REG_ADDR_LO(SP_DMA_FULL_REG):
+                    break;
+                case RSP_REG_ADDR_LO(SP_DMA_BUSY_REG):
+                    break;
+                case RSP_REG_ADDR_LO(SP_SEMAPHORE_REG):
+                    pRSP->nSemaphore = 0;
+                    break;
+                default:
+                    return false;
+            }
+            break;
+        case RSP_REG_ADDR_HI(SP_PC_REG):
+            switch (nAddress & 0xF) {
+                case RSP_REG_ADDR_LO(SP_PC_REG):
+                    pRSP->nPC = *pData;
+                    break;
+                case RSP_REG_ADDR_LO(SP_IBIST_REG):
+                    pRSP->nBIST = *pData & 0xFF;
+                    break;
+                default:
+                    return false;
+            }
+            break;
+        default:
+            return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet8.s")
+    PAD_STACK();
+    PAD_STACK();
+    PAD_STACK();
+    return true;
+}
+#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet16.s")
+bool rspPut64(Rsp* pRSP, u32 nAddress, s64* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *((s64*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 3)) = *pData;
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *((s64*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 3)) = *pData;
+            break;
+        default:
+            return false;
+    }
 
+    return true;
+}
+
+bool rspGet8(Rsp* pRSP, u32 nAddress, s8* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *pData = *((s8*)pRSP->pDMEM + (nAddress & 0xFFF));
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *pData = *((s8*)pRSP->pIMEM + (nAddress & 0xFFF));
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+bool rspGet16(Rsp* pRSP, u32 nAddress, s16* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *pData = *((s16*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 1));
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *pData = *((s16*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 1));
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet32.s")
+#else
+bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *pData = *((s32*)pRSP->pDMEM + ((nAddress & 0xFFC) >> 2));
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *pData = *((s32*)pRSP->pIMEM + ((nAddress & 0xFFC) >> 2));
+            break;
+        case RSP_REG_ADDR_HI(SP_BASE_REG):
+            switch (nAddress & 0x1F) {
+               case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG):
+                    *pData = pRSP->nAddressSP;
+                    break;
+               case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG):
+                    *pData = pRSP->nAddressRDRAM;
+                    break;
+               case RSP_REG_ADDR_LO(SP_RD_LEN_REG):
+                    *pData = pRSP->nSizeGet;
+                    break;
+                case RSP_REG_ADDR_LO(SP_WR_LEN_REG):
+                    *pData = pRSP->nSizePut;
+                    break;
+                case RSP_REG_ADDR_LO(SP_STATUS_REG):
+                    *pData = pRSP->nStatus & 0xFFFF;
+                    break;
+                case RSP_REG_ADDR_LO(SP_DMA_FULL_REG):
+                    *pData = pRSP->nFullDMA & 1;
+                    break;
+                case RSP_REG_ADDR_LO(SP_DMA_BUSY_REG):
+                    *pData = pRSP->nBusyDMA & 1;
+                    break;
+                case RSP_REG_ADDR_LO(SP_SEMAPHORE_REG):
+                    pRSP->nSemaphore = 1;
+                    *pData = 0;
+                    break;
+                default:
+                    return false;
+            }
+            break;
+        case RSP_REG_ADDR_HI(SP_PC_REG):
+            switch (nAddress & 0xF) {
+                case RSP_REG_ADDR_LO(SP_PC_REG):
+                    *pData = pRSP->nPC;
+                    break;
+                case RSP_REG_ADDR_LO(SP_IBIST_REG):
+                    *pData = pRSP->nBIST & 0xFF;
+                    break;
+                default:
+                    return false;
+            }
+            break;
+        default:
+            return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet64.s")
+    return true;
+}
+#endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspInvalidateCache.s")
+bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
+    switch ((nAddress >> 0xC) & 0xFFF) {
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
+            *pData = *((s64*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 3));
+            break;
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
+            *pData = *((s64*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 3));
+            break;
+        default:
+            return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEnableABI.s")
+    return true;
+}
+
+bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
+    __anon_0x5B8F2* pUCode;
+    void* pListNode;
+    s32 nOffsetUCode0;
+    s32 nOffsetUCode1;
+
+    nOffsetUCode0 = nOffset1 & 0x7FFFFF;
+    nOffsetUCode1 = nOffset0 & 0x7FFFFF;
+    pListNode = pRSP->pListUCode->pNodeHead;
+
+    while (pListNode != NULL) {
+        s32 offset0;
+        s32 offset1;
+
+        pUCode = (__anon_0x5B8F2*)NODE_DATA(pListNode);
+        pListNode = NODE_NEXT(pListNode);
+
+        if (pUCode->nOffsetCode < pUCode->nOffsetData) {
+            offset0 = pUCode->nOffsetCode;
+            offset1 = pUCode->nOffsetData + pUCode->nLengthData;
+        } else {
+            offset0 = pUCode->nOffsetData;
+            offset1 = pUCode->nOffsetCode + pUCode->nLengthCode;
+        }
+
+        if ((nOffsetUCode1 <= offset0 && offset0 <= nOffsetUCode0) ||
+            (nOffsetUCode1 <= offset1 && offset1 <= nOffsetUCode0)) {
+            if (!xlListFreeItem(pRSP->pListUCode, &pUCode)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool rspEnableABI(Rsp* pRSP, bool bFlag) {
+    pRSP->eTypeAudioUCode = bFlag ? RUT_NOCODE : RUT_UNKNOWN;
+    return true;
+}
 
 bool rspFrameComplete(Rsp* pRSP) {
     if (pRSP->yield.bValid) {
@@ -654,7 +1065,7 @@ bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode) {
                     pRSP->nMode &= ~0x2;
                     pRSP->nMode |= 0x10;
 
-                    pTask = (RspTask*)((u8*)pRSP->pDMEM + 0xFC0);
+                    pTask = RSP_TASK(pRSP);
                     if (!rspParseGBI_Setup(pRSP, pTask)) {
                         return false;
                     }
@@ -686,4 +1097,57 @@ bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspEvent.s")
+bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument) {
+    switch (nEvent) {
+        case 2:
+            pRSP->nPC = 0;
+            pRSP->pHost = pArgument;
+            pRSP->nPass = 1;
+            pRSP->nMode = 0;
+            pRSP->yield.bValid = false;
+            pRSP->nStatus = 1;
+            pRSP->pfUpdateWaiting = NULL;
+            if (!xlListMake(&pRSP->pListUCode, 0x60)) {
+                return false;
+            }
+            if (!xlHeapTake(&pRSP->pDMEM, 0x1000)) {
+                return false;
+            }
+            if (!xlHeapTake(&pRSP->pIMEM, 0x1000)) {
+                return false;
+            }
+            if (!rspSetupS2DEX(pRSP)) {
+                return false;
+            }
+            if (!rspInitAudioDMEM1(pRSP)) {
+                return false;
+            }
+            pRSP->eTypeAudioUCode = RUT_NOCODE;
+            break;
+        case 3:
+            xlHeapFree(&pRSP->pIMEM);
+            xlHeapFree(&pRSP->pDMEM);
+            if (!xlListFree(&pRSP->pListUCode)) {
+                return false;
+            }
+            break;
+        case 0x1002:
+            if (!cpuSetDevicePut(SYSTEM_CPU(pRSP->pHost), pArgument, (Put8Func)rspPut8, (Put16Func)rspPut16,
+                                 (Put32Func)rspPut32, (Put64Func)rspPut64)) {
+                return false;
+            }
+            if (!cpuSetDeviceGet(SYSTEM_CPU(pRSP->pHost), pArgument, (Get8Func)rspGet8, (Get16Func)rspGet16,
+                                 (Get32Func)rspGet32, (Get64Func)rspGet64)) {
+                return false;
+            }
+            break;
+        case 0:
+        case 1:
+        case 0x1003:
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
