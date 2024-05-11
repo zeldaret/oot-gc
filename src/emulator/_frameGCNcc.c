@@ -64,7 +64,54 @@ static void SetTableTevStages(Frame* pFrame, CombineModeTev* ctP);
 
 #pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetTableTevStages.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetNumTexGensChans.s")
+void SetNumTexGensChans(Frame* pFrame, s32 numCycles) {
+    u8 nColor[4];
+    u8 nAlpha[4];
+    u32 tempColor;
+    u32 tempAlpha;
+    s32 i;
+    s32 j;
+    s32 numGens;
+    s32 numChans;
+
+    numGens = 0;
+    numChans = 1;
+
+    for (i = 0; i < numCycles; i++) {
+        if (i == 0) {
+            tempColor = pFrame->aMode[FMT_COMBINE_COLOR1];
+            tempAlpha = pFrame->aMode[FMT_COMBINE_ALPHA1];
+        } else {
+            tempColor = pFrame->aMode[FMT_COMBINE_COLOR2];
+            tempAlpha = pFrame->aMode[FMT_COMBINE_ALPHA2];
+        }
+
+        nColor[0] = tempColor & 0xFF;
+        nColor[1] = (tempColor >> 8) & 0xFF;
+        nColor[2] = (tempColor >> 16) & 0xFF;
+        nColor[3] = (tempColor >> 24) & 0xFF;
+
+        nAlpha[0] = tempAlpha & 0xFF;
+        nAlpha[1] = (tempAlpha >> 8) & 0xFF;
+        nAlpha[2] = (tempAlpha >> 16) & 0xFF;
+        nAlpha[3] = (tempAlpha >> 24) & 0xFF;
+
+        for (j = 0; j < 4; j++) {
+            if (nColor[j] == 1 || nAlpha[j] == 1) {
+                if (numGens <= 0) {
+                    numGens = 1;
+                }
+            } else if (nColor[j] == 2 || nAlpha[j] == 2) {
+                if (numGens <= 1) {
+                    numGens = 2;
+                }
+            }
+        }
+    }
+
+    GXSetNumTexGens(numGens);
+    GXSetNumChans(numChans);
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetTevStages.s")
 
@@ -79,7 +126,7 @@ bool SetTevStageTable(Frame* pFrame, s32 numCycles) {
         if (pFrame->aMode[FMT_COMBINE_COLOR1] == 0x1F040501 && pFrame->aMode[FMT_COMBINE_ALPHA1] == 0x07030701) {
             if (pFrame->aMode[FMT_COMBINE_COLOR2] == 0x04040300 && pFrame->aMode[FMT_COMBINE_ALPHA2] == 0x07050706) {
                 pFrame->aMode[FMT_COMBINE_COLOR2] = 0x1F040300;
-            }  
+            }
         }
     }
 
