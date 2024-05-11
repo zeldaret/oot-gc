@@ -175,6 +175,7 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspVMADN.s")
 
+static bool rspInitAudioDMEM1(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspInitAudioDMEM1.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspDotProduct8x15MatrixBy15x1Vector.s")
@@ -199,6 +200,7 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetVolume1.s")
 
+static bool rspParseABI(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI1.s")
@@ -257,8 +259,10 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFormatYUV.s")
 
+static bool rspParseJPEG_Encode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_Encode.s")
 
+static bool rspParseJPEG_Decode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_Decode.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspCreateJPEGArraysZ.s")
@@ -281,8 +285,10 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspRecon420Z.s")
 
+static bool rspParseJPEG_EncodeZ(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_EncodeZ.s")
 
+static bool rspParseJPEG_DecodeZ(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_DecodeZ.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/Matrix4by4Identity.s")
@@ -317,6 +323,7 @@ const f32 D_80136074 = 1.52587890625e-05;
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjMatrix.s")
 
+static bool rspSetupS2DEX(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetupS2DEX.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetGeometryMode1.s")
@@ -485,8 +492,10 @@ inline bool rspPopDL(Rsp* pRSP) {
 static bool rspFindUCode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
+static bool rspLSaveYield(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSaveYield.s")
 
+static bool rspLoadYield(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadYield.s")
 
 static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask) {

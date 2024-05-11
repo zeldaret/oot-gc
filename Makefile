@@ -67,7 +67,8 @@ CC_CHECK := gcc
 CC_CHECK_WARNINGS := \
 	-Wall \
 	-Wextra \
-	-Wstrict-prototypes \
+	-Werror=strict-prototypes \
+	-Werror=implicit-function-declaration \
 	-Wno-cast-function-type \
 	-Wno-incompatible-pointer-types \
 	-Wno-sequence-point \
