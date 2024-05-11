@@ -5,6 +5,28 @@
 #include "emulator/xlList.h"
 #include "emulator/xlObject.h"
 
+#define SP_DMEM_SIZE 0x1000
+
+#define SP_DMEM_START 0x04000000
+#define SP_IMEM_START 0x04001000
+
+#define SP_BASE_REG 0x04040000
+#define SP_MEM_ADDR_REG (SP_BASE_REG | 0x0000)
+#define SP_DRAM_ADDR_REG (SP_BASE_REG | 0x0004)
+#define SP_RD_LEN_REG (SP_BASE_REG | 0x0008)
+#define SP_WR_LEN_REG (SP_BASE_REG | 0x000C)
+#define SP_STATUS_REG (SP_BASE_REG | 0x0010)
+#define SP_DMA_FULL_REG (SP_BASE_REG | 0x0014)
+#define SP_DMA_BUSY_REG (SP_BASE_REG | 0x0018)
+#define SP_SEMAPHORE_REG (SP_BASE_REG | 0x001C)
+
+#define SP_PC_REG 0x04080000
+#define SP_IBIST_REG 0x04080004
+
+#define RSP_REG_ADDR_HI(addr) (((addr) >> 12) & 0xFFF)
+#define RSP_REG_ADDR_LO(addr) ((addr) & 0x1F)
+#define RSP_TASK(pRSP) ((RspTask*)((u8*)pRSP->pDMEM + (SP_DMEM_SIZE - sizeof(RspTask))))
+
 #define GBI_COMMAND_HI(p) (((u32*)(p))[0])
 #define GBI_COMMAND_LO(p) (((u32*)(p))[1])
 
@@ -129,6 +151,17 @@ typedef struct __anon_0x583EE {
     /* 0x2 */ s16 u;
     /* 0x4 */ s16 v;
 } __anon_0x583EE; // size = 0x6
+
+typedef struct __anon_0x5B8F2 {
+    /* 0x00 */ s32 nOffsetCode;
+    /* 0x04 */ s32 nLengthCode;
+    /* 0x08 */ s32 nOffsetData;
+    /* 0x0C */ s32 nLengthData;
+    /* 0x10 */ char acUCodeName[64];
+    /* 0x50 */ u64 nUCodeCheckSum;
+    /* 0x58 */ s32 nCountVertex;
+    /* 0x5C */ RspUCodeType eType;
+} __anon_0x5B8F2; // size = 0x60
 
 // __anon_0x5845E
 typedef struct Rsp {
