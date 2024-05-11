@@ -5,19 +5,27 @@
 #include "emulator/xlList.h"
 #include "emulator/xlObject.h"
 
-#define RSP_DMEM_SIZE 0x1000
+#define SP_DMEM_SIZE 0x1000
 
-#define RSP_MEM_ADDR_REG 0x00
-#define RSP_DRAM_ADDR_REG 0x04
-#define RSP_RD_LEN_REG 0x08
-#define RSP_WR_LEN_REG 0x0C
-#define RSP_STATUS_REG 0x10
-#define RSP_DMA_FULL_REG 0x14
-#define RSP_DMA_BUSY_REG 0x18
-#define RSP_SEMAPHORE_REG 0x1C
-#define RSP_PC_REG 0x20
+#define SP_DMEM_START 0x04000000
+#define SP_IMEM_START 0x04001000
 
-#define RSP_TASK(pRSP) ((RspTask*)((u8*)(pRSP)->pDMEM + (RSP_DMEM_SIZE - sizeof(RspTask))))
+#define SP_BASE_REG 0x04040000
+#define SP_MEM_ADDR_REG (SP_BASE_REG | 0x0000)
+#define SP_DRAM_ADDR_REG (SP_BASE_REG | 0x0004)
+#define SP_RD_LEN_REG (SP_BASE_REG | 0x0008)
+#define SP_WR_LEN_REG (SP_BASE_REG | 0x000C)
+#define SP_STATUS_REG (SP_BASE_REG | 0x0010)
+#define SP_DMA_FULL_REG (SP_BASE_REG | 0x0014)
+#define SP_DMA_BUSY_REG (SP_BASE_REG | 0x0018)
+#define SP_SEMAPHORE_REG (SP_BASE_REG | 0x001C)
+
+#define SP_PC_REG 0x04080000
+#define SP_IBIST_REG 0x04080004
+
+#define RSP_REG_ADDR_HI(addr) (((addr) >> 12) & 0xFFF)
+#define RSP_REG_ADDR_LO(addr) ((addr) & 0x1F)
+#define RSP_TASK(pRSP) ((RspTask*)((u8*)pRSP->pDMEM + (SP_DMEM_SIZE - sizeof(RspTask))))
 
 #define GBI_COMMAND_HI(p) (((u32*)(p))[0])
 #define GBI_COMMAND_LO(p) (((u32*)(p))[1])

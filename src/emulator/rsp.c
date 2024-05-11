@@ -600,10 +600,10 @@ static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
 
 bool rspPut8(Rsp* pRSP, u32 nAddress, s8* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *((s8*)pRSP->pDMEM + (nAddress & 0xFFF)) = *pData;
             break;
-        case 1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *((s8*)pRSP->pIMEM + (nAddress & 0xFFF)) = *pData;
             break;
         default:
@@ -615,10 +615,10 @@ bool rspPut8(Rsp* pRSP, u32 nAddress, s8* pData) {
 
 bool rspPut16(Rsp* pRSP, u32 nAddress, s16* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *((s16*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 1)) = *pData;
             break;
-        case 1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *((s16*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 1)) = *pData;
             break;
         default:
@@ -641,21 +641,21 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
     s32 nLength;
 
     switch ((nAddress >> 12) & 0xFFF) {
-        case 0x0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START): 
             *((s32*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 2)) = *pData;
             break;
-        case 0x1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *((s32*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 2)) = *pData;
             break;
-        case 0x40:
+        case RSP_REG_ADDR_HI(SP_BASE_REG):
             switch (nAddress & 0x1F) {
-                case RSP_MEM_ADDR_REG:
+                case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG): 
                     pRSP->nAddressSP = *pData & 0x1FFF;
                     break;
-                case RSP_DRAM_ADDR_REG:
+                case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG): 
                     pRSP->nAddressRDRAM = *pData & 0x03FFFFFF;
                     break;
-                case RSP_RD_LEN_REG:
+                case RSP_REG_ADDR_LO(SP_RD_LEN_REG): 
                     pRSP->nSizeGet = *pData;
                     nLength = pRSP->nSizeGet & 0xFFF;
                     if (pRSP->nAddressSP & 0x1000) {
@@ -663,12 +663,11 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                     } else {
                         pTarget = (u8*)pRSP->pDMEM + (pRSP->nAddressSP & 0xFFF);
                     }
-                    if (!xlHeapCopy(pTarget, (s8*)SYSTEM_RAM(pRSP->pHost)->pBuffer + pRSP->nAddressRDRAM,
-                                    nLength + 1)) {
+                    if (!xlHeapCopy(pTarget, (s8*)SYSTEM_RAM(pRSP->pHost)->pBuffer + pRSP->nAddressRDRAM, nLength + 1)) {
                         return false;
                     }
                     break;
-                case RSP_WR_LEN_REG:
+                case RSP_REG_ADDR_LO(SP_WR_LEN_REG):
                     pRSP->nSizePut = *pData;
                     nLength = pRSP->nSizePut & 0xFFF;
                     if (pRSP->nAddressSP & 0x1000) {
@@ -684,7 +683,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                         return false;
                     }
                     break;
-                case RSP_STATUS_REG:
+                case RSP_REG_ADDR_LO(SP_STATUS_REG):
                     nData = *pData & 0xFFFF;
                     if (nData & 1) {
                         OSGetTick();
@@ -830,22 +829,23 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                         pRSP->nStatus |= 0x4000;
                     }
                     break;
-                case 20:
-                case 24:
+                case RSP_REG_ADDR_LO(SP_DMA_FULL_REG):
                     break;
-                case 28:
+                case RSP_REG_ADDR_LO(SP_DMA_BUSY_REG):
+                    break;
+                case RSP_REG_ADDR_LO(SP_SEMAPHORE_REG):
                     pRSP->nSemaphore = 0;
                     break;
                 default:
                     return false;
             }
             break;
-        case 0x80:
+        case RSP_REG_ADDR_HI(SP_PC_REG):
             switch (nAddress & 0xF) {
-                case 0:
+                case RSP_REG_ADDR_LO(SP_PC_REG):
                     pRSP->nPC = *pData;
                     break;
-                case 4:
+                case RSP_REG_ADDR_LO(SP_IBIST_REG):
                     pRSP->nBIST = *pData & 0xFF;
                     break;
                 default:
@@ -865,10 +865,10 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
 
 bool rspPut64(Rsp* pRSP, u32 nAddress, s64* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *((s64*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 3)) = *pData;
             break;
-        case 1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *((s64*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 3)) = *pData;
             break;
         default:
@@ -880,10 +880,10 @@ bool rspPut64(Rsp* pRSP, u32 nAddress, s64* pData) {
 
 bool rspGet8(Rsp* pRSP, u32 nAddress, s8* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *pData = *((s8*)pRSP->pDMEM + (nAddress & 0xFFF));
             break;
-        case 1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *pData = *((s8*)pRSP->pIMEM + (nAddress & 0xFFF));
             break;
         default:
@@ -895,10 +895,10 @@ bool rspGet8(Rsp* pRSP, u32 nAddress, s8* pData) {
 
 bool rspGet16(Rsp* pRSP, u32 nAddress, s16* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *pData = *((s16*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 1));
             break;
-        case 1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *pData = *((s16*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 1));
             break;
         default:
@@ -914,36 +914,36 @@ bool rspGet16(Rsp* pRSP, u32 nAddress, s16* pData) {
 #else
 bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0x00:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *pData = *((s32*)pRSP->pDMEM + ((nAddress & 0xFFC) >> 2));
             break;
-        case 0x01:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *pData = *((s32*)pRSP->pIMEM + ((nAddress & 0xFFC) >> 2));
             break;
-        case 0x40:
+        case RSP_REG_ADDR_HI(SP_BASE_REG):
             switch (nAddress & 0x1F) {
-                case 0:
+               case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG):
                     *pData = pRSP->nAddressSP;
                     break;
-                case 4:
+               case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG):
                     *pData = pRSP->nAddressRDRAM;
                     break;
-                case 8:
+               case RSP_REG_ADDR_LO(SP_RD_LEN_REG):
                     *pData = pRSP->nSizeGet;
                     break;
-                case 12:
+                case RSP_REG_ADDR_LO(SP_WR_LEN_REG):
                     *pData = pRSP->nSizePut;
                     break;
-                case 16:
+                case RSP_REG_ADDR_LO(SP_STATUS_REG):
                     *pData = pRSP->nStatus & 0xFFFF;
                     break;
-                case 20:
+                case RSP_REG_ADDR_LO(SP_DMA_FULL_REG):
                     *pData = pRSP->nFullDMA & 1;
                     break;
-                case 24:
+                case RSP_REG_ADDR_LO(SP_DMA_BUSY_REG):
                     *pData = pRSP->nBusyDMA & 1;
                     break;
-                case 28:
+                case RSP_REG_ADDR_LO(SP_SEMAPHORE_REG):
                     pRSP->nSemaphore = 1;
                     *pData = 0;
                     break;
@@ -951,12 +951,12 @@ bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
                     return false;
             }
             break;
-        case 0x80:
+        case RSP_REG_ADDR_HI(SP_PC_REG):
             switch (nAddress & 0xF) {
-                case 0:
+                case RSP_REG_ADDR_LO(SP_PC_REG):
                     *pData = pRSP->nPC;
                     break;
-                case 4:
+                case RSP_REG_ADDR_LO(SP_IBIST_REG):
                     *pData = pRSP->nBIST & 0xFF;
                     break;
                 default:
@@ -973,10 +973,10 @@ bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
 
 bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
-        case 0:
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *pData = *((s64*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 3));
             break;
-        case 1:
+        case RSP_REG_ADDR_HI(SP_IMEM_START):
             *pData = *((s64*)pRSP->pIMEM + ((nAddress & 0xFFF) >> 3));
             break;
         default:
