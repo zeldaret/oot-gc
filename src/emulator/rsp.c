@@ -641,7 +641,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
     s32 nLength;
 
     switch ((nAddress >> 12) & 0xFFF) {
-        case RSP_REG_ADDR_HI(SP_DMEM_START): 
+        case RSP_REG_ADDR_HI(SP_DMEM_START):
             *((s32*)pRSP->pDMEM + ((nAddress & 0xFFF) >> 2)) = *pData;
             break;
         case RSP_REG_ADDR_HI(SP_IMEM_START):
@@ -649,13 +649,13 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
             break;
         case RSP_REG_ADDR_HI(SP_BASE_REG):
             switch (nAddress & 0x1F) {
-                case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG): 
+                case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG):
                     pRSP->nAddressSP = *pData & 0x1FFF;
                     break;
-                case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG): 
+                case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG):
                     pRSP->nAddressRDRAM = *pData & 0x03FFFFFF;
                     break;
-                case RSP_REG_ADDR_LO(SP_RD_LEN_REG): 
+                case RSP_REG_ADDR_LO(SP_RD_LEN_REG):
                     pRSP->nSizeGet = *pData;
                     nLength = pRSP->nSizeGet & 0xFFF;
                     if (pRSP->nAddressSP & 0x1000) {
@@ -663,7 +663,8 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                     } else {
                         pTarget = (u8*)pRSP->pDMEM + (pRSP->nAddressSP & 0xFFF);
                     }
-                    if (!xlHeapCopy(pTarget, (s8*)SYSTEM_RAM(pRSP->pHost)->pBuffer + pRSP->nAddressRDRAM, nLength + 1)) {
+                    if (!xlHeapCopy(pTarget, (s8*)SYSTEM_RAM(pRSP->pHost)->pBuffer + pRSP->nAddressRDRAM,
+                                    nLength + 1)) {
                         return false;
                     }
                     break;
@@ -922,13 +923,13 @@ bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
             break;
         case RSP_REG_ADDR_HI(SP_BASE_REG):
             switch (nAddress & 0x1F) {
-               case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG):
+                case RSP_REG_ADDR_LO(SP_MEM_ADDR_REG):
                     *pData = pRSP->nAddressSP;
                     break;
-               case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG):
+                case RSP_REG_ADDR_LO(SP_DRAM_ADDR_REG):
                     *pData = pRSP->nAddressRDRAM;
                     break;
-               case RSP_REG_ADDR_LO(SP_RD_LEN_REG):
+                case RSP_REG_ADDR_LO(SP_RD_LEN_REG):
                     *pData = pRSP->nSizeGet;
                     break;
                 case RSP_REG_ADDR_LO(SP_WR_LEN_REG):

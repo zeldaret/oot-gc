@@ -43,7 +43,7 @@ _check_TRK:
     beq _load_lomem_debug_flag
     lwz r7, OS_BI2_DEBUGFLAG_OFFSET(r6)
     b _check_debug_flag
-    
+
 _load_lomem_debug_flag:
     lis r5, ARENAHI_ADDR@ha
     addi r5, r5, ARENAHI_ADDR@l
@@ -82,7 +82,7 @@ _goto_inittrk:
     addi r6, r6, InitMetroTRK@l
     mtlr r6
     blrl
-    
+
 _goto_main:
     lis r6, BOOTINFO2_ADDR@ha
     addi r6, r6, BOOTINFO2_ADDR@l

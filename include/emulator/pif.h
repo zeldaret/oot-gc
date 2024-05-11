@@ -7,6 +7,13 @@
 #define PIF_RAM_START 0x7C0
 #define PIF_RAM_END 0x7FF
 
+#define PIF_DATA_CRC_MESSAGE_BYTES 32
+#define PIF_DATA_CRC_LENGTH 8
+#define PIF_DATA_CRC_GENERATOR 0x85
+
+#define PIF_GET_RAM_ADDR(pPIF, iData) (((u8*)(pPIF)->pRAM) + (iData))
+#define PIF_GET_RAM_DATA(pPIF, iData) (*PIF_GET_RAM_ADDR(pPIF, iData))
+
 // __anon_0x3C277
 typedef enum ControllerType {
     CT_NONE = 0,
@@ -36,7 +43,7 @@ bool pifSetControllerType(Pif* pPIF, s32 channel, ControllerType type);
 bool pifGetEControllerType(Pif* pPIF, s32 channel, ControllerType* type);
 bool pifSetEEPROMType(Pif* pPIF, ControllerType type);
 bool pifGetEEPROMSize(Pif* pPIF, u32* size);
-bool pifExecuteCommand(Pif* pPIF, u8* buffer, s32 unused, u8* prx, s32 channel);
+bool pifExecuteCommand(Pif* pPIF, u8* buffer, u8* ptx, u8* prx, s32 channel);
 bool pifProcessInputData(Pif* pPIF);
 bool pifProcessOutputData(Pif* pPIF);
 bool pifSetData(Pif* pPIF, u8* acData);
