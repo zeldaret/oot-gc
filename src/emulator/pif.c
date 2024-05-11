@@ -10,8 +10,6 @@ _XL_OBJECTTYPE gClassPIF = {
     (EventFunc)pifEvent,
 };
 
-static u8 pifContDataCrc(Pif* pPIF, u8* data);
-
 bool pifReadRumble(Pif* pPIF, s32 channel, u16 address, u8* data) {
     int i;
 
@@ -48,7 +46,41 @@ bool pifWriteRumble(Pif* pPIF, s32 channel, u16 address, u8* data) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/pif/pifContDataCrc.s")
+// this function is a copy-paste of ``__osContDataCrc``
+static u8 pifContDataCrc(Pif* pPIF, u8* data) {
+    u32 temp = 0;
+    u32 i;
+    u32 j;
+
+    for (i = PIF_DATA_CRC_MESSAGE_BYTES; i != 0; data++, i--) {
+        // Loop over each bit in the byte starting with most significant
+        for (j = (1 << (PIF_DATA_CRC_LENGTH - 1)); j != 0; j >>= 1) {
+            temp <<= 1;
+            if (*data & j) {
+                if (temp & (1 << PIF_DATA_CRC_LENGTH)) {
+                    // Same as ret++; ret ^= 0x85 since last bit always 0 after the shift
+                    temp ^= PIF_DATA_CRC_GENERATOR - 1;
+                } else {
+                    temp++;
+                }
+            } else if (temp & (1 << PIF_DATA_CRC_LENGTH)) {
+                temp ^= PIF_DATA_CRC_GENERATOR;
+            }
+        }
+    }
+
+    // Act like a byte of zeros is appended to data
+    do {
+        temp <<= 1;
+        if (temp & (1 << PIF_DATA_CRC_LENGTH)) {
+            temp ^= PIF_DATA_CRC_GENERATOR;
+        }
+        i++;
+    } while (i < PIF_DATA_CRC_LENGTH);
+
+    // Discarding the excess is done automatically by the return type
+    return temp;
+}
 
 bool pifSetControllerType(Pif* pPIF, s32 channel, ControllerType type) {
     if (!simulatorDetectController(channel)) {
@@ -125,7 +157,7 @@ bool pifGetEEPROMSize(Pif* pPIF, u32* size) {
     return true;
 }
 
-static inline bool pifQueryController(Pif* pPIF, u8* buffer, u8* prx, s32 channel) {
+static inline bool pifQueryController(Pif* pPIF, u8* buffer, s32 channel) {
     if (pPIF->eControllerType[channel] == CT_NONE) {
         return false;
     }
@@ -136,12 +168,12 @@ static inline bool pifQueryController(Pif* pPIF, u8* buffer, u8* prx, s32 channe
     return true;
 }
 
-static inline bool pifReadController(Pif* pPIF, u8* buffer, u8* prx, s32 channel, s32 unused) {
+static inline bool pifReadController(Pif* pPIF, u8* buffer, u8* ptx, u8* prx, s32 channel) {
     if (pPIF->eControllerType[channel] == CT_NONE) {
         *prx |= 0x80;
     }
 
-    if (!simulatorReadController(channel, (u32*)&buffer[1], unused)) {
+    if (!simulatorReadController(channel, (u32*)&buffer[1], ptx)) {
         return false;
     }
 
@@ -220,20 +252,20 @@ bool pifGet64(Pif* pPIF, u32 nAddress, s64* pData) {
     return true;
 }
 
-bool pifExecuteCommand(Pif* pPIF, u8* buffer, s32 unused, u8* prx, s32 channel) {
+bool pifExecuteCommand(Pif* pPIF, u8* buffer, u8* ptx, u8* prx, s32 channel) {
     switch (*buffer) {
         case 0x00:
-            if (!pifQueryController(pPIF, buffer, prx, channel)) {
+            if (!pifQueryController(pPIF, buffer, channel)) {
                 *prx |= 0x80;
             }
             break;
         case 0xFF:
-            if (!pifQueryController(pPIF, buffer, prx, channel)) {
+            if (!pifQueryController(pPIF, buffer, channel)) {
                 *prx |= 0x80;
             }
             break;
         case 0x01: {
-            bool result = !pifReadController(pPIF, buffer, prx, channel, unused) ? false : true;
+            bool result = !pifReadController(pPIF, buffer, ptx, prx, channel) ? false : true;
             if (!result) {
                 return false;
             }
@@ -281,9 +313,133 @@ bool pifExecuteCommand(Pif* pPIF, u8* buffer, s32 unused, u8* prx, s32 channel) 
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/pif/pifProcessInputData.s")
+bool pifProcessInputData(Pif* pPIF) {
+    u8* prx;
+    u8* ptx;
+    s32 iData;
+    s32 channel;
 
-#pragma GLOBAL_ASM("asm/non_matchings/pif/pifProcessOutputData.s")
+    iData = 0;
+    channel = 0;
+
+    while ((PIF_GET_RAM_DATA(pPIF, iData) != 0xFE && PIF_GET_RAM_DATA(pPIF, iData + 1) != 0xFE)) {
+        while (PIF_GET_RAM_DATA(pPIF, iData) == 0xFF || PIF_GET_RAM_DATA(pPIF, iData) == 0xFD) {
+            iData++;
+        }
+
+        if (PIF_GET_RAM_DATA(pPIF, iData) == 0xFE) {
+            break;
+        }
+
+        ptx = PIF_GET_RAM_ADDR(pPIF, iData++);
+        if (*ptx == 0) {
+            channel++;
+            continue;
+        }
+
+        prx = PIF_GET_RAM_ADDR(pPIF, iData++);
+        if (!pifExecuteCommand(pPIF, PIF_GET_RAM_ADDR(pPIF, iData), ptx, prx, channel)) {
+            return false;
+        }
+
+        channel++;
+        switch (PIF_GET_RAM_DATA(pPIF, iData)) {
+            case 0xFF:
+            case 0:
+                iData += 4;
+                break;
+            case 1:
+                iData += 5;
+                break;
+            case 2:
+            case 3:
+                iData += 0x24;
+                break;
+            case 4:
+            case 5:
+                iData += 0xA;
+                break;
+            case 6:
+                iData += 4;
+                break;
+            case 7:
+                iData += 0xB;
+                break;
+            case 8:
+                iData += 0xB;
+                break;
+            default:
+                return false;
+        }
+    }
+
+    ((u8*)pPIF->pRAM)[0x3F] = 0;
+    return true;
+}
+
+bool pifProcessOutputData(Pif* pPIF) {
+    u8* prx;
+    u8* ptx;
+    s32 iData;
+    s32 channel;
+
+    iData = 0;
+    channel = 0;
+
+    while ((PIF_GET_RAM_DATA(pPIF, iData) != 0xFE && PIF_GET_RAM_DATA(pPIF, iData + 1) != 0xFE)) {
+        while (PIF_GET_RAM_DATA(pPIF, iData) == 0xFF || PIF_GET_RAM_DATA(pPIF, iData) == 0xFD) {
+            iData++;
+        }
+
+        if (PIF_GET_RAM_DATA(pPIF, iData) == 0xFE) {
+            break;
+        }
+
+        ptx = PIF_GET_RAM_ADDR(pPIF, iData++);
+        if (*ptx == 0) {
+            channel++;
+            continue;
+        }
+
+        prx = PIF_GET_RAM_ADDR(pPIF, iData++);
+        if (PIF_GET_RAM_DATA(pPIF, iData) == 1 && !pifExecuteCommand(pPIF, PIF_GET_RAM_ADDR(pPIF, iData), ptx, prx, channel)) {
+            return false;
+        }
+
+        channel++;
+        switch (PIF_GET_RAM_DATA(pPIF, iData)) {
+            case 0xFF:
+            case 0:
+                iData += 4;
+                break;
+            case 1:
+                iData += 5;
+                break;
+            case 2:
+            case 3:
+                iData += 0x24;
+                break;
+            case 4:
+            case 5:
+                iData += 0xA;
+                break;
+            case 6:
+                iData += 4;
+                break;
+            case 7:
+                iData += 0xB;
+                break;
+            case 8:
+                iData += 0xB;
+                break;
+            default:
+                return false;
+        }
+    }
+
+    ((u8*)pPIF->pRAM)[0x3F] = 0;
+    return true;
+}
 
 bool pifSetData(Pif* pPIF, u8* acData) {
     if (!xlHeapCopy(pPIF->pRAM, acData, 0x40)) {
