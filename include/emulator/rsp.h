@@ -31,7 +31,7 @@
 #define GBI_COMMAND_LO(p) (((u32*)(p))[1])
 
 #define SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
-    (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM) & 0xFFFFFF))
+    (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM)&0xFFFFFF))
 
 typedef enum __anon_0x581E7 {
     RUT_NOCODE = -1,
