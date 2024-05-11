@@ -18,13 +18,13 @@ s32 gnSizeHeap;
 //   copy low bits of size (6 bits) | flags (2 bits) | size (26 bits)
 #define MAKE_BLOCK(size, flags) ((size) | ((size) << 26) | (flags))
 
-#define BLOCK_IS_FREE(v) ((v)&FLAG_FREE)
-#define BLOCK_IS_TAKEN(v) ((v)&FLAG_TAKEN)
-#define BLOCK_SIZE(v) ((s32)((v)&0xFFFFFF))
+#define BLOCK_IS_FREE(v) ((v) & FLAG_FREE)
+#define BLOCK_IS_TAKEN(v) ((v) & FLAG_TAKEN)
+#define BLOCK_SIZE(v) ((s32)((v) & 0xFFFFFF))
 
 //! TODO: these need better names
 #define CHKSUM_HI(v) ((u32)((v) >> 26))
-#define CHKSUM_LO(v) ((u32)((v)&0x3F))
+#define CHKSUM_LO(v) ((u32)((v) & 0x3F))
 
 static bool xlHeapBlockCacheGet(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
     s32 nBlockCachedSize;

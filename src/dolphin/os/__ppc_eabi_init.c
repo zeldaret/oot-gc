@@ -9,7 +9,7 @@ extern "C" {
 void __OSPSInit();
 void __OSCacheInit();
 
-ASM void __init_hardware(void) {
+ASM void __init_hardware(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfmsr r0

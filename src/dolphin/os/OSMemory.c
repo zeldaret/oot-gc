@@ -2,8 +2,8 @@
 #include "dolphin/os.h"
 #include "macros.h"
 
-#define TRUNC(n, a) (((u32)(n)) & ~((a)-1))
-#define ROUND(n, a) (((u32)(n) + (a)-1) & ~((a)-1))
+#define TRUNC(n, a) (((u32)(n)) & ~((a) - 1))
+#define ROUND(n, a) (((u32)(n) + (a) - 1) & ~((a) - 1))
 
 extern OSErrorHandler __OSErrorTable[16];
 
