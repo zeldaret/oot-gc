@@ -1305,7 +1305,35 @@ static bool rspASetBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetVolume1.s")
+static bool rspASetVolume1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u16 nFlags = (nCommandHi >> 16) & 0xFF;
+    u16 v = nCommandHi & 0xFFFF;
+    u16 t = (nCommandLo >> 16) & 0xFFFF;
+    u16 r = nCommandLo & 0xFFFF;
+
+    if (nFlags & 8) {
+        pRSP->anAudioBuffer[0x1BE] = v;
+        pRSP->anAudioBuffer[0x1BF] = r;
+    } else if (nFlags & 4) {
+        if (nFlags & 2) {
+            pRSP->anAudioBuffer[0x1B3] = v;
+        } else {
+            pRSP->anAudioBuffer[0x1B4] = v;
+        }
+    } else {
+        if (nFlags & 2) {
+            pRSP->anAudioBuffer[0x1B8] = v;
+            pRSP->anAudioBuffer[0x1B9] = t;
+            pRSP->anAudioBuffer[0x1BA] = r;
+        } else {
+            pRSP->anAudioBuffer[0x1BB] = v;
+            pRSP->anAudioBuffer[0x1BC] = t;
+            pRSP->anAudioBuffer[0x1BD] = r;
+        }
+    }
+
+    return true;
+}
 
 static bool rspParseABI(Rsp* pRSP, RspTask* pTask) {
     u8* pFUCode;
