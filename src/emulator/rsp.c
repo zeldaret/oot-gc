@@ -1275,7 +1275,35 @@ static bool rspAPoleFilter1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAResample1.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetBuffer1.s")
+static bool rspASetBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u16 nDMEMIn = nCommandHi & 0xFFFF;
+    u16 nDMEMOut = (nCommandLo >> 16) & 0xFFFF;
+    u16 nCount = nCommandLo & 0xFFFF;
+
+    if ((nCommandHi >> 16) & 8) {
+        pRSP->nAudioDMauxR[1] = nCount + pRSP->nAudioMemOffset;
+        pRSP->nAudioDMauxR[0] = (u16)((s32)pRSP->nAudioDMauxR[1] / 2);
+        pRSP->anAudioBuffer[0x1B7] = (s16)pRSP->nAudioDMauxR[1];
+        pRSP->nAudioDMOutR[1] = nDMEMIn + pRSP->nAudioMemOffset;
+        pRSP->nAudioDMOutR[0] = (u16)((s32)pRSP->nAudioDMOutR[1] / 2);
+        pRSP->anAudioBuffer[0x1B5] = (s16)pRSP->nAudioDMOutR[1];
+        pRSP->nAudioDMauxL[1] = nDMEMOut + pRSP->nAudioMemOffset;
+        pRSP->nAudioDMauxL[0] = (u16)((s32)pRSP->nAudioDMauxL[1] / 2);
+        pRSP->anAudioBuffer[0x1B6] = (s16)pRSP->nAudioDMauxL[1];
+    } else {
+        pRSP->nAudioCount[1] = nCount;
+        pRSP->nAudioCount[0] = (u16)((s32)pRSP->nAudioCount[1] / 2);
+        pRSP->anAudioBuffer[0x1B2] = (s16)pRSP->nAudioCount[1];
+        pRSP->nAudioDMEMIn[1] = nDMEMIn + pRSP->nAudioMemOffset;
+        pRSP->nAudioDMEMIn[0] = (u16)((s32)pRSP->nAudioDMEMIn[1] / 2);
+        pRSP->anAudioBuffer[0x1B0] = (s16)pRSP->nAudioDMEMIn[1];
+        pRSP->nAudioDMEMOut[1] = nDMEMOut + pRSP->nAudioMemOffset;
+        pRSP->nAudioDMEMOut[0] = (u16)((s32)pRSP->nAudioDMEMOut[1] / 2);
+        pRSP->anAudioBuffer[0x1B1] = (s16)pRSP->nAudioDMEMOut[1];
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetVolume1.s")
 
