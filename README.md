@@ -18,15 +18,14 @@ You will need the following dependencies:
 * make
 * git
 * python3
-* WiBo (Linux)
-* 32-bit wine (macOS)
+* wibo (Linux) or wine (macOS)
 * wget
 * unzip
 * clang-format (optional)
 
 #### Ubuntu/Debian
 
-In order to install WiBo, you will need to [download it](https://github.com/decompals/wibo/releases) and run:
+In order to install `wibo`, you will need to [download it](https://github.com/decompals/wibo/releases) and run:
 
 ```
 sudo install wibo /usr/bin
@@ -39,7 +38,7 @@ sudo apt-get update
 sudo apt-get install build-essential git python3 wget unzip
 ```
 
-### macOS
+#### macOS
 
 You can install dependencies via Homebrew with the following command:
 
@@ -51,3 +50,41 @@ brew install coreutils python3 wget wine
 
 1. Obtain the original ELF executable found in the `120903_zelda.tgc` file on the Japanese Collector's Edition disk and place it in the base working directory and name it `SIM_original.elf`
 2. Run `make setup` and `make`
+
+## Development
+
+First, copy a matching build to the `expected/` directory to diff against:
+
+```
+mkdir expected
+cp -r build expected/
+```
+
+### Diff tools
+
+For locally diffing the current build against the expected build:
+
+* `objdiff`: Start the objdiff GUI and open this directory as the project directory.
+* `diff.py` (`asm-differ`): Run e.g. `./diff.py -mwo3 xlMain` to diff a function.
+* `vbindiff`: Run `vbindiff SIM_S.elf build/SIM/SIM_S.elf` to directly diff the
+  ELF files to debug tricky matching issues, using the ELF section headers and
+  the linker map file to locate the diffs in the code.
+
+### decomp.me
+
+Run `tools/decompme.py <c-file> <asm-file>` (e.g. `tools/decompme.py src/emulator/cpu.c asm/non_matchings/cpu/cpuExecute.s`) to create a
+[decomp.me](https://decomp.me/) scratch for a function. The C file and all of its included headers will be used as the context.
+
+### Debug Info
+
+The files in the `debug/` directory contain a dump of the DWARF debugging information in the original ELF. Functions marked as `// Erased`
+were present at one time but have been stripped by the linker, because they were either unused or inlined at all call sites.
+
+### Migrating a file to C
+
+All emulator files have been migrated to C, but some SDK and standard library files are still built from the disassembly. Before decompiling
+one of these files:
+
+* In `obj_files.mk`, replace `$(BUILD_DIR)/asm/<path>.o` with `$(BUILD_DIR)/src/<path>.o` to link the new object file
+* Add an entry in `objdiff.json`
+* Run `cp expected/build/SIM/asm/<path>.o expected/build/SIM/src/<path>.o` to create a base to diff against
