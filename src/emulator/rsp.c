@@ -1041,6 +1041,7 @@ static bool rspInitAudioDMEM3(Rsp* pRSP) {
     pRSP->anAudioBuffer[0x055] = 0x0001;
     pRSP->anAudioBuffer[0x056] = 0x0000;
     pRSP->anAudioBuffer[0x057] = 0x0000;
+
     pRSP->anAudioBuffer[0x058] = 0x0000;
     pRSP->anAudioBuffer[0x059] = 0x0000;
     pRSP->anAudioBuffer[0x05A] = 0x0001;
@@ -1049,6 +1050,7 @@ static bool rspInitAudioDMEM3(Rsp* pRSP) {
     pRSP->anAudioBuffer[0x05D] = 0x0000;
     pRSP->anAudioBuffer[0x05E] = 0x0001;
     pRSP->anAudioBuffer[0x05F] = 0x0000;
+
     // bug? 0x058-0x05F initialized twice with different values
     pRSP->anAudioBuffer[0x058] = 0x0000;
     pRSP->anAudioBuffer[0x059] = 0x0000;
@@ -1058,6 +1060,7 @@ static bool rspInitAudioDMEM3(Rsp* pRSP) {
     pRSP->anAudioBuffer[0x05D] = 0x0000;
     pRSP->anAudioBuffer[0x05E] = 0x0000;
     pRSP->anAudioBuffer[0x05F] = 0x0001;
+
     pRSP->anAudioBuffer[0x060] = 0x2000;
     pRSP->anAudioBuffer[0x061] = 0x4000;
     pRSP->anAudioBuffer[0x062] = 0x6000;
@@ -1439,6 +1442,7 @@ static bool rspInitAudioDMEM4(Rsp* pRSP) {
     pRSP->anAudioBuffer[0x055] = 0x0001;
     pRSP->anAudioBuffer[0x056] = 0x0000;
     pRSP->anAudioBuffer[0x057] = 0x0000;
+
     pRSP->anAudioBuffer[0x058] = 0x0000;
     pRSP->anAudioBuffer[0x059] = 0x0000;
     pRSP->anAudioBuffer[0x05A] = 0x0001;
@@ -1447,6 +1451,7 @@ static bool rspInitAudioDMEM4(Rsp* pRSP) {
     pRSP->anAudioBuffer[0x05D] = 0x0000;
     pRSP->anAudioBuffer[0x05E] = 0x0001;
     pRSP->anAudioBuffer[0x05F] = 0x0000;
+
     // bug? 0x058-0x05F initialized twice with different values
     pRSP->anAudioBuffer[0x058] = 0x0000;
     pRSP->anAudioBuffer[0x059] = 0x0000;
@@ -1456,6 +1461,7 @@ static bool rspInitAudioDMEM4(Rsp* pRSP) {
     pRSP->anAudioBuffer[0x05D] = 0x0000;
     pRSP->anAudioBuffer[0x05E] = 0x0000;
     pRSP->anAudioBuffer[0x05F] = 0x0001;
+
     pRSP->anAudioBuffer[0x060] = 0x2000;
     pRSP->anAudioBuffer[0x061] = 0x4000;
     pRSP->anAudioBuffer[0x062] = 0x6000;
