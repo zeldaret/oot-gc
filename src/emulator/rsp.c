@@ -1957,8 +1957,74 @@ static bool rspANMix2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-static bool rspAResample2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAResample2.s")
+static bool rspAResample2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    s32 nSrcStep;
+    s16* srcP;
+    s16* dstP;
+    s16 lastValue;
+    u16 nCount;
+    u16 i;
+    s32 nCursorPos;
+    u32 scratch;
+    u8 flags;
+    s16* pData;
+    s32 nSrcAddress;
+    s32 pad[6];
+
+    srcP = &pRSP->anAudioBuffer[pRSP->nAudioDMEMIn[0]];
+    dstP = &pRSP->anAudioBuffer[pRSP->nAudioDMEMOut[0]];
+    nCount = pRSP->nAudioCount[0];
+    nSrcStep = nCommandHi & 0xFFFF;
+    flags = (nCommandHi >> 16) & 0xFF;
+    nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nSrcAddress, NULL)) {
+        return false;
+    }
+
+    if (flags & 1) {
+        for (i = 0; i < 5; i++) {
+            pData[i] = 0;
+        }
+    }
+
+    if (flags & 2) {
+        srcP[-2] = pData[0];
+        srcP[-1] = pData[2];
+        srcP -= 2;
+    } else if (flags & 4) {
+        srcP[-8] = pData[0];
+        srcP[-7] = pData[0];
+        srcP[-6] = pData[1];
+        srcP[-5] = pData[1];
+        srcP[-4] = pData[2];
+        srcP[-3] = pData[2];
+        srcP[-2] = pData[3];
+        srcP[-1] = pData[3];
+        srcP -= 8;
+    } else {
+        srcP[-4] = pData[0];
+        srcP[-3] = pData[1];
+        srcP[-2] = pData[2];
+        srcP[-1] = pData[3];
+        srcP -= 4;
+    }
+
+    nCursorPos = pData[4];
+    for (i = 0; i < nCount; i++, nCursorPos += nSrcStep) {
+        lastValue = srcP[nCursorPos >> 15];
+        dstP[i] = lastValue + (((nCursorPos & 0x7FFF) * (srcP[(nCursorPos >> 15) + 1] - lastValue)) >> 15);
+    }
+
+    pData[4] = nCursorPos & 0x7FFF;
+    srcP += nCursorPos >> 15;
+
+    pData[0] = srcP[0];
+    pData[1] = srcP[1];
+    pData[2] = srcP[2];
+    pData[3] = srcP[3];
+
+    return true;
+}
 
 static inline bool rspASResample2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     s32 outp = pRSP->nAudioDMEMOut[0];
@@ -2680,6 +2746,7 @@ static bool rspInitAudioDMEM3(Rsp* pRSP) {
     return true;
 }
 
+static bool rspAEnvMixer3(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAEnvMixer3.s")
 
 static bool rspAMix3(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
