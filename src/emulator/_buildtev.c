@@ -33,12 +33,12 @@ static GXTevAlphaArg sUsualAArgs[] = {
     GX_CA_ZERO,
 };
 
-static s32 texelType[][4] = {
+static s32 texelType[2][4] = {
     {0x00000001, 0x00000002, 0x00000008, 0x00000009},
     {0x00000001, 0x00000002, 0x00000004, 0x00000002},
 };
 
-static s32 lightType[][2] = {
+static s32 lightType[2][2] = {
     {0x00000004, 0x0000000B},
     {0x00000004, 0x00000004},
 };
@@ -62,7 +62,7 @@ const s32 D_801360D8[2] = {
     0x00000000,
 };
 
-//! TODO: move this once the MSL is matched
+// special ``memset`` function?
 inline void memset(void* ptr, int value, size_t num) {
     u8* p = ptr;
 
