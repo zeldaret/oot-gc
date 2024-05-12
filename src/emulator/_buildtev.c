@@ -33,14 +33,13 @@ static GXTevAlphaArg sUsualAArgs[] = {
 };
 
 static s32 texelType[][4] = {
-    {0x00000001, 0x00000002, 0x00000008, 0x00000009}, {0x00000001, 0x00000002, 0x00000004, 0x00000002},
+    {0x00000001, 0x00000002, 0x00000008, 0x00000009},
+    {0x00000001, 0x00000002, 0x00000004, 0x00000002},
 };
 
-static s32 lightType[] = {
-    0x00000004,
-    0x0000000B,
-    0x00000004,
-    0x00000004,
+static s32 lightType[][2] = {
+    {0x00000004, 0x0000000B},
+    {0x00000004, 0x00000004},
 };
 
 char D_800F0568[] = "TEXCOORD0 twice -> should NOT happen!\n";
@@ -70,8 +69,6 @@ inline void memset(void* ptr, int value, u32 num) {
         *p++ = value;
     }
 }
-
-static s32 AddAlphaTevOrder(CombineModeTev* tvP, s32 foundTypes, s32 curStage);
 
 void SetColor(u8* stageValues, u32 colorVal, u8 cycle) {
     s32 i;
