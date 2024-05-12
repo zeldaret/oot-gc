@@ -64,7 +64,7 @@ cp -r build expected/
 
 For locally diffing the current build against the expected build:
 
-* `objdump`: Start the objdump GUI and open this directory as the project directory.
+* `objdiff`: Start the objdiff GUI and open this directory as the project directory.
 * `diff.py` (`asm-differ`): Run e.g. `./diff.py -mwo3 xlMain` to diff a function.
 * `vbindiff`: Run `vbindiff SIM_S.elf build/SIM/SIM_S.elf` to directly diff the
   ELF files to debug tricky matching issues, using the ELF section headers and
