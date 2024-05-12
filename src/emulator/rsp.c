@@ -29,6 +29,8 @@ static s16 TMEMSIZE[5] = {
 
 char D_800EE27C[40] = "FrameComplete: Yielded task pending...\n";
 
+#ifndef NON_MATCHING
+// rspGet32
 void* jtbl_800EE2A4[29] = {
     &lbl_800721A4, &lbl_80072218, &lbl_80072218, &lbl_80072218, &lbl_800721B0, &lbl_80072218,
     &lbl_80072218, &lbl_80072218, &lbl_800721BC, &lbl_80072218, &lbl_80072218, &lbl_80072218,
@@ -36,12 +38,22 @@ void* jtbl_800EE2A4[29] = {
     &lbl_80072218, &lbl_80072218, &lbl_800721E4, &lbl_80072218, &lbl_80072218, &lbl_80072218,
     &lbl_800721F4, &lbl_80072218, &lbl_80072218, &lbl_80072218, &lbl_80072204,
 };
+#else
+void* jtbl_800EE2A4[29] = {0};
+#endif
 
+#ifndef NON_MATCHING
+// rspPut32
 void* jtbl_800EE318[8] = {
     &lbl_80072718, &lbl_80072580, &lbl_800725B4, &lbl_800725E8,
     &lbl_80072608, &lbl_80072670, &lbl_800726D8, &lbl_800726F8,
 };
+#else
+void* jtbl_800EE318[8] = {0};
+#endif
 
+#ifndef NON_MATCHING
+// rspPut32
 void* jtbl_800EE338[29] = {
     &lbl_8007241C, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007242C, &lbl_80072948,
     &lbl_80072948, &lbl_80072948, &lbl_8007243C, &lbl_80072948, &lbl_80072948, &lbl_80072948,
@@ -49,6 +61,9 @@ void* jtbl_800EE338[29] = {
     &lbl_80072948, &lbl_80072948, &lbl_80072998, &lbl_80072948, &lbl_80072948, &lbl_80072948,
     &lbl_80072998, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007293C,
 };
+#else
+void* jtbl_800EE338[29] = {0};
+#endif
 
 #ifndef NON_MATCHING
 // rspParseGBI
@@ -200,7 +215,7 @@ static bool rspInitAudioDMEM1(Rsp* pRSP);
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspASetVolume1.s")
 
-static bool rspParseABI(Rsp* pRSP);
+static bool rspParseABI(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI1.s")
@@ -712,7 +727,7 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                                 break;
                             case 2:
                                 if (pRSP->eTypeAudioUCode != RUT_UNKNOWN) {
-                                    rspParseABI(pRSP);
+                                    rspParseABI(pRSP, pTask);
                                 }
                                 pRSP->nStatus |= 0x201;
                                 xlObjectEvent(pRSP->pHost, 0x1000, (void*)5);
