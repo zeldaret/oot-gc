@@ -350,6 +350,8 @@ typedef struct Frame {
 
 extern _XL_OBJECTTYPE gClassFrame;
 extern bool gNoSwapBuffer;
+extern GXTexMapID ganNamePixel[];
+extern GXTexCoordID ganNameTexCoord[];
 
 bool frameDrawSetup2D(Frame* pFrame);
 bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
@@ -396,5 +398,9 @@ bool frameFixMatrixHint(Frame* pFrame, s32 nAddressFloat, s32 nAddressFixed);
 bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
                         f32 rNear, f32 rFar, f32 rFOVY, f32 rAspect, f32 rScale);
 bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1);
+
+void SetNumTexGensChans(Frame* pFrame, s32 numCycles);
+void SetTevStages(Frame* pFrame, s32 cycle);
+bool SetTevStageTable(Frame* pFrame, s32 numCycles);
 
 #endif
