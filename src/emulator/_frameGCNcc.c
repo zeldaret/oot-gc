@@ -24,13 +24,13 @@ static TevColorOp sTevColorOp[] = {
     {GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, 0, GX_TEVPREV},
 };
 
-static GXTevColorArg sTevColorArg[][4] = {
+static GXTevColorArg sTevColorArg[5][4] = {
     {GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_CPREV}, {GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_CPREV},
     {GX_CC_ZERO, GX_CC_C0, GX_CC_C1, GX_CC_ZERO},      {GX_CC_ZERO, GX_CC_CPREV, GX_CC_C1, GX_CC_C0},
     {GX_CC_ZERO, GX_CC_C0, GX_CC_ONE, GX_CC_CPREV},
 };
 
-static GXTevAlphaArg sTevAlphaArg[][4] = {
+static GXTevAlphaArg sTevAlphaArg[5][4] = {
     {GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV}, {GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV},
     {GX_CA_ZERO, GX_CA_A0, GX_CA_A1, GX_CA_ZERO},      {GX_CA_ZERO, GX_CA_APREV, GX_CA_A1, GX_CA_A0},
     {GX_CA_ZERO, GX_CA_A0, GX_CA_KONST, GX_CA_APREV},
@@ -60,7 +60,6 @@ static char* strings[] = {
 char unused[] = "0x%08x = ( ";
 
 static void SetTableTevStages(Frame* pFrame, CombineModeTev* ctP);
-
 #pragma GLOBAL_ASM("asm/non_matchings/_frameGCNcc/SetTableTevStages.s")
 
 void SetNumTexGensChans(Frame* pFrame, s32 numCycles) {
