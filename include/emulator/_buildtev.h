@@ -33,8 +33,6 @@ typedef struct CombineModeTev {
     /* 0x238 */ GXTevAlphaArg tevAlphaArg[8][4];
 } CombineModeTev; // size = 0x2B8
 
-typedef u8 (*unknown[4]);
-
 void SetColor(u8* stageValues, u32 colorVal, u8 cycle);
 void SetAlpha(u8* stageValues, u32 alphaVal, u8 cycle, u32 colorVal, u32 color2Val, u32 alpha2Val);
 s32 SetupStage(CombineModeTev* tvP, u8* stageValues, s32 type);

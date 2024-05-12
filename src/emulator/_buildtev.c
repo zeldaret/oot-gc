@@ -145,7 +145,6 @@ void SetAlpha(u8* stageValues, u32 alphaVal, u8 cycle, u32 colorVal, u32 color2V
     }
 }
 
-
 #pragma GLOBAL_ASM("asm/non_matchings/_buildtev/AddAlphaTevOrder.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/_buildtev/SetupStage.s")
