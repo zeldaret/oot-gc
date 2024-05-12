@@ -32,8 +32,8 @@ static GXTevAlphaArg sUsualAArgs[] = {
     GX_CA_ZERO,
 };
 
-static s32 texelType[] = {
-    0x00000001, 0x00000002, 0x00000008, 0x00000009, 0x00000001, 0x00000002, 0x00000004, 0x00000002,
+static s32 texelType[][4] = {
+    {0x00000001, 0x00000002, 0x00000008, 0x00000009}, {0x00000001, 0x00000002, 0x00000004, 0x00000002},
 };
 
 static s32 lightType[] = {
@@ -145,11 +145,60 @@ void SetAlpha(u8* stageValues, u32 alphaVal, u8 cycle, u32 colorVal, u32 color2V
     }
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/_buildtev/AddAlphaTevOrder.s")
+s32 AddAlphaTevOrder(CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
+    s32 ret = 0;
+
+    if (foundTypes & 3) {
+        if (foundTypes & 1) {
+            while (tvP->tevOrder[curStage].coordID == GX_TEXCOORD1) {
+                tvP->tevColorOpP[curStage + 1][1] = sUsualOps[0];
+                curStage++;
+                ret++;
+            }
+            tvP->tevOrder[curStage].coordID = GX_TEXCOORD0;
+            tvP->tevOrder[curStage].mapID = GX_TEXMAP0;
+        } else {
+            while (tvP->tevOrder[curStage].coordID == GX_TEXCOORD0) {
+                tvP->tevColorOpP[curStage + 1][1] = sUsualOps[0];
+                curStage++;
+                ret++;
+            }
+            tvP->tevOrder[curStage].coordID = GX_TEXCOORD1;
+            tvP->tevOrder[curStage].mapID = GX_TEXMAP1;
+        }
+    }
+
+    if (foundTypes & 0x400) {
+        tvP->tevOrder[curStage].chanID = GX_COLOR0A0;
+    }
+
+    return ret;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/_buildtev/SetupStage.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/_buildtev/BuildCycle.s")
+void BuildCycle(CombineModeTev* tvP, u8 (*stageValues)[4]) {
+    s32 numCParts;
+    s32 numAParts;
+    s32 i;
+
+    numCParts = SetupStage(tvP, stageValues[0], 0);
+    numAParts = SetupStage(tvP, stageValues[1], 1);
+
+    if (numCParts == numAParts) {
+        tvP->numStages += numCParts;
+    } else if (numCParts > numAParts) {
+        for (i = tvP->numStages + numAParts; i < tvP->numStages + numCParts; i++) {
+            tvP->tevAlphaArg[i][3] = 0;
+        }
+        tvP->numStages += numCParts;
+    } else {
+        for (i = tvP->numStages + numCParts; i < tvP->numStages + numAParts; i++) {
+            tvP->tevColorArg[i][3] = 0;
+        }
+        tvP->numStages += numAParts;
+    }
+}
 
 CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alpha2, u32 numCycles) {
     u8 stageValues[2][2][4];
