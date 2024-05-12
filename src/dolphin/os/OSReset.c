@@ -73,9 +73,9 @@ lbl_80383140:
     mfspr r8, HID0
     ori r8, r8, 8
     mtspr HID0, r8
-    isync 
+    isync
     sync
-    nop 
+    nop
     b lbl_80383160
 lbl_8038315C:
     b lbl_8038317C
@@ -86,7 +86,7 @@ lbl_80383164:
     subf r7, r5, r6
     cmplwi r7, 0x1124
     blt lbl_80383164
-    nop 
+    nop
     b lbl_80383180
 lbl_8038317C:
     b lbl_8038319C
@@ -96,12 +96,12 @@ lbl_80383180:
     li r4, 3
     stw r4, 0x24(r8)
     stw r3, 0x24(r8)
-    nop 
+    nop
     b lbl_803831A0
 lbl_8038319C:
     b lbl_803831A8
 lbl_803831A0:
-    nop 
+    nop
     b lbl_803831A0
 lbl_803831A8:
     b lbl_80383140

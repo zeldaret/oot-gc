@@ -18,7 +18,7 @@ static ASM void __OSLoadFPUContext(register u32, register OSContext* fpuContext)
     mfspr r5, HID2
     rlwinm. r5, r5, 3, 31, 31
     beq _regular_FPRs
-    
+
     psq_l fp0, OS_CONTEXT_PSF0(fpuContext), 0, 0
     psq_l fp1, OS_CONTEXT_PSF1(fpuContext), 0, 0
     psq_l fp2, OS_CONTEXT_PSF2(fpuContext), 0, 0
@@ -342,8 +342,8 @@ misc:
 
 ASM u32 OSGetStackPointer() {
 #ifdef __MWERKS__ // clang-format off
-    nofralloc 
-    mr r3, r1 
+    nofralloc
+    mr r3, r1
     blr
 #endif // clang-format on
 }
@@ -475,7 +475,7 @@ static ASM void OSSwitchFPUContext(register __OSException exception, register OS
     ori     r5, r5, 0x2000
     mtsrr1  r5
     addis   r3, r0, OS_CACHED_REGION_PREFIX
-    lwz     r5, 0x00D8(r3) 
+    lwz     r5, 0x00D8(r3)
     stw     context, 0x00D8(r3)
     cmpw    r5, r4
     beq     _restoreAndExit

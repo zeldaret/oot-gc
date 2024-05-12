@@ -242,7 +242,7 @@ Entry Point: 0x80003154
 .set DSP_06,        0x06 # CPU Mailbox Low (from DSP)
 .set DSP_0A,        0x0A # AI DSP CSR - Control Status Register (DSP Status)
 .set DSP_12,        0x12 # AR_SIZE
-.set DSP_14,        0x14 # 
+.set DSP_14,        0x14 #
 .set DSP_16,        0x16 # AR_MODE
 .set DSP_1A,        0x1A # AR_REFRESH
 .set DSP_20,        0x20 # AR_DMA_MMADDR_H
