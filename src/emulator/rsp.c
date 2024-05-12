@@ -1271,7 +1271,36 @@ static bool rspAPoleFilter1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAEnvMixer1.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAMix1.s")
+static bool rspAMix1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u32 i;
+    u32 nCount;
+    s16 inScale;
+    s16* srcP;
+    s16* dstP;
+    s32 tmp;
+    s32 inData32;
+    s32 outData32;
+
+    nCount = pRSP->nAudioCount[0];
+    inScale = nCommandHi & 0xFFFF;
+    srcP = &pRSP->anAudioBuffer[(s32)(((nCommandLo >> 16) & 0xFFFF) + 0x5C0) / 2];
+    dstP = &pRSP->anAudioBuffer[(s32)((nCommandLo & 0xFFFF) + 0x5C0) / 2];
+
+    for (i = 0; i < nCount; i++) {
+        outData32 = dstP[i];
+        inData32 = srcP[i];
+
+        outData32 += (inData32 * inScale) >> 15;
+        if (outData32 > 0x7FFF) {
+            outData32 = 0x7FFF;
+        } else if (outData32 < -0x7FFF) {
+            outData32 = -0x7FFF;
+        }
+        dstP[i] = outData32;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAResample1.s")
 
@@ -1903,8 +1932,30 @@ static inline bool rspAClearBuffer2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
 static bool rspANoise2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspANoise2.s")
 
-static bool rspANMix2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspANMix2.s")
+static bool rspANMix2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u32 nCount;
+    u32 i;
+    s16* inP;
+    s16* outP;
+    s32 out;
+
+    nCount = ((nCommandHi >> 16) & 0xFF) << 3;
+    inP = &pRSP->anAudioBuffer[((nCommandLo >> 16) & 0xFFFF) >> 1];
+    outP = &pRSP->anAudioBuffer[(nCommandLo & 0xFFFF) >> 1];
+
+    for (i = 0; i < nCount; i++) {
+        out = outP[i];
+        out += inP[i];
+        if (out > 0x7FFF) {
+            out = 0x7FFF;
+        } else if (out < -0x8000) {
+            out = -0x8000;
+        }
+        outP[i] = out;
+    }
+
+    return true;
+}
 
 static bool rspAResample2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAResample2.s")
@@ -1967,8 +2018,36 @@ static inline bool rspALoadADPCM2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-static bool rspAMix2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAMix2.s")
+static bool rspAMix2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u32 i;
+    u32 nCount;
+    s16 inScale;
+    s16* srcP;
+    s16* dstP;
+    s32 tmp;
+    s32 inData32;
+    s32 outData32;
+
+    nCount = (s32)((nCommandHi >> 12) & 0xFF0) >> 1;
+    inScale = nCommandHi & 0xFFFF;
+    srcP = &pRSP->anAudioBuffer[(s32)((nCommandLo >> 16) & 0xFFFF) >> 1];
+    dstP = &pRSP->anAudioBuffer[(s32)(nCommandLo & 0xFFFF) >> 1];
+
+    for (i = 0; i < nCount; i++) {
+        outData32 = dstP[i];
+        inData32 = srcP[i];
+
+        outData32 += (inData32 * inScale) >> 15;
+        if (outData32 > 0x7FFF) {
+            outData32 = 0x7FFF;
+        } else if (outData32 < -0x7FFF) {
+            outData32 = -0x7FFF;
+        }
+        dstP[i] = outData32;
+    }
+
+    return true;
+}
 
 static bool rspAInterleave2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     s32 outp;
@@ -2603,7 +2682,36 @@ static bool rspInitAudioDMEM3(Rsp* pRSP) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAEnvMixer3.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAMix3.s")
+static bool rspAMix3(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u32 i;
+    u32 nCount;
+    s16 inScale;
+    s16* srcP;
+    s16* dstP;
+    s32 tmp;
+    s32 inData32;
+    s32 outData32;
+
+    nCount = (s32)((nCommandHi >> 12) & 0xFF0) >> 1;
+    inScale = nCommandHi & 0xFFFF;
+    srcP = &pRSP->anAudioBuffer[((s32)((nCommandLo >> 16) & 0xFFFF) >> 1) + (pRSP->nAudioMemOffset >> 1)];
+    dstP = &pRSP->anAudioBuffer[((s32)(nCommandLo & 0xFFFF) >> 1) + (pRSP->nAudioMemOffset >> 1)];
+
+    for (i = 0; i < nCount; i++) {
+        outData32 = dstP[i];
+        inData32 = srcP[i];
+
+        outData32 += (inData32 * inScale) >> 15;
+        if (outData32 > 0x7FFF) {
+            outData32 = 0x7FFF;
+        } else if (outData32 < -0x7FFF) {
+            outData32 = -0x7FFF;
+        }
+        dstP[i] = outData32;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI3.s")
 
