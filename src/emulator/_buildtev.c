@@ -1,6 +1,7 @@
 #include "emulator/_buildtev.h"
 #include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
+#include "stddef.h"
 
 GXTevColorArg gColorArgs[16] = {
     GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXC, GX_CC_C1,   GX_CC_RASC, GX_CC_C2,  GX_CC_ONE, GX_CC_APREV,
@@ -62,7 +63,7 @@ const s32 D_801360D8[2] = {
 };
 
 //! TODO: move this once the MSL is matched
-inline void memset(void* ptr, int value, u32 num) {
+inline void memset(void* ptr, int value, size_t num) {
     u8* p = ptr;
 
     while (num-- > 0) {
