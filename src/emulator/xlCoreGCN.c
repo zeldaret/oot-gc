@@ -149,7 +149,7 @@ bool xlCoreHiResolution(void) { return true; }
 int main(int nCount, char** aszArgument) {
     void* pHeap;
     u32 i;
-    TEXDescriptorPtr tdp;
+    TEXDescriptor* tdp;
     GXColor black;
     s32 nSizeHeap;
     s32 nSize;
@@ -183,11 +183,11 @@ int main(int nCount, char** aszArgument) {
         VIWaitForRetrace();
     }
 
-    simulatorUnpackTexPalette((TEXPalettePtr)gTgPcTPL);
+    simulatorUnpackTexPalette((TEXPalette*)gTgPcTPL);
 
     black = D_80135D00;
     for (i = 0; i < 2; i++) {
-        tdp = TEXGet((TEXPalettePtr)gTgPcTPL, i);
+        tdp = TEXGet((TEXPalette*)gTgPcTPL, i);
         GXInitTexObj(&g_texMap[i], tdp->textureHeader->data, tdp->textureHeader->width, tdp->textureHeader->height,
                      tdp->textureHeader->format, GX_CLAMP, GX_CLAMP, GX_FALSE);
     }

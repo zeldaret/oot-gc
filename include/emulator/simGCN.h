@@ -97,7 +97,7 @@ extern u8 TexCoords_u8[];
 
 extern char gpErrorMessageBuffer[20480];
 
-void simulatorUnpackTexPalette(TEXPalettePtr pal);
+void simulatorUnpackTexPalette(TEXPalette* pal);
 bool simulatorDVDOpen(char* szNameFile, DVDFileInfo* pFileInfo);
 bool simulatorDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset, DVDCallback callback);
 bool simulatorShowLoad(s32 unknown, char* szNameFile, f32 rProgress);
