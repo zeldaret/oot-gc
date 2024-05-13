@@ -4827,7 +4827,7 @@ bool cpuException(Cpu* pCPU, CpuExceptionCode eCode, s32 nMaskIP) {
 
     if (eCode == CEC_INTERRUPT) {
         if (!cpuTestInterrupt(pCPU, nMaskIP)) {
-            return 0;
+            return false;
         }
     } else {
         pCPU->nPC -= 4;
