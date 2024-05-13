@@ -1,6 +1,7 @@
 #include "emulator/THPVideoDecode.h"
 #include "dolphin.h"
 #include "emulator/THPPlayer.h"
+#include "emulator/THPRead.h"
 
 #define STACK_SIZE 0x1000
 #define BUFFER_COUNT 3
@@ -14,7 +15,7 @@ static void* DecodedTextureSetMessage[3];
 static bool VideoDecodeThreadCreated;
 static bool First;
 
-static void* VideoDecoder();
+static void* VideoDecoder(void* ptr);
 static void* VideoDecoderForOnMemory(void* ptr);
 static void VideoDecode(THPReadBuffer* readBuffer);
 
@@ -48,19 +49,17 @@ void VideoDecodeThreadStart(void) {
         OSResumeThread(&VideoDecodeThread);
 }
 
-static void* VideoDecoder(void) {
+static void* VideoDecoder(void* ptr) {
     THPReadBuffer* readBuffer;
     s32 old;
     s32 decodedFrame = ActivePlayer.videoAhead;
-    s32 curFrame;
     s32 remaining;
 
     while (true) {
         if (ActivePlayer.audioExist) {
             for (; ActivePlayer.videoAhead < 0; decodedFrame--) {
                 readBuffer = (THPReadBuffer*)PopReadedBuffer2();
-                curFrame = (readBuffer->frameNumber + ActivePlayer.initReadFrame);
-                remaining = (curFrame % ActivePlayer.header.numFrames);
+                remaining = (readBuffer->frameNumber + ActivePlayer.initReadFrame) % ActivePlayer.header.numFrames;
                 if (remaining == (ActivePlayer.header.numFrames - 1) && (ActivePlayer.playFlag & 1) == 0)
                     VideoDecode(readBuffer);
 
@@ -137,6 +136,8 @@ static void* VideoDecoderForOnMemory(void* arg) {
 
         frame++;
     }
+
+    return NULL;
 }
 
 static void VideoDecode(THPReadBuffer* readBuffer) {

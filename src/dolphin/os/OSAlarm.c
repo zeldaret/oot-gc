@@ -8,11 +8,17 @@ static struct OSAlarmQueue {
     OSAlarm* tail;
 } AlarmQueue;
 
+extern bool __DVDTestAlarm(OSAlarm* alarm);
 static void DecrementerExceptionHandler(__OSException exception, OSContext* context);
 static bool OnReset(bool final);
 
 #if DOLPHIN_REV == 2003
-static OSResetFunctionInfo ResetFunctionInfo = {OnReset, 0xFFFFFFFF};
+static OSResetFunctionInfo ResetFunctionInfo = {
+    OnReset,
+    0xFFFFFFFF,
+    NULL,
+    NULL,
+};
 #endif
 
 void OSInitAlarm(void) {

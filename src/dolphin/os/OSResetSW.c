@@ -1,7 +1,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
-extern OSTime __OSGetSystemTime();
+extern OSTime __OSGetSystemTime(void);
 
 u8 GameChoice AT_ADDRESS(OS_BASE_CACHED | 0x30E3);
 

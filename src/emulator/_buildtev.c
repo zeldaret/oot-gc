@@ -63,7 +63,7 @@ const s32 D_801360D8[2] = {
 };
 
 // special ``memset`` function?
-inline void memset(void* ptr, int value, size_t num) {
+inline void BuildTevMemset(void* ptr, int value, size_t num) {
     u8* p = ptr;
 
     while (num-- > 0) {
@@ -205,7 +205,7 @@ CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alph
     u8* tempPtr;
     s32 pad[2];
 
-    memset(&tevStages, 0, sizeof(CombineModeTev));
+    BuildTevMemset(&tevStages, 0, sizeof(CombineModeTev));
 
     for (i = 0; i < 8; i++) {
         tevStages.tevOrder[i].coordID = GX_TEXCOORD_NULL;

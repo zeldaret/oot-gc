@@ -12,6 +12,8 @@ static bool OnReset(bool final);
 static OSResetFunctionInfo ResetFunctionInfo = {
     OnReset,
     127,
+    NULL,
+    NULL,
 };
 
 static bool OnReset(bool final) {
@@ -22,9 +24,9 @@ static bool OnReset(bool final) {
     return true;
 }
 
-inline u32 OSGetPhysicalMemSize() { return *(u32*)(OSPhysicalToCached(0x0028)); }
+inline u32 OSGetPhysicalMemSize(void) { return *(u32*)(OSPhysicalToCached(0x0028)); }
 
-inline u32 OSGetConsoleSimulatedMemSize() { return *(u32*)(OSPhysicalToCached(0x00F0)); }
+inline u32 OSGetConsoleSimulatedMemSize(void) { return *(u32*)(OSPhysicalToCached(0x00F0)); }
 
 static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     u32 addr;
@@ -42,7 +44,7 @@ static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     __OSUnhandledException(OS_ERROR_PROTECTION, context, cause, addr);
 }
 
-ASM void Config24MB() {
+ASM void Config24MB(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 
@@ -90,7 +92,7 @@ ASM void Config24MB() {
 #endif // clang-format on
 }
 
-ASM void Config48MB() {
+ASM void Config48MB(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 
@@ -150,7 +152,7 @@ ASM void RealMode(register u32 addr) {
 #endif // clang-format on
 }
 
-void __OSInitMemoryProtection() {
+void __OSInitMemoryProtection(void) {
     u32 padding[8];
     u32 simulatedSize;
     bool enabled;

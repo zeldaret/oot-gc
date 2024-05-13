@@ -3,10 +3,11 @@
 #include "macros.h"
 #include "string.h"
 
-void __OSSystemCallVectorStart();
-void __OSSystemCallVectorEnd();
+void __OSSystemCallVectorStart(void);
+void __OSSystemCallVectorEnd(void);
+void __sync(void);
 
-static ASM void SystemCallVector() {
+static ASM void SystemCallVector(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 entry __OSSystemCallVectorStart
@@ -24,7 +25,7 @@ entry __OSSystemCallVectorEnd
 #endif // clang-format on
 }
 
-void __OSInitSystemCall() {
+void __OSInitSystemCall(void) {
     void* addr = OSPhysicalToCached(0x00C00);
     memcpy(addr, __OSSystemCallVectorStart, (size_t)__OSSystemCallVectorEnd - (size_t)__OSSystemCallVectorStart);
     DCFlushRangeNoSync(addr, 0x100);

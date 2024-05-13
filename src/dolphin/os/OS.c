@@ -1,10 +1,22 @@
 #include "dolphin/os.h"
 #include "dolphin/DVDPriv.h"
+#include "dolphin/base/PPCArch.h"
 #include "dolphin/db.h"
+#include "dolphin/exi.h"
 #include "dolphin/os/OSBootInfo.h"
+#include "dolphin/os/OSPriv.h"
+#include "dolphin/si.h"
 #include "macros.h"
+#include "string.h"
 
-extern OSTime __OSGetSystemTime();
+extern OSTime __OSGetSystemTime(void);
+extern void __OSInitSystemCall(void);
+extern void __OSModuleInit(void);
+extern void __OSCacheInit(void);
+extern void __OSInitSram(void);
+extern void __OSInitAudioSystem(void);
+extern void EnableMetroTRKInterrupts(void);
+void __sync(void);
 
 #if DOLPHIN_REV == 2002
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Sep  5 2002 05:32:39 (0x2301) >>";
@@ -28,7 +40,7 @@ static DVDCommandBlock DriveBlock;
 
 static OSBootInfo* BootInfo;
 static u32* BI2DebugFlag;
-static u32* BI2DebugFlagHolder;
+static u32 BI2DebugFlagHolder;
 WEAK bool __OSIsGcam = false;
 static f64 ZeroF;
 static f32 ZeroPS[2];
@@ -54,7 +66,6 @@ extern u32 __PADSpec;
 #define OS_DEBUG_ADDRESS_2 0x800030E9
 #define DB_EXCEPTIONRET_OFFSET 0xC
 #define DB_EXCEPTIONDEST_OFFSET 0x8
-#define MSR_RI_BIT 0x1E
 
 void OSDefaultExceptionHandler(__OSException exception, OSContext* context);
 extern bool __DBIsExceptionMarked(__OSException);
@@ -147,7 +158,7 @@ SkipPairedSingles:
 #endif // clang-format on
 }
 
-u32 OSGetConsoleType() {
+u32 OSGetConsoleType(void) {
     if (BootInfo == NULL || BootInfo->consoleType == 0) {
         return OS_CONSOLE_ARTHUR;
     }
@@ -176,12 +187,12 @@ void ClearArena(void) {
 
     if ((u32)OSGetArenaLo() < (u32)__OSSavedRegionStart) {
         if ((u32)OSGetArenaHi() <= (u32)__OSSavedRegionStart) {
-            memset((u32)OSGetArenaLo(), 0U, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
+            memset(OSGetArenaLo(), 0U, (u32)OSGetArenaHi() - (u32)OSGetArenaLo());
             return;
         }
         memset(OSGetArenaLo(), 0U, (u32)__OSSavedRegionStart - (u32)OSGetArenaLo());
         if ((u32)OSGetArenaHi() > (u32)__OSSavedRegionEnd) {
-            memset((u32)__OSSavedRegionEnd, 0, (u32)OSGetArenaHi() - (u32)__OSSavedRegionEnd);
+            memset(__OSSavedRegionEnd, 0, (u32)OSGetArenaHi() - (u32)__OSSavedRegionEnd);
         }
     }
 }
@@ -256,7 +267,7 @@ void OSInit(void) {
             *((u8*)DEBUGFLAG_ADDR) = (u8)*BI2DebugFlag; // store flag in mem
             *((u8*)OS_DEBUG_ADDRESS_2) = (u8)__PADSpec; // store other info in mem
         } else if (BootInfo->arenaHi) { // if the top of the heap is already set
-            BI2DebugFlagHolder = (u32*)*((u8*)DEBUGFLAG_ADDR); // grab whatever's stored at 0x800030E8
+            BI2DebugFlagHolder = (u32) * ((u8*)DEBUGFLAG_ADDR); // grab whatever's stored at 0x800030E8
             BI2DebugFlag = (u32*)&BI2DebugFlagHolder; // flag is then address of flag holder
             __PADSpec = (u32) * ((u8*)OS_DEBUG_ADDRESS_2); // pad spec is whatever's at 0x800030E9
         }
@@ -386,7 +397,7 @@ void OSInit(void) {
                 return;
             }
             DCInvalidateRange(&DriveInfo, sizeof(DriveInfo));
-            DVDInquiryAsync((char*)&DriveBlock, &DriveInfo, InquiryCallback);
+            DVDInquiryAsync(&DriveBlock, &DriveInfo, InquiryCallback);
         }
     }
 }
@@ -408,8 +419,6 @@ void __OSDBJUMPSTART(void);
 void __OSDBJUMPEND(void);
 
 #define NOP 0x60000000
-
-__OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExceptionHandler handler);
 
 static void OSExceptionInit(void) {
     __OSException exception;

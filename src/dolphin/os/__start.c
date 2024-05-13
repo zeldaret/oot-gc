@@ -2,11 +2,10 @@
 #include "__ppc_eabi_linker.h"
 #include "dolphin/__ppc_eabi_init.h"
 #include "macros.h"
+#include "string.h"
 
 u16 Pad3Button AT_ADDRESS(PAD3_BUTTON_ADDR);
 static u8 Debug_BBA = 0;
-
-static void __init_registers(void);
 
 void __check_pad3(void) {
     if ((Pad3Button & 0x0eef) == 0x0eef) {
@@ -151,7 +150,7 @@ _goto_skip_init_bba:
 #endif // clang-format on
 }
 
-ASM static void __init_registers(void) {
+ASM void __init_registers(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     #if DOLPHIN_REV == 2003

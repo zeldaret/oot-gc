@@ -4,9 +4,9 @@
 #include "dolphin.h"
 
 bool CreateAudioDecodeThread(OSPriority prio, void* param);
-void AudioDecodeThreadStart();
-void AudioDecodeThreadCancel();
-void* PopFreeAudioBuffer();
+void AudioDecodeThreadStart(void);
+void AudioDecodeThreadCancel(void);
+void* PopFreeAudioBuffer(void);
 void PushFreeAudioBuffer(void* buf);
 void* PopDecodedAudioBuffer(s32 flags);
 void PushDecodedAudioBuffer(void* buf);

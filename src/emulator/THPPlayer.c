@@ -1,5 +1,10 @@
 #include "emulator/THPPlayer.h"
+#include "emulator/THPAudioDecode.h"
+#include "emulator/THPDraw.h"
+#include "emulator/THPRead.h"
+#include "emulator/THPVideoDecode.h"
 #include "macros.h"
+#include "string.h"
 
 u16 VolumeTable[128] = {
     0x0000, 0x0002, 0x0008, 0x0012, 0x0020, 0x0032, 0x0049, 0x0063, 0x0082, 0x00A4, 0x00CB, 0x00F5, 0x0124,
