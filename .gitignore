@@ -17,3 +17,6 @@ __pycache__/
 
 # IDE artifacts
 .vscode/
+
+# Permuter artifacts
+nonmatchings/
