@@ -161,14 +161,14 @@ $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
-	$(CC) $(CFLAGS) -inline deferred $< -c -o $@
+	$(DOLPHIN_CC) $(CFLAGS) $< -c -o $@
 	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $@
 
 $(BUILD_DIR)/src/emulator/THPRead.o: src/emulator/THPRead.c
 	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
-	$(CC) $(CFLAGS) -inline deferred $< -c -o $@
+	$(CC) $(CFLAGS) $< -c -o $@
 	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $@
 
 $(BUILD_DIR)/src/emulator/xlCoreGCN.o: src/emulator/xlCoreGCN.c
