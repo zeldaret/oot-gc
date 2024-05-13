@@ -2,7 +2,9 @@
 #define _DOLPHIN_OSINTERRUPT
 
 #include "dolphin/os/OSContext.h"
+#include "dolphin/os/OSPriv.h"
 #include "dolphin/types.h"
+#include "string.h"
 
 #ifdef __cplusplus
 extern "C" {

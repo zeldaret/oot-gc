@@ -1,8 +1,12 @@
 #include "dolphin/OSRtcPriv.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
+#include "dolphin/pad.h"
 #include "dolphin/vi.h"
 #include "macros.h"
+
+extern void __OSReboot(u32 resetCode, u32 bootDol);
+extern void __OSStopAudioSystem(void);
 
 typedef struct OSResetQueue {
     OSResetFunctionInfo* first;
@@ -46,7 +50,7 @@ void OSRegisterResetFunction(OSResetFunctionInfo* func) {
     tmp->next = func;
 }
 
-inline bool __OSCallResetFunctions(u32 arg0) {
+static inline bool __OSCallResetFunctions(u32 arg0) {
     OSResetFunctionInfo* iter;
     s32 retCode = 0;
 

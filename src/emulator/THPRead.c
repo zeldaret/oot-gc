@@ -2,6 +2,7 @@
 #include "emulator/THPBuffer.h"
 #include "emulator/THPPlayer.h"
 #include "emulator/simGCN.h"
+#include "emulator/xlCoreGCN.h"
 #include "macros.h"
 
 #define STACK_SIZE 0x1000
@@ -147,7 +148,7 @@ bool movieGXInit(void) {
     GXPokeAlphaRead(GX_READ_FF);
     GXPokeDstAlpha(GX_DISABLE, 0);
     GXPokeZMode(GX_ENABLE, GX_ALWAYS, GX_ENABLE);
-    GXSetGPMetric(GX_PERF0_NONE, GX_PERF0_TRIANGLES_7TEX);
+    GXSetGPMetric(GX_PERF0_NONE, GX_PERF1_NONE);
     GXClearGPMetric();
     return true;
 }
@@ -293,12 +294,14 @@ bool movieDrawErrorMessage(MovieMessage movieMessage) {
                            160 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
                            120 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
             break;
+        default:
+            break;
     }
 
     return true;
 }
 
-bool movieDVDShowError(s32 nStatus, void*, s32, u32) {
+bool movieDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset) {
     MovieMessage nMessage;
 
     nMessage = M_M_NONE;
@@ -419,7 +422,7 @@ bool CreateReadThread(OSPriority priority) {
     return true;
 }
 
-void ReadThreadStart() {
+void ReadThreadStart(void) {
     if (ReadThreadCreated) {
         OSResumeThread(&ReadThread);
     }
@@ -462,7 +465,7 @@ static void* Reader(void* ptr) {
 }
 #endif
 
-void* PopReadedBuffer() {
+void* PopReadedBuffer(void) {
     OSMessage msg;
     OSReceiveMessage(&ReadedBufferQueue, &msg, OS_MESSAGE_BLOCK);
     return msg;
@@ -470,7 +473,7 @@ void* PopReadedBuffer() {
 
 inline void PushReadedBuffer(void* buffer) { OSSendMessage(&ReadedBufferQueue, buffer, OS_MESSAGE_BLOCK); }
 
-inline void* PopFreeReadBuffer() {
+inline void* PopFreeReadBuffer(void) {
     OSMessage msg;
     OSReceiveMessage(&FreeReadBufferQueue, &msg, OS_MESSAGE_BLOCK);
     return msg;
@@ -478,7 +481,7 @@ inline void* PopFreeReadBuffer() {
 
 void PushFreeReadBuffer(void* buffer) { OSSendMessage(&FreeReadBufferQueue, buffer, OS_MESSAGE_BLOCK); }
 
-void* PopReadedBuffer2() {
+void* PopReadedBuffer2(void) {
     OSMessage msg;
     OSReceiveMessage(&ReadedBufferQueue2, &msg, OS_MESSAGE_BLOCK);
     return msg;

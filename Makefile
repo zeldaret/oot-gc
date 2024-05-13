@@ -1,5 +1,4 @@
 NON_MATCHING := 0
-RUN_CC_CHECK := 1
 
 #-------------------------------------------------------------------------------
 # Files
@@ -71,6 +70,8 @@ CC_CHECK_WARNINGS := \
 	-Werror=implicit-function-declaration \
 	-Wno-cast-function-type \
 	-Wno-incompatible-pointer-types \
+	-Wno-pointer-to-int-cast \
+	-Wno-return-type \
 	-Wno-sequence-point \
 	-Wno-sign-compare \
 	-Wno-unknown-pragmas \
@@ -92,8 +93,9 @@ POSTPROC := tools/postprocess.py
 INCLUDES := -Iinclude -Ilibc
 ASFLAGS := -mgekko -I include -I libc
 LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int  -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -inline auto -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
-CC_CHECK_FLAGS := -fno-builtin -fsyntax-only -std=gnu99 -I include -I libc $(CC_CHECK_WARNINGS) -DNON_MATCHING
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int  -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+INLINE_CFLAGS := -inline auto
+CC_CHECK_FLAGS := -fno-builtin -fsyntax-only -std=gnu99 -I include -I libc $(CC_CHECK_WARNINGS) -DNON_MATCHING -DDOLPHIN_REV=$(DOLPHIN_REVISION)
 
 ifneq ($(NON_MATCHING),0)
 	CFLAGS += -DNON_MATCHING
@@ -157,20 +159,17 @@ $(ELF): $(O_FILES) ldscript.lcf
 $(DOL): $(ELF)
 	$(ELF2DOL) $< $@ $(SDATA_PDHR) $(SBSS_PDHR) $(TARGET_COL)
 
+$(BUILD_DIR)/src/dolphin/%.o: CC := $(DOLPHIN_CC)
+
+$(BUILD_DIR)/src/emulator/%.o: INLINE_CFLAGS := -inline auto,deferred
+$(BUILD_DIR)/src/emulator/THP%.o: INLINE_CFLAGS := -inline auto
+$(BUILD_DIR)/src/emulator/THPRead.o: INLINE_CFLAGS := -inline auto,deferred
+
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
-$(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
-	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
-
-$(BUILD_DIR)/src/emulator/THPRead.o: src/emulator/THPRead.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
-
-$(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
-
-$(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
-ifeq ($(RUN_CC_CHECK),1)
+$(BUILD_DIR)/%.o: %.c
+ifneq ($(CC_CHECK),)
 	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
 endif
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) $(INLINE_CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<

@@ -220,6 +220,7 @@ void OSPanic(const char* file, int line, const char* msg, ...);
 #include "dolphin/os/OSMutex.h"
 #include "dolphin/os/OSReset.h"
 #include "dolphin/os/OSResetSW.h"
+#include "dolphin/os/OSRtc.h"
 #include "dolphin/os/OSSerial.h"
 #include "dolphin/os/OSThread.h"
 #endif

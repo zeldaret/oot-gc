@@ -1,6 +1,7 @@
 #include "emulator/THPAudioDecode.h"
 #include "dolphin.h"
 #include "emulator/THPPlayer.h"
+#include "emulator/THPRead.h"
 
 #define STACK_SIZE 0x1000
 #define BUFFER_COUNT 3
@@ -41,7 +42,7 @@ bool CreateAudioDecodeThread(OSPriority prio, void* param) {
     return true;
 }
 
-void AudioDecodeThreadStart() {
+void AudioDecodeThreadStart(void) {
     if (AudioDecodeThreadCreated) {
         OSResumeThread(&AudioDecodeThread);
     }
@@ -54,6 +55,7 @@ static void* AudioDecoder(void* _) {
         AudioDecode(buf);
         PushReadedBuffer2((OSMessage*)buf);
     }
+    return NULL;
 }
 
 static void* AudioDecoderForOnMemory(void* ptr) {
@@ -117,7 +119,7 @@ static void AudioDecode(THPReadBuffer* readBuffer) {
     }
 }
 
-void* PopFreeAudioBuffer() {
+void* PopFreeAudioBuffer(void) {
     void* buf;
     OSReceiveMessage(&FreeAudioBufferQueue, &buf, 1);
     return buf;

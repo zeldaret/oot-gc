@@ -14,15 +14,14 @@
 #define DEBUGFLAG_ADDR 0x800030E8
 #define DVD_DEVICECODE_ADDR 0x800030E6
 
-extern void InitMetroTRK();
+extern void InitMetroTRK(void);
 
 extern u16 Pad3Button;
 
-extern void memset(void*, int, int);
 extern int main(int argc, char* argv[]);
 extern void exit(int);
 extern void __init_user(void);
-extern void InitMetroTRK_BBA();
+extern void InitMetroTRK_BBA(void);
 extern void OSInit(void);
 extern void DBInit(void);
 extern void OSResetSystem(bool reset, u32 resetCode, bool forceMenu);

@@ -1,12 +1,13 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/db.h"
 #include "dolphin/os.h"
+#include "dolphin/os/OSPriv.h"
 #include "macros.h"
 
 volatile OSContext* __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED | 0x00D4);
 volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED | 0x00D8);
 
-static ASM void __OSLoadFPUContext(register u32, register OSContext* fpuContext) {
+static ASM void __OSLoadFPUContext(register u32 unknown, register OSContext* fpuContext) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     lhz r5, fpuContext->state;
@@ -90,7 +91,7 @@ _return:
 #endif // clang-format on
 }
 
-static ASM void __OSSaveFPUContext(register u32, register u32, register OSContext* fpuContext){
+static ASM void __OSSaveFPUContext(register u32 unknown1, register u32 unknown2, register OSContext* fpuContext){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
 
@@ -264,8 +265,8 @@ ASM u32 OSSaveContext(register OSContext* context) {
 #endif // clang-format on
 }
 
-extern void __RAS_OSDisableInterrupts_begin();
-extern void __RAS_OSDisableInterrupts_end();
+extern void __RAS_OSDisableInterrupts_begin(void);
+extern void __RAS_OSDisableInterrupts_end(void);
 
 ASM void OSLoadContext(register OSContext* context) {
 #ifdef __MWERKS__ // clang-format off
@@ -340,7 +341,7 @@ misc:
 #endif // clang-format on
 }
 
-ASM u32 OSGetStackPointer() {
+ASM u32 OSGetStackPointer(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mr r3, r1

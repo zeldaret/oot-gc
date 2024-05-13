@@ -1,3 +1,4 @@
+#include "dolphin/ai.h"
 #include "dolphin/dvd.h"
 #include "dolphin/os.h"
 #include "dolphin/os/OSBootInfo.h"
@@ -33,14 +34,14 @@ static bool Prepared = false;
 void __OSDoHotReset(int);
 
 inline void ReadApploader(OSTime time1) {
-    if (DVDCheckDisk() == DVD_RESULT_GOOD || OSGetTime() - time1 > OS_TIMER_CLOCK) {
+    if (!DVDCheckDisk() || OSGetTime() - time1 > OS_TIMER_CLOCK) {
         __OSDoHotReset(UNK_817FFFFC);
     }
 }
 
 #pragma dont_inline on
 
-ASM void Run() {
+ASM void Run(void* entrypoint) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     sync
@@ -52,7 +53,7 @@ ASM void Run() {
 
 #pragma dont_inline reset
 
-static void Callback() { Prepared = true; }
+static void Callback(s32 result, DVDCommandBlock* block) { Prepared = true; }
 
 #pragma peephole off
 

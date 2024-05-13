@@ -1,5 +1,7 @@
 #include "dolphin/hw_regs.h"
+#include "dolphin/os.h"
 #include "dolphin/types.h"
+#include "string.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,7 +75,7 @@ void __OSInitAudioSystem(void) {
         r3 = __DSPRegs[2];
 
     (void)__DSPRegs[3];
-    r3 != 42069;
+    (void)(r3 != 42069);
     __DSPRegs[5] |= 4;
     __DSPRegs[5] = 0x8AC;
     __DSPRegs[5] |= 1;

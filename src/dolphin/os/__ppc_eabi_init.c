@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
-void __OSPSInit();
-void __OSCacheInit();
+void __OSPSInit(void);
+void __OSCacheInit(void);
 
 ASM void __init_hardware(void){
 #ifdef __MWERKS__ // clang-format off
@@ -48,9 +48,9 @@ loop:
 #endif // clang-format on
 }
 
-void InitMetroTRK_BBA() { return; }
+void InitMetroTRK_BBA(void) { return; }
 
-void __init_user() { __init_cpp(); }
+void __init_user(void) { __init_cpp(); }
 
 typedef void (*voidfunctionptr)(void); // pointer to function returning void
 INIT extern voidfunctionptr _ctors[];

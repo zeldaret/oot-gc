@@ -3,6 +3,15 @@
 
 #include "dolphin/types.h"
 
+typedef struct SramControl {
+    u8 sram[64];
+    u32 offset;
+    s32 enabled;
+    s32 locked;
+    s32 sync;
+    void (*callback)(void);
+} SramControl;
+
 typedef struct OSSram {
     u16 checkSum;
     u16 checkSumInv;
@@ -26,8 +35,8 @@ typedef struct OSSramEx {
     u8 _padding1[2];
 } OSSramEx;
 
-OSSram* __OSLockSram();
-OSSramEx* __OSLockSramEx();
+OSSram* __OSLockSram(void);
+OSSramEx* __OSLockSramEx(void);
 void OSSetWirelessID(s32 chan, u16 id);
 u16 OSGetWirelessID(s32 chan);
 

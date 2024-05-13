@@ -6,6 +6,7 @@ static ASM void ExternalInterruptHandler(register __OSException exception, regis
 
 extern void __RAS_OSDisableInterrupts_begin(void);
 extern void __RAS_OSDisableInterrupts_end(void);
+int __cntlzw(unsigned int n);
 
 static __OSInterruptHandler* InterruptHandlerTable;
 

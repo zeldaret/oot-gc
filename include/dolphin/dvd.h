@@ -67,8 +67,10 @@ s32 DVDGetDriveStatus(void);
 bool DVDSetAutoInvalidation(bool autoInval);
 void DVDResume(void);
 bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback);
+bool DVDCancelStreamAsync(DVDCommandBlock* block, DVDCBCallback callback);
 s32 DVDCancel(DVDCommandBlock* block);
 s32 DVDGetDriveStatus(void);
+bool DVDCheckDisk(void);
 DVDDiskID* DVDGetCurrentDiskID(void);
 bool DVDCompareDiskID(const DVDDiskID* id1, const DVDDiskID* id2);
 

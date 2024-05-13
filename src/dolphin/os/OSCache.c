@@ -3,7 +3,9 @@
 #include "dolphin/os.h"
 #include "macros.h"
 
-ASM void DCEnable(){
+void __sync(void);
+
+ASM void DCEnable(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     sync
@@ -135,7 +137,7 @@ ASM void ICInvalidateRange(register void* addr, register u32 nBytes) {
 #endif // clang-format on
 }
 
-ASM void ICFlashInvalidate(){
+ASM void ICFlashInvalidate(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfspr r3, HID0
@@ -145,7 +147,7 @@ ASM void ICFlashInvalidate(){
 #endif // clang-format on
 }
 
-ASM void ICEnable(){
+ASM void ICEnable(void){
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     isync
@@ -159,7 +161,7 @@ ASM void ICEnable(){
 #define LC_LINES 512
 #define CACHE_LINES 1024
 
-ASM void __LCEnable() {
+ASM void __LCEnable(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     mfmsr   r5
@@ -223,7 +225,7 @@ _lockloop:
 #endif // clang-format on
 }
 
-void LCEnable() {
+void LCEnable(void) {
     bool enabled;
 
     enabled = OSDisableInterrupts();
@@ -231,7 +233,7 @@ void LCEnable() {
     OSRestoreInterrupts(enabled);
 }
 
-ASM void LCDisable() {
+ASM void LCDisable(void) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
     lis     r3, LC_BASE_PREFIX
@@ -366,7 +368,7 @@ void DMAErrorHandler(OSError error, OSContext* context, ...) {
     PPCMthid2(hid2);
 }
 
-void __OSCacheInit() {
+void __OSCacheInit(void) {
     if (!(PPCMfhid0() & HID0_ICE)) {
         ICEnable();
         DBPrintf("L1 i-caches initialized\n");

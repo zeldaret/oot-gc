@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_THP_H_
-#define _DOLPHIN_THP_H_
+#ifndef _DOLPHIN_TEX_H_
+#define _DOLPHIN_TEX_H_
 
 #include "dolphin/gx.h"
 #include "dolphin/types.h"

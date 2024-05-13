@@ -18,6 +18,8 @@ volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED + 0x00D8);
 
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to) {}
 
+int __cntlzw(unsigned int n);
+
 extern u8 _stack_addr[];
 extern u8 _stack_end[];
 extern u32 __OSFpscrEnableBits;
@@ -91,7 +93,7 @@ static inline void OSSetCurrentThread(OSThread* thread) {
     __OSCurrentThread = thread;
 }
 
-void __OSThreadInit() {
+void __OSThreadInit(void) {
     OSThread* thread = &DefaultThread;
     int prio;
 
@@ -129,9 +131,9 @@ void __OSThreadInit() {
 
 void OSInitThreadQueue(OSThreadQueue* queue) { queue->head = queue->tail = NULL; }
 
-OSThread* OSGetCurrentThread() { return __OSCurrentThread; }
+OSThread* OSGetCurrentThread(void) { return __OSCurrentThread; }
 
-s32 OSDisableScheduler() {
+s32 OSDisableScheduler(void) {
     bool enabled;
     s32 count;
 
@@ -141,7 +143,7 @@ s32 OSDisableScheduler() {
     return count;
 }
 
-s32 OSEnableScheduler() {
+s32 OSEnableScheduler(void) {
     bool enabled;
     s32 count;
 
@@ -296,7 +298,7 @@ static OSThread* SelectThread(bool yield) {
     return nextThread;
 }
 
-void __OSReschedule() {
+void __OSReschedule(void) {
     if (!RunQueueHint) {
         return;
     }

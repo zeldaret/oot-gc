@@ -50,6 +50,7 @@ bool THPPlayerOpen(char* fileName, bool onMemory);
 bool THPPlayerClose(void);
 u32 THPPlayerCalcNeedMemory(void);
 bool THPPlayerSetBuffer(u8* buffer);
+void PrepareReady(s32 msg);
 bool THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack);
 bool THPPlayerPlay(void);
 s32 THPPlayerDrawCurrentFrame(GXRenderModeObj* rmode, u32 x, u32 y, u32 polygonW, u32 polygonH);
