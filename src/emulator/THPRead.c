@@ -439,7 +439,7 @@ static void* Reader(void* ptr) {
     while (true) {
         readBuffer = PopFreeReadBuffer();
         // TODO: fake match
-        movieDVDRead(&ActivePlayer.fileInfo, readBuffer->ptr, size, offset & 0xFFFFFFFFFFFFFFFF);
+        movieDVDRead(&ActivePlayer.fileInfo, readBuffer->ptr, size, (s64)offset);
         readBuffer->frameNumber = readFrame;
         PushReadedBuffer(readBuffer);
         offset += size;
