@@ -425,10 +425,6 @@ void ReadThreadStart() {
     }
 }
 
-// regalloc issues
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/THPRead/Reader.s")
-#else
 static void* Reader(void* ptr) {
     THPReadBuffer* readBuffer;
     s32 offset;
@@ -442,7 +438,8 @@ static void* Reader(void* ptr) {
 
     while (true) {
         readBuffer = PopFreeReadBuffer();
-        movieDVDRead(&ActivePlayer.fileInfo, readBuffer->ptr, size, offset);
+        // TODO: fake match
+        movieDVDRead(&ActivePlayer.fileInfo, readBuffer->ptr, size, offset & 0xFFFFFFFFFFFFFFFF);
         readBuffer->frameNumber = readFrame;
         PushReadedBuffer(readBuffer);
         offset += size;
@@ -460,7 +457,6 @@ static void* Reader(void* ptr) {
     }
     return NULL;
 }
-#endif
 
 void* PopReadedBuffer() {
     OSMessage msg;
