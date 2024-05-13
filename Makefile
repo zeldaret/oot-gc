@@ -161,16 +161,73 @@ $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(BUILD_DIR)/src/dolphin/%.o: src/dolphin/%.c
-	$(ASM_PROCESSOR) "$(DOLPHIN_CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+	$(CC) $(CFLAGS) -inline deferred $< -c -o $@
+	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $@
 
 $(BUILD_DIR)/src/emulator/THPRead.o: src/emulator/THPRead.c
 	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/THP%.o: src/emulator/THP%.c
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS)" "$(AS) $(ASFLAGS)" $@ $<
+	$(CC) $(CFLAGS) -inline deferred $< -c -o $@
+	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $@
+
+$(BUILD_DIR)/src/emulator/xlCoreGCN.o: src/emulator/xlCoreGCN.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/simGCN.o: src/emulator/simGCN.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/mcardGCN.o: src/emulator/mcardGCN.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/soundGCN.o: src/emulator/soundGCN.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/frame.o: src/emulator/frame.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/cpu.o: src/emulator/cpu.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/rsp.o: src/emulator/rsp.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/_buildtev.o: src/emulator/_buildtev.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+
+$(BUILD_DIR)/src/emulator/_frameGCNcc.o: src/emulator/_frameGCNcc.c
+ifeq ($(RUN_CC_CHECK),1)
+	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
+endif
+	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
 
 $(BUILD_DIR)/src/emulator/%.o: src/emulator/%.c
 ifeq ($(RUN_CC_CHECK),1)
 	$(CC_CHECK) $(CC_CHECK_FLAGS) $<
 endif
-	$(ASM_PROCESSOR) "$(CC) $(CFLAGS) -inline deferred" "$(AS) $(ASFLAGS)" $@ $<
+	$(CC) $(CFLAGS) -inline deferred $< -c -o $@
+	$(OBJCOPY) --remove-section .mwcats.text --remove-section .comment $@
