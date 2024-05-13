@@ -93,7 +93,7 @@ POSTPROC := tools/postprocess.py
 INCLUDES := -Iinclude -Ilibc
 ASFLAGS := -mgekko -I include -I libc
 LDFLAGS := -map $(MAP) -fp hardware -nodefaults -warn off
-CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int  -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
+CFLAGS := -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -sym on -nodefaults -msgstyle gcc $(INCLUDES) -DDOLPHIN_REV=$(DOLPHIN_REVISION)
 INLINE_CFLAGS := -inline auto
 CC_CHECK_FLAGS := -fno-builtin -fsyntax-only -std=gnu99 -I include -I libc $(CC_CHECK_WARNINGS) -DNON_MATCHING -DDOLPHIN_REV=$(DOLPHIN_REVISION)
 
