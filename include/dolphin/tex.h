@@ -18,7 +18,7 @@ typedef struct {
     /* 0x21 */ u8 minLOD;
     /* 0x22 */ u8 maxLOD;
     /* 0x23 */ u8 unpacked;
-} TEXHeader, *TEXHeaderPtr; // size = 0x24
+} TEXHeader; // size = 0x24
 
 typedef struct {
     /* 0x0 */ u16 numEntries;
@@ -26,20 +26,20 @@ typedef struct {
     /* 0x3 */ u8 pad8;
     /* 0x4 */ GXTlutFmt format;
     /* 0x8 */ char* data;
-} CLUTHeader, *CLUTHeaderPtr; // size = 0xC
+} CLUTHeader; // size = 0xC
 
 typedef struct {
-    /* 0x0 */ TEXHeaderPtr textureHeader;
-    /* 0x4 */ CLUTHeaderPtr CLUTHeader;
-} TEXDescriptor, *TEXDescriptorPtr; // size = 0x8
+    /* 0x0 */ TEXHeader* textureHeader;
+    /* 0x4 */ CLUTHeader* CLUTHeader;
+} TEXDescriptor; // size = 0x8
 
 typedef struct {
     /* 0x0 */ u32 versionNumber;
     /* 0x4 */ u32 numDescriptors;
-    /* 0x8 */ TEXDescriptorPtr descriptorArray;
-} TEXPalette, *TEXPalettePtr; // size = 0xC
+    /* 0x8 */ TEXDescriptor* descriptorArray;
+} TEXPalette; // size = 0xC
 
-TEXDescriptorPtr TEXGet(TEXPalettePtr pal, u32 id);
-void TEXGetGXTexObjFromPalette(TEXPalettePtr pal, GXTexObj* to, u32 id);
+TEXDescriptor* TEXGet(TEXPalette* pal, u32 id);
+void TEXGetGXTexObjFromPalette(TEXPalette* pal, GXTexObj* to, u32 id);
 
 #endif

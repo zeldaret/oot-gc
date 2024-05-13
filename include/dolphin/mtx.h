@@ -5,15 +5,7 @@
 
 typedef struct Vec {
     f32 x, y, z;
-} Vec, *VecPtr, Point3d, *Point3dPtr;
-
-typedef struct S16Vec {
-    s16 x, y, z;
-} S16Vec, *S16VecPtr;
-
-typedef struct Quaternion {
-    f32 x, y, z, w;
-} Quaternion, *QuaternionPtr, Qtrn, *QtrnPtr;
+} Vec;
 
 typedef f32 Mtx[3][4];
 typedef f32 Mtx44[4][4];
