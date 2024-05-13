@@ -77,10 +77,16 @@ Run `tools/decompme.py <c-file> <asm-file>` (e.g. `tools/decompme.py src/emulato
 
 ### Permuter
 
-To import a function for [decomp-permuter](https://github.com/simonlindholm/decomp-permuter), ensure `powerpc-eabi-objdump` binary is on your `PATH`
-(for instance by adding `tools/binutils` from this project) and run `path/to/permuter/import.py <c-file> <asm-file>`
-(e.g. `path/to/permuter/import.py src/emulator/cpu.c asm/non_matchings/cpu/cpuExecute.s`). Sometimes you may need to tweak the source in
-order for things to import correctly, for example by explicitly marking auto-inlined functions as `inline`.
+To import a function for [decomp-permuter](https://github.com/simonlindholm/decomp-permuter), ensure `powerpc-eabi-objdump` binary
+is on your `PATH` (for instance by adding `tools/binutils` from this project) and run something like
+
+```sh
+path/to/permuter/import.py src/emulator/THPRead.c asm/non_matchings/THPRead/Reader.s
+path/to/permuter/permuter.py nonmatchings/Reader -j 8
+```
+
+Sometimes you may need to tweak the source in order for things to import
+correctly, for example by explicitly marking auto-inlined functions as `inline`.
 
 ### Debug Info
 
