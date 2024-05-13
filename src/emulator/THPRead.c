@@ -153,7 +153,7 @@ bool movieGXInit(void) {
     return true;
 }
 
-bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
+bool movieDrawImage(TEXPalette* tpl, s16 nX0, s16 nY0) {
     GXTexObj texObj;
     s32 pad2;
     GXColor color;
@@ -260,39 +260,39 @@ bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0) {
 bool movieDrawErrorMessage(MovieMessage movieMessage) {
     switch (movieMessage) {
         case M_M_DISK_COVER_OPEN:
-            movieDrawImage((TEXPalettePtr)(u8*)gcoverOpen,
-                           160 - ((TEXPalettePtr)(u8*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)gcoverOpen)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)gcoverOpen,
+                           160 - ((TEXPalette*)(u8*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)gcoverOpen)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_WRONG_DISK:
-            movieDrawImage((TEXPalettePtr)(u8*)gwrongDisk,
-                           160 - ((TEXPalettePtr)(u8*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)gwrongDisk)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)gwrongDisk,
+                           160 - ((TEXPalette*)(u8*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)gwrongDisk)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_READING_DISK:
-            movieDrawImage((TEXPalettePtr)(u8*)greadingDisk,
-                           160 - ((TEXPalettePtr)(u8*)greadingDisk)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)greadingDisk)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)greadingDisk,
+                           160 - ((TEXPalette*)(u8*)greadingDisk)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)greadingDisk)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_RETRY_ERROR:
-            movieDrawImage((TEXPalettePtr)(u8*)gretryErr,
-                           160 - ((TEXPalettePtr)(u8*)gretryErr)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)gretryErr)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)gretryErr,
+                           160 - ((TEXPalette*)(u8*)gretryErr)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)gretryErr)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_FATAL_ERROR:
-            movieDrawImage((TEXPalettePtr)(u8*)gfatalErr,
-                           160 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)gfatalErr,
+                           160 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_NO_DISK:
-            movieDrawImage((TEXPalettePtr)(u8*)gnoDisk,
-                           160 - ((TEXPalettePtr)(u8*)gnoDisk)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)gnoDisk)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)gnoDisk,
+                           160 - ((TEXPalette*)(u8*)gnoDisk)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)gnoDisk)->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_DEFAULT_ERROR:
-            movieDrawImage((TEXPalettePtr)(u8*)gfatalErr,
-                           160 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalettePtr)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage((TEXPalette*)(u8*)gfatalErr,
+                           160 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                           120 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
             break;
         default:
             break;

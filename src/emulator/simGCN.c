@@ -282,14 +282,14 @@ bool simulatorGXInit(void) {
     return true;
 }
 
-void simulatorUnpackTexPalette(TEXPalettePtr pal) {
+void simulatorUnpackTexPalette(TEXPalette* pal) {
     u16 i;
 
-    pal->descriptorArray = (TEXDescriptorPtr)((char*)pal->descriptorArray + (u32)pal);
+    pal->descriptorArray = (TEXDescriptor*)((char*)pal->descriptorArray + (u32)pal);
     for (i = 0; i < pal->numDescriptors; i++) {
         if (pal->descriptorArray[i].textureHeader) {
             pal->descriptorArray[i].textureHeader =
-                (TEXHeaderPtr)((char*)pal + (u32)pal->descriptorArray[i].textureHeader);
+                (TEXHeader*)((char*)pal + (u32)pal->descriptorArray[i].textureHeader);
             if (!pal->descriptorArray[i].textureHeader->unpacked) {
                 pal->descriptorArray[i].textureHeader->data =
                     (char*)pal + (u32)pal->descriptorArray[i].textureHeader->data;
@@ -297,7 +297,7 @@ void simulatorUnpackTexPalette(TEXPalettePtr pal) {
             }
         }
         if (pal->descriptorArray[i].CLUTHeader) {
-            pal->descriptorArray[i].CLUTHeader = (CLUTHeaderPtr)((u8*)pal + (u32)pal->descriptorArray[i].CLUTHeader);
+            pal->descriptorArray[i].CLUTHeader = (CLUTHeader*)((u8*)pal + (u32)pal->descriptorArray[i].CLUTHeader);
             if (!pal->descriptorArray[i].CLUTHeader->unpacked) {
                 pal->descriptorArray[i].CLUTHeader->data = (char*)pal + (u32)pal->descriptorArray[i].CLUTHeader->data;
                 pal->descriptorArray[i].CLUTHeader->unpacked = true;
@@ -431,7 +431,7 @@ bool simulatorPlayMovie(void) {
     return true;
 }
 
-s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 percent) {
+s32 simulatorDrawImage(TEXPalette* tpl, s32 nX0, s32 nY0, s32 drawBar, s32 percent) {
     GXTexObj texObj;
     GXTexObj texObj2;
     u32 pad2;
@@ -545,18 +545,18 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     if (drawBar == true) {
         GXLoadPosMtxImm(g2DviewMtx, false);
 
-        Vert_s16Bar[0] = N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gbar)->descriptorArray->textureHeader->width / 2;
+        Vert_s16Bar[0] = N64_FRAME_WIDTH / 2 - ((TEXPalette*)gbar)->descriptorArray->textureHeader->width / 2;
         Vert_s16Bar[1] = (nY0 + tpl->descriptorArray->textureHeader->height);
-        Vert_s16Bar[3] = ((N64_FRAME_WIDTH / 2 - (((TEXPalettePtr)gbar)->descriptorArray->textureHeader->width / 2)) +
-                          ((((TEXPalettePtr)gbar)->descriptorArray->textureHeader->width * percent) / 100));
+        Vert_s16Bar[3] = ((N64_FRAME_WIDTH / 2 - (((TEXPalette*)gbar)->descriptorArray->textureHeader->width / 2)) +
+                          ((((TEXPalette*)gbar)->descriptorArray->textureHeader->width * percent) / 100));
         Vert_s16Bar[4] = (nY0 + tpl->descriptorArray->textureHeader->height);
-        Vert_s16Bar[6] = ((N64_FRAME_WIDTH / 2 - (((TEXPalettePtr)gbar)->descriptorArray->textureHeader->width / 2)) +
-                          ((((TEXPalettePtr)gbar)->descriptorArray->textureHeader->width * percent) / 100));
+        Vert_s16Bar[6] = ((N64_FRAME_WIDTH / 2 - (((TEXPalette*)gbar)->descriptorArray->textureHeader->width / 2)) +
+                          ((((TEXPalette*)gbar)->descriptorArray->textureHeader->width * percent) / 100));
         Vert_s16Bar[7] = (nY0 + tpl->descriptorArray->textureHeader->height +
-                          ((TEXPalettePtr)gbar)->descriptorArray->textureHeader->height);
-        Vert_s16Bar[9] = N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gbar)->descriptorArray->textureHeader->width / 2;
+                          ((TEXPalette*)gbar)->descriptorArray->textureHeader->height);
+        Vert_s16Bar[9] = N64_FRAME_WIDTH / 2 - ((TEXPalette*)gbar)->descriptorArray->textureHeader->width / 2;
         Vert_s16Bar[10] = (nY0 + tpl->descriptorArray->textureHeader->height +
-                           ((TEXPalettePtr)gbar)->descriptorArray->textureHeader->height);
+                           ((TEXPalette*)gbar)->descriptorArray->textureHeader->height);
 
         DCStoreRange(Vert_s16Bar, sizeof(Vert_s16Bar));
         GXClearVtxDesc();
@@ -569,7 +569,7 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGB8, 0);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 0);
-        TEXGetGXTexObjFromPalette((TEXPalettePtr)gbar, &texObj2, 0);
+        TEXGetGXTexObjFromPalette((TEXPalette*)gbar, &texObj2, 0);
         GXLoadTexObj(&texObj2, GX_TEXMAP0);
 
         GXBegin(GX_QUADS, GX_VTXFMT0, 4);
@@ -613,8 +613,8 @@ s32 simulatorDrawImage(TEXPalettePtr tpl, s32 nX0, s32 nY0, s32 drawBar, s32 per
     return 1;
 }
 
-s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Message, TEXPalettePtr tplYes, s32 nX0Yes,
-                            s32 nY0Yes, TEXPalettePtr tplNo, s32 nX0No, s32 nY0No) {
+s32 simulatorDrawYesNoImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Message, TEXPalette* tplYes, s32 nX0Yes,
+                            s32 nY0Yes, TEXPalette* tplNo, s32 nX0No, s32 nY0No) {
 
     GXTexObj texObj;
     u32 pad;
@@ -844,7 +844,7 @@ s32 simulatorDrawYesNoImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Mes
     return 1;
 }
 
-s32 simulatorDrawOKImage(TEXPalettePtr tplMessage, s32 nX0Message, s32 nY0Message, TEXPalettePtr tplOK, s32 nX0OK,
+s32 simulatorDrawOKImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Message, TEXPalette* tplOK, s32 nX0OK,
                          s32 nY0OK) {
     GXTexObj texObj;
     GXColor color0;
@@ -1009,51 +1009,51 @@ bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar,
     switch (simulatorErrorMessage) {
         case S_M_DISK_COVER_OPEN:
             simulatorDrawImage(
-                (TEXPalettePtr)gcoverOpen,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gcoverOpen)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gcoverOpen)->descriptorArray->textureHeader->height / 2, drawBar,
+                (TEXPalette*)gcoverOpen,
+                N64_FRAME_WIDTH / 2 - ((TEXPalette*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
+                N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gcoverOpen)->descriptorArray->textureHeader->height / 2, drawBar,
                 percent);
             break;
         case S_M_DISK_WRONG_DISK:
             simulatorDrawImage(
-                (TEXPalettePtr)gwrongDisk,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gwrongDisk)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gwrongDisk)->descriptorArray->textureHeader->height / 2, drawBar,
+                (TEXPalette*)gwrongDisk,
+                N64_FRAME_WIDTH / 2 - ((TEXPalette*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
+                N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gwrongDisk)->descriptorArray->textureHeader->height / 2, drawBar,
                 percent);
             break;
         case S_M_DISK_READING_DISK:
             simulatorDrawImage(
-                (TEXPalettePtr)greadingDisk,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)greadingDisk)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)greadingDisk)->descriptorArray->textureHeader->height / 2,
-                drawBar, percent);
+                (TEXPalette*)greadingDisk,
+                N64_FRAME_WIDTH / 2 - ((TEXPalette*)greadingDisk)->descriptorArray->textureHeader->width / 2,
+                N64_FRAME_HEIGHT / 2 - ((TEXPalette*)greadingDisk)->descriptorArray->textureHeader->height / 2, drawBar,
+                percent);
             break;
         case S_M_DISK_RETRY_ERROR:
             simulatorDrawImage(
-                (TEXPalettePtr)gretryErr,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gretryErr)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gretryErr)->descriptorArray->textureHeader->height / 2, drawBar,
+                (TEXPalette*)gretryErr,
+                N64_FRAME_WIDTH / 2 - ((TEXPalette*)gretryErr)->descriptorArray->textureHeader->width / 2,
+                N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gretryErr)->descriptorArray->textureHeader->height / 2, drawBar,
                 percent);
             break;
         case S_M_DISK_FATAL_ERROR:
             simulatorDrawImage(
-                (TEXPalettePtr)gfatalErr,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gfatalErr)->descriptorArray->textureHeader->height / 2, drawBar,
+                (TEXPalette*)gfatalErr,
+                N64_FRAME_WIDTH / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->height / 2, drawBar,
                 percent);
             break;
         case S_M_DISK_NO_DISK:
-            simulatorDrawImage(
-                (TEXPalettePtr)gnoDisk,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gnoDisk)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gnoDisk)->descriptorArray->textureHeader->height / 2, drawBar,
-                percent);
+            simulatorDrawImage((TEXPalette*)gnoDisk,
+                               N64_FRAME_WIDTH / 2 - ((TEXPalette*)gnoDisk)->descriptorArray->textureHeader->width / 2,
+                               N64_FRAME_HEIGHT / 2 -
+                                   ((TEXPalette*)gnoDisk)->descriptorArray->textureHeader->height / 2,
+                               drawBar, percent);
             break;
         case S_M_DISK_DEFAULT_ERROR:
             simulatorDrawImage(
-                (TEXPalettePtr)gfatalErr,
-                N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gfatalErr)->descriptorArray->textureHeader->height / 2, drawBar,
+                (TEXPalette*)gfatalErr,
+                N64_FRAME_WIDTH / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->height / 2, drawBar,
                 percent);
             break;
 
@@ -1075,7 +1075,7 @@ s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_in02Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
             break;
 
@@ -1086,7 +1086,7 @@ s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv09Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
             break;
 
@@ -1097,7 +1097,7 @@ s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_gf02Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
             break;
@@ -1108,10 +1108,10 @@ s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage) {
     return true;
 }
 
-bool simulatorDrawYesNoMessageLoop(TEXPalettePtr simulatorQuestion, s32* yes) {
-    TEXDescriptorPtr* pNo;
-    TEXDescriptorPtr* pYes;
-    TEXDescriptorPtr* pQuestion;
+bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, s32* yes) {
+    TEXDescriptor** pNo;
+    TEXDescriptor** pYes;
+    TEXDescriptor** pQuestion;
     s32 pad[2];
 
     if (*yes == 1) {
@@ -1120,13 +1120,13 @@ bool simulatorDrawYesNoMessageLoop(TEXPalettePtr simulatorQuestion, s32* yes) {
         gHighlightChoice = false;
     }
 
-    pNo = &((TEXPalettePtr)gno)->descriptorArray;
-    pYes = &((TEXPalettePtr)gyes)->descriptorArray;
+    pNo = &((TEXPalette*)gno)->descriptorArray;
+    pYes = &((TEXPalette*)gyes)->descriptorArray;
     pQuestion = &simulatorQuestion->descriptorArray;
     simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*pQuestion)->textureHeader->width / 2,
-                            N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalettePtr)gyes,
+                            N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalette*)gyes,
                             120 - (*pYes)->textureHeader->width / 2, 180 - (*pYes)->textureHeader->height / 2,
-                            (TEXPalettePtr)gno, 200 - (*pNo)->textureHeader->width / 2,
+                            (TEXPalette*)gno, 200 - (*pNo)->textureHeader->width / 2,
                             180 - (*pNo)->textureHeader->height / 2);
 
     if (gButtonDownToggle == true) {
@@ -1145,9 +1145,9 @@ bool simulatorDrawYesNoMessageLoop(TEXPalettePtr simulatorQuestion, s32* yes) {
     }
 
     simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*pQuestion)->textureHeader->width / 2,
-                            N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalettePtr)gyes,
+                            N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalette*)gyes,
                             120 - (*pYes)->textureHeader->width / 2, 180 - (*pYes)->textureHeader->height / 2,
-                            (TEXPalettePtr)gno, 200 - (*pNo)->textureHeader->width / 2,
+                            (TEXPalette*)gno, 200 - (*pNo)->textureHeader->width / 2,
                             180 - (*pNo)->textureHeader->height / 2);
 
     if (DemoPad->pst.err == 0) {
@@ -1188,9 +1188,9 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld05_2Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_LD06_4:
             if (simulatorMessageCurrent != simulatorMessage) {
@@ -1199,9 +1199,9 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld06_4Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_LD07:
             if (simulatorMessageCurrent != simulatorMessage) {
@@ -1210,10 +1210,10 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld07Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
         case S_M_CARD_GF01:
             if (simulatorMessageCurrent != simulatorMessage) {
                 simulatorMessageCurrent = simulatorMessage;
@@ -1221,10 +1221,10 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_gf01Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_IN01:
             if (simulatorMessageCurrent != simulatorMessage) {
@@ -1233,10 +1233,10 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_in01Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_SV06_4:
             if (simulatorMessageCurrent != simulatorMessage) {
@@ -1245,10 +1245,10 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv06_4Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
         case S_M_CARD_SV06_5:
             if (simulatorMessageCurrent != simulatorMessage) {
                 simulatorMessageCurrent = simulatorMessage;
@@ -1256,10 +1256,10 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv06_5Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
         case S_M_CARD_SV08:
             if (simulatorMessageCurrent != simulatorMessage) {
                 simulatorMessageCurrent = simulatorMessage;
@@ -1267,10 +1267,10 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv08Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
 
-            return simulatorDrawYesNoMessageLoop((TEXPalettePtr)gpErrorMessageBuffer, yes);
+            return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         default:
             break;
@@ -1279,13 +1279,13 @@ bool simulatorDrawYesNoMessage(__anon_0x61D7 simulatorMessage, s32* yes) {
     return false;
 }
 
-static inline bool simulatorDrawOKMessageLoop(TEXPalettePtr simulatorMessage) {
+static inline bool simulatorDrawOKMessageLoop(TEXPalette* simulatorMessage) {
     simulatorDrawOKImage(
-        (TEXPalettePtr)gpErrorMessageBuffer,
-        N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
-        N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
+        (TEXPalette*)gpErrorMessageBuffer,
+        N64_FRAME_WIDTH / 2 - ((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
+        N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
         simulatorMessage, N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
+        180 - ((TEXPalette*)gyes)->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
 
     if (gButtonDownToggle == true) {
         DEMOPadRead();
@@ -1298,11 +1298,11 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalettePtr simulatorMessage) {
     DEMOPadRead();
 
     simulatorDrawOKImage(
-        (TEXPalettePtr)gpErrorMessageBuffer,
-        N64_FRAME_WIDTH / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
-        N64_FRAME_HEIGHT / 2 - ((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
+        (TEXPalette*)gpErrorMessageBuffer,
+        N64_FRAME_WIDTH / 2 - ((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2,
+        N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2,
         simulatorMessage, N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-        180 - ((TEXPalettePtr)gyes)->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
+        180 - ((TEXPalette*)gyes)->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
 
     if ((DemoPad->pst.err == PAD_ERR_NONE) && (DemoPad->pst.button & (PAD_BUTTON_START | PAD_BUTTON_A))) {
         soundPlayBeep(SYSTEM_SOUND(gpSystem), SOUND_BEEP_ACCEPT);
@@ -1325,9 +1325,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld01Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD02:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1335,9 +1335,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld02Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD03:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1345,9 +1345,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld03Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD04:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1355,9 +1355,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld04Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD05_1:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1365,9 +1365,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld05_1Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD06_1:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1375,9 +1375,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld06_1Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD06_2:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1385,9 +1385,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld06_2Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_LD06_3:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1395,9 +1395,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_ld06_3Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_GF03:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1405,9 +1405,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_gf03Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_GF04:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1415,9 +1415,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_gf04Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_GF05:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1425,9 +1425,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_gf05Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_GF06:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1435,9 +1435,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_gf06Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_IN03:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1445,9 +1445,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_in03Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_IN04:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1455,9 +1455,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_in04Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_IN05:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1465,9 +1465,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_in05Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV01:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1475,9 +1475,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv01Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV01_2:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1485,9 +1485,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv01_2Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV02:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1495,9 +1495,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv02Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV03:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1505,9 +1505,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv03Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV04:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1515,9 +1515,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv04Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV05_1:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1525,9 +1525,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv05_1Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV06_1:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1535,9 +1535,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv06_1Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV06_2:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1545,9 +1545,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv06_2Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV06_3:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1555,9 +1555,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv06_3Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV07:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1565,9 +1565,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv07Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV10:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1575,9 +1575,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv10Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV11:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1585,9 +1585,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv11Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV12:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1595,9 +1595,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv12Size), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         case S_M_CARD_SV_SHARE:
             if (simulatorMessageCurrent != simulatorErrorMessage) {
                 simulatorMessageCurrent = simulatorErrorMessage;
@@ -1605,9 +1605,9 @@ bool simulatorDrawErrorMessageWait(__anon_0x61D7 simulatorErrorMessage) {
                     simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(gmsg_sv_shareSize), 0, NULL);
                 }
                 DVDClose(&fileInfo);
-                simulatorUnpackTexPalette((TEXPalettePtr)gpErrorMessageBuffer);
+                simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);
             }
-            return simulatorDrawOKMessageLoop((TEXPalettePtr)gmesgOK);
+            return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
         default:
             break;
     }
@@ -2004,13 +2004,13 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
 }
 
 bool simulatorDrawMCardText(void) {
-    if ((s32)(((TEXPalettePtr)gpErrorMessageBuffer)->versionNumber) == 0) {
+    if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
-    simulatorDrawImage((TEXPalettePtr)gpErrorMessageBuffer,
-                       160 - (((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
-                       120 - (((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), 0, 0);
+    simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
+                       160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
+                       120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), 0, 0);
     return true;
 }
 
@@ -2025,13 +2025,13 @@ s32 simulatorMCardPollDrawBar(void) {
 
     rate = (rate < 0.0f) ? 0.0f : rate;
 
-    if ((s32)(((TEXPalettePtr)gpErrorMessageBuffer)->versionNumber) == 0) {
+    if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
-    simulatorDrawImage((TEXPalettePtr)gpErrorMessageBuffer,
-                       160 - (((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
-                       120 - (((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), 1,
+    simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
+                       160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
+                       120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), 1,
                        100.0f * rate);
     return true;
 }
@@ -2047,13 +2047,13 @@ s32 simulatorMCardPollDrawFormatBar(void) {
 
     rate = (rate < 0.0f) ? 0.0f : rate;
 
-    if ((s32)(((TEXPalettePtr)gpErrorMessageBuffer)->versionNumber) == 0) {
+    if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
-    simulatorDrawImage((TEXPalettePtr)gpErrorMessageBuffer,
-                       160 - (((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
-                       120 - (((TEXPalettePtr)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), 0,
+    simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
+                       160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
+                       120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), 0,
                        100.0f * rate);
     return true;
 }
@@ -2280,16 +2280,16 @@ bool xlMain(void) {
     VISetBlack(false);
     VIFlush();
 
-    simulatorUnpackTexPalette((TEXPalettePtr)gcoverOpen);
-    simulatorUnpackTexPalette((TEXPalettePtr)gnoDisk);
-    simulatorUnpackTexPalette((TEXPalettePtr)gretryErr);
-    simulatorUnpackTexPalette((TEXPalettePtr)gfatalErr);
-    simulatorUnpackTexPalette((TEXPalettePtr)gwrongDisk);
-    simulatorUnpackTexPalette((TEXPalettePtr)greadingDisk);
-    simulatorUnpackTexPalette((TEXPalettePtr)gbar);
-    simulatorUnpackTexPalette((TEXPalettePtr)gyes);
-    simulatorUnpackTexPalette((TEXPalettePtr)gno);
-    simulatorUnpackTexPalette((TEXPalettePtr)gmesgOK);
+    simulatorUnpackTexPalette((TEXPalette*)gcoverOpen);
+    simulatorUnpackTexPalette((TEXPalette*)gnoDisk);
+    simulatorUnpackTexPalette((TEXPalette*)gretryErr);
+    simulatorUnpackTexPalette((TEXPalette*)gfatalErr);
+    simulatorUnpackTexPalette((TEXPalette*)gwrongDisk);
+    simulatorUnpackTexPalette((TEXPalette*)greadingDisk);
+    simulatorUnpackTexPalette((TEXPalette*)gbar);
+    simulatorUnpackTexPalette((TEXPalette*)gyes);
+    simulatorUnpackTexPalette((TEXPalette*)gno);
+    simulatorUnpackTexPalette((TEXPalette*)gmesgOK);
 
     gbReset = false;
     gnTickReset = OSGetTick();

@@ -17,7 +17,7 @@ typedef enum MovieMessage {
 extern bool gMovieErrorToggle;
 
 bool movieGXInit(void);
-bool movieDrawImage(TEXPalettePtr tpl, s16 nX0, s16 nY0);
+bool movieDrawImage(TEXPalette* tpl, s16 nX0, s16 nY0);
 bool movieDrawErrorMessage(MovieMessage movieMessage);
 bool movieDVDShowError(s32 nStatus, void*, s32, u32);
 bool movieDVDRead(DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset);
