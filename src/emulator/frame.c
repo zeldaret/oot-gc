@@ -3921,7 +3921,49 @@ bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetViewport.s")
+#else
+bool frameSetViewport(Frame* pFrame, s16* pData) {
+    s32 iScale;
+    f32 arScale[3];
+    f32 centerX;
+    f32 centerY;
+    f32 rX;
+    f32 rY;
+    f32 rSizeX;
+    f32 rSizeY;
+    s32 pad[3];
+
+    arScale[0] = pData[0] / 4.0f;
+    arScale[1] = pData[1] / 4.0f;
+    arScale[2] = pData[2] / 4.0f;
+
+    for (iScale = 0; iScale < 3; iScale++) {
+        if (arScale[iScale] < 0.0f) {
+            arScale[iScale] = -arScale[iScale];
+        }
+    }
+
+    rSizeX = (arScale[0] * 2.0f) * pFrame->rScaleX;
+    rSizeY = (arScale[1] * 2.0f) * pFrame->rScaleY;
+
+    centerX = pData[4] / 4.0f;
+    centerY = pData[5] / 4.0f;
+
+    rX = (centerX - arScale[0]) * pFrame->rScaleX;
+    rY = (centerY - arScale[1]) * pFrame->rScaleY;
+
+    pFrame->viewport.rX = rX;
+    pFrame->viewport.rY = rY;
+    pFrame->viewport.rSizeX = rSizeX;
+    pFrame->viewport.rSizeY = rSizeY;
+
+    frameDrawReset(pFrame, 0x10000);
+    return true;
+}
+#endif
 
 bool frameResetUCode(Frame* pFrame, FrameResetType eType) {
     s32 iMode;
