@@ -1973,7 +1973,7 @@ bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, 
         pnPixel += (nSizeTargetX >> 1);
     }
 
-    return 1;
+    return true;
 }
 
 // matches but data doesn't
@@ -2723,7 +2723,6 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetDepth.s")
 #else
-// See "Z Image Foramt", https://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro15/index15.5.html
 bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
     u32 nX;
     u32 nY;
@@ -2735,6 +2734,8 @@ bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
     s32 val;
     s32 pad[2];
 
+    // See "Z Image Format" in the N64 Programming Manual
+    // https://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro15/index15.5.html
     struct {
         s32 shift;
         s32 add;
@@ -3028,7 +3029,8 @@ static bool frameMakeTexture(Frame* pFrame, FrameTexture** ppTexture) {
     if (++pFrame->nBlocksTexture > pFrame->nBlocksMaxTexture) {
         pFrame->nBlocksMaxTexture = pFrame->nBlocksTexture;
     }
-    return 1;
+
+    return true;
 }
 
 static inline bool frameFreeTexture(Frame* pFrame, FrameTexture* pTexture) {
