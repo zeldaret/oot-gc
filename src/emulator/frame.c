@@ -35,6 +35,7 @@ static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 static inline void CopyCFB(u16* srcP);
 static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount);
 static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount);
+static inline bool frameTransposeMatrix(Mtx44 matrixTarget, Mtx44 matrixSource);
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
 static bool frameUpdateCache(Frame* pFrame);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
@@ -855,7 +856,236 @@ bool frameDrawSetup2D(Frame* pFrame) {
 }
 #endif
 
+static inline void frameSetZMode(Frame* pFrame) {
+    u32 mode = pFrame->aMode[FMT_OTHER0];
+
+    if (pFrame->aMode[FMT_GEOMETRY] & 1) {
+        if (mode & 0x10) {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            } else {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+            }
+        } else {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
+            } else {
+                GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+            }
+        }
+    } else if (pFrame->bModifyZBuffer) {
+        if (mode & 0x10) {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            } else {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+            }
+        } else {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
+            } else {
+                GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+            }
+        }
+    } else {
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    }
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupSP.s")
+#else
+static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount) {
+    f32 rValue23;
+    bool bTextureGen;
+    f32 rNear;
+    f32 rFar;
+    f32 rScaleS;
+    f32 rScaleT;
+    f32 rSlideS;
+    f32 rSlideT;
+    FrameTexture* pTexture[8];
+    s32 nColors;
+    s32 bFlag;
+    s32 iTile;
+    s32 iHint;
+    Mtx matrix;
+    Mtx matrixA;
+    Mtx matrixB;
+    Mtx44 matrix44;
+    Mtx44 matrixProjection;
+    GXProjectionType eTypeProjection;
+    f32 scale;
+    s32 nCount;
+    s32 iIndex;
+    s32 pad;
+
+    nColors = 0;
+    bTextureGen = (pFrame->aMode[FMT_GEOMETRY] & 0xA0) == 0xA0;
+
+    if (pFrame->nFlag & 0x10000) {
+        snScissorChanged = false;
+        pFrame->nFlag &= ~0x10000;
+        GXSetViewport(pFrame->viewport.rX, pFrame->viewport.rY, pFrame->viewport.rSizeX, pFrame->viewport.rSizeY, 0.0f,
+                      1.0f);
+
+        if (pFrame->viewport.rSizeX < GC_FRAME_WIDTH) {
+            // TODO: regalloc hacks?
+            u32* left = &snScissorXOrig;
+            u32* top = &snScissorYOrig;
+            GXGetScissor(left, top, &snScissorWidth, &snScissorHeight);
+
+            if (snScissorWidth > pFrame->viewport.rSizeX) {
+                GXSetScissor(pFrame->viewport.rX, pFrame->viewport.rY, pFrame->viewport.rSizeX,
+                             pFrame->viewport.rSizeY);
+                snScissorChanged = true;
+            }
+        }
+
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->nFlag & 4) {
+        pFrame->nFlag &= ~4;
+        frameSetZMode(pFrame);
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->nFlag & 8) {
+        pFrame->nFlag &= ~8;
+        switch (pFrame->aMode[FMT_GEOMETRY] & 0xC) {
+            case 0x8:
+                GXSetCullMode(GX_CULL_FRONT);
+                break;
+            case 0x4:
+                GXSetCullMode(GX_CULL_BACK);
+                break;
+            case 0xC:
+                GXSetCullMode(GX_CULL_ALL);
+                break;
+            default:
+                GXSetCullMode(GX_CULL_NONE);
+                break;
+        }
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if ((pFrame->nFlag & 0x40000) && (pFrame->nMode & 0x04000000)) {
+        pFrame->nFlag &= ~0x40000;
+        if (pFrame->nMode & 0x20000000) {
+            eTypeProjection = pFrame->eTypeProjection == FMP_PERSPECTIVE ? FMP_PERSPECTIVE : FMP_ORTHOGRAPHIC;
+            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == FMP_PERSPECTIVE) {
+                GXSetProjection(pFrame->matrixProjection, eTypeProjection);
+            } else {
+                GXSetProjection(pFrame->matrixProjection, eTypeProjection);
+            }
+        } else {
+            frameTransposeMatrix(matrix44, pFrame->matrixProjection);
+
+            iHint = pFrame->iHintProjection;
+            if (iHint != -1) {
+                if (pFrame->aMatrixHint[iHint].eProjection == FMP_PERSPECTIVE) {
+                    eTypeProjection = FMP_PERSPECTIVE;
+                } else {
+                    eTypeProjection = FMP_ORTHOGRAPHIC;
+                }
+                rNear = pFrame->aMatrixHint[iHint].rClipNear;
+                rFar = pFrame->aMatrixHint[iHint].rClipFar;
+            } else if (pFrame->matrixProjection[3][3] == 1.0f) {
+                rNear = 0.0f;
+                rFar = 32000.0f;
+                eTypeProjection = FMP_ORTHOGRAPHIC;
+            } else {
+                rNear = 1.0f;
+                rFar = 32000.0f;
+                eTypeProjection = FMP_PERSPECTIVE;
+            }
+            if (eTypeProjection == FMP_PERSPECTIVE) {
+                C_MTXPerspective(matrixProjection, 30.0f, 4.0f / 3.0f, 0.1f * rNear, rFar);
+            } else {
+                rNear = -rFar;
+                C_MTXOrtho(matrixProjection, (f32)pFrame->anSizeY[0] / 2.0, -(f32)pFrame->anSizeY[0] / 2.0,
+                           -(f32)pFrame->anSizeX[0] / 2.0, (f32)pFrame->anSizeX[0] / 2.0, rNear, rFar);
+            }
+
+            rValue23 = matrixProjection[2][3];
+            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == FMP_PERSPECTIVE) {
+                rValue23 = -((0.0015f * rNear) - rValue23);
+            }
+            matrix44[2][2] = matrixProjection[2][2];
+            matrix44[2][3] = rValue23;
+
+            GXSetProjection(matrix44, eTypeProjection);
+        }
+
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->aMode[FMT_TEXTURE2] & 1) {
+        bFlag = true;
+        scale = !(pFrame->aMode[FMT_OTHER1] & 0x80000) ? 0.5f : 1.0f;
+        iTile = (pFrame->aMode[FMT_TEXTURE2] >> 8) & 7;
+        nCount = iTile +
+                 (((s32)((pFrame->aMode[FMT_TEXTURE2] >> 8) & 7) < 7 && pFrame->aTile[iTile + 1].nSizeX != 0) ? 1 : 0);
+
+        if (pFrame->nFlag & 1) {
+            for (iIndex = 0; iTile <= nCount; iTile++, iIndex++) {
+                if (frameLoadTile(pFrame, &pTexture[iTile], iTile | (iIndex << 4))) {
+                    if (bTextureGen) {
+                        rSlideS = (pFrame->aTile[iTile].nX0 / 4.0f) / pTexture[iTile]->nSizeX;
+                        rSlideT = (pFrame->aTile[iTile].nY0 / 4.0f) / pTexture[iTile]->nSizeY;
+
+                        rScaleS = 65536.0f * ((pFrame->aMode[FMT_TEXTURE1] >> 16) / 65536.0f);
+                        rScaleS /= (pTexture[iTile]->nSizeX << 6);
+                        rScaleT = 65536.0f * ((pFrame->aMode[FMT_TEXTURE1] & 0xFFFF) / 65536.0f);
+                        rScaleT /= (pTexture[iTile]->nSizeY << 6);
+                    } else {
+                        rSlideS = ((pFrame->aTile[iTile].nX0 / 4.0f) - 0.5f) / pTexture[iTile]->nSizeX;
+                        rSlideT = ((pFrame->aTile[iTile].nY0 / 4.0f) - 0.5f) / pTexture[iTile]->nSizeY;
+
+                        rScaleS = (pFrame->aMode[FMT_TEXTURE1] >> 16) / 65536.0f;
+                        rScaleS /= pTexture[iTile]->nSizeX;
+                        rScaleT = (pFrame->aMode[FMT_TEXTURE1] & 0xFFFF) / 65536.0f;
+                        rScaleT /= pTexture[iTile]->nSizeY;
+                    }
+
+                    if (pFrame->aTile[iTile].nShiftS < 11) {
+                        rScaleS /= (1 << pFrame->aTile[iTile].nShiftS);
+                    } else {
+                        rScaleS *= (1 << (16 - pFrame->aTile[iTile].nShiftS));
+                    }
+
+                    if (pFrame->aTile[iTile].nShiftT < 11) {
+                        rScaleT /= (1 << pFrame->aTile[iTile].nShiftT);
+                    } else {
+                        rScaleT *= (1 << (16 - pFrame->aTile[iTile].nShiftT));
+                    }
+
+                    PSMTXTrans(matrixA, -rSlideS, -rSlideT, 0.0f);
+                    PSMTXScale(matrixB, rScaleS * scale, rScaleT * scale, 0.0f);
+                    PSMTXConcat(matrixA, matrixB, matrix);
+                    GXLoadTexMtxImm(matrix, ganNameTexMtx[iIndex], GX_MTX2x4);
+                }
+            }
+        }
+    } else {
+        bFlag = false;
+    }
+
+    if (pFrame->aMode[FMT_GEOMETRY] & 2) {
+        if (pFrame->aMode[FMT_GEOMETRY] & 0x200) {
+            nColors = nVertexCount;
+        } else {
+            nColors = 1;
+        }
+    }
+
+    *pbFlag = bFlag;
+    *pnColors = nColors;
+    return true;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
@@ -1069,38 +1299,7 @@ static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 ver
             GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
         }
 
-        mode = pFrame->aMode[FMT_OTHER0];
-        if (pFrame->aMode[FMT_GEOMETRY] & 1) {
-            if (mode & 0x10) {
-                if (mode & 0x20) {
-                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
-                } else {
-                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
-                }
-            } else {
-                if (mode & 0x20) {
-                    GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
-                } else {
-                    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-                }
-            }
-        } else if (pFrame->bModifyZBuffer) {
-            if (mode & 0x10) {
-                if (mode & 0x20) {
-                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
-                } else {
-                    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
-                }
-            } else {
-                if (mode & 0x20) {
-                    GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
-                } else {
-                    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-                }
-            }
-        } else {
-            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-        }
+        frameSetZMode(pFrame);
     }
 
     return true;
@@ -3274,6 +3473,26 @@ static inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     matrixTarget[3][0] = matrixSource[3][0];
     matrixTarget[3][1] = matrixSource[3][1];
     matrixTarget[3][2] = matrixSource[3][2];
+    matrixTarget[3][3] = matrixSource[3][3];
+    return true;
+}
+
+static inline bool frameTransposeMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
+    matrixTarget[0][0] = matrixSource[0][0];
+    matrixTarget[0][1] = matrixSource[1][0];
+    matrixTarget[0][2] = matrixSource[2][0];
+    matrixTarget[0][3] = matrixSource[3][0];
+    matrixTarget[1][0] = matrixSource[0][1];
+    matrixTarget[1][1] = matrixSource[1][1];
+    matrixTarget[1][2] = matrixSource[2][1];
+    matrixTarget[1][3] = matrixSource[3][1];
+    matrixTarget[2][0] = matrixSource[0][2];
+    matrixTarget[2][1] = matrixSource[1][2];
+    matrixTarget[2][2] = matrixSource[2][2];
+    matrixTarget[2][3] = matrixSource[3][2];
+    matrixTarget[3][0] = matrixSource[0][3];
+    matrixTarget[3][1] = matrixSource[1][3];
+    matrixTarget[3][2] = matrixSource[2][3];
     matrixTarget[3][3] = matrixSource[3][3];
     return true;
 }
