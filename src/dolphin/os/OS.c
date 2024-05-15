@@ -628,14 +628,13 @@ ASM void OSDefaultExceptionHandler(register __OSException exception, register OS
 
     stwu    r1,-8(r1)
     b       __OSUnhandledException
-#endif // clang-foramt on
+#endif // clang-format on
 }
 
-void __OSPSInit(void)
-{
-  PPCMthid2(PPCMfhid2() | 0xA0000000);
-  ICFlashInvalidate();
-  __sync();
+void __OSPSInit(void) {
+    PPCMthid2(PPCMfhid2() | 0xA0000000);
+    ICFlashInvalidate();
+    __sync();
 
     ASM {
 #ifdef __MWERKS__ // clang-format off
