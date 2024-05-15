@@ -81,11 +81,7 @@ bool sramEvent(Sram* pObject, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pSram->pHost = pArgument;
-        case 0:
-        case 1:
-        case 3:
             break;
-
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pSram->pHost), pArgument, (Put8Func)sramPut8, (Put16Func)sramPut16,
                                  (Put32Func)sramPut32, (Put64Func)sramPut64)) {
@@ -95,9 +91,12 @@ bool sramEvent(Sram* pObject, s32 nEvent, void* pArgument) {
                                  (Get32Func)sramGet32, (Get64Func)sramGet64)) {
                 return false;
             }
+            break;
+        case 0:
+        case 1:
+        case 3:
         case 0x1003:
             break;
-
         default:
             return false;
     }
