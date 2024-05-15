@@ -309,7 +309,7 @@ typedef struct Frame {
     /* 0x01C30 */ s32 nBlocksTexture;
     /* 0x01C34 */ s32 nBlocksMaxTexture;
     /* 0x01C38 */ u32 anPackPixel[48];
-    /* 0x01CF8 */ u32 anPackColor[N64_FRAME_WIDTH];
+    /* 0x01CF8 */ u32 anPackColor[320];
     /* 0x021F8 */ u32 nAddressLoad;
     /* 0x021FC */ u32 nCodePixel;
     /* 0x02200 */ u32 nTlutCode[16];
@@ -323,8 +323,8 @@ typedef struct Frame {
     /* 0x3C350 */ s32 nLastX1;
     /* 0x3C354 */ s32 nLastY1;
     /* 0x3C358 */ Tile aTile[8];
-    /* 0x3C4B8 */ s32 anSizeX[2];
-    /* 0x3C4C0 */ s32 anSizeY[2];
+    /* 0x3C4B8 */ s32 anSizeX[FS_COUNT];
+    /* 0x3C4C0 */ s32 anSizeY[FS_COUNT];
     /* 0x3C4C8 */ s32 iHintMatrix;
     /* 0x3C4CC */ s32 iMatrixModel;
     /* 0x3C4D0 */ s32 iHintProjection;
@@ -392,7 +392,7 @@ bool frameSetLightCount(Frame* pFrame, s32 nCount);
 bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData);
 bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData);
 bool frameSetViewport(Frame* pFrame, s16* pData);
-bool frameResetUCode(Frame* pFrame, RspUCodeType eType);
+bool frameResetUCode(Frame* pFrame, FrameResetType eType);
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType);
 bool frameFixMatrixHint(Frame* pFrame, s32 nAddressFloat, s32 nAddressFixed);
 bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,

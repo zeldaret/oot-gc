@@ -9,6 +9,7 @@
 #include "emulator/xlCoreGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
+#include "emulator/xlPostGCN.h"
 #include "macros.h"
 #include "math.h"
 
@@ -29,6 +30,9 @@ static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static inline void CopyCFB(u16* srcP);
+static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount);
+static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount);
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
 static bool frameUpdateCache(Frame* pFrame);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
@@ -346,7 +350,7 @@ void* jtbl_800EB22C[32] = {0};
 #endif
 
 char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
-char D_800EB2D4[] = "MakeTexture: 'aTexture' is exhausted!\0\0";
+char D_800EB2D4[] = "MakeTexture: 'aTexture' is exhausted!";
 
 static char D_80134E58[] = "frame.c";
 
@@ -451,24 +455,14 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
         C_MTXPerspective(pFrame->matrixProjection, pHint->rFieldOfViewY, pHint->rAspect, pHint->rClipNear,
                          pHint->rClipFar);
     } else if (pHint->eProjection == FMP_ORTHOGRAPHIC) {
-        C_MTXOrtho(pFrame->matrixProjection, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f,
-                   pHint->rClipNear, pHint->rClipFar);
+        C_MTXOrtho(pFrame->matrixProjection, 0.0f, pFrame->anSizeY[FS_SOURCE] - 1.0f, 0.0f,
+                   pFrame->anSizeX[FS_SOURCE] - 1.0f, pHint->rClipNear, pHint->rClipFar);
     } else {
         return false;
     }
 
     pFrame->eTypeProjection = pHint->eProjection;
     return true;
-}
-
-static inline void CopyCFB(u16* srcP) {
-    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
-    GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
-    DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
-    GXCopyTex(srcP, GX_FALSE);
-    sCopyFrameSyncReceived = false;
-    GXSetDrawSync(FRAME_SYNC_TOKEN);
-    while (!sCopyFrameSyncReceived) {}
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
@@ -501,9 +495,118 @@ static void frameDrawDone(void) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTLUT.s")
 
+static inline bool frameFreeTLUT(Frame* pFrame, FrameTexture* pTexture) {
+    if (!packFreeBlocks(&pTexture->iPackColor, pFrame->anPackColor, ARRAY_COUNT(pFrame->anPackColor))) {
+        return false;
+    }
+    return true;
+}
+
+static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, bool bReload);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakePixels.s")
 
+static inline bool frameFreePixels(Frame* pFrame, FrameTexture* pTexture) {
+    if (!frameFreeTLUT(pFrame, pTexture)) {
+        return false;
+    }
+    if (!packFreeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel))) {
+        return false;
+    }
+    return true;
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTexture.s")
+#else
+static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile) {
+    void* pData;
+    s32 iName;
+    s32 nFilter;
+    GXTexWrapMode eWrapS;
+    GXTexWrapMode eWrapT;
+    s32 pad;
+
+    pTexture->nFrameLast = pFrame->nCountFrames;
+    iName = iTextureCode >> 4;
+    pTile->nModeS = pTile->nModeS;
+
+    if (((pTile->nModeS & 2) || pTile->nMaskS == 0) && !(pTexture->nMode & 1)) {
+        eWrapS = GX_CLAMP;
+    } else if (pTile->nModeS & 1) {
+        eWrapS = GX_MIRROR;
+    } else {
+        eWrapS = GX_REPEAT;
+    }
+    pTile->nModeT = pTile->nModeT;
+    if (((pTile->nModeT & 2) || pTile->nMaskT == 0) && !(pTexture->nMode & 2)) {
+        eWrapT = GX_CLAMP;
+    } else if (pTile->nModeT & 1) {
+        eWrapT = GX_MIRROR;
+    } else {
+        eWrapT = GX_REPEAT;
+    }
+    if (pTexture->eWrapS != eWrapS || pTexture->eWrapT != eWrapT) {
+        pTexture->eWrapS = eWrapS;
+        pTexture->eWrapT = eWrapT;
+
+        if ((GXCITexFmt)pTexture->eFormat == GX_TF_C4 || (GXCITexFmt)pTexture->eFormat == GX_TF_C8) {
+            if (pTexture->iPackColor == -1) {
+                pData = NULL;
+            } else {
+                pData = (u8*)pFrame->aColorData + ((pTexture->iPackColor & 0xFFFF) << 5);
+            }
+            GXInitTlutObj(&pTexture->objectTLUT, pData, GX_TL_RGB5A3,
+                          (GXCITexFmt)pTexture->eFormat == GX_TF_C4 ? 16 : 256);
+
+            if (pTexture->iPackPixel == -1) {
+                pData = NULL;
+            } else {
+                pData = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+            GXInitTexObjCI(&pTexture->objectTexture, pData, pTexture->nSizeX, pTexture->nSizeY,
+                           (GXCITexFmt)pTexture->eFormat, eWrapS, eWrapT, GX_FALSE, 0);
+        } else {
+            if (pTexture->iPackPixel == -1) {
+                pData = NULL;
+            } else {
+                pData = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+            GXInitTexObj(&pTexture->objectTexture, pData, pTexture->nSizeX, pTexture->nSizeY, pTexture->eFormat, eWrapS,
+                         eWrapT, 0);
+        }
+    }
+
+    nFilter = pFrame->aMode[FMT_OTHER1] & 0x3000;
+    if ((pTexture->nMode & 0x3000) != nFilter) {
+        pTexture->nMode &= ~0x3000;
+        pTexture->nMode |= nFilter;
+        switch (nFilter) {
+            case 0x0000:
+                GXInitTexObjLOD(&pTexture->objectTexture, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE,
+                                GX_ANISO_1);
+                break;
+            case 0x2000:
+            case 0x3000:
+                GXInitTexObjLOD(&pTexture->objectTexture, GX_LINEAR, GX_LINEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE,
+                                GX_ANISO_1);
+                break;
+            default:
+                OSReport("LoadTexture: Unknown FILTER mode (%d)\n", nFilter);
+                break;
+        }
+    }
+
+    if ((GXCITexFmt)pTexture->eFormat == GX_TF_C4 || (GXCITexFmt)pTexture->eFormat == GX_TF_C8) {
+        GXLoadTlut(&pTexture->objectTLUT, ganNameColor[iName]);
+    }
+
+    GXLoadTexObj(&pTexture->objectTexture, ganNamePixel[iName]);
+
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetup2D.s")
 
@@ -1755,7 +1858,7 @@ bool frameBegin(Frame* pFrame, s32 nCountVertex) {
             GXSetTexCoordGen(ganNameTexCoord[i], GX_TG_MTX2x4, GX_TG_TEX0, ganNameTexMtx[i]);
         }
 
-        GXSetScissor(0, 0, pFrame->anSizeX[1], pFrame->anSizeY[1]);
+        GXSetScissor(0, 0, pFrame->anSizeX[FS_TARGET], pFrame->anSizeY[FS_TARGET]);
     }
 
     pFrame->iMatrixModel = 0;
@@ -1847,7 +1950,31 @@ bool frameEnd(Frame* pFrame) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/_frameDrawRectangle.s")
+bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY) {
+    s32 iY;
+    s32 iX;
+    u32* pnPixel;
+    s32 nSizeTargetX = pFrame->anSizeX[FS_TARGET];
+
+    nX = (nX + 1) & ~1;
+    nSizeX = (nSizeX + 1) & ~1;
+    if (DemoCurrentBuffer == DemoFrameBuffer1) {
+        pnPixel = (u32*)((s16*)DemoFrameBuffer2 + (nY * nSizeTargetX) + nX);
+    } else {
+        pnPixel = (u32*)((s16*)DemoFrameBuffer1 + (nY * nSizeTargetX) + nX);
+    }
+
+    pnPixel = (u32*)((u8*)pnPixel + 0x40000000);
+
+    for (iY = 0; iY < nSizeY; iY++) {
+        for (iX = 0; iX < (nSizeX >> 1); iX++) {
+            pnPixel[iX] = nColor;
+        }
+        pnPixel += (nSizeTargetX >> 1);
+    }
+
+    return true;
+}
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
@@ -2006,6 +2133,16 @@ void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
     frameDrawReset(pFrame, 0x47F2D);
 }
 #endif
+
+static inline void CopyCFB(u16* srcP) {
+    GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
+    GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
+    DCInvalidateRange(srcP, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
+    GXCopyTex(srcP, GX_FALSE);
+    sCopyFrameSyncReceived = false;
+    GXSetDrawSync(FRAME_SYNC_TOKEN);
+    while (!sCopyFrameSyncReceived) {}
+}
 
 void CopyAndConvertCFB(u16* srcP) {
     u16* dataEndP;
@@ -2582,7 +2719,57 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Panel.s")
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetDepth.s")
+#else
+bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
+    u32 nX;
+    u32 nY;
+    u32 nOffset;
+    s32 n64CalcValue;
+    s32 exp;
+    s32 mantissa;
+    s32 compare;
+    s32 val;
+    s32 pad[2];
+
+    // See "Z Image Format" in the N64 Programming Manual
+    // https://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro15/index15.5.html
+    struct {
+        s32 shift;
+        s32 add;
+    } z_format[8] = {
+        {6, 0x00000}, {5, 0x20000}, {4, 0x30000}, {3, 0x38000}, {2, 0x3C000}, {1, 0x3E000}, {0, 0x3F000}, {0, 0x3F800},
+    };
+
+    nAddress &= 0x03FFFFFF;
+    if (pFrame->nOffsetDepth0 <= nAddress && nAddress <= pFrame->nOffsetDepth1) {
+        nOffset = (nAddress - pFrame->nOffsetDepth0) / 2;
+        nX = nOffset % N64_FRAME_WIDTH;
+        nY = nOffset / N64_FRAME_WIDTH;
+
+        val = sTempZBuf[(nY >> 2) * (N64_FRAME_WIDTH / 4) + (nX >> 2)][nY & 3][nX & 3];
+        n64CalcValue = 43.52 * ((((val & 0xFF) << 8) | (val >> 8)) - 0x10000 + 1) + 262143.0;
+
+        compare = 0x3F800;
+        for (exp = 7; exp >= 0; exp--) {
+            if ((n64CalcValue & compare) == compare) {
+                break;
+            }
+            compare = (compare << 1) & 0x3FFFF;
+        }
+
+        mantissa = ((n64CalcValue - z_format[exp].add) >> z_format[exp].shift) & 0x7FF;
+
+        *pnData = 0;
+        *pnData = ((exp << 13) & 0xE000) | ((mantissa << 2) & 0x1FFC);
+        return true;
+    }
+
+    return false;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
@@ -2628,17 +2815,17 @@ bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->bOverrideDepth = false;
             pFrame->viewport.rSizeX = GC_FRAME_WIDTH;
             pFrame->viewport.rSizeY = GC_FRAME_HEIGHT;
-            pFrame->anSizeX[0] = N64_FRAME_WIDTH;
-            pFrame->anSizeY[0] = N64_FRAME_HEIGHT;
-            pFrame->rScaleX = (f32)pFrame->anSizeX[1] / (f32)N64_FRAME_WIDTH;
-            pFrame->rScaleY = (f32)pFrame->anSizeY[1] / (f32)N64_FRAME_HEIGHT;
+            pFrame->anSizeX[FS_SOURCE] = N64_FRAME_WIDTH;
+            pFrame->anSizeY[FS_SOURCE] = N64_FRAME_HEIGHT;
+            pFrame->rScaleX = (f32)pFrame->anSizeX[FS_TARGET] / (f32)N64_FRAME_WIDTH;
+            pFrame->rScaleY = (f32)pFrame->anSizeY[FS_TARGET] / (f32)N64_FRAME_HEIGHT;
 
             temp_r4 = GC_FRAME_HEIGHT >> (xlCoreHiResolution() ? 0 : 1);
             if (temp_r4 > 0) {
-                pFrame->anSizeX[1] = GC_FRAME_WIDTH;
-                pFrame->anSizeY[1] = temp_r4;
-                pFrame->rScaleX = GC_FRAME_WIDTH / (f32)pFrame->anSizeX[0];
-                pFrame->rScaleY = temp_r4 / (f32)pFrame->anSizeY[0];
+                pFrame->anSizeX[FS_TARGET] = GC_FRAME_WIDTH;
+                pFrame->anSizeY[FS_TARGET] = temp_r4;
+                pFrame->rScaleX = GC_FRAME_WIDTH / (f32)pFrame->anSizeX[FS_SOURCE];
+                pFrame->rScaleY = temp_r4 / (f32)pFrame->anSizeY[FS_SOURCE];
             }
             GXSetDrawDoneCallback(&frameDrawDone);
             break;
@@ -2701,14 +2888,94 @@ static inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     return true;
 }
 
-bool frameScaleMatrix(Mtx44 matrixResult, Mtx44 matrix, f32 rScale);
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameScaleMatrix.s")
+bool frameScaleMatrix(Mtx44 matrixResult, Mtx44 matrix, f32 rScale) {
+    matrixResult[0][0] = matrix[0][0] * rScale;
+    matrixResult[0][1] = matrix[0][1] * rScale;
+    matrixResult[0][2] = matrix[0][2] * rScale;
+    matrixResult[0][3] = matrix[0][3] * rScale;
+    matrixResult[1][0] = matrix[1][0] * rScale;
+    matrixResult[1][1] = matrix[1][1] * rScale;
+    matrixResult[1][2] = matrix[1][2] * rScale;
+    matrixResult[1][3] = matrix[1][3] * rScale;
+    matrixResult[2][0] = matrix[2][0] * rScale;
+    matrixResult[2][1] = matrix[2][1] * rScale;
+    matrixResult[2][2] = matrix[2][2] * rScale;
+    matrixResult[2][3] = matrix[2][3] * rScale;
+    matrixResult[3][0] = matrix[3][0] * rScale;
+    matrixResult[3][1] = matrix[3][1] * rScale;
+    matrixResult[3][2] = matrix[3][2] * rScale;
+    matrixResult[3][3] = matrix[3][3] * rScale;
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameConvertYUVtoRGB.s")
+static bool frameConvertYUVtoRGB(u32* YUV, u32* RGB) {
+    s32 Yl;
+    s32 R;
+    s32 G;
+    s32 B;
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/packTakeBlocks.s")
+    Yl = YUV[0] - 16;
+    B = (s32)((YUV[1] - 128) * 20830 + Yl * 12014) >> 16;
+    G = (s32)(Yl * 11079 + ((YUV[2] - 128) * -6480 - B * 12729)) >> 16;
+    R = (s32)(Yl * 31026 - B * 24987 - G * 128660) >> 16;
 
-static bool packFreeBlocks(s32* piPack, u32* anPack) {
+    if (R > 31) {
+        R = 31;
+    } else if (R < 0) {
+        R = 0;
+    }
+    if (G > 31) {
+        G = 31;
+    } else if (G < 0) {
+        G = 0;
+    }
+    if (B > 31) {
+        B = 31;
+    } else if (B < 0) {
+        B = 0;
+    }
+
+    RGB[0] = R;
+    RGB[1] = G;
+    RGB[2] = B;
+    return true;
+}
+
+static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount) {
+    s32 nOffset;
+    s32 nCount;
+    s32 iPack;
+    u32 nPack;
+    u32 nMask;
+    u32 nMask0;
+
+    if (nBlockCount >= 32 || nBlockCount < 0) {
+        return false;
+    }
+
+    nCount = 33 - nBlockCount;
+    for (iPack = 0; iPack < nPackCount; iPack++) {
+        nPack = anPack[iPack];
+        if (nPack != -1) {
+            nMask = (1 << nBlockCount) - 1;
+            nOffset = nCount;
+            do {
+                if ((nPack & nMask) == 0) {
+                    anPack[iPack] |= nMask;
+                    *piPack = (nBlockCount << 16) | ((iPack << 5) + (nCount - nOffset));
+                    return true;
+                }
+                nOffset -= 1;
+                nMask <<= 1;
+            } while (nOffset != 0);
+        }
+    }
+
+    *piPack = -1;
+    return false;
+}
+
+static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount) {
     s32 iPack;
     u32 nMask;
 
@@ -2732,7 +2999,52 @@ static bool packFreeBlocks(s32* piPack, u32* anPack) {
     return false;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTexture.s")
+static bool frameMakeTexture(Frame* pFrame, FrameTexture** ppTexture) {
+    u32 nMask;
+    s32 iTexture;
+    s32 iTextureUsed;
+
+    iTextureUsed = 0;
+    while (iTextureUsed < ARRAY_COUNTU(pFrame->anTextureUsed) && (nMask = pFrame->anTextureUsed[iTextureUsed]) == -1) {
+        iTextureUsed++;
+    }
+
+    if (iTextureUsed == ARRAY_COUNTU(pFrame->anTextureUsed)) {
+        xlPostText(D_800EB2D4, D_80134E58, 554);
+        return false;
+    }
+
+    iTexture = 0;
+    while (nMask & 1) {
+        iTexture++;
+        nMask >>= 1;
+    }
+
+    pFrame->anTextureUsed[iTextureUsed] |= (1 << iTexture);
+    *ppTexture = &pFrame->aTexture[(iTextureUsed << 5) + iTexture];
+    (*ppTexture)->iPackPixel = -1;
+    (*ppTexture)->iPackColor = -1;
+    (*ppTexture)->pTextureNext = NULL;
+
+    if (++pFrame->nBlocksTexture > pFrame->nBlocksMaxTexture) {
+        pFrame->nBlocksMaxTexture = pFrame->nBlocksTexture;
+    }
+
+    return true;
+}
+
+static inline bool frameFreeTexture(Frame* pFrame, FrameTexture* pTexture) {
+    s32 iTexture = (u8*)pTexture - (u8*)&pFrame->aTexture[0];
+
+    if (!frameFreePixels(pFrame, pTexture)) {
+        return false;
+    }
+
+    iTexture /= sizeof(FrameTexture);
+    pFrame->anTextureUsed[iTexture >> 5] &= ~(1 << (iTexture & 0x1F));
+    pFrame->nBlocksTexture--;
+    return true;
+}
 
 static bool frameSetupCache(Frame* pFrame) {
     s32 iTexture;
@@ -2783,9 +3095,156 @@ static inline bool frameResetCache(Frame* pFrame) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameUpdateCache.s")
+static bool frameUpdateCache(Frame* pFrame) {
+    // s32 nCount;
+    // s32 nCountFree;
+    u32 nMask;
+    s32 nFrameCount;
+    s32 nFrameDelta;
+    s32 iTexture;
+    s32 iTextureUsed;
+    s32 iTextureCached;
+    FrameTexture* pTexture;
+    FrameTexture* pTextureCached;
+    FrameTexture* pTextureLast;
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTile.s")
+    nFrameCount = pFrame->nCountFrames;
+    for (iTextureUsed = 0; iTextureUsed < ARRAY_COUNTU(pFrame->anTextureUsed); iTextureUsed++) {
+        if ((nMask = pFrame->anTextureUsed[iTextureUsed]) != 0) {
+            for (iTexture = 0; nMask != 0; iTexture++, nMask >>= 1) {
+                if (nMask & 1) {
+                    pTexture = &pFrame->aTexture[(iTextureUsed << 5) + iTexture];
+                    nFrameDelta = pTexture->nFrameLast - nFrameCount;
+                    if (nFrameDelta < 0) {
+                        nFrameDelta = -nFrameDelta;
+                    }
+                    if (nFrameDelta > 1) {
+                        pTextureLast = NULL;
+                        iTextureCached = pTexture->nAddress >> 11;
+                        pTextureCached = pFrame->apTextureCached[iTextureCached];
+
+                        while (pTextureCached != NULL && pTextureCached != pTexture) {
+                            pTextureLast = pTextureCached;
+                            pTextureCached = pTextureCached->pTextureNext;
+                        }
+
+                        if (pTextureLast == NULL) {
+                            pFrame->apTextureCached[iTextureCached] = pTextureCached->pTextureNext;
+                        } else {
+                            pTextureLast->pTextureNext = pTextureCached->pTextureNext;
+                        }
+                        if (!frameFreeTexture(pFrame, pTexture)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode) {
+    bool bFlag;
+    Tile* pTile;
+    FrameTexture* pTexture;
+    FrameTexture* pTextureLast;
+    u32 nData0;
+    u32 nData1;
+    u32 nData2;
+    u32 nData3;
+    s32 iTexture;
+    s32 nShift;
+    s32 pad;
+
+    pTile = &pFrame->aTile[iTileCode & 0xF];
+    if (pTile->nX0 == 0 && pTile->nY0 == 0 && pTile->nX1 == 0 && pTile->nY1 == 0) {
+        bFlag = true;
+        pTile->nX0 = pFrame->aTile[pFrame->iTileLoad].nX0;
+        pTile->nY0 = pFrame->aTile[pFrame->iTileLoad].nY0;
+        pTile->nX1 = pFrame->aTile[pFrame->iTileLoad].nX1;
+        pTile->nY1 = pFrame->aTile[pFrame->iTileLoad].nY1;
+        nShift = pFrame->aTile[pFrame->iTileLoad].nSize - pTile->nSize;
+        if (nShift < 0) {
+            nShift = -nShift;
+            pTile->nX0 >>= nShift;
+            pTile->nX1 >>= nShift;
+        } else {
+            pTile->nX0 <<= nShift;
+            pTile->nX1 <<= nShift;
+        }
+        pTile->nModeS = 2;
+        pTile->nModeT = 2;
+    } else {
+        bFlag = false;
+    }
+
+    nData0 = (pTile->nX0 & 0xFFFF) | ((pTile->nX1 & 0xFFFF) << 16);
+    nData1 = (pTile->nY0 & 0xFFFF) | ((pTile->nY1 & 0xFFFF) << 16);
+    nData2 = ((pTile->nMaskS & 0xF) << 0) | ((pTile->nMaskT & 0xF) << 4) | ((pTile->nModeS & 7) << 8) |
+             ((pTile->nModeT & 7) << 11) | ((pTile->nShiftS & 0xF) << 14) | ((pTile->nShiftT & 0xF) << 18) |
+             ((pTile->nSize & 7) << 22) | ((pTile->nFormat & 7) << 25) | ((pTile->iTLUT & 0xF) << 28);
+    nData3 = (pTile->nTMEM & 0xFFFF) | ((pTile->nSizeX & 0xFFFF) << 16);
+    if (pFrame->nAddressLoad == -1) {
+        iTexture = 0;
+    } else {
+        iTexture = pFrame->nAddressLoad >> 11;
+    }
+
+    pTextureLast = pTexture = pFrame->apTextureCached[iTexture];
+    while (pTexture != NULL) {
+        if (pTexture->nData0 == nData0 && pTexture->nData1 == nData1 && pTexture->nData2 == nData2 &&
+            pTexture->nData3 == nData3 && pTexture->nCodePixel == pTile->nCodePixel &&
+            pTexture->nAddress == pFrame->nAddressLoad) {
+            break;
+        }
+        pTextureLast = pTexture;
+        pTexture = pTexture->pTextureNext;
+    }
+
+    if (pTexture == NULL) {
+        if (!frameMakeTexture(pFrame, &pTexture)) {
+            return false;
+        }
+
+        frameMakePixels(pFrame, pTexture, pTile, false);
+        pTexture->nData0 = nData0;
+        pTexture->nData1 = nData1;
+        pTexture->nData2 = nData2;
+        pTexture->nData3 = nData3;
+
+        if (pFrame->nAddressLoad == -1) {
+            pTexture->nAddress = 0;
+        } else {
+            pTexture->nAddress = pFrame->nAddressLoad;
+        }
+        if (pTextureLast == NULL) {
+            pFrame->apTextureCached[iTexture] = pTexture;
+        } else {
+            pTextureLast->pTextureNext = pTexture;
+        }
+    } else if (pTexture->iPackColor != -1 && pTexture->nCodeColor != pFrame->nTlutCode[pTile->iTLUT]) {
+        frameMakePixels(pFrame, pTexture, pTile, true);
+    }
+
+    pTexture->nFrameLast = pFrame->nCountFrames;
+    pTexture->nCodeColor = pFrame->nTlutCode[pTile->iTLUT];
+    pTexture->nCodePixel = pTile->nCodePixel;
+
+    if (!frameLoadTexture(pFrame, pTexture, iTileCode, pTile)) {
+        return false;
+    }
+
+    if (ppTexture != NULL) {
+        *ppTexture = pTexture;
+    }
+
+    if (bFlag) {
+        pTile->nX0 = pTile->nY0 = pTile->nX1 = pTile->nY1 = 0;
+    }
+    return true;
+}
 
 bool frameDrawReset(Frame* pFrame, s32 nFlag) {
     pFrame->nFlag |= nFlag;
@@ -2805,7 +3264,26 @@ bool frameSetFill(Frame* pFrame, bool bFill) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
+#else
+bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY) {
+    if (nSizeX > 0 && nSizeY > 0) {
+        pFrame->anSizeX[eSize] = nSizeX;
+        pFrame->anSizeY[eSize] = nSizeY;
+        if (eSize == FS_SOURCE) {
+            pFrame->rScaleX = (f32)pFrame->anSizeX[FS_TARGET] / nSizeX;
+            pFrame->rScaleY = (f32)pFrame->anSizeY[FS_TARGET] / nSizeY;
+        } else if (eSize == FS_TARGET) {
+            pFrame->rScaleX = (f32)nSizeX / pFrame->anSizeX[FS_SOURCE];
+            pFrame->rScaleY = (f32)nSizeY / pFrame->anSizeY[FS_SOURCE];
+        }
+    }
+
+    return true;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
@@ -3327,7 +3805,56 @@ bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameCullDL.s")
+bool frameCullDL(Frame* pFrame, s32 nVertexStart, s32 nVertexEnd) {
+    f32 rX;
+    f32 rY;
+    f32 rZ;
+    f32 rW;
+    Mtx44Ptr matrix;
+    Vertex* vtxP;
+    Vertex* endVtxP;
+    s32 nCode;
+    s32 nCodeFull;
+
+    matrix = pFrame->matrixProjection;
+    vtxP = &pFrame->aVertex[nVertexStart];
+    endVtxP = &pFrame->aVertex[nVertexEnd];
+    nCodeFull = 0xFF;
+
+    for (; vtxP <= endVtxP; vtxP++) {
+        rX = vtxP->vec.x * matrix[0][0] + vtxP->vec.y * matrix[1][0] + vtxP->vec.z * matrix[2][0] + matrix[3][0];
+        rY = vtxP->vec.x * matrix[0][1] + vtxP->vec.y * matrix[1][1] + vtxP->vec.z * matrix[2][1] + matrix[3][1];
+        rZ = vtxP->vec.x * matrix[0][2] + vtxP->vec.y * matrix[1][2] + vtxP->vec.z * matrix[2][2] + matrix[3][2];
+        rW = vtxP->vec.x * matrix[0][3] + vtxP->vec.y * matrix[1][3] + vtxP->vec.z * matrix[2][3] + matrix[3][3];
+
+        nCode = 0;
+        if (rX < -rW) {
+            nCode |= 0x01;
+        }
+        if (rX > rW) {
+            nCode |= 0x02;
+        }
+        if (rY < -rW) {
+            nCode |= 0x04;
+        }
+        if (rY > rW) {
+            nCode |= 0x08;
+        }
+        if (rZ < -rW) {
+            nCode |= 0x10;
+        }
+        if (rZ > rW) {
+            nCode |= 0x20;
+        }
+
+        nCodeFull &= nCode;
+        if (nCodeFull == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTLUT.s")
 
@@ -3396,9 +3923,68 @@ bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetViewport.s")
+#else
+bool frameSetViewport(Frame* pFrame, s16* pData) {
+    s32 iScale;
+    f32 arScale[3];
+    f32 centerX;
+    f32 centerY;
+    f32 rX;
+    f32 rY;
+    f32 rSizeX;
+    f32 rSizeY;
+    s32 pad[3];
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameResetUCode.s")
+    arScale[0] = pData[0] / 4.0f;
+    arScale[1] = pData[1] / 4.0f;
+    arScale[2] = pData[2] / 4.0f;
+
+    for (iScale = 0; iScale < 3; iScale++) {
+        if (arScale[iScale] < 0.0f) {
+            arScale[iScale] = -arScale[iScale];
+        }
+    }
+
+    rSizeX = (arScale[0] * 2.0f) * pFrame->rScaleX;
+    rSizeY = (arScale[1] * 2.0f) * pFrame->rScaleY;
+
+    centerX = pData[4] / 4.0f;
+    centerY = pData[5] / 4.0f;
+
+    rX = (centerX - arScale[0]) * pFrame->rScaleX;
+    rY = (centerY - arScale[1]) * pFrame->rScaleY;
+
+    pFrame->viewport.rX = rX;
+    pFrame->viewport.rY = rY;
+    pFrame->viewport.rSizeX = rSizeX;
+    pFrame->viewport.rSizeY = rSizeY;
+
+    frameDrawReset(pFrame, 0x10000);
+    return true;
+}
+#endif
+
+bool frameResetUCode(Frame* pFrame, FrameResetType eType) {
+    s32 iMode;
+
+    pFrame->iMatrixModel = 0;
+    pFrame->nMode &= 0x9C1F0000;
+    if (eType == FRT_COLD) {
+        pFrame->nMode &= ~0x1C000000;
+        pFrame->iHintProjection = -1;
+    }
+
+    for (iMode = 0; iMode < ARRAY_COUNT(pFrame->aMode); iMode++) {
+        pFrame->aMode[iMode] = 0;
+    }
+
+    pFrame->nWidthLine = -1;
+    pFrame->nCountLight = 0;
+    return true;
+}
 
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
     if (((u32)(eType - 2) > 1) && (eType == FBT_DEPTH)) {
@@ -3497,7 +4083,29 @@ bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nA
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameInvalidateCache.s")
+bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1) {
+    s32 iTexture0;
+    s32 iTexture1;
+    FrameTexture* pTexture;
+    FrameTexture* pTextureNext;
+
+    iTexture0 = (nOffset0 & 0x7FFFFF) / 2048;
+    iTexture1 = (nOffset1 & 0x7FFFFF) / 2048;
+    while (iTexture0 <= iTexture1) {
+        pTexture = pFrame->apTextureCached[iTexture0];
+        while (pTexture != NULL) {
+            pTextureNext = pTexture->pTextureNext;
+            if (!frameFreeTexture(pFrame, pTexture)) {
+                return false;
+            }
+            pTexture = pTextureNext;
+        }
+        pFrame->apTextureCached[iTexture0] = NULL;
+        iTexture0 += 1;
+    }
+
+    return true;
+}
 
 #ifndef NON_MATCHING
 // matches but data doesn't
@@ -3520,12 +4128,12 @@ bool frameGetTextureInfo(Frame* pFrame, TextureInfo* pInfo) {
             nCount++;
             switch ((s32)pTexture->eFormat) {
                 case GX_TF_I4:
-                case 8: // GX_TF_CI4?
+                case GX_TF_C4:
                     nSize += ((pTexture->nSizeX * pTexture->nSizeY) + 1) >> 1;
                     break;
                 case GX_TF_I8:
                 case GX_TF_IA4:
-                case 9: // GX_TF_CI8?
+                case GX_TF_C8:
                     nSize += pTexture->nSizeX * pTexture->nSizeY;
                     break;
                 case GX_TF_IA8:
