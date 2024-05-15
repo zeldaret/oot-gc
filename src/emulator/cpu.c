@@ -21,10 +21,13 @@ static bool cpuSetTLB(Cpu* pCPU, s32 iEntry);
 static bool cpuHeapReset(u32* array, s32 count);
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
 static void treeCallerInit(CpuCallerID* block, s32 total);
+static bool treeInit(Cpu* pCPU, s32 root_address);
 static bool treeKill(Cpu* pCPU);
 static bool treeKillNodes(Cpu* pCPU, CpuFunction* tree);
 static bool treeAdjustRoot(Cpu* pCPU, s32 new_start, s32 new_end);
+static inline bool treeSearch(Cpu* pCPU, s32 target, CpuFunction** node);
 static bool treeSearchNode(CpuFunction* tree, s32 target, CpuFunction** node);
+bool treeInsert(Cpu* pCPU, s32 start, s32 end);
 static bool treeInsertNode(CpuFunction** tree, s32 start, s32 end, CpuFunction** ppFunction);
 static bool treeBalance(CpuTreeRoot* root);
 static bool treeKillReason(Cpu* pCPU, s32* value);
@@ -197,13 +200,20 @@ char D_800EC078[] = "tree range (%p - %p)\n";
 char D_800EC090[] = "total nodes: %d (tree height: %d %d)\n";
 char D_800EC0B8[] = "total memory: %d\n";
 
+#ifndef NON_MATCHING
+// cpuFindFunction
 void* jtbl_800EC0CC[25] = {
     &lbl_8003381C, &lbl_80033A68, &lbl_80033A68, &lbl_8003381C, &lbl_8003381C, &lbl_80033A68, &lbl_8003381C,
     &lbl_8003381C, &lbl_80033A68, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C,
     &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_8003381C,
     &lbl_8003381C, &lbl_8003381C, &lbl_8003381C, &lbl_800337F0,
 };
+#else
+void* jtbl_800EC0CC[25] = {0};
+#endif
 
+#ifndef NON_MATCHING
+// cpuFindFunction
 void* jtbl_800EC130[44] = {
     &lbl_800334D8, &lbl_800335A0, &lbl_80033564, &lbl_80033A5C, &lbl_80033644, &lbl_80033768, &lbl_80033768,
     &lbl_80033768, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C,
@@ -213,6 +223,9 @@ void* jtbl_800EC130[44] = {
     &lbl_8003394C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C, &lbl_80033A5C,
     &lbl_80033A5C, &lbl_80033938,
 };
+#else
+void* jtbl_800EC130[44] = {0};
+#endif
 
 char D_800EC1E0[] = "_cpuGCN.c";
 
@@ -5803,7 +5816,419 @@ static inline bool cpuTreeFree(CpuFunction* pFunction) {
     return false;
 }
 
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
+#else
+bool cpuFindFunction(Cpu* pCPU, s32 theAddress, CpuFunction** tree_node) {
+    CpuDevice** apDevice;
+    u8* aiDevice;
+    u32 opcode;
+    u8 follow;
+    u8 valid;
+    u8 check;
+    u8 end_flag;
+    u8 save_restore;
+    u8 alert;
+    s32 beginAddress;
+    s32 cheat_address;
+    s32 current_address;
+    s32 temp_address;
+    s32 branch;
+    int anAddr[3];
+    s32 pad;
+
+    save_restore = false;
+    alert = false;
+    cheat_address = 0;
+    if (pCPU->gTree == NULL) {
+        check = 0;
+        pCPU->survivalTimer = 1;
+        if (!xlHeapTake(&pCPU->gTree, sizeof(CpuTreeRoot))) {
+            return false;
+        }
+        treeInit(pCPU, 0x80150002);
+    } else {
+        check = 1;
+        if (treeSearch(pCPU, theAddress, tree_node)) {
+            pCPU->pFunctionLast = *tree_node;
+            return true;
+        }
+    }
+
+    anAddr[0] = 0;
+    anAddr[1] = 0;
+    anAddr[2] = 0;
+    aiDevice = pCPU->aiDevice;
+    apDevice = pCPU->apDevice;
+    beginAddress = branch = theAddress;
+    current_address = theAddress;
+
+    do {
+        CPU_DEVICE_GET32(apDevice, aiDevice, current_address, &opcode);
+        follow = true;
+
+        if (check == 0) {
+            if (opcode != 0 && anAddr[0] == 0) {
+                anAddr[0] = current_address;
+            }
+        } else {
+            if (anAddr[0] == 0) {
+                anAddr[0] = current_address;
+            }
+        }
+
+        valid = true;
+        end_flag = 0;
+
+        switch ((u8)MIPS_OP(opcode)) {
+            case 0x00: { // special
+                switch ((u8)MIPS_FUNCT(opcode)) {
+                    case 0x08: // jr
+                        if (!save_restore && (anAddr[1] == 0 || current_address > anAddr[1]) &&
+                            (anAddr[2] == 0 || current_address >= anAddr[2])) {
+                            end_flag = 111;
+                        }
+                        break;
+                    case 0x0D: // break
+                        if ((anAddr[1] == 0 || current_address > anAddr[1]) &&
+                            (anAddr[2] == 0 || current_address >= anAddr[2])) {
+                            end_flag = 111;
+                            save_restore = false;
+                        }
+                        break;
+                    default:
+                        valid = SpecialOpcode[MIPS_FUNCT(opcode)];
+                        break;
+                }
+                break;
+            }
+            case 0x02: // j
+                if ((branch = (MIPS_TARGET(opcode) << 2) | (current_address & 0xF0000000)) >= current_address &&
+                    branch - current_address <= 0x1000) {
+                    if (anAddr[2] == 0) {
+                        anAddr[2] = branch;
+                    } else if (branch > anAddr[2]) {
+                        anAddr[2] = branch;
+                    }
+                }
+                break;
+            case 0x01: // regimm
+                switch ((u8)MIPS_RT(opcode)) {
+                    case 0x00: // bltz
+                    case 0x01: // bgez
+                    case 0x02: // bltzl
+                    case 0x03: // bgezl
+                    case 0x10: // bltzal
+                    case 0x11: // bgezal
+                    case 0x12: // bltzall
+                    case 0x13: // bgezall
+                        branch = MIPS_IMM_S16(opcode) * 4;
+                        if (branch < 0) {
+                            if (check == 1 && current_address + branch + 4 < beginAddress) {
+                                anAddr[0] = 0;
+                                anAddr[1] = 0;
+                                anAddr[2] = 0;
+                                beginAddress = current_address + branch + 4;
+                                current_address = current_address + branch + 4;
+                                alert = true;
+                                continue;
+                            }
+                        } else {
+                            if (anAddr[1] == 0) {
+                                anAddr[1] = current_address + branch;
+                            } else if (current_address + branch > anAddr[1]) {
+                                anAddr[1] = current_address + branch;
+                            }
+                        }
+                        break;
+                    default:
+                        valid = RegimmOpcode[MIPS_RT(opcode)];
+                        break;
+                }
+                break;
+            case 0x04: // beq
+            case 0x14: // beql
+                branch = MIPS_IMM_S16(opcode) * 4;
+                if (branch < 0) {
+                    if (check == 1 && current_address + branch + 4 < beginAddress) {
+                        anAddr[0] = 0;
+                        anAddr[1] = 0;
+                        anAddr[2] = 0;
+                        beginAddress = current_address + branch + 4;
+                        current_address = current_address + branch + 4;
+                        alert = true;
+                        continue;
+                    }
+
+                    temp_address = current_address + 8;
+                    CPU_DEVICE_GET32(apDevice, aiDevice, temp_address, &opcode);
+                    if (opcode == 0) {
+                        do {
+                            temp_address += 4;
+                            CPU_DEVICE_GET32(apDevice, aiDevice, temp_address, &opcode);
+                        } while (opcode == 0);
+
+                        if (MIPS_OP(opcode) != 0x23) { // lw
+                            current_address = temp_address - 8;
+                            if ((anAddr[1] == 0 || current_address > anAddr[1]) &&
+                                (anAddr[2] == 0 || current_address >= anAddr[2])) {
+                                end_flag = 111;
+                                save_restore = false;
+                            }
+                        } else {
+                            current_address = temp_address - 4;
+                        }
+                    }
+                } else {
+                    if (anAddr[1] == 0) {
+                        anAddr[1] = current_address + branch;
+                    } else if (current_address + branch > anAddr[1]) {
+                        anAddr[1] = current_address + branch;
+                    }
+                }
+                break;
+            case 0x05: // bne
+            case 0x06: // blez
+            case 0x07: // bgtz
+            case 0x15: // bnel
+            case 0x16: // blezl
+            case 0x17: // bgtzl
+                branch = MIPS_IMM_S16(opcode) * 4;
+                if (branch < 0) {
+                    if (check == 1 && current_address + branch + 4 < beginAddress) {
+                        anAddr[0] = 0;
+                        anAddr[1] = 0;
+                        anAddr[2] = 0;
+                        beginAddress = current_address + branch + 4;
+                        current_address = current_address + branch + 4;
+                        alert = true;
+                        continue;
+                    }
+                } else {
+                    if (anAddr[1] == 0) {
+                        anAddr[1] = current_address + branch;
+                    } else if (current_address + branch > anAddr[1]) {
+                        anAddr[1] = current_address + branch;
+                    }
+                }
+                break;
+            case 0x10: // cop0
+                switch ((u8)MIPS_FUNCT(opcode)) {
+                    case 0x01: // tlbr
+                    case 0x02: // tlbwi
+                    case 0x05: // tlbwr
+                    case 0x08: // tlbp
+                        break;
+                    case 0x18: // eret
+                        if ((anAddr[1] == 0 || current_address > anAddr[1]) &&
+                            (anAddr[2] == 0 || current_address >= anAddr[2])) {
+                            end_flag = 222;
+                            save_restore = false;
+                        }
+                        break;
+                    default:
+                        switch ((u8)MIPS_FMT(opcode)) {
+                            case 0x08:
+                                switch (MIPS_FT(opcode)) {
+                                    case 0x00:
+                                    case 0x01:
+                                    case 0x02:
+                                    case 0x03:
+                                        branch = MIPS_IMM_S16(opcode) * 4;
+                                        if (branch < 0) {
+                                            if (check == 1 && current_address + branch + 4 < beginAddress) {
+                                                anAddr[0] = 0;
+                                                anAddr[1] = 0;
+                                                anAddr[2] = 0;
+                                                beginAddress = current_address + branch + 4;
+                                                current_address = current_address + branch + 4;
+                                                alert = true;
+                                                continue;
+                                            }
+                                        } else {
+                                            if (anAddr[1] == 0) {
+                                                anAddr[1] = current_address + branch;
+                                            } else if (current_address + branch > anAddr[1]) {
+                                                anAddr[1] = current_address + branch;
+                                            }
+                                        }
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case 0x11: // cop1
+                if (MIPS_FMT(opcode) == 0x08) {
+                    switch ((u8)MIPS_FT(opcode)) {
+                        case 0x00:
+                        case 0x01:
+                        case 0x02:
+                        case 0x03:
+                            branch = MIPS_IMM_S16(opcode) * 4;
+                            if (branch < 0) {
+                                if (check == 1 && current_address + branch + 4 < beginAddress) {
+                                    anAddr[0] = 0;
+                                    anAddr[1] = 0;
+                                    anAddr[2] = 0;
+                                    beginAddress = current_address + branch + 4;
+                                    current_address = current_address + branch + 4;
+                                    alert = true;
+                                    continue;
+                                }
+                            } else {
+                                if (anAddr[1] == 0) {
+                                    anAddr[1] = current_address + branch;
+                                } else if (current_address + branch > anAddr[1]) {
+                                    anAddr[1] = current_address + branch;
+                                }
+                            }
+                            break;
+                    }
+                }
+                break;
+            case 0x2B: // sw
+                if (MIPS_RT(opcode) == 31) {
+                    save_restore = true;
+                }
+                break;
+            case 0x23: // lw
+                if (MIPS_RT(opcode) == 31) {
+                    save_restore = false;
+                    if (check == 1 && alert) {
+                        current_address = beginAddress;
+
+                        while (true) {
+                            CPU_DEVICE_GET32(apDevice, aiDevice, current_address, &opcode);
+                            if (MIPS_OP(opcode) == 0x2B && MIPS_RT(opcode) == 31) { // sw ra, ...
+                                break;
+                            }
+                            current_address -= 4;
+                        }
+
+                        do {
+                            current_address -= 4;
+                            CPU_DEVICE_GET32(apDevice, aiDevice, current_address, &opcode);
+                            if (opcode != 0 && treeSearch(pCPU, current_address - 4, tree_node)) {
+                                break;
+                            }
+                        } while (opcode != 0);
+
+                        anAddr[0] = 0;
+                        anAddr[1] = 0;
+                        anAddr[2] = 0;
+                        current_address = beginAddress = current_address + 4;
+                        alert = false;
+                        continue;
+                    }
+                }
+                break;
+            default:
+                valid = Opcode[MIPS_OP(opcode)];
+                break;
+        }
+
+        if (end_flag != 0) {
+            if (end_flag == 111) {
+                anAddr[2] = current_address + 4;
+                current_address += 8;
+            } else {
+                anAddr[2] = current_address;
+                current_address += 4;
+            }
+
+            if (check == 0) {
+                if (romTestCode(SYSTEM_ROM(pCPU->pHost), D_8013522C)) {
+                    if (current_address == 0x800BB62C) {
+                        current_address = 0x800BB9B0;
+                    } else if (current_address == 0x800CC010) {
+                        valid = false;
+                    }
+                } else if (romTestCode(SYSTEM_ROM(pCPU->pHost), D_80135234)) {
+                    if (anAddr[2] == 0x800A9D40) {
+                        anAddr[0] = 0x800A9CF0;
+                        cheat_address = anAddr[0];
+                    }
+                } else if (romTestCode(SYSTEM_ROM(pCPU->pHost), D_8013523C)) {
+                    if (current_address == 0x80000470) {
+                        current_address = 0x80000870;
+                    } else if (anAddr[2] == 0x80001248) {
+                        anAddr[2] = 0x80001884;
+                        current_address = 0x80001890;
+                    }
+                } else if (romTestCode(SYSTEM_ROM(pCPU->pHost), D_80135244)) {
+                    if (current_address == 0x800829CC) {
+                        current_address = 0x80082D60;
+                    }
+                } else if (romTestCode(SYSTEM_ROM(pCPU->pHost), D_8013524C)) {
+                    if (current_address == 0x8000E1C8) {
+                        if (!treeInsert(pCPU, 0x8007ED94, 0x8007F55C)) {
+                            return false;
+                        }
+                        treeSearch(pCPU, 0x8007ED94, tree_node);
+                        (*tree_node)->timeToLive = 0;
+                    }
+                } else if (romTestCode(SYSTEM_ROM(pCPU->pHost), D_80135254)) {
+                    if (current_address == 0x8000E1C8) {
+                        if (!treeInsert(pCPU, 0x8007EC54, 0x8007F41C)) {
+                            return false;
+                        }
+                        treeSearch(pCPU, 0x8007EC54, tree_node);
+                        (*tree_node)->timeToLive = 0;
+                    }
+                }
+            }
+
+            if (!treeInsert(pCPU, anAddr[0], anAddr[2])) {
+                return false;
+            }
+
+            if (cheat_address != 0) {
+                treeSearch(pCPU, cheat_address, tree_node);
+                cheat_address = 0;
+                (*tree_node)->timeToLive = 0;
+            }
+
+            if (check == 1) {
+                if (treeSearch(pCPU, theAddress, tree_node)) {
+                    pCPU->pFunctionLast = *tree_node;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            follow = false;
+            anAddr[0] = 0;
+            anAddr[1] = 0;
+            anAddr[2] = 0;
+            if (check == 0 && pCPU->gTree->total > 3970) {
+                valid = false;
+            }
+        }
+
+        if (follow) {
+            current_address += 4;
+        }
+    } while (valid);
+
+    if (check == 0) {
+        treeInsert(pCPU, 0x80000180, 0x8000018C);
+        treeSearch(pCPU, 0x80000180, tree_node);
+        (*tree_node)->timeToLive = 0;
+
+        if (treeSearch(pCPU, theAddress, tree_node)) {
+            pCPU->pFunctionLast = *tree_node;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    return false;
+}
+#endif
 
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end) {
     CpuTreeRoot* root = pCPU->gTree;
@@ -5920,7 +6345,7 @@ static bool treeCallerCheck(Cpu* pCPU, CpuFunction* tree, bool flag, s32 nAddres
     return true;
 }
 
-s32 treeInit(Cpu* pCPU, s32 root_address) {
+static bool treeInit(Cpu* pCPU, s32 root_address) {
     CpuTreeRoot* root = pCPU->gTree;
 
     if (root == NULL) {
@@ -6205,7 +6630,7 @@ static bool treeDeleteNode(Cpu* pCPU, CpuFunction** top, CpuFunction* kill) {
     return true;
 }
 
-s32 treeInsert(Cpu* pCPU, s32 start, s32 end) {
+bool treeInsert(Cpu* pCPU, s32 start, s32 end) {
     CpuTreeRoot* root;
     CpuFunction* current;
     s32 flag;
@@ -6416,6 +6841,18 @@ static bool treeAdjustRoot(Cpu* pCPU, s32 new_start, s32 new_end) {
     root->total = total;
     root->total_memory = total_memory;
     return true;
+}
+
+static inline bool treeSearch(Cpu* pCPU, s32 target, CpuFunction** node) {
+    CpuTreeRoot* root = pCPU->gTree;
+    bool flag;
+
+    if (target < root->root_address) {
+        flag = treeSearchNode(root->left, target, node);
+    } else {
+        flag = treeSearchNode(root->right, target, node);
+    }
+    return flag;
 }
 
 static bool treeSearchNode(CpuFunction* tree, s32 target, CpuFunction** node) {
