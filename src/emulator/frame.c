@@ -974,8 +974,8 @@ static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVe
     if ((pFrame->nFlag & 0x40000) && (pFrame->nMode & 0x04000000)) {
         pFrame->nFlag &= ~0x40000;
         if (pFrame->nMode & 0x20000000) {
-            eTypeProjection = pFrame->eTypeProjection == FMP_PERSPECTIVE ? FMP_PERSPECTIVE : FMP_ORTHOGRAPHIC;
-            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == FMP_PERSPECTIVE) {
+            eTypeProjection = pFrame->eTypeProjection == FMP_PERSPECTIVE ? GX_PERSPECTIVE : GX_ORTHOGRAPHIC;
+            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == GX_PERSPECTIVE) {
                 GXSetProjection(pFrame->matrixProjection, eTypeProjection);
             } else {
                 GXSetProjection(pFrame->matrixProjection, eTypeProjection);
@@ -985,23 +985,23 @@ static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVe
 
             iHint = pFrame->iHintProjection;
             if (iHint != -1) {
-                if (pFrame->aMatrixHint[iHint].eProjection == FMP_PERSPECTIVE) {
-                    eTypeProjection = FMP_PERSPECTIVE;
+                if (pFrame->aMatrixHint[iHint].eProjection == FMP_ORTHOGRAPHIC) {
+                    eTypeProjection = GX_PERSPECTIVE;
                 } else {
-                    eTypeProjection = FMP_ORTHOGRAPHIC;
+                    eTypeProjection = GX_ORTHOGRAPHIC;
                 }
                 rNear = pFrame->aMatrixHint[iHint].rClipNear;
                 rFar = pFrame->aMatrixHint[iHint].rClipFar;
             } else if (pFrame->matrixProjection[3][3] == 1.0f) {
                 rNear = 0.0f;
                 rFar = 32000.0f;
-                eTypeProjection = FMP_ORTHOGRAPHIC;
+                eTypeProjection = GX_ORTHOGRAPHIC;
             } else {
                 rNear = 1.0f;
                 rFar = 32000.0f;
-                eTypeProjection = FMP_PERSPECTIVE;
+                eTypeProjection = GX_PERSPECTIVE;
             }
-            if (eTypeProjection == FMP_PERSPECTIVE) {
+            if (eTypeProjection == GX_PERSPECTIVE) {
                 C_MTXPerspective(matrixProjection, 30.0f, 4.0f / 3.0f, 0.1f * rNear, rFar);
             } else {
                 rNear = -rFar;
@@ -1010,7 +1010,7 @@ static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVe
             }
 
             rValue23 = matrixProjection[2][3];
-            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == FMP_PERSPECTIVE) {
+            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == GX_PERSPECTIVE) {
                 rValue23 = -((0.0015f * rNear) - rValue23);
             }
             matrix44[2][2] = matrixProjection[2][2];

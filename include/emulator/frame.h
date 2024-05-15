@@ -402,6 +402,6 @@ bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1);
 // _frameGCNcc.c
 void SetNumTexGensChans(Frame* pFrame, s32 numCycles);
 void SetTevStages(Frame* pFrame, s32 cycle, s32 numCycles);
-s32 SetTevStageTable(Frame* pFrame, s32 numCycles);
+bool SetTevStageTable(Frame* pFrame, s32 numCycles);
 
 #endif
