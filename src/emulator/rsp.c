@@ -1302,7 +1302,86 @@ static bool rspAMix1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAResample1.s")
+static bool rspAResample1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    s32 nSrcStep;
+    s16* srcP;
+    s16* dstP;
+    s16 lastValue;
+    u16 nCount;
+    u16 i;
+    s32 nCursorPos;
+    s32 nExtra;
+    u32 scratch;
+    u8 flags;
+    s16* pData;
+    s32 nSrcAddress;
+    s32 pad[7];
+
+    srcP = &pRSP->anAudioBuffer[pRSP->nAudioDMEMIn[0]];
+    dstP = &pRSP->anAudioBuffer[pRSP->nAudioDMEMOut[0]];
+    nCount = pRSP->nAudioCount[0];
+    nSrcStep = nCommandHi & 0xFFFF;
+    flags = (nCommandHi >> 16) & 0xFF;
+    nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nSrcAddress, NULL)) {
+        return false;
+    }
+
+    if (flags & 1) {
+        for (i = 0; i < 16; i++) {
+            pData[i] = 0;
+        }
+    }
+
+    if (flags & 2) {
+        srcP[-8] = pData[8];
+        srcP[-7] = pData[9];
+        srcP[-6] = pData[10];
+        srcP[-5] = pData[11];
+        srcP[-4] = pData[12];
+        srcP[-3] = pData[13];
+        srcP[-2] = pData[14];
+        srcP[-1] = pData[15];
+        srcP -= pData[5] / 2;
+    }
+
+    srcP -= 4;
+    srcP[0] = pData[0];
+    srcP[1] = pData[1];
+    srcP[2] = pData[2];
+    srcP[3] = pData[3];
+
+    nCursorPos = pData[4];
+    for (i = 0; i < nCount; i++, nCursorPos += nSrcStep) {
+        lastValue = srcP[nCursorPos >> 15];
+        dstP[i] = lastValue + (((nCursorPos & 0x7FFF) * (srcP[(nCursorPos >> 15) + 1] - lastValue)) >> 15);
+    }
+
+    pData[4] = (nCursorPos & 0x7FFF);
+    srcP += nCursorPos >> 15;
+
+    pData[0] = srcP[0];
+    pData[1] = srcP[1];
+    pData[2] = srcP[2];
+    pData[3] = srcP[3];
+
+    scratch = ((srcP + 4 - &pRSP->anAudioBuffer[pRSP->nAudioDMEMIn[0]]) & 7) << 1;
+    if (scratch != 0) {
+        scratch -= 16;
+    }
+    pData[5] = scratch;
+
+    pData[8] = srcP[4];
+    pData[9] = srcP[5];
+    pData[10] = srcP[6];
+    pData[11] = srcP[7];
+    pData[12] = srcP[8];
+    pData[13] = srcP[9];
+    pData[14] = srcP[10];
+    pData[15] = srcP[11];
+
+    return true;
+}
 
 static bool rspASetBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     u16 nDMEMIn = nCommandHi & 0xFFFF;
