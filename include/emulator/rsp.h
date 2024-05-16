@@ -32,6 +32,8 @@
 
 #define SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
     (pRSP->anBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM) & 0xFFFFFF))
+#define AUDIO_SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
+    (pRSP->anAudioBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM) & 0xFFFFFF))
 
 typedef enum __anon_0x581E7 {
     RUT_NOCODE = -1,
