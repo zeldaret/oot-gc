@@ -3311,6 +3311,7 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
             pFrame->bSnapShot &= ~0xF00;
             return true;
         }
+
         return false;
     }
 
@@ -3394,6 +3395,7 @@ bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer) {
     if (!pFrame->bFrameOn) {
         return false;
     }
+
     if (pBuffer->nAddress >= 0x358800 && pBuffer->nAddress <= 0x37B800) {
         if (pBuffer->nFormat == 0 && pBuffer->nWidth == 1 && pBuffer->nSize == 2) {
             pBuffer->pData = pFrame->nTempBuffer + ((((s32)(pBuffer->nAddress + 0xFFCA7800) / 2) + 0x8C0));
@@ -3402,6 +3404,7 @@ bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer) {
         pFrame->bFrameOn = false;
         return false;
     }
+
     return false;
 }
 
