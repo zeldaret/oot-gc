@@ -523,8 +523,7 @@ static bool systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
-                // "ゼルダコレクション"
-                mcardOpen(&mCard, "ZELDA1", "\x83\x5b\x83\x8b\x83\x5f\x83\x52\x83\x8c\x83\x4e\x83\x56\x83\x87\x83\x93",
+                mcardOpen(&mCard, "ZELDA1", "ゼルダコレクション", // "Zelda Collection"
                           mCard.saveIcon, mCard.saveBanner, "ZELDAX",
                           &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
             } else {
@@ -543,8 +542,7 @@ static bool systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
-                // "ゼルダコレクション"
-                mcardOpen(&mCard, "ZELDA1", "\x83\x5b\x83\x8b\x83\x5f\x83\x52\x83\x8c\x83\x4e\x83\x56\x83\x87\x83\x93",
+                mcardOpen(&mCard, "ZELDA1", "ゼルダコレクション", // "Zelda Collection"
                           mCard.saveIcon, mCard.saveBanner, "ZELDA",
                           &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
             }

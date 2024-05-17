@@ -385,9 +385,9 @@ def generate_build_ninja(
     gnu_as_implicit = [binutils_implicit or gnu_as, dtk]
 
     # MWCC with asm_processor
-    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
+    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{sjiswrap} {mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
     mwcc_asm_processor_implicit: List[Optional[Path]] = [
-        *mwcc_implicit,
+        *mwcc_sjis_implicit,
         binutils_implicit or gnu_as,
         Path("tools/asm_processor/compile.sh"),
         Path("tools/asm_processor/asm_processor.py"),
@@ -440,7 +440,7 @@ def generate_build_ninja(
     )
     n.newline()
 
-    n.comment("MWCC build (with asm_processor)")
+    n.comment("MWCC build (with asm_processor and UTF-8 to Shift JIS wrapper)")
     n.rule(
         name="mwcc_asm_processor",
         command=mwcc_asm_processor_cmd,
