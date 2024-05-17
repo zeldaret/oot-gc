@@ -30,9 +30,12 @@ static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount);
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle);
+static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
+static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 static inline void CopyCFB(u16* srcP);
 static bool packTakeBlocks(s32* piPack, u32* anPack, s32 nPackCount, s32 nBlockCount);
 static bool packFreeBlocks(s32* piPack, u32* anPack, s32 nPackCount);
+static inline bool frameTransposeMatrix(Mtx44 matrixTarget, Mtx44 matrixSource);
 static bool frameLoadTile(Frame* pFrame, FrameTexture** ppTexture, s32 iTileCode);
 static bool frameUpdateCache(Frame* pFrame);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
@@ -465,9 +468,218 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     return true;
 }
 
+#ifndef NON_MATCHING
+static bool frameDrawSetupFog_Zelda1(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
+#else
+static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
+    GXFogType nFogType;
+    f32 rNear;
+    f32 rFar;
+    u32 nMode;
+    u32 iHint;
+    f32 rFogNear;
+    f32 rFogFar;
+    f32 rFogMin;
+    f32 rFogMax;
+    f32 rMultiplier;
+    f32 rOffset;
+    f32 rMinimum;
+    f32 rMaximum;
+    s32 pad[4];
 
+    nMode = pFrame->aMode[0];
+    iHint = pFrame->iHintProjection;
+    rMultiplier = (s16)(nMode >> 16);
+    rOffset = rMinimum = (s16)(nMode & 0xFFFF);
+
+    if (iHint != -1) {
+        rFar = pFrame->aMatrixHint[pFrame->iHintProjection].rClipFar;
+        rNear = 0.1f * pFrame->aMatrixHint[pFrame->iHintProjection].rClipNear;
+    } else {
+        rFar = 32000.0f;
+        rNear = 1.0f;
+    }
+
+    if (rMultiplier == 0.0f) {
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+    } else {
+        if (rOffset == rMultiplier) {
+            nFogType = GX_FOG_LIN;
+            rFogNear = 500.0f;
+            rFogFar = 1000.0f;
+            rFogMin = rFogNear * (1.0f - (rOffset / rMultiplier));
+            rFogMax = (128000.0f / rMultiplier) + rFogMin;
+        } else if (rOffset == -25344.0f && rMultiplier == 25600.0f && rFar == 2200.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.575f * dplane + rNear;
+            rFogMax = 0.75f * dplane + rNear;
+        } else if (rOffset == -21077.0f && rMultiplier == 21333.0f && rFar == 12800.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.1f * dplane + rNear;
+            rFogMax = dplane + rNear;
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2 && rOffset == -90.0f && rMultiplier == 258.0f && rFar == 12800.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.45f * dplane + rNear;
+            rFogMax = dplane + rNear;
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2 && rOffset == -667.0f && rMultiplier == 688.0f &&
+                   rFar == 12800.0f) {
+            f32 dplane = rFar - rNear;
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = 0.45f * dplane + rNear;
+            rFogMax = dplane + rNear;
+        } else {
+            f32 dplane = rFar - rNear;
+            f32 rFarScale;
+            f32 rNearScale;
+
+            rMultiplier = 128000.0f / rMultiplier;
+            rMultiplier = rOffset * rMultiplier;
+            rFogFar = 1.0f / 256.0f;
+            rFogNear = 500.0f - rMultiplier * rFogFar;
+
+            if (rFogNear <= 860.0f) {
+                rMinimum = 0.0f;
+                rMaximum = 0.15f;
+            } else {
+                rMinimum = (rFogNear - 860.0f) / 140.0f;
+                rMaximum = 0.72f * rMinimum * rMinimum * rMinimum * rMinimum + 0.28f;
+                rMinimum = 0.26f * rMinimum * rMinimum * rMinimum * rMinimum;
+            }
+
+            rFarScale = rFar / 12800.0f;
+            rFarScale = 1.0f - rFarScale;
+            rFarScale = rFarScale * rFarScale;
+            rFarScale = rFarScale * rFarScale;
+            rFarScale = rFarScale * rFarScale;
+
+            rNearScale = rNear * rNear;
+            rNearScale *= 0.1f * rFarScale;
+
+            rFarScale *= 8.44f;
+            rNearScale *= 8.44; // bug? should be 8.44f
+
+            rFarScale += 1.0f;
+            rNearScale += 1.0f;
+
+            rMaximum *= rFarScale;
+            if (rMaximum > 1.0f) {
+                rMaximum = 1.0f;
+            }
+
+            rMinimum *= rNearScale;
+            if (rMinimum > 1.0f) {
+                rMinimum = 1.0f;
+            }
+
+            if (rMinimum > rMaximum) {
+                rMinimum = rMaximum;
+            }
+
+            nFogType = GX_FOG_EXP;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            rFogMin = rMinimum * dplane + rNear;
+            rFogMax = rMaximum * dplane + rNear;
+        }
+
+        nMode = pFrame->aMode[4];
+        if (((nMode >> 26) & 3) == 1 || (nMode >> 30) == 3 || ((nMode >> 22) & 3) == 3) {
+            GXSetFog(nFogType, rFogMin, rFogMax, rFogNear, rFogFar, pFrame->aColor[0]);
+        } else {
+            GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+        }
+    }
+
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool frameDrawSetupFog_Default(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
+#else
+static s32 frameDrawSetupFog_Default(Frame* pFrame) {
+    s32 iHint;
+    f32 rNear;
+    f32 rFar;
+    f32 rFOVY;
+    Mtx44 matrixProjection;
+    GXFogAdjTable fogTable;
+    f32 rMax;
+    f32 rMin;
+    f32 rIntpV;
+    f32 rMinimum;
+    f32 rMultiplier;
+    f32 rOffset;
+    s32 pad;
+
+    rMultiplier = (s16)(pFrame->aMode[0] >> 16);
+    rOffset = (s16)(pFrame->aMode[0] & 0xFFFF);
+    iHint = pFrame->iHintProjection;
+
+    if (iHint != -1) {
+        rFar = pFrame->aMatrixHint[pFrame->iHintProjection].rClipFar;
+        rNear = pFrame->aMatrixHint[pFrame->iHintProjection].rClipNear;
+        rFOVY = pFrame->aMatrixHint[pFrame->iHintProjection].rFieldOfViewY;
+    } else {
+        rFar = 32000.0f;
+        rNear = 1.0f;
+        rFOVY = 30.0f;
+    }
+    if (rMultiplier == 0.0f) {
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[0]);
+    } else {
+        rMinimum = 500.0f * (1.0f - rOffset / rMultiplier);
+        C_MTXPerspective(matrixProjection, 30.0f, 4.0f / 3.0f, 0.1f * rNear, rFar);
+        GXInitFogAdjTable(&fogTable, GC_FRAME_WIDTH, matrixProjection);
+        GXSetFogRangeAdj(GX_TRUE, pFrame->viewport.rX + pFrame->viewport.rSizeX / 2.0f, &fogTable);
+        if (rMinimum > 970.0f) {
+            if (rFOVY > 59.0f || rMinimum > 990.0f) {
+                rMin = 0.21f * (rFar - 0.35f * rNear);
+                rMin = MAX(rMin, 0.35f * rNear);
+                if (rFOVY < 59.0f && rFar >= 12800.0f) {
+                    rMax = 0.6f * rFar;
+                } else {
+                    rMax = 0.7f * rFar;
+                }
+            } else if (rFOVY > 44.0f) {
+                rMin = 0.13f * (rFar - 0.35f * rNear);
+                rMin = MAX(rMin, 0.35f * rNear);
+                rIntpV = MAX(rFOVY - 45.0f, 0.0f) / 15.0f;
+                rMax = rFar * (0.6f * (1.0f - rIntpV) + 0.7f * rIntpV);
+            } else {
+                rMin = 0.1f * (rFar - 0.35f * rNear);
+                rMin = MAX(rMin, 0.35f * rNear);
+                rMax = 0.37f * rFar;
+            }
+            GXSetFog(GX_FOG_LIN, rMin, rMax, 0.35f * rNear, rFar, pFrame->aColor[0]);
+        } else if (rMinimum > 900.0f) {
+            GXSetFog(GX_FOG_LIN, 350.0f, 500.0f, 10.0f, 500.0f, pFrame->aColor[0]);
+        } else {
+            GXSetFog(GX_FOG_LIN, 10.0f, 200.0f, 10.0f, 200.0f, pFrame->aColor[0]);
+        }
+    }
+
+    return true;
+}
+#endif
 
 static void frameDrawSyncCallback(u16 nToken) {
     if (nToken == FRAME_SYNC_TOKEN) {
@@ -608,9 +820,272 @@ static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTexture
 }
 #endif
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetup2D.s")
+#else
+bool frameDrawSetup2D(Frame* pFrame) {
+    Mtx44 matrix44;
 
+    if (!(*(volatile u32*)&pFrame->nMode & 0x40000000)) {
+        pFrame->nMode |= 0x40000000;
+
+        GXSetViewport(0.0f, 0.0f, pFrame->anSizeX[1], pFrame->anSizeY[1], 0.0f, 1.0f);
+        pFrame->nFlag |= 0x10000;
+
+        if (snScissorChanged) {
+            GXSetScissor(snScissorXOrig, snScissorYOrig, snScissorWidth, snScissorHeight);
+            snScissorChanged = false;
+        }
+
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[FCT_FOG]);
+        pFrame->nFlag |= 0x20;
+
+        C_MTXOrtho(matrix44, 0.0f, pFrame->anSizeY[0] - 1.0f, 0.0f, pFrame->anSizeX[0] - 1.0f, 0.0f, 1001.0f);
+        GXSetProjection(matrix44, GX_ORTHOGRAPHIC);
+        pFrame->nFlag |= 0x40000;
+
+        GXSetCullMode(GX_CULL_NONE);
+        pFrame->nFlag |= 8;
+
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_TRUE);
+        pFrame->nFlag |= 4;
+    }
+
+    return true;
+}
+#endif
+
+static inline void frameSetZMode(Frame* pFrame) {
+    u32 mode = pFrame->aMode[FMT_OTHER0];
+
+    if (pFrame->aMode[FMT_GEOMETRY] & 1) {
+        if (mode & 0x10) {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            } else {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+            }
+        } else {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
+            } else {
+                GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+            }
+        }
+    } else if (pFrame->bModifyZBuffer) {
+        if (mode & 0x10) {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            } else {
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+            }
+        } else {
+            if (mode & 0x20) {
+                GXSetZMode(GX_TRUE, GX_ALWAYS, GX_TRUE);
+            } else {
+                GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+            }
+        }
+    } else {
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    }
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupSP.s")
+#else
+static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount) {
+    f32 rValue23;
+    bool bTextureGen;
+    f32 rNear;
+    f32 rFar;
+    f32 rScaleS;
+    f32 rScaleT;
+    f32 rSlideS;
+    f32 rSlideT;
+    FrameTexture* pTexture[8];
+    s32 nColors;
+    s32 bFlag;
+    s32 iTile;
+    s32 iHint;
+    Mtx matrix;
+    Mtx matrixA;
+    Mtx matrixB;
+    Mtx44 matrix44;
+    Mtx44 matrixProjection;
+    GXProjectionType eTypeProjection;
+    f32 scale;
+    s32 nCount;
+    s32 iIndex;
+    s32 pad;
+
+    nColors = 0;
+    bTextureGen = (pFrame->aMode[FMT_GEOMETRY] & 0xA0) == 0xA0;
+
+    if (pFrame->nFlag & 0x10000) {
+        snScissorChanged = false;
+        pFrame->nFlag &= ~0x10000;
+        GXSetViewport(pFrame->viewport.rX, pFrame->viewport.rY, pFrame->viewport.rSizeX, pFrame->viewport.rSizeY, 0.0f,
+                      1.0f);
+
+        if (pFrame->viewport.rSizeX < GC_FRAME_WIDTH) {
+            // TODO: regalloc hacks?
+            u32* left = &snScissorXOrig;
+            u32* top = &snScissorYOrig;
+            GXGetScissor(left, top, &snScissorWidth, &snScissorHeight);
+
+            if (snScissorWidth > pFrame->viewport.rSizeX) {
+                GXSetScissor(pFrame->viewport.rX, pFrame->viewport.rY, pFrame->viewport.rSizeX,
+                             pFrame->viewport.rSizeY);
+                snScissorChanged = true;
+            }
+        }
+
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->nFlag & 4) {
+        pFrame->nFlag &= ~4;
+        frameSetZMode(pFrame);
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->nFlag & 8) {
+        pFrame->nFlag &= ~8;
+        switch (pFrame->aMode[FMT_GEOMETRY] & 0xC) {
+            case 0x8:
+                GXSetCullMode(GX_CULL_FRONT);
+                break;
+            case 0x4:
+                GXSetCullMode(GX_CULL_BACK);
+                break;
+            case 0xC:
+                GXSetCullMode(GX_CULL_ALL);
+                break;
+            default:
+                GXSetCullMode(GX_CULL_NONE);
+                break;
+        }
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if ((pFrame->nFlag & 0x40000) && (pFrame->nMode & 0x04000000)) {
+        pFrame->nFlag &= ~0x40000;
+        if (pFrame->nMode & 0x20000000) {
+            eTypeProjection = pFrame->eTypeProjection == FMP_PERSPECTIVE ? GX_PERSPECTIVE : GX_ORTHOGRAPHIC;
+            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == GX_PERSPECTIVE) {
+                GXSetProjection(pFrame->matrixProjection, eTypeProjection);
+            } else {
+                GXSetProjection(pFrame->matrixProjection, eTypeProjection);
+            }
+        } else {
+            frameTransposeMatrix(matrix44, pFrame->matrixProjection);
+
+            iHint = pFrame->iHintProjection;
+            if (iHint != -1) {
+                if (pFrame->aMatrixHint[iHint].eProjection == FMP_ORTHOGRAPHIC) {
+                    eTypeProjection = GX_PERSPECTIVE;
+                } else {
+                    eTypeProjection = GX_ORTHOGRAPHIC;
+                }
+                rNear = pFrame->aMatrixHint[iHint].rClipNear;
+                rFar = pFrame->aMatrixHint[iHint].rClipFar;
+            } else if (pFrame->matrixProjection[3][3] == 1.0f) {
+                rNear = 0.0f;
+                rFar = 32000.0f;
+                eTypeProjection = GX_ORTHOGRAPHIC;
+            } else {
+                rNear = 1.0f;
+                rFar = 32000.0f;
+                eTypeProjection = GX_PERSPECTIVE;
+            }
+            if (eTypeProjection == GX_PERSPECTIVE) {
+                C_MTXPerspective(matrixProjection, 30.0f, 4.0f / 3.0f, 0.1f * rNear, rFar);
+            } else {
+                rNear = -rFar;
+                C_MTXOrtho(matrixProjection, (f32)pFrame->anSizeY[0] / 2.0, -(f32)pFrame->anSizeY[0] / 2.0,
+                           -(f32)pFrame->anSizeX[0] / 2.0, (f32)pFrame->anSizeX[0] / 2.0, rNear, rFar);
+            }
+
+            rValue23 = matrixProjection[2][3];
+            if ((pFrame->aMode[FMT_OTHER0] & 0xC00) == 0xC00 && eTypeProjection == GX_PERSPECTIVE) {
+                rValue23 = -((0.0015f * rNear) - rValue23);
+            }
+            matrix44[2][2] = matrixProjection[2][2];
+            matrix44[2][3] = rValue23;
+
+            GXSetProjection(matrix44, eTypeProjection);
+        }
+
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->aMode[FMT_TEXTURE2] & 1) {
+        bFlag = true;
+        scale = !(pFrame->aMode[FMT_OTHER1] & 0x80000) ? 0.5f : 1.0f;
+        iTile = (pFrame->aMode[FMT_TEXTURE2] >> 8) & 7;
+        nCount = iTile +
+                 (((s32)((pFrame->aMode[FMT_TEXTURE2] >> 8) & 7) < 7 && pFrame->aTile[iTile + 1].nSizeX != 0) ? 1 : 0);
+
+        if (pFrame->nFlag & 1) {
+            for (iIndex = 0; iTile <= nCount; iTile++, iIndex++) {
+                if (frameLoadTile(pFrame, &pTexture[iTile], iTile | (iIndex << 4))) {
+                    if (bTextureGen) {
+                        rSlideS = (pFrame->aTile[iTile].nX0 / 4.0f) / pTexture[iTile]->nSizeX;
+                        rSlideT = (pFrame->aTile[iTile].nY0 / 4.0f) / pTexture[iTile]->nSizeY;
+
+                        rScaleS = 65536.0f * ((pFrame->aMode[FMT_TEXTURE1] >> 16) / 65536.0f);
+                        rScaleS /= (pTexture[iTile]->nSizeX << 6);
+                        rScaleT = 65536.0f * ((pFrame->aMode[FMT_TEXTURE1] & 0xFFFF) / 65536.0f);
+                        rScaleT /= (pTexture[iTile]->nSizeY << 6);
+                    } else {
+                        rSlideS = ((pFrame->aTile[iTile].nX0 / 4.0f) - 0.5f) / pTexture[iTile]->nSizeX;
+                        rSlideT = ((pFrame->aTile[iTile].nY0 / 4.0f) - 0.5f) / pTexture[iTile]->nSizeY;
+
+                        rScaleS = (pFrame->aMode[FMT_TEXTURE1] >> 16) / 65536.0f;
+                        rScaleS /= pTexture[iTile]->nSizeX;
+                        rScaleT = (pFrame->aMode[FMT_TEXTURE1] & 0xFFFF) / 65536.0f;
+                        rScaleT /= pTexture[iTile]->nSizeY;
+                    }
+
+                    if (pFrame->aTile[iTile].nShiftS < 11) {
+                        rScaleS /= (1 << pFrame->aTile[iTile].nShiftS);
+                    } else {
+                        rScaleS *= (1 << (16 - pFrame->aTile[iTile].nShiftS));
+                    }
+
+                    if (pFrame->aTile[iTile].nShiftT < 11) {
+                        rScaleT /= (1 << pFrame->aTile[iTile].nShiftT);
+                    } else {
+                        rScaleT *= (1 << (16 - pFrame->aTile[iTile].nShiftT));
+                    }
+
+                    PSMTXTrans(matrixA, -rSlideS, -rSlideT, 0.0f);
+                    PSMTXScale(matrixB, rScaleS * scale, rScaleT * scale, 0.0f);
+                    PSMTXConcat(matrixA, matrixB, matrix);
+                    GXLoadTexMtxImm(matrix, ganNameTexMtx[iIndex], GX_MTX2x4);
+                }
+            }
+        }
+    } else {
+        bFlag = false;
+    }
+
+    if (pFrame->aMode[FMT_GEOMETRY] & 2) {
+        if (pFrame->aMode[FMT_GEOMETRY] & 0x200) {
+            nColors = nVertexCount;
+        } else {
+            nColors = 1;
+        }
+    }
+
+    *pbFlag = bFlag;
+    *pnColors = nColors;
+    return true;
+}
+#endif
 
 #ifndef NON_MATCHING
 // matches but data doesn't
@@ -715,7 +1190,121 @@ static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 n
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupDP.s")
+#else
+static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 vertexCount) {
+    u32 nMode;
+    s32 numCycles;
+    u32 mode;
+    u32 cycle;
+    s32 pad[2];
+
+    if (pFrame->nFlag & 0x100) {
+        pFrame->nFlag &= ~0x100;
+        if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000) {
+            *pnColors = 0;
+            *pbFlag = false;
+            GXSetNumTevStages(1);
+            GXSetNumChans(1);
+            GXSetNumTexGens(0);
+            GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_C2);
+            GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A2);
+            GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+            GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_FALSE, GX_TEVPREV);
+            GXSetTevColor(GX_TEVREG2, pFrame->aColor[FCT_FILL]);
+            GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        } else if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x200000) {
+            GXSetNumTevStages(1);
+            GXSetNumChans(0);
+            GXSetNumTexGens(1);
+            GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+            GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        } else {
+            numCycles = ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x100000) + 1;
+            if (!SetTevStageTable(pFrame, numCycles)) {
+                GXSetNumTevStages(numCycles * 5);
+                SetNumTexGensChans(pFrame, numCycles);
+                SetTevStages(pFrame, 0, numCycles);
+                if (numCycles == 2) {
+                    SetTevStages(pFrame, 1, numCycles);
+                }
+            }
+        }
+    }
+
+    if (pFrame->nFlag & 0x220) {
+        pFrame->nFlag &= ~0x20;
+        if ((pFrame->aMode[FMT_GEOMETRY] & 0x10)) {
+            switch (gpSystem->eTypeROM) {
+                case SRT_ZELDA1:
+                case SRT_ZELDA2:
+                    if (!frameDrawSetupFog_Zelda1(pFrame)) {
+                        return false;
+                    }
+                    break;
+                default:
+                    if (!frameDrawSetupFog_Default(pFrame)) {
+                        return false;
+                    }
+                    break;
+            }
+        } else {
+            GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000.0f, pFrame->aColor[FCT_FOG]);
+        }
+        pFrame->nMode &= ~0x40000000;
+    }
+
+    if (pFrame->nFlag & 0x200) {
+        pFrame->nFlag &= ~0x200;
+        mode = pFrame->aMode[FMT_OTHER0];
+
+        if ((mode & 0xFFFF0000) == 0xAF500000) {
+            GXSetColorUpdate(GX_FALSE);
+        } else {
+            GXSetColorUpdate(GX_TRUE);
+        }
+
+        cycle = pFrame->aMode[FMT_OTHER1] & 0x300000;
+        if (((mode & 0x33330000) == 0x100000 && cycle == 0x100000) || (mode & 0xCCCC0000) == 0x400000) {
+            GXSetZCompLoc(GX_FALSE);
+            GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+            if ((mode & 3) == 1) {
+                GXSetAlphaCompare(GX_GREATER, pFrame->aColor[FCT_BLEND].a, GX_AOP_AND, GX_GREATER,
+                                  pFrame->aColor[FCT_BLEND].a);
+            } else if (mode & 0x1000) {
+                GXSetAlphaCompare(GX_GREATER, 16, GX_AOP_AND, GX_GREATER, 16);
+            } else {
+                GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+            }
+        } else if ((mode & 0x1000) || (mode & 1)) {
+            GXSetZCompLoc(GX_FALSE);
+            GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+            if ((mode & 3) == 1) {
+                GXSetAlphaCompare(GX_GREATER, pFrame->aColor[FCT_BLEND].a, GX_AOP_AND, GX_GREATER,
+                                  pFrame->aColor[FCT_BLEND].a);
+            } else {
+                GXSetAlphaCompare(GX_GREATER, 16, GX_AOP_AND, GX_GREATER, 16);
+            }
+        } else {
+            if ((mode & 3) == 1) {
+                GXSetZCompLoc(GX_FALSE);
+                GXSetAlphaCompare(GX_GREATER, pFrame->aColor[FCT_BLEND].a, GX_AOP_AND, GX_GREATER,
+                                  pFrame->aColor[FCT_BLEND].a);
+            } else {
+                GXSetZCompLoc(GX_TRUE);
+                GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+            }
+            GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+        }
+
+        frameSetZMode(pFrame);
+    }
+
+    return true;
+}
+#endif
 
 static bool frameDrawTriangle_C0T0(Frame* pFrame, Primitive* pPrimitive) {
     s32 iData;
@@ -2884,6 +3473,26 @@ static inline bool frameCopyMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
     matrixTarget[3][0] = matrixSource[3][0];
     matrixTarget[3][1] = matrixSource[3][1];
     matrixTarget[3][2] = matrixSource[3][2];
+    matrixTarget[3][3] = matrixSource[3][3];
+    return true;
+}
+
+static inline bool frameTransposeMatrix(Mtx44 matrixTarget, Mtx44 matrixSource) {
+    matrixTarget[0][0] = matrixSource[0][0];
+    matrixTarget[0][1] = matrixSource[1][0];
+    matrixTarget[0][2] = matrixSource[2][0];
+    matrixTarget[0][3] = matrixSource[3][0];
+    matrixTarget[1][0] = matrixSource[0][1];
+    matrixTarget[1][1] = matrixSource[1][1];
+    matrixTarget[1][2] = matrixSource[2][1];
+    matrixTarget[1][3] = matrixSource[3][1];
+    matrixTarget[2][0] = matrixSource[0][2];
+    matrixTarget[2][1] = matrixSource[1][2];
+    matrixTarget[2][2] = matrixSource[2][2];
+    matrixTarget[2][3] = matrixSource[3][2];
+    matrixTarget[3][0] = matrixSource[0][3];
+    matrixTarget[3][1] = matrixSource[1][3];
+    matrixTarget[3][2] = matrixSource[2][3];
     matrixTarget[3][3] = matrixSource[3][3];
     return true;
 }

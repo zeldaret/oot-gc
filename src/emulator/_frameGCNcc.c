@@ -111,7 +111,7 @@ void SetNumTexGensChans(Frame* pFrame, s32 numCycles) {
     GXSetNumChans(numChans);
 }
 
-void SetTevStages(Frame* pFrame, s32 cycle) {
+void SetTevStages(Frame* pFrame, s32 cycle, s32 numCycles) {
     u8 nColor[4];
     u8 nAlpha[4];
     u32 tempColor;
@@ -126,7 +126,7 @@ void SetTevStages(Frame* pFrame, s32 cycle) {
     s32 i;
     // bug? order never used
     s32 order;
-    s32 pad[3];
+    s32 pad[2];
 
     order = 0;
     if (cycle == 0) {
