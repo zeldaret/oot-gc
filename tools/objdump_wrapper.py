@@ -10,9 +10,9 @@ import subprocess
 import sys
 from typing import BinaryIO
 
-MAP_FILE = "expected/build/SIM/SIM.map"
+MAP_FILE = "expected/build/ce-j/oot-gc.elf.MAP"
 ORIGINAL_ELF_FILE = "SIM_original.elf"
-OBJDUMP_EXECUTABLE = "tools/binutils/powerpc-eabi-objdump"
+OBJDUMP_EXECUTABLE = "build/binutils/powerpc-eabi-objdump"
 
 
 def find_start_address_from_map_file(object_name: str) -> int | None:
@@ -92,7 +92,7 @@ def main(objdump_args: list[str]):
     line_numbers = []
     if object_file.parts[0] == "expected":
         start_address = find_start_address_from_map_file(object_file.name)
-        if start_address is not None:
+        if start_address is not None and Path(ORIGINAL_ELF_FILE).exists():
             line_numbers = read_line_numbers(Path(ORIGINAL_ELF_FILE), start_address)
     else:
         line_numbers = read_line_numbers(object_file, 0)

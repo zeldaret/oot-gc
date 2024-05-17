@@ -1,11 +1,9 @@
 def apply(config, args):
-    config["baseimg"] = "SIM_S.elf"
-    config["myimg"] = "build/SIM/SIM_S.elf"
-    config["mapfile"] = "build/SIM/SIM.map"
+    config["mapfile"] = f"build/ce-j/oot-gc.elf.MAP"
     config["source_directories"] = ["src", "include"]
     config["arch"] = "ppc"
     config["map_format"] = "mw" # gnu, mw, ms
-    config["build_dir"] = "build/SIM/" # only needed for mw and ms map format
+    config["build_dir"] = f"build/ce-j/src" # only needed for mw and ms map formats
     config["objdump_executable"] = "tools/objdump_wrapper.py"
     config["show_line_numbers_default"] = True
     config["show_target_line_numbers_default"] = True
