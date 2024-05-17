@@ -5,9 +5,8 @@
 # This generator is intentionally project-agnostic
 # and shared between multiple projects. Any configuration
 # specific to a project should be added to `configure.py`.
-#
-# If changes are made, please submit a PR to
-# https://github.com/encounter/dtk-template
+# But, we've modified it anyway to support asm_processor and
+# make multiple versions more user-friendly.
 ###
 
 import io
@@ -44,6 +43,7 @@ class Object:
             "mw_version": None,
             "shift_jis": None,
             "source": name,
+            "asm_processor": False,
         }
         self.options.update(options)
 
@@ -84,9 +84,9 @@ class ProjectConfig:
         self.warn_missing_config: bool = False  # Warn on missing unit configuration
         self.warn_missing_source: bool = False  # Warn on missing source file
         self.rel_strip_partial: bool = True  # Generate PLFs with -strip_partial
-        self.rel_empty_file: Optional[
-            str
-        ] = None  # Object name for generating empty RELs
+        self.rel_empty_file: Optional[str] = (
+            None  # Object name for generating empty RELs
+        )
         self.shift_jis = (
             True  # Convert source files from UTF-8 to Shift JIS automatically
         )
@@ -384,12 +384,23 @@ def generate_build_ninja(
     )
     gnu_as_implicit = [binutils_implicit or gnu_as, dtk]
 
+    # MWCC with asm_processor
+    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
+    mwcc_asm_processor_implicit: List[Optional[Path]] = [
+        *mwcc_implicit,
+        binutils_implicit or gnu_as,
+        Path("tools/asm_processor/compile.sh"),
+        Path("tools/asm_processor/asm_processor.py"),
+    ]
+
     if os.name != "nt":
         transform_dep = config.tools_dir / "transform_dep.py"
         mwcc_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
         mwcc_sjis_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
+        mwcc_asm_processor_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
         mwcc_implicit.append(transform_dep)
         mwcc_sjis_implicit.append(transform_dep)
+        mwcc_asm_processor_implicit.append(transform_dep)
 
     n.comment("Link ELF file")
     n.rule(
@@ -423,6 +434,16 @@ def generate_build_ninja(
     n.rule(
         name="mwcc_sjis",
         command=mwcc_sjis_cmd,
+        description="MWCC $out",
+        depfile="$basefile.d",
+        deps="gcc",
+    )
+    n.newline()
+
+    n.comment("MWCC build (with asm_processor)")
+    n.rule(
+        name="mwcc_asm_processor",
+        command=mwcc_asm_processor_cmd,
         description="MWCC $out",
         depfile="$basefile.d",
         deps="gcc",
@@ -563,6 +584,7 @@ def generate_build_ninja(
         def c_build(
             obj: Object, options: Dict[str, Any], lib_name: str, src_path: Path
         ) -> Optional[Path]:
+            asflags_str = make_flags_str(config.asflags or [])
             cflags_str = make_flags_str(options["cflags"])
             if options["extra_cflags"] is not None:
                 extra_cflags_str = make_flags_str(options["extra_cflags"])
@@ -583,18 +605,33 @@ def generate_build_ninja(
 
             # Add MWCC build rule
             n.comment(f"{obj.name}: {lib_name} (linked {obj.completed})")
-            n.build(
-                outputs=src_obj_path,
-                rule="mwcc_sjis" if shift_jis else "mwcc",
-                inputs=src_path,
-                variables={
-                    "mw_version": Path(options["mw_version"]),
-                    "cflags": cflags_str,
-                    "basedir": os.path.dirname(src_base_path),
-                    "basefile": src_base_path,
-                },
-                implicit=mwcc_sjis_implicit if shift_jis else mwcc_implicit,
-            )
+            if options["asm_processor"]:
+                n.build(
+                    outputs=src_obj_path,
+                    rule="mwcc_asm_processor",
+                    inputs=src_path,
+                    variables={
+                        "mw_version": Path(options["mw_version"]),
+                        "asflags": asflags_str,
+                        "cflags": cflags_str,
+                        "basedir": os.path.dirname(src_base_path),
+                        "basefile": src_base_path,
+                    },
+                    implicit=mwcc_asm_processor_implicit,
+                )
+            else:
+                n.build(
+                    outputs=src_obj_path,
+                    rule="mwcc_sjis" if shift_jis else "mwcc",
+                    inputs=src_path,
+                    variables={
+                        "mw_version": Path(options["mw_version"]),
+                        "cflags": cflags_str,
+                        "basedir": os.path.dirname(src_base_path),
+                        "basefile": src_base_path,
+                    },
+                    implicit=mwcc_sjis_implicit if shift_jis else mwcc_implicit,
+                )
 
             # Add ctx build rule
             ctx_path = build_src_path / f"{obj.base_name}.ctx"
@@ -776,7 +813,7 @@ def generate_build_ninja(
             rspfile="$rspfile",
             rspfile_content="$in_newline",
         )
-        generated_rels = []
+        generated_rels: List[str] = []
         for idx, link in enumerate(build_config["links"]):
             # Map module names to link steps
             link_steps_local = list(
@@ -1174,7 +1211,7 @@ def calculate_progress(config: ProjectConfig) -> None:
                 return
 
             _, obj = result
-            if not obj.completed:
+            if not obj.completed or obj.options["asm_processor"]:
                 return
 
             self.code_progress += build_obj["code_size"]

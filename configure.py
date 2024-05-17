@@ -65,12 +65,6 @@ parser.add_argument(
     action="store_true",
     help="don't incorporate .s files from asm directory",
 )
-parser.add_argument(
-    "--debug",
-    action="store_true",
-    help="build with debug info (non-NonMatching)",
-    default=True,
-)
 if not is_windows():
     parser.add_argument(
         "--wrapper",
@@ -108,7 +102,6 @@ config.build_dir = args.build_dir
 config.dtk_path = args.dtk
 config.binutils_path = args.binutils
 config.compilers_path = args.compilers
-config.debug = args.debug
 config.generate_map = args.map
 config.sjiswrap_path = args.sjiswrap
 
@@ -171,12 +164,6 @@ cflags_base = [
     "-DDOLPHIN_REV=2003",
 ]
 
-# Debug flags
-if config.debug:
-    cflags_base.extend(["-DDEBUG=1"])
-else:
-    cflags_base.append("-DNDEBUG=1")
-
 ### Helper functions
 
 def EmulatorLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
@@ -232,18 +219,18 @@ config.libs = [
             Object(Matching, "emulator/THPDraw.c", cflags=cflags_base),
             Object(Matching, "emulator/THPRead.c"),
             Object(Matching, "emulator/THPVideoDecode.c", cflags=cflags_base),
-            Object(NonMatching, "emulator/mcardGCN.c"),
+            Object(Matching, "emulator/mcardGCN.c", asm_processor=True),
             Object(Matching, "emulator/codeGCN.c"),
-            Object(NonMatching, "emulator/soundGCN.c"),
-            Object(NonMatching, "emulator/frame.c"),
+            Object(Matching, "emulator/soundGCN.c", asm_processor=True),
+            Object(Matching, "emulator/frame.c", asm_processor=True),
             Object(Matching, "emulator/system.c"),
-            Object(NonMatching, "emulator/cpu.c"),
+            Object(Matching, "emulator/cpu.c", asm_processor=True),
             Object(Matching, "emulator/pif.c"),
             Object(Matching, "emulator/ram.c"),
             Object(Matching, "emulator/rom.c"),
             Object(Matching, "emulator/rdp.c"),
             Object(Matching, "emulator/rdb.c"),
-            Object(NonMatching, "emulator/rsp.c"),
+            Object(Matching, "emulator/rsp.c", asm_processor=True),
             Object(Matching, "emulator/mips.c"),
             Object(Matching, "emulator/disk.c"),
             Object(Matching, "emulator/flash.c"),
@@ -253,8 +240,8 @@ config.libs = [
             Object(Matching, "emulator/serial.c"),
             Object(Matching, "emulator/library.c"),
             Object(Matching, "emulator/peripheral.c"),
-            Object(NonMatching, "emulator/_frameGCNcc.c"),
-            Object(NonMatching, "emulator/_buildtev.c"),
+            Object(Matching, "emulator/_frameGCNcc.c", asm_processor=True),
+            Object(Matching, "emulator/_buildtev.c", asm_processor=True),
         ],
     ),
     DolphinLib(
