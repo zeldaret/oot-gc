@@ -85,9 +85,9 @@ parser.add_argument(
     help="path to sjiswrap.exe (optional)",
 )
 parser.add_argument(
-    "--verbose",
-    action="store_true",
-    help="print verbose output",
+    "--progress-version",
+    metavar="VERSION",
+    help="version to print progress for",
 )
 
 args = parser.parse_args()
@@ -95,7 +95,13 @@ args = parser.parse_args()
 ### Create new project configuration
 
 config = ProjectConfig()
-config.version = 'ce-j' # TODO: remove
+config.versions = [
+    'ce-j',
+]
+config.default_version = "ce-j"
+config.warn_missing_config = True
+config.warn_missing_source = False
+config.progress_all = False
 
 # Apply arguments
 config.build_dir = args.build_dir
@@ -119,12 +125,6 @@ config.dtk_tag = "v0.8.2"
 config.sjiswrap_tag = "v1.1.1"
 config.wibo_tag = "0.6.11"
 config.linker_version = "GC/1.1"
-
-### Project
-
-# TODO: remove
-config.config_path = Path("config") / config.version / "config.yml"
-config.check_sha_path = Path("config") / config.version / "build.sha1"
 
 ### Flags
 
@@ -158,9 +158,7 @@ cflags_base = [
     "-sym on",
     "-i include",
     "-i libc",
-    # TODO: move somewhere else
-    f"-i build/{config.version}/include",
-    # TODO: version-specific flags
+    # TODO: use version-specific flags instead
     "-DDOLPHIN_REV=2003",
 ]
 
@@ -509,7 +507,6 @@ if args.mode == "configure":
     generate_build(config)
 elif args.mode == "progress":
     # Print progress and write progress.json
-    config.progress_each_module = args.verbose
-    calculate_progress(config)
+    calculate_progress(config, args.progress_version)
 else:
     sys.exit("Unknown mode: " + args.mode)
