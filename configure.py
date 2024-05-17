@@ -92,18 +92,17 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-### Create new project configuration
+### Project configuration
 
 config = ProjectConfig()
 config.versions = [
-    'ce-j',
+    "ce-j",
 ]
 config.default_version = "ce-j"
 config.warn_missing_config = True
 config.warn_missing_source = False
 config.progress_all = False
 
-# Apply arguments
 config.build_dir = args.build_dir
 config.dtk_path = args.dtk
 config.binutils_path = args.binutils
@@ -193,53 +192,57 @@ def GenericLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 
 ### Link order
 
-Matching = True
-NonMatching = False
+# Not matching for any version
+NonMatching = {}
 
-config.warn_missing_config = True
-config.warn_missing_source = False
+# Matching for all versions
+Matching = config.versions
+
+# Matching for specific versions
+def MatchingFor(*versions):
+    return versions
 
 config.libs = [
     EmulatorLib(
         "emulator",
         [
-            Object(Matching, "emulator/xlCoreGCN.c"),
-            Object(Matching, "emulator/xlPostGCN.c"),
-            Object(Matching, "emulator/xlFileGCN.c"),
-            Object(Matching, "emulator/xlList.c"),
-            Object(Matching, "emulator/xlHeap.c"),
-            Object(Matching, "emulator/xlObject.c"),
-            Object(Matching, "emulator/simGCN.c"),
-            Object(Matching, "emulator/movie.c"),
+            Object(MatchingFor("ce-j"), "emulator/xlCoreGCN.c"),
+            Object(MatchingFor("ce-j"), "emulator/xlPostGCN.c"),
+            Object(MatchingFor("ce-j"), "emulator/xlFileGCN.c"),
+            Object(MatchingFor("ce-j"), "emulator/xlList.c"),
+            Object(MatchingFor("ce-j"), "emulator/xlHeap.c"),
+            Object(MatchingFor("ce-j"), "emulator/xlObject.c"),
+            Object(MatchingFor("ce-j"), "emulator/simGCN.c"),
+            Object(MatchingFor("ce-j"), "emulator/movie.c"),
             # THP files except for THPRead.c do not have -inline deferred
-            Object(Matching, "emulator/THPPlayer.c", cflags=cflags_base),
-            Object(Matching, "emulator/THPAudioDecode.c", cflags=cflags_base),
-            Object(Matching, "emulator/THPDraw.c", cflags=cflags_base),
-            Object(Matching, "emulator/THPRead.c"),
-            Object(Matching, "emulator/THPVideoDecode.c", cflags=cflags_base),
-            Object(Matching, "emulator/mcardGCN.c", asm_processor=True),
-            Object(Matching, "emulator/codeGCN.c"),
-            Object(Matching, "emulator/soundGCN.c", asm_processor=True),
-            Object(Matching, "emulator/frame.c", asm_processor=True),
-            Object(Matching, "emulator/system.c"),
-            Object(Matching, "emulator/cpu.c", asm_processor=True),
-            Object(Matching, "emulator/pif.c"),
-            Object(Matching, "emulator/ram.c"),
-            Object(Matching, "emulator/rom.c"),
-            Object(Matching, "emulator/rdp.c"),
-            Object(Matching, "emulator/rdb.c"),
-            Object(Matching, "emulator/rsp.c", asm_processor=True),
-            Object(Matching, "emulator/mips.c"),
-            Object(Matching, "emulator/disk.c"),
-            Object(Matching, "emulator/flash.c"),
-            Object(Matching, "emulator/sram.c"),
-            Object(Matching, "emulator/audio.c"),
-            Object(Matching, "emulator/video.c"),
-            Object(Matching, "emulator/serial.c"),
-            Object(Matching, "emulator/library.c"),
-            Object(Matching, "emulator/peripheral.c"),
-            Object(Matching, "emulator/_frameGCNcc.c", asm_processor=True),
-            Object(Matching, "emulator/_buildtev.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/THPPlayer.c", cflags=cflags_base),
+            Object(MatchingFor("ce-j"), "emulator/THPAudioDecode.c", cflags=cflags_base),
+            Object(MatchingFor("ce-j"), "emulator/THPDraw.c", cflags=cflags_base),
+            Object(MatchingFor("ce-j"), "emulator/THPRead.c"),
+            Object(MatchingFor("ce-j"), "emulator/THPVideoDecode.c", cflags=cflags_base),
+            Object(MatchingFor("ce-j"), "emulator/mcardGCN.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/codeGCN.c"),
+            Object(MatchingFor("ce-j"), "emulator/soundGCN.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/frame.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/system.c"),
+            Object(MatchingFor("ce-j"), "emulator/cpu.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/pif.c"),
+            Object(MatchingFor("ce-j"), "emulator/ram.c"),
+            Object(MatchingFor("ce-j"), "emulator/rom.c"),
+            Object(MatchingFor("ce-j"), "emulator/rdp.c"),
+            Object(MatchingFor("ce-j"), "emulator/rdb.c"),
+            Object(MatchingFor("ce-j"), "emulator/rsp.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/mips.c"),
+            Object(MatchingFor("ce-j"), "emulator/disk.c"),
+            Object(MatchingFor("ce-j"), "emulator/flash.c"),
+            Object(MatchingFor("ce-j"), "emulator/sram.c"),
+            Object(MatchingFor("ce-j"), "emulator/audio.c"),
+            Object(MatchingFor("ce-j"), "emulator/video.c"),
+            Object(MatchingFor("ce-j"), "emulator/serial.c"),
+            Object(MatchingFor("ce-j"), "emulator/library.c"),
+            Object(MatchingFor("ce-j"), "emulator/peripheral.c"),
+            Object(MatchingFor("ce-j"), "emulator/_frameGCNcc.c", asm_processor=True),
+            Object(MatchingFor("ce-j"), "emulator/_buildtev.c", asm_processor=True),
         ],
     ),
     DolphinLib(
@@ -251,29 +254,29 @@ config.libs = [
     DolphinLib(
         "os",
         [
-            Object(Matching, "dolphin/os/OS.c"),
-            Object(Matching, "dolphin/os/OSAlarm.c"),
-            Object(Matching, "dolphin/os/OSAlloc.c"),
-            Object(Matching, "dolphin/os/OSArena.c"),
-            Object(Matching, "dolphin/os/OSAudioSystem.c"),
-            Object(Matching, "dolphin/os/OSCache.c"),
-            Object(Matching, "dolphin/os/OSContext.c"),
-            Object(Matching, "dolphin/os/OSError.c"),
-            Object(Matching, "dolphin/os/OSFont.c"),
-            Object(Matching, "dolphin/os/OSInterrupt.c"),
-            Object(Matching, "dolphin/os/OSLink.c"),
-            Object(Matching, "dolphin/os/OSMessage.c"),
-            Object(Matching, "dolphin/os/OSMemory.c"),
-            Object(Matching, "dolphin/os/OSMutex.c"),
-            Object(Matching, "dolphin/os/OSReboot.c"),
-            Object(Matching, "dolphin/os/OSReset.c"),
-            Object(Matching, "dolphin/os/OSResetSW.c"),
-            Object(Matching, "dolphin/os/OSRtc.c"),
-            Object(Matching, "dolphin/os/OSSync.c"),
-            Object(Matching, "dolphin/os/OSThread.c"),
-            Object(Matching, "dolphin/os/OSTime.c"),
-            Object(Matching, "dolphin/os/__start.c"),
-            Object(Matching, "dolphin/os/__ppc_eabi_init.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OS.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSAlarm.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSAlloc.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSArena.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSAudioSystem.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSCache.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSContext.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSError.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSFont.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSInterrupt.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSLink.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSMessage.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSMemory.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSMutex.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSReboot.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSReset.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSResetSW.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSRtc.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSSync.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSThread.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/OSTime.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/__start.c"),
+            Object(MatchingFor("ce-j"), "dolphin/os/__ppc_eabi_init.c"),
         ],
     ),
     DolphinLib(

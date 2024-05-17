@@ -30,10 +30,12 @@ if sys.platform == "cygwin":
 
 
 class Object:
-    def __init__(self, completed: bool, name: str, **options: Any) -> None:
+    def __init__(
+        self, completed_versions: List[str], name: str, **options: Any
+    ) -> None:
         self.name = name
         self.base_name = Path(name).with_suffix("")
-        self.completed = completed
+        self.completed_versions = completed_versions
         self.options: Dict[str, Any] = {
             "add_to_all": True,
             "asflags": None,
@@ -46,6 +48,9 @@ class Object:
             "asm_processor": False,
         }
         self.options.update(options)
+
+    def completed(self, version: str) -> bool:
+        return version in self.completed_versions
 
 
 class ProjectConfig:
@@ -643,7 +648,7 @@ def generate_build_ninja(
                 shift_jis = config.shift_jis
 
             # Add MWCC build rule
-            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed})")
+            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed(version)})")
             if options["asm_processor"]:
                 n.build(
                     outputs=src_obj_path,
@@ -722,7 +727,7 @@ def generate_build_ninja(
             source_added.add(asm_obj_path)
 
             # Add assembler build rule
-            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed})")
+            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed(version)})")
             n.build(
                 outputs=asm_obj_path,
                 rule="as",
@@ -764,7 +769,7 @@ def generate_build_ninja(
                 ).with_suffix(".s")
 
             built_obj_path: Optional[Path] = None
-            link_built_obj = obj.completed
+            link_built_obj = obj.completed(version)
             if unit_src_path.exists():
                 if unit_src_path.suffix in (".c", ".cp", ".cpp"):
                     # Add MWCC & host build rules
@@ -775,7 +780,7 @@ def generate_build_ninja(
                 else:
                     sys.exit(f"Unknown source file type {unit_src_path}")
             else:
-                if config.warn_missing_source or obj.completed:
+                if config.warn_missing_source or obj.completed(version):
                     print(f"Missing source file {unit_src_path}")
                 link_built_obj = False
 
@@ -1100,7 +1105,7 @@ def generate_objdiff_config(
 
         unit_config["base_path"] = src_obj_path
         unit_config["reverse_fn_order"] = reverse_fn_order
-        unit_config["complete"] = obj.completed
+        unit_config["complete"] = obj.completed(version)
         compiler_version = COMPILER_MAP.get(options["mw_version"])
         if compiler_version is None:
             print(f"Missing scratch compiler mapping for {options['mw_version']}")
@@ -1174,7 +1179,7 @@ def calculate_progress(config: ProjectConfig, version: str) -> None:
                 return
 
             _, obj = result
-            if not obj.completed or obj.options["asm_processor"]:
+            if not obj.completed(version) or obj.options["asm_processor"]:
                 return
 
             self.code_progress += build_obj["code_size"]
