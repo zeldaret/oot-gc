@@ -1016,7 +1016,7 @@ static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVe
 
             iHint = pFrame->iHintProjection;
             if (iHint != -1) {
-                if (pFrame->aMatrixHint[iHint].eProjection == FMP_ORTHOGRAPHIC) {
+                if (pFrame->aMatrixHint[iHint].eProjection == FMP_PERSPECTIVE) {
                     eTypeProjection = GX_PERSPECTIVE;
                 } else {
                     eTypeProjection = GX_ORTHOGRAPHIC;
