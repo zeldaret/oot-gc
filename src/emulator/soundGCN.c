@@ -146,7 +146,7 @@ bool soundSetBufferSize(Sound* pSound, s32 nSize) {
     }
 
     pSound->nSizePlay = nSize;
-    pSound->nSizeHold =  pSound->nSizeZero = nSize >> 4;
+    pSound->nSizeHold = pSound->nSizeZero = nSize >> 4;
     pSound->nSizeRamp = nSize >> 2;
 
     if (!soundWipeBuffers(pSound)) {
@@ -158,7 +158,7 @@ bool soundSetBufferSize(Sound* pSound, s32 nSize) {
             return false;
         }
     }
-    
+
     if (!xlHeapTake(&pSound->pBufferZero, pSound->nSizeZero | 0x30000000)) {
         return false;
     }
@@ -168,11 +168,11 @@ bool soundSetBufferSize(Sound* pSound, s32 nSize) {
     if (!xlHeapTake(&pSound->pBufferHold, pSound->nSizeHold | 0x30000000)) {
         return false;
     }
-    
+
     if (!xlHeapTake(&pSound->pBufferRampUp, pSound->nSizeRamp | 0x30000000)) {
         return false;
     }
-    
+
     if (!xlHeapTake(&pSound->pBufferRampDown, pSound->nSizeRamp | 0x30000000)) {
         return false;
     }
