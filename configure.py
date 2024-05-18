@@ -36,6 +36,11 @@ parser.add_argument(
     nargs="?",
 )
 parser.add_argument(
+    "--non-matching",
+    action="store_true",
+    help="create non-matching build for modding",
+)
+parser.add_argument(
     "--build-dir",
     metavar="DIR",
     type=Path,
@@ -110,6 +115,7 @@ config.binutils_path = args.binutils
 config.compilers_path = args.compilers
 config.generate_map = args.map
 config.sjiswrap_path = args.sjiswrap
+config.non_matching = args.non_matching
 
 if not is_windows():
     config.wrapper = args.wrapper
@@ -161,6 +167,9 @@ cflags_base = [
     # TODO: remove and use VERSION instead
     "-DDOLPHIN_REV=2003",
 ]
+
+if config.non_matching:
+    cflags_base.append("-DNON_MATCHING")
 
 ### Helper functions
 

@@ -79,6 +79,7 @@ class ProjectConfig:
         self.build_rels: bool = True  # Build REL files
         self.config_dir: Path = Path("config")  # Config directory
         self.debug: bool = False  # Build with debug info
+        self.non_matching: bool = False  # Disable hash check (for modding)
         self.generate_map: bool = False  # Generate map file(s)
         self.asflags: Optional[List[str]] = None  # Assembler flags
         self.ldflags: Optional[List[str]] = None  # Linker flags
@@ -862,11 +863,19 @@ def generate_build_ninja(
         # Version target
         ###
         n.comment(f"Version {version}")
-        n.build(
-            outputs=f"{version}",
-            rule="phony",
-            inputs=progress_path,
-        )
+        if config.non_matching:
+            n.build(
+                outputs=version,
+                rule="phony",
+                inputs=[*map(lambda step: step.output(), link_steps)],
+            )
+        else:
+            n.build(
+                outputs=f"{version}",
+                rule="phony",
+                inputs=progress_path,
+            )
+        n.newline()
 
     ###
     # Split DOL
