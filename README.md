@@ -1,41 +1,38 @@
 # oot-gc
 
-This repo contains a WIP decompilation of the N64 Emulator ELF executable intended for use with the Gamecube releases of The Legend of Zelda Ocarina of Time. Currently the decompilation specifically targets the version shipped with the Japanese Zelda Collector's Edition disk as symbols and other debugging information was left unstripped.
+A work-in-progress decompilation of the N64 emulator used in the GameCube releases of The Legend of Zelda: Ocarina of Time.
 
-It builds the following ELF executables:
+Supported versions:
 
-SIM.elf   : `md5: 64428C7350B31E0AAD3DDE221C5B18A5`
-SIM_S.elf : `md5: EDDD2DED9906AD2312F7EC585B3D72CE`
+- `mq-j`: Master Quest - Japan
+- `mq-u`: Master Quest - North America
+- `mq-e`: Master Quest - Europe/Australia
+- `ce-j`: Collector's Edition - Japan
+- `ce-u`: Collector's Edition - North America
+- `ce-e`: Collector's Edition - Europe/Australia
 
-SIM_S is a version of the build with stripped symbols which when diffed against a similarly stripped original matches byte for byte if assembled and linked, which is the most realistic goal for verifying the accuracy of the decompilation.
+Currently the decompilation mainly targets the `ce-j` version, as the
+Collector's Edition disks also contain an ELF file where symbols and other
+debugging information were left unstripped.
 
 ## Building
 
 ### Requirements
 
 You will need the following dependencies:
-* gcc or clang
-* make
 * git
+* ninja
 * python3
-* wibo (Linux) or wine (macOS)
-* wget
-* unzip
+* wine (for macOS or non-x86 Linux)
 * clang-format (optional)
 
 #### Ubuntu/Debian
-
-In order to install `wibo`, you will need to [download it](https://github.com/decompals/wibo/releases) and run:
-
-```
-sudo install wibo /usr/bin
-```
 
 You can install the dependencies with the following commands:
 
 ```
 sudo apt-get update
-sudo apt-get install build-essential git python3 wget unzip
+sudo apt-get install git ninja python3
 ```
 
 #### macOS
@@ -43,15 +40,45 @@ sudo apt-get install build-essential git python3 wget unzip
 You can install dependencies via Homebrew with the following command:
 
 ```
-brew install coreutils python3 wget wine
+brew install git ninja python3
+brew install --cask --no-quarantine gcenx/wine/wine-crossover
 ```
 
 ### Instructions
 
-1. Obtain the original ELF executable found in the `120903_zelda.tgc` file on the Japanese Collector's Edition disk and place it in the base working directory and name it `SIM_original.elf`
-2. Run `make setup` and `make`
+1. Clone the repo using `git clone https://github.com/zeldaret/oot-gc`.
 
-## Development
+2. Extract the following TGC archive containing the N64 emulator from the disc of the version you want to build:
+
+  * `mq-j`: `zlj_f.tgc`
+  * `mq-u`: `zlj_f.tgc`
+  * `mq-e`: `zlj_f.tgc`
+  * `ce-j`: `120903_zelda.tgc`
+  * `ce-u`: `zelda_ENG_090903.tgc`
+  * `ce-e`: `zelda_PAL_093003.tgc`
+
+  Then, extract the DOL file from the TGC archive and place it in the repo as `orig/<version>/main.dol`.
+  You can use [Dolphin](https://dolphin-emu.org) to perform both of these extraction steps:
+  right click on the file you want to extract from, select `Properties`, and go to the `Filesystem` tab.
+
+3. Run `python3 configure.py`.
+
+4. Run `ninja` to build the `ce-j` version, or run `ninja <version>` to build another version.
+
+## Development Tools
+
+### Scripts
+
+* `./dol-diff <version>` will run `dtk dol diff` to show the first differing symbol if the build does not match.
+* `./dol-apply <version>` will run `dtk dol apply` to sync symbols (e.g. if a function was renamed in the repo).
+* `./format` will format all source files with `clang-format`.
+
+### objdiff
+
+For local decompilation testing, start the objdiff GUI and open this directory as the project directory.
+Currently `objdiff` may not work properly on files using asm-processor (i.e. files with `asm_processor=True` in `configure.py`).
+
+### asm-differ (diff.py)
 
 First, copy a matching build to the `expected/` directory to diff against:
 
@@ -60,15 +87,7 @@ mkdir expected
 cp -r build expected/
 ```
 
-### Diff tools
-
-For locally diffing the current build against the expected build:
-
-* `objdiff`: Start the objdiff GUI and open this directory as the project directory.
-* `diff.py` (`asm-differ`): Run e.g. `./diff.py -mwo3 xlMain` to diff a function.
-* `vbindiff`: Run `vbindiff SIM_S.elf build/SIM/SIM_S.elf` to directly diff the
-  ELF files to debug tricky matching issues, using the ELF section headers and
-  the linker map file to locate the diffs in the code.
+Then run e.g. `./diff.py -o xlMain` to diff a function for `ce-j`, or e.g. `./diff.py -o xlMain -v mq-j` to diff a function for another version.
 
 ### decomp.me
 
@@ -92,12 +111,3 @@ correctly, for example by explicitly marking auto-inlined functions as `inline`.
 
 The files in the `debug/` directory contain a dump of the DWARF debugging information in the original ELF. Functions marked as `// Erased`
 were present at one time but have been stripped by the linker, because they were either unused or inlined at all call sites.
-
-### Migrating a file to C
-
-All emulator files have been migrated to C, but some SDK and standard library files are still built from the disassembly. Before decompiling
-one of these files:
-
-* In `obj_files.mk`, replace `$(BUILD_DIR)/asm/<path>.o` with `$(BUILD_DIR)/src/<path>.o` to link the new object file
-* Add an entry in `objdiff.json`
-* Run `cp expected/build/SIM/asm/<path>.o expected/build/SIM/src/<path>.o` to create a base to diff against
