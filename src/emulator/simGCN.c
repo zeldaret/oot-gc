@@ -29,6 +29,12 @@
 #include "gmesgOK.inc"
 // clang-format on
 
+#if VERSION == CE_J
+#define DEFAULT_ROM_NAME "zlj_f.n64"
+#elif VERSION == CE_U
+#define DEFAULT_ROM_NAME "zle_f.n64"
+#endif
+
 s16 Vert_s16[12] ALIGNAS(32) = {
     0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
 };
@@ -2278,7 +2284,7 @@ bool xlMain(void) {
     if (simulatorGetArgument(SAT_NAME, &szNameROM)) {
         strcpy(acNameROM, szNameROM);
     } else {
-        strcpy(acNameROM, "zlj_f.n64");
+        strcpy(acNameROM, DEFAULT_ROM_NAME);
     }
 
     iName = strlen(acNameROM) - 1;
