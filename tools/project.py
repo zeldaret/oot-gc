@@ -506,19 +506,6 @@ def generate_build_ninja(
     )
     n.newline()
 
-    n.comment("Helper tools")
-    n.rule(
-        name="dol_diff",
-        command=f"{dtk} -L error dol diff $in",
-        description=f"DIFF $dol_elf_path",
-    )
-    n.rule(
-        name="dol_apply",
-        command=f"{dtk} dol apply $in",
-        description=f"APPLY $dol_elf_path",
-    )
-    n.newline()
-
     ###
     # Source files
     ###
@@ -881,40 +868,6 @@ def generate_build_ninja(
             inputs=progress_path,
         )
 
-        ###
-        # Helper tools
-        ###
-        dol_link_step = link_steps[0]
-        dol_elf_path = dol_link_step.partial_output()
-        n.comment("Check for mismatching symbols")
-        n.build(
-            inputs=[config.config_path(version), dol_elf_path],
-            outputs=f"dol_diff-{version}",
-            rule="dol_diff",
-            variables={"dol_elf_path": dol_elf_path},
-        )
-        n.build(
-            outputs=f"diff-{version}",
-            rule="phony",
-            inputs=f"dol_diff-{version}",
-        )
-        n.newline()
-
-        n.comment("Apply symbols from linked ELF")
-        n.build(
-            inputs=[config.config_path(version), dol_elf_path],
-            outputs=f"dol_apply-{version}",
-            rule="dol_apply",
-            variables={"dol_elf_path": dol_elf_path},
-            implicit=[ok_path],
-        )
-        n.build(
-            outputs=f"apply-{version}",
-            rule="phony",
-            inputs=f"dol_apply-{version}",
-        )
-        n.newline()
-
     ###
     # Split DOL
     ###
@@ -970,16 +923,6 @@ def generate_build_ninja(
     if rebuild_configs:
         n.default("split-all")
     elif config.default_version is not None:
-        n.build(
-            outputs="diff",
-            rule="phony",
-            inputs=f"diff-{config.default_version}",
-        )
-        n.build(
-            outputs="apply",
-            rule="phony",
-            inputs=f"apply-{config.default_version}",
-        )
         n.default(config.default_version)
 
     # Write build.ninja

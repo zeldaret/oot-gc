@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Wrapper for `dtk dol apply` to automatically update dtk symbols from the elf.
+# Usage: ./dol-apply [VERSION]
+# If VERSION is not provided, it defaults to ce-j.
+
+set -euo pipefail
+
+VERSION=${1:-ce-j}
+ninja "build/$VERSION/ok"
+build/tools/dtk dol apply "config/$VERSION/config.yml" "build/$VERSION/oot-gc.elf"
