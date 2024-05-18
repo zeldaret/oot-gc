@@ -2519,7 +2519,31 @@ static bool rspParseJPEG_DecodeZ(Rsp* pRSP, RspTask* pTask) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/Matrix4by4Identity.s")
+#else
+static bool Matrix4by4Identity(Mtx44Ptr matrix4b4) {
+    matrix4b4[0][0] = 1.0f;
+    matrix4b4[1][0] = 0.0f;
+    matrix4b4[2][0] = 0.0f;
+    matrix4b4[3][0] = 0.0f;
+    matrix4b4[0][1] = 0.0f;
+    matrix4b4[1][1] = 1.0f;
+    matrix4b4[2][1] = 0.0f;
+    matrix4b4[3][1] = 0.0f;
+    matrix4b4[0][2] = 0.0f;
+    matrix4b4[1][2] = 0.0f;
+    matrix4b4[2][2] = 1.0f;
+    matrix4b4[3][2] = 0.0f;
+    matrix4b4[0][3] = 0.0f;
+    matrix4b4[1][3] = 0.0f;
+    matrix4b4[2][3] = 0.0f;
+    matrix4b4[3][3] = 1.0f;
+
+    return true;
+}
+#endif
 
 static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, __anon_0x5F63B* pSprite) {
     u16* pnData16;
@@ -2721,12 +2745,96 @@ static bool tmemLoad_A(Frame* pFrame, Rsp* pRSP, s32 imagePtr, s16 loadLines, s1
 static bool rspSetupS2DEX(Rsp* pRSP);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetupS2DEX.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetGeometryMode1.s")
+static bool rspSetGeometryMode1(Rsp* pRSP, s32 nMode) {
+    s32 nModeFrame = 0;
+
+    pRSP->nGeometryMode = nMode;
+    if (nMode & 1) {
+        nModeFrame |= 1;
+    }
+    if (nMode & 4) {
+        nModeFrame |= 2;
+    }
+    if (nMode & 0x200) {
+        nModeFrame |= 0x200;
+    }
+    if (nMode & 0x1000) {
+        nModeFrame |= 4;
+    }
+    if (nMode & 0x2000) {
+        nModeFrame |= 8;
+    }
+    if (nMode & 0x10000) {
+        nModeFrame |= 0x10;
+    }
+    if (nMode & 0x20000) {
+        nModeFrame |= 0x20;
+    }
+    if (nMode & 0x40000) {
+        nModeFrame |= 0x80;
+    }
+    if (nMode & 0x80000) {
+        nModeFrame |= 0x100;
+    }
+    if (nMode & 0x800000) {
+        nModeFrame |= 0x400;
+    }
+
+    if (!frameSetMode(SYSTEM_FRAME(pRSP->pHost), FMT_GEOMETRY, nModeFrame)) {
+        return false;
+    }
+
+    return true;
+}
 
 static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX1.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGeometryMode.s")
+static bool rspGeometryMode(Rsp* pRSP, s32 nSet, s32 nClr) {
+    s32 nMode = 0;
+
+    pRSP->nGeometryMode &= nClr;
+    pRSP->nGeometryMode |= nSet;
+    if (pRSP->nGeometryMode & 1) {
+        nMode |= 1;
+    }
+    if (pRSP->nGeometryMode & 4) {
+        nMode |= 2;
+    }
+    if (pRSP->nGeometryMode & 0x200) {
+        nMode |= 4;
+    }
+    if (pRSP->nGeometryMode & 0x400) {
+        nMode |= 8;
+    }
+    if (pRSP->nGeometryMode & 0x10000) {
+        nMode |= 0x10;
+    }
+    if (pRSP->nGeometryMode & 0x20000) {
+        nMode |= 0x20;
+    }
+    if (pRSP->nGeometryMode & 0x40000) {
+        nMode |= 0x80;
+    }
+    if (pRSP->nGeometryMode & 0x80000) {
+        nMode |= 0x100;
+    }
+    if (pRSP->nGeometryMode & 0x200000) {
+        nMode |= 0x200;
+    }
+    if (pRSP->nGeometryMode & 0x800000) {
+        nMode |= 0x400;
+    }
+    if (pRSP->nGeometryMode & 0x400000) {
+        nMode |= 0x800;
+    }
+
+    if (!frameSetMode(SYSTEM_FRAME(pRSP->pHost), FMT_GEOMETRY, nMode)) {
+        return false;
+    }
+
+    return true;
+}
 
 static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX2.s")
@@ -2887,11 +2995,59 @@ inline bool rspPopDL(Rsp* pRSP) {
 static bool rspFindUCode(Rsp* pRSP, RspTask* pTask);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
 
-static bool rspSaveYield(Rsp* pRSP);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSaveYield.s")
+static bool rspSaveYield(Rsp* pRSP) {
+    int iData;
+    RspTask* pTask;
 
-static bool rspLoadYield(Rsp* pRSP);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadYield.s")
+    pRSP->yield.bValid = true;
+    pRSP->yield.iDL = pRSP->iDL;
+    pRSP->yield.n2TriMult = pRSP->n2TriMult;
+    pRSP->yield.nCountVertex = pRSP->nCountVertex;
+    pRSP->yield.eTypeUCode = pRSP->eTypeUCode;
+    pRSP->yield.nVersionUCode = pRSP->nVersionUCode;
+
+    for (iData = 0; iData < 16; iData++) {
+        pRSP->yield.anBaseSegment[iData] = pRSP->anBaseSegment[iData];
+    }
+
+    for (iData = 0; iData < 16; iData++) {
+        pRSP->yield.apDL[iData] = pRSP->apDL[iData];
+    }
+
+    pTask = RSP_TASK(pRSP);
+    if (!xlHeapCopy(&pRSP->yield.task, pTask, sizeof(RspTask))) {
+        return false;
+    }
+
+    return true;
+}
+
+static bool rspLoadYield(Rsp* pRSP) {
+    int iData;
+    RspTask* pTask;
+
+    pRSP->iDL = pRSP->yield.iDL;
+    pRSP->n2TriMult = pRSP->yield.n2TriMult;
+    pRSP->nCountVertex = pRSP->yield.nCountVertex;
+    pRSP->eTypeUCode = pRSP->yield.eTypeUCode;
+    pRSP->nVersionUCode = pRSP->yield.nVersionUCode;
+
+    for (iData = 0; iData < 16; iData++) {
+        pRSP->anBaseSegment[iData] = pRSP->yield.anBaseSegment[iData];
+    }
+
+    for (iData = 0; iData < 16; iData++) {
+        pRSP->apDL[iData] = pRSP->yield.apDL[iData];
+    }
+
+    pTask = RSP_TASK(pRSP);
+    if (!xlHeapCopy(pTask, &pRSP->yield.task, sizeof(RspTask))) {
+        return false;
+    }
+
+    pRSP->yield.bValid = false;
+    return true;
+}
 
 static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask) {
     s32 iSegment;
