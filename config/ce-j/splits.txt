@@ -515,6 +515,12 @@ dolphin/demo/DEMOStats.c:
 	.sbss       start:0x80135AA8 end:0x80135B10
 	.sdata2     start:0x80136208 end:0x80136218
 
+metrotrk/mem_TRK.c:
+	.init       start:0x80003458 end:0x8000347C
+
+metrotrk/__exception.c:
+	.init       start:0x8000347C end:0x800053B0
+
 dolphin/ai/ai.c:
 	.text       start:0x800B7F84 end:0x800B88A4
 	.data       start:0x800F3588 end:0x800F35D0
@@ -605,233 +611,227 @@ dolphin/thp/THPDec.c:
 dolphin/thp/THPAudio.c:
 	.text       start:0x800C8A2C end:0x800C8F5C
 
-dolphin/thp/texPalette.c:
+dolphin/tex/texPalette.c:
 	.text       start:0x800C8F5C end:0x800C9040
 	.sdata2     start:0x80136238 end:0x80136240
 
-TRK_MINNOW_DOLPHIN/Portable/mem_TRK.c:
-	.init       start:0x80003458 end:0x8000347C
-
-TRK_MINNOW_DOLPHIN/ppc/Generic/__exception.c:
-	.init       start:0x8000347C end:0x800053B0
-
-TRK_MINNOW_DOLPHIN/Portable/mainloop.c:
+metrotrk/mainloop.c:
 	.text       start:0x800C9040 end:0x800C91A8
 
-TRK_MINNOW_DOLPHIN/Portable/nubevent.c:
+metrotrk/nubevent.c:
 	.text       start:0x800C91A8 end:0x800C9404
 	.bss        start:0x80132B50 end:0x80132B78
 
-TRK_MINNOW_DOLPHIN/Portable/nubinit.c:
+metrotrk/nubinit.c:
 	.text       start:0x800C9404 end:0x800C9598
 	.rodata     start:0x800D32A0 end:0x800D32C0
 	.bss        start:0x80132B78 end:0x80132B80
 
-TRK_MINNOW_DOLPHIN/Portable/msg.c:
+metrotrk/msg.c:
 	.text       start:0x800C9598 end:0x800C95C0
 
-TRK_MINNOW_DOLPHIN/Portable/msgbuf.c:
+metrotrk/msgbuf.c:
 	.text       start:0x800C95C0 end:0x800C9E08
 	.bss        start:0x80132B80 end:0x80134530
 
-TRK_MINNOW_DOLPHIN/Portable/serpoll.c:
+metrotrk/serpoll.c:
 	.text       start:0x800C9E08 end:0x800C9FD0
 	.bss        start:0x80134530 end:0x80134548
 
-TRK_MINNOW_DOLPHIN/Portable/usr_put.c:
+metrotrk/usr_put.c:
 	.text       start:0x800C9FD0 end:0x800C9FD4
 
-TRK_MINNOW_DOLPHIN/Portable/dispatch.c:
+metrotrk/dispatch.c:
 	.text       start:0x800C9FD4 end:0x800CA06C
 	.data       start:0x800F3A20 end:0x800F3AA8
 	.bss        start:0x80134548 end:0x80134550
 
-TRK_MINNOW_DOLPHIN/Portable/msghndlr.c:
+metrotrk/msghndlr.c:
 	.text       start:0x800CA06C end:0x800CB2D8
 
-TRK_MINNOW_DOLPHIN/Portable/support.c:
+metrotrk/support.c:
 	.text       start:0x800CB2D8 end:0x800CB754
 
-TRK_MINNOW_DOLPHIN/Portable/mutex_TRK.c:
+metrotrk/mutex_TRK.c:
 	.text       start:0x800CB754 end:0x800CB76C
 
-TRK_MINNOW_DOLPHIN/Portable/notify.c:
+metrotrk/notify.c:
 	.text       start:0x800CB76C end:0x800CB844
 
-TRK_MINNOW_DOLPHIN/ppc/Generic/flush_cache.c:
+metrotrk/flush_cache.c:
 	.text       start:0x800CB844 end:0x800CB87C
 
-TRK_MINNOW_DOLPHIN/ppc/Generic/targimpl.c:
+metrotrk/targimpl.c:
 	.text       start:0x800CB87C end:0x800CCE58
 	.rodata     start:0x800D32C0 end:0x800D3310
 	.data       start:0x800F3AA8 end:0x800F3AD8
 	.bss        start:0x80134550 end:0x80134AD0
 
-TRK_MINNOW_DOLPHIN/Os/dolphin/dolphin_trk.c:
+metrotrk/dolphin_trk.c:
 	.init       start:0x800053B0 end:0x800053D0
 	.text       start:0x800CCE58 end:0x800CD04C
 	.data       start:0x800F3AD8 end:0x800F3B18
 
-TRK_MINNOW_DOLPHIN/ppc/Generic/mpc_7xx_603e.c:
+metrotrk/mpc_7xx_603e.c:
 	.text       start:0x800CD04C end:0x800CD3BC
 
-TRK_MINNOW_DOLPHIN/Portable/main_TRK.c:
+metrotrk/main_TRK.c:
 	.text       start:0x800CD3BC end:0x800CD40C
 	.bss        start:0x80134AD0 end:0x80134AD8
 
-TRK_MINNOW_DOLPHIN/Os/dolphin/dolphin_trk_glue.c:
+metrotrk/dolphin_trk_glue.c:
 	.text       start:0x800CD40C end:0x800CD764
 	.data       start:0x800F3B18 end:0x800F3B38
 
-TRK_MINNOW_DOLPHIN/Os/dolphin/targcont.c:
+libc/ansi_files.c:
+	.data       start:0x800F3B38 end:0x800F3C10
+
+metrotrk/targcont.c:
 	.text       start:0x800CD764 end:0x800CD798
 
-PowerPC_EABI_Support/Runtime/Src/__va_arg.c:
+runtime/__va_arg.c:
 	.text       start:0x800CD798 end:0x800CD88C
 
-PowerPC_EABI_Support/Runtime/Src/global_destructor_chain.c:
+runtime/global_destructor_chain.c:
 	.text       start:0x800CD88C end:0x800CD8D4
 	.sbss       start:0x80135CB8 end:0x80135CC0
 
-PowerPC_EABI_Support/Runtime/Src/runtime.c:
+runtime/runtime.c:
 	.text       start:0x800CD8D4 end:0x800CDFE4
 	.rodata     start:0x800D3310 end:0x800D3328
 
-PowerPC_EABI_Support/Runtime/Src/__mem.c:
-	.init       start:0x800053D0 end:0x80005514
-
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Src/ansi_files.c:
-	.data       start:0x800F3B38 end:0x800F3C10
-
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/abort_exit.c:
+libc/abort_exit.c:
 	.text       start:0x800CDFE4 end:0x800CE0F0
 	.dtors      start:0x800D2FC0 end:0x800D2FC4
 	.bss        start:0x80134AD8 end:0x80134CD8
 	.sbss       start:0x80135CC0 end:0x80135CD8
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/errno.c:
+libc/errno.c:
 	.sbss       start:0x80135CD8 end:0x80135CE0
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Src/ansi_fp.c:
+libc/ansi_fp.c:
 	.text       start:0x800CE0F0 end:0x800CE4A4
 	.rodata     start:0x800D3328 end:0x800D33B0
 	.sdata2     start:0x80136240 end:0x80136268
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/buffer_io.c:
+libc/buffer_io.c:
 	.text       start:0x800CE4A4 end:0x800CE5A4
 
-PowerPC_EABI_Support/MSL/MSL_C/PPC_EABI/SRC/critical_regions.ppc_eabi.c:
+libc/critical_regions.ppc_eabi.c:
 	.text       start:0x800CE5A4 end:0x800CE5A8
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/ctype.c:
+libc/ctype.c:
 	.text       start:0x800CE5A8 end:0x800CE5F8
 	.rodata     start:0x800D33B0 end:0x800D36B0
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/direct_io.c:
+libc/direct_io.c:
 	.text       start:0x800CE5F8 end:0x800CE8D4
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/mbstring.c:
+libc/mbstring.c:
 	.text       start:0x800CE8D4 end:0x800CE910
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/mem.c:
+libc/mem.c:
 	.text       start:0x800CE910 end:0x800CEA5C
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/mem_funcs.c:
+libc/mem_funcs.c:
 	.text       start:0x800CEA5C end:0x800CED38
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/misc_io.c:
+libc/misc_io.c:
 	.text       start:0x800CED38 end:0x800CED3C
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/printf.c:
+libc/printf.c:
 	.text       start:0x800CED3C end:0x800D0740
 	.rodata     start:0x800D36B0 end:0x800D36C0
 	.data       start:0x800F3C10 end:0x800F3E30
 	.sdata      start:0x80135568 end:0x80135570
 	.sdata2     start:0x80136268 end:0x80136270
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/scanf.c:
+libc/scanf.c:
 	.text       start:0x800D0740 end:0x800D07D0
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/string.c:
+libc/string.c:
 	.text       start:0x800D07D0 end:0x800D0A7C
 	.sdata      start:0x80135570 end:0x80135578
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/strtoul.c:
+libc/strtoul.c:
 	.text       start:0x800D0A7C end:0x800D0E88
 	.data       start:0x800F3E30 end:0x800F3E78
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/float.c:
+libc/float.c:
 	.data       start:0x800F3E78 end:0x800F3E80
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Src/uart_console_io.c:
+libc/uart_console_io.c:
 	.text       start:0x800D0E88 end:0x800D1008
 	.sbss       start:0x80135CE0 end:0x80135CE8
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/wchar_io.c:
+libc/wchar_io.c:
 	.text       start:0x800D1008 end:0x800D1088
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_asin.c:
+libc/e_asin.c:
 	.text       start:0x800D1088 end:0x800D1090
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_pow.c:
+libc/e_pow.c:
 	.text       start:0x800D1090 end:0x800D18C8
 	.rodata     start:0x800D36C0 end:0x800D36F0
 	.sdata2     start:0x80136270 end:0x80136380
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/fminmaxdim.c:
+libc/fminmaxdim.c:
 	.text       start:0x800D18C8 end:0x800D1948
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ceil.c:
+libc/s_ceil.c:
 	.text       start:0x800D1948 end:0x800D1AB0
 	.sdata2     start:0x80136380 end:0x80136390
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_copysign.c:
+libc/s_copysign.c:
 	.text       start:0x800D1AB0 end:0x800D1ADC
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_floor.c:
+libc/s_floor.c:
 	.text       start:0x800D1ADC end:0x800D1C48
 	.sdata2     start:0x80136390 end:0x801363A0
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_frexp.c:
+libc/s_frexp.c:
 	.text       start:0x800D1C48 end:0x800D1CE4
 	.sdata2     start:0x801363A0 end:0x801363A8
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ldexp.c:
+libc/s_ldexp.c:
 	.text       start:0x800D1CE4 end:0x800D1E5C
 	.sdata2     start:0x801363A8 end:0x801363D0
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_pow.c:
+libc/w_pow.c:
 	.text       start:0x800D1E5C end:0x800D1E7C
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Single_precision/hyperbolicsf.c:
+libc/hyperbolicsf.c:
 	.text       start:0x800D1E7C end:0x800D1E84
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Single_precision/log10f.c:
+libc/log10f.c:
 	.text       start:0x800D1E84 end:0x800D2058
 	.rodata     start:0x800D36F0 end:0x800D3700
 	.sdata2     start:0x801363D0 end:0x801363F0
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Single_precision/trigf.c:
+libc/trigf.c:
 	.text       start:0x800D2058 end:0x800D2444
 	.ctors      start:0x800D2FA0 end:0x800D2FA4
 	.rodata     start:0x800D3700 end:0x800D3710
 	.data       start:0x800F3E80 end:0x800F3E90
 	.sdata2     start:0x801363F0 end:0x80136408
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Single_precision/common_float_tables.c:
+libc/common_float_tables.c:
 	.data       start:0x800F3E90 end:0x800F3ED8
 
-PowerPC_EABI_Support/MSL/MSL_C/PPC_EABI/SRC/math_inlines.c:
+libc/math_inlines.c:
 	.text       start:0x800D2444 end:0x800D24D4
 	.sdata2     start:0x80136408 end:0x80136420
 
-amcstubs/AmcExi2Stubs.c:
+runtime/__mem.c:
+	.init       start:0x800053D0 end:0x80005514
+
+debugger/AmcExi2Stubs.c:
 	.text       start:0x800D24D4 end:0x800D2504
 
-OdemuExi2/DebuggerDriver.c:
+debugger/DebuggerDriver.c:
 	.text       start:0x800D2504 end:0x800D2F84
 	.sdata      start:0x80135578 end:0x80135579
 	.sbss       start:0x80135CE8 end:0x80135CFD
 
-odenotstub/odenotstub.c:
+debugger/odenotstub.c:
 	.text       start:0x800D2F84 end:0x800D2F8C
