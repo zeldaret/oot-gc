@@ -705,7 +705,38 @@ static void frameDrawDone(void) {
     }
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakeTLUT.s")
+static bool frameMakeTLUT(Frame* pFrame, FrameTexture* pTexture, s32 nCount, s32 nOffsetTMEM, bool bReload) {
+    s32 iColor;
+    u16* anColor;
+    u16 nData16;
+
+    if (bReload) {
+        if (pTexture->iPackColor == -1) {
+            return true;
+        }
+        anColor = (u16*)((u8*)pFrame->aColorData + ((pTexture->iPackColor & 0xFFFF) << 5));
+    } else {
+        if (!packTakeBlocks(&pTexture->iPackColor, pFrame->anPackColor, ARRAY_COUNT(pFrame->anPackColor),
+                            (nCount * sizeof(u16)) >> 5)) {
+            return false;
+        }
+        anColor = (u16*)((u8*)pFrame->aColorData + ((pTexture->iPackColor & 0xFFFF) << 5));
+    }
+
+    for (iColor = 0; iColor < nCount; iColor++) {
+        nData16 = pFrame->TMEM.data.u64[nOffsetTMEM + 0x100 + iColor] & 0xFFFF;
+        if (nData16 & 1) {
+            anColor[iColor] =
+                (((nData16 >> 11) & 0x1F) << 10) | (((nData16 >> 6) & 0x1F) << 5) | ((nData16 >> 1) & 0x1F) | 0x8000;
+        } else {
+            anColor[iColor] = (((nData16 >> 12) & 0xF) << 8) | (((nData16 >> 7) & 0xF) << 4) | ((nData16 >> 2) & 0xF);
+        }
+    }
+
+    DCStoreRange(anColor, nCount * sizeof(u16));
+
+    return true;
+}
 
 static inline bool frameFreeTLUT(Frame* pFrame, FrameTexture* pTexture) {
     if (!packFreeBlocks(&pTexture->iPackColor, pFrame->anPackColor, ARRAY_COUNT(pFrame->anPackColor))) {
@@ -3280,6 +3311,7 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
             pFrame->bSnapShot &= ~0xF00;
             return true;
         }
+
         return false;
     }
 
@@ -3298,13 +3330,83 @@ bool frameHackCIMG_Zelda2_Camera(Frame* pFrame, FrameBuffer* pBuffer, u32 nComma
     return false;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawBG8.s")
+void PanelDrawBG8(u16* BG, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool flip) {
+    s32 i;
+    s32 j;
+    u16 color;
+    s32 pad[3];
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawBG16.s")
+    for (i = 0; i < sizeY; i++) {
+        for (j = 0; j < sizeX; j++) {
+            color = LUT[bitmap[i * sizeX + j]];
+            if (color & 1) {
+                if (!flip) {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+                } else {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + (sizeX - j)] = color;
+                }
+            }
+        }
+    }
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/PanelDrawFR3D.s")
+void PanelDrawBG16(u16* BG, u16* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool flip) {
+    s32 i;
+    s32 j;
+    u16 color;
+    s32 pad[2];
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackTIMG_Panel.s")
+    for (i = 0; i < sizeY; i++) {
+        for (j = 0; j < sizeX; j++) {
+            color = bitmap[i * sizeX + j];
+            if (color & 1) {
+                if (!flip) {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+                } else {
+                    BG[(posY + i) * N64_FRAME_WIDTH + posX + (sizeX - j)] = color;
+                }
+            }
+        }
+    }
+}
+
+void PanelDrawFR3D(u16* FR, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool first) {
+    s32 i;
+    s32 j;
+    u16 color;
+    s32 pad[3];
+
+    for (i = 0; i < sizeY; i++) {
+        for (j = 0; j < sizeX; j++) {
+            color = LUT[bitmap[i * sizeX + j]];
+            if (first) {
+                if (color == 0x6D3F) {
+                    color = 0x6D3E;
+                }
+                FR[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+            } else if (color & 1) {
+                FR[(posY + i) * N64_FRAME_WIDTH + posX + j] = color;
+            }
+        }
+    }
+}
+
+bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer) {
+    if (!pFrame->bFrameOn) {
+        return false;
+    }
+
+    if (pBuffer->nAddress >= 0x358800 && pBuffer->nAddress <= 0x37B800) {
+        if (pBuffer->nFormat == 0 && pBuffer->nWidth == 1 && pBuffer->nSize == 2) {
+            pBuffer->pData = pFrame->nTempBuffer + ((((s32)(pBuffer->nAddress + 0xFFCA7800) / 2) + 0x8C0));
+            return true;
+        }
+        pFrame->bFrameOn = false;
+        return false;
+    }
+
+    return false;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Panel.s")
 
@@ -4465,7 +4567,35 @@ bool frameCullDL(Frame* pFrame, s32 nVertexStart, s32 nVertexEnd) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTLUT.s")
+bool frameLoadTLUT(Frame* pFrame, s32 nCount, s32 iTile) {
+    s32 iTMEM = pFrame->aTile[iTile].nTMEM & 0x1FF;
+    s32 nSize = nCount + 1;
+    u32 nSum = 0;
+    u64 nData64;
+    u16 nData16;
+    u16* pSource = pFrame->aBuffer[FBT_IMAGE].pData;
+    s32 tileNum;
+
+    while (nSize-- != 0) {
+        nData16 = *pSource;
+        pSource++;
+
+        nSum += nData16 ^ iTMEM;
+        nData64 = (nData16 << 16) | nData16;
+        nData64 = (nData64 << 32) | nData64;
+        pFrame->TMEM.data.u64[iTMEM] = nData64;
+        iTMEM = (iTMEM + 1) & 0x1FF;
+    }
+
+    tileNum = pFrame->aTile[iTile].nTMEM & 0x1FF;
+    tileNum -= 0x100;
+    tileNum /= 16;
+    tileNum &= 0xF;
+
+    pFrame->nTlutCode[tileNum] = nSum;
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTMEM.s")
 
