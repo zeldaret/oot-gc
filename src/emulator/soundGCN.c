@@ -13,19 +13,7 @@ _XL_OBJECTTYPE gClassSound = {
     (EventFunc)soundEvent,
 };
 
-char D_800EA7E8[62] = "SetBufferSize: ERROR: 'nSize' must be a multiple of 32! (%d)\n";
-char D_800EA828[11] = "soundGCN.c";
-
 s32 gVolumeCurve[257] ALIGNAS(32);
-
-s32 D_80134DD0 = 10;
-
-const f32 D_80135DD8 = 65536.0f;
-const f32 D_80135DDC = 20.0f;
-const f32 D_80135DE0 = 256.0f;
-const f64 D_80135DE8 = 256.0;
-const f64 D_80135DF0 = 4503601774854144.0;
-const f32 D_80135DF8 = 0.5f;
 
 bool soundWipeBuffers(Sound* pSound) {
     s32 iBuffer;
@@ -55,10 +43,6 @@ bool soundWipeBuffers(Sound* pSound) {
     return true;
 }
 
-// matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/soundGCN/soundMakeRamp.s")
-#else
 static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
     s32 bFlag;
     s32 iData;
@@ -163,7 +147,6 @@ static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
     DCStoreRange(anData, pSound->nSizeRamp);
     return true;
 }
-#endif
 
 static inline bool soundMakeZero(Sound* pSound) {
     int iData;
@@ -212,8 +195,74 @@ bool soundPlayBuffer(Sound* pSound) {
 
 static void soundCallbackDMA(void) { soundPlayBuffer(SYSTEM_SOUND(gpSystem)); }
 
-static s32 soundMakeBuffer(Sound* pSound);
-#pragma GLOBAL_ASM("asm/non_matchings/soundGCN/soundMakeBuffer.s")
+bool soundMakeBuffer(Sound* pSound) {
+    u32 nSamples;
+    s16* curBufP;
+    u32 sampleStep;
+    u32 sample;
+    s32 j;
+    s32 nSize;
+    s32 samp;
+    s32 iBuffer;
+    s32 vol;
+    s32 bFlag;
+    s32 bPlay;
+    s32 volAdjust;
+
+    s32 temp_r6;
+    u32 cmp;
+
+    iBuffer = pSound->iBufferMake;
+    bPlay = 0;
+    nSize = pSound->nSndLen;
+    nSamples = ((nSize * 32000) + 16000) / pSound->nFrequency;
+    cmp = ((nSamples >> 2) & ~7);
+    temp_r6 = pSound->anSizeBuffer[iBuffer] = nSamples & (~0x1F);
+    curBufP = pSound->apBuffer[iBuffer];
+
+    for (vol = 0x10000, sample = 0, j = 0; j < cmp * 2; j += 2) {
+        samp = sample >> 16;
+
+        if (j + 1 < (pSound->nSizePlay >> 1)) {
+            volAdjust = gVolumeCurve[vol >> 8];
+            curBufP[j + 1] = (volAdjust * ((s16*)pSound->pSrcData)[2 * samp + 0]) >> 16;
+            curBufP[j + 0] = (volAdjust * ((s16*)pSound->pSrcData)[2 * samp + 1]) >> 16;
+        }
+
+        vol = (u32)vol;
+
+        sampleStep = ((nSize << 14) & 0xFFFF0000);
+        sampleStep /= cmp;
+        sample += sampleStep;
+    }
+
+    DCStoreRange(curBufP, temp_r6);
+    pSound->iBufferMake = (iBuffer + 1) % 16;
+    bFlag = OSDisableInterrupts();
+
+    if (AIGetDMAEnableFlag() == 0 || pSound->eMode == SPM_RAMPQUEUED) {
+        bPlay = 1;
+        if (soundPlayBuffer(pSound) == 0) {
+            return false;
+        }
+    }
+
+    OSRestoreInterrupts(bFlag);
+
+    if (pSound->eMode != SPM_PLAY && !soundMakeRamp(pSound, iBuffer, SR_INCREASE)) {
+        return false;
+    }
+
+    if (!soundMakeRamp(pSound, iBuffer, SR_DECREASE)) {
+        return false;
+    }
+
+    if (bPlay && AIGetDMAEnableFlag() == 0) {
+        AIStartDMA();
+    }
+
+    return true;
+}
 
 bool soundSetLength(Sound* pSound, s32 nSize) {
     pSound->nSndLen = nSize;
@@ -241,10 +290,6 @@ bool soundGetDMABuffer(Sound* pSound, u32* pnSize) {
     return true;
 }
 
-// matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/soundGCN/soundSetBufferSize.s")
-#else
 bool soundSetBufferSize(Sound* pSound, s32 nSize) {
     int iBuffer;
 
@@ -287,15 +332,18 @@ bool soundSetBufferSize(Sound* pSound, s32 nSize) {
 
     return true;
 }
-#endif
 
 static inline void InitVolumeCurve(void) {
+    static s32 sCapture = 10;
     s32 i;
     f64 value;
 
+    // fixes float ordering issue
+    (void)65536.0f;
+
     gVolumeCurve[0] = 0;
     for (i = 1; i < ARRAY_COUNT(gVolumeCurve); i++) {
-        value = pow(D_80134DD0, (20.0f * log10f(SQ(256 - i) / 65536.0f)) / 20.0f);
+        value = pow(sCapture, (20.0f * log10f(SQ(256 - i) / 65536.0f)) / 20.0f);
         gVolumeCurve[i] = (256.0f * (f32) - ((value * 256.0) - 256.0));
     }
 }
@@ -354,10 +402,6 @@ bool soundPlayBeep(Sound* pSound, SoundBeep iBeep) {
     return true;
 }
 
-// matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/soundGCN/soundEvent.s")
-#else
 bool soundEvent(Sound* pSound, s32 nEvent, void* pArgument) {
     int iBuffer;
     s32 pad[8];
@@ -410,4 +454,3 @@ bool soundEvent(Sound* pSound, s32 nEvent, void* pArgument) {
 
     return true;
 }
-#endif
