@@ -55,7 +55,117 @@ bool soundWipeBuffers(Sound* pSound) {
     return true;
 }
 
+// matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/soundGCN/soundMakeRamp.s")
+#else
+static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
+    s32 bFlag;
+    s32 iData;
+    s16* anData;
+    s16 nData0;
+    s16 nData1;
+    s16 nGoal0;
+    s16 nGoal1;
+    s16 nStep0;
+    s16 nStep1;
+    s16 nLast0;
+    s16 nLast1;
+
+    s32 offset;
+
+    if (eRamp == SR_DECREASE) {
+        anData = pSound->pBufferRampDown;
+        offset = (pSound->anSizeBuffer[iBuffer] >> 1) - 2;
+        nData0 = ((s16*)pSound->apBuffer[iBuffer])[offset];
+        nData1 = ((s16*)pSound->apBuffer[iBuffer])[offset + 1];
+
+        if (nData0 == 0) {
+            nStep0 = 0;
+        } else if ((nStep0 = 0.5f + (f32)nData0 / (pSound->nSizeRamp >> 2)) == 0) {
+            nStep0 = nData0 > 0 ? 1 : -1;
+        }
+
+        if (nData1 == 0) {
+            nStep1 = 0;
+        } else if ((nStep1 = 0.5f + (f32)nData1 / (pSound->nSizeRamp >> 2)) == 0) {
+            nStep1 = nData1 > 0 ? 1 : -1;
+        }
+
+        nStep0 = -nStep0;
+        nStep1 = -nStep1;
+        nGoal0 = nGoal1 = 0;
+    } else if (eRamp == SR_INCREASE) {
+        anData = pSound->pBufferRampUp;
+        nGoal0 = ((s16*)pSound->apBuffer[iBuffer])[0];
+        nGoal1 = ((s16*)pSound->apBuffer[iBuffer])[1];
+
+        if (nGoal0 == 0) {
+            nStep0 = 0;
+        } else if ((nStep0 = 0.5f + (f32)nGoal0 / (pSound->nSizeRamp >> 2)) == 0) {
+            nStep0 = nGoal0 > 0 ? 1 : -1;
+        }
+
+        if (nGoal1 == 0) {
+            nStep1 = 0;
+        } else if ((nStep1 = 0.5f + (f32)nGoal1 / (pSound->nSizeRamp >> 2)) == 0) {
+            nStep1 = nGoal1 > 0 ? 1 : -1;
+        }
+
+        nData0 = nData1 = 0;
+    } else {
+        return false;
+    }
+
+    do {
+        bFlag = 1;
+
+        if (nStep0 != 0) {
+            nLast0 = nData0 + (((u32)nStep0) * (pSound->nSizeRamp >> 2));
+            if ((nData0 < 0 && nLast0 < 0) || (nData0 > 0 && nLast0 > 0) || (nData0 == 0 && (nGoal0 < 0 ? nLast0 > nGoal0 : nLast0 < nGoal0))) {   
+                nStep0 <<= 1;
+                bFlag = 0;
+            }
+        }
+
+        if (nStep1 != 0) {
+            nLast1 = nData1 + (((u32) nStep1) * (pSound->nSizeRamp >> 2));
+            if ((nData1 < 0 && nLast1 < 0) || (nData1 > 0 && nLast1 > 0) || (nData1 == 0 && (nGoal1 < 0 ? nLast1 > nGoal1 : nLast1 < nGoal1))) {   
+                nStep1 <<= 1;
+                bFlag = 0;
+            }
+        }
+    } while (bFlag == 0);
+
+    for (iData = 0; iData < (pSound->nSizeRamp >> 1); iData += 2) {
+        anData[iData + 0] = nData0;
+        anData[iData + 1] = nData1;
+
+        if (nData0 != nGoal0) {
+            if ((nData0 < nGoal0 && nData0 + nStep0 > nGoal0) ||
+                (nData0 > nGoal0 != 0 && nData0 + nStep0 < nGoal0)) {
+                nData0 = nGoal0;
+            } else {
+                nData0 += nStep0;
+            }
+        }
+
+        if (nData1 != nGoal1) {
+            if ((nData1 < nGoal1 && nData1 + nStep1 > nGoal1) ||
+                (nData1 > nGoal1 != 0 && nData1 + nStep1 < nGoal1)) {
+                nData1 = nGoal1;
+            } else {
+                nData1 += nStep1;
+            }
+        }
+    }
+
+    DCStoreRange(anData, pSound->nSizeRamp);
+    return true;
+}
+#endif
+
+
 
 static inline bool soundMakeZero(Sound* pSound) {
     int iData;
