@@ -3,6 +3,7 @@ def add_custom_arguments(parser):
 
 def apply(config, args):
     version = args.version
+    config["make_command"] = ["ninja"]
     config["mapfile"] = f"build/{version}/oot-gc.elf.MAP"
     config["source_directories"] = ["src", "include"]
     config["arch"] = "ppc"
