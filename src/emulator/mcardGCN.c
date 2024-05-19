@@ -19,18 +19,13 @@ void* jtbl_800EA5A8[24] = {
 void* jtbl_800EA5A8[24] = {0};
 #endif
 
-#ifndef NON_MATCHING
 void* jtbl_800EA608[24] = {
     &lbl_80016E54, &lbl_80016E54, &lbl_80016DE8, &lbl_80016DC8, &lbl_80016E28, &lbl_80016DD8,
     &lbl_80016E08, &lbl_80016E54, &lbl_80016E54, &lbl_80016E54, &lbl_80016E54, &lbl_80016E54,
     &lbl_80016E54, &lbl_80016E08, &lbl_80016E54, &lbl_80016E54, &lbl_80016DF8, &lbl_80016E54,
     &lbl_80016E44, &lbl_80016E18, &lbl_80016E18, &lbl_80016E54, &lbl_80016E54, &lbl_80016E34,
 };
-#else
-void* jtbl_800EA608[24] = {0};
-#endif
 
-#ifndef NON_MATCHING
 void* jtbl_800EA668[50] = {
     &lbl_800177EC, &lbl_80016EF8, &lbl_80016F24, &lbl_80016F54, &lbl_80016F80, &lbl_80016FAC, &lbl_80016FD8,
     &lbl_80017020, &lbl_80017054, &lbl_80017074, &lbl_8001709C, &lbl_800170E8, &lbl_80017134, &lbl_80017158,
@@ -41,9 +36,6 @@ void* jtbl_800EA668[50] = {
     &lbl_8001769C, &lbl_800176B4, &lbl_800177EC, &lbl_800176FC, &lbl_80017734, &lbl_80017768, &lbl_8001779C,
     &lbl_800177C4,
 };
-#else
-void* jtbl_800EA668[50] = {0};
-#endif
 
 char D_800EA730[] = "Accessing Card";
 char D_800EA740[] = "Writing Game Data";

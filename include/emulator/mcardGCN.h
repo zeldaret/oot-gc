@@ -178,6 +178,6 @@ s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* 
               s32* defaultConfiguration, s32 fileSize, s32 gameSize);
 s32 mcardOpenDuringGame(MemCard* pMCard);
 s32 mcardStore(MemCard* pMCard);
-s32 mcardUpdate(MemCard* pMCard);
+s32 mcardUpdate(void);
 
 #endif
