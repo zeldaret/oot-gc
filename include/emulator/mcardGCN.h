@@ -3,6 +3,17 @@
 
 #include "dolphin.h"
 
+// __anon_0x1BD8E
+typedef enum MemCardCommand {
+    MC_C_NONE = 0,
+    MC_C_CONTINUE = 1,
+    MC_C_IPL = 2,
+    MC_C_GO_TO_GAME = 3,
+    MC_C_CREATE_GAME = 4,
+    MC_C_DELETE_GAME = 5,
+    MC_C_FORMAT_CARD = 6,
+} MemCardCommand;
+
 // __anon_0x1B0CB
 typedef enum MemCardError {
     MC_E_NONE = 0,
@@ -146,11 +157,27 @@ typedef struct _MCARD {
 
 extern MemCard mCard;
 
+s32 mcardReadGameData(MemCard* pMCard);
 s32 mcardWriteGameDataReset(MemCard* pMCard);
-s32 mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);
-s32 mcardRead(MemCard* pMCard, s32 address, s32 size, char* data);
+s32 mcardReInit(MemCard* pMCard);
 s32 mcardInit(MemCard* pMCard);
+s32 mcardFileSet(MemCard* pMCard, char* name);
+s32 mcardGameSet(MemCard* pMCard, char* name);
+s32 mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, char* banner, s32 size);
+s32 mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 size);
+s32 mcardCardErase(MemCard* pMCard);
+s32 mcardFileErase(MemCard* pMCard);
+s32 mcardGameErase(MemCard* pMCard, s32 index);
+s32 mcardGameRelease(MemCard* pMCard);
+s32 mcardRead(MemCard* pMCard, s32 address, s32 size, char* data);
+s32 mcardMenu(MemCard* pMCard, __anon_0x1A5F0 menuEntry, MemCardCommand* pCommand);
+s32 mcardOpenError(MemCard* pMCard, MemCardCommand* pCommand);
+s32 mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand);
+s32 mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);
 s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
               s32* defaultConfiguration, s32 fileSize, s32 gameSize);
+s32 mcardOpenDuringGame(MemCard* pMCard);
+s32 mcardStore(MemCard* pMCard);
+s32 mcardUpdate(MemCard* pMCard);
 
 #endif
