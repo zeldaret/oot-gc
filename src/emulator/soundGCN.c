@@ -122,15 +122,17 @@ static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
 
         if (nStep0 != 0) {
             nLast0 = nData0 + (((u32)nStep0) * (pSound->nSizeRamp >> 2));
-            if ((nData0 < 0 && nLast0 < 0) || (nData0 > 0 && nLast0 > 0) || (nData0 == 0 && (nGoal0 < 0 ? nLast0 > nGoal0 : nLast0 < nGoal0))) {   
+            if ((nData0 < 0 && nLast0 < 0) || (nData0 > 0 && nLast0 > 0) ||
+                (nData0 == 0 && (nGoal0 < 0 ? nLast0 > nGoal0 : nLast0 < nGoal0))) {
                 nStep0 <<= 1;
                 bFlag = 0;
             }
         }
 
         if (nStep1 != 0) {
-            nLast1 = nData1 + (((u32) nStep1) * (pSound->nSizeRamp >> 2));
-            if ((nData1 < 0 && nLast1 < 0) || (nData1 > 0 && nLast1 > 0) || (nData1 == 0 && (nGoal1 < 0 ? nLast1 > nGoal1 : nLast1 < nGoal1))) {   
+            nLast1 = nData1 + (((u32)nStep1) * (pSound->nSizeRamp >> 2));
+            if ((nData1 < 0 && nLast1 < 0) || (nData1 > 0 && nLast1 > 0) ||
+                (nData1 == 0 && (nGoal1 < 0 ? nLast1 > nGoal1 : nLast1 < nGoal1))) {
                 nStep1 <<= 1;
                 bFlag = 0;
             }
@@ -142,8 +144,7 @@ static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
         anData[iData + 1] = nData1;
 
         if (nData0 != nGoal0) {
-            if ((nData0 < nGoal0 && nData0 + nStep0 > nGoal0) ||
-                (nData0 > nGoal0 != 0 && nData0 + nStep0 < nGoal0)) {
+            if ((nData0 < nGoal0 && nData0 + nStep0 > nGoal0) || (nData0 > nGoal0 != 0 && nData0 + nStep0 < nGoal0)) {
                 nData0 = nGoal0;
             } else {
                 nData0 += nStep0;
@@ -151,8 +152,7 @@ static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
         }
 
         if (nData1 != nGoal1) {
-            if ((nData1 < nGoal1 && nData1 + nStep1 > nGoal1) ||
-                (nData1 > nGoal1 != 0 && nData1 + nStep1 < nGoal1)) {
+            if ((nData1 < nGoal1 && nData1 + nStep1 > nGoal1) || (nData1 > nGoal1 != 0 && nData1 + nStep1 < nGoal1)) {
                 nData1 = nGoal1;
             } else {
                 nData1 += nStep1;
@@ -164,8 +164,6 @@ static bool soundMakeRamp(Sound* pSound, s32 iBuffer, SoundRamp eRamp) {
     return true;
 }
 #endif
-
-
 
 static inline bool soundMakeZero(Sound* pSound) {
     int iData;
