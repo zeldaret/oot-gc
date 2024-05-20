@@ -31,3 +31,72 @@ extract:
   header: gno.inc
 - symbol: gmesgOK
   header: gmesgOK.inc
+
+block_relocations:
+# systemSetupGameALL
+- source: 0x8002E168
+- source: 0x8002E190
+- source: 0x8002E1BC
+- source: 0x8002E1E4
+- source: 0x8002E240
+- source: 0x8002E260
+- source: 0x8002E28C
+- source: 0x8002E2B0
+- source: 0x8002E7A0
+- source: 0x8002E7C8
+- source: 0x8002E7F0
+- source: 0x8002E818
+- source: 0x8002E840
+- source: 0x8002E868
+- source: 0x8002E890
+- source: 0x8002E8B8
+- source: 0x8002E8E0
+- source: 0x8002E904
+- source: 0x8002E928
+- source: 0x8002EC10
+- source: 0x8002ED30
+- source: 0x8002EE20
+- source: 0x8002EE44
+- source: 0x8002EE68
+- source: 0x8002EE94
+- source: 0x8002EEB8
+- source: 0x8002EEDC
+- source: 0x8002F01C
+- source: 0x8002F044
+- source: 0x8002F06C
+- source: 0x8002F0AC
+- source: 0x8002F0D0
+- source: 0x8002F0FC
+- source: 0x8002F13C
+- source: 0x8002F160
+- source: 0x8002F18C
+- source: 0x8002F2F8
+- source: 0x8002F320
+- source: 0x8002F878
+- source: 0x8002F8A0
+- source: 0x8002F8C8
+- source: 0x8002F8EC
+- source: 0x8002F914
+- source: 0x8002FAA0
+- source: 0x8002FB08
+- source: 0x8002FB2C
+- source: 0x8002FB58
+- source: 0x8002FB7C
+- source: 0x8002FC6C
+- source: 0x8002FDBC
+- source: 0x8002FE04
+- source: 0x8002FF38
+- source: 0x8002FF80
+- source: 0x8002FFA8
+# cpuFindFunction
+- source: 0x80033460
+- source: 0x8003346C
+- source: 0x80033BFC
+- source: 0x80033C2C
+- source: 0x80033C30
+- source: 0x80033C64
+- source: 0x80033C78
+- source: 0x80033CB8
+- source: 0x80033CBC
+- source: 0x80033CF0
+- source: 0x80033D04
