@@ -232,7 +232,7 @@ config.libs = [
             Object(MatchingFor("ce-j", "ce-u"), "emulator/THPVideoDecode.c", cflags=cflags_base),
             Object(MatchingFor("ce-j"), "emulator/mcardGCN.c", asm_processor=True),
             Object(MatchingFor("ce-j", "ce-u"), "emulator/codeGCN.c"),
-            Object(MatchingFor("ce-j"), "emulator/soundGCN.c", asm_processor=True),
+            Object(MatchingFor("ce-j", "ce-u"), "emulator/soundGCN.c"),
             Object(MatchingFor("ce-j"), "emulator/frame.c", asm_processor=True),
             Object(MatchingFor("ce-j", "ce-u"), "emulator/system.c"),
             Object(MatchingFor("ce-j"), "emulator/cpu.c", asm_processor=True),
