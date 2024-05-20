@@ -6,6 +6,8 @@
 #include "macros.h"
 #include "math.h"
 
+#define VI_NTSC_CLOCK 48681812
+
 _XL_OBJECTTYPE gClassSound = {
     "SOUND",
     sizeof(Sound),
@@ -161,21 +163,19 @@ static inline bool soundMakeZero(Sound* pSound) {
 
 bool soundPlayBuffer(Sound* pSound) {
     void* pData;
-    s32 iBufferPlay; // iBuffer
-    int iBufferMake;
+    s32 iBuffer;
     s32 nSize;
 
-    iBufferMake = pSound->iBufferMake;
-    iBufferPlay = pSound->iBufferPlay;
+    iBuffer = pSound->iBufferPlay;
 
-    if (iBufferMake != iBufferPlay) {
+    if ((iBuffer = pSound->iBufferPlay) != pSound->iBufferMake) {
         if (pSound->eMode == SPM_RAMPPLAYED) {
             nSize = pSound->nSizeRamp;
             pData = pSound->pBufferRampUp;
         } else {
-            nSize = pSound->anSizeBuffer[iBufferPlay];
-            pData = pSound->apBuffer[iBufferPlay];
-            pSound->iBufferPlay = (iBufferPlay + 1) % 16;
+            nSize = pSound->anSizeBuffer[iBuffer];
+            pData = pSound->apBuffer[iBuffer];
+            pSound->iBufferPlay = (iBuffer + 1) % 16;
         }
         pSound->eMode = SPM_PLAY;
     } else if ((*((volatile SoundPlayMode*)&pSound->eMode) == SPM_RAMPQUEUED) || (pSound->eMode == SPM_RAMPPLAYED)) {
@@ -210,17 +210,19 @@ bool soundMakeBuffer(Sound* pSound) {
     s32 volAdjust;
 
     s32 temp_r6;
-    u32 cmp;
+    u32 temp_r3;
 
     iBuffer = pSound->iBufferMake;
     bPlay = 0;
     nSize = pSound->nSndLen;
     nSamples = ((nSize * 32000) + 16000) / pSound->nFrequency;
-    cmp = ((nSamples >> 2) & ~7);
+    temp_r3 = ((nSamples >> 2) & ~7);
     temp_r6 = pSound->anSizeBuffer[iBuffer] = nSamples & (~0x1F);
     curBufP = pSound->apBuffer[iBuffer];
+    vol = 0x10000;
+    sample = 0;
 
-    for (vol = 0x10000, sample = 0, j = 0; j < cmp * 2; j += 2) {
+    for (j = 0; j < temp_r3 * 2; j += 2) {
         samp = sample >> 16;
 
         if (j + 1 < (pSound->nSizePlay >> 1)) {
@@ -229,10 +231,11 @@ bool soundMakeBuffer(Sound* pSound) {
             curBufP[j + 0] = (volAdjust * ((s16*)pSound->pSrcData)[2 * samp + 1]) >> 16;
         }
 
+        // required to match
         vol = (u32)vol;
 
         sampleStep = ((nSize << 14) & 0xFFFF0000);
-        sampleStep /= cmp;
+        sampleStep /= temp_r3;
         sample += sampleStep;
     }
 
@@ -276,7 +279,7 @@ bool soundSetLength(Sound* pSound, s32 nSize) {
 
 bool soundSetDACRate(Sound* pSound, s32 nDacRate) {
     pSound->nDacrate = nDacRate;
-    pSound->nFrequency = 0x02E6D354 / (nDacRate + 1);
+    pSound->nFrequency = VI_NTSC_CLOCK / (nDacRate + 1);
     return true;
 }
 
@@ -293,7 +296,7 @@ bool soundGetDMABuffer(Sound* pSound, u32* pnSize) {
 bool soundSetBufferSize(Sound* pSound, s32 nSize) {
     int iBuffer;
 
-    if (nSize % 32) {
+    if (nSize % 32 != 0) {
         xlPostText("SetBufferSize: ERROR: 'nSize' must be a multiple of 32! (%d)\n", "soundGCN.c", 674, nSize);
         nSize = (nSize + 0x1F) & ~0x1F;
     }
