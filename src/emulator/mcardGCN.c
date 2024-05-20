@@ -8,16 +8,12 @@ char D_800EA548[] =
 char D_800EA564[] = "Invalid Memory Card Command %d - Assuming Go To Game";
 char D_800EA59C[] = "mcardGCN.c";
 
-#ifndef NON_MATCHING
 void* jtbl_800EA5A8[24] = {
     &lbl_80016D74, &lbl_80016D74, &lbl_80016D08, &lbl_80016CE8, &lbl_80016D48, &lbl_80016CF8,
     &lbl_80016D28, &lbl_80016D74, &lbl_80016D74, &lbl_80016D74, &lbl_80016D74, &lbl_80016D74,
     &lbl_80016D74, &lbl_80016D28, &lbl_80016D74, &lbl_80016D74, &lbl_80016D18, &lbl_80016D74,
     &lbl_80016D54, &lbl_80016D38, &lbl_80016D38, &lbl_80016D74, &lbl_80016D74, &lbl_80016D64,
 };
-#else
-void* jtbl_800EA5A8[24] = {0};
-#endif
 
 void* jtbl_800EA608[24] = {
     &lbl_80016E54, &lbl_80016E54, &lbl_80016DE8, &lbl_80016DC8, &lbl_80016E28, &lbl_80016DD8,
