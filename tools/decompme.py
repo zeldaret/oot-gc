@@ -34,7 +34,7 @@ ELSE_PATTERN = re.compile(r"^#else")
 ENDIF_PATTERN = re.compile(r"^#endif")
 INCBIN_PATTERN = re.compile(r"^#pragma INCBIN\(.*\)")
 
-MACROS = [
+MACROS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bAT_ADDRESS\b\(.*\)"), ""),
     (re.compile(r"\b_GX_TF_CTF\b"), "0x20"),
     (re.compile(r"\b_GX_TF_ZTF\b"), "0x10"),
@@ -43,6 +43,8 @@ MACROS = [
     (re.compile(r"\bCARD_ICON_MAX\b"), "8"),
     (re.compile(r"\bN64_FRAME_WIDTH\b"), "320"),
     (re.compile(r"\bN64_FRAME_HEIGHT\b"), "240"),
+    (re.compile(r"\bALIGNAS\b\(.*\)"), ""),
+    (re.compile(r"\b_MATH_INLINE\b"), "static inline"),
 ]
 
 # Defined preprocessor macros (for conditions)
