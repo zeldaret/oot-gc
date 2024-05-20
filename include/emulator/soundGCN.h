@@ -4,6 +4,13 @@
 #include "dolphin.h"
 #include "emulator/xlObject.h"
 
+// __anon_0x221A3
+typedef enum SoundRamp {
+    SR_NONE = -1,
+    SR_DECREASE = 0,
+    SR_INCREASE = 1,
+} SoundRamp;
+
 // __anon_0x20C8D
 typedef enum SoundBeep {
     SOUND_BEEP_ACCEPT = 0,
@@ -28,8 +35,8 @@ typedef struct Sound {
     /* 0x10 */ void* apBuffer[16];
     /* 0x50 */ s32 anSizeBuffer[16];
     /* 0x90 */ s32 nCountBeep;
-    /* 0x94 */ s32 anSizeBeep[3];
-    /* 0xA0 */ void* apDataBeep[3];
+    /* 0x94 */ s32 anSizeBeep[SOUND_BEEP_COUNT];
+    /* 0xA0 */ void* apDataBeep[SOUND_BEEP_COUNT];
     /* 0xAC */ s32 iBufferPlay;
     /* 0xB0 */ s32 iBufferMake;
     /* 0xB4 */ SoundPlayMode eMode;
@@ -43,6 +50,7 @@ typedef struct Sound {
     /* 0xD4 */ s32 nSizeRamp;
 } Sound; // size = 0xD8
 
+bool soundWipeBuffers(Sound* pSound);
 bool soundSetLength(Sound* pSound, s32 nSize);
 bool soundSetDACRate(Sound* pSound, s32 nDacRate);
 bool soundSetAddress(Sound* pSound, void* pData);
