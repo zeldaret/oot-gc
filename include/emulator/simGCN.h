@@ -4,7 +4,7 @@
 #include "dolphin.h"
 #include "emulator/system.h"
 
-typedef enum __anon_0x61D7 {
+typedef enum SimulatorMessage {
     S_M_NONE = -1,
     S_M_DISK_COVER_OPEN = 0,
     S_M_DISK_WRONG_DISK = 1,
@@ -54,10 +54,9 @@ typedef enum __anon_0x61D7 {
     S_M_CARD_SV12 = 45,
     S_M_CARD_SV_SHARE = 46,
     S_M_CARD_DEFAULT_ERROR = 47,
-} __anon_0x61D7;
+} SimulatorMessage;
 
-// __anon_0xA982
-typedef enum SimArgumentType {
+typedef enum SimulatorArgumentType {
     SAT_NONE = -1,
     SAT_NAME = 0,
     SAT_PROGRESSIVE = 1,
@@ -68,7 +67,7 @@ typedef enum SimArgumentType {
     SAT_MOVIE = 6,
     SAT_RESET = 7,
     SAT_COUNT = 8
-} SimArgumentType;
+} SimulatorArgumentType;
 
 extern bool gDVDResetToggle;
 extern bool gbDisplayedError;
@@ -116,14 +115,14 @@ bool simulatorReadPak(s32 channel, u16 address, u8* data);
 bool simulatorWritePak(s32 channel, u16 address, u8* data);
 bool simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie(void);
-bool simulatorDrawErrorMessage(__anon_0x61D7 simulatorErrorMessage, s32 drawBar, s32 percent);
+bool simulatorDrawErrorMessage(SimulatorMessage simulatorErrorMessage, bool drawBar, s32 percent);
 bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings);
-bool simulatorGetArgument(SimArgumentType eType, char** pszArgument);
+bool simulatorGetArgument(SimulatorArgumentType eType, char** pszArgument);
 bool simulatorPlayMovie(void);
 bool xlMain(void);
-s32 simulatorMCardPollDrawFormatBar(void);
-s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage);
+bool simulatorMCardPollDrawFormatBar(void);
+bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage);
 bool simulatorDrawMCardText(void);
 
 #endif
