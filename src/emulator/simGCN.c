@@ -16,45 +16,24 @@
 #include "macros.h"
 #include "string.h"
 
-u8 gcoverOpen[0x28C1] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000D8880, 0x28C1)
-};
+// clang-format off
+#include "gcoverOpen.inc"
+#include "gnoDisk.inc"
+#include "gretryErr.inc"
+#include "gfatalErr.inc"
+#include "gwrongDisk.inc"
+#include "greadingDisk.inc"
+#include "gbar.inc"
+#include "gyes.inc"
+#include "gno.inc"
+#include "gmesgOK.inc"
+// clang-format on
 
-u8 gnoDisk[0x1F01] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DB160, 0x1F01)
-};
-
-u8 gretryErr[0x2441] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DD080, 0x2441)
-};
-
-u8 gfatalErr[0x32E1] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000DF4E0, 0x32E1)
-};
-
-u8 gwrongDisk[0x1F01] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E27E0, 0x1F01)
-};
-
-u8 greadingDisk[0x0C41] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E4700, 0x0C41)
-};
-
-u8 gbar[0x0741] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E5360, 0x0741)
-};
-
-u8 gyes[0x05C1] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E5AC0, 0x05C1)
-};
-
-u8 gno[0x05C1] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E60A0, 0x05C1)
-};
-
-u8 gmesgOK[0x0341] ALIGNAS(32) = {
-#pragma INCBIN("SIM_original.elf", 0x000E6680, 0x0341)
-};
+#if VERSION == CE_J
+#define DEFAULT_ROM_NAME "zlj_f.n64"
+#elif VERSION == CE_U
+#define DEFAULT_ROM_NAME "zle_f.n64"
+#endif
 
 s16 Vert_s16[12] ALIGNAS(32) = {
     0x0000, 0x0000, 0xFFFF, 0x00C8, 0x0000, 0xFFFF, 0x00C8, 0x00C8, 0xFFFF, 0x0000, 0x00C8, 0xFFFF,
@@ -2305,7 +2284,7 @@ bool xlMain(void) {
     if (simulatorGetArgument(SAT_NAME, &szNameROM)) {
         strcpy(acNameROM, szNameROM);
     } else {
-        strcpy(acNameROM, "zlj_f.n64");
+        strcpy(acNameROM, DEFAULT_ROM_NAME);
     }
 
     iName = strlen(acNameROM) - 1;

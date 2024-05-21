@@ -938,6 +938,8 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
     late_rodata_source_name_start = None
     late_rodata_source_name_end = None
 
+    function_sizes = {function.text_glabels[0]: function.data['.text'][1] for function in functions}
+
     # Generate an assembly file with all the assembly we need to fill in. For
     # simplicity we pad with nops/.space so that addresses match exactly, so we
     # don't have to fix up relocations/symbol references.
@@ -1134,6 +1136,8 @@ def fixup_objfile(objfile_name, functions, asm_prelude, assembler, output_enc):
                 if objfile.sections[s.st_shndx].name == '.rodata' and s.st_value in moved_late_rodata:
                     s.st_value = moved_late_rodata[s.st_value]
             s.st_name += strtab_adj
+            if s.name in function_sizes:
+                s.st_size = function_sizes[s.name]
             if is_local:
                 new_local_syms.append(s)
             else:

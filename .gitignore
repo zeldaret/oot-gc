@@ -6,14 +6,20 @@ tools/elf2dol/elf2dol
 
 # Build artifacts
 build/
+build.ninja
+objdiff.json
+.ninja_*
 *.o
 *.obj
+*.dol
 *.elf
+*.exe
 *.map
 
 # Python artifacts
 __pycache__/
 .venv/
+.mypy_cache
 
 # IDE artifacts
 .vscode/

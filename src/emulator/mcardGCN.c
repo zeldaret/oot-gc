@@ -1,9 +1,8 @@
 #include "emulator/mcardGCN.h"
 #include "emulator/mcardGCN_jumptables.h"
 
-// ゼルダの伝説：時のオカリナ
-char D_800EA548[] =
-    "\x83\x5b\x83\x8b\x83\x5f\x82\xcc\x93\x60\x90\xe0\x81\x46\x8e\x9e\x82\xcc\x83\x49\x83\x4a\x83\x8a\x83\x69";
+// "The Legend of Zelda: Ocarina of Time"
+char D_800EA548[] = "ゼルダの伝説：時のオカリナ";
 
 char D_800EA564[] = "Invalid Memory Card Command %d - Assuming Go To Game";
 char D_800EA59C[] = "mcardGCN.c";

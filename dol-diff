@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Wrapper for `dtk dol diff` to locate the first diff in the dol.
+# Usage: ./dol-diff [VERSION]
+# If VERSION is not provided, it defaults to ce-j.
+
+set -euo pipefail
+
+VERSION=${1:-ce-j}
+ninja "build/$VERSION/oot-gc.elf"
+build/tools/dtk dol diff "config/$VERSION/config.yml" "build/$VERSION/oot-gc.elf"

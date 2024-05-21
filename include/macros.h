@@ -1,6 +1,14 @@
 #ifndef _MACROS_H
 #define _MACROS_H
 
+// The VERSION macro will be set to one of these version numbers.
+#define MQ_J 1
+#define MQ_U 2
+#define MQ_E 3
+#define CE_J 4
+#define CE_U 5
+#define CE_E 6
+
 #define ALIGNAS(N) __attribute__((aligned(N)))
 #define ALIGN_PREV(X, N) ((X) & ~((N) - 1))
 #define ALIGN_NEXT(X, N) ALIGN_PREV(((X) + (N) - 1), N)
