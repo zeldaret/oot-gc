@@ -1693,10 +1693,10 @@ typedef enum _GXXfTexGen {
 
 // Transform memory types.
 typedef enum _GXXfMem {
-	GX_XF_MEM_POSMTX     = 0x000, // position coord matrix
-	GX_XF_MEM_NRMMTX     = 0x400, // normal coord matrix
-	GX_XF_MEM_DUALTEXMTX = 0x500, // dual texture matrix
-	GX_XF_MEM_LIGHTOBJ   = 0x600, // light object
+    GX_XF_MEM_POSMTX = 0x000, // position coord matrix
+    GX_XF_MEM_NRMMTX = 0x400, // normal coord matrix
+    GX_XF_MEM_DUALTEXMTX = 0x500, // dual texture matrix
+    GX_XF_MEM_LIGHTOBJ = 0x600, // light object
 } GXXfMem;
 
 // BP GenMode locators.
