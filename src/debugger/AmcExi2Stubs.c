@@ -1,5 +1,5 @@
-#include "dolphin.h"
 #include "debugger.h"
+#include "dolphin.h"
 
 void EXI2_Init(void) {}
 
