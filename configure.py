@@ -318,7 +318,7 @@ config.libs = [
     DolphinLib(
         "mtx",
         [
-            Object(NonMatching, "dolphin/mtx/mtx.c", extra_cflags=["-fp_contract off"]),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/mtx/mtx.c", extra_cflags=["-fp_contract off"]),
             Object(NonMatching, "dolphin/mtx/mtxvec.c"),
             Object(NonMatching, "dolphin/mtx/mtx44.c"),
         ],
