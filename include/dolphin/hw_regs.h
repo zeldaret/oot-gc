@@ -215,6 +215,24 @@ vu32 __AIRegs[8] AT_ADDRESS(0xCC006C00);
 #define AI_SAMPLE_COUNTER (2) // number of stereo samples output
 #define AI_INTRPT_TIMING (3) // interrupt timing
 
+#define FP0 fp0
+#define FP1 fp1
+#define FP2 fp2
+#define FP3 fp3
+#define FP4 fp4
+#define FP5 fp5
+#define FP6 fp6
+#define FP7 fp7
+#define FP8 fp8
+#define FP9 fp9
+#define FP10 fp10
+#define FP11 fp11
+#define FP12 fp12
+#define FP13 fp13
+#define FP14 fp14
+#define FP15 fp15
+#define FP31 fp31
+
 #ifdef __cplusplus
 }
 #endif

@@ -292,33 +292,33 @@ config.libs = [
     DolphinLib(
         "exi",
         [
-            Object(NonMatching, "dolphin/exi/EXIBios.c"),
-            Object(NonMatching, "dolphin/exi/EXIUart.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/exi/EXIBios.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/exi/EXIUart.c"),
         ],
     ),
     DolphinLib(
         "si",
         [
-            Object(NonMatching, "dolphin/si/SIBios.c"),
-            Object(NonMatching, "dolphin/si/SISamplingRate.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/si/SIBios.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/si/SISamplingRate.c"),
         ],
     ),
     DolphinLib(
         "vi",
         [
-            Object(NonMatching, "dolphin/vi/vi.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/vi/vi.c"),
         ],
     ),
     DolphinLib(
         "db",
         [
-            Object(NonMatching, "dolphin/db/db.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/db/db.c"),
         ],
     ),
     DolphinLib(
         "mtx",
         [
-            Object(NonMatching, "dolphin/mtx/mtx.c", extra_cflags=["-fp_contract off"]),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/mtx/mtx.c", extra_cflags=["-fp_contract off"]),
             Object(NonMatching, "dolphin/mtx/mtxvec.c"),
             Object(NonMatching, "dolphin/mtx/mtx44.c"),
         ],
