@@ -21,6 +21,7 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 #define SQ(x) ((x) * (x))
+#define CLAMP(x, l, h) (((x) > (h)) ? (h) : (((x) < (l)) ? (l) : (x)))
 
 // Adds no-ops to increase a function's size, preventing automatic inlining
 #define NO_INLINE() \

@@ -306,7 +306,7 @@ config.libs = [
     DolphinLib(
         "vi",
         [
-            Object(NonMatching, "dolphin/vi/vi.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/vi/vi.c"),
         ],
     ),
     DolphinLib(
