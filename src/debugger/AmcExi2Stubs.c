@@ -4,7 +4,7 @@ void EXI2_Init(void) {}
 
 void EXI2_EnableInterrupts(void) {}
 
-s32 EXI2_Poll(void) { return 0; }
+bool EXI2_Poll(void) { return false; }
 
 AmcExiError EXI2_ReadN(void) { return AMC_EXI_NO_ERROR; }
 
@@ -14,4 +14,4 @@ void EXI2_Reserve(void) {}
 
 void EXI2_Unreserve(void) {}
 
-s32 AMC_IsStub(void) { return 1; }
+bool AMC_IsStub(void) { return true; }

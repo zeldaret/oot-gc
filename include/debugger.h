@@ -11,13 +11,13 @@ typedef enum {
 
 void EXI2_Init(void);
 void EXI2_EnableInterrupts(void);
-s32 EXI2_Poll(void);
+bool EXI2_Poll(void);
 AmcExiError EXI2_ReadN(void);
 AmcExiError EXI2_WriteN(void);
 void EXI2_Reserve(void);
 void EXI2_Unreserve(void);
-s32 AMC_IsStub(void);
+bool AMC_IsStub(void);
 
-s32 Hu_IsStub(void);
+bool Hu_IsStub(void);
 
 #endif

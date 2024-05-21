@@ -1,3 +1,3 @@
 #include "debugger.h"
 
-s32 Hu_IsStub(void) { return 0; }
+bool Hu_IsStub(void) { return false; }
