@@ -122,5 +122,8 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
 bool simulatorGetArgument(SimArgumentType eType, char** pszArgument);
 bool simulatorPlayMovie(void);
 bool xlMain(void);
+s32 simulatorMCardPollDrawFormatBar(void);
+s32 simulatorPrepareMessage(__anon_0x61D7 simulatorErrorMessage);
+bool simulatorDrawMCardText(void);
 
 #endif
