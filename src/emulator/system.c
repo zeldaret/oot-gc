@@ -25,6 +25,16 @@
 #include "stdlib.h"
 #include "string.h"
 
+#if VERSION == CE_J
+#define MCARD_FILE_NAME "ZELDA1"
+#define MCARD_COMMENT "ゼルダコレクション" // "Zelda Collection"
+#define MCARD_FILE_SIZE 0xC000
+#elif VERSION == CE_U
+#define MCARD_FILE_NAME "ZELDA1"
+#define MCARD_COMMENT "Zelda: Collector's Edition"
+#define MCARD_FILE_SIZE 0xC000
+#endif
+
 _XL_OBJECTTYPE gClassSystem = {
     "SYSTEM (N64)",
     sizeof(System),
@@ -169,12 +179,27 @@ static bool systemSetupGameRAM(System* pSystem) {
     if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || romTestCode(pROM, "NZSJ") ||
         romTestCode(pROM, "NZSE")) {
         switch (nCode) {
+#if VERSION == CE_U
+            case 0x5CAC1CF7:
+#else
             case 0x5CAC1C8F:
+#endif
                 gnFlagZelda = 2;
                 break;
             case 0x184CED80:
                 gnFlagZelda = 3;
                 break;
+#if VERSION == CE_U
+            case 0x5CAC1C27:
+                gnFlagZelda = 0;
+                break;
+            case 0x5CAC1C8F:
+                gnFlagZelda = romTestCode(pROM, "CZLE") ? 2 : 0;
+                break;
+            case 0x184CED18:
+                gnFlagZelda = 1;
+                break;
+#endif
             case 0x54A59B56:
             case 0x421EB8E9:
                 gnFlagZelda = 4;
@@ -523,10 +548,8 @@ static bool systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
-                // "ゼルダコレクション"
-                mcardOpen(&mCard, "ZELDA1", "\x83\x5b\x83\x8b\x83\x5f\x83\x52\x83\x8c\x83\x4e\x83\x56\x83\x87\x83\x93",
-                          mCard.saveIcon, mCard.saveBanner, "ZELDAX",
-                          &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+                mcardOpen(&mCard, MCARD_FILE_NAME, MCARD_COMMENT, mCard.saveIcon, mCard.saveBanner, "ZELDAX",
+                          &gSystemRomConfigurationList[i].currentControllerConfig, MCARD_FILE_SIZE, 0x8000);
             } else {
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
@@ -543,10 +566,8 @@ static bool systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
-                // "ゼルダコレクション"
-                mcardOpen(&mCard, "ZELDA1", "\x83\x5b\x83\x8b\x83\x5f\x83\x52\x83\x8c\x83\x4e\x83\x56\x83\x87\x83\x93",
-                          mCard.saveIcon, mCard.saveBanner, "ZELDA",
-                          &gSystemRomConfigurationList[i].currentControllerConfig, 0xC000, 0x8000);
+                mcardOpen(&mCard, MCARD_FILE_NAME, MCARD_COMMENT, mCard.saveIcon, mCard.saveBanner, "ZELDA",
+                          &gSystemRomConfigurationList[i].currentControllerConfig, MCARD_FILE_SIZE, 0x8000);
             }
         } else {
             // debug rom?

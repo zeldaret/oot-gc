@@ -1,0 +1,2 @@
+#!/bin/bash
+find include libc src -name '*.h' -o -name '*.c' | xargs clang-format -i
