@@ -32,7 +32,6 @@ void* jtbl_800EA608[24] = {
 void* jtbl_800EA608[24] = {0};
 #endif
 
-#ifndef NON_MATCHING
 void* jtbl_800EA668[50] = {
     &lbl_800177EC, &lbl_80016EF8, &lbl_80016F24, &lbl_80016F54, &lbl_80016F80, &lbl_80016FAC, &lbl_80016FD8,
     &lbl_80017020, &lbl_80017054, &lbl_80017074, &lbl_8001709C, &lbl_800170E8, &lbl_80017134, &lbl_80017158,
@@ -43,9 +42,6 @@ void* jtbl_800EA668[50] = {
     &lbl_8001769C, &lbl_800176B4, &lbl_800177EC, &lbl_800176FC, &lbl_80017734, &lbl_80017768, &lbl_8001779C,
     &lbl_800177C4,
 };
-#else
-void* jtbl_800EA668[50] = {0};
-#endif
 
 char D_800EA730[] = "Accessing Card";
 char D_800EA740[] = "Writing Game Data";
@@ -294,16 +290,20 @@ bool mcardGameErase(MemCard* pMCard, s32 index) {
 
 bool mcardGameRelease(MemCard* pMCard) {
     if (pMCard->bufferCreated == 0) {
-        if (pMCard->file.game.buffer != NULL && !xlHeapFree(&pMCard->file.game.buffer)) {
-            return false;
+        if (pMCard->file.game.buffer != NULL) {
+            if (!xlHeapFree(&pMCard->file.game.buffer)) {
+                return false;
+            }
         }
 
         pMCard->file.game.size = 0;
         memset(&pMCard->file.game, 0, 4);
     }
 
-    if (pMCard->file.game.writtenBlocks != NULL && !xlHeapFree(&pMCard->file.game.writtenBlocks)) {
-        return false;
+    if (pMCard->file.game.writtenBlocks != NULL) {
+        if (!xlHeapFree(&pMCard->file.game.writtenBlocks)) {
+            return false;
+        }
     }
 
     pMCard->file.game.writtenConfig = 0;
@@ -415,8 +415,8 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
     char testByte;
 
     testByte = pMCard->file.game.buffer[0];
-    bWrite2Card = 1;
-    bNoWriteInCurrentFrame[currentIdx] = 0;
+    bWrite2Card = true;
+    bNoWriteInCurrentFrame[currentIdx] = false;
 
     memcpy(&pMCard->file.game.buffer[address], data, size);
 
@@ -461,8 +461,10 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
             pMCard->saveToggle = 1;
             pMCard->wait = 0;
             mcardOpenDuringGame(pMCard);
-            if (pMCard->saveToggle == 1 && !mcardUpdate()) {
-                return false;
+            if (pMCard->saveToggle == 1) {
+                if (!mcardUpdate()) {
+                    return false;
+                }
             }
         } else if (size == 0x1450 && toggle2 == 0) {
             toggle2 = 1;
@@ -477,8 +479,10 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
             pMCard->saveToggle = 1;
             pMCard->wait = 0;
             mcardOpenDuringGame(pMCard);
-            if (pMCard->saveToggle == 1 && !mcardUpdate()) {
-                return false;
+            if (pMCard->saveToggle == 1) {
+                if (!mcardUpdate()) {
+                    return false;
+                }
             }
         }
     }
