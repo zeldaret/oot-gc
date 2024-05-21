@@ -461,8 +461,8 @@ static inline void setInterruptRegs(VITimingInfo* tm) {
     changed |= VI_BITMASK(VI_DISP_INT_0);
 }
 
-static inline void setPicConfig(u16 fbSizeX, VIXFBMode xfbMode, u16 panPosX, u16 panSizeX, u8* wordPerLine, u8* std, u8* wpl,
-                         u8* xof) {
+static inline void setPicConfig(u16 fbSizeX, VIXFBMode xfbMode, u16 panPosX, u16 panSizeX, u8* wordPerLine, u8* std,
+                                u8* wpl, u8* xof) {
     *wordPerLine = (u8)((fbSizeX + 15) / 16);
     *std = (u8)((xfbMode == VI_XFBMODE_SF) ? *wordPerLine : (u8)(2 * *wordPerLine));
     *xof = (u8)(panPosX % 16);
@@ -511,8 +511,8 @@ static inline void setScalingRegs(u16 panSizeX, u16 dispSizeX, bool is3D) {
     }
 }
 
-static inline void calcFbbs(u32 bufAddr, u16 panPosX, u16 panPosY, u8 wordPerLine, VIXFBMode xfbMode, u16 dispPosY, u32* tfbb,
-                     u32* bfbb) {
+static inline void calcFbbs(u32 bufAddr, u16 panPosX, u16 panPosY, u8 wordPerLine, VIXFBMode xfbMode, u16 dispPosY,
+                            u32* tfbb, u32* bfbb) {
     u32 bytesPerLine, xoffInWords;
     xoffInWords = (u32)panPosX / 16;
     bytesPerLine = (u32)wordPerLine * 32;
