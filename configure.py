@@ -292,8 +292,8 @@ config.libs = [
     DolphinLib(
         "exi",
         [
-            Object(NonMatching, "dolphin/exi/EXIBios.c"),
-            Object(NonMatching, "dolphin/exi/EXIUart.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/exi/EXIBios.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/exi/EXIUart.c"),
         ],
     ),
     DolphinLib(
