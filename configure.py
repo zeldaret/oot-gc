@@ -299,8 +299,8 @@ config.libs = [
     DolphinLib(
         "si",
         [
-            Object(NonMatching, "dolphin/si/SIBios.c"),
-            Object(NonMatching, "dolphin/si/SISamplingRate.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/si/SIBios.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/si/SISamplingRate.c"),
         ],
     ),
     DolphinLib(
