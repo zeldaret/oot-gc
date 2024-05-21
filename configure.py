@@ -312,7 +312,7 @@ config.libs = [
     DolphinLib(
         "db",
         [
-            Object(NonMatching, "dolphin/db/db.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/db/db.c"),
         ],
     ),
     DolphinLib(
