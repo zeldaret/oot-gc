@@ -59,6 +59,7 @@ typedef enum _GXPixelFmt {
     GX_PF_U8,
     GX_PF_V8,
     GX_PF_YUV420,
+    GX_MAX_PIXELFMT
 } GXPixelFmt;
 
 typedef enum _GXPrimitive {
@@ -1689,6 +1690,14 @@ typedef enum _GXXfTexGen {
     GX_XF_TG_CLR0 = 2, // Color texgen for color 0 (s,t) = (r, g:b)
     GX_XF_TG_CLR1 = 3, // Color texgen for color 1 (s,t) = (r, g:b)
 } GXXfTexGen;
+
+// Transform memory types.
+typedef enum _GXXfMem {
+	GX_XF_MEM_POSMTX     = 0x000, // position coord matrix
+	GX_XF_MEM_NRMMTX     = 0x400, // normal coord matrix
+	GX_XF_MEM_DUALTEXMTX = 0x500, // dual texture matrix
+	GX_XF_MEM_LIGHTOBJ   = 0x600, // light object
+} GXXfMem;
 
 // BP GenMode locators.
 typedef enum _GXBPGenMode {

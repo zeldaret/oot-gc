@@ -39,6 +39,7 @@ extern _INT32 __extended_huge[];
 #define HUGE_VALF (*(float*)__float_huge)
 #define HUGE_VALL (*(long double*)__extended_huge)
 #define M_PI 3.14159265358979323846
+#define M_SQRT3 1.73205f
 
 double fabs(double x);
 double fmod(double x, double m);

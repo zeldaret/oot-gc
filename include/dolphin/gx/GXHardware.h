@@ -1,6 +1,7 @@
 #ifndef _DOLPHIN_GX_HARDWARE_H
 #define _DOLPHIN_GX_HARDWARE_H
 
+#include "dolphin/gx/GXFifo.h"
 #include "dolphin/types.h"
 
 #define GX_BITFIELD(field, pos, size, value) \
@@ -15,9 +16,9 @@
 #define GX_SET_TRUNC(reg, x, st, end) GX_BITFIELD_TRUNC((reg), (st), ((end) - (st) + 1), (x))
 
 #define GET_REG_FIELD(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
-#define SET_REG_FIELD(reg, size, shift, val)                                                \
-    do {                                                                                    \
-        (reg) = ((u32)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((u32)(val) << (shift)); \
+#define SET_REG_FIELD(line, reg, size, shift, val)                                                \
+    do {                                                                                          \
+        (reg) = ((u32)__rlwimi((u32)(reg), (val), (shift), 32 - (shift) - (size), 31 - (shift))); \
     } while (0)
 
 #define GX_WRITE_SOME_REG4(a, b, c, addr) \

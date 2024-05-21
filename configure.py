@@ -336,9 +336,9 @@ config.libs = [
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXTexture.c"),
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXBump.c"),
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXTev.c"),
-            Object(NonMatching, "dolphin/gx/GXPixel.c"),
-            Object(NonMatching, "dolphin/gx/GXTransform.c"),
-            Object(NonMatching, "dolphin/gx/GXPerf.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXPixel.c", extra_cflags=["-fp_contract off"]),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXPerf.c"),
         ],
     ),
     DolphinLib(
