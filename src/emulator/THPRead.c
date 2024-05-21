@@ -36,15 +36,14 @@ bool movieGXInit(void) {
     GXColor WHITE = {0};
     Mtx identity_mtx = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, -1.0}};
 
-    // possible bug? GX_TG_MTX3x4 vs GX_TG_MTX2x4 (see identity_mtx)
-    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_TEX2, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD3, GX_TG_MTX2x4, GX_TG_TEX3, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD4, GX_TG_MTX2x4, GX_TG_TEX4, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD5, GX_TG_MTX2x4, GX_TG_TEX5, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD6, GX_TG_MTX2x4, GX_TG_TEX6, 0x3C, GX_FALSE, 0x7D);
-    GXSetTexCoordGen2(GX_TEXCOORD7, GX_TG_MTX2x4, GX_TG_TEX7, 0x3C, GX_FALSE, 0x7D);
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_TEX2, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD3, GX_TG_MTX2x4, GX_TG_TEX3, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD4, GX_TG_MTX2x4, GX_TG_TEX4, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD5, GX_TG_MTX2x4, GX_TG_TEX5, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD6, GX_TG_MTX2x4, GX_TG_TEX6, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD7, GX_TG_MTX2x4, GX_TG_TEX7, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
 
     GXSetNumTexGens(1);
     GXClearVtxDesc();
@@ -61,10 +60,10 @@ bool movieGXInit(void) {
     GXEnableTexOffsets(GX_TEXCOORD6, GX_DISABLE, GX_DISABLE);
     GXEnableTexOffsets(GX_TEXCOORD7, GX_DISABLE, GX_DISABLE);
 
-    GXLoadPosMtxImm(identity_mtx, 0);
-    GXLoadNrmMtxImm(identity_mtx, 0);
-    GXSetCurrentMtx(0);
-    GXLoadTexMtxImm(identity_mtx, 0x3C, 0);
+    GXLoadPosMtxImm(identity_mtx, GX_PNMTX0);
+    GXLoadNrmMtxImm(identity_mtx, GX_PNMTX0);
+    GXSetCurrentMtx(GX_PNMTX0);
+    GXLoadTexMtxImm(identity_mtx, GX_IDENTITY, GX_MTX3x4);
 
     GXSetCoPlanar(GX_DISABLE);
     GXSetCullMode(GX_CULL_BACK);
@@ -102,7 +101,7 @@ bool movieGXInit(void) {
     GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
     GXSetZTexture(GX_ZT_DISABLE, GX_TF_Z8, 0);
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < GX_MAX_TEVSTAGE; i++) {
         GXSetTevKColorSel(i, GX_TEV_KCSEL_1_4);
         GXSetTevKAlphaSel(i, GX_TEV_KASEL_1);
         GXSetTevSwapMode(i, GX_TEV_SWAP0, GX_TEV_SWAP0);
@@ -123,7 +122,7 @@ bool movieGXInit(void) {
     GXSetIndTexCoordScale(GX_INDTEXSTAGE2, GX_ITS_1, GX_ITS_1);
     GXSetIndTexCoordScale(GX_INDTEXSTAGE3, GX_ITS_1, GX_ITS_1);
 
-    GXSetFog(GX_FOG_NONE, 0.0f, 1.0f, 0.10000000149011612f, 1.0f, BLACK);
+    GXSetFog(GX_FOG_NONE, 0.0f, 1.0f, 0.1f, 1.0f, BLACK);
     GXSetFogRangeAdj(GX_DISABLE, 0, NULL);
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
     GXSetColorUpdate(GX_ENABLE);
@@ -136,7 +135,7 @@ bool movieGXInit(void) {
     GXSetFieldMask(GX_ENABLE, GX_ENABLE);
 
     GXSetCopyClear(GX_DEFAULT_BG, 0xFFFFFF);
-    GXSetCopyClamp(3); // missing enum?
+    GXSetCopyClamp((GXFBClamp)(GX_CLAMP_TOP | GX_CLAMP_BOTTOM));
     GXSetDispCopyGamma(GX_GM_1_0);
     GXSetDispCopyFrame2Field(GX_COPY_PROGRESSIVE);
     GXClearBoundingBox();
