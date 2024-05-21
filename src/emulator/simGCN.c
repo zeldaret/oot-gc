@@ -63,7 +63,7 @@ u32 Colors_u32[3] ALIGNAS(32) = {
 };
 
 u8 TexCoords_u8[] ALIGNAS(32) = {
-    0, 0, 1, 0 1, 1, 0, 1,
+    0, 0, 1, 0, 1, 1, 0, 1,
 };
 
 static f32 gOrthoMtx[4][4] ALIGNAS(32);
