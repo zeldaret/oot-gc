@@ -702,12 +702,7 @@ void VIConfigure(GXRenderModeObj* rm) {
             }
         default:
         panic:
-            OSPanic(__FILE__,
-#if VERSION <= MQ_E
-                    1884,
-#else
-                    1908,
-#endif
+            OSPanic(__FILE__, VERSION <= MQ_E ? 1884 : 1908,
                     "VIConfigure(): Tried to change mode from (%d) to (%d), which is forbidden\n", tvInBootrom,
                     tvInGame);
     }
@@ -848,17 +843,15 @@ static void GetCurrentDisplayPosition(u32* hct, u32* vct) {
 
 static inline u32 getCurrentHalfLine(void) {
     u32 hcount;
-#if VERSION <= MQ_E
-    u32 vcount0;
-#endif
     u32 vcount;
 
 #if VERSION <= MQ_E
-    vcount = __VIRegs[22] & 0x7FF;
+    u32 vcount0;
+    vcount = __VIRegs[VI_VERT_COUNT] & 0x7FF;
     do {
         vcount0 = vcount;
-        hcount = __VIRegs[23] & 0x7FF;
-        vcount = __VIRegs[22] & 0x7FF;
+        hcount = __VIRegs[VI_HORIZ_COUNT] & 0x7FF;
+        vcount = __VIRegs[VI_VERT_COUNT] & 0x7FF;
     } while (vcount0 != vcount);
 #else
     GetCurrentDisplayPosition(&hcount, &vcount);
@@ -866,16 +859,7 @@ static inline u32 getCurrentHalfLine(void) {
     return ((vcount - 1) * 2) + ((hcount - 1) / CurrTiming->hlw);
 }
 
-static u32 getCurrentFieldEvenOdd(void) {
-#if VERSION <= MQ_E
-    if (getCurrentHalfLine() < CurrTiming->numHalfLines) {
-        return 1;
-    }
-    return 0;
-#else
-    return (getCurrentHalfLine() < CurrTiming->numHalfLines) ? 1 : 0;
-#endif
-}
+static u32 getCurrentFieldEvenOdd(void) { return (getCurrentHalfLine() < CurrTiming->numHalfLines) ? 1 : 0; }
 
 u32 VIGetNextField(void) {
     s32 nextField;

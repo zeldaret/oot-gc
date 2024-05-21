@@ -542,21 +542,21 @@ void EXIInit(void) {
     __OSSetInterruptHandler(__OS_INTERRUPT_EXI_2_TC, TCIntrruptHandler);
 
 #if VERSION <= MQ_E
-    if ((OSGetConsoleType() & 0x10000000) != 0)
-#else
-    EXIGetID(0, 2, &IDSerialPort1);
-
-    if (__OSInIPL)
-#endif
-    {
+    if ((OSGetConsoleType() & 0x10000000) != 0) {
         __EXIProbeStartTime[0] = __EXIProbeStartTime[1] = 0;
         Ecb[0].idTime = Ecb[1].idTime = 0;
         __EXIProbe(0);
         __EXIProbe(1);
     }
+#else
+    EXIGetID(0, 2, &IDSerialPort1);
 
-#if VERSION > MQ_E
-    else if (EXIGetID(0, 0, &id) && id == 0x07010000) {
+    if (__OSInIPL) {
+        __EXIProbeStartTime[0] = __EXIProbeStartTime[1] = 0;
+        Ecb[0].idTime = Ecb[1].idTime = 0;
+        __EXIProbe(0);
+        __EXIProbe(1);
+    } else if (EXIGetID(0, 0, &id) && id == 0x07010000) {
         __OSEnableBarnacle(1, 0);
     } else if (EXIGetID(1, 0, &id) && id == 0x07010000) {
         __OSEnableBarnacle(0, 2);
