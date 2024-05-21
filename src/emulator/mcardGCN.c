@@ -1,8 +1,8 @@
 #include "emulator/mcardGCN.h"
+#include "emulator/mcardGCN_jumptables.h"
+#include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
-#include "emulator/simGCN.h"
-#include "emulator/mcardGCN_jumptables.h"
 
 // "The Legend of Zelda: Ocarina of Time"
 char D_800EA548[] = "ゼルダの伝説：時のオカリナ";
@@ -87,7 +87,7 @@ static bool mcardGCErrorHandler(MemCard* pMCard, s32 gcError);
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardVerifyChecksumFileHeader.s")
 
-static s32 mcardPoll(MemCard* pMCard);
+static bool mcardPoll(MemCard* pMCard);
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardPoll.s")
 
 static bool mcardReadyCard(MemCard* pMCard);
@@ -101,7 +101,7 @@ static bool mcardReadyCard(MemCard* pMCard);
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReadFileHeader.s")
 
-static s32 mcardWriteFileHeader(MemCard* pMCard);
+static bool mcardWriteFileHeader(MemCard* pMCard);
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteFileHeader.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReadFileHeaderInitial.s")
@@ -148,14 +148,14 @@ bool mcardInit(MemCard* pMCard) {
 bool mcardCardErase(MemCard* pMCard) {
     s32 slot;
 
-    if (mcardReadyCard(pMCard) == 0) {
+    if (!mcardReadyCard(pMCard)) {
         if (pMCard->error != MC_E_NONE && pMCard->error != MC_E_BROKEN && pMCard->error != MC_E_ENCODING) {
             CARDUnmount(pMCard->slot);
             return false;
         }
     }
 
-    if (mcardGCErrorHandler(pMCard, CARDFormatAsync(pMCard->slot, NULL)) == 0) {
+    if (!mcardGCErrorHandler(pMCard, CARDFormatAsync(pMCard->slot, NULL))) {
         CARDUnmount(pMCard->slot);
         return false;
     }
@@ -268,7 +268,7 @@ bool mcardGameErase(MemCard* pMCard, s32 index) {
             return false;
         }
 
-        if (mcardWriteFileHeader(pMCard) == 0) {
+        if (!mcardWriteFileHeader(pMCard)) {
             pMCard->accessType = 0;
             if (pMCard->saveToggle == 1) {
                 if (pMCard->file.fileInfo.chan != -1) {
@@ -410,7 +410,80 @@ bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand) {
 }
 #endif
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWrite.s")
+bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
+    s32 i;
+    char testByte;
+
+    testByte = pMCard->file.game.buffer[0];
+    bWrite2Card = 1;
+    bNoWriteInCurrentFrame[currentIdx] = 0;
+
+    memcpy(&pMCard->file.game.buffer[address], data, size);
+
+    if (gpSystem->eTypeROM == SRT_ZELDA1) {
+        if (address == 0) {
+            if (toggle != 0 && pMCard->soundToggle == 1) {
+                if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
+                    pMCard->file.game.buffer[0] &= 0xFC;
+                    pMCard->file.game.buffer[0] |= 1;
+                } else if (OSGetSoundMode() == OS_SOUND_MODE_STEREO) {
+                    if ((pMCard->file.game.buffer[0] & 0xF) == 1) {
+                        pMCard->file.game.buffer[0] &= 0xFC;
+                    }
+                }
+                *data = pMCard->file.game.buffer[0];
+                toggle = 0;
+            } else if (pMCard->file.game.buffer[0] != testByte) {
+                if ((testByte & 3) == 1) {
+                    OSSetSoundMode(OS_SOUND_MODE_STEREO);
+                } else if ((pMCard->file.game.buffer[0] & 3) == 1) {
+                    OSSetSoundMode(OS_SOUND_MODE_MONO);
+                }
+            }
+        }
+        if (pMCard->saveToggle == 1) {
+            //! TODO: fake match
+            for (i = (u64)((u32)address / 8188); i < (u32)(address + size + 8187) / 8188; i++) {
+                pMCard->file.game.writtenBlocks[i] = 1;
+            }
+
+            if (size == 0x1450 && toggle2 == 1) {
+                toggle2 = 0;
+                simulatorRumbleStop(0);
+                if (!mcardUpdate()) {
+                    return false;
+                }
+            } else if (size == 0x1450 && toggle2 == 0) {
+                toggle2 = 1;
+            }
+        } else if (size == 0x1450 && toggle2 == 1) {
+            toggle2 = 0;
+            pMCard->saveToggle = 1;
+            pMCard->wait = 0;
+            mcardOpenDuringGame(pMCard);
+            if (pMCard->saveToggle == 1 && !mcardUpdate()) {
+                return false;
+            }
+        } else if (size == 0x1450 && toggle2 == 0) {
+            toggle2 = 1;
+        }
+    } else {
+        if (pMCard->saveToggle == 1) {
+            simulatorRumbleStop(0);
+            if (!mcardUpdate()) {
+                return false;
+            }
+        } else {
+            pMCard->saveToggle = 1;
+            pMCard->wait = 0;
+            mcardOpenDuringGame(pMCard);
+            if (pMCard->saveToggle == 1 && !mcardUpdate()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardOpen.s")
 

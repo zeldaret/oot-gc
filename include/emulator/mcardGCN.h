@@ -157,27 +157,27 @@ typedef struct _MCARD {
 
 extern MemCard mCard;
 
-s32 mcardReadGameData(MemCard* pMCard);
-s32 mcardWriteGameDataReset(MemCard* pMCard);
-s32 mcardReInit(MemCard* pMCard);
+bool mcardReadGameData(MemCard* pMCard);
+bool mcardWriteGameDataReset(MemCard* pMCard);
+bool mcardReInit(MemCard* pMCard);
 bool mcardInit(MemCard* pMCard);
-s32 mcardFileSet(MemCard* pMCard, char* name);
-s32 mcardGameSet(MemCard* pMCard, char* name);
-s32 mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, char* banner, s32 size);
-s32 mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 size);
+bool mcardFileSet(MemCard* pMCard, char* name);
+bool mcardGameSet(MemCard* pMCard, char* name);
+bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, char* banner, s32 size);
+bool mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 size);
 bool mcardCardErase(MemCard* pMCard);
 bool mcardFileErase(MemCard* pMCard);
 bool mcardGameErase(MemCard* pMCard, s32 index);
 bool mcardGameRelease(MemCard* pMCard);
 bool mcardRead(MemCard* pMCard, s32 address, s32 size, char* data);
-s32 mcardMenu(MemCard* pMCard, __anon_0x1A5F0 menuEntry, MemCardCommand* pCommand);
+bool mcardMenu(MemCard* pMCard, __anon_0x1A5F0 menuEntry, MemCardCommand* pCommand);
 bool mcardOpenError(MemCard* pMCard, MemCardCommand* pCommand);
 bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand);
-s32 mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);
-s32 mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
-              s32* defaultConfiguration, s32 fileSize, s32 gameSize);
-s32 mcardOpenDuringGame(MemCard* pMCard);
-s32 mcardStore(MemCard* pMCard);
-s32 mcardUpdate(void);
+bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);
+bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char* banner, char* gameName,
+               s32* defaultConfiguration, s32 fileSize, s32 gameSize);
+bool mcardOpenDuringGame(MemCard* pMCard);
+bool mcardStore(MemCard* pMCard);
+bool mcardUpdate(void);
 
 #endif
