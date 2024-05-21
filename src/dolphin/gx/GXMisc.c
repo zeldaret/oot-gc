@@ -1,3 +1,4 @@
+#include "dolphin/base.h"
 #include "dolphin/gx.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"

@@ -7,5 +7,6 @@
 GXFifoObj* GXInit(void* base, u32 size);
 void __GXInitGX();
 void __GXPEInit();
+void __GXAbort(void);
 
 #endif
