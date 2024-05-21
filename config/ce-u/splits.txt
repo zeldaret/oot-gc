@@ -222,3 +222,14 @@ emulator/_buildtev.c:
 	.bss        start:0x80133150 end:0x80133420
 	.sdata      start:0x80137900 end:0x80137910
 	.sdata2     start:0x801385D8 end:0x801385E0
+
+debugger/AmcExi2Stubs.c:
+	.text       start:0x800D2550 end:0x800D2580
+
+debugger/DebuggerDriver.c:
+	.text       start:0x800D2580 end:0x800D3000
+	.sdata      start:0x80137A78 end:0x80137A79
+	.sbss       start:0x801381E8 end:0x801381FD
+
+debugger/odenotstub.c:
+	.text       start:0x800D3000 end:0x800D3008

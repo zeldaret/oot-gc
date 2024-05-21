@@ -501,9 +501,9 @@ config.libs = [
     GenericLib(
         "debugger",
         [
-            Object(NonMatching, "debugger/AmcExi2Stubs.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "debugger/AmcExi2Stubs.c"),
             Object(NonMatching, "debugger/DebuggerDriver.c"),
-            Object(NonMatching, "debugger/odenotstub.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "debugger/odenotstub.c"),
         ]
     ),
 ]
