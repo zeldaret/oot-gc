@@ -1,6 +1,8 @@
 #ifndef DEBUGGER_H
 #define DEBUGGER_H
 
+#include "dolphin.h"
+
 // EXI error codes
 typedef enum {
     AMC_EXI_NO_ERROR = 0,
