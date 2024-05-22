@@ -1,5 +1,5 @@
-#include "dolphin/SIPriv.h"
 #include "dolphin/hw_regs.h"
+#include "dolphin/si.h"
 #include "dolphin/vi.h"
 
 #pragma dont_inline on

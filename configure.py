@@ -344,21 +344,21 @@ config.libs = [
     DolphinLib(
         "pad",
         [
-            Object(NonMatching, "dolphin/pad/Padclamp.c"),
-            Object(NonMatching, "dolphin/pad/Pad.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/pad/Padclamp.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/pad/Pad.c"),
         ],
     ),
     DolphinLib(
         "dvd",
         [
-            Object(NonMatching, "dolphin/dvd/dvdlow.c"),
-            Object(NonMatching, "dolphin/dvd/dvdfs.c"),
-            Object(NonMatching, "dolphin/dvd/dvd.c"),
-            Object(NonMatching, "dolphin/dvd/dvdqueue.c"),
-            Object(NonMatching, "dolphin/dvd/dvderror.c"),
-            Object(NonMatching, "dolphin/dvd/dvdidutils.c"),
-            Object(NonMatching, "dolphin/dvd/dvdFatal.c"),
-            Object(NonMatching, "dolphin/dvd/fstload.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvdlow.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvdfs.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvd.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvdqueue.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvderror.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvdidutils.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/dvdFatal.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dvd/fstload.c"),
         ],
     ),
     DolphinLib(

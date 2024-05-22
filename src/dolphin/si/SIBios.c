@@ -1,6 +1,6 @@
 #include "dolphin/OSRtcPriv.h"
-#include "dolphin/SIPriv.h"
 #include "dolphin/os.h"
+#include "dolphin/si.h"
 
 vu32 __SIRegs[64] AT_ADDRESS(0xCC006400);
 
@@ -11,14 +11,6 @@ const char* __SIVersion = "<< Dolphin SDK - SI\trelease build: Sep  5 2002 05:33
 #else
 const char* __SIVersion = "<< Dolphin SDK - SI\trelease build: Apr 17 2003 12:33:19 (0x2301) >>";
 #endif
-
-typedef struct SIControl {
-    s32 chan;
-    u32 poll;
-    u32 inputBytes;
-    void* input;
-    SICallback callback;
-} SIControl;
 
 static SIControl Si = {
     -1, 0, 0, NULL, NULL,

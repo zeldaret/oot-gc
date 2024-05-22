@@ -14,7 +14,15 @@
 #define PAD_MOTOR_RUMBLE 1
 #define PAD_MOTOR_STOP_HARD 2
 
+#define PAD_CHAN0 0
+#define PAD_CHAN1 1
+#define PAD_CHAN2 2
+#define PAD_CHAN3 3
+
 #define PAD_CHAN0_BIT 0x80000000
+#define PAD_CHAN1_BIT 0x40000000
+#define PAD_CHAN2_BIT 0x20000000
+#define PAD_CHAN3_BIT 0x10000000
 
 #define PAD_MAX_CONTROLLERS 4
 
@@ -32,10 +40,16 @@
 #define PAD_BUTTON_MENU (1 << 12) // 0x1000
 #define PAD_BUTTON_START (1 << 12) // 0x1000
 
+#define PAD_ALL                                                                                             \
+    (PAD_BUTTON_LEFT | PAD_BUTTON_RIGHT | PAD_BUTTON_DOWN | PAD_BUTTON_UP | PAD_TRIGGER_Z | PAD_TRIGGER_R | \
+     PAD_TRIGGER_L | PAD_BUTTON_A | PAD_BUTTON_B | PAD_BUTTON_X | PAD_BUTTON_Y | PAD_BUTTON_MENU | 0x2000 | 0x0080)
+
 #define PAD_ERR_NONE 0
 #define PAD_ERR_NO_CONTROLLER -1
 #define PAD_ERR_NOT_READY -2
 #define PAD_ERR_TRANSFER -3
+
+typedef void (*PADSamplingCallback)(void);
 
 typedef struct PADStatus {
     /* 0x00 */ u16 button;
@@ -50,6 +64,8 @@ typedef struct PADStatus {
     /* 0x0A */ s8 err;
 } PADStatus;
 
+extern u32 __PADFixBits;
+
 bool PADInit(void);
 u32 PADRead(PADStatus* status);
 bool PADRecalibrate(u32 mask);
@@ -57,6 +73,7 @@ bool PADReset(u32 mask);
 void PADControlMotor(s32 chan, u32 command);
 void PADSetSpec(u32 spec);
 void PADClamp(PADStatus* status);
-s32 __PADDisableRecalibration(s32 disable);
+bool __PADDisableRecalibration(bool disable);
+PADSamplingCallback PADSetSamplingCallback(PADSamplingCallback callback);
 
 #endif
