@@ -128,7 +128,7 @@ typedef struct _MCARD {
     /* 0x000 */ __anon_0x1AEB5 file;
     /* 0x35C */ MemCardError error;
     /* 0x360 */ s32 slot;
-    /* 0x364 */ s32 (*pPollFunction)(void);
+    /* 0x364 */ bool (*pPollFunction)(void);
     /* 0x368 */ s32 pollPrevBytes;
     /* 0x36C */ s32 pollSize;
     /* 0x370 */ char pollMessage[256];
