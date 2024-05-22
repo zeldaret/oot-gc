@@ -215,6 +215,7 @@ void OSPanic(const char* file, int line, const char* msg, ...);
 #include "dolphin/os/OSAlarm.h"
 #include "dolphin/os/OSAlloc.h"
 #include "dolphin/os/OSArena.h"
+#include "dolphin/os/OSBootInfo.h"
 #include "dolphin/os/OSCache.h"
 #include "dolphin/os/OSContext.h"
 #include "dolphin/os/OSError.h"

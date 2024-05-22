@@ -14,8 +14,14 @@ typedef struct {
 } DVDDiskID;
 
 typedef struct DVDCommandBlock DVDCommandBlock;
+typedef struct DVDFileInfo DVDFileInfo;
+typedef struct DVDQueue DVDQueue;
 
+typedef void (*DVDCallback)(s32 result, DVDFileInfo* fileInfo);
 typedef void (*DVDCBCallback)(s32 result, DVDCommandBlock* block);
+typedef void (*DVDLowCallback)(u32 intType);
+typedef void (*DVDDoneReadCallback)(s32, DVDFileInfo*);
+typedef void (*DVDOptionalCommandChecker)(DVDCommandBlock* block, DVDLowCallback callback);
 
 struct DVDCommandBlock {
     /* 0x00 */ DVDCommandBlock* next;
@@ -32,15 +38,16 @@ struct DVDCommandBlock {
     /* 0x2C */ void* userData;
 };
 
-typedef struct DVDFileInfo DVDFileInfo;
-
-typedef void (*DVDCallback)(s32 result, DVDFileInfo* fileInfo);
-
 struct DVDFileInfo {
     /* 0x00 */ DVDCommandBlock cb;
     /* 0x30 */ u32 startAddr;
     /* 0x34 */ u32 length;
     /* 0x38 */ DVDCallback callback;
+};
+
+struct DVDQueue {
+    DVDQueue* mHead; // _00
+    DVDQueue* mTail; // _04
 };
 
 typedef struct DVDDir {
@@ -56,6 +63,7 @@ typedef struct DVDDirEntry {
 } DVDDirEntry;
 
 void DVDInit(void);
+void DVDReset(void);
 bool DVDOpen(const char* fileName, DVDFileInfo* fileInfo);
 bool DVDClose(DVDFileInfo*);
 bool DVDReadAsyncPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, DVDCallback callback, s32 prio);
@@ -72,7 +80,8 @@ s32 DVDCancel(DVDCommandBlock* block);
 s32 DVDGetDriveStatus(void);
 bool DVDCheckDisk(void);
 DVDDiskID* DVDGetCurrentDiskID(void);
-bool DVDCompareDiskID(const DVDDiskID* id1, const DVDDiskID* id2);
+bool DVDCompareDiskID(const DVDDiskID* discID1, const DVDDiskID* discID2);
+void __DVDLowSetWAType(u32 type, u32 location);
 
 #define DVDReadAsync(fileInfo, addr, length, offset, callback) \
     DVDReadAsyncPrio((fileInfo), (addr), (length), (offset), (callback), 2)
@@ -95,5 +104,12 @@ bool DVDCompareDiskID(const DVDDiskID* id1, const DVDDiskID* id2);
 #define DVD_STATE_IGNORED 9
 #define DVD_STATE_CANCELED 10
 #define DVD_STATE_RETRY 11
+
+#define DVD_MIN_TRANSFER_SIZE 32
+
+#define DVD_FILEINFO_READY 0
+#define DVD_FILEINFO_BUSY 1
+
+#define DVD_AIS_SUCCESS 0
 
 #endif
