@@ -28,6 +28,14 @@
 typedef void (*SICallback)(s32 chan, u32 sr, OSContext* context);
 typedef void (*SITypeAndStatusCallback)(s32 chan, u32 type);
 
+typedef struct SIControl {
+    s32 chan;
+    u32 poll;
+    u32 inputBytes;
+    void* input;
+    SICallback callback;
+} SIControl;
+
 typedef struct SIPacket {
     s32 chan;
     void* output;

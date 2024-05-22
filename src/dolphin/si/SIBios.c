@@ -12,14 +12,6 @@ const char* __SIVersion = "<< Dolphin SDK - SI\trelease build: Sep  5 2002 05:33
 const char* __SIVersion = "<< Dolphin SDK - SI\trelease build: Apr 17 2003 12:33:19 (0x2301) >>";
 #endif
 
-typedef struct SIControl {
-    s32 chan;
-    u32 poll;
-    u32 inputBytes;
-    void* input;
-    SICallback callback;
-} SIControl;
-
 static SIControl Si = {
     -1, 0, 0, NULL, NULL,
 };
