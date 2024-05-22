@@ -46,8 +46,8 @@ struct DVDFileInfo {
 };
 
 struct DVDQueue {
-    DVDQueue* mHead; // _00
-    DVDQueue* mTail; // _04
+    /* 0x00 */ DVDQueue* mHead;
+    /* 0x04 */ DVDQueue* mTail;
 };
 
 typedef struct DVDDir {
