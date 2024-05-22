@@ -14,10 +14,10 @@
 #define PAD_MOTOR_RUMBLE 1
 #define PAD_MOTOR_STOP_HARD 2
 
-#define PAD_CHAN0   0
-#define PAD_CHAN1   1
-#define PAD_CHAN2   2
-#define PAD_CHAN3   3
+#define PAD_CHAN0 0
+#define PAD_CHAN1 1
+#define PAD_CHAN2 2
+#define PAD_CHAN3 3
 
 #define PAD_CHAN0_BIT 0x80000000
 #define PAD_CHAN1_BIT 0x40000000
@@ -40,9 +40,9 @@
 #define PAD_BUTTON_MENU (1 << 12) // 0x1000
 #define PAD_BUTTON_START (1 << 12) // 0x1000
 
-#define PAD_ALL                                                                                                                          \
-	(PAD_BUTTON_LEFT | PAD_BUTTON_RIGHT | PAD_BUTTON_DOWN | PAD_BUTTON_UP | PAD_TRIGGER_Z | PAD_TRIGGER_R | PAD_TRIGGER_L | PAD_BUTTON_A \
-	 | PAD_BUTTON_B | PAD_BUTTON_X | PAD_BUTTON_Y | PAD_BUTTON_MENU | 0x2000 | 0x0080)
+#define PAD_ALL                                                                                             \
+    (PAD_BUTTON_LEFT | PAD_BUTTON_RIGHT | PAD_BUTTON_DOWN | PAD_BUTTON_UP | PAD_TRIGGER_Z | PAD_TRIGGER_R | \
+     PAD_TRIGGER_L | PAD_BUTTON_A | PAD_BUTTON_B | PAD_BUTTON_X | PAD_BUTTON_Y | PAD_BUTTON_MENU | 0x2000 | 0x0080)
 
 #define PAD_ERR_NONE 0
 #define PAD_ERR_NO_CONTROLLER -1

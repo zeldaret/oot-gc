@@ -51,7 +51,7 @@ u32 SIEnablePolling(u32 poll);
 u32 SIDisablePolling(u32 poll);
 bool SIGetResponse(s32 chan, void* data);
 bool SITransfer(s32 chan, void* output, u32 outputBytes, void* input, u32 inputBytes,
-               void (*callback)(s32, u32, OSContext*), s64 time);
+                void (*callback)(s32, u32, OSContext*), s64 time);
 u32 SIGetType(s32 chan);
 u32 SIGetTypeAsync(s32 chan, SITypeAndStatusCallback callback);
 

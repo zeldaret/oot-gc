@@ -35,10 +35,6 @@ static const PADClampRegion ClampRegion = {
     44,
 };
 
-/**
- * @note Address: 0x800F3048
- * @note Size: 0x130
- */
 void ClampStick(s8* px, s8* py, s8 max, s8 xy, s8 min) {
     int x = *px;
     int y = *py;
@@ -94,10 +90,6 @@ void ClampStick(s8* px, s8* py, s8 max, s8 xy, s8 min) {
     *py = (s8)(signY * y);
 }
 
-/**
- * @note Address: 0x800F3178
- * @note Size: 0x1A8
- */
 inline void ClampCircle(s8* px, s8* py, s8 radius, s8 min) {
     int x = *px;
     int y = *py;
@@ -131,10 +123,6 @@ inline void ClampCircle(s8* px, s8* py, s8 radius, s8 min) {
     *py = y;
 }
 
-/**
- * @note Address: N/A
- * @note Size: 0x3C
- */
 inline void ClampTrigger(u8* trigger, u8 min, u8 max) {
     if (*trigger <= min) {
         *trigger = 0;
@@ -146,10 +134,6 @@ inline void ClampTrigger(u8* trigger, u8 min, u8 max) {
     }
 }
 
-/**
- * @note Address: 0x800F3320
- * @note Size: 0x114
- */
 void PADClamp(PADStatus* status) {
     int i;
     for (i = 0; i < PAD_MAX_CONTROLLERS; i++, status++) {
