@@ -1,6 +1,7 @@
 #ifndef _MATH_H_
 #define _MATH_H_
 
+#include "intrinsics.h"
 #include "stdint.h"
 
 #ifdef __cplusplus
@@ -16,17 +17,7 @@ typedef int _INT32;
 typedef unsigned int _UINT32;
 #endif
 
-int abs(int n);
-#ifdef __MWERKS__
-#define abs(n) __abs(n)
-#define labs(n) __labs(n)
 static inline double fabs(double x) { return __fabs(x); }
-#else
-// static inline int abs(int n) {
-//   int mask = n >> 31;
-//   return (n + mask) ^ mask;
-// }
-#endif
 
 extern _INT32 __float_huge[];
 extern _INT32 __float_nan[];
@@ -41,7 +32,6 @@ extern _INT32 __extended_huge[];
 #define M_PI 3.14159265358979323846
 #define M_SQRT3 1.73205f
 
-double fabs(double x);
 double fmod(double x, double m);
 double sin(double x);
 double cos(double x);
@@ -77,8 +67,6 @@ _MATH_INLINE float powf(float __x, float __y) { return pow(__x, __y); }
 #ifdef __MWERKS__
 #pragma cplusplus on
 #endif
-
-double __frsqrte(double x);
 
 extern inline float sqrtf(float x) {
     const double _half = .5;
