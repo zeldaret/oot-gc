@@ -6,6 +6,7 @@
 #include "dolphin/os/OSBootInfo.h"
 #include "dolphin/os/OSPriv.h"
 #include "dolphin/si.h"
+#include "intrinsics.h"
 #include "macros.h"
 #include "string.h"
 
@@ -16,7 +17,6 @@ extern void __OSCacheInit(void);
 extern void __OSInitSram(void);
 extern void __OSInitAudioSystem(void);
 extern void EnableMetroTRKInterrupts(void);
-void __sync(void);
 
 #if DOLPHIN_REV == 2002
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Sep  5 2002 05:32:39 (0x2301) >>";
