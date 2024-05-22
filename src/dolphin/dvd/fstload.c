@@ -11,12 +11,12 @@ struct bb2struct {
 };
 
 static u32 status;
-static struct bb2struct* bb2; // pointer?
-static u8* idTmp; // also pointer
+static struct bb2struct* bb2;
+static u8* idTmp;
 static u8 bb2Buf[0x3F];
 static u8 block[0x30];
 
-struct blah {
+struct DiskInfo {
     s8 Gamecode[4];
     s8 Company[2];
     u8 DiskID;
@@ -52,7 +52,7 @@ void __fstLoad(void) {
     char* onStr;
     u8 idBuffer[64];
     void* arenaHi;
-    struct blah* di;
+    struct DiskInfo* di;
 
     arenaHi = OSGetArenaHi();
     idTmp = (void*)OSRoundUp32B(idBuffer);

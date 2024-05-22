@@ -5,11 +5,13 @@
 #include "dolphin/types.h"
 #include "string.h"
 
+// required to match
+#define DVD_MIN(a, b) (((a) > (b)) ? (b) : (a))
+
 extern OSThreadQueue __DVDThreadQueue;
 
 const char* __DVDVersion = "<< Dolphin SDK - DVD\trelease build: Jul 23 2003 11:27:57 (0x2301) >>";
 
-// forward declarations for local functions, as needed:
 static void AlarmHandler(OSAlarm* alarm, OSContext* context);
 static void cbForCancelSync(s32 result, DVDCommandBlock* block);
 static void cbForStateBusy(u32 p1);
@@ -38,7 +40,6 @@ static void stateMotorStopped();
 static void stateReady();
 static void stateTimeout();
 
-// Private/weak functions from other files.
 void __DVDInterruptHandler(__OSInterrupt interrupt, OSContext* context);
 DVDCommandBlock* __DVDPopWaitingQueue();
 
@@ -593,9 +594,6 @@ void stateReady() {
     }
 }
 
-// idk why this file insists on doing this in the opposite order
-#define DVDMIN(a, b) (((a) > (b)) ? (b) : (a))
-
 void stateBusy(DVDCommandBlock* block) {
     DVDCommandBlock* finished;
     LastState = stateBusy;
@@ -617,7 +615,7 @@ void stateBusy(DVDCommandBlock* block) {
                 stateReady();
             } else {
                 __DIRegs[DI_COVER_STATUS] = __DIRegs[DI_COVER_STATUS];
-                block->currTransferSize = DVDMIN(block->length - block->transferredSize, 0x80000);
+                block->currTransferSize = DVD_MIN(block->length - block->transferredSize, 0x80000);
                 DVDLowRead((void*)((u8*)block->addr + block->transferredSize), block->currTransferSize,
                            block->offset + block->transferredSize, cbForStateBusy);
             }
@@ -1045,7 +1043,7 @@ void DVDResume() {
 bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     bool enabled;
     DVDLowCallback old;
-    u32 tmp; // dumb ass compiler
+    u32 tmp;
 
     enabled = OSDisableInterrupts();
 
