@@ -258,7 +258,7 @@ config.libs = [
     DolphinLib(
         "base",
         [
-            Object(NonMatching, "dolphin/base/PPCArch.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/base/PPCArch.c"),
         ],
     ),
     DolphinLib(
