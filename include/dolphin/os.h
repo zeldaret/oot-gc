@@ -21,7 +21,11 @@ typedef s64 OSTime;
 typedef u32 OSTick;
 
 extern bool __OSInIPL;
+extern OSTime __OSGetSystemTime(void);
+extern OSTime __OSStartTime;
 
+u8 GameChoice AT_ADDRESS(OS_BASE_CACHED | 0x30E3);
+u16 __OSWirelessPadFixMode AT_ADDRESS(OS_BASE_CACHED | 0x30E0);
 u32 __OSBusClock AT_ADDRESS(OS_BASE_CACHED | 0x00F8);
 u32 __OSCoreClock AT_ADDRESS(OS_BASE_CACHED | 0x00FC);
 

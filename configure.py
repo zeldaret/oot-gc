@@ -344,8 +344,8 @@ config.libs = [
     DolphinLib(
         "pad",
         [
-            Object(NonMatching, "dolphin/pad/Padclamp.c"),
-            Object(NonMatching, "dolphin/pad/Pad.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/pad/Padclamp.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/pad/Pad.c"),
         ],
     ),
     DolphinLib(

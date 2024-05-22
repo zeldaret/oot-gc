@@ -1,5 +1,5 @@
 #include "dolphin/OSRtcPriv.h"
-#include "dolphin/SIPriv.h"
+#include "dolphin/si.h"
 #include "dolphin/os.h"
 
 vu32 __SIRegs[64] AT_ADDRESS(0xCC006400);
