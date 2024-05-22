@@ -5,8 +5,8 @@
 #include "dolphin/types.h"
 
 GXFifoObj* GXInit(void* base, u32 size);
-void __GXInitGX();
-void __GXPEInit();
+void __GXInitGX(void);
+void __GXPEInit(void);
 void __GXAbort(void);
 
 #endif

@@ -21,6 +21,7 @@ typedef s64 OSTime;
 typedef u32 OSTick;
 
 extern bool __OSInIPL;
+
 u32 __OSBusClock AT_ADDRESS(OS_BASE_CACHED | 0x00F8);
 u32 __OSCoreClock AT_ADDRESS(OS_BASE_CACHED | 0x00FC);
 
@@ -202,6 +203,7 @@ volatile int __OSTVMode AT_ADDRESS(OS_BASE_CACHED | 0xCC);
 
 void OSReport(const char* msg, ...);
 void OSPanic(const char* file, int line, const char* msg, ...);
+int __cntlzw(unsigned int n);
 
 #ifdef __cplusplus
 }
@@ -226,4 +228,5 @@ void OSPanic(const char* file, int line, const char* msg, ...);
 #include "dolphin/os/OSRtc.h"
 #include "dolphin/os/OSSerial.h"
 #include "dolphin/os/OSThread.h"
+
 #endif

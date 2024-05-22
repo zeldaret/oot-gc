@@ -1,7 +1,7 @@
 #include "dolphin/gx.h"
 #include "dolphin/mtx.h"
 
-static inline void WriteProjPS(const register f32 src[6], register volatile void* dst) {
+inline void WriteProjPS(const register f32 src[6], register volatile void* dst) {
     register f32 ps_0, ps_1, ps_2;
 
 #ifdef __MWERKS__ // clang-format off
@@ -16,7 +16,7 @@ static inline void WriteProjPS(const register f32 src[6], register volatile void
 #endif // clang-format on
 }
 
-static inline void Copy6Floats(const register f32 src[6], register f32 dst[6]) {
+inline void Copy6Floats(const register f32 src[6], register f32 dst[6]) {
     register f32 ps_0, ps_1, ps_2;
 
 #ifdef __MWERKS__ // clang-format off
@@ -31,7 +31,7 @@ static inline void Copy6Floats(const register f32 src[6], register f32 dst[6]) {
 #endif // clang-format on
 }
 
-static inline void __GXSetProjection(void) {
+inline void __GXSetProjection(void) {
     GX_XF_LOAD_REGS(6, GX_XF_REG_PROJECTIONA);
     WriteProjPS(gx->projMtx, (volatile void*)GXFIFO_ADDR);
     GX_WRITE_U32(gx->projType);
@@ -66,7 +66,7 @@ void GXSetProjectionv(const f32* proj) {
     gx->bpSentNot = GX_TRUE;
 }
 
-static inline void WriteMTXPS4x3(register volatile void* dst, register const Mtx src) {
+inline void WriteMTXPS4x3(register volatile void* dst, register const Mtx src) {
     register f32 ps_0, ps_1, ps_2, ps_3, ps_4, ps_5;
 
 #ifdef __MWERKS__ // clang-format off
@@ -88,7 +88,7 @@ static inline void WriteMTXPS4x3(register volatile void* dst, register const Mtx
 #endif // clang-format on
 }
 
-static inline void WriteMTXPS3x3(register volatile void* dst, register const Mtx src) {
+inline void WriteMTXPS3x3(register volatile void* dst, register const Mtx src) {
     register f32 ps_0, ps_1, ps_2, ps_3, ps_4, ps_5;
 
 #ifdef __MWERKS__ // clang-format off
@@ -110,7 +110,7 @@ static inline void WriteMTXPS3x3(register volatile void* dst, register const Mtx
 #endif // clang-format on
 }
 
-static inline void WriteMTXPS4x2(register volatile void* dst, register const Mtx src) {
+inline void WriteMTXPS4x2(register volatile void* dst, register const Mtx src) {
     register f32 ps_0, ps_1, ps_2, ps_3;
 
 #ifdef __MWERKS__ // clang-format off

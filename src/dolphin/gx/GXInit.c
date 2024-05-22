@@ -3,6 +3,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/mtx.h"
 #include "dolphin/os.h"
+#include "dolphin/vi.h"
 #include "macros.h"
 
 static GXFifoObj FifoObj;
@@ -57,7 +58,7 @@ static OSResetFunctionInfo GXResetFuncInfo = {__GXShutdown, OS_RESET_PRIO_GX};
 
 #pragma peephole off
 
-static inline void EnableWriteGatherPipe() {
+static inline void EnableWriteGatherPipe(void) {
     u32 hid2; // r31
     hid2 = PPCMfhid2();
     PPCMtwpar(OSUncachedToPhysical((void*)GXFIFO_ADDR));

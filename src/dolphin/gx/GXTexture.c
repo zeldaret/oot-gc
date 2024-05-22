@@ -1,4 +1,6 @@
 #include "dolphin/gx.h"
+#include "dolphin/os.h"
+#include "string.h"
 
 static u8 GXTexMode0Ids[8] = {0x80, 0x81, 0x82, 0x83, 0xA0, 0xA1, 0xA2, 0xA3};
 static u8 GXTexMode1Ids[8] = {0x84, 0x85, 0x86, 0x87, 0xA4, 0xA5, 0xA6, 0xA7};
@@ -369,7 +371,7 @@ GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback func) {
     return oldFunc;
 }
 
-static void __SetSURegs(u32 texImgIndex, u32 setUpRegIndex) {
+void __SetSURegs(u32 texImgIndex, u32 setUpRegIndex) {
     u16 a1, a2;
     GXBool b, c;
 

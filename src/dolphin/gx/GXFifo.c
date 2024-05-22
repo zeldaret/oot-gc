@@ -10,7 +10,7 @@ static bool GXOverflowSuspendInProgress;
 static GXBreakPtCallback BreakPointCB;
 static u32 __GXOverflowCount;
 
-static inline void GXOverflowHandler() {
+static inline void GXOverflowHandler(void) {
     __GXOverflowCount += 1;
     __GXWriteFifoIntEnable(0, 1);
     __GXWriteFifoIntReset(1, 0);
@@ -18,7 +18,7 @@ static inline void GXOverflowHandler() {
     OSSuspendThread(__GXCurrentThread);
 }
 
-static inline void GXUnderflowHandler() {
+static inline void GXUnderflowHandler(void) {
     OSResumeThread(__GXCurrentThread);
     GXOverflowSuspendInProgress = false;
     __GXWriteFifoIntReset(1, 1);

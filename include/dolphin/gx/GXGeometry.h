@@ -17,6 +17,7 @@ void GXSetPointSize(u8 pointSize, GXTexOffset texOffsets);
 void GXEnableTexOffsets(GXTexCoordID coord, GXBool line_enable, GXBool point_enable);
 void __GXSendFlushPrim(void);
 void __GXSetGenMode(void);
+void __GXSetDirtyState(void);
 
 static inline void GXSetTexCoordGen(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc src_param, u32 mtx) {
     GXSetTexCoordGen2(dst_coord, func, src_param, mtx, GX_FALSE, GX_PTIDENTITY);
