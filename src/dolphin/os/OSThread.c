@@ -1,4 +1,5 @@
 #include "dolphin/os/OSPriv.h"
+#include "intrinsics.h"
 
 static vu32 RunQueueBits;
 static volatile bool RunQueueHint;
@@ -17,8 +18,6 @@ volatile OSContext __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED + 0x00D4);
 volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED + 0x00D8);
 
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to) {}
-
-int __cntlzw(unsigned int n);
 
 extern u8 _stack_addr[];
 extern u8 _stack_end[];

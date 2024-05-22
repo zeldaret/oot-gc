@@ -60,7 +60,7 @@ void __init_cpp(void) {
     voidfunctionptr* constructor;
 
     /*
-     *	call static initializers
+     * call static initializers
      */
     for (constructor = _ctors; *constructor; constructor++) {
         (*constructor)();
