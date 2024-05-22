@@ -4,6 +4,7 @@
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXTexture.h"
 #include "dolphin/types.h"
+#include "intrinsics.h"
 #include "macros.h"
 
 #define GX_CP_ADDR 0x0C000000
@@ -24,9 +25,9 @@
 #define GX_CHECK_FLUSH() (!(*(u32*)(&gx->vNumNot)))
 #define GX_COLOR_AS_U32(color) (*((u32*)&(color)))
 
-#define FAST_FLAG_SET(regOrg, newFlag, shift, size)                                                              \
-    do {                                                                                                         \
-        (regOrg) = (u32)rlwimi((int)(regOrg), (int)(newFlag), (shift), (32 - (shift) - (size)), (31 - (shift))); \
+#define FAST_FLAG_SET(regOrg, newFlag, shift, size)                                                                \
+    do {                                                                                                           \
+        (regOrg) = (u32)__rlwimi((int)(regOrg), (int)(newFlag), (shift), (32 - (shift) - (size)), (31 - (shift))); \
     } while (0);
 
 #define gx __GXData

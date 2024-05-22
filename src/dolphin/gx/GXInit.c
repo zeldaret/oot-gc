@@ -51,15 +51,15 @@ static u32 GXTexRegionAddrTable[] = {
     0x40000, 0x90000, 0x60000, 0xB0000, 0x80000, 0x10000, 0xA0000, 0x30000, 0x80000, 0x50000, 0xA0000, 0x70000,
 };
 
-// forward declaring static reset function
 static bool __GXShutdown(bool);
 
 static OSResetFunctionInfo GXResetFuncInfo = {__GXShutdown, OS_RESET_PRIO_GX};
 
+// ``IsWriteGatherBufferEmpty`` is an handwritten function that the linker removed
 #pragma peephole off
 
 static inline void EnableWriteGatherPipe(void) {
-    u32 hid2; // r31
+    u32 hid2;
     hid2 = PPCMfhid2();
     PPCMtwpar(OSUncachedToPhysical((void*)GXFIFO_ADDR));
     hid2 |= 0x40000000;
@@ -67,8 +67,8 @@ static inline void EnableWriteGatherPipe(void) {
 }
 
 static GXTexRegion* __GXDefaultTexRegionCallback(GXTexObj* obj, GXTexMapID id) {
-    GXTexFmt format; // r31
-    GXBool isMipMap; // r3
+    GXTexFmt format;
+    GXBool isMipMap;
 
     format = GXGetTexObjFmt(obj);
     isMipMap = GXGetTexObjMipMap(obj);
@@ -162,8 +162,8 @@ bool __GXShutdown(bool final) {
 GXFifoObj* GXInit(void* base, u32 size) {
     static u32 resetFuncRegistered = 0;
     u32 i;
-    u32 pad; // for stack matching
-    u32 pad2; // for stack matching
+    u32 pad;
+    u32 pad2;
 
     OSRegisterVersion(__GXVersion);
     gx->inDispList = GX_FALSE;

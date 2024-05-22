@@ -69,11 +69,4 @@ inline void padStack(void) { int pad = 0; }
 #define AT_ADDRESS(xyz)
 #endif
 
-#ifdef __MWERKS__
-#define rlwimi(a, b, c, d, e) __rlwimi((a), (b), (c), (d), (e))
-#else
-// using zero makes CC-Check happy
-#define rlwimi(a, b, c, d, e) 0
-#endif
-
 #endif

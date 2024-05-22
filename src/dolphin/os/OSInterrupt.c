@@ -1,12 +1,12 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
+#include "intrinsics.h"
 #include "macros.h"
 
 static ASM void ExternalInterruptHandler(register __OSException exception, register OSContext* context);
 
 extern void __RAS_OSDisableInterrupts_begin(void);
 extern void __RAS_OSDisableInterrupts_end(void);
-int __cntlzw(unsigned int n);
 
 static __OSInterruptHandler* InterruptHandlerTable;
 

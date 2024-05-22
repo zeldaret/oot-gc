@@ -1,5 +1,6 @@
 #include "dolphin/gx.h"
 #include "dolphin/os.h"
+#include "intrinsics.h"
 
 static inline void __GXXfVtxSpecs(void) {
     u32 normCount, colorCount, texCount;

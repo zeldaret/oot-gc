@@ -1,5 +1,6 @@
 #include "dolphin/gx.h"
 #include "dolphin/os.h"
+#include "intrinsics.h"
 #include "string.h"
 
 static u8 GXTexMode0Ids[8] = {0x80, 0x81, 0x82, 0x83, 0xA0, 0xA1, 0xA2, 0xA3};

@@ -3,12 +3,13 @@
 
 #include "dolphin/gx/GXFifo.h"
 #include "dolphin/types.h"
+#include "intrinsics.h"
 #include "macros.h"
 
 #define GX_BITFIELD(field, pos, size, value) \
-    (rlwimi((field), (value), 31 - (pos) - (size) + 1, (pos), (pos) + (size) - 1))
+    (__rlwimi((field), (value), 31 - (pos) - (size) + 1, (pos), (pos) + (size) - 1))
 #define GX_BITFIELD_SET(field, pos, size, value) ((field) = GX_BITFIELD(field, pos, size, value))
-#define GX_BITFIELD_TRUNC(field, pos, size, value) (rlwimi((field), (value), 0, (pos), (pos) + (size) - 1))
+#define GX_BITFIELD_TRUNC(field, pos, size, value) (__rlwimi((field), (value), 0, (pos), (pos) + (size) - 1))
 #define GX_BITGET(field, pos, size) ((field) >> (31 - (pos) - (size) + 1) & ((1 << (size)) - 1))
 
 #define GX_REG_MASK(st, end) (((1 << ((end) - (st) + 1)) - 1) << 31 - (end))
@@ -17,9 +18,9 @@
 #define GX_SET_TRUNC(reg, x, st, end) GX_BITFIELD_TRUNC((reg), (st), ((end) - (st) + 1), (x))
 
 #define GET_REG_FIELD(reg, size, shift) ((int)((reg) >> (shift)) & ((1 << (size)) - 1))
-#define SET_REG_FIELD(line, reg, size, shift, val)                                              \
-    do {                                                                                        \
-        (reg) = ((u32)rlwimi((u32)(reg), (val), (shift), 32 - (shift) - (size), 31 - (shift))); \
+#define SET_REG_FIELD(line, reg, size, shift, val)                                                \
+    do {                                                                                          \
+        (reg) = ((u32)__rlwimi((u32)(reg), (val), (shift), 32 - (shift) - (size), 31 - (shift))); \
     } while (0)
 
 #define GX_WRITE_SOME_REG4(a, b, c, addr) \

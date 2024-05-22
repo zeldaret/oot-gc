@@ -234,11 +234,13 @@ void __GXWriteFifoIntReset(u32 p1, u32 p2) {
 
 void __GXCleanGPFifo(void) {
     bool interrupts;
-    GXFifoObjPriv tempObj; // 0x14
-    u32 i, j, k; // stack alloc
-    GXFifoObjPriv* gpFifo; // r31
-    GXFifoObjPriv* cpuFifo; // r30
-    void* tempPtr; // r29
+    GXFifoObjPriv tempObj;
+    u32 i;
+    u32 j;
+    u32 k;
+    GXFifoObjPriv* gpFifo;
+    GXFifoObjPriv* cpuFifo;
+    void* tempPtr;
 
     gpFifo = (GXFifoObjPriv*)GXGetGPFifo();
     if (!gpFifo) {

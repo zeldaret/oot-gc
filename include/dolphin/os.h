@@ -203,7 +203,6 @@ volatile int __OSTVMode AT_ADDRESS(OS_BASE_CACHED | 0xCC);
 
 void OSReport(const char* msg, ...);
 void OSPanic(const char* file, int line, const char* msg, ...);
-int __cntlzw(unsigned int n);
 
 #ifdef __cplusplus
 }

@@ -5,13 +5,13 @@ inline void WriteProjPS(const register f32 src[6], register volatile void* dst) 
     register f32 ps_0, ps_1, ps_2;
 
 #ifdef __MWERKS__ // clang-format off
-	asm {
-		psq_l  ps_0,  0(src), 0, 0
-		psq_l  ps_1,  8(src), 0, 0
-		psq_l  ps_2, 16(src), 0, 0
-		psq_st ps_0,  0(dst), 0, 0
-		psq_st ps_1,  0(dst), 0, 0
-		psq_st ps_2,  0(dst), 0, 0
+    asm {
+	    psq_l  ps_0,  0(src), 0, 0
+	    psq_l  ps_1,  8(src), 0, 0
+	    psq_l  ps_2, 16(src), 0, 0
+	    psq_st ps_0,  0(dst), 0, 0
+	    psq_st ps_1,  0(dst), 0, 0
+	    psq_st ps_2,  0(dst), 0, 0
 	}
 #endif // clang-format on
 }
@@ -20,13 +20,13 @@ inline void Copy6Floats(const register f32 src[6], register f32 dst[6]) {
     register f32 ps_0, ps_1, ps_2;
 
 #ifdef __MWERKS__ // clang-format off
-	asm {
-		psq_l  ps_0,  0(src), 0, 0
-		psq_l  ps_1,  8(src), 0, 0
-		psq_l  ps_2, 16(src), 0, 0
-		psq_st ps_0,  0(dst), 0, 0
-		psq_st ps_1,  8(dst), 0, 0
-		psq_st ps_2, 16(dst), 0, 0
+    asm {
+	    psq_l  ps_0,  0(src), 0, 0
+	    psq_l  ps_1,  8(src), 0, 0
+	    psq_l  ps_2, 16(src), 0, 0
+	    psq_st ps_0,  0(dst), 0, 0
+	    psq_st ps_1,  8(dst), 0, 0
+	    psq_st ps_2, 16(dst), 0, 0
 	}
 #endif // clang-format on
 }
@@ -70,20 +70,20 @@ inline void WriteMTXPS4x3(register volatile void* dst, register const Mtx src) {
     register f32 ps_0, ps_1, ps_2, ps_3, ps_4, ps_5;
 
 #ifdef __MWERKS__ // clang-format off
-	asm {
-		psq_l  ps_0,  0(src), 0, 0
-		psq_l  ps_1,  8(src), 0, 0
-		psq_l  ps_2, 16(src), 0, 0
-		psq_l  ps_3, 24(src), 0, 0
-		psq_l  ps_4, 32(src), 0, 0
-		psq_l  ps_5, 40(src), 0, 0
+    asm {
+	    psq_l  ps_0,  0(src), 0, 0
+	    psq_l  ps_1,  8(src), 0, 0
+	    psq_l  ps_2, 16(src), 0, 0
+	    psq_l  ps_3, 24(src), 0, 0
+	    psq_l  ps_4, 32(src), 0, 0
+	    psq_l  ps_5, 40(src), 0, 0
 
-		psq_st ps_0, 0(dst),  0, 0
-		psq_st ps_1, 0(dst),  0, 0
-		psq_st ps_2, 0(dst),  0, 0
-		psq_st ps_3, 0(dst),  0, 0
-		psq_st ps_4, 0(dst),  0, 0
-		psq_st ps_5, 0(dst),  0, 0
+	    psq_st ps_0, 0(dst),  0, 0
+	    psq_st ps_1, 0(dst),  0, 0
+	    psq_st ps_2, 0(dst),  0, 0
+	    psq_st ps_3, 0(dst),  0, 0
+	    psq_st ps_4, 0(dst),  0, 0
+	    psq_st ps_5, 0(dst),  0, 0
 	}
 #endif // clang-format on
 }
@@ -92,20 +92,20 @@ inline void WriteMTXPS3x3(register volatile void* dst, register const Mtx src) {
     register f32 ps_0, ps_1, ps_2, ps_3, ps_4, ps_5;
 
 #ifdef __MWERKS__ // clang-format off
-	asm {
-		psq_l  ps_0,  0(src), 0, 0
-		lfs    ps_1,  8(src)
-		psq_l  ps_2, 16(src), 0, 0
-		lfs    ps_3, 24(src)
-		psq_l  ps_4, 32(src), 0, 0
-		lfs    ps_5, 40(src)
+    asm {
+	    psq_l  ps_0,  0(src), 0, 0
+	    lfs    ps_1,  8(src)
+	    psq_l  ps_2, 16(src), 0, 0
+	    lfs    ps_3, 24(src)
+	    psq_l  ps_4, 32(src), 0, 0
+	    lfs    ps_5, 40(src)
 
-		psq_st ps_0, 0(dst),  0, 0
-		stfs   ps_1, 0(dst)
-		psq_st ps_2, 0(dst),  0, 0
-		stfs   ps_3, 0(dst)
-		psq_st ps_4, 0(dst),  0, 0
-		stfs   ps_5, 0(dst)
+	    psq_st ps_0, 0(dst),  0, 0
+	    stfs   ps_1, 0(dst)
+	    psq_st ps_2, 0(dst),  0, 0
+	    stfs   ps_3, 0(dst)
+	    psq_st ps_4, 0(dst),  0, 0
+	    stfs   ps_5, 0(dst)
 	}
 #endif // clang-format on
 }
@@ -114,16 +114,16 @@ inline void WriteMTXPS4x2(register volatile void* dst, register const Mtx src) {
     register f32 ps_0, ps_1, ps_2, ps_3;
 
 #ifdef __MWERKS__ // clang-format off
-	asm {
-		psq_l  ps_0,  0(src), 0, 0
-		psq_l  ps_1,  8(src), 0, 0
-		psq_l  ps_2, 16(src), 0, 0
-		psq_l  ps_3, 24(src), 0, 0
+    asm {
+	    psq_l  ps_0,  0(src), 0, 0
+	    psq_l  ps_1,  8(src), 0, 0
+	    psq_l  ps_2, 16(src), 0, 0
+	    psq_l  ps_3, 24(src), 0, 0
 
-		psq_st ps_0, 0(dst),  0, 0
-		psq_st ps_1, 0(dst),  0, 0
-		psq_st ps_2, 0(dst),  0, 0
-		psq_st ps_3, 0(dst),  0, 0
+	    psq_st ps_0, 0(dst),  0, 0
+	    psq_st ps_1, 0(dst),  0, 0
+	    psq_st ps_2, 0(dst),  0, 0
+	    psq_st ps_3, 0(dst),  0, 0
 	}
 #endif // clang-format on
 }
