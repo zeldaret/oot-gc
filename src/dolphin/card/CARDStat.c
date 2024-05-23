@@ -6,7 +6,7 @@ static void UpdateIconOffsets(CARDDir* entry, CARDStat* state) {
     int i;
 
     offset = entry->iconAddr;
-    if (offset == 0xffffffff) {
+    if (offset == 0xFFFFFFFF) {
         state->bannerFormat = 0;
         state->iconFormat = 0;
         state->iconSpeed = 0;
@@ -24,11 +24,11 @@ static void UpdateIconOffsets(CARDDir* entry, CARDStat* state) {
         case CARD_STAT_BANNER_RGB5A3:
             state->offsetBanner = offset;
             offset += 2 * CARD_BANNER_WIDTH * CARD_BANNER_HEIGHT;
-            state->offsetBannerTlut = 0xffffffff;
+            state->offsetBannerTlut = 0xFFFFFFFF;
             break;
         default:
-            state->offsetBanner = 0xffffffff;
-            state->offsetBannerTlut = 0xffffffff;
+            state->offsetBanner = 0xFFFFFFFF;
+            state->offsetBannerTlut = 0xFFFFFFFF;
             break;
     }
     for (i = 0; i < CARD_ICON_MAX; ++i) {
@@ -43,7 +43,7 @@ static void UpdateIconOffsets(CARDDir* entry, CARDStat* state) {
                 offset += 2 * CARD_ICON_WIDTH * CARD_ICON_HEIGHT;
                 break;
             default:
-                state->offsetIcon[i] = 0xffffffff;
+                state->offsetIcon[i] = 0xFFFFFFFF;
                 break;
         }
     }
@@ -51,7 +51,7 @@ static void UpdateIconOffsets(CARDDir* entry, CARDStat* state) {
         state->offsetIconTlut = offset;
         offset += 2 * 256;
     } else {
-        state->offsetIconTlut = 0xffffffff;
+        state->offsetIconTlut = 0xFFFFFFFF;
     }
     state->offsetData = offset;
 }
@@ -98,8 +98,8 @@ s32 CARDSetStatusAsync(s32 channel, s32 fileNo, CARDStat* state, CARDCallback ca
     CARDDir* ent;
     s32 result;
 
-    if (fileNo < 0 || CARD_MAX_FILE <= fileNo || (state->iconAddr != 0xffffffff && CARD_READ_SIZE <= state->iconAddr) ||
-        (state->commentAddr != 0xffffffff &&
+    if (fileNo < 0 || CARD_MAX_FILE <= fileNo || (state->iconAddr != 0xFFFFFFFF && CARD_READ_SIZE <= state->iconAddr) ||
+        (state->commentAddr != 0xFFFFFFFF &&
          CARD_SYSTEM_BLOCK_SIZE - CARD_COMMENT_SIZE < state->commentAddr % CARD_SYSTEM_BLOCK_SIZE)) {
         return CARD_RESULT_FATAL_ERROR;
     }
@@ -122,7 +122,7 @@ s32 CARDSetStatusAsync(s32 channel, s32 fileNo, CARDStat* state, CARDCallback ca
     ent->commentAddr = state->commentAddr;
     UpdateIconOffsets(ent, state);
 
-    if (ent->iconAddr == 0xffffffff) {
+    if (ent->iconAddr == 0xFFFFFFFF) {
         CARDSetIconSpeed(ent, 0, CARD_STAT_SPEED_FAST);
     }
 
