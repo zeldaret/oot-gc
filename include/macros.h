@@ -64,6 +64,18 @@ inline void padStack(void) { int pad = 0; }
 #endif
 
 #ifdef __MWERKS__
+#define CTORS __declspec(section ".ctors")
+#else
+#define CTORS
+#endif
+
+#ifdef __MWERKS__
+#define DTORS __declspec(section ".dtors")
+#else
+#define DTORS
+#endif
+
+#ifdef __MWERKS__
 #define AT_ADDRESS(xyz) : (xyz)
 #else
 #define AT_ADDRESS(xyz)
