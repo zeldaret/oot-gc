@@ -38,5 +38,6 @@ void DEMOPadRead(void);
 void DEMOPadInit(void);
 void DEMOUpdateStats(s32);
 void DEMOPrintStats(void);
+void DEMOSetGPHangMetric(GXBool enable);
 
 #endif
