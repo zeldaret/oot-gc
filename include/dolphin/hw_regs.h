@@ -4,10 +4,6 @@
 #include "dolphin/types.h"
 #include "macros.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 vu16 __VIRegs[59] AT_ADDRESS(0xCC002000);
 
 // offsets for __VIRegs[i]
@@ -241,9 +237,5 @@ vu32 __AIRegs[8] AT_ADDRESS(0xCC006C00);
 #define FP14 fp14
 #define FP15 fp15
 #define FP31 fp31
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_HW_REGS

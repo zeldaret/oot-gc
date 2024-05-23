@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define CTR 9
 #define XER 1
 #define LR 8
@@ -492,9 +488,5 @@ void PPCMtwpar(u32 newwpar);
 void PPCEnableSpeculation(void);
 void PPCDisableSpeculation(void);
 void PPCSetFpNonIEEEMode(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

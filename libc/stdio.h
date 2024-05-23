@@ -5,10 +5,6 @@
 #include "stdarg.h"
 #include "stddef.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
@@ -128,9 +124,5 @@ size_t fread(const void*, size_t memb_size, size_t num_memb, FILE*);
 size_t fwrite(const void*, size_t memb_size, size_t num_memb, FILE*);
 int fseek(FILE* file, long offset, int mode);
 size_t __fwrite(const void*, size_t, size_t, FILE*);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _STDIO

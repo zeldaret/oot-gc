@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define SI_MAX_CHAN 4
 #define SI_MAX_COMCSR_INLNGTH 128
 #define SI_MAX_COMCSR_OUTLNGTH 128
@@ -62,7 +58,4 @@ char* SIGetTypeString(u32 type);
 void SIRefreshSamplingRate(void);
 void SISetSamplingRate(u32 msec);
 
-#ifdef __cplusplus
-}
-#endif
 #endif // _DOLPHIN_OSSERIAL

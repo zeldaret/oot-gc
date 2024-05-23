@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Struct for holding font information (size 0x30).
 typedef struct OSFontHeader {
     u16 fontType; // _00
@@ -57,9 +53,5 @@ typedef enum {
 #define OS_FONT_FIXED true
 
 u16 OSGetFontEncode(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSFONT

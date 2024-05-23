@@ -3,10 +3,6 @@
 
 #include "dolphin/os/OSContext.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define OS_THREAD_SPECIFIC_MAX 2
 
 typedef struct OSThread OSThread;
@@ -97,9 +93,5 @@ s32 OSSuspendThread(OSThread* thread);
 void OSSleepThread(OSThreadQueue* queue);
 void OSWakeupThread(OSThreadQueue* queue);
 void OSClearStack(u8 val);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSTHREAD

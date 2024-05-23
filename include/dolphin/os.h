@@ -5,10 +5,6 @@
 #include "dolphin/types.h"
 #include "macros.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Upper words of the masks, since UIMM is only 16 bits
 #define OS_CACHED_REGION_PREFIX 0x8000
 #define OS_UNCACHED_REGION_PREFIX 0xC000
@@ -207,10 +203,6 @@ volatile int __OSTVMode AT_ADDRESS(OS_BASE_CACHED | 0xCC);
 
 void OSReport(const char* msg, ...);
 void OSPanic(const char* file, int line, const char* msg, ...);
-
-#ifdef __cplusplus
-}
-#endif
 
 #include "dolphin/os/OSAlarm.h"
 #include "dolphin/os/OSAlloc.h"

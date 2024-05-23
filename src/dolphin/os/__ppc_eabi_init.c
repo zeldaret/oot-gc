@@ -2,10 +2,6 @@
 #include "dolphin/base/PPCArch.h"
 #include "macros.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void __OSPSInit(void);
 void __OSCacheInit(void);
 
@@ -68,7 +64,3 @@ void __init_cpp(void) {
 }
 
 void _ExitProcess(void) { PPCHalt(); }
-
-#ifdef __cplusplus
-}
-#endif

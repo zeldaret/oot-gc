@@ -1,10 +1,6 @@
 #ifndef _DOLPHIN_OSFASTCAST
 #define _DOLPHIN_OSFASTCAST
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define OS_GQR_F32 0x0000
 #define OS_GQR_U8 0x0004
 #define OS_GQR_U16 0x0005
@@ -189,9 +185,5 @@ static inline void OSf32tou8(f32* in, u8* out) { *out = __OSf32tou8(*in); }
 static inline void OSf32tou16(f32* in, u16* out) { *out = __OSf32tou16(*in); }
 static inline void OSf32tos8(f32* in, s8* out) { *out = __OSf32tos8(*in); }
 static inline void OSf32tos16(f32* in, s16* out) { *out = __OSf32tos16(*in); }
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSFASTCAST

@@ -4,10 +4,6 @@
 #include "intrinsics.h"
 #include "stdint.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef _MATH_INLINE
 #define _MATH_INLINE static inline
 #endif
@@ -122,10 +118,6 @@ static inline float scalbnf(float x, int n) { return (float)ldexpf(x, n); }
 
 #ifdef __MWERKS__
 #pragma cplusplus reset
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif

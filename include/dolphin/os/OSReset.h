@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define OS_RESETCODE_RESTART 0x80000000
 #define OS_RESETCODE_SYSTEM 0x40000000
 
@@ -42,9 +38,5 @@ struct OSResetFunctionInfo {
 void OSRegisterResetFunction(OSResetFunctionInfo* func);
 void OSResetSystem(int reset, u32 resetCode, bool forceMenu);
 u32 OSGetResetCode(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSRESET

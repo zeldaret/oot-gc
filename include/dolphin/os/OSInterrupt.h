@@ -6,10 +6,6 @@
 #include "dolphin/types.h"
 #include "string.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define __OS_INTERRUPT_MEM_0 0
 #define __OS_INTERRUPT_MEM_1 1
 #define __OS_INTERRUPT_MEM_2 2
@@ -104,9 +100,5 @@ u32 SetInterruptMask(OSInterruptMask mask, OSInterruptMask current);
 OSInterruptMask __OSMaskInterrupts(OSInterruptMask global);
 OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask global);
 void __OSDispatchInterrupt(__OSException exception, OSContext* context);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSINTERRUPT

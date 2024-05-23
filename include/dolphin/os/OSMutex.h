@@ -4,10 +4,6 @@
 #include "dolphin/os/OSThread.h"
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 struct OSMutex {
     OSThreadQueue queue;
     OSThread* thread; // the current owner
@@ -20,9 +16,5 @@ struct OSCond {
 };
 
 void __OSUnlockAllMutex(OSThread* thread);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSMUTEX
