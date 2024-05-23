@@ -4,13 +4,9 @@
 #include "dolphin/mtx.h"
 #include "stdarg.h"
 
-extern u32 DEMOFontBitmap[]; // size: 0x0, address: 0x0
-
-// .bss
-static GXTexObj fontTexObj; // size: 0x20, address: 0x0
-
-// .sbss
-static s32 fontShift; // size: 0x4, address: 0x0
+extern u32 DEMOFontBitmap[];
+static GXTexObj fontTexObj;
+static s32 fontShift;
 
 void DEMOSetFontType(DMFontType attr) {
     switch (attr) {
@@ -53,14 +49,12 @@ void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
     Mtx mMtx;
     f32 top;
 
-    // fixes float ordering issue
-    (void)0.0f;
-
     if (DEMOGetRenderModeObj()->field_rendering && !VIGetNextField()) {
         top = -0.667f;
     } else {
         top = 0.0f;
     }
+
     C_MTXOrtho(pMtx, top, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
     GXSetProjection(pMtx, GX_ORTHOGRAPHIC);
     PSMTXIdentity(mMtx);
@@ -90,10 +84,10 @@ void DEMOPuts(s16 x, s16 y, s16 z, char* string) {
 
     str = string;
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxDesc(0xD, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 3, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 3, 1);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_CLR_RGBA, GX_RGBA4, 1);
 
     len = 0;
     while (1) {
@@ -104,7 +98,7 @@ void DEMOPuts(s16 x, s16 y, s16 z, char* string) {
         }
 
         if (len > 0) {
-            GXBegin(0x80, 0, len * 4);
+            GXBegin(GX_QUADS, GX_VTXFMT0, len * 4);
             for (i = 0; i < len; i++) {
                 w = string[i] - 0x20;
                 s = fontShift + ((w % 8) * 0x10);
@@ -123,7 +117,7 @@ void DEMOPuts(s16 x, s16 y, s16 z, char* string) {
         }
 
         string = str;
-        if (c == 0xA) {
+        if (c == '\n') {
             y += 0x8;
         } else {
             break;

@@ -2,7 +2,6 @@
 #include "dolphin/demo.h"
 #include "dolphin/pad.h"
 
-// .data
 static u32 PadChanMask[4] = {
     PAD_CHAN0_BIT,
     PAD_CHAN1_BIT,
@@ -10,14 +9,10 @@ static u32 PadChanMask[4] = {
     PAD_CHAN3_BIT,
 };
 
-// .bss
 static PADStatus Pad[4];
 DEMODMPad DemoPad[4];
-
-// .sbss
 u32 DemoNumValidPads;
 
-// functions
 static void DEMOPadCopy(PADStatus* pad, DEMODMPad* dmpad);
 void DEMOPadRead();
 void DEMOPadInit();

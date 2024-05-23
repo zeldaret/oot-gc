@@ -4,27 +4,20 @@
 #include "dolphin/pad.h"
 #include "dolphin/vi.h"
 
-extern unsigned char DemoStatEnable; // size: 0x1, address: 0x0
-
-// .bss
-static GXRenderModeObj rmodeobj; // size: 0x3C, address: 0x0
-
-// .sdata
-static unsigned char DemoFirstFrame = 1; // size: 0x1, address: 0x0
-
-// .sbss
-static void* DefaultFifo = NULL; // size: 0x4, address: 0x0
-static GXFifoObj* DefaultFifoObj = NULL; // size: 0x4, address: 0x4
-static GXRenderModeObj* rmode; // size: 0x4, address: 0x8
+extern unsigned char DemoStatEnable;
+static GXRenderModeObj rmodeobj;
+static unsigned char DemoFirstFrame = 1;
+static void* DefaultFifo = NULL;
+static GXFifoObj* DefaultFifoObj = NULL;
+static GXRenderModeObj* rmode;
 static int allocatedFrameBufferSize;
-static int GPHangWorkaround; // size: 0x4, address: 0xC
-static unsigned long FrameCount; // size: 0x4, address: 0x10
-static unsigned long FrameMissThreshold; // size: 0x4, address: 0x14
-void* DemoFrameBuffer1; // size: 0x4, address: 0x20
-void* DemoFrameBuffer2; // size: 0x4, address: 0x1C
-void* DemoCurrentBuffer; // size: 0x4, address: 0x18
+static int GPHangWorkaround;
+static unsigned long FrameCount;
+static unsigned long FrameMissThreshold;
+void* DemoFrameBuffer1;
+void* DemoFrameBuffer2;
+void* DemoCurrentBuffer;
 
-// functions
 static void __DEMOInitRenderMode(GXRenderModeObj* mode);
 static void __DEMOInitMem(void);
 static void __DEMOInitGX(void);
