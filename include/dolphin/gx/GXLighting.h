@@ -4,8 +4,8 @@
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"
 
-#define XF_AMBIENT0_ID 0x100a
-#define XF_MATERIAL0_ID 0x100c
+#define XF_AMBIENT0_ID 0x100A
+#define XF_MATERIAL0_ID 0x100C
 
 void GXSetNumChans(u8 nChans);
 void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc amb_src, GXColorSrc mat_src, u32 light_mask,

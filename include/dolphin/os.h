@@ -90,7 +90,7 @@ typedef struct OSCalendarTime {
 
 void OSTicksToCalendarTime(OSTime ticks, OSCalendarTime* td);
 
-#define OS_CONSOLE_MASK 0xf0000000
+#define OS_CONSOLE_MASK 0xF0000000
 #define OS_CONSOLE_RETAIL 0x00000000
 #define OS_CONSOLE_DEVELOPMENT 0x10000000
 #define OS_CONSOLE_TDEV 0x20000000
