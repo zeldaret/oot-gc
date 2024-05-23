@@ -41,7 +41,7 @@ void WriteCallback(s32 channel, s32 result) {
 void EraseCallback(s32 channel, s32 result) {
     CARDControl* card;
     CARDCallback callback;
-    u32 temp[2]; /* this compiler sucks */
+    u32 temp[2];
     u16* fat;
     u32 addr;
 

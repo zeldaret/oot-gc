@@ -39,13 +39,6 @@ inline int CARDRand() {
     return (int)((u32)(next / 65536) % 32768);
 }
 
-/**
- * @note Address: N/A
- * @note Size: 0x8
- * Fun fact: making the argument of this a u32 instead of uint
- * makes the inlined versions of this not match (:
- * LOVE this compiler.
- */
 inline void CARDSrand(unsigned int seed) { next = seed; }
 
 inline u32 exnor_1st(u32 data, u32 rshift) {
