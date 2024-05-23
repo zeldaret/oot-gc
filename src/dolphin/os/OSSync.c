@@ -1,11 +1,11 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/os.h"
+#include "intrinsics.h"
 #include "macros.h"
 #include "string.h"
 
 void __OSSystemCallVectorStart(void);
 void __OSSystemCallVectorEnd(void);
-void __sync(void);
 
 static ASM void SystemCallVector(void) {
 #ifdef __MWERKS__ // clang-format off

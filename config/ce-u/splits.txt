@@ -514,6 +514,12 @@ dolphin/demo/DEMOStats.c:
 	.sbss       start:0x80137FA8 end:0x80138010
 	.sdata2     start:0x80138708 end:0x80138718
 
+metrotrk/mem_TRK.c:
+	.init       start:0x80003458 end:0x8000347C
+
+metrotrk/__exception.c:
+	.init       start:0x8000347C end:0x800053B0
+
 dolphin/ai/ai.c:
 	.text       start:0x800B8000 end:0x800B8920
 	.data       start:0x800F5A88 end:0x800F5AD0
@@ -815,6 +821,9 @@ libc/math_inlines.c:
 	.text       start:0x800D24C0 end:0x800D2550
 	.sdata2     start:0x80138908 end:0x80138920
 
+runtime/__mem.c:
+	.init       start:0x800053D0 end:0x80005514
+
 debugger/AmcExi2Stubs.c:
 	.text       start:0x800D2550 end:0x800D2580
 
@@ -825,6 +834,3 @@ debugger/DebuggerDriver.c:
 
 debugger/odenotstub.c:
 	.text       start:0x800D3000 end:0x800D3008
-
-runtime/__mem.c:
-	.init       start:0x800053D0 end:0x80005514

@@ -1,12 +1,6 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
-extern OSTime __OSGetSystemTime(void);
-
-u8 GameChoice AT_ADDRESS(OS_BASE_CACHED | 0x30E3);
-
-extern OSTime __OSStartTime;
-
 #if DOLPHIN_REV == 2002
 //! TODO: find what's wrong with sbss on mq
 static bool bootThisDol;

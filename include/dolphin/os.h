@@ -21,7 +21,11 @@ typedef s64 OSTime;
 typedef u32 OSTick;
 
 extern bool __OSInIPL;
+extern OSTime __OSGetSystemTime(void);
+extern OSTime __OSStartTime;
 
+u8 GameChoice AT_ADDRESS(OS_BASE_CACHED | 0x30E3);
+u16 __OSWirelessPadFixMode AT_ADDRESS(OS_BASE_CACHED | 0x30E0);
 u32 __OSBusClock AT_ADDRESS(OS_BASE_CACHED | 0x00F8);
 u32 __OSCoreClock AT_ADDRESS(OS_BASE_CACHED | 0x00FC);
 
@@ -211,6 +215,7 @@ void OSPanic(const char* file, int line, const char* msg, ...);
 #include "dolphin/os/OSAlarm.h"
 #include "dolphin/os/OSAlloc.h"
 #include "dolphin/os/OSArena.h"
+#include "dolphin/os/OSBootInfo.h"
 #include "dolphin/os/OSCache.h"
 #include "dolphin/os/OSContext.h"
 #include "dolphin/os/OSError.h"

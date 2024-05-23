@@ -1,9 +1,8 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/db.h"
 #include "dolphin/os.h"
+#include "intrinsics.h"
 #include "macros.h"
-
-void __sync(void);
 
 ASM void DCEnable(void){
 #ifdef __MWERKS__ // clang-format off
