@@ -29,7 +29,7 @@
 #include "gmesgOK.inc"
 // clang-format on
 
-#if VERSION == CE_J
+#if VERSION == CE_J || MQ_J
 #define DEFAULT_ROM_NAME "zlj_f.n64"
 #elif VERSION == CE_U
 #define DEFAULT_ROM_NAME "zle_f.n64"

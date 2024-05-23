@@ -103,6 +103,7 @@ config = ProjectConfig()
 config.versions = [
     "ce-j",
     "ce-u",
+    "mq-j",
 ]
 config.default_version = "ce-j"
 config.warn_missing_config = True
@@ -216,14 +217,14 @@ config.libs = [
     EmulatorLib(
         "emulator",
         [
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/xlCoreGCN.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/xlPostGCN.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/xlFileGCN.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/xlList.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/xlHeap.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/xlObject.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/simGCN.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "emulator/movie.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/xlCoreGCN.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/xlPostGCN.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/xlFileGCN.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/xlList.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/xlHeap.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/xlObject.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/simGCN.c"),
+            Object(MatchingFor("ce-j", "ce-u", "mq-j"), "emulator/movie.c"),
             # THP files except for THPRead.c do not have -inline deferred
             Object(MatchingFor("ce-j", "ce-u"), "emulator/THPPlayer.c", cflags=cflags_base),
             Object(MatchingFor("ce-j", "ce-u"), "emulator/THPAudioDecode.c", cflags=cflags_base),
