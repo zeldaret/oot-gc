@@ -43,7 +43,7 @@ MACROS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bCARD_ICON_MAX\b"), "8"),
     (re.compile(r"\bN64_FRAME_WIDTH\b"), "320"),
     (re.compile(r"\bN64_FRAME_HEIGHT\b"), "240"),
-    (re.compile(r"\bALIGNAS\b\(.*\)"), ""),
+    (re.compile(r"\bATTRIBUTE_ALIGN\b\(.*\)"), ""),
     (re.compile(r"\b_MATH_INLINE\b"), "static inline"),
 ]
 

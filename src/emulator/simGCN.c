@@ -35,38 +35,38 @@
 #define DEFAULT_ROM_NAME "zle_f.n64"
 #endif
 
-s16 Vert_s16[12] ALIGNAS(32) = {
+s16 Vert_s16[12] ATTRIBUTE_ALIGN(32) = {
     0, 0, -1, 200, 0, -1, 200, 200, -1, 0, 200, -1,
 };
 
-s16 VertTitle_s16[12] ALIGNAS(32) = {
+s16 VertTitle_s16[12] ATTRIBUTE_ALIGN(32) = {
     0, 0, -1, 200, 0, -1, 200, 200, -1, 0, 200, -1,
 };
 
-s16 VertYes_s16[12] ALIGNAS(32) = {
+s16 VertYes_s16[12] ATTRIBUTE_ALIGN(32) = {
     0, 0, -1, 200, 0, -1, 200, 200, -1, 0, 200, -1,
 };
 
-s16 VertNo_s16[12] ALIGNAS(32) = {
+s16 VertNo_s16[12] ATTRIBUTE_ALIGN(32) = {
     0, 0, -1, 200, 0, -1, 200, 200, -1, 0, 200, -1,
 };
 
-s16 Vert_s16Bar[12] ALIGNAS(32) = {
+s16 Vert_s16Bar[12] ATTRIBUTE_ALIGN(32) = {
     0, 0, -1, 200, 0, -1, 200, 200, -1, 0, 200, -1,
 };
 
 // rgba
-u32 Colors_u32[3] ALIGNAS(32) = {
+u32 Colors_u32[3] ATTRIBUTE_ALIGN(32) = {
     0x000000FF,
     0x000000FF,
     0x000000FF,
 };
 
-u8 TexCoords_u8[] ALIGNAS(32) = {
+u8 TexCoords_u8[] ATTRIBUTE_ALIGN(32) = {
     0, 0, 1, 0, 1, 1, 0, 1,
 };
 
-static f32 gOrthoMtx[4][4] ALIGNAS(32);
+static f32 gOrthoMtx[4][4] ATTRIBUTE_ALIGN(32);
 static u32 gContMap[4][GCN_BTN_COUNT];
 static char* gaszArgument[8];
 
