@@ -103,9 +103,9 @@ void GXSetTexCopyDst(u16 width, u16 height, GXTexFmt format, GXBool useMIPmap) {
 
     gx->cpTexZ = GX_NONE;
 
-    depthRelated = format & 0xf;
+    depthRelated = format & 0xF;
     if (format == GX_TF_Z16) {
-        depthRelated = 0xb;
+        depthRelated = 0xB;
     }
 
     switch (format) {

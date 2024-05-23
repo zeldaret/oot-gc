@@ -18,11 +18,11 @@ bool OnReset(bool f);
 static OSResetFunctionInfo ResetFunctionInfo = {OnReset, 127};
 
 // bit manip stuff for __CARDReadSegment, __CARDWritePage, __CARDEraseSector
-#define AD1(x) ((u8)(((x) >> 17) & 0x7f))
+#define AD1(x) ((u8)(((x) >> 17) & 0x7F))
 #define AD1EX(x) ((u8)(AD1(x) | 0x80));
-#define AD2(x) ((u8)(((x) >> 9) & 0xff))
+#define AD2(x) ((u8)(((x) >> 9) & 0xFF))
 #define AD3(x) ((u8)(((x) >> 7) & 0x03))
-#define BA(x) ((u8)((x) & 0x7f))
+#define BA(x) ((u8)((x) & 0x7F))
 
 void __CARDDefaultApiCallback(s32 channel, s32 result) {}
 
@@ -535,7 +535,7 @@ s32 CARDFreeBlocks(s32 channel, s32* byteNotUsed, s32* filesNotUsed) {
         *filesNotUsed = 0;
         for (fileNo = 0; fileNo < CARD_MAX_FILE; fileNo++) {
             ent = &dir[fileNo];
-            if (ent->fileName[0] == 0xff) {
+            if (ent->fileName[0] == 0xFF) {
                 ++*filesNotUsed;
             }
         }

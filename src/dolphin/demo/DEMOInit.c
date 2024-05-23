@@ -200,7 +200,7 @@ void DEMOSetGPHangMetric(GXBool enable) {
     if (enable) {
         GXSetGPMetric(GX_PERF0_NONE, GX_PERF1_NONE);
         GXCmd1u8(GX_LOAD_BP_REG);
-        GXParam1u32(0x2402c004);
+        GXParam1u32(0x2402C004);
         GXCmd1u8(GX_LOAD_BP_REG);
         GXParam1u32(0x23000020);
         GXCmd1u8(GX_LOAD_XF_REG);

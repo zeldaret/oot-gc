@@ -129,7 +129,7 @@ static void UpdateOrigin(s32 chan) {
     origin->substickY -= 128;
 
     if (XPatchBits & chanBit) {
-        if (64 < origin->stickX && (SIGetType(chan) & 0xffff0000) == SI_GC_CONTROLLER) {
+        if (64 < origin->stickX && (SIGetType(chan) & 0xFFFF0000) == SI_GC_CONTROLLER) {
             origin->stickX = 0;
         }
     }
@@ -330,7 +330,7 @@ bool PADInit(void) {
     if (__PADFixBits != 0) {
         OSTime time = OSGetTime();
         __OSWirelessPadFixMode =
-            (u16)((((time) & 0xffff) + ((time >> 16) & 0xffff) + ((time >> 32) & 0xffff) + ((time >> 48) & 0xffff)) &
+            (u16)((((time) & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) &
                   0x3fffu);
         RecalibrateBits = PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT;
     }
@@ -582,24 +582,24 @@ static void SPEC2_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
         case 0x00000700:
             status->substickX = (s8)(data[1] >> 24);
             status->substickY = (s8)(data[1] >> 16);
-            status->triggerLeft = (u8)(((data[1] >> 12) & 0x0f) << 4);
-            status->triggerRight = (u8)(((data[1] >> 8) & 0x0f) << 4);
-            status->analogA = (u8)(((data[1] >> 4) & 0x0f) << 4);
-            status->analogB = (u8)(((data[1] >> 0) & 0x0f) << 4);
+            status->triggerLeft = (u8)(((data[1] >> 12) & 0x0F) << 4);
+            status->triggerRight = (u8)(((data[1] >> 8) & 0x0F) << 4);
+            status->analogA = (u8)(((data[1] >> 4) & 0x0F) << 4);
+            status->analogB = (u8)(((data[1] >> 0) & 0x0F) << 4);
             break;
         case 0x00000100:
-            status->substickX = (s8)(((data[1] >> 28) & 0x0f) << 4);
-            status->substickY = (s8)(((data[1] >> 24) & 0x0f) << 4);
+            status->substickX = (s8)(((data[1] >> 28) & 0x0F) << 4);
+            status->substickY = (s8)(((data[1] >> 24) & 0x0F) << 4);
             status->triggerLeft = (u8)(data[1] >> 16);
             status->triggerRight = (u8)(data[1] >> 8);
-            status->analogA = (u8)(((data[1] >> 4) & 0x0f) << 4);
-            status->analogB = (u8)(((data[1] >> 0) & 0x0f) << 4);
+            status->analogA = (u8)(((data[1] >> 4) & 0x0F) << 4);
+            status->analogB = (u8)(((data[1] >> 0) & 0x0F) << 4);
             break;
         case 0x00000200:
-            status->substickX = (s8)(((data[1] >> 28) & 0x0f) << 4);
-            status->substickY = (s8)(((data[1] >> 24) & 0x0f) << 4);
-            status->triggerLeft = (u8)(((data[1] >> 20) & 0x0f) << 4);
-            status->triggerRight = (u8)(((data[1] >> 16) & 0x0f) << 4);
+            status->substickX = (s8)(((data[1] >> 28) & 0x0F) << 4);
+            status->substickY = (s8)(((data[1] >> 24) & 0x0F) << 4);
+            status->triggerLeft = (u8)(((data[1] >> 20) & 0x0F) << 4);
+            status->triggerRight = (u8)(((data[1] >> 16) & 0x0F) << 4);
             status->analogA = (u8)(data[1] >> 8);
             status->analogB = (u8)(data[1] >> 0);
             break;
@@ -628,7 +628,7 @@ static void SPEC2_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
 
     type = Type[chan];
 
-    if (((Type[chan] & 0xffff0000) == SI_GC_CONTROLLER) && ((status->button & 0x80) ^ 0x80)) {
+    if (((Type[chan] & 0xFFFF0000) == SI_GC_CONTROLLER) && ((status->button & 0x80) ^ 0x80)) {
         BarrelBits |= (PAD_CHAN0_BIT >> chan);
         status->stickX = 0;
         status->stickY = 0;

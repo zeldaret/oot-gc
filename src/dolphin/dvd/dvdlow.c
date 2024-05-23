@@ -87,7 +87,7 @@ WEAK void __DVDInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
     LastCommandWasRead = false;
     StopAtNextInt = false;
     reg = __DIRegs[0];
-    mask = reg & 0x2a;
+    mask = reg & 0x2A;
     intr = (reg & 0x54) & (mask << 1);
 
     if (intr & 0x40) {
@@ -194,7 +194,7 @@ static void Read(void* addr, u32 length, u32 offset, DVDLowCallback callback) {
     Callback = callback;
     LastReadIssued = __OSGetSystemTime();
 
-    __DIRegs[2] = 0xa8000000;
+    __DIRegs[2] = 0xA8000000;
     __DIRegs[3] = offset / 4;
     __DIRegs[4] = length;
     __DIRegs[5] = (u32)addr;
@@ -202,7 +202,7 @@ static void Read(void* addr, u32 length, u32 offset, DVDLowCallback callback) {
     LastLength = length;
     __DIRegs[7] = 3;
 
-    if (length > 0xa00000) {
+    if (length > 0xA00000) {
         SetTimeoutAlarm(OSSecondsToTicks(20));
     } else {
         SetTimeoutAlarm(OSSecondsToTicks(10));
@@ -297,7 +297,7 @@ WEAK bool DVDLowRead(void* addr, u32 length, u32 offset, DVDLowCallback callback
 WEAK bool DVDLowSeek(u32 offset, DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = 0xab000000;
+    __DIRegs[2] = 0xAB000000;
     __DIRegs[3] = offset / 4;
     __DIRegs[7] = 1;
     SetTimeoutAlarm(OSSecondsToTicks(10));
@@ -315,7 +315,7 @@ WEAK bool DVDLowWaitCoverClose(DVDLowCallback callback) {
 WEAK bool DVDLowReadDiskID(DVDDiskID* diskID, DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = 0xa8000040;
+    __DIRegs[2] = 0xA8000040;
     __DIRegs[3] = 0;
     __DIRegs[4] = sizeof(DVDDiskID);
     __DIRegs[5] = (u32)diskID;
@@ -328,7 +328,7 @@ WEAK bool DVDLowReadDiskID(DVDDiskID* diskID, DVDLowCallback callback) {
 WEAK bool DVDLowStopMotor(DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = 0xe3000000;
+    __DIRegs[2] = 0xE3000000;
     __DIRegs[7] = 1;
     SetTimeoutAlarm(OSSecondsToTicks(10));
     return true;
@@ -337,7 +337,7 @@ WEAK bool DVDLowStopMotor(DVDLowCallback callback) {
 WEAK bool DVDLowRequestError(DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = 0xe0000000;
+    __DIRegs[2] = 0xE0000000;
     __DIRegs[7] = 1;
     SetTimeoutAlarm(OSSecondsToTicks(10));
     return true;
@@ -358,7 +358,7 @@ WEAK bool DVDLowInquiry(DVDDriveInfo* info, DVDLowCallback callback) {
 WEAK bool DVDLowAudioStream(u32 subcmd, u32 length, u32 offset, DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = subcmd | 0xe1000000;
+    __DIRegs[2] = subcmd | 0xE1000000;
     __DIRegs[3] = offset >> 2;
     __DIRegs[4] = length;
     __DIRegs[7] = 1;
@@ -369,7 +369,7 @@ WEAK bool DVDLowAudioStream(u32 subcmd, u32 length, u32 offset, DVDLowCallback c
 WEAK bool DVDLowRequestAudioStatus(u32 subcmd, DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = subcmd | 0xe2000000;
+    __DIRegs[2] = subcmd | 0xE2000000;
     __DIRegs[7] = 1;
     SetTimeoutAlarm(OSSecondsToTicks(10));
     return true;
@@ -378,7 +378,7 @@ WEAK bool DVDLowRequestAudioStatus(u32 subcmd, DVDLowCallback callback) {
 WEAK bool DVDLowAudioBufferConfig(bool enable, u32 size, DVDLowCallback callback) {
     StopAtNextInt = false;
     Callback = callback;
-    __DIRegs[2] = 0xe4000000 | (enable != 0 ? 0x10000 : 0) | size;
+    __DIRegs[2] = 0xE4000000 | (enable != 0 ? 0x10000 : 0) | size;
     __DIRegs[7] = 1;
     SetTimeoutAlarm(OSSecondsToTicks(10));
     return true;

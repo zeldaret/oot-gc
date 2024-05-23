@@ -19,7 +19,7 @@ static OSResetFunctionInfo ResetFunctionInfo = {
 static bool OnReset(bool final) {
     if (final != false) {
         __MEMRegs[8] = 0xFF;
-        __OSMaskInterrupts(0xf0000000);
+        __OSMaskInterrupts(0xF0000000);
     }
     return true;
 }
@@ -32,8 +32,8 @@ static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     u32 addr;
     u32 cause;
 
-    cause = __MEMRegs[0xf];
-    addr = (((u32)__MEMRegs[0x12] & 0x3ff) << 16) | __MEMRegs[0x11];
+    cause = __MEMRegs[0xF];
+    addr = (((u32)__MEMRegs[0x12] & 0x3FF) << 16) | __MEMRegs[0x11];
     __MEMRegs[0x10] = 0;
 
     if (__OSErrorTable[OS_ERROR_PROTECTION]) {
@@ -52,13 +52,13 @@ ASM void Config24MB(void) {
 
     addis   r4,r0,0x00000002@ha
     addi    r4,r4,0x00000002@l
-    addis   r3,r0,0x800001ff@ha
-    addi    r3,r3,0x800001ff@l
+    addis   r3,r0,0x800001FF@ha
+    addi    r3,r3,0x800001FF@l
 
     addis   r6,r0,0x01000002@ha
     addi    r6,r6,0x01000002@l
-    addis   r5,r0,0x810000ff@ha
-    addi    r5,r5,0x810000ff@l
+    addis   r5,r0,0x810000FF@ha
+    addi    r5,r5,0x810000FF@l
 
     isync
 
@@ -100,13 +100,13 @@ ASM void Config48MB(void) {
 
     addis   r4,r0,0x00000002@ha
     addi    r4,r4,0x00000002@l
-    addis   r3,r0,0x800003ff@ha
-    addi    r3,r3,0x800003ff@l
+    addis   r3,r0,0x800003FF@ha
+    addi    r3,r3,0x800003FF@l
 
     addis   r6,r0,0x02000002@ha
     addi    r6,r6,0x02000002@l
-    addis   r5,r0,0x820001ff@ha
-    addi    r5,r5,0x820001ff@l
+    addis   r5,r0,0x820001FF@ha
+    addi    r5,r5,0x820001FF@l
 
     isync
 

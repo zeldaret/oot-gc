@@ -11,10 +11,10 @@ void __CARDCheckSum(void* ptr, int length, u16* checksum, u16* checksumInv) {
         *checksum += *p;
         *checksumInv += ~*p;
     }
-    if (*checksum == 0xffff) {
+    if (*checksum == 0xFFFF) {
         *checksum = 0;
     }
-    if (*checksumInv == 0xffff) {
+    if (*checksumInv == 0xFFFF) {
         *checksumInv = 0;
     }
 }
@@ -241,7 +241,7 @@ s32 CARDCheckExAsync(s32 channel, s32* xferBytes, CARDCallback callback) {
         CARDDir* ent;
 
         ent = &card->currentDir[fileNo];
-        if (ent->gameName[0] == 0xff) {
+        if (ent->gameName[0] == 0xFF) {
             continue;
         }
 

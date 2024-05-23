@@ -50,7 +50,7 @@ s32 CARDDeleteAsync(s32 chan, char* fileName, CARDCallback callback) {
     dir = __CARDGetDirBlock(card);
     ent = &dir[fileNo];
     card->startBlock = ent->startBlock;
-    memset(ent, 0xff, sizeof(CARDDir));
+    memset(ent, 0xFF, sizeof(CARDDir));
 
     card->apiCallback = callback ? callback : __CARDDefaultApiCallback;
     result = __CARDUpdateDir(chan, DeleteCallback);

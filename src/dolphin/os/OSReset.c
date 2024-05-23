@@ -185,12 +185,12 @@ void OSResetSystem(int reset, u32 resetCode, bool forceMenu) {
         __OSReboot(resetCode, forceMenu);
     }
     KillThreads();
-    memset(OSPhysicalToCached(0x40), 0, 0xcc - 0x40);
-    memset(OSPhysicalToCached(0xd4), 0, 0xe8 - 0xd4);
-    memset(OSPhysicalToCached(0xf4), 0, 0xf8 - 0xf4);
-    memset(OSPhysicalToCached(0x3000), 0, 0xc0);
-    memset(OSPhysicalToCached(0x30c8), 0, 0xd4 - 0xc8);
-    memset(OSPhysicalToCached(0x30e2), 0, 1);
+    memset(OSPhysicalToCached(0x40), 0, 0xCC - 0x40);
+    memset(OSPhysicalToCached(0xD4), 0, 0xE8 - 0xD4);
+    memset(OSPhysicalToCached(0xF4), 0, 0xF8 - 0xF4);
+    memset(OSPhysicalToCached(0x3000), 0, 0xC0);
+    memset(OSPhysicalToCached(0x30C8), 0, 0xD4 - 0xC8);
+    memset(OSPhysicalToCached(0x30E2), 0, 1);
 
     __PADDisableRecalibration(disableRecalibration);
 }

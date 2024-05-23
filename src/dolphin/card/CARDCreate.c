@@ -72,7 +72,7 @@ s32 CARDCreateAsync(s32 channel, char* fileName, u32 size, CARDFileInfo* fileInf
     dir = __CARDGetDirBlock(card);
     for (fileNo = 0; fileNo < CARD_MAX_FILE; fileNo++) {
         ent = &dir[fileNo];
-        if (ent->gameName[0] == 0xff) {
+        if (ent->gameName[0] == 0xFF) {
             if (freeNo == (u16)-1) {
                 freeNo = fileNo;
             }

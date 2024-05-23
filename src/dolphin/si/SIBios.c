@@ -100,13 +100,13 @@ static u32 CompleteTransfer() {
         if (rLen) {
             u32 temp = __SIRegs[32 + i];
             for (i = 0; i < rLen; i++) {
-                *input++ = (u8)((temp >> ((3 - i) * 8)) & 0xff);
+                *input++ = (u8)((temp >> ((3 - i) * 8)) & 0xFF);
             }
         }
 
         if (__SIRegs[13] & 0x20000000) {
             sr >>= 8 * (3 - Si.chan);
-            sr &= 0xf;
+            sr &= 0xF;
 
             if ((sr & SI_ERROR_NO_RESPONSE) && !(Type[Si.chan] & SI_ERROR_BUSY)) {
                 Type[Si.chan] = SI_ERROR_NO_RESPONSE;
@@ -148,7 +148,7 @@ static void SIInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
 
     reg = __SIRegs[13];
 
-    if ((reg & 0xc0000000) == 0xc0000000) {
+    if ((reg & 0xC0000000) == 0xC0000000) {
         s32 chan;
         u32 sr;
         SICallback callback;
@@ -165,7 +165,7 @@ static void SIInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
         }
 
         sr = __SIRegs[14];
-        sr &= 0xf000000 >> (8 * chan);
+        sr &= 0xF000000 >> (8 * chan);
         __SIRegs[14] = sr;
 
         if (Type[chan] == SI_ERROR_BUSY && !SIIsChanBusy(chan)) {
@@ -181,7 +181,7 @@ static void SIInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
         u32 x;
 
         vcount = VIGetCurrentLine() + 1;
-        x = (Si.poll & 0x03ff0000) >> 16;
+        x = (Si.poll & 0x03FF0000) >> 16;
 
         for (i = 0; i < SI_MAX_CHAN; ++i) {
             if (SIGetResponseRaw(i)) {
@@ -319,7 +319,7 @@ static bool __SITransfer(s32 chan, void* output, u32 outputBytes, void* input, u
     }
 
     sr = __SIRegs[14];
-    sr &= (0xf000000) >> (8 * chan);
+    sr &= (0xF000000) >> (8 * chan);
     __SIRegs[14] = sr;
 
     Si.chan = chan;
@@ -376,7 +376,7 @@ u32 SISetXY(u32 x, u32 y) {
     poll |= y << 8;
 
     enabled = OSDisableInterrupts();
-    Si.poll &= ~(0x03ff0000 | 0x0000ff00);
+    Si.poll &= ~(0x03FF0000 | 0x0000FF00);
     Si.poll |= poll;
     poll = Si.poll;
     __SIRegs[12] = poll;
@@ -395,11 +395,11 @@ u32 SIEnablePolling(u32 poll) {
     enabled = OSDisableInterrupts();
 
     poll >>= (31 - 7);
-    en = poll & 0xf0;
+    en = poll & 0xF0;
 
-    poll &= (en >> 4) | 0x03fffff0;
+    poll &= (en >> 4) | 0x03FFFFF0;
 
-    poll &= ~0x03ffff00;
+    poll &= ~0x03FFFF00;
 
     Si.poll &= ~(en >> 4);
 
@@ -426,7 +426,7 @@ u32 SIDisablePolling(u32 poll) {
     enabled = OSDisableInterrupts();
 
     poll >>= (31 - 7);
-    poll &= 0xf0;
+    poll &= 0xF0;
 
     poll = Si.poll & ~poll;
 
@@ -571,7 +571,7 @@ static void GetTypeCallback(s32 chan, u32 error, OSContext* context) {
             if (!(id & SI_WIRELESS_FIX_ID)) {
                 id = type & SI_WIRELESS_TYPE_ID;
                 id |= SI_WIRELESS_FIX_ID;
-                OSSetWirelessID(chan, (u16)((id >> 8) & 0xffff));
+                OSSetWirelessID(chan, (u16)((id >> 8) & 0xFFff));
             }
 
             cmdFixDevice[chan] = 0x4E << 24 | id;
@@ -583,7 +583,7 @@ static void GetTypeCallback(s32 chan, u32 error, OSContext* context) {
         id = type & SI_WIRELESS_TYPE_ID;
         id |= SI_WIRELESS_FIX_ID;
 
-        OSSetWirelessID(chan, (u16)((id >> 8) & 0xffff));
+        OSSetWirelessID(chan, (u16)((id >> 8) & 0xFFff));
 
         cmdFixDevice[chan] = 0x4E << 24 | id;
         Type[chan] = SI_ERROR_BUSY;

@@ -153,7 +153,7 @@ void PPCMtfpscr(register u32 newFPSCR) {
         stw   r4, m.u.fpscr_pad;
         stw   newFPSCR, m.u.fpscr
         lfd   fp31, m.f
-        mtfsf 0xff, fp31
+        mtfsf 0xFF, fp31
 #endif // clang-format on
     }
 }

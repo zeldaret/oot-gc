@@ -177,9 +177,9 @@ static u32 CategorizeError(u32 error) {
         return 1;
     }
 
-    error &= 0xffffff;
+    error &= 0xFFFFFF;
 
-    if ((error == 0x62800) || (error == 0x23a00) || (error == 0xb5a01)) {
+    if ((error == 0x62800) || (error == 0x23A00) || (error == 0xB5A01)) {
         return 0;
     }
 
@@ -243,7 +243,7 @@ static void cbForStateGettingError(u32 intType) {
     }
 
     error = __DIRegs[DI_MM_BUF];
-    status = error & 0xff000000;
+    status = error & 0xFF000000;
 
     errorCategory = CategorizeError(error);
 
@@ -276,7 +276,7 @@ static void cbForStateGettingError(u32 intType) {
     }
 
     if (errorCategory == 3) {
-        if ((error & 0x00ffffff) == 0x00031100) {
+        if ((error & 0x00FFFFFF) == 0x00031100) {
             DVDLowSeek(executing->offset, cbForUnrecoveredError);
         } else {
             LastState(executing);

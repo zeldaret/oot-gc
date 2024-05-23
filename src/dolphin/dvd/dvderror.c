@@ -36,7 +36,7 @@ void __DVDStoreErrorCode(u32 errCode) {
         storedCode = -2;
     } else {
         upperByte = errCode >> 0x18;
-        storedCode = ErrorCode2Num(errCode & 0xffffff);
+        storedCode = ErrorCode2Num(errCode & 0xFFFFFF);
         if (errCode >> 0x18 >= 6) {
             upperByte = 6;
         }

@@ -892,7 +892,7 @@ static bool romPut64(Rom* pROM, u32 nAddress, s64* pData) { return true; }
 static bool romGet8(Rom* pROM, u32 nAddress, s8* pData) {
     u8 nData;
 
-    nAddress = nAddress & 0x07ffffff;
+    nAddress = nAddress & 0x07FFFFFF;
     if (nAddress < pROM->nSize && romCopy(pROM, &nData, nAddress, 1, 0)) {
         *pData = nData;
         return true;
@@ -905,7 +905,7 @@ static bool romGet8(Rom* pROM, u32 nAddress, s8* pData) {
 static bool romGet16(Rom* pROM, u32 nAddress, s16* pData) {
     u16 nData;
 
-    nAddress = nAddress & 0x07ffffff;
+    nAddress = nAddress & 0x07FFFFFF;
     if (nAddress < pROM->nSize && romCopy(pROM, &nData, nAddress, 2, 0)) {
         *pData = nData;
         return true;
@@ -918,7 +918,7 @@ static bool romGet16(Rom* pROM, u32 nAddress, s16* pData) {
 static bool romGet32(Rom* pROM, u32 nAddress, s32* pData) {
     u32 nData;
 
-    nAddress = nAddress & 0x07ffffff;
+    nAddress = nAddress & 0x07FFFFFF;
     if (nAddress < pROM->nSize && romCopy(pROM, &nData, nAddress, 4, 0)) {
         *pData = nData;
         return true;
@@ -931,7 +931,7 @@ static bool romGet32(Rom* pROM, u32 nAddress, s32* pData) {
 static bool romGet64(Rom* pROM, u32 nAddress, s64* pData) {
     u64 nData;
 
-    nAddress = nAddress & 0x07ffffff;
+    nAddress = nAddress & 0x07FFFFFF;
     if (nAddress < pROM->nSize && romCopy(pROM, &nData, nAddress, 8, 0)) {
         *pData = nData;
         return true;
