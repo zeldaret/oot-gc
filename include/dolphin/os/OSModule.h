@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define OS_MODULE_VERSION 2
 typedef struct OSModuleHeader OSModuleHeader;
 
@@ -107,9 +103,5 @@ OSModuleInfo* OSSearchModule(void* ptr, u32* section, u32* offset);
 // debugger notification
 void OSNotifyLink(OSModuleInfo* module);
 void OSNotifyUnlink(OSModuleInfo* module);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSMODULE

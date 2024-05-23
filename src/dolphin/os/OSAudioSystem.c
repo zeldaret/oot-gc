@@ -3,10 +3,6 @@
 #include "dolphin/types.h"
 #include "string.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // clang-format off
 static u8 DSPInitCode[128] = {
     0x02, 0x9F, 0x00, 0x10, 0x02, 0x9F, 0x00, 0x33, 0x02, 0x9F, 0x00, 0x34, 0x02, 0x9F, 0x00, 0x35,
@@ -111,7 +107,3 @@ void __OSStopAudioSystem(void) {
 
 #undef waitUntil
 }
-
-#ifdef __cplusplus
-}
-#endif

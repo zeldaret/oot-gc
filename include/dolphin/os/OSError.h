@@ -4,10 +4,6 @@
 #include "dolphin/os/OSException.h"
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define OS_ERROR_SYSTEM_RESET 0
 #define OS_ERROR_MACHINE_CHECK 1
 #define OS_ERROR_DSI 2
@@ -35,9 +31,5 @@ void OSReport(const char* msg, ...);
 void OSPanic(const char* file, int line, const char* msg, ...);
 OSErrorHandler OSSetErrorHandler(OSError error, OSErrorHandler handler);
 void __OSUnhandledException(__OSException exception, OSContext* context, u32 dsisr, u32 dar);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSERROR

@@ -5,9 +5,6 @@
 #include "dolphin/os/OSContext.h"
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 #define __OS_EXCEPTION_SYSTEM_RESET 0
 #define __OS_EXCEPTION_MACHINE_CHECK 1
 #define __OS_EXCEPTION_DSI 2
@@ -47,9 +44,5 @@ typedef void (*__OSExceptionHandler)(__OSException exception, OSContext* context
     stw r0, OS_CONTEXT_GQR6(context);   \
     mfspr r0, GQR7;                     \
     stw r0, OS_CONTEXT_GQR7(context);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSEXCEPTION

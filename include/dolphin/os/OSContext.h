@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define __OS_CONTEXT_FRAME 768
 
 #define OS_CONTEXT_R0 0
@@ -168,9 +164,5 @@ void OSClearContext(register OSContext* context);
 void OSInitContext(register OSContext* context, register u32 pc, register u32 newsp);
 void OSDumpContext(OSContext* context);
 void __OSContextInit(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSCONTEXT

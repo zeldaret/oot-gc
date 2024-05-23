@@ -1,10 +1,6 @@
 #ifndef _CTYPE_H_
 #define _CTYPE_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // eof.h
 #define EOF -1L
 
@@ -61,9 +57,5 @@ _CTYPE_INLINE
 int toupper(int c) { return ((c == EOF) ? EOF : ((int)__upper_map[__zero_fill(c)])); }
 _CTYPE_INLINE
 int iswblank(int c) { return ((c == (int)L' ') || (c == (int)L'\t')); }
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

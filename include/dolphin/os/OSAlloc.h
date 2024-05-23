@@ -3,10 +3,6 @@
 
 #include "dolphin/types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef int OSHeapHandle;
 typedef void (*OSAllocVisitor)(void* obj, u32 size);
 
@@ -21,9 +17,5 @@ extern volatile OSHeapHandle __OSCurrHeap;
 
 #define OSAlloc(size) OSAllocFromHeap(__OSCurrHeap, (size))
 #define OSFree(ptr) OSFreeToHeap(__OSCurrHeap, (ptr))
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _DOLPHIN_OSALLOC
