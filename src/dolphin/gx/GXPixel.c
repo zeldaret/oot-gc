@@ -99,7 +99,7 @@ void GXInitFogAdjTable(GXFogAdjTable* table, u16 width, const Mtx44 proj) {
         sideX = nearZ / proj[0][0];
     } else {
         sideX = 1.0f / proj[0][0];
-        nearZ = M_SQRT3 * sideX;
+        nearZ = (f32)M_SQRT3 * sideX;
     }
 
     scale = 2.0f / width;
