@@ -364,31 +364,31 @@ config.libs = [
     DolphinLib(
         "demo",
         [
-            Object(NonMatching, "dolphin/demo/DEMOInit.c"),
-            Object(NonMatching, "dolphin/demo/DEMOPuts.c"),
-            Object(NonMatching, "dolphin/demo/DEMOFont.c"),
-            Object(NonMatching, "dolphin/demo/DEMOPad.c"),
-            Object(NonMatching, "dolphin/demo/DEMOStats.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOInit.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOPuts.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOFont.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOPad.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOStats.c"),
         ],
     ),
     DolphinLib(
         "ai",
         [
-            Object(NonMatching, "dolphin/ai/ai.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/ai/ai.c"),
         ],
     ),
     DolphinLib(
         "ar",
         [
-            Object(NonMatching, "dolphin/ar/ar.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/ar/ar.c"),
         ],
     ),
     DolphinLib(
         "dsp",
         [
-            Object(NonMatching, "dolphin/dsp/dsp.c"),
-            Object(NonMatching, "dolphin/dsp/dsp_debug.c"),
-            Object(NonMatching, "dolphin/dsp/dsp_task.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dsp/dsp.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dsp/dsp_debug.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dsp/dsp_task.c"),
         ],
     ),
     DolphinLib(

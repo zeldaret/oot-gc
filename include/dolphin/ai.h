@@ -4,6 +4,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/types.h"
 
+typedef void (*AISCallback)(u32 count);
 typedef void (*AIDCallback)(void);
 
 AIDCallback AIRegisterDMACallback(AIDCallback);
