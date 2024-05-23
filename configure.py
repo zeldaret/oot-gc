@@ -414,14 +414,14 @@ config.libs = [
     DolphinLib(
         "thp",
         [
-            Object(NonMatching, "dolphin/thp/THPDec.c"),
-            Object(NonMatching, "dolphin/thp/THPAudio.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/thp/THPDec.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/thp/THPAudio.c"),
         ],
     ),
     DolphinLib(
         "tex",
         [
-            Object(NonMatching, "dolphin/tex/texPalette.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/tex/texPalette.c"),
         ],
     ),
     GenericLib(
