@@ -53,8 +53,8 @@ void InitMetroTRK_BBA(void) { return; }
 void __init_user(void) { __init_cpp(); }
 
 typedef void (*voidfunctionptr)(void); // pointer to function returning void
-INIT extern voidfunctionptr _ctors[];
-INIT extern voidfunctionptr _dtors[];
+extern voidfunctionptr _ctors[];
+extern voidfunctionptr _dtors[];
 
 void __init_cpp(void) {
     voidfunctionptr* constructor;

@@ -194,7 +194,7 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def GenericLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-        "mw_version": "GC/1.3.2",
+        "mw_version": "GC/1.2.5n",
         "cflags": cflags_base,
         "host": False,
         "objects": objects,
@@ -456,18 +456,18 @@ config.libs = [
         [
             Object(NonMatching, "runtime/__mem.c"),
             Object(NonMatching, "runtime/__va_arg.c"),
-            Object(NonMatching, "runtime/global_destructor_chain.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "runtime/global_destructor_chain.c"),
             Object(NonMatching, "runtime/runtime.c"),
         ]
     ),
     GenericLib(
         "libc",
         [
-            Object(NonMatching, "libc/abort_exit.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "libc/abort_exit.c"),
             Object(MatchingFor("ce-j", "ce-u"), "libc/ansi_files.c"),
             Object(NonMatching, "libc/ansi_fp.c", extra_cflags=["-inline noauto"]),
             Object(NonMatching, "libc/buffer_io.c"),
-            Object(NonMatching, "libc/critical_regions.ppc_eabi.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "libc/critical_regions.ppc_eabi.c"),
             Object(NonMatching, "libc/ctype.c"),
             Object(NonMatching, "libc/direct_io.c"),
             Object(NonMatching, "libc/errno.c"),
