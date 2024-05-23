@@ -365,10 +365,10 @@ config.libs = [
         "demo",
         [
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOInit.c"),
-            Object(NonMatching, "dolphin/demo/DEMOPuts.c"),
-            Object(NonMatching, "dolphin/demo/DEMOFont.c"),
-            Object(NonMatching, "dolphin/demo/DEMOPad.c"),
-            Object(NonMatching, "dolphin/demo/DEMOStats.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOPuts.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOFont.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOPad.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOStats.c"),
         ],
     ),
     DolphinLib(

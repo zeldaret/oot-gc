@@ -5,7 +5,46 @@
 #include "dolphin/pad.h"
 #include "dolphin/types.h"
 
-typedef struct __anon_0xAD2F {
+typedef enum {
+    DMTF_POINTSAMPLE,
+    DMTF_BILERP,
+} DMTexFlt;
+
+typedef enum {
+    DM_FT_OPQ,
+    DM_FT_RVS,
+    DM_FT_XLU
+} DMFontType;
+
+typedef enum DEMO_STAT_TYPE {
+    DEMO_STAT_GP0 = 0,
+    DEMO_STAT_GP1 = 1,
+    DEMO_STAT_MEM = 2,
+    DEMO_STAT_PIX = 3,
+    DEMO_STAT_VC = 4,
+    DEMO_STAT_FR = 5,
+    DEMO_STAT_TBW = 6,
+    DEMO_STAT_TBP = 7,
+    DEMO_STAT_MYC = 8,
+    DEMO_STAT_MYR = 9,
+} DEMO_STAT_TYPE;
+
+typedef enum {
+    DEMO_STAT_TL = 0,
+    DEMO_STAT_BL = 1,
+    DEMO_STAT_TLD = 2,
+    DEMO_STAT_BLD = 3,
+    DEMO_STAT_IO = 4,
+} DEMO_STAT_DISP;
+
+typedef struct DemoStatData {
+    char text[50];
+    DEMO_STAT_TYPE stat_type;
+    unsigned long stat;
+    unsigned long count;
+} DemoStatData;
+
+typedef struct DEMODMPad {
     /* 0x00 */ PADStatus pst;
     /* 0x0C */ u16 buttonDown;
     /* 0x0E */ u16 buttonUp;
@@ -16,13 +55,13 @@ typedef struct __anon_0xAD2F {
     /* 0x18 */ s16 stickDeltaY;
     /* 0x1A */ s16 substickDeltaX;
     /* 0x1C */ s16 substickDeltaY;
-} __anon_0xAD2F; // size = 0x1E
+} DEMODMPad; // size = 0x1E
 
 extern void* DemoCurrentBuffer;
 extern void* DemoFrameBuffer2;
 extern void* DemoFrameBuffer1;
 
-extern __anon_0xAD2F DemoPad[4];
+extern DEMODMPad DemoPad[4];
 extern u8 DemoStatEnable;
 
 void DEMOInit(GXRenderModeObj* mode);
@@ -36,7 +75,7 @@ void DEMOPuts(s16, s16, s16, char*);
 void DEMOPrintf(s16, s16, s16, char*, ...);
 void DEMOPadRead(void);
 void DEMOPadInit(void);
-void DEMOUpdateStats(s32);
+void DEMOUpdateStats(u8 inc);
 void DEMOPrintStats(void);
 void DEMOSetGPHangMetric(GXBool enable);
 

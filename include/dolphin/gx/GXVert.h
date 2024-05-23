@@ -84,17 +84,11 @@ static inline void GXTexCoord2u16(const u16 u, const u16 v) {
     GXWGFifo.u16 = v;
 }
 
-static inline void GXCmd1u8(const u8 u) {
-    GXWGFifo.u8 = u;
-}
+static inline void GXCmd1u8(const u8 u) { GXWGFifo.u8 = u; }
 
-static inline void GXParam1u16(const u16 u) {
-    GXWGFifo.u16 = u;
-}
+static inline void GXParam1u16(const u16 u) { GXWGFifo.u16 = u; }
 
-static inline void GXParam1u32(const u32 u) {
-    GXWGFifo.u32 = u;
-}
+static inline void GXParam1u32(const u32 u) { GXWGFifo.u32 = u; }
 
 static inline void GXEnd(void) {}
 
