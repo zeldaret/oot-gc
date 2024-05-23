@@ -492,15 +492,14 @@ dolphin/demo/DEMOInit.c:
 	.sbss       start:0x80135A70 end:0x80135A98
 	.sdata2     start:0x801361D0 end:0x801361E0
 
+dolphin/demo/DEMOFont.c:
+	.data       start:0x800F2820 end:0x800F3420
+
 dolphin/demo/DEMOPuts.c:
-	.text       start:0x800B68C4 end:0x800B6E30
+	.text       start:0x800B68C4 end:0x800B6EF4
 	.bss        start:0x80132708 end:0x80132728
 	.sbss       start:0x80135A98 end:0x80135AA0
 	.sdata2     start:0x801361E0 end:0x80136208
-
-dolphin/demo/DEMOFont.c:
-	.text       start:0x800B6E30 end:0x800B6EF4
-	.data       start:0x800F2820 end:0x800F3420
 
 dolphin/demo/DEMOPad.c:
 	.text       start:0x800B6EF4 end:0x800B722C
