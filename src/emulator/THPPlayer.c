@@ -23,7 +23,7 @@ static s32 WorkBuffer[16];
 static OSMessageQueue PrepareReadyQueue;
 static OSMessageQueue UsedTextureSetQueue;
 static void* UsedTextureSetMessage[3];
-static s16 SoundBuffer[2][320] ALIGNAS(32);
+static s16 SoundBuffer[2][320] ATTRIBUTE_ALIGN(32);
 THPPlayer ActivePlayer;
 
 static bool Initialized;

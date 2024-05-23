@@ -15,7 +15,7 @@ _XL_OBJECTTYPE gClassSound = {
     (EventFunc)soundEvent,
 };
 
-s32 gVolumeCurve[257] ALIGNAS(32);
+s32 gVolumeCurve[257] ATTRIBUTE_ALIGN(32);
 
 bool soundWipeBuffers(Sound* pSound) {
     s32 iBuffer;

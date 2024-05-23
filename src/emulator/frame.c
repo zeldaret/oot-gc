@@ -70,7 +70,7 @@ static volatile bool sCopyFrameSyncReceived;
 static u8 sSpecialZeldaHackON;
 static u32 sDestinationBuffer;
 static u32 sSrcBuffer;
-static u32 sConstantBufAddr[6] ALIGNAS(32);
+static u32 sConstantBufAddr[6] ATTRIBUTE_ALIGN(32);
 static u32 sNumAddr;
 static u32 gHackCreditsColor;
 
@@ -129,7 +129,7 @@ bool bSkip;
 s32 nCounter;
 s32 gnCountMapHack;
 bool gNoSwapBuffer;
-static u16 sTempZBuf[N64_FRAME_WIDTH * N64_FRAME_HEIGHT / 16][4][4] ALIGNAS(32);
+static u16 sTempZBuf[N64_FRAME_WIDTH * N64_FRAME_HEIGHT / 16][4][4] ATTRIBUTE_ALIGN(32);
 
 s32 sZBufShift[] = {
     0x0003F800, 0x00000000, 0x0003F000, 0x00000000, 0x0003E000, 0x00000001, 0x0003C000, 0x00000002,

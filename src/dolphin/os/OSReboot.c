@@ -13,7 +13,7 @@ typedef struct ApploaderHeader {
     u32 reserved2; // offset 0x1C, size 0x4
 } ApploaderHeader;
 
-static ApploaderHeader Header ALIGNAS(32);
+static ApploaderHeader Header ATTRIBUTE_ALIGN(32);
 
 extern void* __OSSavedRegionStart;
 extern void* __OSSavedRegionEnd;

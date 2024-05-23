@@ -9,7 +9,6 @@
 #define CE_U 5
 #define CE_E 6
 
-#define ALIGNAS(N) __attribute__((aligned(N)))
 #define ALIGN_PREV(X, N) ((X) & ~((N) - 1))
 #define ALIGN_NEXT(X, N) ALIGN_PREV(((X) + (N) - 1), N)
 
