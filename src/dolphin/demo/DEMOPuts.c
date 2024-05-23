@@ -12,7 +12,7 @@ static GXTexObj fontTexObj; // size: 0x20, address: 0x0
 // .sbss
 static s32 fontShift; // size: 0x4, address: 0x0
 
-inline void DEMOSetFontType(DMFontType attr) {
+void DEMOSetFontType(DMFontType attr) {
     switch (attr) {
         case DM_FT_RVS:
             GXSetBlendMode(GX_BM_LOGIC, GX_BL_ZERO, GX_BL_ZERO, GX_LO_INVCOPY);
@@ -27,7 +27,7 @@ inline void DEMOSetFontType(DMFontType attr) {
     }
 }
 
-inline void DEMOLoadFont(enum _GXTexMapID texMap, enum _GXTexMtx texMtx, DMTexFlt texFlt) {
+void DEMOLoadFont(enum _GXTexMapID texMap, enum _GXTexMtx texMtx, DMTexFlt texFlt) {
     Mtx fontTMtx;
     u16 width;
     u16 height;
@@ -48,13 +48,13 @@ inline void DEMOLoadFont(enum _GXTexMapID texMap, enum _GXTexMtx texMtx, DMTexFl
     GXSetTexCoordGen(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, texMtx);
 }
 
-inline void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
+void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
     Mtx44 pMtx;
     Mtx mMtx;
     f32 top;
 
+    // fixes float ordering issue
     (void)0.0f;
-    (void)1.0f;
 
     if (DEMOGetRenderModeObj()->field_rendering && !VIGetNextField()) {
         top = -0.667f;
