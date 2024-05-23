@@ -464,7 +464,7 @@ config.libs = [
         "libc",
         [
             Object(NonMatching, "libc/abort_exit.c"),
-            Object(NonMatching, "libc/ansi_files.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "libc/ansi_files.c"),
             Object(NonMatching, "libc/ansi_fp.c", extra_cflags=["-inline noauto"]),
             Object(NonMatching, "libc/buffer_io.c"),
             Object(NonMatching, "libc/critical_regions.ppc_eabi.c"),

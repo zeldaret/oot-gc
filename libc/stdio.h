@@ -77,7 +77,6 @@ typedef struct _IO_FILE {
     __file_handle handle;
     __file_modes mode;
     __file_state state;
-    unsigned char is_dynamically_allocated;
     unsigned char char_buffer;
     unsigned char char_buffer_overflow;
     unsigned char ungetc_buffer[__ungetc_buffer_size];
@@ -95,7 +94,6 @@ typedef struct _IO_FILE {
     __io_proc write_proc;
     __close_proc close_proc;
     __idle_proc idle_proc;
-    struct _IO_FILE* next_file_struct;
 } FILE;
 
 typedef struct {
