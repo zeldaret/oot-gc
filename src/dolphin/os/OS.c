@@ -283,9 +283,9 @@ void OSInit(void) {
         //     set arenaLo to just past the end of the db stack
         if ((BootInfo->arenaLo == NULL) && (BI2DebugFlag != 0) && (*BI2DebugFlag < 2)) {
 #if DOLPHIN_REV == 2002
-            debugArenaLo = (char*)(((u32)_db_stack_end + 0x1f) & ~0x1f);
+            debugArenaLo = (char*)(((u32)_db_stack_end + 0x1F) & ~0x1F);
 #else
-            debugArenaLo = (char*)(((u32)_stack_addr + 0x1f) & ~0x1f);
+            debugArenaLo = (char*)(((u32)_stack_addr + 0x1F) & ~0x1F);
 #endif
             OSSetArenaLo(debugArenaLo);
         }

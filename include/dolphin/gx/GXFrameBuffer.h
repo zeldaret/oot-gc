@@ -4,7 +4,7 @@
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"
 
-#define GX_MAX_Z24 0x00ffffff
+#define GX_MAX_Z24 0x00FFFFFF
 
 extern GXRenderModeObj GXNtsc480IntDf;
 extern GXRenderModeObj GXNtsc480Prog;

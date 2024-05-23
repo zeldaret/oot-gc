@@ -3,7 +3,7 @@
 #include "dolphin/os.h"
 
 #define RTC_CMD_READ 0x20000000
-#define RTC_CMD_WRITE 0xa0000000
+#define RTC_CMD_WRITE 0xA0000000
 
 #define RTC_SRAM_ADDR 0x00000100
 #define RTC_SRAM_SIZE 64

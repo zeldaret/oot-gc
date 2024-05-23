@@ -8,7 +8,7 @@ u16 Pad3Button AT_ADDRESS(PAD3_BUTTON_ADDR);
 static u8 Debug_BBA = 0;
 
 void __check_pad3(void) {
-    if ((Pad3Button & 0x0eef) == 0x0eef) {
+    if ((Pad3Button & 0x0EEF) == 0x0EEF) {
         OSResetSystem(OS_RESET_RESTART, 0, false);
     }
     return;
@@ -106,7 +106,7 @@ _loop:
     bdnz _loop
     lis r5, ARENAHI_ADDR@ha
     addi r5, r5, ARENAHI_ADDR@l
-    rlwinm r7, r15, 0, 0, 0x1a
+    rlwinm r7, r15, 0, 0, 0x1A
     stw r7, 0(r5)
     b _end_of_parseargs
 
@@ -122,7 +122,7 @@ _end_of_parseargs:
     lhz r3, 0(r4)
     andi. r5, r3, 0x8000
     beq _check_pad3
-    andi. r3, r3, 0x7fff
+    andi. r3, r3, 0x7FFF
     cmplwi r3, 1
 #if DOLPHIN_REV == 2002
     bne _goto_skip_init_bba

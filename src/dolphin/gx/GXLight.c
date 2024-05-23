@@ -10,12 +10,12 @@ void GXSetChanAmbColor(GXChannelID channel, GXColor color) {
     switch (channel) {
         case GX_COLOR0:
             rgb = gx->ambColor[GX_COLOR0];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xff, rgb, 24, 31);
+            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
             colorID = GX_COLOR0;
             break;
         case GX_COLOR1:
             rgb = gx->ambColor[GX_COLOR1];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xff, rgb, 24, 31);
+            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
             colorID = GX_COLOR1;
             break;
         case GX_ALPHA0:
@@ -53,12 +53,12 @@ void GXSetChanMatColor(GXChannelID channel, GXColor color) {
     switch (channel) {
         case GX_COLOR0:
             rgb = gx->matColor[GX_COLOR0];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xff, rgb, 24, 31);
+            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
             colorID = GX_COLOR0;
             break;
         case GX_COLOR1:
             rgb = gx->matColor[GX_COLOR1];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xff, rgb, 24, 31);
+            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
             colorID = GX_COLOR1;
             break;
         case GX_ALPHA0:
@@ -109,9 +109,9 @@ void GXSetChanCtrl(GXChannelID channel, GXBool doEnable, GXColorSrc ambSrc, GXCo
 
     // why are we unmasking bits we're about to overwrite?
 
-    reg = (reg & ~(0xf << 2)) | ((mask & 0xf) << 2);
+    reg = (reg & ~(0xF << 2)) | ((mask & 0xF) << 2);
 
-    reg = (reg & ~(0xf << 11)) | (((mask >> 4) & 0xf) << 11);
+    reg = (reg & ~(0xF << 11)) | (((mask >> 4) & 0xF) << 11);
 
     GX_XF_LOAD_REG(GX_XF_REG_COLOR0CNTRL + colorID, reg);
 

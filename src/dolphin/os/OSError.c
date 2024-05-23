@@ -28,7 +28,7 @@ WEAK void OSPanic(const char* file, int line, const char* msg, ...) {
     OSReport(" in \"%s\" on line %d.\n", file, line);
 
     OSReport("\nAddress:      Back Chain    LR Save\n");
-    for (i = 0, p = (u32*)OSGetStackPointer(); p && (u32)p != 0xffffffff && i++ < 16; p = (u32*)*p) {
+    for (i = 0, p = (u32*)OSGetStackPointer(); p && (u32)p != 0xFFFFFFFF && i++ < 16; p = (u32*)*p) {
         OSReport("0x%08x:   0x%08x    0x%08x\n", p, p[0], p[1]);
     }
 
@@ -58,8 +58,8 @@ OSErrorHandler OSSetErrorHandler(OSError error, OSErrorHandler handler) {
                     int i;
                     thread->context.state |= OS_CONTEXT_STATE_FPSAVED;
                     for (i = 0; i < 32; ++i) {
-                        *(u64*)&thread->context.fpr[i] = (u64)0xffffffffffffffffLL;
-                        *(u64*)&thread->context.psf[i] = (u64)0xffffffffffffffffLL;
+                        *(u64*)&thread->context.fpr[i] = (u64)0xFFFFFFFFffffffffLL;
+                        *(u64*)&thread->context.psf[i] = (u64)0xFFFFFFFFffffffffLL;
                     }
                     thread->context.fpscr = FPSCR_NI;
                 }

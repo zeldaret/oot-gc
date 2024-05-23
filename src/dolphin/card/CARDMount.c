@@ -23,7 +23,7 @@ static bool IsCard(u32 id) {
         return false;
     }
 
-    size = id & 0xfc;
+    size = id & 0xFC;
     switch (size) {
         case 4:
         case 8:
@@ -90,7 +90,7 @@ s32 CARDProbeEx(s32 channel, s32* memSize, s32* sectorSize) {
         result = CARD_RESULT_BUSY;
     } else if (IsCard(id)) {
         if (memSize) {
-            *memSize = (s32)(id & 0xfc);
+            *memSize = (s32)(id & 0xFC);
         }
         if (sectorSize) {
             *sectorSize = SectorSizeTable[(id & 0x00003800) >> 11];
@@ -189,7 +189,7 @@ static s32 DoMount(s32 channel) {
             vendorID = *(u16*)sram->flashID[channel];
             __OSUnlockSramEx(false);
 
-            if (__CARDVendorID == 0xffff || vendorID != __CARDVendorID) {
+            if (__CARDVendorID == 0xFFFF || vendorID != __CARDVendorID) {
                 result = CARD_RESULT_WRONGDEVICE;
                 goto error;
             }

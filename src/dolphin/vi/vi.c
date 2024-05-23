@@ -566,7 +566,7 @@ static void setFbbRegs(VIPositionInfo* hv, u32* tfbb, u32* bfbb, u32* rtfbb, u32
     changed |= VI_BITMASK(VI_BTTM_FIELD_BASE_LEFT);
 
     if (hv->is3D) {
-        regs[VI_TOP_FIELD_BASE_RIGHT_U] = *rtfbb & 0xffff;
+        regs[VI_TOP_FIELD_BASE_RIGHT_U] = *rtfbb & 0xFFFF;
         changed |= VI_BITMASK(VI_TOP_FIELD_BASE_RIGHT_U);
 
         regs[VI_TOP_FIELD_BASE_RIGHT] = *rtfbb >> 16;

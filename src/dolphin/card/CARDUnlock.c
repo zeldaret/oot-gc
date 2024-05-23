@@ -30,9 +30,9 @@ static u32 next = 1;
 
 // bit manip macros for use in ReadArrayUnlock
 #define SEC_AD1(x) ((u8)(((x) >> 29) & 0x03))
-#define SEC_AD2(x) ((u8)(((x) >> 21) & 0xff))
+#define SEC_AD2(x) ((u8)(((x) >> 21) & 0xFF))
 #define SEC_AD3(x) ((u8)(((x) >> 19) & 0x03))
-#define SEC_BA(x) ((u8)(((x) >> 12) & 0x7f))
+#define SEC_BA(x) ((u8)(((x) >> 12) & 0x7F))
 
 inline int CARDRand() {
     next = next * 1103515245 + 12345;
@@ -101,7 +101,7 @@ s32 ReadArrayUnlock(s32 channel, u32 data, void* buffer, s32 rlen, s32 mode) {
         return CARD_RESULT_NOCARD;
     }
 
-    data &= 0xfffff000;
+    data &= 0xFFfff000;
     memset(cmd, 0, 5);
     cmd[0] = 0x52;
     if (mode == 0) {
@@ -110,8 +110,8 @@ s32 ReadArrayUnlock(s32 channel, u32 data, void* buffer, s32 rlen, s32 mode) {
         cmd[3] = SEC_AD3(data);
         cmd[4] = SEC_BA(data);
     } else {
-        cmd[1] = (u8)((data & 0xff000000) >> 24);
-        cmd[2] = (u8)((data & 0x00ff0000) >> 16);
+        cmd[1] = (u8)((data & 0xFF000000) >> 24);
+        cmd[2] = (u8)((data & 0x00FF0000) >> 16);
     }
 
     err = false;
@@ -147,7 +147,7 @@ s32 DummyLen() {
     CARDSrand(tick);
 
     tmp = CARDRand();
-    tmp &= 0x0000001f;
+    tmp &= 0x0000001F;
     tmp += 1;
     while ((tmp < 4) && (max < 10)) {
         tick = OSGetTick();
@@ -158,7 +158,7 @@ s32 DummyLen() {
         }
         CARDSrand((u32)tmp);
         tmp = CARDRand();
-        tmp &= 0x0000001f;
+        tmp &= 0x0000001F;
         tmp += 1;
         max++;
     }
@@ -303,7 +303,7 @@ void InitCallback(void* dspTask) {
     }
     param = (CARDDecodeParameters*)card->workArea;
 
-    DSPSendMailToDSP(0xff000000);
+    DSPSendMailToDSP(0xFF000000);
     while (DSPCheckMailToDSP()) {}
 
     DSPSendMailToDSP((u32)param);
@@ -345,7 +345,7 @@ void DoneCallback(void* dspTask) {
     Ans2 = *(u32*)output;
     dummy = DummyLen();
     rlen = dummy;
-    data = ((Ans2 ^ card->scramble) & 0xffff0000);
+    data = ((Ans2 ^ card->scramble) & 0xFFff0000);
     if (ReadArrayUnlock(chan, data, rbuf, rlen, 1) < 0) {
         EXIUnlock(chan);
         __CARDMountCallback(chan, CARD_RESULT_NOCARD);
@@ -359,7 +359,7 @@ void DoneCallback(void* dspTask) {
 
     dummy = DummyLen();
     rlen = dummy;
-    data = (((Ans2 << 16) ^ card->scramble) & 0xffff0000);
+    data = (((Ans2 << 16) ^ card->scramble) & 0xFFff0000);
     if (ReadArrayUnlock(chan, data, rbuf, rlen, 1) < 0) {
         EXIUnlock(chan);
         __CARDMountCallback(chan, CARD_RESULT_NOCARD);

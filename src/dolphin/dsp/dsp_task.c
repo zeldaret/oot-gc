@@ -219,7 +219,7 @@ void __DSP_boot_task(DSPTaskInfo* task) {
 
     DSPSendMailToDSP(MSG_BASE | 0xC002);
     while (DSPCheckMailToDSP()) {}
-    DSPSendMailToDSP((u32)(task->iram_addr & 0xffff));
+    DSPSendMailToDSP((u32)(task->iram_addr & 0xFFFF));
     while (DSPCheckMailToDSP()) {}
 
     DSPSendMailToDSP(MSG_BASE | 0xA002);
@@ -234,7 +234,7 @@ void __DSP_boot_task(DSPTaskInfo* task) {
 
     DSPSendMailToDSP(MSG_BASE | 0xD001);
     while (DSPCheckMailToDSP()) {}
-    DSPSendMailToDSP((u32)(0xffff & task->dsp_init_vector));
+    DSPSendMailToDSP((u32)(0xFFFF & task->dsp_init_vector));
     while (DSPCheckMailToDSP()) {}
 
     __DSP_debug_printf("DSP is booting task: 0x%08X\n", task);

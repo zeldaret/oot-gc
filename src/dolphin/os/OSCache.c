@@ -194,7 +194,7 @@ ASM void __LCEnable(void) {
     lis     r3, LC_BASE_PREFIX
     ori     r3, r3, 0x0002
     mtspr   DBAT3L, r3
-    ori     r3, r3, 0x01fe
+    ori     r3, r3, 0x01FE
     mtspr   DBAT3U, r3
     isync
     lis     r3, LC_BASE_PREFIX

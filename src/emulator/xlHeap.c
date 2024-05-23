@@ -9,7 +9,7 @@ static s32 gnHeapTakeCacheCount;
 static u32* gapHeapBlockCache[11][32];
 s32 gnSizeHeap;
 
-#define PADDING_MAGIC 0x1234abcd
+#define PADDING_MAGIC 0x1234ABCD
 
 #define FLAG_FREE 0x01000000
 #define FLAG_TAKEN 0x02000000

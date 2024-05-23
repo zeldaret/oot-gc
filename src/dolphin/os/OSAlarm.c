@@ -45,7 +45,7 @@ static inline void SetTimer(OSAlarm* alarm) {
     } else if (delta < 0x80000000) {
         PPCMtdec((u32)delta);
     } else {
-        PPCMtdec(0x7fffffff);
+        PPCMtdec(0x7FFFFFFF);
     }
 }
 

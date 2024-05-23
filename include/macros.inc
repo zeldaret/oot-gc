@@ -173,7 +173,7 @@ Entry Point: 0x80003154
 .set VI_56,         0x56 # ?
 .set VI_FCT3,       0x58 # FCT3 - Filter Coefficient Table 3 (AA stuff)
 .set VI_5A,         0x5A # ?
-.set VI_FCT4,       0x5c # FCT4 - Filter Coefficient Table 4 (AA stuff)
+.set VI_FCT4,       0x5C # FCT4 - Filter Coefficient Table 4 (AA stuff)
 .set VI_5E,         0x5E # ?
 .set VI_FCT5,       0x60 # FCT5 - Filter Coefficient Table 5 (AA stuff)
 .set VI_62,         0x62 # ?
@@ -187,7 +187,7 @@ Entry Point: 0x80003154
 .set VI_HBS,        0x74 # Border HBS
 .set VI_76,         0x76 # ?
 .set VI_78,         0x78 # ?
-.set VI_7C,         0x7c # ?
+.set VI_7C,         0x7C # ?
 
 .set PI_REGS_BASE, 0xCC003000
 .set PI_INTSR,      0x00 # interrupt cause
@@ -260,11 +260,11 @@ Entry Point: 0x80003154
 .set DI_DISR,       0x00 # DI Status Register
 .set DI_DICVR,      0x04 # DI Cover Register (status2)
 .set DI_DICMDBUF0,  0x08 # DI Command Buffer 0
-.set DI_DICMDBUF1,  0x0c # DI Command Buffer 1 (offset in 32 bit words)
+.set DI_DICMDBUF1,  0x0C # DI Command Buffer 1 (offset in 32 bit words)
 .set DI_DICMDBUF2,  0x10 # DI Command Buffer 2 (source length)
 .set DI_DIMAR,      0x14 # DMA Memory Address Register
 .set DI_DILENGTH,   0x18 # DI DMA Transfer Length Register
-.set DI_DICR,       0x1c # DI Control Register
+.set DI_DICR,       0x1C # DI Control Register
 .set DI_DIIMMBUF,   0x20 # DI immediate data buffer (error code ?)
 .set DI_DICFG,      0x24 # DI Configuration Register
 
@@ -295,11 +295,11 @@ Entry Point: 0x80003154
 .set EXI_0DATA,     0x10 # EXI Channel 0 Immediate Data
 .set EXI_14,        0x14 # EXI1CSR - EXI Channel 1 Parameter Register
 .set EXI_18,        0x18 # EXI1MAR - EXI Channel 1 DMA Start Address
-.set EXI_1c,        0x1c # EXI Channel 1 DMA Transfer Length
+.set EXI_1c,        0x1C # EXI Channel 1 DMA Transfer Length
 .set EXI_1CR,       0x20 # EXI Channel 1 Control Register
 .set EXI_1DATA,     0x24 # EXI Channel 1 Immediate Data
 .set EXI_28,        0x28 # EXI2CSR - EXI Channel 2 Parameter Register
-.set EXI_2c,        0x2c # EXI2MAR - EXI Channel 2 DMA Start Address
+.set EXI_2c,        0x2C # EXI2MAR - EXI Channel 2 DMA Start Address
 .set EXI_30,        0x30 # EXI Channel 2 DMA Transfer Length
 .set EXI_2CR,       0x34 # EXI Channel 2 Control Register
 .set EXI_2DATA,     0x38 # EXI Channel 2 Immediate Data

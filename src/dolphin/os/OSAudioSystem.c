@@ -94,13 +94,13 @@ void __OSStopAudioSystem(void) {
     __DSPRegs[27] = r28 & ~0x8000;
     waitUntil(__DSPRegs[5], 0x400);
     waitUntil(__DSPRegs[5], 0x200);
-    __DSPRegs[5] = 0x8ac;
+    __DSPRegs[5] = 0x8AC;
     __DSPRegs[0] = 0;
 
     while (((__DSPRegs[2] << 16) | __DSPRegs[3]) & 0x80000000)
         ;
     r28 = OSGetTick();
-    while ((s32)(OSGetTick() - r28) < 0x2c)
+    while ((s32)(OSGetTick() - r28) < 0x2C)
         ;
     __DSPRegs[5] |= 1;
     waitUntil(__DSPRegs[5], 0x001);

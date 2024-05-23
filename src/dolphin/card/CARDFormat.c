@@ -58,7 +58,7 @@ s32 __CARDFormatRegionAsync(s32 channel, u16 encode, CARDCallback callback) {
     }
 
     id = (CARDID*)card->workArea;
-    memset(id, 0xff, CARD_SYSTEM_BLOCK_SIZE);
+    memset(id, 0xFF, CARD_SYSTEM_BLOCK_SIZE);
     viDTVStatus = __VIRegs[55];
 
     id->encode = encode;
@@ -89,7 +89,7 @@ s32 __CARDFormatRegionAsync(s32 channel, u16 encode, CARDCallback callback) {
         CARDDirCheck* check;
 
         dir = CARDGetDirectoryBlock(card, i);
-        memset(dir, 0xff, CARD_SYSTEM_BLOCK_SIZE);
+        memset(dir, 0xFF, CARD_SYSTEM_BLOCK_SIZE);
         check = CARDGetDirCheck(dir);
         check->checkCode = i;
         __CARDCheckSum(dir, CARD_SYSTEM_BLOCK_SIZE - sizeof(u32), &check->checkSum, &check->checkSumInv);
