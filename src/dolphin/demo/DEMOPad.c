@@ -4,10 +4,10 @@
 
 // .data
 static u32 PadChanMask[4] = {
-    0x80000000,
-    0x40000000,
-    0x20000000,
-    0x10000000,
+    PAD_CHAN0_BIT,
+    PAD_CHAN1_BIT,
+    PAD_CHAN2_BIT,
+    PAD_CHAN3_BIT,
 };
 
 // .bss
