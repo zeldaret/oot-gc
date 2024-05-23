@@ -365,7 +365,7 @@ config.libs = [
         "demo",
         [
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOInit.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOPuts.c"),
+            Object(NonMatching, "dolphin/demo/DEMOPuts.c"),
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOFont.c"),
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOPad.c"),
             Object(MatchingFor("ce-j", "ce-u"), "dolphin/demo/DEMOStats.c"),
@@ -374,13 +374,13 @@ config.libs = [
     DolphinLib(
         "ai",
         [
-            Object(NonMatching, "dolphin/ai/ai.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/ai/ai.c"),
         ],
     ),
     DolphinLib(
         "ar",
         [
-            Object(NonMatching, "dolphin/ar/ar.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/ar/ar.c"),
         ],
     ),
     DolphinLib(
