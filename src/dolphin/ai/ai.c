@@ -286,34 +286,34 @@ static void __AIDHandler(s16 interrupt, OSContext* context) {
 
 ASM static void __AICallbackStackSwitch(register AIDCallback cb) {
 #ifdef __MWERKS__ // clang-format off
-	// Allocate stack frame
-	fralloc
+    // Allocate stack frame
+    fralloc
 
-	// Store current stack
-	lis r5, __OldStack@ha
-	addi r5, r5, __OldStack@l
-	stw r1, 0(r5)
+    // Store current stack
+    lis r5, __OldStack@ha
+    addi r5, r5, __OldStack@l
+    stw r1, 0(r5)
 
-	// Load stack for callback
-	lis r5, __CallbackStack@ha
-	addi r5, r5, __CallbackStack@l
-	lwz r1,0(r5)
+    // Load stack for callback
+    lis r5, __CallbackStack@ha
+    addi r5, r5, __CallbackStack@l
+    lwz r1,0(r5)
 
-	// Move stack down 8 bytes
-	subi r1, r1, 8
-	// Call callback
-	mtlr cb
-	blrl
+    // Move stack down 8 bytes
+    subi r1, r1, 8
+    // Call callback
+    mtlr cb
+    blrl
 
-	// Restore old stack
-	lis r5, __OldStack @ha
-	addi r5, r5, __OldStack@l
-	lwz r1,0(r5)
+    // Restore old stack
+    lis r5, __OldStack @ha
+    addi r5, r5, __OldStack@l
+    lwz r1,0(r5)
 
-	// Free stack frame
-	frfree
+    // Free stack frame
+    frfree
 
-	blr
+    blr
 #endif // clang-format on
 }
 
