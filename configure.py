@@ -386,9 +386,9 @@ config.libs = [
     DolphinLib(
         "dsp",
         [
-            Object(NonMatching, "dolphin/dsp/dsp.c"),
-            Object(NonMatching, "dolphin/dsp/dsp_debug.c"),
-            Object(NonMatching, "dolphin/dsp/dsp_task.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dsp/dsp.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dsp/dsp_debug.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "dolphin/dsp/dsp_task.c"),
         ],
     ),
     DolphinLib(
