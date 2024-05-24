@@ -3,12 +3,7 @@
 
 #include "dolphin/types.h"
 #include "intrinsics.h"
-#include "stdint.h"
-
-// Used by math_inlines.c and e_pow.c to use a non-inline version of sqrt
-#ifndef SQRT_DECL
-#define SQRT_DECL static inline
-#endif
+#include "macros.h"
 
 #define M_PI 3.1415926535897932
 #define M_SQRT3 1.7320499420166016
@@ -54,7 +49,11 @@ int __fpclassifyd__Fd(f64 x);
 #define isinf(x) (fpclassify(x) == FP_INFINITE)
 #define isfinite(x) (fpclassify(x) > FP_INFINITE)
 
-SQRT_DECL f64 sqrt(f64 x) {
+// e_pow.c uses a non-inlined version of sqrt() defined in math_inlines.c instead
+#ifdef DONT_INLINE_SQRT
+f64 sqrt(f64 x);
+#else
+static inline f64 sqrt(f64 x) {
     if (x > 0.0) {
         f64 guess = __frsqrte(x); /* returns an approximation to  */
         guess = .5 * guess * (3.0 - guess * guess * x); /* now have 8 sig bits          */
@@ -69,6 +68,7 @@ SQRT_DECL f64 sqrt(f64 x) {
     }
     return INFINITY;
 }
+#endif
 
 static inline f32 sqrtf(f32 x) {
     const f64 _half = .5;

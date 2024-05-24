@@ -482,7 +482,7 @@ config.libs = [
             Object(MatchingFor("ce-j", "ce-u"), "libc/float.c"),
             Object(NonMatching, "libc/wchar_io.c"),
             Object(MatchingFor("ce-j", "ce-u"), "libc/e_asin.c"),
-            Object(NonMatching, "libc/e_pow.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "libc/e_pow.c"),
             Object(MatchingFor("ce-j", "ce-u"), "libc/fminmaxdim.c"),
             Object(NonMatching, "libc/s_ceil.c"),
             Object(NonMatching, "libc/s_copysign.c"),
