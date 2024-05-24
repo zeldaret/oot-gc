@@ -19,7 +19,7 @@ _XL_OBJECTTYPE gClassROM = {
     (EventFunc)romEvent,
 };
 
-#if VERSION == CE_J || VERSION == MQ_J
+#if VERSION == MQ_J || VERSION == CE_J
 
 static u32 ganOffsetBlock_ZLJ[198] = {
     0x01685160, 0x016D376F, 0x016D3770, 0x0172B78F, 0x0172B790, 0x0175E1CF, 0x0175E1D0, 0x017BE4FF, 0x017BE500,

@@ -99,7 +99,7 @@ bool audioGet32(Audio* pAudio, u32 nAddress, s32* pData) {
 
 bool audioGet64(Audio* pAudio, u32 nAddress, s64* pData) { return false; }
 
-#if VERSION != MQ_J
+// Note: this function is not present on MQ-J
 bool audioEnable(Audio* pAudio, bool bEnable) {
     pAudio->bEnable = bEnable ? true : false;
 
@@ -109,7 +109,6 @@ bool audioEnable(Audio* pAudio, bool bEnable) {
 
     return true;
 }
-#endif
 
 bool audioEvent(Audio* pAudio, s32 nEvent, void* pArgument) {
     switch (nEvent) {

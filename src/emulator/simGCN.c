@@ -295,14 +295,17 @@ bool gDVDResetToggle = false;
 bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset) {
     static bool toggle;
 
-#if VERSION != MQ_J
+#if VERSION == MQ_J
+#define continueToggle false
+#else
     bool continueToggle;
 #endif
 
     SimulatorMessage nMessage = S_M_NONE;
 
-#if VERSION != MQ_J
     do {
+
+#if VERSION != MQ_J
         if ((nStatus != 1) && (nStatus != 0) && (nStatus != 2) && (nStatus != 3) && (nStatus != 7) && (nStatus != 8) &&
             (nStatus != 10)) {
             continueToggle = true;
@@ -310,6 +313,7 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
             continueToggle = false;
         }
 #endif
+
         switch (nStatus) {
             case -1:
                 nMessage = S_M_DISK_FATAL_ERROR;
@@ -349,6 +353,7 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
             toggle = false;
             nMessage = S_M_DISK_READING_DISK;
         }
+
 #if VERSION == MQ_J
         if (nStatus == 5) {
             if (!simulatorTestReset(true, true, true)) {
@@ -364,7 +369,6 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
             }
         }
 #else
-    // clang-format off
         if ((gDVDResetToggle == 1) && ((nStatus <= 3U) || ((nStatus - 7) <= 1U) || (nStatus == 10))) {
             if (!simulatorTestReset(false, false, true, false)) {
                 return false;
@@ -372,8 +376,8 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
         } else if ((nStatus != -1) && (!simulatorTestReset(true, false, true, false))) {
             return false;
         }
-    // clang-format on
 #endif
+
         if (nMessage != S_M_NONE) {
             while (!(frameBeginOK(gpSystem->pFrame))) {}
             PADControlMotor(0, PAD_MOTOR_STOP);
@@ -382,8 +386,9 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
 
 #if VERSION != MQ_J
         nStatus = DVDGetDriveStatus();
-    } while (continueToggle == true);
 #endif
+
+    } while (continueToggle == true);
 
     return true;
 }
@@ -1928,9 +1933,6 @@ bool simulatorRumbleStop(s32 channel) {
 
 #if VERSION == MQ_J
 #define usePreviousSettings false
-#define prevIPLSetting false
-#define prevForceMenuSetting false
-#define prevAllowResetSetting true
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset)
 #else
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings)
@@ -1939,7 +1941,12 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
     u32 bFlag;
     u32 nTick;
 
-#if VERSION != MQ_J
+#if VERSION == MQ_J
+#define prevIPLSetting false
+#define prevForceMenuSetting false
+#define prevAllowResetSetting true
+    nTick = OSGetTick();
+#else
     bool prevIPLSetting;
     bool prevForceMenuSetting;
     bool prevAllowResetSetting;
@@ -1959,8 +1966,6 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
         gPreviousForceMenuSetting = forceMenu;
         gPreviousAllowResetSetting = allowReset;
     }
-#else
-    nTick = OSGetTick();
 #endif
 
     DEMOPadRead();
@@ -2019,6 +2024,7 @@ bool simulatorDrawMCardText(void) {
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
 #endif
+
     simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
                        160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
                        120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), false,

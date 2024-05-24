@@ -183,6 +183,7 @@ static bool systemSetupGameRAM(System* pSystem) {
     if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || romTestCode(pROM, "NZSJ") ||
         romTestCode(pROM, "NZSE")) {
         switch (nCode) {
+
 #if VERSION == MQ_J
             case 0x5CAC1CF7:
                 gnFlagZelda = 2;
@@ -202,19 +203,29 @@ static bool systemSetupGameRAM(System* pSystem) {
                 gnFlagZelda = 1;
                 bExpansion = 1;
                 break;
-#else // VERSION == MQ_J
 
-#if VERSION == CE_U
-            case 0x5CAC1CF7:
-#else
+#elif VERSION == CE_J
             case 0x5CAC1C8F:
-#endif
                 gnFlagZelda = 2;
                 break;
             case 0x184CED80:
                 gnFlagZelda = 3;
                 break;
-#if VERSION == CE_U
+            case 0x54A59B56:
+            case 0x421EB8E9:
+                gnFlagZelda = 4;
+                break;
+            case 0x7E8BEE60:
+                gnFlagZelda = 5;
+                break;
+
+#elif VERSION == CE_U
+            case 0x5CAC1CF7:
+                gnFlagZelda = 2;
+                break;
+            case 0x184CED80:
+                gnFlagZelda = 3;
+                break;
             case 0x5CAC1C27:
                 gnFlagZelda = 0;
                 break;
@@ -224,7 +235,6 @@ static bool systemSetupGameRAM(System* pSystem) {
             case 0x184CED18:
                 gnFlagZelda = 1;
                 break;
-#endif
             case 0x54A59B56:
             case 0x421EB8E9:
                 gnFlagZelda = 4;
@@ -232,7 +242,7 @@ static bool systemSetupGameRAM(System* pSystem) {
             case 0x7E8BEE60:
                 gnFlagZelda = 5;
                 break;
-#endif // VERSION == MQ_J
+#endif
         }
 
 #if VERSION != MQ_J
@@ -1558,7 +1568,6 @@ bool systemReset(System* pSystem) {
             return false;
         }
 #else
-
         for (eObject = 0; eObject < SOT_COUNT; eObject++) {
             if (pSystem->apObject[eObject] != NULL && !xlObjectEvent(pSystem->apObject[eObject], 0x1003, NULL)) {
                 return false;
@@ -1573,6 +1582,7 @@ bool systemReset(System* pSystem) {
             return false;
         }
 #endif
+
     }
 
     return true;

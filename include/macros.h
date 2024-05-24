@@ -9,18 +9,6 @@
 #define CE_U 5
 #define CE_E 6
 
-#if VERSION == MQ_J
-#define INLINE
-#else
-#define INLINE inline
-#endif
-
-#if VERSION == MQ_J
-#define STATIC
-#else
-#define STATIC static
-#endif
-
 #define ALIGN_PREV(X, N) ((X) & ~((N) - 1))
 #define ALIGN_NEXT(X, N) ALIGN_PREV(((X) + (N) - 1), N)
 
