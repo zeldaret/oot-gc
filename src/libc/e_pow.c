@@ -3,9 +3,6 @@
 #define DONT_INLINE_SQRT
 #include "math.h"
 
-#define __HI(x) (((s32*)&x)[0])
-#define __LO(x) (((s32*)&x)[1])
-
 static const f64 bp[] = {1.0, 1.5};
 static const f64 dp_h[] = {
     0.0, 5.84962487220764160156e-01 /* 0x3FE2B803, 0x40000000 */

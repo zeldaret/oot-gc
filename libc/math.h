@@ -14,6 +14,10 @@ extern int __float_huge[];
 #define NAN (*(f32*)__float_nan)
 #define INFINITY (*(f32*)__float_huge)
 
+// f64 bit-twiddling macros
+#define __HI(x) (((s32*)&x)[0])
+#define __LO(x) (((s32*)&x)[1])
+
 f64 ldexp(f64 x, int exp);
 f64 pow(f64 x, f64 y);
 f64 ceil(f64 x);
