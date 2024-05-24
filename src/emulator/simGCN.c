@@ -29,7 +29,9 @@
 #include "gmesgOK.inc"
 // clang-format on
 
-#if VERSION == CE_J || MQ_J
+#if VERSION == MQ_J
+#define DEFAULT_ROM_NAME "urazlj_f.n64"
+#elif VERSION == CE_J
 #define DEFAULT_ROM_NAME "zlj_f.n64"
 #elif VERSION == CE_U
 #define DEFAULT_ROM_NAME "zle_f.n64"
@@ -125,9 +127,12 @@ System* gpSystem;
 
 char gpErrorMessageBuffer[20480];
 bool gbDisplayedError;
+
+#if VERSION != MQ_J
 bool gPreviousAllowResetSetting;
 bool gPreviousForceMenuSetting;
 bool gPreviousIPLSetting;
+#endif
 
 u32 gnTickReset;
 bool gbReset;
@@ -290,9 +295,13 @@ bool gDVDResetToggle = false;
 bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset) {
     static bool toggle;
 
+#if VERSION != MQ_J
     bool continueToggle;
+#endif
+
     SimulatorMessage nMessage = S_M_NONE;
 
+#if VERSION != MQ_J
     do {
         if ((nStatus != 1) && (nStatus != 0) && (nStatus != 2) && (nStatus != 3) && (nStatus != 7) && (nStatus != 8) &&
             (nStatus != 10)) {
@@ -300,7 +309,7 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
         } else {
             continueToggle = false;
         }
-
+#endif
         switch (nStatus) {
             case -1:
                 nMessage = S_M_DISK_FATAL_ERROR;
@@ -329,7 +338,7 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
                 break;
             default:
                 nMessage = S_M_DISK_DEFAULT_ERROR;
-                xlPostText("ShowError: Unknown FileInfoStatus: %d", "simGCN.c", 763, nStatus);
+                xlPostText("ShowError: Unknown FileInfoStatus: %d", "simGCN.c", VERSION == MQ_J ? 750 : 763, nStatus);
                 break;
         }
 
@@ -340,7 +349,22 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
             toggle = false;
             nMessage = S_M_DISK_READING_DISK;
         }
-
+#if VERSION == MQ_J
+        if (nStatus == 5) {
+            if (!simulatorTestReset(true, true, true)) {
+                return false;
+            }
+        } else if (nStatus != -1) {
+            if (gDVDResetToggle == 1 && (((u32)nStatus <= 3) || (((u32)nStatus - 7) <= 1) || (nStatus == 10))) {
+                if (!simulatorTestReset(false, false, true)) {
+                    return false;
+                }
+            } else if (!simulatorTestReset(true, false, true)) {
+                return false;
+            }
+        }
+#else
+    // clang-format off
         if ((gDVDResetToggle == 1) && ((nStatus <= 3U) || ((nStatus - 7) <= 1U) || (nStatus == 10))) {
             if (!simulatorTestReset(false, false, true, false)) {
                 return false;
@@ -348,15 +372,18 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
         } else if ((nStatus != -1) && (!simulatorTestReset(true, false, true, false))) {
             return false;
         }
-
+    // clang-format on
+#endif
         if (nMessage != S_M_NONE) {
             while (!(frameBeginOK(gpSystem->pFrame))) {}
             PADControlMotor(0, PAD_MOTOR_STOP);
             simulatorDrawErrorMessage(nMessage, false, 0);
         }
 
+#if VERSION != MQ_J
         nStatus = DVDGetDriveStatus();
     } while (continueToggle == true);
+#endif
 
     return true;
 }
@@ -1899,9 +1926,20 @@ bool simulatorRumbleStop(s32 channel) {
     return true;
 }
 
-bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings) {
+#if VERSION == MQ_J
+#define usePreviousSettings false
+#define prevIPLSetting false
+#define prevForceMenuSetting false
+#define prevAllowResetSetting true
+bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset)
+#else
+bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings)
+#endif
+{
     u32 bFlag;
     u32 nTick;
+
+#if VERSION != MQ_J
     bool prevIPLSetting;
     bool prevForceMenuSetting;
     bool prevAllowResetSetting;
@@ -1921,6 +1959,9 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
         gPreviousForceMenuSetting = forceMenu;
         gPreviousAllowResetSetting = allowReset;
     }
+#else
+    nTick = OSGetTick();
+#endif
 
     DEMOPadRead();
     bFlag = OSGetResetButtonState();
@@ -1972,10 +2013,12 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
 }
 
 bool simulatorDrawMCardText(void) {
+#if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
+#endif
     simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
                        160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
                        120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), false,
@@ -1993,11 +2036,12 @@ bool simulatorMCardPollDrawBar(void) {
     rate = (rate > 1.0f) ? 1.0f : rate;
 
     rate = (rate < 0.0f) ? 0.0f : rate;
-
+#if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
+#endif
     simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
                        160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
                        120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), true,
@@ -2015,11 +2059,12 @@ bool simulatorMCardPollDrawFormatBar(void) {
     rate = (rate > 1.0f) ? 1.0f : rate;
 
     rate = (rate < 0.0f) ? 0.0f : rate;
-
+#if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
+#endif
     simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
                        160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
                        120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), false,
@@ -2269,7 +2314,9 @@ bool xlMain(void) {
     }
 
     mCard.bufferCreated = 0;
+#if VERSION != MQ_J
     mCard.isBroken = 0;
+#endif
     mcardInit(&mCard);
 
     if (simulatorGetArgument(SAT_NAME, &szNameROM)) {

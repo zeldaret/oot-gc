@@ -194,7 +194,9 @@ bool videoEvent(Video* pVideo, s32 nEvent, void* pArgument) {
         case 1:
         case 3:
         case 5:
+#if VERSION != MQ_J
         case 0x1003:
+#endif
             break;
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pVideo->pHost), pArgument, (Put8Func)videoPut8, (Put16Func)videoPut16,

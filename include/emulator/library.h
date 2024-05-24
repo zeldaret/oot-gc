@@ -26,11 +26,15 @@ typedef struct Library {
     /* 0x40 */ s32 anAddress[10];
 } Library; // size = 0x68
 
+extern _XL_OBJECTTYPE gClassLibrary;
+
 bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction);
 bool libraryFunctionReplaced(Library* pLibrary, s32 iFunction);
 bool libraryCall(Library* pLibrary, Cpu* pCPU, s32 iFunction);
 bool libraryEvent(Library* pLibrary, s32 nEvent, void* pArgument);
 
-extern _XL_OBJECTTYPE gClassLibrary;
+#if VERSION == MQ_J
+bool libraryUpdate(Library* pLibrary);
+#endif
 
 #endif
