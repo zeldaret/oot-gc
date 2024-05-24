@@ -3716,11 +3716,12 @@ static bool librarySearch(Library* pLibrary, CpuFunction* pFunction) {
     return true;
 }
 
-#if VERSION != MQ_J
-static inline
+#if VERSION == MQ_J
+bool libraryUpdate(Library* pLibrary)
+#else
+static inline bool libraryUpdate(Library* pLibrary)
 #endif
-    bool
-    libraryUpdate(Library* pLibrary) {
+{
     Cpu* pCPU;
     CpuFunction* pFunction;
 

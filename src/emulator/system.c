@@ -1582,7 +1582,6 @@ bool systemReset(System* pSystem) {
             return false;
         }
 #endif
-
     }
 
     return true;
