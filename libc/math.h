@@ -33,11 +33,11 @@ static inline f64 fabs(f64 x) { return __fabs(x); }
 
 // In reality, these are "weak" functions which all have C++ names (except scalbn).
 // We fake it by defining them as strong C functions instead.
-f64 sin__Ff(f32 x);
-f64 cos__Ff(f32 x);
+f32 sin__Ff(f32 x);
+f32 cos__Ff(f32 x);
 f64 scalbn(f64 x, int n);
 f64 fabs__Fd(f64 x);
-f64 fabsf__Ff(f32 x);
+f32 fabsf__Ff(f32 x);
 
 #define FP_NAN 1
 #define FP_INFINITE 2
