@@ -71,7 +71,7 @@ static u32 ganOffsetBlock_URAZLJ[198] = {
     0x01F45A0F, 0x01F45A10, 0x01F4F24F, 0x01F4F250, 0x01F57B7F, 0x01F57B80, 0x01F6255F, 0x01F62560, 0x01F739DF,
 };
 
-#elif VERSION == CE_U
+#elif VERSION == MQ_U || VERSION == CE_U
 
 static u32 ganOffsetBlock_ZLE[198] = {
     0x01685440, 0x016D3A4F, 0x016D3A50, 0x0172BA5F, 0x0172BA60, 0x0175E48F, 0x0175E490, 0x017BE7AF, 0x017BE7B0,
@@ -481,6 +481,7 @@ static bool romCacheGame_ZELDA(f32 rProgress) {
 }
 
 #if VERSION == MQ_J
+
 static bool romCacheGame(Rom* pROM) {
     s32 blockCount;
     s32 nSize;
@@ -546,14 +547,15 @@ static bool romCacheGame(Rom* pROM) {
     gDVDResetToggle = false;
     return true;
 }
-#else
+
+#elif VERSION == MQ_U || VERSION == CE_J || VERSION == CE_U
+
 static bool romCacheGame(Rom* pROM) {
     s32 blockCount;
-    s32 pad[2];
+    bool bIsCZLE;
+    bool bIsCZLJ;
     s32 nSize;
     char* szName;
-    s32 bIsCZLE;
-    s32 bIsCZLJ;
     tXL_FILE* pFile;
 
     blockCount = 0;
@@ -591,6 +593,7 @@ static bool romCacheGame(Rom* pROM) {
         } else {
             szName = "";
         }
+
         if (xlFileOpen(&pFile, 1, szName)) {
             nSize = pFile->nSize;
             gpImageBack = (u8*)SYSTEM_RAM(pROM->pHost)->pBuffer + 0x300000;
@@ -605,6 +608,7 @@ static bool romCacheGame(Rom* pROM) {
             gbProgress = false;
             gbDisplayedError = true;
         }
+
         if (gnFlagZelda & 2) {
             if (!romLoadRange(pROM, 0, 0xA6251F, &blockCount, 1, &romCacheGame_ZELDA)) {
                 return false;
@@ -635,6 +639,7 @@ static bool romCacheGame(Rom* pROM) {
     gDVDResetToggle = false;
     return true;
 }
+
 #endif
 
 bool __romLoadUpdate_Complete(void) {
@@ -1410,10 +1415,11 @@ bool romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
             break;
         case 0:
         case 1:
+            break;
 #if VERSION != MQ_J
         case 0x1003:
-#endif
             break;
+#endif
         default:
             return false;
     }

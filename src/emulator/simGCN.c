@@ -1932,8 +1932,8 @@ bool simulatorRumbleStop(s32 channel) {
 }
 
 #if VERSION == MQ_J
-#define usePreviousSettings false
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset)
+#define usePreviousSettings false
 #else
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings)
 #endif
@@ -1945,14 +1945,16 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
 #define prevIPLSetting false
 #define prevForceMenuSetting false
 #define prevAllowResetSetting true
-    nTick = OSGetTick();
 #else
     bool prevIPLSetting;
     bool prevForceMenuSetting;
     bool prevAllowResetSetting;
     s32 pad;
+#endif
 
     nTick = OSGetTick();
+
+#if VERSION != MQ_J
     prevAllowResetSetting = gPreviousAllowResetSetting;
     prevIPLSetting = gPreviousIPLSetting;
     prevForceMenuSetting = gPreviousForceMenuSetting;
@@ -2040,14 +2042,15 @@ bool simulatorMCardPollDrawBar(void) {
     rate = nBytes / (f32)mCard.pollSize;
 
     rate = (rate > 1.0f) ? 1.0f : rate;
-
     rate = (rate < 0.0f) ? 0.0f : rate;
+
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
 #endif
+
     simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
                        160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
                        120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), true,
@@ -2063,14 +2066,15 @@ bool simulatorMCardPollDrawFormatBar(void) {
     rate = nBytes / (f32)mCard.pollSize;
 
     rate = (rate > 1.0f) ? 1.0f : rate;
-
     rate = (rate < 0.0f) ? 0.0f : rate;
+
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
 #endif
+
     simulatorDrawImage((TEXPalette*)gpErrorMessageBuffer,
                        160 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->width / 2),
                        120 - (((TEXPalette*)gpErrorMessageBuffer)->descriptorArray->textureHeader->height / 2), false,

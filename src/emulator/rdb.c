@@ -183,10 +183,11 @@ bool rdbEvent(Rdb* pRDB, s32 nEvent, void* pArgument) {
         case 0:
         case 1:
         case 3:
+            break;
 #if VERSION != MQ_J
         case 0x1003:
-#endif
             break;
+#endif
         default:
             return false;
     }

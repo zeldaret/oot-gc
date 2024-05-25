@@ -3321,10 +3321,11 @@ bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument) {
             break;
         case 0:
         case 1:
+            break;
 #if VERSION != MQ_J
         case 0x1003:
-#endif
             break;
+#endif
         default:
             return false;
     }

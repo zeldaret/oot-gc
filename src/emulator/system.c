@@ -242,6 +242,7 @@ static bool systemSetupGameRAM(System* pSystem) {
             case 0x7E8BEE60:
                 gnFlagZelda = 5;
                 break;
+
 #endif
         }
 
@@ -338,12 +339,15 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     if (romTestCode(pROM, "NSME") || romTestCode(pROM, "NSMJ")) {
         // Super Mario 64
         systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x01010101, false);
+
 #if VERSION != MQ_J
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
 #endif
+
     } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
         // Ocarina of Time
         gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
+
 #if VERSION != MQ_J
         if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
             if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
@@ -359,9 +363,11 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
             }
         }
 #endif
+
     } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
         // Majora's Mask
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
+
 #if VERSION != MQ_J
         if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
             if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
@@ -377,6 +383,7 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
             }
         }
 #endif
+
     } else if (romTestCode(pROM, "NPWE")) {
         // Pilotwings 64
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
@@ -604,6 +611,7 @@ static bool systemSetupGameALL(System* pSystem) {
             }
         }
 #endif
+
         if (!(gnFlagZelda & 1)) {
             if (!(gnFlagZelda & 2)) {
                 // CE-J/MQ-J?
@@ -951,6 +959,7 @@ static bool systemSetupGameALL(System* pSystem) {
                     return false;
                 }
 #endif
+
                 if (!cpuSetCodeHack(pCPU, 0x80020BCC, 0x8DF80034, -1)) {
                     return false;
                 }
@@ -1923,10 +1932,11 @@ bool systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
         case 5:
         case 6:
         case 7:
+            break;
 #if VERSION != MQ_J
         case 0x1003:
-#endif
             break;
+#endif
         default:
             return false;
     }
