@@ -124,5 +124,7 @@ bool xlMain(void);
 bool simulatorMCardPollDrawFormatBar(void);
 bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage);
 bool simulatorDrawMCardText(void);
+bool simulatorDrawErrorMessageWait(SimulatorMessage simulatorErrorMessage);
+bool simulatorDrawYesNoMessage(SimulatorMessage simulatorMessage, bool* yes);
 
 #endif
