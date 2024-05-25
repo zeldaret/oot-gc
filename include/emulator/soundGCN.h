@@ -48,6 +48,9 @@ typedef struct Sound {
     /* 0xCC */ s32 nSizeZero;
     /* 0xD0 */ s32 nSizeHold;
     /* 0xD4 */ s32 nSizeRamp;
+#if VERSION == MQ_J
+    /* 0xD8 */ char pad[12];
+#endif
 } Sound; // size = 0xD8
 
 bool soundWipeBuffers(Sound* pSound);

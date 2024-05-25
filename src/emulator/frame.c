@@ -2452,7 +2452,7 @@ bool frameBegin(Frame* pFrame, s32 nCountVertex) {
             OSReport(D_800EB1F8);
         }
 
-        if (!simulatorTestReset(false, false, true, false)) {
+        if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
             return false;
         }
 
@@ -3525,6 +3525,7 @@ bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
                 return false;
             }
             break;
+#if VERSION != MQ_J
         case 0x1003:
             pFrame->nTempBuffer = NULL;
             pFrame->nCopyBuffer = NULL;
@@ -3546,6 +3547,7 @@ bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
                 return false;
             }
             break;
+#endif
         case 0:
         case 1:
         case 5:

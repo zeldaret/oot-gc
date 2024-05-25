@@ -3758,9 +3758,12 @@ static bool cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressG
     Rom* pROM;
 
     pROM = SYSTEM_ROM(pCPU->pHost);
+
+#if VERSION != MQ_J
     if (!simulatorTestReset(false, false, false, true)) {
         return false;
     }
+#endif
 
     nCount = OSGetTick();
     if (pCPU->nWaitPC != 0) {
@@ -5462,8 +5465,11 @@ bool cpuEvent(Cpu* pCPU, s32 nEvent, void* pArgument) {
             break;
         case 0:
         case 1:
+            break;
+#if VERSION != MQ_J
         case 0x1003:
             break;
+#endif
         default:
             return false;
     }

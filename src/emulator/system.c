@@ -25,7 +25,11 @@
 #include "stdlib.h"
 #include "string.h"
 
-#if VERSION == CE_J
+#if VERSION == MQ_J
+#define MCARD_FILE_NAME "ZELDA"
+#define MCARD_COMMENT "ゼルダの伝説　時のオカリナＧＣ" // "The Legend of Zelda: Ocarina of Time GC"
+#define MCARD_FILE_SIZE (0xC000 * 2)
+#elif VERSION == CE_J
 #define MCARD_FILE_NAME "ZELDA1"
 #define MCARD_COMMENT "ゼルダコレクション" // "Zelda Collection"
 #define MCARD_FILE_SIZE 0xC000
@@ -179,17 +183,49 @@ static bool systemSetupGameRAM(System* pSystem) {
     if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || romTestCode(pROM, "NZSJ") ||
         romTestCode(pROM, "NZSE")) {
         switch (nCode) {
-#if VERSION == CE_U
+
+#if VERSION == MQ_J
             case 0x5CAC1CF7:
-#else
+                gnFlagZelda = 2;
+                break;
+            case 0x184CED80:
+                gnFlagZelda = 3;
+                bExpansion = 1;
+                break;
             case 0x5CAC1C8F:
-#endif
+                gnFlagZelda = 0;
+                break;
+            case 0x184CED18:
+                gnFlagZelda = 1;
+                bExpansion = 1;
+                break;
+            case 0x7E8BEE60:
+                gnFlagZelda = 1;
+                bExpansion = 1;
+                break;
+
+#elif VERSION == CE_J
+            case 0x5CAC1C8F:
                 gnFlagZelda = 2;
                 break;
             case 0x184CED80:
                 gnFlagZelda = 3;
                 break;
-#if VERSION == CE_U
+            case 0x54A59B56:
+            case 0x421EB8E9:
+                gnFlagZelda = 4;
+                break;
+            case 0x7E8BEE60:
+                gnFlagZelda = 5;
+                break;
+
+#elif VERSION == CE_U
+            case 0x5CAC1CF7:
+                gnFlagZelda = 2;
+                break;
+            case 0x184CED80:
+                gnFlagZelda = 3;
+                break;
             case 0x5CAC1C27:
                 gnFlagZelda = 0;
                 break;
@@ -199,7 +235,6 @@ static bool systemSetupGameRAM(System* pSystem) {
             case 0x184CED18:
                 gnFlagZelda = 1;
                 break;
-#endif
             case 0x54A59B56:
             case 0x421EB8E9:
                 gnFlagZelda = 4;
@@ -207,11 +242,15 @@ static bool systemSetupGameRAM(System* pSystem) {
             case 0x7E8BEE60:
                 gnFlagZelda = 5;
                 break;
+
+#endif
         }
 
+#if VERSION != MQ_J
         if (gnFlagZelda & 1) {
             bExpansion = true;
         }
+#endif
     }
 
     // Conker's Bad Fur Day
@@ -281,15 +320,35 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
     systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, false);
     gSystemRomConfigurationList[index].storageDevice = SOT_CPU;
 
+#if VERSION == MQ_J
+    if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
+        if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, true);
+        } else {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x80808080, true);
+        }
+    } else {
+        if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x02020202, true);
+        } else {
+            systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, true);
+        }
+    }
+#endif
+
     if (romTestCode(pROM, "NSME") || romTestCode(pROM, "NSMJ")) {
         // Super Mario 64
         systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x01010101, false);
+
+#if VERSION != MQ_J
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
+#endif
 
     } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
         // Ocarina of Time
         gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
 
+#if VERSION != MQ_J
         if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
             if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, true);
@@ -303,11 +362,13 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, true);
             }
         }
+#endif
 
     } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
         // Majora's Mask
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
 
+#if VERSION != MQ_J
         if (!simulatorGetArgument(SAT_VIBRATION, &szText) || (*szText == '1')) {
             if (!simulatorGetArgument(SAT_CONTROLLER, &szText) || (*szText == '0')) {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0x82828282, true);
@@ -321,6 +382,7 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
                 systemSetControllerConfiguration(&gSystemRomConfigurationList[index], 0, true);
             }
         }
+#endif
 
     } else if (romTestCode(pROM, "NPWE")) {
         // Pilotwings 64
@@ -492,6 +554,25 @@ static bool systemSetupGameALL(System* pSystem) {
         pSystem->eTypeROM = SRT_ZELDA1;
         nSizeSound = 0x1000;
 
+#if VERSION == MQ_J
+        if ((gnFlagZelda & 1)) {
+            if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
+                return false;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x8006E468, 0x97040000, -1)) {
+                return false;
+            }
+        } else {
+            if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
+                return false;
+            }
+
+            if (!cpuSetCodeHack(pCPU, 0x80066658, 0x97040000, -1)) {
+                return false;
+            }
+        }
+#else
         if (gnFlagZelda & 1) {
             if (romTestCode(pROM, "CZLE")) {
                 if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
@@ -529,6 +610,7 @@ static bool systemSetupGameALL(System* pSystem) {
                 }
             }
         }
+#endif
 
         if (!(gnFlagZelda & 1)) {
             if (!(gnFlagZelda & 2)) {
@@ -872,9 +954,12 @@ static bool systemSetupGameALL(System* pSystem) {
                 pCPU->nCompileFlag |= 0x10;
             } else if (romTestCode(pROM, "NK4E")) {
                 // Kirby 64
+#if VERSION != MQ_J
                 if (!audioEnable(SYSTEM_AUDIO(pSystem), false)) {
                     return false;
                 }
+#endif
+
                 if (!cpuSetCodeHack(pCPU, 0x80020BCC, 0x8DF80034, -1)) {
                     return false;
                 }
@@ -1487,6 +1572,11 @@ bool systemReset(System* pSystem) {
             return false;
         }
 
+#if VERSION == MQ_J
+        if (!libraryUpdate(SYSTEM_LIBRARY(pSystem))) {
+            return false;
+        }
+#else
         for (eObject = 0; eObject < SOT_COUNT; eObject++) {
             if (pSystem->apObject[eObject] != NULL && !xlObjectEvent(pSystem->apObject[eObject], 0x1003, NULL)) {
                 return false;
@@ -1500,6 +1590,7 @@ bool systemReset(System* pSystem) {
         if (!xlObjectEvent(pSystem->pSound, 0x1003, NULL)) {
             return false;
         }
+#endif
     }
 
     return true;
@@ -1632,9 +1723,28 @@ bool systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
             pSystem->pFrame = gpFrame;
             pSystem->pSound = gpSound;
 
+#if VERSION == MQ_J
+            pSystem->apObject[SOT_CPU] = NULL;
+            pSystem->apObject[SOT_PIF] = NULL;
+            pSystem->apObject[SOT_RAM] = NULL;
+            pSystem->apObject[SOT_ROM] = NULL;
+            pSystem->apObject[SOT_RSP] = NULL;
+            pSystem->apObject[SOT_RDP] = NULL;
+            pSystem->apObject[SOT_MIPS] = NULL;
+            pSystem->apObject[SOT_DISK] = NULL;
+            pSystem->apObject[SOT_FLASH] = NULL;
+            pSystem->apObject[SOT_SRAM] = NULL;
+            pSystem->apObject[SOT_AUDIO] = NULL;
+            pSystem->apObject[SOT_VIDEO] = NULL;
+            pSystem->apObject[SOT_SERIAL] = NULL;
+            pSystem->apObject[SOT_LIBRARY] = NULL;
+            pSystem->apObject[SOT_PERIPHERAL] = NULL;
+            pSystem->apObject[SOT_RDB] = NULL;
+#else
             for (eObject = 0; eObject < SOT_COUNT; eObject++) {
                 pSystem->apObject[eObject] = NULL;
             }
+#endif
 
             systemClearExceptions(pSystem);
 
@@ -1822,8 +1932,11 @@ bool systemEvent(System* pSystem, s32 nEvent, void* pArgument) {
         case 5:
         case 6:
         case 7:
+            break;
+#if VERSION != MQ_J
         case 0x1003:
             break;
+#endif
         default:
             return false;
     }

@@ -449,8 +449,10 @@ bool soundEvent(Sound* pSound, s32 nEvent, void* pArgument) {
                 return false;
             }
             break;
+#if VERSION != MQ_J
         case 0x1003:
             break;
+#endif
         default:
             return false;
     }
