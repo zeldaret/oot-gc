@@ -2,12 +2,7 @@
 #define _STRING_H_
 
 #include "stddef.h"
-
-#pragma section code_type ".init"
-void* memcpy(void* dst, const void* src, size_t n);
-void* memset(void* dst, int val, size_t n);
-void __fill_mem(void* dst, int val, size_t n);
-#pragma section code_type
+#include "mem_funcs.h"
 
 size_t strlen(const char* s);
 char* strcpy(char* dest, const char* src);

@@ -454,10 +454,10 @@ config.libs = [
     GenericLib(
         "runtime",
         [
-            Object(NonMatching, "runtime/__mem.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "runtime/__mem.c"),
             Object(NonMatching, "runtime/__va_arg.c"),
             Object(MatchingFor("ce-j", "ce-u"), "runtime/global_destructor_chain.c"),
-            Object(NonMatching, "runtime/runtime.c"),
+            Object(MatchingFor("ce-j", "ce-u"), "runtime/runtime.c"),
         ]
     ),
     GenericLib(
