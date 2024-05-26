@@ -691,6 +691,7 @@ runtime/__va_arg.c:
 
 runtime/global_destructor_chain.c:
 	.text       start:0x800CC464 end:0x800CC4AC
+	.dtors      start:0x800D1BA0 end:0x800D1BA4
 	.sbss       start:0x8018BEF8 end:0x8018BF00
 
 runtime/runtime.c:
@@ -699,7 +700,6 @@ runtime/runtime.c:
 
 libc/abort_exit.c:
 	.text       start:0x800CCBBC end:0x800CCCC8
-	.dtors      start:0x800D1BA0 end:0x800D1BA4
 	.bss        start:0x8018AD78 end:0x8018AF78
 	.sbss       start:0x8018BF00 end:0x8018BF18
 
