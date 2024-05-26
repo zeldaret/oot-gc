@@ -3,7 +3,7 @@
 #include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
-#include "mem_funcs.h"
+#include "string.h"
 
 // "The Legend of Zelda: Ocarina of Time"
 char D_800EA548[] = "ゼルダの伝説：時のオカリナ";

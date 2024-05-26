@@ -1,13 +1,13 @@
 #include "dolphin/types.h"
 #include "mem_funcs.h"
 
-void* memset(void* dst, int val, size_t n) {
+INIT void* memset(void* dst, int val, size_t n) {
     __fill_mem(dst, val, n);
 
     return (dst);
 }
 
-void __fill_mem(void* dst, int val, size_t n) {
+INIT void __fill_mem(void* dst, int val, size_t n) {
     u32 v = (u8)val;
     u32 i;
 
@@ -66,7 +66,7 @@ void __fill_mem(void* dst, int val, size_t n) {
     }
 }
 
-void* memcpy(void* dst, const void* src, size_t n) {
+INIT void* memcpy(void* dst, const void* src, size_t n) {
     const char* p;
     char* q;
     int rev = ((u32)src < (u32)dst);
