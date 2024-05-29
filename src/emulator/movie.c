@@ -4,7 +4,7 @@
 #include "emulator/system.h"
 #include "emulator/xlCoreGCN.h"
 
-#if VERSION == CE_J
+#if VERSION == MQ_J || VERSION == CE_J
 #define MOVIE_FILENAME "final_zelda_credits_sound.thp"
 #elif VERSION == CE_U
 #define MOVIE_FILENAME "us_final_zelda_credits_sound.thp"

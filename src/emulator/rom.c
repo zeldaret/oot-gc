@@ -19,7 +19,7 @@ _XL_OBJECTTYPE gClassROM = {
     (EventFunc)romEvent,
 };
 
-#if VERSION == CE_J
+#if VERSION == MQ_J || VERSION == CE_J
 
 static u32 ganOffsetBlock_ZLJ[198] = {
     0x01685160, 0x016D376F, 0x016D3770, 0x0172B78F, 0x0172B790, 0x0175E1CF, 0x0175E1D0, 0x017BE4FF, 0x017BE500,
@@ -71,7 +71,7 @@ static u32 ganOffsetBlock_URAZLJ[198] = {
     0x01F45A0F, 0x01F45A10, 0x01F4F24F, 0x01F4F250, 0x01F57B7F, 0x01F57B80, 0x01F6255F, 0x01F62560, 0x01F739DF,
 };
 
-#elif VERSION == CE_U
+#elif VERSION == MQ_U || VERSION == CE_U
 
 static u32 ganOffsetBlock_ZLE[198] = {
     0x01685440, 0x016D3A4F, 0x016D3A50, 0x0172BA5F, 0x0172BA60, 0x0175E48F, 0x0175E490, 0x017BE7AF, 0x017BE7B0,
@@ -480,13 +480,82 @@ static bool romCacheGame_ZELDA(f32 rProgress) {
     return true;
 }
 
+#if VERSION == MQ_J
+
 static bool romCacheGame(Rom* pROM) {
     s32 blockCount;
-    s32 pad[2];
     s32 nSize;
     char* szName;
-    s32 bIsCZLE;
-    s32 bIsCZLJ;
+    tXL_FILE* pFile;
+
+    blockCount = 0;
+    gDVDResetToggle = true;
+
+    if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
+        if (gnFlagZelda & 2) {
+            pROM->anOffsetBlock = ganOffsetBlock_ZLJ;
+            pROM->nCountOffsetBlocks = 0xC6;
+        } else {
+            pROM->anOffsetBlock = ganOffsetBlock_URAZLJ;
+            pROM->nCountOffsetBlocks = 0xC6;
+        }
+
+        szName = gnFlagZelda & 2 ? "zlj.tpl" : "urazlj.tpl";
+
+        if (xlFileOpen(&pFile, 1, szName)) {
+            nSize = pFile->nSize;
+            gpImageBack = (u8*)SYSTEM_RAM(pROM->pHost)->pBuffer + 0x300000;
+            if (!xlFileGet(pFile, gpImageBack, nSize)) {
+                return false;
+            }
+            if (!xlFileClose(&pFile)) {
+                return false;
+            }
+            simulatorUnpackTexPalette(gpImageBack);
+            DCStoreRange(gpImageBack, nSize);
+            gbProgress = false;
+            gbDisplayedError = true;
+        }
+
+        if (gnFlagZelda & 2) {
+            if (!romLoadRange(pROM, 0, 0xA6251F, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return false;
+            }
+            if (!romLoadRange(pROM, 0xAFDAA0, 0x0168515F, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return false;
+            }
+        } else {
+            if (!romLoadRange(pROM, 0, 0xA6251F, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return false;
+            }
+            if (!romLoadRange(pROM, 0xAFDB00, 0x01684BCF, &blockCount, 1, &romCacheGame_ZELDA)) {
+                return false;
+            }
+        }
+    } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
+        if (!romLoadRange(pROM, 0, 0xEFAB5F, &blockCount, 1, NULL)) {
+            return false;
+        }
+        if (!romLoadRange(pROM, 0x0167CE40, 0x016B4E8F, &blockCount, 1, NULL)) {
+            return false;
+        }
+        if (!romLoadRange(pROM, 0x01F82960, pROM->nSize - 1, &blockCount, 1, NULL)) {
+            return false;
+        }
+    }
+
+    gDVDResetToggle = false;
+    return true;
+}
+
+#elif VERSION == MQ_U || VERSION == CE_J || VERSION == CE_U
+
+static bool romCacheGame(Rom* pROM) {
+    s32 blockCount;
+    bool bIsCZLE;
+    bool bIsCZLJ;
+    s32 nSize;
+    char* szName;
     tXL_FILE* pFile;
 
     blockCount = 0;
@@ -524,6 +593,7 @@ static bool romCacheGame(Rom* pROM) {
         } else {
             szName = "";
         }
+
         if (xlFileOpen(&pFile, 1, szName)) {
             nSize = pFile->nSize;
             gpImageBack = (u8*)SYSTEM_RAM(pROM->pHost)->pBuffer + 0x300000;
@@ -538,6 +608,7 @@ static bool romCacheGame(Rom* pROM) {
             gbProgress = false;
             gbDisplayedError = true;
         }
+
         if (gnFlagZelda & 2) {
             if (!romLoadRange(pROM, 0, 0xA6251F, &blockCount, 1, &romCacheGame_ZELDA)) {
                 return false;
@@ -569,6 +640,8 @@ static bool romCacheGame(Rom* pROM) {
     return true;
 }
 
+#endif
+
 bool __romLoadUpdate_Complete(void) {
     Rom* pROM = SYSTEM_ROM(gpSystem);
 
@@ -596,7 +669,7 @@ static bool romLoadUpdate(Rom* pROM) {
             return true;
         }
 
-        if (!simulatorTestReset(false, false, true, false)) {
+        if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
             return false;
         }
 
@@ -665,7 +738,7 @@ static bool romCopyUpdate(Rom* pROM) {
             return true;
         }
 
-        if (!simulatorTestReset(false, false, true, false)) {
+        if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
             return false;
         }
 
@@ -790,7 +863,7 @@ static bool romLoadFullOrPart(Rom* pROM) {
             simulatorShowLoad(1, pROM->acNameFile, 1.0f);
         } else {
             for (i = 0; i < (s32)pROM->nSize;) {
-                if (!simulatorTestReset(false, false, true, false)) {
+                if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
                     return false;
                 }
 
@@ -1342,8 +1415,11 @@ bool romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
             break;
         case 0:
         case 1:
+            break;
+#if VERSION != MQ_J
         case 0x1003:
             break;
+#endif
         default:
             return false;
     }

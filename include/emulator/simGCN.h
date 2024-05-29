@@ -117,7 +117,13 @@ bool simulatorSetControllerMap(u32* mapData, s32 channel);
 void simulatorResetAndPlayMovie(void);
 bool simulatorDrawErrorMessage(SimulatorMessage simulatorErrorMessage, bool drawBar, s32 percent);
 bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
+
+#if VERSION == MQ_J
+bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset);
+#else
 bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePreviousSettings);
+#endif
+
 bool simulatorGetArgument(SimulatorArgumentType eType, char** pszArgument);
 bool simulatorPlayMovie(void);
 bool xlMain(void);
@@ -126,5 +132,13 @@ bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage);
 bool simulatorDrawMCardText(void);
 bool simulatorDrawErrorMessageWait(SimulatorMessage simulatorErrorMessage);
 bool simulatorDrawYesNoMessage(SimulatorMessage simulatorMessage, bool* yes);
+
+#if VERSION == MQ_J
+#define SIMULATOR_TEST_RESET(IPL, forceMenu, allowReset, usePreviousSettings) \
+    simulatorTestReset(IPL, forceMenu, allowReset)
+#else
+#define SIMULATOR_TEST_RESET(IPL, forceMenu, allowReset, usePreviousSettings) \
+    simulatorTestReset(IPL, forceMenu, allowReset, usePreviousSettings)
+#endif
 
 #endif
