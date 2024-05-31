@@ -213,16 +213,18 @@ void __init_data(void) {
 
     dci = _rom_copy_info;
     while (true) {
-        if (dci->size == 0)
+        if (dci->size == 0) {
             break;
+        }
         __copy_rom_section(dci->addr, dci->rom, dci->size);
         dci++;
     }
 
     bii = _bss_init_info;
     while (true) {
-        if (bii->size == 0)
+        if (bii->size == 0) {
             break;
+        }
         __init_bss_section(bii->addr, bii->size);
         bii++;
     }

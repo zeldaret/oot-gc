@@ -967,8 +967,9 @@ void __VIDisplayPositionToXY(u32 hcount, u32 vcount, s16* x, s16* y) {
                 *y = -1;
             } else if (halfLine >= CurrTiming->numHalfLines - CurrTiming->psbEven) {
                 *y = -1;
-            } else
+            } else {
                 *y = (s16)((halfLine - CurrTiming->equ * 3 - CurrTiming->prbEven) & ~1);
+            }
         }
     }
 

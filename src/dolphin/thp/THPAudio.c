@@ -49,8 +49,9 @@ u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
             if ((u16)(yn & 0xffff) > 0x8000) {
                 yn += 0x10000;
             } else if ((u16)(yn & 0xffff) == 0x8000) {
-                if ((yn & 0x10000))
+                if ((yn & 0x10000)) {
                     yn += 0x10000;
+                }
             }
 
             if (yn > INT_MAX) {
@@ -84,8 +85,9 @@ u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
                 yn += 0x10000;
             } else {
                 if ((u16)(yn & 0xffff) == 0x8000) {
-                    if ((yn & 0x10000))
+                    if ((yn & 0x10000)) {
                         yn += 0x10000;
+                    }
                 }
             }
 
@@ -119,8 +121,9 @@ u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
                 yn += 0x10000;
             } else {
                 if ((u16)(yn & 0xffff) == 0x8000) {
-                    if ((yn & 0x10000))
+                    if ((yn & 0x10000)) {
                         yn += 0x10000;
+                    }
                 }
             }
 

@@ -164,8 +164,9 @@ static void UnsetRun(OSThread* thread) {
     OSThreadQueue* queue;
     queue = thread->queue;
     RemoveItem(queue, thread, link);
-    if (queue->head == 0)
+    if (queue->head == 0) {
         RunQueueBits &= ~(1u << (OS_PRIORITY_MAX - thread->priority));
+    }
     thread->queue = NULL;
 }
 #pragma dont_inline reset

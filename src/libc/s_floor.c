@@ -21,32 +21,37 @@ f64 floor(f64 x) {
             }
         } else {
             i = (0x000FFFFF) >> j0;
-            if (((i0 & i) | i1) == 0)
+            if (((i0 & i) | i1) == 0) {
                 return x; /* x is integral */
+            }
             if (huge + x > 0.0) { /* raise inexact flag */
-                if (i0 < 0)
+                if (i0 < 0) {
                     i0 += (0x00100000) >> j0;
+                }
                 i0 &= (~i);
                 i1 = 0;
             }
         }
     } else if (j0 > 51) {
-        if (j0 == 0x400)
+        if (j0 == 0x400) {
             return x + x; /* inf or NaN */
-        else
+        } else {
             return x; /* x is integral */
+        }
     } else {
         i = ((u32)(0xFFFFFFFF)) >> (j0 - 20);
-        if ((i1 & i) == 0)
+        if ((i1 & i) == 0) {
             return x; /* x is integral */
+        }
         if (huge + x > 0.0) { /* raise inexact flag */
             if (i0 < 0) {
-                if (j0 == 20)
+                if (j0 == 20) {
                     i0 += 1;
-                else {
+                } else {
                     j = i1 + (1 << (52 - j0));
-                    if (j < i1)
+                    if (j < i1) {
                         i0 += 1; /* got a carry */
+                    }
                     i1 = j;
                 }
             }

@@ -106,19 +106,22 @@ s32 DVDConvertPathToEntrynum(const char* pathPtr) {
                     extention = true;
                     extentionStart = ptr + 1;
 
-                } else if (*ptr == ' ')
+                } else if (*ptr == ' ') {
                     illegal = true;
+                }
             }
 
-            if ((extention == true) && (ptr - extentionStart > 3))
+            if ((extention == true) && (ptr - extentionStart > 3)) {
                 illegal = true;
+            }
 
-            if (illegal)
+            if (illegal) {
                 OSPanic("dvdfs.c", 383,
                         "DVDConvertEntrynumToPath(possibly DVDOpen or DVDChangeDir or DVDOpenDir): "
                         "specified directory or file (%s) doesn't match standard 8.3 format. This is a "
                         "temporary restriction and will be removed soon\n",
                         origPathPtr);
+            }
         } else {
             for (ptr = pathPtr; (*ptr != '\0') && (*ptr != '/'); ptr++)
                 ;

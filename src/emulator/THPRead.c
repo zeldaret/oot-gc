@@ -449,10 +449,11 @@ static void* Reader(void* ptr) {
 
         frameNumber = (readFrame + ActivePlayer.initReadFrame) % ActivePlayer.header.numFrames;
         if (frameNumber == ActivePlayer.header.numFrames - 1) {
-            if ((ActivePlayer.playFlag & 1))
+            if ((ActivePlayer.playFlag & 1)) {
                 offset = ActivePlayer.header.movieDataOffsets;
-            else
+            } else {
                 OSSuspendThread(&ReadThread);
+            }
         }
 
         readFrame++;

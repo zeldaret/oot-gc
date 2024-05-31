@@ -149,8 +149,9 @@ static void cbForStateError(u32 intType) {
 
     if (Canceling) {
         Canceling = false;
-        if (CancelCallback)
+        if (CancelCallback) {
             (CancelCallback)(0, finished);
+        }
     }
 
     stateReady();
@@ -214,10 +215,12 @@ static inline bool CheckCancel(u32 resume) {
         executing = &DummyCommandBlock;
 
         finished->state = 10;
-        if (finished->callback)
+        if (finished->callback) {
             (*finished->callback)(-3, finished);
-        if (CancelCallback)
+        }
+        if (CancelCallback) {
             (CancelCallback)(0, finished);
+        }
         stateReady();
         return true;
     }
@@ -256,18 +259,20 @@ static void cbForStateGettingError(u32 intType) {
     if ((errorCategory == 2) || (errorCategory == 3)) {
         resume = 0;
     } else {
-        if (status == 0x01000000)
+        if (status == 0x01000000) {
             resume = 4;
-        else if (status == 0x02000000)
+        } else if (status == 0x02000000) {
             resume = 6;
-        else if (status == 0x03000000)
+        } else if (status == 0x03000000) {
             resume = 3;
-        else
+        } else {
             resume = 5;
+        }
     }
 
-    if (CheckCancel(resume))
+    if (CheckCancel(resume)) {
         return;
+    }
 
     if (errorCategory == 2) {
         __DVDStoreErrorCode(error);
@@ -705,8 +710,9 @@ static inline bool IsImmCommandWithResult(u32 command) {
     }
 
     for (i = 0; i < sizeof(ImmCommand) / sizeof(ImmCommand[0]); i++) {
-        if (command == ImmCommand[i])
+        if (command == ImmCommand[i]) {
             return true;
+        }
     }
 
     return false;
@@ -717,12 +723,14 @@ static u32 DmaCommand[] = {0xFFFFFFFF};
 static inline bool IsDmaCommand(u32 command) {
     u32 i;
 
-    if (command == 1 || command == 4 || command == 5 || command == 14)
+    if (command == 1 || command == 4 || command == 5 || command == 14) {
         return true;
+    }
 
     for (i = 0; i < sizeof(DmaCommand) / sizeof(DmaCommand[0]); i++) {
-        if (command == DmaCommand[i])
+        if (command == DmaCommand[i]) {
             return true;
+        }
     }
 
     return false;
@@ -783,8 +791,9 @@ void cbForStateBusy(u32 p1) {
     if (p1 & 1) {
         NumInternalRetry = 0;
 
-        if (CheckCancel(0))
+        if (CheckCancel(0)) {
             return;
+        }
 
         if (IsDmaCommand(CurrCommand)) {
             if (executing->transferredSize != executing->length) {
@@ -1051,8 +1060,9 @@ bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
         case -1:
         case 0:
         case 10:
-            if (callback)
+            if (callback) {
                 (*callback)(0, block);
+            }
             break;
 
         case 1:
@@ -1071,10 +1081,12 @@ bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
         case 2:
             __DVDDequeueWaitingQueue(block);
             block->state = 10;
-            if (block->callback)
+            if (block->callback) {
                 (block->callback)(-3, block);
-            if (callback)
+            }
+            if (callback) {
                 (*callback)(0, block);
+            }
             break;
 
         case 3:
@@ -1083,8 +1095,9 @@ bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
                 case 4:
                 case 13:
                 case 15:
-                    if (callback)
+                    if (callback) {
                         (*callback)(0, block);
+                    }
                     break;
 
                 default:
@@ -1109,16 +1122,21 @@ bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
                 return false;
             }
 
-            if (block->state == 4)
+            if (block->state == 4) {
                 ResumeFromHere = 3;
-            if (block->state == 5)
+            }
+            if (block->state == 5) {
                 ResumeFromHere = 4;
-            if (block->state == 6)
+            }
+            if (block->state == 6) {
                 ResumeFromHere = 1;
-            if (block->state == 11)
+            }
+            if (block->state == 11) {
                 ResumeFromHere = 2;
-            if (block->state == 7)
+            }
+            if (block->state == 7) {
                 ResumeFromHere = 7;
+            }
 
             executing = &DummyCommandBlock;
             block->state = 10;
@@ -1186,12 +1204,13 @@ static inline bool DVDCancelAllAsync(DVDCBCallback callback) {
         DVDCancelAsync(p, NULL);
     }
 
-    if (executing)
+    if (executing) {
         retVal = DVDCancelAsync(executing, callback);
-    else {
+    } else {
         retVal = true;
-        if (callback)
+        if (callback) {
             (*callback)(0, NULL);
+        }
     }
 
     DVDResume();

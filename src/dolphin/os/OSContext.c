@@ -352,8 +352,9 @@ ASM u32 OSGetStackPointer(void) {
 void OSClearContext(register OSContext* context) {
     context->mode = 0;
     context->state = 0;
-    if (context == __OSFPUContext)
+    if (context == __OSFPUContext) {
         __OSFPUContext = NULL;
+    }
 }
 
 ASM void OSInitContext(register OSContext* context, register u32 pc, register u32 newsp) {

@@ -51,7 +51,8 @@ DSPTaskInfo* DSPAddTask(DSPTaskInfo* task) {
     task->flags = 1;
 
     OSRestoreInterrupts(old);
-    if (task == __DSP_first_task)
+    if (task == __DSP_first_task) {
         __DSP_boot_task(task);
+    }
     return task;
 }

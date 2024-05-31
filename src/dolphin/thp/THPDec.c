@@ -2086,8 +2086,9 @@ static void __THPHuffDecodeDCTCompU(register THPFileInfo* info, THPCoeff* block)
         }
 
         else {
-            if (rrrr != 15)
+            if (rrrr != 15) {
                 break;
+            }
             k += 15;
         }
     }
@@ -2212,8 +2213,9 @@ static void __THPHuffDecodeDCTCompV(register THPFileInfo* info, THPCoeff* block)
 
             block[__THPJpegNaturalOrder[k]] = (s16)rrrr;
         } else {
-            if (rrrr != 15)
+            if (rrrr != 15) {
                 break;
+            }
             k += 15;
         }
     }
