@@ -527,8 +527,9 @@ static void PushUsedTextureSet(OSMessage msg) {
 
 static inline OSMessage PopUsedTextureSet(void) {
     OSMessage msg;
-    if (OSReceiveMessage(&UsedTextureSetQueue, &msg, OS_MESSAGE_NOBLOCK) == true)
+    if (OSReceiveMessage(&UsedTextureSetQueue, &msg, OS_MESSAGE_NOBLOCK) == true) {
         return msg;
+    }
 
     return NULL;
 }

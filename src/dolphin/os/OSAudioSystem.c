@@ -42,8 +42,9 @@ void __OSInitAudioSystem(void) {
     *(u32*)&__DSPRegs[20] = 0x20;
 
     r3 = __DSPRegs[5];
-    while (!(r3 & 0x20))
+    while (!(r3 & 0x20)) {
         r3 = __DSPRegs[5];
+    }
     __DSPRegs[5] = r3;
 
     r28 = OSGetTick();
@@ -55,8 +56,9 @@ void __OSInitAudioSystem(void) {
     *(u32*)&__DSPRegs[20] = 0x20;
 
     r3 = __DSPRegs[5];
-    while (!(r3 & 0x20))
+    while (!(r3 & 0x20)) {
         r3 = __DSPRegs[5];
+    }
     __DSPRegs[5] = r3;
 
     __DSPRegs[5] &= ~0x800;
@@ -67,8 +69,9 @@ void __OSInitAudioSystem(void) {
     r3 = __DSPRegs[2];
 
     // the nonmatching part
-    while (!(r3 & 0x8000))
+    while (!(r3 & 0x8000)) {
         r3 = __DSPRegs[2];
+    }
 
     (void)__DSPRegs[3];
     (void)(r3 != 42069);

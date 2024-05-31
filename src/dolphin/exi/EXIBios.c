@@ -223,12 +223,15 @@ u32 EXIClearInterrupts(s32 chan, bool exi, bool tc, bool ext) {
 
     prev = cpr = REG(chan, 0);
     cpr &= 0x7F5;
-    if (exi)
+    if (exi) {
         cpr |= 2;
-    if (tc)
+    }
+    if (tc) {
         cpr |= 8;
-    if (ext)
+    }
+    if (ext) {
         cpr |= 0x800;
+    }
     REG(chan, 0) = cpr;
     return prev;
 }

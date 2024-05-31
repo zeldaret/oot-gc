@@ -22,18 +22,21 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
     while (DSPCheckMailFromDSP() == 0)
         ;
     mail = DSPReadMailFromDSP();
-    if ((__DSP_curr_task->flags & (1 << (31 - 0x1E))) && (mail + 0x232F0000) == 2)
+    if ((__DSP_curr_task->flags & (1 << (31 - 0x1E))) && (mail + 0x232F0000) == 2) {
         mail = 0xDCD10003;
+    }
     switch (mail) {
         case 0xDCD10000:
             __DSP_curr_task->state = 1;
-            if (__DSP_curr_task->init_cb != NULL)
+            if (__DSP_curr_task->init_cb != NULL) {
                 __DSP_curr_task->init_cb(__DSP_curr_task);
+            }
             break;
         case 0xDCD10001:
             __DSP_curr_task->state = 1;
-            if (__DSP_curr_task->res_cb != NULL)
+            if (__DSP_curr_task->res_cb != NULL) {
                 __DSP_curr_task->res_cb(__DSP_curr_task);
+            }
             break;
         case 0xDCD10002:
             if (__DSP_rude_task_pending) {
@@ -43,8 +46,9 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
                         ;
                     __DSP_rude_task = NULL;
                     __DSP_rude_task_pending = 0;
-                    if (__DSP_curr_task->res_cb != NULL)
+                    if (__DSP_curr_task->res_cb != NULL) {
                         __DSP_curr_task->res_cb(__DSP_curr_task);
+                    }
                 } else {
                     DSPSendMailToDSP(0xCDD10001);
                     while (DSPCheckMailToDSP() != 0)
@@ -61,8 +65,9 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
                         DSPSendMailToDSP(0xCDD10003);
                         while (DSPCheckMailToDSP() != 0)
                             ;
-                        if (__DSP_curr_task->res_cb != NULL)
+                        if (__DSP_curr_task->res_cb != NULL) {
                             __DSP_curr_task->res_cb(__DSP_curr_task);
+                        }
                     } else {
                         DSPSendMailToDSP(0xCDD10001);
                         while (DSPCheckMailToDSP() != 0)
@@ -83,8 +88,9 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
             break;
         case 0xDCD10003:
             if (__DSP_rude_task_pending) {
-                if (__DSP_curr_task->done_cb != NULL)
+                if (__DSP_curr_task->done_cb != NULL) {
                     __DSP_curr_task->done_cb(__DSP_curr_task);
+                }
                 DSPSendMailToDSP(0xCDD10001);
                 while (DSPCheckMailToDSP() != 0)
                     ;
@@ -96,16 +102,18 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
             } else {
                 if (__DSP_curr_task->next == NULL) {
                     if (__DSP_curr_task == __DSP_first_task) {
-                        if (__DSP_curr_task->done_cb != NULL)
+                        if (__DSP_curr_task->done_cb != NULL) {
                             __DSP_curr_task->done_cb(__DSP_curr_task);
+                        }
                         DSPSendMailToDSP(0xCDD10002);
                         while (DSPCheckMailToDSP() != 0)
                             ;
                         __DSP_curr_task->state = 3;
                         __DSP_remove_task(__DSP_curr_task);
                     } else {
-                        if (__DSP_curr_task->done_cb != NULL)
+                        if (__DSP_curr_task->done_cb != NULL) {
                             __DSP_curr_task->done_cb(__DSP_curr_task);
+                        }
                         DSPSendMailToDSP(0xCDD10001);
                         while (DSPCheckMailToDSP() != 0)
                             ;
@@ -115,8 +123,9 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
                         __DSP_remove_task(__DSP_last_task);
                     }
                 } else {
-                    if (__DSP_curr_task->done_cb != NULL)
+                    if (__DSP_curr_task->done_cb != NULL) {
                         __DSP_curr_task->done_cb(__DSP_curr_task);
+                    }
                     DSPSendMailToDSP(0xCDD10001);
                     while (DSPCheckMailToDSP() != 0)
                         ;
@@ -128,8 +137,9 @@ void __DSPHandler(__OSInterrupt intr, OSContext* context) {
             }
             break;
         case 0xDCD10004:
-            if (__DSP_curr_task->req_cb != NULL)
+            if (__DSP_curr_task->req_cb != NULL) {
                 __DSP_curr_task->req_cb(__DSP_curr_task);
+            }
             break;
     }
     OSClearContext(&exceptionContext);

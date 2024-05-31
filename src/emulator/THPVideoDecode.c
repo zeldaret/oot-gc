@@ -45,8 +45,9 @@ bool CreateVideoDecodeThread(OSPriority priority, u8* ptr) {
 }
 
 void VideoDecodeThreadStart(void) {
-    if (VideoDecodeThreadCreated)
+    if (VideoDecodeThreadCreated) {
         OSResumeThread(&VideoDecodeThread);
+    }
 }
 
 static void* VideoDecoder(void* ptr) {
@@ -60,8 +61,9 @@ static void* VideoDecoder(void* ptr) {
             for (; ActivePlayer.videoAhead < 0; decodedFrame--) {
                 readBuffer = (THPReadBuffer*)PopReadedBuffer2();
                 remaining = (readBuffer->frameNumber + ActivePlayer.initReadFrame) % ActivePlayer.header.numFrames;
-                if (remaining == (ActivePlayer.header.numFrames - 1) && (ActivePlayer.playFlag & 1) == 0)
+                if (remaining == (ActivePlayer.header.numFrames - 1) && (ActivePlayer.playFlag & 1) == 0) {
                     VideoDecode(readBuffer);
+                }
 
                 PushFreeReadBuffer((OSMessage*)readBuffer);
                 old = OSDisableInterrupts();
@@ -70,10 +72,11 @@ static void* VideoDecoder(void* ptr) {
             }
         }
 
-        if (ActivePlayer.audioExist)
+        if (ActivePlayer.audioExist) {
             readBuffer = (THPReadBuffer*)PopReadedBuffer2();
-        else
+        } else {
             readBuffer = (THPReadBuffer*)PopReadedBuffer();
+        }
 
         VideoDecode(readBuffer);
         PushFreeReadBuffer((OSMessage*)readBuffer);
@@ -102,8 +105,9 @@ static void* VideoDecoderForOnMemory(void* arg) {
                 OSRestoreInterrupts(old);
                 remaining = (frame + ActivePlayer.initReadFrame) % ActivePlayer.header.numFrames;
                 if (remaining == ActivePlayer.header.numFrames - 1) {
-                    if ((ActivePlayer.playFlag & 1) == 0)
+                    if ((ActivePlayer.playFlag & 1) == 0) {
                         break;
+                    }
 
                     readSize = *(s32*)readBuffer.ptr;
                     readBuffer.ptr = ActivePlayer.movieData;
