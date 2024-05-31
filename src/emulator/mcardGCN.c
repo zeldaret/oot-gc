@@ -143,12 +143,16 @@ bool mcardReInit(MemCard* pMCard) {
     pMCard->pPollFunction = NULL;
     pMCard->writeToggle = true;
 
-    if (pMCard->writeBuffer != NULL && !xlHeapFree(&pMCard->writeBuffer)) {
-        return false;
+    if (pMCard->writeBuffer != NULL) {
+        if (!xlHeapFree(&pMCard->writeBuffer)) {
+            return false;
+        }
     }
 
-    if (pMCard->readBuffer != NULL && !xlHeapFree(&pMCard->readBuffer)) {
-        return false;
+    if (pMCard->readBuffer != NULL) {
+        if (!xlHeapFree(&pMCard->readBuffer)) {
+            return false;
+        }
     }
 
     if (!xlHeapTake(&pMCard->writeBuffer, 0x2000 | 0x30000000)) {
@@ -1025,7 +1029,7 @@ bool mcardUpdate(void) {
 
         prevIndex = 100;
         counter = 0;
-        while (true) { // ?
+        while (true) {
             if (!simulatorTestReset(false, false, false, false)) {
                 return false;
             }
