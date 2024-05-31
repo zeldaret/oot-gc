@@ -33,6 +33,7 @@ void* jtbl_800EA608[24] = {
 void* jtbl_800EA608[24] = {0};
 #endif
 
+#ifndef NON_MATCHING
 void* jtbl_800EA668[50] = {
     &lbl_800177EC, &lbl_80016EF8, &lbl_80016F24, &lbl_80016F54, &lbl_80016F80, &lbl_80016FAC, &lbl_80016FD8,
     &lbl_80017020, &lbl_80017054, &lbl_80017074, &lbl_8001709C, &lbl_800170E8, &lbl_80017134, &lbl_80017158,
@@ -43,6 +44,9 @@ void* jtbl_800EA668[50] = {
     &lbl_8001769C, &lbl_800176B4, &lbl_800177EC, &lbl_800176FC, &lbl_80017734, &lbl_80017768, &lbl_8001779C,
     &lbl_800177C4,
 };
+#else
+void* jtbl_800EA668[50] = {0};
+#endif
 
 char D_800EA730[] = "Accessing Card";
 char D_800EA740[] = "Writing Game Data";
@@ -60,12 +64,14 @@ OSCalendarTime gDate;
 
 static s32 toggle = 0x00000001;
 static s32 currentIdx;
-static s32 yes;
-static __anon_0x1A5F0 prevMenuEntry;
-static __anon_0x1A5F0 nextMenuEntry;
+static bool yes;
+static MemCardMessage prevMenuEntry;
+static MemCardMessage nextMenuEntry;
 static s32 toggle2;
 static s32 checkFailCount;
 static s32 bWrite2Card;
+
+static inline bool mcardFileRelease(MemCard* pMCard);
 
 static bool mcardGCErrorHandler(MemCard* pMCard, s32 gcError);
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardGCErrorHandler.s")
@@ -105,6 +111,7 @@ static bool mcardWriteFileHeader(MemCard* pMCard);
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteFileHeaderInitial.s")
 
+static s32 mcardWriteBufferAsynch(MemCard* pMCard, s32 offset);
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteBufferAsynch.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReadBufferAsynch.s")
@@ -115,9 +122,49 @@ static bool mcardWriteFileHeader(MemCard* pMCard);
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReadGameData.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteGameDataReset.s")
+bool mcardWriteGameDataReset(MemCard* pMCard) {
+    if (pMCard->saveToggle == true) {
+        while (!mCard.writeToggle) {
+            mcardWriteBufferAsynch(pMCard, pMCard->file.game.offset + 0x6000);
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReInit.s")
+    return true;
+}
+
+bool mcardReInit(MemCard* pMCard) {
+    pMCard->saveToggle = true;
+    mcardGameRelease(pMCard);
+    mcardFileRelease(pMCard);
+
+    pMCard->error = MC_E_NONE;
+    pMCard->slot = 0;
+    pMCard->wait = false;
+    pMCard->pPollFunction = NULL;
+    pMCard->writeToggle = true;
+
+    if (pMCard->writeBuffer != NULL) {
+        if (!xlHeapFree(&pMCard->writeBuffer)) {
+            return false;
+        }
+    }
+
+    if (pMCard->readBuffer != NULL) {
+        if (!xlHeapFree(&pMCard->readBuffer)) {
+            return false;
+        }
+    }
+
+    if (!xlHeapTake(&pMCard->writeBuffer, 0x2000 | 0x30000000)) {
+        return false;
+    }
+
+    if (!xlHeapTake(&pMCard->readBuffer, 0x2000 | 0x30000000)) {
+        return false;
+    }
+
+    return true;
+}
 
 bool mcardInit(MemCard* pMCard) {
     CARDInit();
@@ -289,6 +336,34 @@ bool mcardGameErase(MemCard* pMCard, s32 index) {
     return true;
 }
 
+static inline bool mcardFileRelease(MemCard* pMCard) {
+    //! TODO: determine if this belongs to this function
+    pMCard->file.changedDate = 0;
+    memset(pMCard->file.name, 0, ARRAY_COUNT(pMCard->file.name));
+    pMCard->file.numberOfGames = 0;
+    memset(pMCard->file.gameSize, 0, ARRAY_COUNT(pMCard->file.gameSize));
+    memset(pMCard->file.gameOffset, 0, ARRAY_COUNT(pMCard->file.gameOffset));
+    memset(pMCard->file.gameName, 0, 0x201);
+
+    if (!pMCard->bufferCreated) {
+        if (pMCard->file.game.buffer != NULL) {
+            if (!xlHeapFree(&pMCard->file.game.buffer)) {
+                return false;
+            }
+        }
+
+        pMCard->file.game.size = 0;
+        memset(&pMCard->file.game.configuration, 0, sizeof(s32));
+    }
+
+    if ((pMCard->file.game.writtenBlocks == NULL) || xlHeapFree(&pMCard->file.game.writtenBlocks)) {
+        pMCard->file.game.writtenConfig = 0;
+        pMCard->file.currentGame = 16;
+    }
+
+    return true;
+}
+
 bool mcardGameRelease(MemCard* pMCard) {
     if (pMCard->bufferCreated == 0) {
         if (pMCard->file.game.buffer != NULL) {
@@ -298,7 +373,7 @@ bool mcardGameRelease(MemCard* pMCard) {
         }
 
         pMCard->file.game.size = 0;
-        memset(&pMCard->file.game, 0, 4);
+        memset(&pMCard->file.game.configuration, 0, sizeof(s32));
     }
 
     if (pMCard->file.game.writtenBlocks != NULL) {
@@ -319,7 +394,445 @@ bool mcardRead(MemCard* pMCard, s32 address, s32 size, char* data) {
     return true;
 }
 
+// matches but data doesn't
+//! TODO: define ``yes`` as a static variable inside this function
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardMenu.s")
+#else
+bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pCommand) {
+    if (pMCard->wait == true && menuEntry != MC_M_LD01 && menuEntry != MC_M_SV01) {
+        menuEntry = nextMenuEntry;
+    } else {
+        pMCard->wait = false;
+        if (menuEntry == prevMenuEntry) {
+            menuEntry = nextMenuEntry;
+        }
+        nextMenuEntry = menuEntry;
+    }
+
+    *pCommand = MC_C_CONTINUE;
+    switch (menuEntry) {
+        case MC_M_LD01:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD01) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD02:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD02) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                pMCard->isBroken = true;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD03:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD03) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD04:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD04) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD05:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD05_1) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD05_2;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD05_2:
+            if (simulatorDrawYesNoMessage(S_M_CARD_LD05_2, &yes) == true) {
+                if ((s32)yes == true) {
+                    yes = false;
+                    nextMenuEntry = MC_M_IN01_L;
+                    *pCommand = MC_C_CONTINUE;
+                } else {
+                    nextMenuEntry = MC_M_IN05;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_LD06:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD06_1) == true) {
+                nextMenuEntry = MC_M_LD06_2;
+                *pCommand = MC_C_CONTINUE;
+            } else {
+                nextMenuEntry = MC_M_LD06;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD06_2:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD06_2) == true) {
+                nextMenuEntry = MC_M_LD06_3;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD06_3:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_LD06_3) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD06_4;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_LD06_4:
+            if (simulatorDrawYesNoMessage(S_M_CARD_LD06_4, &yes) == true) {
+                if ((s32)yes == true) {
+                    prevMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_IPL;
+                } else {
+                    yes = false;
+                    nextMenuEntry = MC_M_LD07;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_LD07:
+            if (simulatorDrawYesNoMessage(S_M_CARD_LD07, &yes) == true) {
+                pMCard->wait = false;
+                nextMenuEntry = MC_M_LD07;
+                prevMenuEntry = MC_M_NONE;
+                if ((s32)yes == true) {
+                    pMCard->isBroken = 0;
+                    *pCommand = MC_C_GO_TO_GAME;
+                } else {
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_SV01:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV01) == true) {
+                nextMenuEntry = MC_M_SV01_2;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV01_2:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV01_2) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV02:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV02) == true) {
+                nextMenuEntry = MC_M_SV_SHARE;
+                pMCard->isBroken = true;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV03:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV03) == true) {
+                nextMenuEntry = MC_M_SV_SHARE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV04:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV04) == true) {
+                nextMenuEntry = MC_M_SV_SHARE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV05:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV05_1) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_SV05_2;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV05_2:
+            if (simulatorDrawYesNoMessage(S_M_CARD_LD05_2, &yes) == true) {
+                if ((s32)yes == true) {
+                    yes = false;
+                    nextMenuEntry = MC_M_IN01_S;
+                    *pCommand = MC_C_CONTINUE;
+                } else {
+                    nextMenuEntry = MC_M_SV11;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_SV06:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV06_1) == true) {
+                nextMenuEntry = MC_M_SV06_2;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV06_2:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV06_2) == true) {
+                nextMenuEntry = MC_M_SV06_3;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV06_3:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV06_3) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_SV06_4;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV06_4:
+            if (simulatorDrawYesNoMessage(S_M_CARD_SV06_4, &yes) == true) {
+                if ((s32)yes == true) {
+                    yes = false;
+                    nextMenuEntry = MC_M_SV06_5;
+                    *pCommand = MC_C_CONTINUE;
+                } else {
+                    yes = false;
+                    nextMenuEntry = MC_M_LD07;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_SV06_5:
+            if (simulatorDrawYesNoMessage(S_M_CARD_SV06_5, &yes) == true) {
+                if ((s32)yes == true) {
+                    prevMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_IPL;
+                } else {
+                    yes = false;
+                    prevMenuEntry = MC_M_NONE;
+                    nextMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_SV07:
+            prevMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV07) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV08_L:
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = MC_M_SV08_L_2;
+            yes = false;
+            break;
+        case MC_M_SV08_L_2:
+            if (simulatorDrawYesNoMessage(S_M_CARD_SV08, &yes) == true) {
+                if ((s32)yes == true) {
+                    *pCommand = MC_C_DELETE_GAME;
+                } else {
+                    yes = false;
+                    nextMenuEntry = MC_M_LD07;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_SV08:
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = MC_M_SV08_2;
+            yes = false;
+            break;
+        case MC_M_SV08_2:
+            if (simulatorDrawYesNoMessage(S_M_CARD_SV08, &yes) == true) {
+                if ((s32)yes == true) {
+                    prevMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_DELETE_GAME;
+                } else {
+                    yes = false;
+                    nextMenuEntry = MC_M_LD07;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_SV10:
+            pMCard->wait = 1;
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV10) == true) {
+                pMCard->wait = false;
+                nextMenuEntry = MC_M_NONE;
+                prevMenuEntry = MC_M_NONE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV11:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV11) == true) {
+                nextMenuEntry = MC_M_SV_SHARE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_SV12:
+            prevMenuEntry = menuEntry;
+            pMCard->wait = 1;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV12) == true) {
+                pMCard->wait = false;
+                prevMenuEntry = MC_M_NONE;
+                *pCommand = MC_C_GO_TO_GAME;
+            }
+            break;
+        case MC_M_SV_SHARE:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_SV_SHARE) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_IN01_L:
+            if (simulatorDrawYesNoMessage(S_M_CARD_IN01, &yes) == true) {
+                if ((s32)yes == true) {
+                    nextMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_FORMAT_CARD;
+                } else {
+                    nextMenuEntry = MC_M_IN05;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_IN01_S:
+            if (simulatorDrawYesNoMessage(S_M_CARD_IN01, &yes) == true) {
+                if ((s32)yes == true) {
+                    prevMenuEntry = MC_M_NONE;
+                    nextMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_FORMAT_CARD;
+                } else {
+                    nextMenuEntry = MC_M_SV11;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_IN03:
+            pMCard->wait = 1;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_IN03) == true) {
+                pMCard->wait = false;
+                prevMenuEntry = MC_M_NONE;
+                nextMenuEntry = MC_M_NONE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_IN04_L:
+            pMCard->wait = 1;
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_IN04) == true) {
+                nextMenuEntry = MC_M_LD02;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_IN04_S:
+            pMCard->wait = 1;
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_IN04) == true) {
+                nextMenuEntry = MC_M_SV02;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_IN05:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_IN05) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_GF01_L:
+            prevMenuEntry = menuEntry;
+            yes = false;
+            nextMenuEntry = MC_M_GF01_L_2;
+            break;
+        case MC_M_GF01_L_2:
+            if (simulatorDrawYesNoMessage(S_M_CARD_GF01, &yes) == true) {
+                if ((s32)yes == true) {
+                    prevMenuEntry = MC_M_NONE;
+                    nextMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_CREATE_GAME;
+                } else {
+                    nextMenuEntry = MC_M_GF06;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_GF01_S:
+            prevMenuEntry = menuEntry;
+            yes = false;
+            nextMenuEntry = MC_M_GF01_S_2;
+            break;
+        case MC_M_GF01_S_2:
+            if (simulatorDrawYesNoMessage(S_M_CARD_GF01, &yes) == true) {
+                if ((s32)yes == true) {
+                    prevMenuEntry = MC_M_NONE;
+                    nextMenuEntry = MC_M_NONE;
+                    *pCommand = MC_C_CREATE_GAME;
+                } else {
+                    nextMenuEntry = MC_M_GF05;
+                    *pCommand = MC_C_CONTINUE;
+                }
+            }
+            break;
+        case MC_M_GF03:
+            pMCard->wait = 1;
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_GF03) == true) {
+                pMCard->wait = false;
+                nextMenuEntry = MC_M_GF05;
+                *pCommand = MC_C_GO_TO_GAME;
+            }
+            break;
+        case MC_M_GF04_L:
+            pMCard->wait = 1;
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_GF04) == true) {
+                pMCard->wait = false;
+                prevMenuEntry = MC_M_NONE;
+                nextMenuEntry = MC_M_NONE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_GF04_S:
+            pMCard->wait = 1;
+            prevMenuEntry = menuEntry;
+            nextMenuEntry = menuEntry;
+            if (simulatorDrawErrorMessageWait(S_M_CARD_GF04) == true) {
+                pMCard->wait = false;
+                prevMenuEntry = MC_M_NONE;
+                nextMenuEntry = MC_M_NONE;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_GF05:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_GF05) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        case MC_M_GF06:
+            if (simulatorDrawErrorMessageWait(S_M_CARD_GF06) == true) {
+                yes = false;
+                nextMenuEntry = MC_M_LD07;
+                *pCommand = MC_C_CONTINUE;
+            }
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+#endif
 
 // matches but data doesn't
 #ifndef NON_MATCHING
@@ -496,4 +1009,99 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardStore.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardUpdate.s")
+bool mcardUpdate(void) {
+    s32 j;
+    s32 i;
+    s32 toggle;
+    MemCardCommand command;
+    s32 prevIndex;
+    s32 index;
+    s32 counter;
+
+    command = MC_C_NONE;
+    mCard.saveToggle = true;
+    mcardOpenDuringGame(&mCard);
+
+    if (mCard.saveToggle == true) {
+        for (i = 0; i < (u32)(mCard.file.game.size + 8187) / 8188; i++) {
+            mCard.file.game.writtenBlocks[i] = 1;
+        }
+
+        prevIndex = 100;
+        counter = 0;
+        while (true) {
+            if (!simulatorTestReset(false, false, false, false)) {
+                return false;
+            }
+
+            mcardStore(&mCard);
+
+            if (mCard.writeStatus != 0) {
+                mCard.accessType = 2;
+                simulatorPrepareMessage(S_M_CARD_SV09);
+                simulatorDrawMCardText();
+            }
+
+            toggle = 0;
+            j = (u32)(mCard.file.game.size + 8187) / 8188;
+            for (i = 0; i < (u32)j; i++) {
+                if (mCard.file.game.writtenBlocks[i] == 1) {
+                    index = i;
+                    toggle = true;
+                    break;
+                }
+            }
+
+            if (toggle != 1) {
+                if (mCard.file.game.writtenConfig == 1) {
+                    index = j;
+                    toggle = true;
+                } else if (mCard.file.changedDate == true) {
+                    toggle = true;
+                    index = j + 1;
+                }
+            }
+
+            if (mCard.writeStatus == 0) {
+                if (index == prevIndex) {
+                    counter += 1;
+                } else {
+                    counter = 0;
+                }
+                prevIndex = index;
+            }
+
+            if (counter == 3) {
+                mCard.isBroken = true;
+                counter = 0;
+                mCard.saveToggle = false;
+            }
+
+            if (mCard.saveToggle == false) {
+                mCard.saveToggle = true;
+                mcardOpenDuringGame(&mCard);
+            }
+
+            if (toggle != true && mCard.writeStatus == 0 || mCard.saveToggle != true) {
+                if (!simulatorTestReset(false, false, true, false)) {
+                    return false;
+                }
+
+                if (gpSystem->eTypeROM == SRT_ZELDA1 && mCard.saveToggle == true) {
+                    do {
+                        mcardMenu(&mCard, MC_M_SV12, &command);
+                        if (!simulatorTestReset(false, false, true, false)) {
+                            return false;
+                        }
+                    } while (mCard.wait == true);
+                }
+                break;
+            }
+        }
+
+        bWrite2Card = false;
+        mCard.accessType = 0;
+    }
+
+    return true;
+}

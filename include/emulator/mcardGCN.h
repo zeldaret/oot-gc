@@ -44,7 +44,7 @@ typedef enum MemCardError {
     MC_E_UNKNOWN = 25,
 } MemCardError;
 
-typedef enum __anon_0x1A5F0 {
+typedef enum MemCardMessage {
     MC_M_NONE = 0,
     MC_M_LD01 = 1,
     MC_M_LD02 = 2,
@@ -95,7 +95,7 @@ typedef enum __anon_0x1A5F0 {
     MC_M_GF04_S = 47,
     MC_M_GF05 = 48,
     MC_M_GF06 = 49,
-} __anon_0x1A5F0;
+} MemCardMessage;
 
 // __anon_0x1AC1A
 typedef struct __anon_0x1AC1A {
@@ -170,7 +170,7 @@ bool mcardFileErase(MemCard* pMCard);
 bool mcardGameErase(MemCard* pMCard, s32 index);
 bool mcardGameRelease(MemCard* pMCard);
 bool mcardRead(MemCard* pMCard, s32 address, s32 size, char* data);
-bool mcardMenu(MemCard* pMCard, __anon_0x1A5F0 menuEntry, MemCardCommand* pCommand);
+bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pCommand);
 bool mcardOpenError(MemCard* pMCard, MemCardCommand* pCommand);
 bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand);
 bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data);

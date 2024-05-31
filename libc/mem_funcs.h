@@ -6,6 +6,7 @@
 
 #define __min_bytes_for_long_copy 32
 
+INIT int memcmp(void*, const void*, size_t);
 INIT void* memcpy(void* dst, const void* src, size_t n);
 INIT void* memset(void* dst, int val, size_t n);
 INIT void __fill_mem(void* dst, int val, size_t n);
