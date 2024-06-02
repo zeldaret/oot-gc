@@ -20,7 +20,6 @@
 
 typedef void (*VIRetraceCallback)(u32 retraceCount);
 typedef void (*VIPositionCallback)(s16 x, s16 y);
-typedef void (*VIRetraceCallback)(u32 retraceCount);
 
 typedef enum VITVMode {
     VI_TVMODE_NTSC_INT = 0, // VI_TVMODE(VI_NTSC, VI_INTERLACE)

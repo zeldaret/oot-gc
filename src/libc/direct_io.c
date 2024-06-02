@@ -1,5 +1,9 @@
 #include "buffer_io.h"
 #include "stdio.h"
+#include "string.h"
+#include "wchar.h"
+
+extern void __stdio_atexit(void);
 
 size_t fwrite(const void* buffer, size_t memb_size, size_t num_memb, FILE* file) {
     unsigned char* cur_ptr;

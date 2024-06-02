@@ -2,7 +2,7 @@
 #include "dolphin/exi.h"
 #include "dolphin/types.h"
 
-int __init_console() {
+int __init_console(void) {
     static bool initialized;
     int res = 0;
 
