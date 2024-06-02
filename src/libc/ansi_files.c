@@ -1,8 +1,5 @@
+#include "console_io.h"
 #include "stdio.h"
-
-extern int __read_console(__file_handle file, unsigned char* buff, size_t* count, __idle_proc idle_proc);
-extern int __write_console(__file_handle file, unsigned char* buff, size_t* count, __idle_proc idle_proc);
-extern int __close_console(__file_handle file);
 
 FILE __files[3] = {
     {

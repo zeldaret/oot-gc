@@ -13,9 +13,7 @@
 
 typedef unsigned long __file_handle;
 typedef unsigned long fpos_t;
-#ifndef __cplusplus
 typedef unsigned short wchar_t;
-#endif
 
 enum __io_modes {
     __read = 1,

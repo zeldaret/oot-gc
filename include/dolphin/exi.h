@@ -82,4 +82,8 @@ char* EXIGetTypeString(u32 type);
 u32 EXIClearInterrupts(s32 chan, bool exi, bool tc, bool ext);
 s32 EXIGetID(s32 channel, u32 device, u32* id);
 
+s32 InitializeUART(u32 baudRate);
+s32 ReadUARTN(void* buf, u32 length);
+s32 WriteUARTN(const void* buf, u32 len);
+
 #endif
