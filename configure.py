@@ -455,7 +455,7 @@ config.libs = [
         "runtime",
         [
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "runtime/__mem.c"),
-            Object(NonMatching, "runtime/__va_arg.c"),
+            Object(MatchingFor("mq-j", "ce-j", "ce-u"), "runtime/__va_arg.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "runtime/global_destructor_chain.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "runtime/runtime.c"),
         ]
