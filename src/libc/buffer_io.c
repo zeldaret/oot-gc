@@ -1,5 +1,12 @@
 #include "buffer_io.h"
 
+void __prep_buffer(FILE* file) {
+    file->buffer_ptr = file->buffer;
+    file->buffer_len = file->buffer_size;
+    file->buffer_len -= file->position & file->buffer_alignment;
+    file->buffer_pos = file->position;
+}
+
 int __flush_buffer(FILE* file, size_t* bytes_flushed) {
     size_t len;
     int res;
@@ -20,16 +27,6 @@ int __flush_buffer(FILE* file, size_t* bytes_flushed) {
         file->position += file->buffer_len;
     }
 
-    file->buffer_ptr = file->buffer;
-    file->buffer_len = file->buffer_size;
-    file->buffer_len -= file->position & file->buffer_alignment;
-    file->buffer_pos = file->position;
+    __prep_buffer(file);
     return 0;
-}
-
-void __prep_buffer(FILE* file) {
-    file->buffer_ptr = file->buffer;
-    file->buffer_len = file->buffer_size;
-    file->buffer_len -= file->position & file->buffer_alignment;
-    file->buffer_pos = file->position;
 }
