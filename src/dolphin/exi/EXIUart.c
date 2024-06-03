@@ -81,7 +81,7 @@ void __OSEnableBarnacle(s32 chan, u32 dev) {
     }
 }
 
-u32 InitializeUART(u32 baudRate) {
+s32 InitializeUART(u32 baudRate) {
     if (BarnacleEnabled == EXI_MAGIC) {
         return 0;
     }
@@ -97,7 +97,7 @@ u32 InitializeUART(u32 baudRate) {
     }
 }
 
-u32 ReadUARTN(void* bytes, unsigned long length) { return 4; }
+s32 ReadUARTN(void* buf, u32 len) { return 4; }
 
 static inline int QueueLength(void) {
     u32 cmd;
@@ -117,7 +117,7 @@ static inline int QueueLength(void) {
     return 16 - (int)((cmd >> 24) & 0xFF);
 }
 
-u32 WriteUARTN(const void* buf, unsigned long len) {
+s32 WriteUARTN(const void* buf, u32 len) {
     u32 cmd;
 #if VERSION > MQ_E
     bool interrupt;
@@ -126,7 +126,7 @@ u32 WriteUARTN(const void* buf, unsigned long len) {
     long xLen;
     char* ptr;
     bool locked;
-    u32 error;
+    s32 error;
 
     if (Enabled != EXI_MAGIC) {
         return 2;

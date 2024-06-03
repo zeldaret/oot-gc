@@ -87,4 +87,4 @@ void __sinit_trigf_c(void) {
     __four_over_pi_m1[3] = tmp_float[3];
 }
 
-CTORS extern void* const __sinit_trigf_c_reference = __sinit_trigf_c;
+CTORS void* const __sinit_trigf_c_reference = __sinit_trigf_c;

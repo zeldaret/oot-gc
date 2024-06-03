@@ -19,9 +19,7 @@ typedef struct DVDQueue DVDQueue;
 
 typedef void (*DVDCallback)(s32 result, DVDFileInfo* fileInfo);
 typedef void (*DVDCBCallback)(s32 result, DVDCommandBlock* block);
-typedef void (*DVDLowCallback)(u32 intType);
 typedef void (*DVDDoneReadCallback)(s32, DVDFileInfo*);
-typedef void (*DVDOptionalCommandChecker)(DVDCommandBlock* block, DVDLowCallback callback);
 
 struct DVDCommandBlock {
     /* 0x00 */ DVDCommandBlock* next;
