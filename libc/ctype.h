@@ -40,7 +40,7 @@ static inline int isupper(int c) { return __ctype_map[__zero_fill(c)] & __upper_
 static inline int isxdigit(int c) { return __ctype_map[__zero_fill(c)] & __hex_digit; }
 static inline int iswblank(int c) { return ((c == (int)L' ') || (c == (int)L'\t')); }
 
-int toupper(int c);
 int tolower(int c);
+int toupper(int c);
 
 #endif

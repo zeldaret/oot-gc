@@ -192,11 +192,11 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "objects": objects,
     }
 
-def GenericLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+def GenericLib(lib_name: str, cflags: List[str], objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
         "mw_version": "GC/1.2.5",
-        "cflags": cflags_base,
+        "cflags": cflags,
         "host": False,
         "objects": objects,
     }
@@ -427,6 +427,7 @@ config.libs = [
     ),
     GenericLib(
         "metrotrk",
+        cflags_base,
         [
             Object(NonMatching, "metrotrk/mainloop.c"),
             Object(NonMatching, "metrotrk/nubevent.c"),
@@ -453,6 +454,7 @@ config.libs = [
     ),
     GenericLib(
         "runtime",
+        [*cflags_base, "-inline deferred"],
         [
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "runtime/__mem.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "runtime/__va_arg.c"),
@@ -462,6 +464,7 @@ config.libs = [
     ),
     GenericLib(
         "libc",
+        [*cflags_base, "-inline deferred"],
         [
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "libc/abort_exit.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "libc/ansi_files.c"),
@@ -500,6 +503,7 @@ config.libs = [
     ),
     GenericLib(
         "debugger",
+        cflags_base,
         [
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "debugger/AmcExi2Stubs.c"),
             Object(NonMatching, "debugger/DebuggerDriver.c"),

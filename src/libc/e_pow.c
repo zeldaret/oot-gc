@@ -40,6 +40,10 @@ static const f64 ivln2 = 1.44269504088896338700e+00; /* 0x3FF71547, 0x652B82FE =
 static const f64 ivln2_h = 1.44269502162933349609e+00; /* 0x3FF71547, 0x60000000 =24b 1/ln2*/
 static const f64 ivln2_l = 1.92596299112661746887e-08; /* 0x3E54AE0B, 0xF85DDF44 =1/ln2 tail*/
 
+#pragma dont_inline on
+f64 scalbn(f64 x, int n) { return ldexp(x, n); }
+#pragma dont_inline reset
+
 f64 __ieee754_pow(f64 x, f64 y) {
     f64 z, ax, z_h, z_l, p_h, p_l;
     f64 y1, t1, t2, r, s, t, u, v, w;
@@ -299,5 +303,3 @@ f64 __ieee754_pow(f64 x, f64 y) {
     }
     return s * z;
 }
-
-f64 scalbn(f64 x, int n) { return ldexp(x, n); }
