@@ -1286,21 +1286,20 @@ bool DVDCheckDisk() {
         case 8:
             coverReg = __DIRegs[1];
 
+            if (((coverReg >> 2) & 1) || (coverReg & 1)) {
+                result = false;
+            } else {
+
 #if IS_MQ
-            if (((coverReg >> 2) & 1) || (coverReg & 1)) {
-                result = false;
-            } else {
                 result = true;
-            }
 #else
-            if (((coverReg >> 2) & 1) || (coverReg & 1)) {
-                result = false;
-            } else if (ResumeFromHere != 0) {
-                result = false;
-            } else {
-                result = true;
-            }
+                if (ResumeFromHere != 0) {
+                    result = false;
+                } else {
+                    result = true;
+                }
 #endif
+            }
     }
 
     OSRestoreInterrupts(enabled);

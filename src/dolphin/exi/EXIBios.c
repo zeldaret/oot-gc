@@ -200,21 +200,17 @@ bool EXISync(s32 chan) {
             if (exi->state & STATE_SELECTED) {
                 CompleteTransfer(chan);
 
-#if IS_MQ
-                if (__OSGetDIConfig() != 0xFF || exi->immLen != 4 ||
-                    (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
-                    (REG(chan, 4) != EXI_USB_ADAPTER && REG(chan, 4) != EXI_IS_VIEWER && REG(chan, 4) != 0x04220001) ||
-                    __OSDeviceCode == 0x8200) {
-                    rc = true;
-                }
-#else
-                if (__OSGetDIConfig() != 0xFF || ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV) ||
+                if (__OSGetDIConfig() != 0xFF ||
+
+#if IS_CE
+                    ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV) ||
+#endif
+
                     exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
                     (REG(chan, 4) != EXI_USB_ADAPTER && REG(chan, 4) != EXI_IS_VIEWER && REG(chan, 4) != 0x04220001) ||
                     __OSDeviceCode == 0x8200) {
                     rc = true;
                 }
-#endif
             }
 
             OSRestoreInterrupts(enabled);

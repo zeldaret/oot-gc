@@ -165,8 +165,6 @@ cflags_base = [
     "-sym on",
     "-i include",
     "-i libc",
-    # TODO: remove and use VERSION instead
-    "-DDOLPHIN_REV=2003",
 ]
 
 if config.non_matching:

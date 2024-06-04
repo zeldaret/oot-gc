@@ -23,15 +23,12 @@ bool __CARDCompareFileName(CARDDir* entry, const char* fileName) {
     return false;
 }
 
+s32 __CARDAccess(CARDControl* card, CARDDir* entry) {
 #if IS_MQ
 #define DISK_ID card->diskID
 #else
-#define DISK_ID diskID
-#endif
-
-s32 __CARDAccess(CARDControl* card, CARDDir* entry) {
-#if IS_CE
     const DVDDiskID* diskID = card->diskID;
+#define DISK_ID diskID
 #endif
 
     if (entry->gameName[0] == 0xFF) {

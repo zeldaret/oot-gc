@@ -47,21 +47,17 @@ void DEMOLoadFont(enum _GXTexMapID texMap, enum _GXTexMtx texMtx, DMTexFlt texFl
 void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
     Mtx44 pMtx;
     Mtx mMtx;
+    f32 top = 0.0f;
 
-#if IS_MQ
-    C_MTXOrtho(pMtx, 0.0f, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
-#else
-    f32 top;
-
+#if IS_CE
     if (DEMOGetRenderModeObj()->field_rendering && !VIGetNextField()) {
         top = -0.667f;
     } else {
         top = 0.0f;
     }
-
-    C_MTXOrtho(pMtx, top, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
 #endif
 
+    C_MTXOrtho(pMtx, top, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
     GXSetProjection(pMtx, GX_ORTHOGRAPHIC);
     PSMTXIdentity(mMtx);
     GXLoadPosMtxImm(mMtx, GX_PNMTX0);
