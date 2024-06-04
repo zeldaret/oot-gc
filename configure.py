@@ -279,7 +279,7 @@ config.libs = [
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSMessage.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSMemory.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSMutex.c"),
-            Object(MatchingFor("ce-j", "ce-u"), "dolphin/os/OSReboot.c"),
+            Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSReboot.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSReset.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSResetSW.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/os/OSRtc.c"),

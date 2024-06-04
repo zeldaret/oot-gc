@@ -29,7 +29,11 @@ extern u32 OS_RESET_CODE AT_ADDRESS(0x800030F0);
 extern u8 OS_REBOOT_BOOL AT_ADDRESS(0x800030E2); // unknown function, set to true by __OSReboot
 extern s32 __OSIsGcam;
 
+#if IS_MQ
+static volatile bool Prepared = false;
+#else
 static bool Prepared = false;
+#endif
 
 void __OSDoHotReset(int);
 
