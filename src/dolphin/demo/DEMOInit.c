@@ -58,7 +58,8 @@ static void __DEMOInitRenderMode(GXRenderModeObj* mode) {
                 rmode = &GXMpal480IntDf;
                 break;
             default:
-                OSPanic("DEMOInit.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 462 : 470, "DEMOInit: invalid TV format\n");
+                OSPanic("DEMOInit.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 462 : 470,
+                        "DEMOInit: invalid TV format\n");
                 break;
         }
         GXAdjustForOverscan(rmode, &rmodeobj, 0, 0x10);

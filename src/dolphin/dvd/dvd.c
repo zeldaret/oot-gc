@@ -107,7 +107,8 @@ static void stateReadingFST() {
     LastState = (stateFunc)stateReadingFST;
 
     if (bootInfo->FSTMaxLength < BB2.FSTLength) {
-        OSPanic("dvd.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 630 : 650, "DVDChangeDisk(): FST in the new disc is too big.   ");
+        OSPanic("dvd.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 630 : 650,
+                "DVDChangeDisk(): FST in the new disc is too big.   ");
     }
 
     DVDLowRead(bootInfo->FSTLocation, OSRoundUp32B(BB2.FSTLength), BB2.FSTPosition, cbForStateReadingFST);
@@ -1301,7 +1302,6 @@ bool DVDCheckDisk() {
                 result = true;
             }
 #endif
-
     }
 
     OSRestoreInterrupts(enabled);

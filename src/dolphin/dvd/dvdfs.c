@@ -247,11 +247,13 @@ bool DVDGetCurrentDir(char* path, u32 maxlen) { return DVDConvertEntrynumToPath(
 bool DVDReadAsyncPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, DVDCallback callback, s32 prio) {
 
     if (!((0 <= offset) && (offset < fileInfo->length))) {
-        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 742 : 746, "DVDReadAsync(): specified area is out of the file  ");
+        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 742 : 746,
+                "DVDReadAsync(): specified area is out of the file  ");
     }
 
     if (!((0 <= offset + length) && (offset + length < fileInfo->length + DVD_MIN_TRANSFER_SIZE))) {
-        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 748 : 752, "DVDReadAsync(): specified area is out of the file  ");
+        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 748 : 752,
+                "DVDReadAsync(): specified area is out of the file  ");
     }
 
     fileInfo->callback = callback;
@@ -277,11 +279,13 @@ s32 DVDReadPrio(DVDFileInfo* fileInfo, void* addr, s32 length, s32 offset, s32 p
     s32 retVal;
 
     if (!((0 <= offset) && (offset < fileInfo->length))) {
-        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 812 : 816, "DVDRead(): specified area is out of the file  ");
+        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 812 : 816,
+                "DVDRead(): specified area is out of the file  ");
     }
 
     if (!((0 <= offset + length) && (offset + length < fileInfo->length + DVD_MIN_TRANSFER_SIZE))) {
-        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 818 : 822, "DVDRead(): specified area is out of the file  ");
+        OSPanic("dvdfs.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 818 : 822,
+                "DVDRead(): specified area is out of the file  ");
     }
 
     block = &(fileInfo->cb);

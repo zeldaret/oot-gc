@@ -201,14 +201,15 @@ bool EXISync(s32 chan) {
                 CompleteTransfer(chan);
 
 #if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
-                if (__OSGetDIConfig() != 0xFF || exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
+                if (__OSGetDIConfig() != 0xFF || exi->immLen != 4 ||
+                    (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
                     (REG(chan, 4) != EXI_USB_ADAPTER && REG(chan, 4) != EXI_IS_VIEWER && REG(chan, 4) != 0x04220001) ||
                     __OSDeviceCode == 0x8200) {
                     rc = true;
                 }
 #else
-                if (__OSGetDIConfig() != 0xFF || ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV)
-                    || exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
+                if (__OSGetDIConfig() != 0xFF || ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV) ||
+                    exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
                     (REG(chan, 4) != EXI_USB_ADAPTER && REG(chan, 4) != EXI_IS_VIEWER && REG(chan, 4) != 0x04220001) ||
                     __OSDeviceCode == 0x8200) {
                     rc = true;
@@ -574,7 +575,6 @@ void EXIInit(void) {
 
     OSRegisterVersion(__EXIVersion);
 #endif
-
 }
 
 bool EXILock(s32 chan, u32 dev, EXICallback unlockedCallback) {

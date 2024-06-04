@@ -371,7 +371,6 @@ void OSInit(void) {
                 OSReport("%08x\n", inputConsoleType);
                 break;
 #endif
-
         }
 
         // report memory size

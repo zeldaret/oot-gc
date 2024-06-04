@@ -34,36 +34,34 @@ static bool Prepared = false;
 void __OSDoHotReset(int);
 
 #if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
-static void ReadApploader(void *addr, long length, long offset)
-{
+static void ReadApploader(void* addr, long length, long offset) {
     DVDCommandBlock block;
 
     while (!Prepared) {};
 
     DVDReadAbsAsyncForBS(&block, addr, length, offset + 0x2440, NULL);
-    
-    while(1)
-    {
+
+    while (1) {
         switch (block.state) {
-        case 0:
-            return;
-        case 1:
-            break;
-        case -1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-            __OSDoHotReset(UNK_817FFFFC);
-            break;
-        default:
-            break;
+            case 0:
+                return;
+            case 1:
+                break;
+            case -1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                __OSDoHotReset(UNK_817FFFFC);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -171,7 +169,7 @@ void __OSReboot(u32 resetCode, u32 bootDol) {
     numBytes = OSRoundUp32B(Header.rebootSize);
 
 #if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
-    ReadApploader((void *)(OS_BOOTROM_ADDR), numBytes, offset);
+    ReadApploader((void*)(OS_BOOTROM_ADDR), numBytes, offset);
 #else
     DVDReadAbsAsyncPrio(&dvdCmd3, (void*)(OS_BOOTROM_ADDR), numBytes, offset + 0x2440, NULL, 0);
     time = OSGetTime();
