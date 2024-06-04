@@ -120,7 +120,7 @@ static inline int QueueLength(void) {
 s32 WriteUARTN(const void* buf, u32 len) {
     u32 cmd;
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     bool interrupt;
 #endif
 
@@ -134,14 +134,14 @@ s32 WriteUARTN(const void* buf, u32 len) {
         return 2;
     }
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     interrupt = OSDisableInterrupts();
 #endif
 
     locked = EXILock(Chan, Dev, 0);
     if (!locked) {
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
         OSRestoreInterrupts(interrupt);
 #endif
 
@@ -191,7 +191,7 @@ s32 WriteUARTN(const void* buf, u32 len) {
 
     EXIUnlock(Chan);
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     OSRestoreInterrupts(interrupt);
 #endif
 

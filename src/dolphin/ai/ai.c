@@ -2,7 +2,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 char* __AIVersion = "<< Dolphin SDK - AI\trelease build: Sep  5 2002 05:34:25 (0x2301) >>";
 #else
 char* __AIVersion = "<< Dolphin SDK - AI\trelease build: Apr 17 2003 12:33:54 (0x2301) >>";

@@ -18,7 +18,7 @@ extern void __OSInitSram(void);
 extern void __OSInitAudioSystem(void);
 extern void EnableMetroTRKInterrupts(void);
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Sep  5 2002 05:32:39 (0x2301) >>";
 #else
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Jul 23 2003 11:27:16 (0x2301) >>";
@@ -208,7 +208,7 @@ static void InquiryCallback(s32 result, DVDCommandBlock* block) {
     }
 }
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 #define HI_MASK 0xFFFF0000
 #define LO_MASK 0x0000FFFF
 #else
@@ -238,7 +238,7 @@ void OSInit(void) {
         OSDisableInterrupts();
 
 // set some PPC things
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
         PPCMtmmcr0(0);
         PPCMtmmcr1(0);
         PPCMtpmc1(0);
@@ -312,7 +312,7 @@ void OSInit(void) {
         }
 
 // begin OS reporting
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
         OSReport("\nDolphin OS $Revision: 58 $.\n");
         OSReport("Kernel built : %s %s\n", "Sep  5 2002", "05:32:39");
 #else
@@ -339,7 +339,7 @@ void OSInit(void) {
                 OSReport("Retail %d\n", inputConsoleType);
                 break;
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
             default:
 #else
             case OS_CONSOLE_DEVELOPMENT:
@@ -366,7 +366,7 @@ void OSInit(void) {
                 }
                 break;
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
             default: // if none of the above, just report the info we have
                 OSReport("%08x\n", inputConsoleType);
                 break;
@@ -641,7 +641,7 @@ void __OSPSInit(void) {
         li      r3, 0
         mtspr   GQR0, r3
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
         mtspr   GQR1, r3
         mtspr   GQR2, r3
         mtspr   GQR3, r3

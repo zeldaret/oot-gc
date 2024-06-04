@@ -48,7 +48,7 @@ void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
     Mtx44 pMtx;
     Mtx mMtx;
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     C_MTXOrtho(pMtx, 0.0f, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
 #else
     f32 top;

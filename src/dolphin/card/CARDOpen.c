@@ -23,14 +23,14 @@ bool __CARDCompareFileName(CARDDir* entry, const char* fileName) {
     return false;
 }
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 #define DISK_ID card->diskID
 #else
 #define DISK_ID diskID
 #endif
 
 s32 __CARDAccess(CARDControl* card, CARDDir* entry) {
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     const DVDDiskID* diskID = card->diskID;
 #endif
 
@@ -46,7 +46,7 @@ s32 __CARDAccess(CARDControl* card, CARDDir* entry) {
     return CARD_RESULT_NOPERM;
 }
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 s32 __CARDIsPublic(CARDDir* entry) {
     if (entry->gameName[0] == 0xFF) {
         return CARD_RESULT_NOFILE;

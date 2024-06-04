@@ -5,7 +5,7 @@
 
 bool __DSP_init_flag;
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 #define BUILD_DAY "Sep  5 2002"
 #define BUILD_TIME "05:35:13"
 #else

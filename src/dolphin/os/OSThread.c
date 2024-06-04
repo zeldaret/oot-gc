@@ -264,12 +264,12 @@ static OSThread* SelectThread(bool yield) {
         }
     }
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     OSSetCurrentThread(NULL);
 #endif
 
     if (RunQueueBits == 0) {
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
         OSSetCurrentThread(NULL);
 #endif
 

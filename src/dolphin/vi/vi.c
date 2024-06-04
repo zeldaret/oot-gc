@@ -12,7 +12,7 @@
 #define ONES(x) ((1 << (x)) - 1)
 #define VI_BITMASK(index) (1ull << (63 - (index)))
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 const char* __VIVersion = "<< Dolphin SDK - VI\trelease build: Sep  5 2002 05:33:13 (0x2301) >>";
 #else
 const char* __VIVersion = "<< Dolphin SDK - VI\trelease build: Apr 17 2003 12:33:22 (0x2301) >>";
@@ -25,7 +25,7 @@ static OSThreadQueue retraceQueue;
 static VIRetraceCallback PreCB;
 static VIRetraceCallback PostCB;
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
 static VIPositionCallback PositionCallback;
 #endif
 
@@ -159,7 +159,7 @@ static void __VIRetraceHandler(__OSInterrupt interrupt, OSContext* context) {
 
     if ((inter & 4) || (inter & 8)) {
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
         OSClearContext(&exceptionContext);
         OSSetCurrentContext(&exceptionContext);
         if (PositionCallback) {
@@ -707,7 +707,7 @@ void VIConfigure(GXRenderModeObj* rm) {
             }
         default:
         panic:
-            OSPanic(__FILE__, VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 1884 : 1908,
+            OSPanic(__FILE__, IS_MQ ? 1884 : 1908,
                     "VIConfigure(): Tried to change mode from (%d) to (%d), which is forbidden\n", tvInBootrom,
                     tvInGame);
     }
@@ -847,7 +847,7 @@ static void GetCurrentDisplayPosition(u32* hct, u32* vct) {
 }
 
 static inline u32 getCurrentHalfLine(void) {
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     u32 hcount;
     u32 vcount0;
     u32 vcount;

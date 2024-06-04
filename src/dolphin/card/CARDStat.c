@@ -73,7 +73,7 @@ s32 CARDGetStatus(s32 channel, s32 fileNo, CARDStat* state) {
     dir = __CARDGetDirBlock(card);
     ent = &dir[fileNo];
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     result = __CARDAccess(card, ent);
 
     if (result == CARD_RESULT_NOPERM) {
@@ -120,7 +120,7 @@ s32 CARDSetStatusAsync(s32 channel, s32 fileNo, CARDStat* state, CARDCallback ca
     dir = __CARDGetDirBlock(card);
     ent = &dir[fileNo];
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     result = __CARDAccess(card, ent);
 #else
     result = __CARDIsWritable(card, ent);

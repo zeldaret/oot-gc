@@ -15,7 +15,7 @@ ASM void __init_hardware(void){
     mflr r31
     bl __OSPSInit
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     bl __OSFPRInit
 #endif
 

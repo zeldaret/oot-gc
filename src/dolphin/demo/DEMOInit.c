@@ -58,8 +58,7 @@ static void __DEMOInitRenderMode(GXRenderModeObj* mode) {
                 rmode = &GXMpal480IntDf;
                 break;
             default:
-                OSPanic("DEMOInit.c", VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E ? 462 : 470,
-                        "DEMOInit: invalid TV format\n");
+                OSPanic("DEMOInit.c", IS_MQ ? 462 : 470, "DEMOInit: invalid TV format\n");
                 break;
         }
         GXAdjustForOverscan(rmode, &rmodeobj, 0, 0x10);
@@ -72,7 +71,7 @@ static void __DEMOInitMem() {
     void* arenaHi = OSGetArenaHi();
     unsigned long fbSize = ((u16)(rmode->fbWidth + 15) & 0xFFF0) * rmode->xfbHeight * 2;
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     allocatedFrameBufferSize = fbSize;
 #endif
 
@@ -266,7 +265,7 @@ void __DEMODiagnoseHang(void) {
 
 void DEMOReInit(GXRenderModeObj* mode) {
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     s32 pad;
 #endif
 

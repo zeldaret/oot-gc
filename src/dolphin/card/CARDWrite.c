@@ -96,7 +96,7 @@ s32 CARDWriteAsync(CARDFileInfo* fileInfo, void* buffer, s32 length, s32 offset,
     dir = __CARDGetDirBlock(card);
     ent = &dir[fileInfo->fileNo];
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     result = __CARDAccess(card, ent);
 #else
     result = __CARDIsWritable(card, ent);

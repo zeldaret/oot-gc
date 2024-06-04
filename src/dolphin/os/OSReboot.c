@@ -33,7 +33,7 @@ static bool Prepared = false;
 
 void __OSDoHotReset(int);
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
 static void ReadApploader(void* addr, long length, long offset) {
     DVDCommandBlock block;
 
@@ -101,7 +101,7 @@ inline bool IsStreamEnabled(void) {
 void __OSReboot(u32 resetCode, u32 bootDol) {
     OSContext exceptionContext;
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     OSTime time;
     DVDCommandBlock dvdCmd;
     DVDCommandBlock dvdCmd2;
@@ -122,14 +122,14 @@ void __OSReboot(u32 resetCode, u32 bootDol) {
     DVDInit();
     DVDSetAutoInvalidation(true);
 
-#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
+#if IS_CE
     DVDResume();
     Prepared = false;
 #endif
 
     __DVDPrepareResetAsync(Callback);
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     if (!DVDCheckDisk()) {
         __OSDoHotReset(UNK_817FFFFC);
     }
@@ -139,7 +139,7 @@ void __OSReboot(u32 resetCode, u32 bootDol) {
     __OSUnmaskInterrupts(0x400);
     OSEnableInterrupts();
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     ReadApploader(&Header, 32, 0);
 #else
     time = OSGetTime();
@@ -168,7 +168,7 @@ void __OSReboot(u32 resetCode, u32 bootDol) {
     offset = Header.size + 0x20;
     numBytes = OSRoundUp32B(Header.rebootSize);
 
-#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#if IS_MQ
     ReadApploader((void*)(OS_BOOTROM_ADDR), numBytes, offset);
 #else
     DVDReadAbsAsyncPrio(&dvdCmd3, (void*)(OS_BOOTROM_ADDR), numBytes, offset + 0x2440, NULL, 0);
