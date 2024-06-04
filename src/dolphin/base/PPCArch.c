@@ -93,7 +93,7 @@ _spin:
 #endif // clang-format on
 }
 
-#if DOLPHIN_REV == 2003
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
 ASM void PPCMtmmcr0(register u32 newMmcr0){
 #ifdef __MWERKS__ // clang-format off
     mtspr MMCR0, newMmcr0

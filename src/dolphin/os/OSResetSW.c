@@ -1,7 +1,7 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
 //! TODO: find what's wrong with sbss on mq
 static bool bootThisDol;
 #endif
@@ -31,7 +31,7 @@ void __OSResetSWInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
     __PIRegs[0] = 2;
 }
 
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
 #define GAME_CHOICE_MASK 0x3F
 #else
 #define GAME_CHOICE_MASK 0x1F

@@ -18,7 +18,7 @@ extern void __OSInitSram(void);
 extern void __OSInitAudioSystem(void);
 extern void EnableMetroTRKInterrupts(void);
 
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Sep  5 2002 05:32:39 (0x2301) >>";
 #else
 static const char* __OSVersion = "<< Dolphin SDK - OS\trelease build: Jul 23 2003 11:27:16 (0x2301) >>";
@@ -208,7 +208,7 @@ static void InquiryCallback(s32 result, DVDCommandBlock* block) {
     }
 }
 
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
 #define HI_MASK 0xFFFF0000
 #define LO_MASK 0x0000FFFF
 #else
@@ -238,7 +238,7 @@ void OSInit(void) {
         OSDisableInterrupts();
 
 // set some PPC things
-#if DOLPHIN_REV == 2003
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
         PPCMtmmcr0(0);
         PPCMtmmcr1(0);
         PPCMtpmc1(0);
@@ -246,6 +246,7 @@ void OSInit(void) {
         PPCMtpmc3(0);
         PPCMtpmc4(0);
 #endif
+
         PPCDisableSpeculation();
         PPCSetFpNonIEEEMode();
 
@@ -282,11 +283,7 @@ void OSInit(void) {
         // if the input arenaLo is null, and debug flag location exists (and flag is < 2),
         //     set arenaLo to just past the end of the db stack
         if ((BootInfo->arenaLo == NULL) && (BI2DebugFlag != 0) && (*BI2DebugFlag < 2)) {
-#if DOLPHIN_REV == 2002
-            debugArenaLo = (char*)(((u32)_db_stack_end + 0x1F) & ~0x1F);
-#else
             debugArenaLo = (char*)(((u32)_stack_addr + 0x1F) & ~0x1F);
-#endif
             OSSetArenaLo(debugArenaLo);
         }
 
@@ -315,7 +312,7 @@ void OSInit(void) {
         }
 
 // begin OS reporting
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
         OSReport("\nDolphin OS $Revision: 58 $.\n");
         OSReport("Kernel built : %s %s\n", "Sep  5 2002", "05:32:39");
 #else
@@ -341,12 +338,14 @@ void OSInit(void) {
             case OS_CONSOLE_RETAIL:
                 OSReport("Retail %d\n", inputConsoleType);
                 break;
-#if DOLPHIN_REV == 2002
+
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
             default:
 #else
             case OS_CONSOLE_DEVELOPMENT:
             case OS_CONSOLE_TDEV:
 #endif
+
                 switch (inputConsoleType & LO_MASK) { // if "first" byte is 2, check "the rest"
                     case OS_CONSOLE_EMULATOR:
                         OSReport("Mac Emulator\n");
@@ -366,11 +365,13 @@ void OSInit(void) {
                         break;
                 }
                 break;
-#if DOLPHIN_REV == 2003
+
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
             default: // if none of the above, just report the info we have
                 OSReport("%08x\n", inputConsoleType);
                 break;
 #endif
+
         }
 
         // report memory size
@@ -640,7 +641,8 @@ void __OSPSInit(void) {
 #ifdef __MWERKS__ // clang-format off
         li      r3, 0
         mtspr   GQR0, r3
-    #if DOLPHIN_REV == 2003
+
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
         mtspr   GQR1, r3
         mtspr   GQR2, r3
         mtspr   GQR3, r3
@@ -648,7 +650,8 @@ void __OSPSInit(void) {
         mtspr   GQR5, r3
         mtspr   GQR6, r3
         mtspr   GQR7, r3
-    #endif
+#endif
+
 #endif // clang-format on
     }
 }

@@ -10,7 +10,7 @@ static GXFifoObj FifoObj;
 static GXData gxData;
 GXData* const __GXData = &gxData;
 
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
 char* __GXVersion = "<< Dolphin SDK - GX\trelease build: Sep  5 2002 05:33:28 (0x2301) >>";
 #else
 char* __GXVersion = "<< Dolphin SDK - GX\trelease build: Jul 23 2003 11:27:39 (0x2301) >>";

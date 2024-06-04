@@ -14,9 +14,11 @@ ASM void __init_hardware(void){
 
     mflr r31
     bl __OSPSInit
-    #if DOLPHIN_REV == 2003
+
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
     bl __OSFPRInit
-    #endif
+#endif
+
     bl __OSCacheInit
     mtlr r31
     blr

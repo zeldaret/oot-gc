@@ -264,12 +264,12 @@ static OSThread* SelectThread(bool yield) {
         }
     }
 
-#if DOLPHIN_REV == 2002
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
     OSSetCurrentThread(NULL);
 #endif
 
     if (RunQueueBits == 0) {
-#if DOLPHIN_REV == 2003
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
         OSSetCurrentThread(NULL);
 #endif
 
