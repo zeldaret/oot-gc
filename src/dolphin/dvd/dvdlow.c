@@ -412,7 +412,11 @@ WEAK DVDLowCallback DVDLowClearCallback() {
     __DIRegs[1] = 0;
     old = Callback;
     Callback = NULL;
+
+#if VERSION == CE_J || VERSION == CE_U || VERSION == CE_E
     WaitingCoverClose = false;
+#endif
+
     return old;
 }
 

@@ -47,6 +47,10 @@ void DEMOLoadFont(enum _GXTexMapID texMap, enum _GXTexMtx texMtx, DMTexFlt texFl
 void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
     Mtx44 pMtx;
     Mtx mMtx;
+
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+    C_MTXOrtho(pMtx, 0.0f, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
+#else
     f32 top;
 
     if (DEMOGetRenderModeObj()->field_rendering && !VIGetNextField()) {
@@ -56,6 +60,8 @@ void DEMOSetupScrnSpc(s32 width, s32 height, f32 depth) {
     }
 
     C_MTXOrtho(pMtx, top, (f32)height, 0.0f, (f32)width, 0.0f, -depth);
+#endif
+
     GXSetProjection(pMtx, GX_ORTHOGRAPHIC);
     PSMTXIdentity(mMtx);
     GXLoadPosMtxImm(mMtx, GX_PNMTX0);

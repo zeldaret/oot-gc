@@ -4,7 +4,16 @@
 #include "dolphin/types.h"
 
 bool __DSP_init_flag;
-char* __DSPVersion = "<< Dolphin SDK - DSP\trelease build: Apr 17 2003 12:34:16 (0x2301) >>";
+
+#if VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E
+#define BUILD_DAY "Sep  5 2002"
+#define BUILD_TIME "05:35:13"
+#else
+#define BUILD_DAY "Apr 17 2003"
+#define BUILD_TIME "12:34:16"
+#endif
+
+char* __DSPVersion = "<< Dolphin SDK - DSP\trelease build: " BUILD_DAY " " BUILD_TIME " (0x2301) >>";
 
 u32 DSPCheckMailToDSP() { return __DSPRegs[DSP_MAILBOX_IN_HI] >> 0xF & 1; }
 
@@ -20,7 +29,7 @@ void DSPSendMailToDSP(u32 mail) {
 void DSPInit() {
     u32 tmp;
     bool old;
-    __DSP_debug_printf("DSPInit(): Build Date: %s %s\n", "Apr 17 2003", "12:34:16");
+    __DSP_debug_printf("DSPInit(): Build Date: %s %s\n", BUILD_DAY, BUILD_TIME);
     if (__DSP_init_flag == true) {
         return;
     }

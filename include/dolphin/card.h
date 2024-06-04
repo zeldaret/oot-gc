@@ -244,6 +244,8 @@ CARDDir* __CARDGetDirBlock(CARDControl* card);
 u16 __CARDGetFontEncode();
 void __CARDCheckSum(void* ptr, int length, u16* checksum, u16* checksumInv);
 s32 __CARDGetFileNo(CARDControl* card, char* fileName, s32* outFileNo);
+s32 __CARDAccess(CARDControl* card, CARDDir* entry);
+s32 __CARDIsPublic(CARDDir* entry);
 
 void CARDInit(void);
 s32 CARDFormatAsync(s32 channel, CARDCallback callback);
