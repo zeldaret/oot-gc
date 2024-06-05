@@ -26,7 +26,7 @@ You will need the following dependencies:
 * wine (for macOS or non-x86 Linux)
 * clang-format (optional)
 
-#### Ubuntu/Debian
+#### Ubuntu/Debian/Windows (WSL)
 
 You can install the dependencies with the following commands:
 
@@ -44,9 +44,7 @@ brew install git ninja python3
 brew install --cask --no-quarantine gcenx/wine/wine-crossover
 ```
 
-#### Windows
-
-If you want to use WSL, follow the steps for Ubuntu/Debian above.
+#### Windows (Native)
 
 You will need the following dependencies:
 - [ninja.exe](https://github.com/ninja-build/ninja/releases/latest)

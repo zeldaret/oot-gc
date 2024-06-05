@@ -5,8 +5,7 @@ set -euo pipefail
 # bash scripts are executed with sh.exe, installed with Git for Windows, which is using MSYS
 OS=$(uname -o)
 PYTHON="python3"
-if [ "$OS" == "Msys" ]
-then 
+if [ "$OS" == "Msys" ]; then 
     PYTHON="python"
 fi
 
