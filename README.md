@@ -55,6 +55,8 @@ You need to add ``C:\Program Files\Git\bin`` to your system's PATH (not the user
 
 To get objdiff to work properly you also need to add the path to the folder containing ``ninja.exe`` to the system's PATH.
 
+If you git shows ``splits.txt`` and/or ``symbols.txt`` are modified for no reasons you might need to turn off CRLF. You can do that with ``git config --global core.autocrlf false``
+
 ### Instructions
 
 1. Clone the repo using `git clone https://github.com/zeldaret/oot-gc`.
