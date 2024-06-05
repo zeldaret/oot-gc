@@ -46,6 +46,8 @@ brew install --cask --no-quarantine gcenx/wine/wine-crossover
 
 #### Windows
 
+If you want to use WSL, follow the steps for Ubuntu/Debian above.
+
 You will need the following dependencies:
 - [ninja.exe](https://github.com/ninja-build/ninja/releases/latest)
 - Python (make sure to add it to your PATH during the installation)
