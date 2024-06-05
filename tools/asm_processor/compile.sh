@@ -2,6 +2,14 @@
 
 set -euo pipefail
 
+# bash scripts are executed with sh.exe, installed with Git for Windows, which is using MSYS
+OS=$(uname -o)
+PYTHON="python3"
+if [ "$OS" == "Msys" ]
+then 
+    PYTHON="python"
+fi
+
 CC="$1"
 shift
 AS="$1"
@@ -18,9 +26,9 @@ trap "rm -rf $TEMP" EXIT
 STEM=$(basename "$IN")
 STEM="${STEM%.*}"
 
-tools/asm_processor/asm_processor.py "$IN" > "$TEMP/$STEM.c"
+$PYTHON tools/asm_processor/asm_processor.py "$IN" > "$TEMP/$STEM.c"
 $CC "$TEMP/$STEM.c" -c -o "$TEMP"
-tools/asm_processor/asm_processor.py "$IN" --post-process "$TEMP/$STEM.o" --assembler "$AS" --asm-prelude include/macros.inc
+$PYTHON tools/asm_processor/asm_processor.py "$IN" --post-process "$TEMP/$STEM.o" --assembler "$AS" --asm-prelude include/macros.inc
 # Remove sections that don't work with our reloc hacks
 build/binutils/powerpc-eabi-objcopy --remove-section .mwcats.text --remove-section .comment "$TEMP/$STEM.o" "$OUT"
 # Copy depfile, replacing the first line with the correct input/output files
