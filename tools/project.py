@@ -422,6 +422,8 @@ def generate_build_ninja(
         mwcc_implicit.append(transform_dep)
         mwcc_sjis_implicit.append(transform_dep)
         mwcc_asm_processor_implicit.append(transform_dep)
+    else:
+        mwcc_asm_processor_cmd = "sh " + mwcc_asm_processor_cmd
 
     n.comment("Link ELF file")
     n.rule(
