@@ -1,11 +1,6 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
-#if IS_MQ
-//! TODO: find what's wrong with sbss on mq
-static bool bootThisDol;
-#endif
-
 static OSResetCallback ResetCallback;
 static bool Down;
 static bool LastState;

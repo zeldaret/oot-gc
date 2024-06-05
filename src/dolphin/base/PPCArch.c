@@ -94,6 +94,7 @@ _spin:
 }
 
 #if IS_CE
+
 ASM void PPCMtmmcr0(register u32 newMmcr0){
 #ifdef __MWERKS__ // clang-format off
     mtspr MMCR0, newMmcr0
@@ -129,6 +130,7 @@ ASM void PPCMtpmc4(register u32 newPmc4){
     mtspr PMC4, newPmc4
 #endif // clang-format on
 }
+
 #endif
 
 u32 PPCMffpscr(void) {

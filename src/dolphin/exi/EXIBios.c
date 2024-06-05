@@ -201,11 +201,9 @@ bool EXISync(s32 chan) {
                 CompleteTransfer(chan);
 
                 if (__OSGetDIConfig() != 0xFF ||
-
 #if IS_CE
                     ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV) ||
 #endif
-
                     exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
                     (REG(chan, 4) != EXI_USB_ADAPTER && REG(chan, 4) != EXI_IS_VIEWER && REG(chan, 4) != 0x04220001) ||
                     __OSDeviceCode == 0x8200) {
@@ -518,7 +516,6 @@ static void EXTIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
 }
 
 void EXIInit(void) {
-
 #if IS_MQ
     OSRegisterVersion(__EXIVersion);
 #else
@@ -734,10 +731,10 @@ static char unused10[] = "Broadband Adapter";
 
 static char unused11[] = "Stream Hanger";
 
-#if IS_CE
-static char unused12[] = "IS-DOL-VIEWER";
-#else
+#if IS_MQ
 static char unused12[] = "IS Viewer";
+#else
+static char unused12[] = "IS-DOL-VIEWER";
 #endif
 
 #pragma scheduling reset

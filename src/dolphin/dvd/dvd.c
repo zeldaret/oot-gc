@@ -568,14 +568,12 @@ void stateReady() {
 
     if (ResumeFromHere) {
         switch (ResumeFromHere) {
-
 #if IS_MQ
             case 1:
                 executing->state = 1;
                 stateCoverClosed();
                 break;
 #endif
-
             case 2:
                 executing->state = 11;
                 stateMotorStopped();
@@ -590,11 +588,9 @@ void stateReady() {
                 executing->state = 5;
                 stateMotorStopped();
                 break;
-
 #if IS_CE
             case 1:
 #endif
-
             case 7:
             case 6:
                 executing->state = 3;
@@ -1068,7 +1064,6 @@ void DVDResume() {
 bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     bool enabled;
     DVDLowCallback old;
-
 #if IS_CE
     u32 tmp;
 #endif
@@ -1289,7 +1284,6 @@ bool DVDCheckDisk() {
             if (((coverReg >> 2) & 1) || (coverReg & 1)) {
                 result = false;
             } else {
-
 #if IS_MQ
                 result = true;
 #else

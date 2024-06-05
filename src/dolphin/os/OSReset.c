@@ -14,10 +14,7 @@ typedef struct OSResetQueue {
 } OSResetQueue;
 
 static OSResetQueue ResetFunctionQueue;
-
-#if IS_CE
 static u32 bootThisDol;
-#endif
 
 void OSRegisterResetFunction(OSResetFunctionInfo* func) {
     OSResetFunctionInfo* tmp;

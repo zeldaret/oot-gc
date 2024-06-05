@@ -264,11 +264,9 @@ void __DEMODiagnoseHang(void) {
 }
 
 void DEMOReInit(GXRenderModeObj* mode) {
-
 #if IS_CE
     s32 pad;
 #endif
-
     GXFifoObj tmpobj;
     void* tmpFifo;
     GXFifoObj* realFifoObj;

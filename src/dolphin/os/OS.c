@@ -237,8 +237,8 @@ void OSInit(void) {
         __OSStartTime = __OSGetSystemTime();
         OSDisableInterrupts();
 
-// set some PPC things
 #if IS_CE
+        // set some PPC things
         PPCMtmmcr0(0);
         PPCMtmmcr1(0);
         PPCMtpmc1(0);
@@ -311,7 +311,6 @@ void OSInit(void) {
             __OSInitMemoryProtection();
         }
 
-// begin OS reporting
 #if IS_MQ
         OSReport("\nDolphin OS $Revision: 58 $.\n");
         OSReport("Kernel built : %s %s\n", "Sep  5 2002", "05:32:39");
@@ -319,6 +318,7 @@ void OSInit(void) {
         OSReport("\nDolphin OS\n");
         OSReport("Kernel built : %s %s\n", "Jul 23 2003", "11:27:16");
 #endif
+
         OSReport("Console Type : ");
 
         // this is a function in the same file, but it doesn't seem to match
@@ -338,14 +338,12 @@ void OSInit(void) {
             case OS_CONSOLE_RETAIL:
                 OSReport("Retail %d\n", inputConsoleType);
                 break;
-
 #if IS_MQ
             default:
 #else
             case OS_CONSOLE_DEVELOPMENT:
             case OS_CONSOLE_TDEV:
 #endif
-
                 switch (inputConsoleType & LO_MASK) { // if "first" byte is 2, check "the rest"
                     case OS_CONSOLE_EMULATOR:
                         OSReport("Mac Emulator\n");
@@ -365,7 +363,6 @@ void OSInit(void) {
                         break;
                 }
                 break;
-
 #if IS_CE
             default: // if none of the above, just report the info we have
                 OSReport("%08x\n", inputConsoleType);
