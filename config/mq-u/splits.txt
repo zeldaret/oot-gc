@@ -1,0 +1,224 @@
+Sections:
+	.init       type:code align:32
+	.text       type:code align:32
+	.ctors      type:rodata align:32
+	.dtors      type:rodata align:32
+	.rodata     type:rodata align:32
+	.data       type:data align:32
+	.bss        type:bss align:32
+	.sdata      type:data align:32
+	.sbss       type:bss align:32
+	.sdata2     type:rodata align:32
+
+emulator/xlCoreGCN.c:
+	.text       start:0x80005500 end:0x80005D64
+	.data       start:0x800D2B80 end:0x800DAC40
+	.bss        start:0x800F4780 end:0x800F4840
+	.sbss       start:0x80135D60 end:0x80135D80
+	.sdata2     start:0x801364A0 end:0x801364B8
+
+emulator/xlPostGCN.c:
+	.text       start:0x80005D64 end:0x80005DC8
+
+emulator/xlFileGCN.c:
+	.text       start:0x80005DC8 end:0x800061E0
+	.data       start:0x800DAC40 end:0x800DAC60
+	.sdata      start:0x801354C0 end:0x801354C8
+	.sbss       start:0x80135D80 end:0x80135D88
+
+emulator/xlList.c:
+	.text       start:0x800061E0 end:0x800065A8
+	.bss        start:0x800F4840 end:0x800F4850
+
+emulator/xlHeap.c:
+	.text       start:0x800065A8 end:0x80007B20
+	.bss        start:0x800F4850 end:0x800F4DE0
+	.sbss       start:0x80135D88 end:0x80135DA8
+
+emulator/xlObject.c:
+	.text       start:0x80007B20 end:0x80007EE0
+	.sbss       start:0x80135DA8 end:0x80135DB0
+
+emulator/simGCN.c:
+	.text       start:0x80007EE0 end:0x8000F738
+	.rodata     start:0x800D2440 end:0x800D2590
+	.data       start:0x800DAC60 end:0x800EABB0
+	.bss        start:0x800F4DE0 end:0x800F9F80
+	.sdata      start:0x801354C8 end:0x80135590
+	.sbss       start:0x80135DB0 end:0x80135DF0
+	.sdata2     start:0x801364B8 end:0x80136510
+
+emulator/movie.c:
+	.text       start:0x8000F738 end:0x8000F7FC
+	.data       start:0x800EABB0 end:0x800EABD0
+	.sbss       start:0x80135DF0 end:0x80135DF8
+
+emulator/THPPlayer.c:
+	.text       start:0x8000F7FC end:0x80010D08
+	.data       start:0x800EABD0 end:0x800EAE70
+	.bss        start:0x800F9F80 end:0x800FA6F0
+	.sdata      start:0x80135590 end:0x80135598
+	.sbss       start:0x80135DF8 end:0x80135E18
+	.sdata2     start:0x80136510 end:0x80136518
+
+emulator/THPAudioDecode.c:
+	.text       start:0x80010D08 end:0x800110A4
+	.data       start:0x800EAE70 end:0x800EAE98
+	.bss        start:0x800FA6F0 end:0x800FBA60
+	.sbss       start:0x80135E18 end:0x80135E20
+
+emulator/THPDraw.c:
+	.text       start:0x800110A4 end:0x800118A4
+	.sdata2     start:0x80136518 end:0x80136540
+
+emulator/THPRead.c:
+	.text       start:0x800118A4 end:0x80012E8C
+	.rodata     start:0x800D2590 end:0x800D2620
+	.data       start:0x800EAE98 end:0x800EAF08
+	.bss        start:0x800FBA60 end:0x800FCE90
+	.sbss       start:0x80135E20 end:0x80135E38
+	.sdata2     start:0x80136540 end:0x80136578
+
+emulator/THPVideoDecode.c:
+	.text       start:0x80012E8C end:0x800133AC
+	.data       start:0x800EAF08 end:0x800EAF30
+	.bss        start:0x800FCE90 end:0x800FE200
+	.sbss       start:0x80135E38 end:0x80135E40
+
+emulator/mcardGCN.c:
+	.text       start:0x800133AC end:0x8001C41C
+	.data       start:0x800EAF30 end:0x800EB1A8
+	.bss        start:0x800FE200 end:0x80108A20
+	.sdata      start:0x80135598 end:0x801355A0
+	.sbss       start:0x80135E40 end:0x80135E60
+
+emulator/codeGCN.c:
+	.text       start:0x8001C41C end:0x8001C470
+	.data       start:0x800EB1A8 end:0x800EB1B8
+	.sdata      start:0x801355A0 end:0x801355A8
+	.sbss       start:0x80135E60 end:0x80135E68
+
+emulator/soundGCN.c:
+	.text       start:0x8001C470 end:0x8001D324
+	.data       start:0x800EB1B8 end:0x800EB218
+	.bss        start:0x80108A20 end:0x80108E40
+	.sdata      start:0x801355A8 end:0x801355B8
+	.sdata2     start:0x80136578 end:0x801365A0
+
+emulator/frame.c:
+	.text       start:0x8001D324 end:0x8002C9EC
+	.rodata     start:0x800D2620 end:0x800D2660
+	.data       start:0x800EB218 end:0x800EBCE0
+	.bss        start:0x80108E40 end:0x80131180
+	.sdata      start:0x801355B8 end:0x80135640
+	.sbss       start:0x80135E68 end:0x80135EB8
+	.sdata2     start:0x801365A0 end:0x80136730
+
+emulator/system.c:
+	.text       start:0x8002C9EC end:0x80030EC0
+	.data       start:0x800EBCE0 end:0x800EC040
+	.bss        start:0x80131180 end:0x801312F8
+	.sdata      start:0x80135640 end:0x80135880
+	.sbss       start:0x80135EB8 end:0x80135EC0
+	.sdata2     start:0x80136730 end:0x80136740
+
+emulator/cpu.c:
+	.text       start:0x80030EC0 end:0x8006BEB8
+	.data       start:0x800EC040 end:0x800EE0A0
+	.bss        start:0x801312F8 end:0x801314F0
+	.sdata      start:0x80135880 end:0x80135A40
+	.sbss       start:0x80135EC0 end:0x80135F40
+	.sdata2     start:0x80136740 end:0x80136770
+
+emulator/pif.c:
+	.text       start:0x8006BEB8 end:0x8006CDE8
+	.data       start:0x800EE0A0 end:0x800EE0B0
+	.sdata      start:0x80135A40 end:0x80135A48
+
+emulator/ram.c:
+	.text       start:0x8006CDE8 end:0x8006D3FC
+	.data       start:0x800EE0B0 end:0x800EE2D0
+	.sdata      start:0x80135A48 end:0x80135A50
+
+emulator/rom.c:
+	.text       start:0x8006D3FC end:0x8006FF10
+	.data       start:0x800EE2D0 end:0x800EE928
+	.sdata      start:0x80135A50 end:0x80135A88
+	.sbss       start:0x80135F40 end:0x80135F50
+	.sdata2     start:0x80136770 end:0x801367A8
+
+emulator/rdp.c:
+	.text       start:0x8006FF10 end:0x80071620
+	.data       start:0x800EE928 end:0x800EEB98
+	.sdata      start:0x80135A88 end:0x80135A90
+	.sbss       start:0x80135F50 end:0x80135F68
+	.sdata2     start:0x801367A8 end:0x801367D8
+
+emulator/rdb.c:
+	.text       start:0x80071620 end:0x80071C08
+	.data       start:0x800EEB98 end:0x800EEC08
+	.sdata      start:0x80135A90 end:0x80135A98
+
+emulator/rsp.c:
+	.text       start:0x80071C08 end:0x8008D298
+	.data       start:0x800EEC08 end:0x800EF0B8
+	.sdata      start:0x80135A98 end:0x80135AC0
+	.sbss       start:0x80135F68 end:0x80135F90
+	.sdata2     start:0x801367D8 end:0x80136818
+
+emulator/mips.c:
+	.text       start:0x8008D298 end:0x8008D7D8
+	.data       start:0x800EF0B8 end:0x800EF130
+	.sdata      start:0x80135AC0 end:0x80135AC8
+
+emulator/disk.c:
+	.text       start:0x8008D7D8 end:0x8008DA6C
+	.data       start:0x800EF130 end:0x800EF140
+	.sdata      start:0x80135AC8 end:0x80135AD0
+
+emulator/flash.c:
+	.text       start:0x8008DA6C end:0x8008E188
+	.data       start:0x800EF140 end:0x800EF150
+	.sdata      start:0x80135AD0 end:0x80135AD8
+
+emulator/sram.c:
+	.text       start:0x8008E188 end:0x8008E4F8
+	.data       start:0x800EF150 end:0x800EF160
+	.sdata      start:0x80135AD8 end:0x80135AE0
+
+emulator/audio.c:
+	.text       start:0x8008E4F8 end:0x8008E8F0
+	.data       start:0x800EF160 end:0x800EF258
+	.sdata      start:0x80135AE0 end:0x80135AF0
+
+emulator/video.c:
+	.text       start:0x8008E8F0 end:0x8008EE70
+	.data       start:0x800EF258 end:0x800EF410
+	.sdata      start:0x80135AF0 end:0x80135AF8
+
+emulator/serial.c:
+	.text       start:0x8008EE70 end:0x8008F144
+	.data       start:0x800EF410 end:0x800EF4E8
+	.sdata      start:0x80135AF8 end:0x80135B00
+
+emulator/library.c:
+	.text       start:0x8008F144 end:0x800977EC
+	.data       start:0x800EF4E8 end:0x800F0998
+	.sdata      start:0x80135B00 end:0x80135B48
+	.sdata2     start:0x80136818 end:0x80136878
+
+emulator/peripheral.c:
+	.text       start:0x800977EC end:0x80097DEC
+	.data       start:0x800F0998 end:0x800F0B40
+
+emulator/_frameGCNcc.c:
+	.text       start:0x80097DEC end:0x800986F4
+	.data       start:0x800F0B40 end:0x800F0E48
+	.sdata      start:0x80135B48 end:0x80135BD8
+
+emulator/_buildtev.c:
+	.text       start:0x800986F4 end:0x8009BB0C
+	.data       start:0x800F0E48 end:0x800F1010
+	.bss        start:0x801314F0 end:0x801317C0
+	.sdata      start:0x80135BD8 end:0x80135BE8
+	.sdata2     start:0x80136878 end:0x80136880

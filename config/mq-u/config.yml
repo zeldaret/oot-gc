@@ -1,0 +1,33 @@
+# See config.example.yml for documentation.
+name: oot-gc
+object: orig/mq-u/main.dol
+hash: 1bd1d5e7c13dc94c2090d458c9e6706932e611a8
+symbols: config/mq-u/symbols.txt
+splits: config/mq-u/splits.txt
+mw_comment_version: 8
+
+extract:
+# xlCoreGCN.c
+- symbol: gTgPcTPL
+  header: gTgPcTPL.inc
+# simGCN.c
+- symbol: gcoverOpen
+  header: gcoverOpen.inc
+- symbol: gnoDisk
+  header: gnoDisk.inc
+- symbol: gretryErr
+  header: gretryErr.inc
+- symbol: gfatalErr
+  header: gfatalErr.inc
+- symbol: gwrongDisk
+  header: gwrongDisk.inc
+- symbol: greadingDisk
+  header: greadingDisk.inc
+- symbol: gbar
+  header: gbar.inc
+- symbol: gyes
+  header: gyes.inc
+- symbol: gno
+  header: gno.inc
+- symbol: gmesgOK
+  header: gmesgOK.inc
