@@ -27,9 +27,11 @@ void GXSetMisc(GXMiscToken token, u32 val) {
             gx->dlSaveContext = (val != 0);
             break;
 
+#if IS_CE
         case GX_MT_ABORT_WAIT_COPYOUT:
             gx->abtWaitPECopy = (val != 0);
             break;
+#endif
     }
 }
 
@@ -70,9 +72,11 @@ static inline void __GXAbortWaitPECopyDone(void) {
 }
 
 void __GXAbort(void) {
+#if IS_CE
     if (gx->abtWaitPECopy && GXGetGPFifo()) {
         __GXAbortWaitPECopyDone();
     }
+#endif
 
     __PIRegs[0x18 / 4] = 1;
     __GXAbortWait(200);

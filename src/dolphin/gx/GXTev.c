@@ -67,10 +67,10 @@ void GXSetTevColorIn(GXTevStageID stage, GXTevColorArg a, GXTevColorArg b, GXTev
 
     tevReg = gx->tevc[stage];
 
-    GX_SET_REG(tevReg, a, 16, 19);
-    GX_SET_REG(tevReg, b, 20, 23);
-    GX_SET_REG(tevReg, c, 24, 27);
-    GX_SET_REG(tevReg, d, 28, 31);
+    GX_SET_REG2(tevReg, a, 16, 19);
+    GX_SET_REG2(tevReg, b, 20, 23);
+    GX_SET_REG2(tevReg, c, 24, 27);
+    GX_SET_REG2(tevReg, d, 28, 31);
 
     GX_BP_LOAD_REG(tevReg);
 
@@ -83,10 +83,10 @@ void GXSetTevAlphaIn(GXTevStageID stage, GXTevAlphaArg a, GXTevAlphaArg b, GXTev
 
     tevReg = gx->teva[stage];
 
-    GX_SET_REG(tevReg, a, 16, 18);
-    GX_SET_REG(tevReg, b, 19, 21);
-    GX_SET_REG(tevReg, c, 22, 24);
-    GX_SET_REG(tevReg, d, 25, 27);
+    GX_SET_REG2(tevReg, a, 16, 18);
+    GX_SET_REG2(tevReg, b, 19, 21);
+    GX_SET_REG2(tevReg, c, 22, 24);
+    GX_SET_REG2(tevReg, d, 25, 27);
 
     GX_BP_LOAD_REG(tevReg);
 
@@ -99,18 +99,18 @@ void GXSetTevColorOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale 
     u32 tevReg;
 
     tevReg = gx->tevc[stage];
-    GX_SET_REG(tevReg, op & 1, 13, 13);
+    GX_SET_REG2(tevReg, op & 1, 13, 13);
 
     if (op <= 1) {
-        GX_SET_REG(tevReg, scale, 10, 11);
-        GX_SET_REG(tevReg, bias, 14, 15);
+        GX_SET_REG2(tevReg, scale, 10, 11);
+        GX_SET_REG2(tevReg, bias, 14, 15);
     } else {
-        GX_SET_REG(tevReg, (op >> 1) & 3, 10, 11);
-        GX_SET_REG(tevReg, 3, 14, 15);
+        GX_SET_REG2(tevReg, (op >> 1) & 3, 10, 11);
+        GX_SET_REG2(tevReg, 3, 14, 15);
     }
 
-    GX_SET_REG(tevReg, doClamp, 12, 12);
-    GX_SET_REG(tevReg, outReg, 8, 9);
+    GX_SET_REG2(tevReg, doClamp, 12, 12);
+    GX_SET_REG2(tevReg, outReg, 8, 9);
 
     GX_BP_LOAD_REG(tevReg);
 
@@ -123,18 +123,18 @@ void GXSetTevAlphaOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale 
     u32 tevReg;
 
     tevReg = gx->teva[stage];
-    GX_SET_REG(tevReg, op & 1, 13, 13);
+    GX_SET_REG2(tevReg, op & 1, 13, 13);
 
     if (op <= 1) {
-        GX_SET_REG(tevReg, scale, 10, 11);
-        GX_SET_REG(tevReg, bias, 14, 15);
+        GX_SET_REG2(tevReg, scale, 10, 11);
+        GX_SET_REG2(tevReg, bias, 14, 15);
     } else {
-        GX_SET_REG(tevReg, (op >> 1) & 3, 10, 11);
-        GX_SET_REG(tevReg, 3, 14, 15);
+        GX_SET_REG2(tevReg, (op >> 1) & 3, 10, 11);
+        GX_SET_REG2(tevReg, 3, 14, 15);
     }
 
-    GX_SET_REG(tevReg, doClamp, 12, 12);
-    GX_SET_REG(tevReg, outReg, 8, 9);
+    GX_SET_REG2(tevReg, doClamp, 12, 12);
+    GX_SET_REG2(tevReg, outReg, 8, 9);
 
     GX_BP_LOAD_REG(tevReg);
 
@@ -146,6 +146,15 @@ void GXSetTevColor(GXTevRegID reg, GXColor color) {
     u32 ra = 0;
     u32 bg = 0;
 
+#if IS_MQ
+    SET_REG_FIELD(ra, 11, 0, color.r);
+    SET_REG_FIELD(ra, 11, 12, color.a);
+    SET_REG_FIELD(ra, 8, 24, 224 + reg * 2);
+
+    SET_REG_FIELD(bg, 11, 0, color.b);
+    SET_REG_FIELD(bg, 11, 12, color.g);
+    SET_REG_FIELD(bg, 8, 24, 225 + reg * 2);
+#else
     GX_SET_REG(ra, color.r, 21, 31);
     GX_SET_REG(ra, color.a, 9, 19);
     GX_SET_REG(bg, color.b, 21, 31);
@@ -153,6 +162,7 @@ void GXSetTevColor(GXTevRegID reg, GXColor color) {
 
     GX_SET_REG(ra, 0xE0 + reg * 2, 0, 7);
     GX_SET_REG(bg, 0xE1 + reg * 2, 0, 7);
+#endif
 
     GX_BP_LOAD_REG(ra);
     GX_BP_LOAD_REG(bg);
@@ -166,14 +176,28 @@ void GXSetTevColorS10(GXTevRegID reg, GXColorS10 color) {
     u32 ra, bg;
 
     ra = 0;
+
+#if IS_MQ
+    SET_REG_FIELD(ra, 11, 0, color.r & 0x7FF);
+    SET_REG_FIELD(ra, 11, 12, color.a & 0x7FF);
+    SET_REG_FIELD(ra, 8, 24, 224 + reg * 2);
+#else
     GX_SET_REG(ra, color.r & 0x7FF, 21, 31);
     GX_SET_REG(ra, color.a & 0x7FF, 9, 19);
     GX_SET_REG(ra, GX_BP_REG_TEVREG0LO + reg * 2, 0, 7);
+#endif
 
     bg = 0;
+
+#if IS_MQ
+    SET_REG_FIELD(bg, 11, 0, color.b & 0x7FF);
+    SET_REG_FIELD(bg, 11, 12, color.g & 0x7FF);
+    SET_REG_FIELD(bg, 8, 24, 225 + reg * 2);
+#else
     GX_SET_REG(bg, color.b & 0x7FF, 21, 31);
     GX_SET_REG(bg, color.g & 0x7FF, 9, 19);
     GX_SET_REG(bg, GX_BP_REG_TEVREG0HI + reg * 2, 0, 7);
+#endif
 
     GX_BP_LOAD_REG(ra);
 

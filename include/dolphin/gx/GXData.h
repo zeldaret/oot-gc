@@ -126,8 +126,14 @@ typedef struct _GXData {
 
     // Texture regions
     /* 0x208 */ GXTexRegion TexRegions0[GX_MAX_TEXMAP];
+#if IS_MQ
+    /* 0x288 */ GXTexRegion TexRegionsCI[4];
+    /* 0x2C8 */ u32 nextTexRgn;
+    /* 0x2CC */ u32 nextTexRgnCI;
+#else
     /* 0x288 */ GXTexRegion TexRegions1[GX_MAX_TEXMAP];
     /* 0x308 */ GXTexRegion TexRegions2[GX_MAX_TEXMAP];
+#endif
 
     // Texture lookup table regions
     /* 0x388 */ GXTlutRegion TlutRegions[GX_MAX_TLUT_ALL];
@@ -148,8 +154,13 @@ typedef struct _GXData {
     /* 0x500 */ f32 vpHt;
     /* 0x504 */ f32 vpNearz;
     /* 0x508 */ f32 vpFarz;
+#if IS_MQ
+    u8 fgRange;
+    f32 fgSideX;
+#else
     /* 0x50C */ f32 zOffset;
     /* 0x510 */ f32 zScale;
+#endif
 
     // Texture regs
     /* 0x514 */ u32 tImage0[8];
@@ -166,7 +177,9 @@ typedef struct _GXData {
     // Flags
     /* 0x5A8 */ GXBool inDispList;
     /* 0x5A9 */ GXBool dlSaveContext;
+#if IS_CE
     /* 0x5AA */ GXBool abtWaitPECopy;
+#endif
     /* 0x5AB */ u8 dirtyVAT;
     /* 0x5AC */ u32 dirtyState;
 } GXData;
