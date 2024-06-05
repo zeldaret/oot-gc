@@ -286,13 +286,13 @@ u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes) {
 ASM void LCQueueWait(register u32 len) {
 #ifdef __MWERKS__ // clang-format off
     nofralloc
-#if DOLPHIN_REV == 2002
+#if IS_MQ
     addi len, len, 1
 #endif
 @1
     mfspr r4, HID2
     rlwinm r4, r4, 8, 28, 31
-#if DOLPHIN_REV == 2002
+#if IS_MQ
     cmpw cr2, r4, r3
     bge cr2, @1
 #else

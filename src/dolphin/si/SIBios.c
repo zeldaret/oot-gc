@@ -6,7 +6,7 @@ vu32 __SIRegs[64] AT_ADDRESS(0xCC006400);
 
 extern OSTime __OSGetSystemTime();
 
-#if VERSION <= MQ_E
+#if IS_MQ
 const char* __SIVersion = "<< Dolphin SDK - SI\trelease build: Sep  5 2002 05:33:08 (0x2301) >>";
 #else
 const char* __SIVersion = "<< Dolphin SDK - SI\trelease build: Apr 17 2003 12:33:19 (0x2301) >>";

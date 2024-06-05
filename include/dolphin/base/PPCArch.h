@@ -472,7 +472,7 @@ void PPCMtl2cr(u32 newL2cr);
 void PPCMtdec(u32 newDec);
 void PPCSync(void);
 void PPCHalt(void);
-#if DOLPHIN_REV == 2003
+#if IS_CE
 void PPCMtmmcr0(u32 newMmcr0);
 void PPCMtmmcr1(u32 newMmcr1);
 void PPCMtpmc1(u32 newPmc1);

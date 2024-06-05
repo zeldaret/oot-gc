@@ -10,7 +10,11 @@
 
 extern OSThreadQueue __DVDThreadQueue;
 
+#if IS_MQ
+const char* __DVDVersion = "<< Dolphin SDK - DVD\trelease build: Sep  5 2002 05:34:06 (0x2301) >>";
+#else
 const char* __DVDVersion = "<< Dolphin SDK - DVD\trelease build: Jul 23 2003 11:27:57 (0x2301) >>";
+#endif
 
 static void AlarmHandler(OSAlarm* alarm, OSContext* context);
 static void cbForCancelSync(s32 result, DVDCommandBlock* block);
@@ -103,7 +107,7 @@ static void stateReadingFST() {
     LastState = (stateFunc)stateReadingFST;
 
     if (bootInfo->FSTMaxLength < BB2.FSTLength) {
-        OSPanic("dvd.c", 650, "DVDChangeDisk(): FST in the new disc is too big.   ");
+        OSPanic("dvd.c", IS_MQ ? 630 : 650, "DVDChangeDisk(): FST in the new disc is too big.   ");
     }
 
     DVDLowRead(bootInfo->FSTLocation, OSRoundUp32B(BB2.FSTLength), BB2.FSTPosition, cbForStateReadingFST);
@@ -564,6 +568,12 @@ void stateReady() {
 
     if (ResumeFromHere) {
         switch (ResumeFromHere) {
+#if IS_MQ
+            case 1:
+                executing->state = 1;
+                stateCoverClosed();
+                break;
+#endif
             case 2:
                 executing->state = 11;
                 stateMotorStopped();
@@ -578,7 +588,9 @@ void stateReady() {
                 executing->state = 5;
                 stateMotorStopped();
                 break;
+#if IS_CE
             case 1:
+#endif
             case 7:
             case 6:
                 executing->state = 3;
@@ -1052,7 +1064,9 @@ void DVDResume() {
 bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     bool enabled;
     DVDLowCallback old;
+#if IS_CE
     u32 tmp;
+#endif
 
     enabled = OSDisableInterrupts();
 
@@ -1138,7 +1152,10 @@ bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
                 ResumeFromHere = 7;
             }
 
+#if IS_CE
             executing = &DummyCommandBlock;
+#endif
+
             block->state = 10;
             if (block->callback) {
                 (block->callback)(-3, block);
@@ -1263,12 +1280,19 @@ bool DVDCheckDisk() {
         case 0:
         case 8:
             coverReg = __DIRegs[1];
+
             if (((coverReg >> 2) & 1) || (coverReg & 1)) {
                 result = false;
-            } else if (ResumeFromHere != 0) {
-                result = false;
             } else {
+#if IS_MQ
                 result = true;
+#else
+                if (ResumeFromHere != 0) {
+                    result = false;
+                } else {
+                    result = true;
+                }
+#endif
             }
     }
 

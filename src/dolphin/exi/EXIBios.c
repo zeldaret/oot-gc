@@ -4,11 +4,10 @@
 
 #pragma scheduling off
 
-#if VERSION <= MQ_E
+#if IS_MQ
 static const char* __EXIVersion = "<< Dolphin SDK - EXI\trelease build: Sep  5 2002 05:33:04 (0x2301) >>";
 #else
 static const char* __EXIVersion = "<< Dolphin SDK - EXI\trelease build: Apr 17 2003 12:33:17 (0x2301) >>";
-
 static u32 IDSerialPort1;
 #endif
 
@@ -200,16 +199,18 @@ bool EXISync(s32 chan) {
             enabled = OSDisableInterrupts();
             if (exi->state & STATE_SELECTED) {
                 CompleteTransfer(chan);
-                if (__OSGetDIConfig() != 0xFF
-#if VERSION > MQ_E
-                    || ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV)
+
+                if (__OSGetDIConfig() != 0xFF ||
+#if IS_CE
+                    ((OSGetConsoleType() & 0xF0000000) == OS_CONSOLE_TDEV) ||
 #endif
-                    || exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
+                    exi->immLen != 4 || (REG(chan, 0) & 0x00000070) != (EXI_FREQ_1M << 4) ||
                     (REG(chan, 4) != EXI_USB_ADAPTER && REG(chan, 4) != EXI_IS_VIEWER && REG(chan, 4) != 0x04220001) ||
                     __OSDeviceCode == 0x8200) {
                     rc = true;
                 }
             }
+
             OSRestoreInterrupts(enabled);
             break;
         }
@@ -515,7 +516,7 @@ static void EXTIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
 }
 
 void EXIInit(void) {
-#if VERSION <= MQ_E
+#if IS_MQ
     OSRegisterVersion(__EXIVersion);
 #else
     u32 id;
@@ -544,7 +545,7 @@ void EXIInit(void) {
     __OSSetInterruptHandler(__OS_INTERRUPT_EXI_2_EXI, EXIIntrruptHandler);
     __OSSetInterruptHandler(__OS_INTERRUPT_EXI_2_TC, TCIntrruptHandler);
 
-#if VERSION <= MQ_E
+#if IS_MQ
     if ((OSGetConsoleType() & 0x10000000) != 0) {
         __EXIProbeStartTime[0] = __EXIProbeStartTime[1] = 0;
         Ecb[0].idTime = Ecb[1].idTime = 0;
@@ -642,7 +643,8 @@ s32 EXIGetID(s32 chan, u32 dev, u32* id) {
     u32 cmd;
     s32 startTime;
     bool enabled;
-#if VERSION > MQ_E
+
+#if IS_CE
     bool interrupt;
 
     if (chan == 0 && dev == 2 && IDSerialPort1) {
@@ -668,7 +670,7 @@ s32 EXIGetID(s32 chan, u32 dev, u32* id) {
         startTime = __EXIProbeStartTime[chan];
     }
 
-#if VERSION > MQ_E
+#if IS_CE
     interrupt = OSDisableInterrupts();
 #endif
 
@@ -686,7 +688,7 @@ s32 EXIGetID(s32 chan, u32 dev, u32* id) {
         EXIUnlock(chan);
     }
 
-#if VERSION > MQ_E
+#if IS_CE
     OSRestoreInterrupts(interrupt);
 #endif
 
@@ -714,7 +716,7 @@ static char unused2[] = "Memory Card 123";
 static char unused3[] = "Memory Card 251";
 static char unused4[] = "Memory Card 507";
 
-#if VERSION > MQ_E
+#if IS_CE
 static char unused5[] = "Memory Card 1019";
 static char unused6[] = "Memory Card 2043";
 #endif
@@ -723,16 +725,16 @@ static char unused7[] = "USB Adapter";
 static char unused8[] = "Net Card";
 static char unused9[] = "Artist Ether";
 
-#if VERSION > MQ_E
+#if IS_CE
 static char unused10[] = "Broadband Adapter";
 #endif
 
 static char unused11[] = "Stream Hanger";
 
-#if VERSION > MQ_E
-static char unused12[] = "IS-DOL-VIEWER";
-#else
+#if IS_MQ
 static char unused12[] = "IS Viewer";
+#else
+static char unused12[] = "IS-DOL-VIEWER";
 #endif
 
 #pragma scheduling reset

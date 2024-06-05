@@ -2,7 +2,11 @@
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
+#if IS_MQ
+char* __ARVersion = "<< Dolphin SDK - AR\trelease build: Sep  5 2002 05:34:27 (0x2301) >>";
+#else
 char* __ARVersion = "<< Dolphin SDK - AR\trelease build: Apr 17 2003 12:33:55 (0x2301) >>";
+#endif
 
 static ARCallback __AR_Callback;
 static u32 __AR_Size;

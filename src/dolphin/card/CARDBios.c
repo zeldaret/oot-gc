@@ -2,7 +2,11 @@
 #include "dolphin/exi.h"
 #include "dolphin/types.h"
 
+#if IS_MQ
+const char* __CARDVersion = "<< Dolphin SDK - CARD\trelease build: Sep  5 2002 05:35:20 (0x2301) >>";
+#else
 const char* __CARDVersion = "<< Dolphin SDK - CARD\trelease build: Apr 17 2003 12:34:19 (0x2301) >>";
+#endif
 
 CARDControl __CARDBlock[2];
 DVDDiskID __CARDDiskNone;

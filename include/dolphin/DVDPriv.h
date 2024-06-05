@@ -41,5 +41,6 @@ DVDCommandBlock* __DVDPopWaitingQueue(void);
 bool DVDInquiryAsync(DVDCommandBlock* block, DVDDriveInfo* info, DVDCBCallback callback);
 void __DVDPrepareResetAsync(DVDCBCallback callback);
 bool DVDReadAbsAsyncPrio(DVDCommandBlock* block, void* addr, s32 length, s32 offset, DVDCBCallback callback, s32 prio);
+bool __DVDLowTestAlarm(struct OSAlarm* alarm);
 
 #endif // _DOLPHIN_DVDPRIV

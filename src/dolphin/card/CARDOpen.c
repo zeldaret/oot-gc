@@ -24,19 +24,38 @@ bool __CARDCompareFileName(CARDDir* entry, const char* fileName) {
 }
 
 s32 __CARDAccess(CARDControl* card, CARDDir* entry) {
+#if IS_MQ
+#define DISK_ID card->diskID
+#else
     const DVDDiskID* diskID = card->diskID;
+#define DISK_ID diskID
+#endif
+
     if (entry->gameName[0] == 0xFF) {
         return CARD_RESULT_NOFILE;
     }
 
-    if (diskID == &__CARDDiskNone ||
-        (memcmp(entry->gameName, diskID->gameName, 4) == 0 && memcmp(entry->company, diskID->company, 2) == 0)) {
+    if (DISK_ID == &__CARDDiskNone ||
+        (memcmp(entry->gameName, DISK_ID->gameName, 4) == 0 && memcmp(entry->company, DISK_ID->company, 2) == 0)) {
         return CARD_RESULT_READY;
     }
 
     return CARD_RESULT_NOPERM;
 }
 
+#if IS_MQ
+s32 __CARDIsPublic(CARDDir* entry) {
+    if (entry->gameName[0] == 0xFF) {
+        return CARD_RESULT_NOFILE;
+    }
+
+    if (entry->permission & CARD_ATTR_PUBLIC) {
+        return CARD_RESULT_READY;
+    }
+
+    return CARD_RESULT_NOPERM;
+}
+#else
 s32 __CARDIsWritable(CARDControl* card, CARDDir* entry) {
     const DVDDiskID* diskID = card->diskID;
     s32 result;
@@ -68,6 +87,7 @@ s32 __CARDIsReadable(CARDControl* card, CARDDir* entry) {
 
     return result;
 }
+#endif
 
 s32 __CARDGetFileNo(CARDControl* card, char* fileName, s32* outFileNo) {
     CARDDir* dir;

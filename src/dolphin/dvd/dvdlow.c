@@ -412,7 +412,11 @@ WEAK DVDLowCallback DVDLowClearCallback() {
     __DIRegs[1] = 0;
     old = Callback;
     Callback = NULL;
+
+#if IS_CE
     WaitingCoverClose = false;
+#endif
+
     return old;
 }
 

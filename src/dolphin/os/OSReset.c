@@ -14,10 +14,7 @@ typedef struct OSResetQueue {
 } OSResetQueue;
 
 static OSResetQueue ResetFunctionQueue;
-
-#if DOLPHIN_REV == 2003
 static u32 bootThisDol;
-#endif
 
 void OSRegisterResetFunction(OSResetFunctionInfo* func) {
     OSResetFunctionInfo* tmp;
@@ -54,7 +51,7 @@ static inline bool __OSCallResetFunctions(u32 arg0) {
     OSResetFunctionInfo* iter;
     s32 retCode = 0;
 
-#if DOLPHIN_REV == 2002
+#if IS_MQ
     for (iter = ResetFunctionQueue.first; iter != NULL; iter = iter->next)
 #else
     for (iter = ResetFunctionQueue.first; iter != NULL && retCode == false; iter = iter->next)
@@ -145,7 +142,7 @@ void OSResetSystem(int reset, u32 resetCode, bool forceMenu) {
     OSDisableScheduler();
     __OSStopAudioSystem();
 
-#if DOLPHIN_REV == 2002
+#if IS_MQ
     if (reset == OS_RESET_SHUTDOWN)
 #else
     if (reset == OS_RESET_SHUTDOWN || (reset == OS_RESET_RESTART && bootThisDol != 0))
@@ -175,7 +172,7 @@ void OSResetSystem(int reset, u32 resetCode, bool forceMenu) {
     if (reset == OS_RESET_HOTRESET) {
         __OSDoHotReset(resetCode);
     } else if (reset == OS_RESET_RESTART) {
-#if DOLPHIN_REV == 2003
+#if IS_CE
         if ((*(u32*)OSPhysicalToCached(0x30EC) = bootThisDol) != 0) {
             __PADDisableRecalibration(disableRecalibration);
         }

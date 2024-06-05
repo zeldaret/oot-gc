@@ -72,7 +72,16 @@ s32 CARDGetStatus(s32 channel, s32 fileNo, CARDStat* state) {
 
     dir = __CARDGetDirBlock(card);
     ent = &dir[fileNo];
+
+#if IS_MQ
+    result = __CARDAccess(card, ent);
+
+    if (result == CARD_RESULT_NOPERM) {
+        result = __CARDIsPublic(ent);
+    }
+#else
     result = __CARDIsReadable(card, ent);
+#endif
 
     if (result >= 0) {
         memcpy(state->gameName, ent->gameName, sizeof(state->gameName));
@@ -110,7 +119,13 @@ s32 CARDSetStatusAsync(s32 channel, s32 fileNo, CARDStat* state, CARDCallback ca
 
     dir = __CARDGetDirBlock(card);
     ent = &dir[fileNo];
+
+#if IS_MQ
+    result = __CARDAccess(card, ent);
+#else
     result = __CARDIsWritable(card, ent);
+#endif
+
     if (result < 0) {
         return __CARDPutControlBlock(card, result);
     }

@@ -2,7 +2,11 @@
 #include "dolphin/os.h"
 #include "dolphin/si.h"
 
+#if IS_MQ
+const char* __PADVersion = "<< Dolphin SDK - PAD\trelease build: Sep  5 2002 05:34:02 (0x2301) >>";
+#else
 const char* __PADVersion = "<< Dolphin SDK - PAD\trelease build: Aug  6 2003 04:30:02 (0x2301) >>";
+#endif
 
 // forward declarations of static functions.
 static void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]);
@@ -67,7 +71,11 @@ static inline void PADDisable(s32 chan) {
     WaitingBits &= ~chanBit;
     CheckingBits &= ~chanBit;
     PendingBits &= ~chanBit;
+
+#if IS_CE
     BarrelBits &= ~chanBit;
+#endif
+
     OSSetWirelessID(chan, 0);
 
     OSRestoreInterrupts(enabled);
@@ -270,7 +278,10 @@ bool PADReset(u32 mask) {
     ResettingBits |= mask;
     diableBits = ResettingBits & EnabledBits;
     EnabledBits &= ~mask;
+
+#if IS_CE
     BarrelBits &= ~mask;
+#endif
 
     if (Spec == PAD_SPEC_4) {
         RecalibrateBits |= mask;
@@ -299,7 +310,10 @@ bool PADRecalibrate(u32 mask) {
     ResettingBits |= mask;
     disableBits = ResettingBits & EnabledBits;
     EnabledBits &= ~mask;
+
+#if IS_CE
     BarrelBits &= ~mask;
+#endif
 
     if (!(GameChoice & 0x40)) {
         RecalibrateBits |= mask;
@@ -457,9 +471,12 @@ void PADControlMotor(s32 chan, u32 command) {
         if (Spec < PAD_SPEC_2 && command == PAD_MOTOR_STOP_HARD) {
             command = PAD_MOTOR_STOP;
         }
+
+#if IS_CE
         if (GameChoice & 0x20) {
             command = PAD_MOTOR_STOP;
         }
+#endif
 
         SISetCommand(chan, (0x40 << 16) | AnalogMode | (command & (0x00000001 | 0x00000002)));
         SITransferCommands();
@@ -626,6 +643,7 @@ static void SPEC2_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     status->substickX -= 128;
     status->substickY -= 128;
 
+#if IS_CE
     type = Type[chan];
 
     if (((Type[chan] & 0xFFFF0000) == SI_GC_CONTROLLER) && ((status->button & 0x80) ^ 0x80)) {
@@ -638,6 +656,7 @@ static void SPEC2_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     } else {
         BarrelBits &= ~(PAD_CHAN0_BIT >> chan);
     }
+#endif
 
     origin = &Origin[chan];
     status->stickX = ClampS8(status->stickX, origin->stickX);
@@ -703,7 +722,13 @@ bool __PADDisableRecalibration(bool disable) {
 
     enabled = OSDisableInterrupts();
     prev = (GameChoice & 0x40) ? true : false;
+
+#if IS_MQ
+    GameChoice &= 0xBF;
+#else
     GameChoice &= ~0x40;
+#endif
+
     if (disable) {
         GameChoice |= 0x40;
     }
