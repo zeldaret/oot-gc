@@ -5,7 +5,10 @@
 #include "string.h"
 
 u16 Pad3Button AT_ADDRESS(PAD3_BUTTON_ADDR);
+
+#if IS_CE
 static u8 Debug_BBA = 0;
+#endif
 
 void __check_pad3(void) {
     if ((Pad3Button & 0x0EEF) == 0x0EEF) {

@@ -29,6 +29,10 @@
 #define MCARD_FILE_NAME "ZELDA"
 #define MCARD_COMMENT "ゼルダの伝説　時のオカリナＧＣ" // "The Legend of Zelda: Ocarina of Time GC"
 #define MCARD_FILE_SIZE (0xC000 * 2)
+#elif VERSION == MQ_U
+#define MCARD_FILE_NAME "ZELDA"
+#define MCARD_COMMENT "Zelda: Ocarina of Time"
+#define MCARD_FILE_SIZE (0xC000 * 2)
 #elif VERSION == CE_J
 #define MCARD_FILE_NAME "ZELDA1"
 #define MCARD_COMMENT "ゼルダコレクション" // "Zelda Collection"
@@ -219,7 +223,7 @@ static bool systemSetupGameRAM(System* pSystem) {
                 gnFlagZelda = 5;
                 break;
 
-#elif VERSION == CE_U
+#elif VERSION == MQ_U || VERSION == CE_U
             case 0x5CAC1CF7:
                 gnFlagZelda = 2;
                 break;
