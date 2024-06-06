@@ -508,7 +508,7 @@ dolphin/demo/DEMOStats.c:
 	.text       start:0x800B6808 end:0x800B7560
 	.data       start:0x800F3CD0 end:0x800F3E28
 	.sdata      start:0x80135CF8 end:0x80135D00
-	.sbss       start:0x80136238 end:0x801362B8
+	.sbss       start:0x80136238 end:0x801362A0
 	.sdata2     start:0x80136998 end:0x801369A8
 
 metrotrk/mem_TRK.c:
@@ -521,19 +521,19 @@ dolphin/ai/ai.c:
 	.text       start:0x800B7560 end:0x800B7E80
 	.data       start:0x800F3E28 end:0x800F3E70
 	.sdata      start:0x80135D00 end:0x80135D08
-	.sbss       start:0x801362B8 end:0x801362E4
+	.sbss       start:0x801362A0 end:0x801362E0
 
 dolphin/ar/ar.c:
 	.text       start:0x800B7E80 end:0x800B98E4
 	.data       start:0x800F3E70 end:0x800F3EB8
 	.sdata      start:0x80135D08 end:0x80135D10
-	.sbss       start:0x801362E4 end:0x80136308
+	.sbss       start:0x801362E0 end:0x80136300
 
 dolphin/dsp/dsp.c:
 	.text       start:0x800B98E4 end:0x800B9A64
 	.data       start:0x800F3EB8 end:0x800F3F38
 	.sdata      start:0x80135D10 end:0x80135D18
-	.sbss       start:0x80136308 end:0x8013630C
+	.sbss       start:0x80136300 end:0x80136308
 
 dolphin/dsp/dsp_debug.c:
 	.text       start:0x800B9A64 end:0x800B9AB4
@@ -541,14 +541,14 @@ dolphin/dsp/dsp_debug.c:
 dolphin/dsp/dsp_task.c:
 	.text       start:0x800B9AB4 end:0x800BA338
 	.data       start:0x800F3F38 end:0x800F4078
-	.sbss       start:0x8013630C end:0x80136330
+	.sbss       start:0x80136308 end:0x80136320
 
 dolphin/card/CARDBios.c:
 	.text       start:0x800BA338 end:0x800BB61C
 	.data       start:0x800F4078 end:0x800F40E0
 	.bss        start:0x80132FB0 end:0x80133200
 	.sdata      start:0x80135D18 end:0x80135D20
-	.sbss       start:0x80136330 end:0x80136340
+	.sbss       start:0x80136320 end:0x80136340
 
 dolphin/card/CARDUnlock.c:
 	.text       start:0x800BB61C end:0x800BC87C
