@@ -325,7 +325,7 @@ config.libs = [
     DolphinLib(
         "gx",
         [
-            Object(MatchingFor("ce-j", "ce-u"), "dolphin/gx/GXInit.c"),
+            Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/gx/GXInit.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/gx/GXFifo.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/gx/GXAttr.c"),
             Object(MatchingFor("mq-j", "ce-j", "ce-u"), "dolphin/gx/GXMisc.c"),
