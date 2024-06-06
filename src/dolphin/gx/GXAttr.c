@@ -2,11 +2,7 @@
 #include "dolphin/os.h"
 #include "intrinsics.h"
 
-#if IS_CE
-static inline
-#endif
-    void
-    __GXXfVtxSpecs(void) {
+void __GXXfVtxSpecs(void) {
     u32 normCount;
     u32 colorCount;
     u32 texCount;
