@@ -2,9 +2,25 @@
 #include "dolphin/os.h"
 #include "intrinsics.h"
 
-static inline void __GXXfVtxSpecs(void) {
-    u32 normCount, colorCount, texCount;
+void __GXXfVtxSpecs(void) {
+    u32 normCount;
+    u32 colorCount;
+    u32 texCount;
 
+#if IS_MQ
+    colorCount = GET_REG_FIELD(gx->vcdLo, 2, 13) ? 1 : 0;
+    colorCount += GET_REG_FIELD(gx->vcdLo, 2, 15) ? 1 : 0;
+    normCount = gx->hasBiNrms ? 2 : gx->hasNrms ? 1 : 0;
+    texCount = 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 0) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 2) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 4) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 6) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 8) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 10) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 12) ? 1 : 0;
+    texCount += GET_REG_FIELD(gx->vcdHi, 2, 14) ? 1 : 0;
+#else
     normCount = gx->hasBiNrms ? 2 : (gx->hasNrms ? 1 : 0);
 
     // Both fields in one access
@@ -14,11 +30,10 @@ static inline void __GXXfVtxSpecs(void) {
     // All 16 assigned bits in VCD_Hi
     texCount = 33 - __cntlzw((gx->vcdHi & (0xFfff << 0)) >> 0);
     texCount /= 2; // equivalent to /=2 and >>= 1
+#endif
 
     GX_XF_LOAD_REG(GX_XF_REG_INVERTEXSPEC, (colorCount) | (normCount << 2) | (texCount << 4));
     gx->bpSentNot = GX_TRUE;
-
-    return;
 }
 
 void GXSetVtxDesc(GXAttr attr, GXAttrType type) {
@@ -380,16 +395,16 @@ void GXSetTexCoordGen2(GXTexCoordID id, GXTexGenType type, GXTexGenSrc src, u32 
 
     switch (type) {
         case GX_TG_NRM:
-            GX_SET_REG(reg, GX_XF_TEX_PROJ_ST, GX_XF_TEX_PROJTYPE_ST, GX_XF_TEX_PROJTYPE_END); // 2x4 projection
-            GX_SET_REG(reg, inputForm, GX_XF_TEX_INPUTFORM_ST, GX_XF_TEX_INPUTFORM_END);
-            GX_SET_REG(reg, GX_TG_POS, GX_XF_TEX_TEXGENTYPE_ST, GX_XF_TEX_TEXGENTYPE_END);
-            GX_SET_REG(reg, inputRow, GX_XF_TEX_SRCROW_ST, GX_XF_TEX_SRCROW_END);
+            SET_REG_FIELD(reg, 1, 1, 0); // 3x4 projection
+            SET_REG_FIELD(reg, 1, 2, inputForm);
+            SET_REG_FIELD(reg, 3, 4, 0);
+            SET_REG_FIELD(reg, 5, 7, inputRow);
             break;
         case GX_TG_POS:
-            GX_SET_REG(reg, GX_XF_TEX_PROJ_STQ, GX_XF_TEX_PROJTYPE_ST, GX_XF_TEX_PROJTYPE_END); // 3x4 projection
-            GX_SET_REG(reg, inputForm, GX_XF_TEX_INPUTFORM_ST, GX_XF_TEX_INPUTFORM_END);
-            GX_SET_REG(reg, GX_TG_POS, GX_XF_TEX_TEXGENTYPE_ST, GX_XF_TEX_TEXGENTYPE_END);
-            GX_SET_REG(reg, inputRow, GX_XF_TEX_SRCROW_ST, GX_XF_TEX_SRCROW_END);
+            SET_REG_FIELD(reg, 1, 1, 1); // 3x4 projection
+            SET_REG_FIELD(reg, 1, 2, inputForm);
+            SET_REG_FIELD(reg, 3, 4, 0);
+            SET_REG_FIELD(reg, 5, 7, inputRow);
             break;
         case GX_TG_BUMP0:
         case GX_TG_BUMP1:
@@ -399,16 +414,16 @@ void GXSetTexCoordGen2(GXTexCoordID id, GXTexGenType type, GXTexGenSrc src, u32 
         case GX_TG_BUMP5:
         case GX_TG_BUMP6:
         case GX_TG_BUMP7:
-            GX_SET_REG(reg, GX_XF_TEX_PROJ_ST, GX_XF_TEX_PROJTYPE_ST, GX_XF_TEX_PROJTYPE_END); // 2x4 projection
-            GX_SET_REG(reg, inputForm, GX_XF_TEX_INPUTFORM_ST, GX_XF_TEX_INPUTFORM_END);
-            GX_SET_REG(reg, GX_TG_NRM, GX_XF_TEX_TEXGENTYPE_ST, GX_XF_TEX_TEXGENTYPE_END);
-            GX_SET_REG(reg, inputRow, GX_XF_TEX_SRCROW_ST, GX_XF_TEX_SRCROW_END);
-            GX_SET_REG(reg, src - GX_TG_TEXCOORD0, GX_XF_TEX_BUMPSRCTEX_ST, GX_XF_TEX_BUMPSRCTEX_END);
-            GX_SET_REG(reg, type - GX_TG_BUMP0, GX_XF_TEX_BUMPSRCLIGHT_ST, GX_XF_TEX_BUMPSRCLIGHT_END);
+            SET_REG_FIELD(reg, 1, 1, 0); // 2x4 projection
+            SET_REG_FIELD(reg, 1, 2, inputForm);
+            SET_REG_FIELD(reg, 3, 4, 1);
+            SET_REG_FIELD(reg, 5, 7, inputRow);
+            SET_REG_FIELD(reg, 3, 12, src - GX_TG_TEXCOORD0);
+            SET_REG_FIELD(reg, 3, 15, type - GX_TG_BUMP0);
             break;
         case GX_TG_SRTG:
-            GX_SET_REG(reg, GX_XF_TEX_PROJ_ST, GX_XF_TEX_PROJTYPE_ST, GX_XF_TEX_PROJTYPE_END); // 2x4 projection
-            GX_SET_REG(reg, inputForm, GX_XF_TEX_INPUTFORM_ST, GX_XF_TEX_INPUTFORM_END);
+            SET_REG_FIELD(reg, 1, 1, 0); // 2x4 projection
+            SET_REG_FIELD(reg, 1, 2, inputForm);
 
             if (src == GX_TG_COLOR0) {
                 GX_SET_REG(reg, GX_XF_TG_CLR0, GX_XF_TEX_TEXGENTYPE_ST, GX_XF_TEX_TEXGENTYPE_END);
@@ -459,7 +474,7 @@ void GXSetTexCoordGen2(GXTexCoordID id, GXTexGenType type, GXTexGenSrc src, u32 
 }
 
 void GXSetNumTexGens(u8 count) {
-    GX_SET_REG(gx->genMode, count, GX_BP_GENMODE_NUMTEX_ST, GX_BP_GENMODE_NUMTEX_END);
-    GX_XF_LOAD_REG(GX_XF_REG_NUMTEX, count);
+    SET_REG_FIELD(gx->genMode, 4, 0, count);
+    GX_WRITE_XF_REG(0x3F, count);
     gx->dirtyState |= GX_DIRTY_GEN_MODE;
 }

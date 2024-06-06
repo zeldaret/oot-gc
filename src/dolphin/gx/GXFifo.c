@@ -95,7 +95,13 @@ void GXSetCPUFifo(GXFifoObj* fifo) {
         GX_SET_PI_REG(3, (u32)((GXFifoObjPriv*)fifo)->base & 0x3FFFFFFF);
         GX_SET_PI_REG(4, (u32)((GXFifoObjPriv*)fifo)->end & 0x3FFFFFFF);
         reg = 0;
+
+#if IS_MQ
+        SET_REG_FIELD(reg, 21, 5, ((u32)((GXFifoObjPriv*)fifo)->writePtr & 0x3FFFFFFF) >> 5);
+#else
         GX_SET_REG(reg, (u32)((GXFifoObjPriv*)fifo)->writePtr >> 5, 6, 26);
+#endif
+
         GX_SET_REG(reg, 0, 5, 5);
         GX_SET_PI_REG(5, reg);
 
@@ -115,7 +121,13 @@ void GXSetCPUFifo(GXFifoObj* fifo) {
         GX_SET_PI_REG(3, (u32)((GXFifoObjPriv*)fifo)->base & 0x3FFFFFFF);
         GX_SET_PI_REG(4, (u32)((GXFifoObjPriv*)fifo)->end & 0x3FFFFFFF);
         reg = 0;
+
+#if IS_MQ
+        SET_REG_FIELD(reg, 21, 5, ((u32)((GXFifoObjPriv*)fifo)->writePtr & 0x3FFFFFFF) >> 5);
+#else
         GX_SET_REG(reg, (u32)((GXFifoObjPriv*)fifo)->writePtr >> 5, 6, 26);
+#endif
+
         GX_SET_REG(reg, 0, 5, 5);
         GX_SET_PI_REG(5, reg);
     }
@@ -221,14 +233,26 @@ void __GXFifoLink(u8 link) {
 }
 
 void __GXWriteFifoIntEnable(u32 p1, u32 p2) {
+#if IS_MQ
+    SET_REG_FIELD(gx->cpEnable, 1, 2, (u8)p1);
+    SET_REG_FIELD(gx->cpEnable, 1, 3, (u8)p2);
+#else
     GX_SET_REG(gx->cpEnable, p1, 29, 29);
     GX_SET_REG(gx->cpEnable, (u8)p2, 28, 28);
+#endif
+
     GX_SET_CP_REG(1, gx->cpEnable);
 }
 
 void __GXWriteFifoIntReset(u32 p1, u32 p2) {
+#if IS_MQ
+    SET_REG_FIELD(gx->cpClr, 1, 0, (u8)p1);
+    SET_REG_FIELD(gx->cpClr, 1, 1, (u8)p2);
+#else
     GX_SET_REG(gx->cpClr, p1, 31, 31);
     GX_SET_REG(gx->cpClr, (u8)p2, 30, 30);
+#endif
+
     GX_SET_CP_REG(2, gx->cpClr);
 }
 

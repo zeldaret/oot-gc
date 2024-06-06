@@ -2,11 +2,23 @@
 #include "dolphin/mtx.h"
 #include "dolphin/types.h"
 
+#define GX_WRITE_SOME_REG5(a, b) \
+    do {                         \
+        GX_WRITE_U8(a);          \
+        GX_WRITE_U32(b);         \
+    } while (0)
+
 void GXSetTevIndirect(GXTevStageID tevStage, GXIndTexStageID texStage, GXIndTexFormat texFmt, GXIndTexBiasSel biasSel,
                       GXIndTexMtxID mtxId, GXIndTexWrap wrapS, GXIndTexWrap wrapT, u8 addPrev, u8 utcLod,
                       GXIndTexAlphaSel alphaSel) {
     u32 field = 0;
+
+#if IS_MQ
+#define STAGE tevStage + 0x10
+#else
     const u32 stage = tevStage + 0x10;
+#define STAGE stage
+#endif
 
     GX_SET_REG(field, texStage, GX_BP_INDTEV_STAGE_ST, GX_BP_INDTEV_STAGE_END);
     GX_SET_REG(field, texFmt, GX_BP_INDTEV_FMT_ST, GX_BP_INDTEV_FMT_END);
@@ -17,10 +29,12 @@ void GXSetTevIndirect(GXTevStageID tevStage, GXIndTexStageID texStage, GXIndTexF
     GX_SET_REG(field, wrapT, GX_BP_INDTEV_WRAPT_ST, GX_BP_INDTEV_WRAPT_END);
     GX_SET_REG(field, utcLod, GX_BP_INDTEV_UNMODTEXCOORD_ST, GX_BP_INDTEV_UNMODTEXCOORD_END);
     GX_SET_REG(field, addPrev, GX_BP_INDTEV_ADDPREV_ST, GX_BP_INDTEV_ADDPREV_END);
-    GX_SET_REG(field, stage, 0, 7);
+    GX_SET_REG(field, STAGE, 0, 7);
 
     GX_BP_LOAD_REG(field);
     gx->bpSentNot = GX_FALSE;
+
+    NO_INLINE();
 }
 
 void GXSetIndTexCoordScale(GXIndTexStageID stage, GXIndTexScale scaleS, GXIndTexScale scaleT) {
@@ -72,7 +86,45 @@ void GXSetTevDirect(GXTevStageID stage) {
                      GX_ITBA_OFF);
 }
 
-void __GXUpdateBPMask() {}
+void __GXUpdateBPMask() {
+#if IS_MQ
+    u32 nIndStages;
+    u32 i;
+    u32 tmap;
+    u32 new_imask;
+    u32 nStages;
+    u32 new_dmask;
+
+    new_imask = 0;
+    new_dmask = 0;
+    nIndStages = GET_REG_FIELD(gx->genMode, 3, 16);
+
+    for (i = 0; i < nIndStages; i++) {
+        switch (i) {
+            case 0:
+                tmap = GET_REG_FIELD(gx->iref, 3, 0);
+                break;
+            case 1:
+                tmap = GET_REG_FIELD(gx->iref, 3, 6);
+                break;
+            case 2:
+                tmap = GET_REG_FIELD(gx->iref, 3, 12);
+                break;
+            case 3:
+                tmap = GET_REG_FIELD(gx->iref, 3, 18);
+                break;
+        }
+
+        new_imask |= 1 << tmap;
+    }
+
+    if ((u8)gx->bpMask != new_imask) {
+        SET_REG_FIELD(gx->bpMask, 8, 0, new_imask);
+        GX_WRITE_SOME_REG5(0x61, gx->bpMask);
+        gx->bpSentNot = GX_FALSE;
+    }
+#endif
+}
 
 void __GXSetIndirectMask(u32 mask) {
     GX_SET_REG(gx->bpMask, mask, GX_BP_INDIMASK_ST, GX_BP_INDIMASK_END);

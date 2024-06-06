@@ -36,30 +36,48 @@ void GXAdjustForOverscan(GXRenderModeObj* rIn, GXRenderModeObj* rOut, u16 horiz,
     u16 hor2 = horiz * 2;
     u16 ver2 = vert * 2;
     u32 verf;
+
+#if IS_CE
     u32 viTVMode;
+#endif
 
     if (rIn != rOut) {
         *rOut = *rIn;
     }
 
+#if IS_CE
     viTVMode = rIn->viTVmode & 3;
+#endif
+
     rOut->fbWidth = rIn->fbWidth - hor2;
     verf = rIn->efbHeight;
     rOut->efbHeight = verf - ((ver2 * verf) / rIn->xfbHeight);
 
+#if IS_MQ
+    if (rIn->xFBmode == VI_XFBMODE_SF && (rIn->viTVmode & 2) != 2) {
+        rOut->xfbHeight = rIn->xfbHeight - vert;
+    } else {
+        rOut->xfbHeight = rIn->xfbHeight - ver2;
+    }
+#else
     if ((rIn->xFBmode == VI_XFBMODE_SF) && (viTVMode == 0)) {
         rOut->xfbHeight = rIn->xfbHeight - (ver2 / 2);
     } else {
         rOut->xfbHeight = rIn->xfbHeight - ver2;
     }
+#endif
 
     rOut->viWidth = rIn->viWidth - hor2;
 
+#if IS_MQ
+    rOut->viHeight = rIn->viHeight - ver2;
+#else
     if (viTVMode == 1) {
         rOut->viHeight = rIn->viHeight - (ver2 * 2);
     } else {
         rOut->viHeight = rIn->viHeight - ver2;
     }
+#endif
 
     rOut->viXOrigin = rIn->viXOrigin + horiz;
     rOut->viYOrigin = rIn->viYOrigin + vert;
@@ -241,21 +259,21 @@ u32 GXSetDispCopyYScale(f32 vertScale) {
 
 void GXSetCopyClear(GXColor clearColor, u32 clearZ) {
     u32 reg = 0;
-    GX_SET_REG(reg, clearColor.r, 24, 31);
-    GX_SET_REG(reg, clearColor.a, 16, 23);
-    GX_SET_REG(reg, 0x4F, 0, 7);
-    GX_BP_LOAD_REG(reg);
+    SET_REG_FIELD(reg, 8, 0, clearColor.r);
+    SET_REG_FIELD(reg, 8, 8, clearColor.a);
+    SET_REG_FIELD(reg, 8, 24, 0x4F);
+    GX_WRITE_RAS_REG(reg);
 
     reg = 0;
-    GX_SET_REG(reg, clearColor.b, 24, 31);
-    GX_SET_REG(reg, clearColor.g, 16, 23);
-    GX_SET_REG(reg, 0x50, 0, 7);
-    GX_BP_LOAD_REG(reg);
+    SET_REG_FIELD(reg, 8, 0, clearColor.b);
+    SET_REG_FIELD(reg, 8, 8, clearColor.g);
+    SET_REG_FIELD(reg, 8, 24, 0x50);
+    GX_WRITE_RAS_REG(reg);
 
     reg = 0;
-    GX_SET_REG(reg, clearZ, 8, 31);
-    GX_SET_REG(reg, 0x51, 0, 7);
-    GX_BP_LOAD_REG(reg);
+    SET_REG_FIELD(reg, 24, 0, clearZ);
+    SET_REG_FIELD(reg, 8, 24, 0x51);
+    GX_WRITE_RAS_REG(reg);
 
     gx->bpSentNot = GX_FALSE;
 }
@@ -326,15 +344,14 @@ void GXSetCopyFilter(GXBool useAA, u8 samplePattern[12][2], GXBool doVertFilt, u
         GX_SET_REG(unk2, vFilt[4], 26, 31);
         GX_SET_REG(unk2, vFilt[5], 20, 25);
         GX_SET_REG(unk2, vFilt[6], 14, 19);
-
     } else {
-        GX_SET_REG(unk1, 0, 26, 31);
-        GX_SET_REG(unk1, 0, 20, 25);
-        GX_SET_REG(unk1, 21, 14, 19);
-        GX_SET_REG(unk1, 22, 8, 13);
-        GX_SET_REG(unk2, 21, 26, 31);
-        GX_SET_REG(unk2, 0, 20, 25);
-        GX_SET_REG(unk2, 0, 14, 19);
+        SET_REG_FIELD(unk1, 6, 0, 0);
+        SET_REG_FIELD(unk1, 6, 6, 0);
+        SET_REG_FIELD(unk1, 6, 12, 21);
+        SET_REG_FIELD(unk1, 6, 18, 22);
+        SET_REG_FIELD(unk2, 6, 0, 21);
+        SET_REG_FIELD(unk2, 6, 6, 0);
+        SET_REG_FIELD(unk2, 6, 12, 0);
     }
 
     GX_BP_LOAD_REG(unk1);
@@ -348,25 +365,25 @@ void GXSetDispCopyGamma(GXGamma gamma) { GX_SET_REG(gx->cpDisp, gamma, 23, 24); 
 void GXCopyDisp(void* dest, GXBool doClear) {
     u32 reg;
     u32 newDest;
-    GXBool check;
+    GXBool changePeCtrl;
 
     if (doClear) {
         reg = gx->zmode;
-        GX_SET_REG(reg, 1, 31, 31);
-        GX_SET_REG(reg, 7, 28, 30);
+        SET_REG_FIELD(reg, 1, 0, 1);
+        SET_REG_FIELD(reg, 3, 1, 7);
         GX_BP_LOAD_REG(reg);
 
         reg = gx->cmode0;
-        GX_SET_REG(reg, 0, 31, 31);
-        GX_SET_REG(reg, 0, 30, 30);
+        SET_REG_FIELD(reg, 1, 0, 0);
+        SET_REG_FIELD(reg, 1, 1, 0);
         GX_BP_LOAD_REG(reg);
     }
 
-    check = GX_FALSE;
+    changePeCtrl = GX_FALSE;
     if ((doClear || (gx->peCtrl & 0x7) == 3) && (gx->peCtrl >> 6 & 0x1) == 1) {
-        check = GX_TRUE;
+        changePeCtrl = GX_TRUE;
         reg = gx->peCtrl;
-        GX_SET_REG(reg, 0, 25, 25);
+        SET_REG_FIELD(reg, 1, 6, 0);
         GX_BP_LOAD_REG(reg);
     }
 
@@ -390,7 +407,7 @@ void GXCopyDisp(void* dest, GXBool doClear) {
         GX_BP_LOAD_REG(gx->cmode0);
     }
 
-    if (check) {
+    if (changePeCtrl) {
         GX_BP_LOAD_REG(gx->peCtrl);
     }
 
@@ -405,13 +422,13 @@ void GXCopyTex(void* dest, GXBool doClear) {
 
     if (doClear) {
         reg = gx->zmode;
-        GX_SET_REG(reg, 1, 31, 31);
-        GX_SET_REG(reg, 7, 28, 30);
+        SET_REG_FIELD(reg, 1, 0, 1);
+        SET_REG_FIELD(reg, 3, 1, 7);
         GX_BP_LOAD_REG(reg);
 
         reg = gx->cmode0;
-        GX_SET_REG(reg, 0, 31, 31);
-        GX_SET_REG(reg, 0, 30, 30);
+        SET_REG_FIELD(reg, 1, 0, 0);
+        SET_REG_FIELD(reg, 1, 1, 0);
         GX_BP_LOAD_REG(reg);
     }
 
