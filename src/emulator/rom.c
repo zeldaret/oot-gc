@@ -574,7 +574,7 @@ static bool romCacheGame(Rom* pROM) {
             pROM->anOffsetBlock = ganOffsetBlock_URAZLJ;
             pROM->nCountOffsetBlocks = 0xC6;
         }
-#elif VERSION == CE_U
+#elif VERSION == MQ_U || VERSION == CE_U
         if (gnFlagZelda & 2) {
             if (bIsCZLE) {
                 pROM->anOffsetBlock = ganOffsetBlock_ZLE;
