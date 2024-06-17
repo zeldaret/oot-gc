@@ -69,10 +69,14 @@ To get objdiff to work properly you also need to add the path to the folder cont
   * `ce-e`: `zelda_PAL_093003.tgc`
 
   Then, extract the DOL file from the TGC archive and place it in the repo as `orig/<version>/main.dol`.
-  You can use [Dolphin](https://dolphin-emu.org) to perform both of these extraction steps:
-  right click on the file you want to extract from, select `Properties`, and go to the `Filesystem` tab.
 
-3. Run `python3 configure.py`. (Note: on Windows you might need to run ``python configure.py``.)
+  You can use [Dolphin](https://dolphin-emu.org) to perform both of these extraction steps:
+  first, right click on the `.iso` file, select "Properties", go to the "Filesystem" tab, find the correct
+  `.tgc` file, then right-click and select "Extract File..." and extract it to your games folder.
+  Then, right-click the extracted `.tgc` file in Dolphin, select "Properties", go to the "Filesystem" tab,
+  right-click the "Disc" and select "Extract System Data..." to extract the DOL file.
+
+3. Run `python3 configure.py` to generate the build. (Note: on Windows you might need to run ``python configure.py``.)
 
 4. Run `ninja` to build the `ce-j` version, or run `ninja <version>` to build another version.
 
