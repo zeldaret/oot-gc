@@ -100,13 +100,22 @@ args = parser.parse_args()
 ### Project configuration
 
 config = ProjectConfig()
-config.versions = [
+
+# Only configure versions for which main.dol exists
+ALL_VERSIONS = [
     "mq-j",
     "mq-u",
     "ce-j",
     "ce-u",
 ]
-config.default_version = "ce-j"
+config.versions = [
+    version
+    for version in ALL_VERSIONS
+    if (Path("orig") / version / "main.dol").exists()
+]
+if "ce-j" in config.versions:
+    config.default_version = "ce-j"
+
 config.warn_missing_config = True
 config.warn_missing_source = False
 config.progress_all = False
