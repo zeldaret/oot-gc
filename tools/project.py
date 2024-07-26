@@ -406,24 +406,31 @@ def generate_build_ninja(
     gnu_as_implicit = [binutils_implicit or gnu_as, dtk]
 
     # MWCC with asm_processor
-    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{sjiswrap} {mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
+    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd} {mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
     mwcc_asm_processor_implicit: List[Optional[Path]] = [
-        *mwcc_sjis_implicit,
+        *mwcc_implicit,
         binutils_implicit or gnu_as,
         Path("tools/asm_processor/compile.sh"),
         Path("tools/asm_processor/asm_processor.py"),
     ]
+
+    # MWCC with asm_processor and UTF-8 to Shift JIS wrapper
+    mwcc_asm_processor_sjis_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{sjiswrap} {mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
+    mwcc_asm_processor_sjis_implicit: List[Optional[Path]] = [*mwcc_asm_processor_implicit, sjiswrap]
 
     if os.name != "nt":
         transform_dep = config.tools_dir / "transform_dep.py"
         mwcc_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
         mwcc_sjis_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
         mwcc_asm_processor_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
+        mwcc_asm_processor_sjis_cmd += f" && $python {transform_dep} $basefile.d $basefile.d"
         mwcc_implicit.append(transform_dep)
         mwcc_sjis_implicit.append(transform_dep)
         mwcc_asm_processor_implicit.append(transform_dep)
+        mwcc_asm_processor_sjis_implicit.append(transform_dep)
     else:
         mwcc_asm_processor_cmd = "sh " + mwcc_asm_processor_cmd
+        mwcc_asm_processor_sjis_cmd = "sh " + mwcc_asm_processor_sjis_cmd
 
     n.comment("Link ELF file")
     n.rule(
@@ -463,10 +470,20 @@ def generate_build_ninja(
     )
     n.newline()
 
-    n.comment("MWCC build (with asm_processor and UTF-8 to Shift JIS wrapper)")
+    n.comment("MWCC build (with asm_processor)")
     n.rule(
         name="mwcc_asm_processor",
         command=mwcc_asm_processor_cmd,
+        description="MWCC $out",
+        depfile="$basefile.d",
+        deps="gcc",
+    )
+    n.newline()
+
+    n.comment("MWCC build (with asm_processor and UTF-8 to Shift JIS wrapper)")
+    n.rule(
+        name="mwcc_asm_processor_sjis",
+        command=mwcc_asm_processor_sjis_cmd,
         description="MWCC $out",
         depfile="$basefile.d",
         deps="gcc",
@@ -642,7 +659,7 @@ def generate_build_ninja(
             if options["asm_processor"]:
                 n.build(
                     outputs=src_obj_path,
-                    rule="mwcc_asm_processor",
+                    rule="mwcc_asm_processor_sjis" if shift_jis else "mwcc_asm_processor",
                     inputs=src_path,
                     variables={
                         "mw_version": Path(options["mw_version"]),
@@ -651,7 +668,7 @@ def generate_build_ninja(
                         "basedir": os.path.dirname(src_base_path),
                         "basefile": src_base_path,
                     },
-                    implicit=mwcc_asm_processor_implicit,
+                    implicit=mwcc_asm_processor_sjis_implicit if shift_jis else mwcc_asm_processor_implicit,
                 )
             else:
                 n.build(
