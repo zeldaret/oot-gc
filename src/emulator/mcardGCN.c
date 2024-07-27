@@ -144,22 +144,22 @@ bool mcardReInit(MemCard* pMCard) {
     pMCard->writeToggle = true;
 
     if (pMCard->writeBuffer != NULL) {
-        if (!xlHeapFree(&pMCard->writeBuffer)) {
+        if (!xlHeapFree((void**)&pMCard->writeBuffer)) {
             return false;
         }
     }
 
     if (pMCard->readBuffer != NULL) {
-        if (!xlHeapFree(&pMCard->readBuffer)) {
+        if (!xlHeapFree((void**)&pMCard->readBuffer)) {
             return false;
         }
     }
 
-    if (!xlHeapTake(&pMCard->writeBuffer, 0x2000 | 0x30000000)) {
+    if (!xlHeapTake((void**)&pMCard->writeBuffer, 0x2000 | 0x30000000)) {
         return false;
     }
 
-    if (!xlHeapTake(&pMCard->readBuffer, 0x2000 | 0x30000000)) {
+    if (!xlHeapTake((void**)&pMCard->readBuffer, 0x2000 | 0x30000000)) {
         return false;
     }
 
@@ -347,7 +347,7 @@ static inline bool mcardFileRelease(MemCard* pMCard) {
 
     if (!pMCard->bufferCreated) {
         if (pMCard->file.game.buffer != NULL) {
-            if (!xlHeapFree(&pMCard->file.game.buffer)) {
+            if (!xlHeapFree((void**)&pMCard->file.game.buffer)) {
                 return false;
             }
         }
@@ -356,7 +356,7 @@ static inline bool mcardFileRelease(MemCard* pMCard) {
         memset(&pMCard->file.game.configuration, 0, sizeof(s32));
     }
 
-    if ((pMCard->file.game.writtenBlocks == NULL) || xlHeapFree(&pMCard->file.game.writtenBlocks)) {
+    if ((pMCard->file.game.writtenBlocks == NULL) || xlHeapFree((void**)&pMCard->file.game.writtenBlocks)) {
         pMCard->file.game.writtenConfig = 0;
         pMCard->file.currentGame = 16;
     }
@@ -367,7 +367,7 @@ static inline bool mcardFileRelease(MemCard* pMCard) {
 bool mcardGameRelease(MemCard* pMCard) {
     if (pMCard->bufferCreated == 0) {
         if (pMCard->file.game.buffer != NULL) {
-            if (!xlHeapFree(&pMCard->file.game.buffer)) {
+            if (!xlHeapFree((void**)&pMCard->file.game.buffer)) {
                 return false;
             }
         }
@@ -377,7 +377,7 @@ bool mcardGameRelease(MemCard* pMCard) {
     }
 
     if (pMCard->file.game.writtenBlocks != NULL) {
-        if (!xlHeapFree(&pMCard->file.game.writtenBlocks)) {
+        if (!xlHeapFree((void**)&pMCard->file.game.writtenBlocks)) {
             return false;
         }
     }
