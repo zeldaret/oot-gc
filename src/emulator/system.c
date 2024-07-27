@@ -462,11 +462,11 @@ static bool systemSetupGameALL(System* pSystem) {
     pROM = SYSTEM_ROM(pSystem);
     pPIF = SYSTEM_PIF(pSystem);
 
-    if (!xlHeapTake(&mCard.saveIcon, gz_iconSize | 0x30000000)) {
+    if (!xlHeapTake((void**)&mCard.saveIcon, gz_iconSize | 0x30000000)) {
         return false;
     }
 
-    if (!xlHeapTake(&mCard.saveBanner, gz_bnrSize | 0x30000000)) {
+    if (!xlHeapTake((void**)&mCard.saveBanner, gz_bnrSize | 0x30000000)) {
         return false;
     }
 
@@ -474,7 +474,7 @@ static bool systemSetupGameALL(System* pSystem) {
     memset(&defaultConfiguration, 0, 4);
     pSystem->eTypeROM = SRT_UNKNOWN;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x300, NULL)) {
         return false;
     }
 
@@ -691,7 +691,7 @@ static bool systemSetupGameALL(System* pSystem) {
         nTickMultiplier = 2;
         fTickScale = 1.1f;
 
-        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
+        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x300U, NULL)) {
             return false;
         }
 
@@ -1136,17 +1136,17 @@ static bool systemSetupGameALL(System* pSystem) {
                     } else if (romTestCode(pROM, "NTEA")) {
                         pSystem->eTypeROM = SRT_1080;
 
-                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x300U, NULL)) {
                             return false;
                         }
 
                         anMode[4] = 0x17D7;
-                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x200U, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x200U, NULL)) {
                             return false;
                         }
 
                         anMode[0] = 0xAC290000;
-                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x284U, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x284U, NULL)) {
                             return false;
                         }
 

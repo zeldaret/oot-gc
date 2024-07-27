@@ -669,7 +669,7 @@ static bool cpuCompile_DSLLV(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 16;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -703,7 +703,7 @@ static bool cpuCompile_DSRLV(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 16;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -737,7 +737,7 @@ static bool cpuCompile_DSRAV(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 17;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -772,7 +772,7 @@ static bool cpuCompile_DMULT(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 53;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -843,7 +843,7 @@ static bool cpuCompile_DMULTU(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 28;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -889,7 +889,7 @@ static bool cpuCompile_DDIV(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 64;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -971,7 +971,7 @@ static bool cpuCompile_DDIVU(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 43;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1032,7 +1032,7 @@ static inline bool cpuCompile_DADD(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 3;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1053,7 +1053,7 @@ static inline bool cpuCompile_DADDU(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 3;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1074,7 +1074,7 @@ static inline bool cpuCompile_DSUB(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 3;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1095,7 +1095,7 @@ static inline bool cpuCompile_DSUBU(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 3;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1116,7 +1116,7 @@ static bool cpuCompile_S_SQRT(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 36;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1170,7 +1170,7 @@ static bool cpuCompile_D_SQRT(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 48;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1236,7 +1236,7 @@ static bool cpuCompile_W_CVT_SD(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 14;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1268,7 +1268,7 @@ static bool cpuCompile_L_CVT_SD(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 56;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1342,7 +1342,7 @@ static bool cpuCompile_CEIL_W(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 13;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1373,7 +1373,7 @@ static bool cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 13;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1404,7 +1404,7 @@ static inline bool cpuCompile_ROUND_W(s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 3;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1425,7 +1425,7 @@ static inline bool cpuCompile_TRUNC_W(s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 3;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1446,7 +1446,7 @@ static bool cpuCompile_LB(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 11;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1474,7 +1474,7 @@ static bool cpuCompile_LH(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 11;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1502,7 +1502,7 @@ static bool cpuCompile_LW(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 10;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1529,7 +1529,7 @@ static bool cpuCompile_LBU(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 10;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1556,7 +1556,7 @@ static bool cpuCompile_LHU(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 10;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1583,7 +1583,7 @@ static bool cpuCompile_SB(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 10;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1610,7 +1610,7 @@ static bool cpuCompile_SH(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 10;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1637,7 +1637,7 @@ static bool cpuCompile_SW(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 10;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1664,7 +1664,7 @@ static bool cpuCompile_LDC(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 12;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1693,7 +1693,7 @@ static bool cpuCompile_SDC(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 12;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1722,7 +1722,7 @@ static bool cpuCompile_LWL(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 12;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -1752,7 +1752,7 @@ static bool cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
     s32 count = 0;
     s32 nSize = 12;
 
-    if (!xlHeapTake(&compile, (nSize * sizeof(s32)) | 0x30000000)) {
+    if (!xlHeapTake((void**)&compile, (nSize * sizeof(s32)) | 0x30000000)) {
         return false;
     }
     *addressGCN = (s32)compile;
@@ -4392,7 +4392,7 @@ static bool cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFun
     s32 nData;
     s32 pad;
 
-    if (!xlHeapTake(&pnCode, 0x200 | 0x30000000)) {
+    if (!xlHeapTake((void**)&pnCode, 0x200 | 0x30000000)) {
         return false;
     }
     *ppfLink = (CpuExecuteFunc)pnCode;
@@ -4439,7 +4439,7 @@ static bool cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFun
 }
 
 static inline bool cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
-    if (!xlHeapFree(&ppfLink)) {
+    if (!xlHeapFree((void**)&ppfLink)) {
         return false;
     } else {
         *ppfLink = NULL;
@@ -4512,7 +4512,7 @@ bool cpuExecute(Cpu* pCPU, u64 nAddressBreak) {
     cpuCompile_LWR(pCPU, &cpuCompile_LWR_function);
 
     if (cpuMakeFunction(pCPU, &pFunction, pCPU->nPC)) {
-        if (!xlHeapTake(&pnCode, 0x100 | 0x30000000)) {
+        if (!xlHeapTake((void**)&pnCode, 0x100 | 0x30000000)) {
             return false;
         }
 
@@ -4553,7 +4553,7 @@ bool cpuExecute(Cpu* pCPU, u64 nAddressBreak) {
 
         pfCode();
 
-        if (!xlHeapFree(&pfCode)) {
+        if (!xlHeapFree((void**)&pfCode)) {
             return false;
         }
 
@@ -4684,7 +4684,8 @@ static bool cpuHackHandler(Cpu* pCPU) {
 
     iSave1 = iSave2 = iLoad = 0;
 
-    if (xlObjectTest(SYSTEM_RAM(pCPU->pHost), &gClassRAM) && ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &pnCode, 0, NULL)) {
+    if (xlObjectTest(SYSTEM_RAM(pCPU->pHost), &gClassRAM) &&
+        ramGetBuffer(SYSTEM_RAM(pCPU->pHost), (void**)&pnCode, 0, NULL)) {
         if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), (s32*)&nSize)) {
             return false;
         }
@@ -4902,7 +4903,7 @@ static bool cpuMakeDevice(Cpu* pCPU, s32* piDevice, void* pObject, s32 nOffset, 
     }
 
     *piDevice = iDevice;
-    if (!xlHeapTake(&pDevice, sizeof(CpuDevice))) {
+    if (!xlHeapTake((void**)&pDevice, sizeof(CpuDevice))) {
         return false;
     }
 
@@ -6441,7 +6442,7 @@ static bool treeKill(Cpu* pCPU) {
     }
 
     root->total -= count;
-    if (!xlHeapFree(&pCPU->gTree)) {
+    if (!xlHeapFree((void**)&pCPU->gTree)) {
         return false;
     }
 

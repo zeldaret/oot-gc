@@ -2353,16 +2353,16 @@ bool xlMain(void) {
 
     gpSystem = NULL;
 
-    if (!xlObjectMake(&gpCode, NULL, &gClassCode)) {
+    if (!xlObjectMake((void**)&gpCode, NULL, &gClassCode)) {
         return false;
     }
-    if (!xlObjectMake(&gpFrame, NULL, &gClassFrame)) {
+    if (!xlObjectMake((void**)&gpFrame, NULL, &gClassFrame)) {
         return false;
     }
-    if (!xlObjectMake(&gpSound, NULL, &gClassSound)) {
+    if (!xlObjectMake((void**)&gpSound, NULL, &gClassSound)) {
         return false;
     }
-    if (!xlObjectMake(&gpSystem, NULL, &gClassSystem)) {
+    if (!xlObjectMake((void**)&gpSystem, NULL, &gClassSystem)) {
         return false;
     }
 
@@ -2395,16 +2395,16 @@ bool xlMain(void) {
 
     simulatorRun(&eMode);
 
-    if (!xlObjectFree(&gpSystem)) {
+    if (!xlObjectFree((void**)&gpSystem)) {
         return false;
     }
-    if (!xlObjectFree(&gpSound)) {
+    if (!xlObjectFree((void**)&gpSound)) {
         return false;
     }
-    if (!xlObjectFree(&gpFrame)) {
+    if (!xlObjectFree((void**)&gpFrame)) {
         return false;
     }
-    if (!xlObjectFree(&gpCode)) {
+    if (!xlObjectFree((void**)&gpCode)) {
         return false;
     }
 
