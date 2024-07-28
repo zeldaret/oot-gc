@@ -526,14 +526,6 @@ def generate_build_ninja(
     )
     n.newline()
 
-    n.comment("Build All Versions")
-    n.build(
-        outputs="all",
-        rule="phony",
-        inputs=list(build_configs.keys()),
-    )
-    n.newline()
-
     ###
     # Source files
     ###
@@ -926,7 +918,7 @@ def generate_build_ninja(
     n.build(
         outputs="split-all",
         rule="phony",
-        inputs=[f"split-{version}" for version in config.versions],
+        inputs=[f"split-{version}" for version in build_configs.keys()],
     )
     n.newline()
 
@@ -960,6 +952,14 @@ def generate_build_ninja(
         n.default("split-all")
     elif config.default_version is not None:
         n.default(config.default_version)
+
+    n.comment("Build All Versions")
+    n.build(
+        outputs="all",
+        rule="phony",
+        inputs=list(build_configs.keys()),
+    )
+    n.newline()
 
     # Write build.ninja
     with open("build.ninja", "w", encoding="utf-8") as f:
