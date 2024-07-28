@@ -77,57 +77,57 @@ static bool mcardGCErrorHandler(MemCard* pMCard, s32 gcError) {
     switch (gcError) {
         case 0:
             pMCard->error = MC_E_NONE;
-            return 1;
+            return true;
         case -1:
             pMCard->error = MC_E_BUSY;
-            return 0;
+            return false;
         case -2:
             pMCard->error = MC_E_WRONGDEVICE;
-            return 0;
+            return false;
         case -3:
             pMCard->error = MC_E_NOCARD;
             pMCard->isBroken = 0;
-            return 0;
+            return false;
         case -4:
             pMCard->error = MC_E_NOFILE;
-            return 0;
+            return false;
         case -5:
             pMCard->error = MC_E_IOERROR;
             pMCard->isBroken = 1;
-            return 0;
+            return false;
         case -6:
             pMCard->error = MC_E_BROKEN;
-            return 0;
+            return false;
         case -7:
             pMCard->error = MC_E_EXIST;
-            return 0;
+            return false;
         case -8:
             pMCard->error = MC_E_NOENT;
-            return 0;
+            return false;
         case -9:
             pMCard->error = MC_E_INSSPACE;
-            return 0;
+            return false;
         case -10:
             pMCard->error = MC_E_NOPERM;
-            return 0;
+            return false;
         case -11:
             pMCard->error = MC_E_LIMIT;
-            return 0;
+            return false;
         case -12:
             pMCard->error = MC_E_NAMETOOLONG;
-            return 0;
+            return false;
         case -13:
             pMCard->error = MC_E_ENCODING;
-            return 0;
+            return false;
         case -14:
             pMCard->error = MC_E_CANCELED;
-            return 0;
+            return false;
         case -128:
             pMCard->error = MC_E_FATAL;
-            return 0;
+            return false;
         default:
             pMCard->error = MC_E_UNKNOWN;
-            return 0;
+            return false;
     }
 }
 
@@ -367,7 +367,7 @@ static inline bool UnkInlinemCardVerifyChecksumFileHeader2(MemCard* pMCard, char
 
 static inline bool UnkINlinemCardVerifyChecksumFileHeader3(MemCard* pMCard, char** buffer) {
     if (xlHeapFree(buffer) == false) {
-        return 0;
+        return false;
     }
     if (pMCard->saveToggle == true) {
         if (pMCard->file.fileInfo.chan != -1) {
