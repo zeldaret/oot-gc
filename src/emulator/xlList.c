@@ -8,7 +8,7 @@ static tXL_LIST gListList;
 bool xlListMake(tXL_LIST** ppList, s32 nItemSize) {
     nItemSize = (nItemSize + 3) & ~3;
 
-    if (xlListMakeItem(&gListList, ppList)) {
+    if (xlListMakeItem(&gListList, (void**)ppList)) {
         (*ppList)->nItemCount = 0;
         (*ppList)->nItemSize = nItemSize;
         (*ppList)->pNodeNext = NULL;

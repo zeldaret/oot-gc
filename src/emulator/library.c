@@ -175,7 +175,7 @@ static bool __osException(Cpu* pCPU) {
     }
 
     CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[8], &pCPU->aGPR[26].u32);
-    if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[26].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&__osRunningThread, pCPU->aGPR[26].u32)) {
         return false;
     }
 
@@ -536,7 +536,7 @@ static bool __osEnqueueAndYield(Cpu* pCPU) {
     __OSGlobalIntMask = *(u32*)pLibrary->apData[3];
     CPU_DEVICE_GET32(apDevice, aiDevice, pLibrary->anAddress[8], &pCPU->aGPR[5].u32);
 
-    if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, pCPU->aGPR[5].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&__osRunningThread, pCPU->aGPR[5].u32)) {
         return false;
     }
 
@@ -653,7 +653,7 @@ static bool __osDispatchThread(Cpu* pCPU) {
     nAddress = pCPU->aGPR[2].u32;
     *(u32*)pLibrary->apData[8] = nAddress;
 
-    if (!cpuGetAddressBuffer(pCPU, &__osRunningThread, nAddress)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&__osRunningThread, nAddress)) {
         return false;
     }
 
@@ -873,9 +873,9 @@ void guMtxCatF(Cpu* pCPU) {
     u32* nf;
     u32* res;
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &nf, pCPU->aGPR[5].u32);
-    cpuGetAddressBuffer(pCPU, &res, pCPU->aGPR[6].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&nf, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&res, pCPU->aGPR[6].u32);
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
@@ -908,8 +908,8 @@ void guMtxF2L(Cpu* pCPU) {
     s32* af;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[5].u32);
     frameFixMatrixHint(SYSTEM_FRAME(pCPU->pHost), pCPU->aGPR[4].u32, pCPU->aGPR[5].u32);
 
     ai = &m[0];
@@ -937,7 +937,7 @@ void guMtxIdentF(Cpu* pCPU) {
 
     *((volatile f32*)&data0.f32) = 0.0f;
     *((volatile f32*)&data1.f32) = 1.0f;
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
 
     float1 = data1.f32;
     float0 = data0.f32;
@@ -955,7 +955,7 @@ void guMtxIdentF(Cpu* pCPU) {
 void guMtxIdent(Cpu* pCPU) {
     s32* m;
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
     m[0] = 0x10000;
     m[1] = 0;
     m[2] = 1;
@@ -990,8 +990,8 @@ void guOrthoF(Cpu* pCPU) {
     CpuFpr data1;
     CpuFpr data;
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     l = data.f32;
@@ -1070,8 +1070,8 @@ void guOrtho(Cpu* pCPU) {
     f32 scale;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     l = data.f32;
@@ -1149,9 +1149,9 @@ void guPerspectiveF(Cpu* pCPU) {
     f32 rFar;
     f32 scale;
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
-    cpuGetAddressBuffer(pCPU, &perspNorm, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&perspNorm, pCPU->aGPR[5].u32);
 
     data.u32 = pCPU->aGPR[6].u32;
     fovy = data.f32;
@@ -1224,8 +1224,8 @@ void guPerspective(Cpu* pCPU) {
     s32* af;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[6].u32;
     fovy = data.f32;
@@ -1294,8 +1294,8 @@ void GenPerspective_1080(Cpu* pCPU) {
     f32 rFar;
     Frame* pFrame = SYSTEM_FRAME(pCPU->pHost);
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     fovy = data.f32;
@@ -1322,7 +1322,7 @@ void guScaleF(Cpu* pCPU) {
 
     data0.f32 = 0.0f;
     data1.f32 = 1.0f;
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
@@ -1352,7 +1352,7 @@ void guScale(Cpu* pCPU) {
     s32* af;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
 
     mf[0][0] = 1.0f;
     mf[0][1] = 0.0f;
@@ -1401,7 +1401,7 @@ void guTranslateF(Cpu* pCPU) {
 
     data0.f32 = 0.0f;
     data1.f32 = 1.0f;
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
@@ -1430,7 +1430,7 @@ void guTranslate(Cpu* pCPU) {
     s32* af;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
 
     mf[0][0] = 1.0f;
     mf[0][1] = 0.0f;
@@ -1491,7 +1491,7 @@ void guRotateF(Cpu* pCPU) {
     f32 t;
     static f32 dtor = (f32)M_PI / 180;
 
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     a = data.f32;
@@ -1522,7 +1522,7 @@ void guRotateF(Cpu* pCPU) {
 
     data0.f32 = 0.0f;
     data1.f32 = 1.0f;
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
@@ -1590,8 +1590,8 @@ void guRotate(Cpu* pCPU) {
     s32 pad[2];
     static f32 dtor = (f32)M_PI / 180;
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     a = data.f32;
@@ -1687,8 +1687,8 @@ void guLookAtF(Cpu* pCPU) {
 
     data0.f32 = 0.0f;
     data1.f32 = 1.0f;
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     xEye = data.f32;
@@ -1812,8 +1812,8 @@ void guLookAt(Cpu* pCPU) {
     f32 zUp;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[5].u32;
     xEye = data.f32;
@@ -1965,10 +1965,10 @@ void guLookAtHiliteF(Cpu* pCPU) {
     s32 twidth;
     s32 theight;
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
-    cpuGetAddressBuffer(pCPU, &h, pCPU->aGPR[6].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&h, pCPU->aGPR[6].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[7].u32;
     xEye = data.f32;
@@ -2202,10 +2202,10 @@ void guLookAtHilite(Cpu* pCPU) {
     s32 theight;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
-    cpuGetAddressBuffer(pCPU, &h, pCPU->aGPR[6].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&h, pCPU->aGPR[6].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[7].u32;
     xEye = data.f32;
@@ -2402,9 +2402,9 @@ void guLookAtReflectF(Cpu* pCPU) {
     f32 yRight;
     f32 zRight;
 
-    cpuGetAddressBuffer(pCPU, &mf, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&mf, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[6].u32;
     xEye = data.f32;
@@ -2559,9 +2559,9 @@ void guLookAtReflect(Cpu* pCPU) {
     f32 zRight;
     s32 pad[2];
 
-    cpuGetAddressBuffer(pCPU, &m, pCPU->aGPR[4].u32);
-    cpuGetAddressBuffer(pCPU, &l, pCPU->aGPR[5].u32);
-    cpuGetAddressBuffer(pCPU, &sp, pCPU->aGPR[29].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&m, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&l, pCPU->aGPR[5].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&sp, pCPU->aGPR[29].u32);
 
     data.u32 = pCPU->aGPR[6].u32;
     xEye = data.f32;
@@ -2734,7 +2734,7 @@ bool __osEepStatus(Cpu* pCPU) {
     s32 nSize;
     u8* status;
 
-    if (!cpuGetAddressBuffer(pCPU, &status, pCPU->aGPR[5].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&status, pCPU->aGPR[5].u32)) {
         return false;
     }
 
@@ -2762,7 +2762,7 @@ bool osEepromRead(Cpu* pCPU) {
     u8* buffer;
 
     address = pCPU->aGPR[5].u8;
-    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&buffer, pCPU->aGPR[6].u32)) {
         return false;
     }
 
@@ -2776,7 +2776,7 @@ bool osEepromWrite(Cpu* pCPU) {
     u8* buffer;
 
     address = pCPU->aGPR[5].u8;
-    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&buffer, pCPU->aGPR[6].u32)) {
         return false;
     }
 
@@ -2793,7 +2793,7 @@ bool osEepromLongRead(Cpu* pCPU) {
     ret = 0;
 
     address = pCPU->aGPR[5].u8;
-    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&buffer, pCPU->aGPR[6].u32)) {
         return false;
     }
     length = pCPU->aGPR[7].s32;
@@ -2822,7 +2822,7 @@ bool osEepromLongWrite(Cpu* pCPU) {
     ret = 0;
 
     address = pCPU->aGPR[5].u8;
-    if (!cpuGetAddressBuffer(pCPU, &buffer, pCPU->aGPR[6].u32)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&buffer, pCPU->aGPR[6].u32)) {
         return false;
     }
     length = pCPU->aGPR[7].s32;
@@ -2858,7 +2858,7 @@ bool starfoxCopy(Cpu* pCPU) {
     char* target;
 
     A1 = pCPU->aGPR[5].u32;
-    cpuGetAddressBuffer(pCPU, &A0, pCPU->aGPR[4].u32);
+    cpuGetAddressBuffer(pCPU, (void**)&A0, pCPU->aGPR[4].u32);
 
     A3 = A0[2] + pCPU->aGPR[4].u32;
     T9 = A0[3] + pCPU->aGPR[4].u32;
@@ -2884,20 +2884,20 @@ bool starfoxCopy(Cpu* pCPU) {
         }
 
         if (T2 != 0) {
-            cpuGetAddressBuffer(pCPU, &source, T9);
-            cpuGetAddressBuffer(pCPU, &target, A1);
+            cpuGetAddressBuffer(pCPU, (void**)&source, T9);
+            cpuGetAddressBuffer(pCPU, (void**)&target, A1);
             T9 += 1;
             A1 += 1;
             *target = *source;
         } else {
-            cpuGetAddressBuffer(pCPU, &pData16, A3);
+            cpuGetAddressBuffer(pCPU, (void**)&pData16, A3);
             A3 += 2;
             T3 = (((u32)*pData16 >> 12) & 0xF) + 3;
             T1 = A1 - (*pData16 & 0xFFF);
 
             do {
-                cpuGetAddressBuffer(pCPU, &source, T1 - 1);
-                cpuGetAddressBuffer(pCPU, &target, A1);
+                cpuGetAddressBuffer(pCPU, (void**)&source, T1 - 1);
+                cpuGetAddressBuffer(pCPU, (void**)&target, A1);
                 T3 -= 1;
                 A1 += 1;
                 T1 += 1;
@@ -2931,12 +2931,12 @@ bool dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     s32 nOffsetROM;
 
     nAddress = pCPU->aGPR[5].u32;
-    if (!cpuGetAddressBuffer(pCPU, &pIOMessage, nAddress)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&pIOMessage, nAddress)) {
         return false;
     }
 
     nAddress = (u32)pIOMessage->hdr.retQueue;
-    if (!cpuGetAddressBuffer(pCPU, &mq, nAddress)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&mq, nAddress)) {
         return false;
     }
 
@@ -2944,7 +2944,7 @@ bool dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     first = mq->first;
     msgCount = mq->msgCount;
     validCount = mq->validCount;
-    if (!cpuGetAddressBuffer(pCPU, &msg, nAddress)) {
+    if (!cpuGetAddressBuffer(pCPU, (void**)&msg, nAddress)) {
         return false;
     }
 
@@ -3488,7 +3488,7 @@ static bool libraryFindFunctions(Library* pLibrary) {
             nAddress += 4;
         } while (nOpcode != 0x400A4000);
 
-        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 0x14)) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCode, nAddress + 0x14)) {
             return false;
         }
 
@@ -3512,7 +3512,7 @@ static bool libraryFindFunctions(Library* pLibrary) {
         } while (MIPS_OP(nOpcode) != 0x02 && (nOpcode & 0xFFFF0000) != 0x10000000 && MIPS_OP(nOpcode) != 0x00 &&
                  MIPS_FUNCT(nOpcode) != 0x08);
 
-        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 8)) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCode, nAddress + 8)) {
             return false;
         }
 
@@ -3523,7 +3523,7 @@ static bool libraryFindFunctions(Library* pLibrary) {
          iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osEnqueueThread;
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressEnqueueThread != -1) {
-        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressEnqueueThread)) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCode, nAddressEnqueueThread)) {
             return false;
         }
         *(pnCode++) = 0x7C000000 | iFunction;
@@ -3541,7 +3541,7 @@ static bool libraryFindFunctions(Library* pLibrary) {
             nAddress += 4;
         } while (nOpcode != 0x03E00008);
 
-        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddress + 4)) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCode, nAddress + 4)) {
             return false;
         }
 
@@ -3554,7 +3554,7 @@ static bool libraryFindFunctions(Library* pLibrary) {
          iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osDispatchThread;
          iFunction++) {}
     if (iFunction < ARRAY_COUNTU(gaFunction) && nAddressDispatchThread != -1) {
-        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, nAddressDispatchThread)) {
+        if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCode, nAddressDispatchThread)) {
             return false;
         }
 
@@ -3594,7 +3594,7 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
             bDone = false;
             bReturn = true;
 
-            if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCode, pFunction->nAddress0)) {
+            if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCode, pFunction->nAddress0)) {
                 return false;
             }
 
@@ -3602,7 +3602,7 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
             bFlag = MIPS_OP(nOpcode) == 0x1F ? false : true;
             if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osEepromLongRead && nChecksum == 0x5B919EF9) {
                 nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
-                if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
+                if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCodeTemp, nAddress)) {
                     return false;
                 }
                 if (pnCodeTemp[10] != 0xAFA00030) {
@@ -3612,7 +3612,7 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
             } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osEepromLongWrite &&
                        nChecksum == 0x5B919EF9) {
                 nAddress = (pFunction->nAddress0 & 0xF0000000) | (MIPS_TARGET(pnCode[17]) << 2);
-                if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), &pnCodeTemp, nAddress)) {
+                if (!cpuGetAddressBuffer(SYSTEM_CPU(pLibrary->pHost), (void**)&pnCodeTemp, nAddress)) {
                     return false;
                 }
                 if (pnCodeTemp[10] == 0xAFA00030) {

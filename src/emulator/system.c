@@ -29,6 +29,10 @@
 #define MCARD_FILE_NAME "ZELDA"
 #define MCARD_COMMENT "ゼルダの伝説　時のオカリナＧＣ" // "The Legend of Zelda: Ocarina of Time GC"
 #define MCARD_FILE_SIZE (0xC000 * 2)
+#elif VERSION == MQ_U
+#define MCARD_FILE_NAME "ZELDA"
+#define MCARD_COMMENT "Zelda: Ocarina of Time"
+#define MCARD_FILE_SIZE (0xC000 * 2)
 #elif VERSION == CE_J
 #define MCARD_FILE_NAME "ZELDA1"
 #define MCARD_COMMENT "ゼルダコレクション" // "Zelda Collection"
@@ -219,7 +223,7 @@ static bool systemSetupGameRAM(System* pSystem) {
                 gnFlagZelda = 5;
                 break;
 
-#elif VERSION == CE_U
+#elif VERSION == MQ_U || VERSION == CE_U
             case 0x5CAC1CF7:
                 gnFlagZelda = 2;
                 break;
@@ -458,11 +462,11 @@ static bool systemSetupGameALL(System* pSystem) {
     pROM = SYSTEM_ROM(pSystem);
     pPIF = SYSTEM_PIF(pSystem);
 
-    if (!xlHeapTake(&mCard.saveIcon, gz_iconSize | 0x30000000)) {
+    if (!xlHeapTake((void**)&mCard.saveIcon, gz_iconSize | 0x30000000)) {
         return false;
     }
 
-    if (!xlHeapTake(&mCard.saveBanner, gz_bnrSize | 0x30000000)) {
+    if (!xlHeapTake((void**)&mCard.saveBanner, gz_bnrSize | 0x30000000)) {
         return false;
     }
 
@@ -470,7 +474,7 @@ static bool systemSetupGameALL(System* pSystem) {
     memset(&defaultConfiguration, 0, 4);
     pSystem->eTypeROM = SRT_UNKNOWN;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x300, NULL)) {
         return false;
     }
 
@@ -687,7 +691,7 @@ static bool systemSetupGameALL(System* pSystem) {
         nTickMultiplier = 2;
         fTickScale = 1.1f;
 
-        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
+        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x300U, NULL)) {
             return false;
         }
 
@@ -1132,17 +1136,17 @@ static bool systemSetupGameALL(System* pSystem) {
                     } else if (romTestCode(pROM, "NTEA")) {
                         pSystem->eTypeROM = SRT_1080;
 
-                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x300U, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x300U, NULL)) {
                             return false;
                         }
 
                         anMode[4] = 0x17D7;
-                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x200U, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x200U, NULL)) {
                             return false;
                         }
 
                         anMode[0] = 0xAC290000;
-                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), &anMode, 0x284U, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pSystem), (void**)&anMode, 0x284U, NULL)) {
                             return false;
                         }
 

@@ -985,14 +985,14 @@ static bool rspAADPCMDec1Fast(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     nDMEMOut = pRSP->nAudioDMEMOut[0];
     nCount = pRSP->nAudioCount[0];
     nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pStateAddress, nSrcAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pStateAddress, nSrcAddress, NULL)) {
         return false;
     }
 
     if (!(nFlags & 1)) {
         pTempStateAddr = pStateAddress;
         if (nFlags & 2) {
-            if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pTempStateAddr, pRSP->nAudioLoopAddress, NULL)) {
+            if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pTempStateAddr, pRSP->nAudioLoopAddress, NULL)) {
                 return false;
             }
         }
@@ -1495,14 +1495,14 @@ static bool rspAADPCMDec2Fast(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     nDMEMOut = pRSP->nAudioDMEMOut[0];
     nCount = pRSP->nAudioCount[0];
     nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pStateAddress, nSrcAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pStateAddress, nSrcAddress, NULL)) {
         return false;
     }
 
     if (!(nFlags & 1)) {
         pTempStateAddr = pStateAddress;
         if (nFlags & 2) {
-            if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pTempStateAddr, pRSP->nAudioLoopAddress, NULL)) {
+            if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pTempStateAddr, pRSP->nAudioLoopAddress, NULL)) {
                 return false;
             }
         }
@@ -2636,7 +2636,7 @@ inline bool rspSetDL(Rsp* pRSP, s32 nOffsetRDRAM, bool bPush) {
     s32* pDL;
 
     nAddress = SEGMENT_ADDRESS(pRSP, nOffsetRDRAM);
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pDL, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pDL, nAddress, NULL)) {
         return false;
     }
 
@@ -3191,7 +3191,7 @@ bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
 
         if ((nOffsetUCode1 <= offset0 && offset0 <= nOffsetUCode0) ||
             (nOffsetUCode1 <= offset1 && offset1 <= nOffsetUCode0)) {
-            if (!xlListFreeItem(pRSP->pListUCode, &pUCode)) {
+            if (!xlListFreeItem(pRSP->pListUCode, (void**)&pUCode)) {
                 return false;
             }
         }

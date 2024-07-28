@@ -162,10 +162,10 @@ bool flashEvent(Flash* pFLASH, s32 nEvent, void* pArgument) {
         case 2:
             pFLASH->pHost = pArgument;
             pFLASH->flashCommand = 0;
-            xlHeapTake(&pFLASH->flashBuffer, 128);
+            xlHeapTake((void**)&pFLASH->flashBuffer, 128);
             break;
         case 3:
-            xlHeapFree(&pFLASH->flashBuffer);
+            xlHeapFree((void**)&pFLASH->flashBuffer);
             break;
         case 0x1002:
             if (!cpuSetDevicePut(SYSTEM_CPU(pFLASH->pHost), pArgument, (Put8Func)flashPut8, (Put16Func)flashPut16,
