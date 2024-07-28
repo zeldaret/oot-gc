@@ -129,6 +129,7 @@ bool simulatorPlayMovie(void);
 bool xlMain(void);
 bool simulatorMCardPollDrawFormatBar(void);
 bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage);
+bool simulatorMCardPollDrawBar(void);
 bool simulatorDrawMCardText(void);
 bool simulatorDrawErrorMessageWait(SimulatorMessage simulatorErrorMessage);
 bool simulatorDrawYesNoMessage(SimulatorMessage simulatorMessage, bool* yes);
