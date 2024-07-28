@@ -530,7 +530,7 @@ def generate_build_ninja(
     n.build(
         outputs="all",
         rule="phony",
-        inputs=[version for version in build_configs],
+        inputs=list(build_configs.keys()),
     )
     n.newline()
 
