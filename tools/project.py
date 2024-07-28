@@ -526,6 +526,14 @@ def generate_build_ninja(
     )
     n.newline()
 
+    n.comment("Build All Versions")
+    n.build(
+        outputs="all",
+        rule="phony",
+        inputs=[version for version in build_configs],
+    )
+    n.newline()
+
     ###
     # Source files
     ###
