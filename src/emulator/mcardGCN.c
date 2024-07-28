@@ -210,17 +210,17 @@ static bool mcardSaveChecksumFileHeader(MemCard* pMCard, char* buffer, u32 unuse
 static inline bool UnkInlinemCardReplaceFileBlock(MemCard* pMCard) {
     char* buf = pMCard->writeBuffer;
 
-    if (mCard.saveToggle == 1) {
-        if (mcardGCErrorHandler(pMCard, CARDReadAsync(&pMCard->file.fileInfo, buf, 0x2000, 0x4000, NULL)) != 1) {
-            return 0;
+    if (mCard.saveToggle == true) {
+        if (mcardGCErrorHandler(pMCard, CARDReadAsync(&pMCard->file.fileInfo, buf, 0x2000, 0x4000, NULL)) != true) {
+            return false;
         }
-        if (mcardPoll(pMCard) != 1) {
-            return 0;
+        if (mcardPoll(pMCard) != true) {
+            return false;
         }
         DCInvalidateRange(buf, 0x2000);
     }
 
-    return 1;
+    return true;
 }
 
 static inline bool UnkInlinemCardReplaceFileBlock2(MemCard* pMCard, int offset) {
