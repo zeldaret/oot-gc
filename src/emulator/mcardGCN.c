@@ -4,6 +4,7 @@
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
 #include "string.h"
+#include "dolphin/card.h"
 
 // "The Legend of Zelda: Ocarina of Time"
 char D_800EA548[] = "ゼルダの伝説：時のオカリナ";
@@ -75,54 +76,54 @@ static inline bool mcardFileRelease(MemCard* pMCard);
 
 static bool mcardGCErrorHandler(MemCard* pMCard, s32 gcError) {
     switch (gcError) {
-        case 0:
+        case CARD_RESULT_READY:
             pMCard->error = MC_E_NONE;
             return true;
-        case -1:
+        case CARD_RESULT_BUSY:
             pMCard->error = MC_E_BUSY;
             return false;
-        case -2:
+        case CARD_RESULT_WRONGDEVICE:
             pMCard->error = MC_E_WRONGDEVICE;
             return false;
-        case -3:
+        case CARD_RESULT_NOCARD:
             pMCard->error = MC_E_NOCARD;
             pMCard->isBroken = 0;
             return false;
-        case -4:
+        case CARD_RESULT_NOFILE:
             pMCard->error = MC_E_NOFILE;
             return false;
-        case -5:
+        case CARD_RESULT_IOERROR:
             pMCard->error = MC_E_IOERROR;
             pMCard->isBroken = 1;
             return false;
-        case -6:
+        case CARD_RESULT_BROKEN:
             pMCard->error = MC_E_BROKEN;
             return false;
-        case -7:
+        case CARD_RESULT_EXIST:
             pMCard->error = MC_E_EXIST;
             return false;
-        case -8:
+        case CARD_RESULT_NOENT:
             pMCard->error = MC_E_NOENT;
             return false;
-        case -9:
+        case CARD_RESULT_INSSPACE:
             pMCard->error = MC_E_INSSPACE;
             return false;
-        case -10:
+        case CARD_RESULT_NOPERM:
             pMCard->error = MC_E_NOPERM;
             return false;
-        case -11:
+        case CARD_RESULT_LIMIT:
             pMCard->error = MC_E_LIMIT;
             return false;
-        case -12:
+        case CARD_RESULT_NAMETOOLONG:
             pMCard->error = MC_E_NAMETOOLONG;
             return false;
-        case -13:
+        case CARD_RESULT_ENCODING:
             pMCard->error = MC_E_ENCODING;
             return false;
-        case -14:
+        case CARD_RESULT_CANCELED:
             pMCard->error = MC_E_CANCELED;
             return false;
-        case -128:
+        case CARD_RESULT_FATAL_ERROR:
             pMCard->error = MC_E_FATAL;
             return false;
         default:
@@ -137,7 +138,7 @@ static bool mcardCalculateChecksum(MemCard* pMCard, s32* checksum) {
     if (mCard.saveToggle == true) {
         *checksum = 0;
         for (i = 1; i != 0x800; i++) {
-            *checksum += *((s32*)pMCard->writeBuffer + i);
+            *checksum += ((s32*)pMCard->writeBuffer)[i];
         }
 
         if (*checksum == 0) {
@@ -156,7 +157,7 @@ static bool mcardCalculateChecksumFileBlock1(MemCard* pMCard, s32* checksum) {
 
         for (i = 0; i != 0x800; i++) {
             if (i != 10U) {
-                *checksum += *((s32*)pMCard->writeBuffer + i);
+                *checksum += ((s32*)pMCard->writeBuffer)[i];
             }
         }
 
@@ -176,7 +177,7 @@ static bool mcardCalculateChecksumFileBlock2(MemCard* pMCard, s32* checksum) {
 
         for (i = 0; i != 0x800; i++) {
             if (i != 0x41BU) {
-                *checksum += *((s32*)pMCard->writeBuffer + i);
+                *checksum += ((s32*)pMCard->writeBuffer)[i];
             }
         }
 
@@ -228,7 +229,7 @@ static inline bool UnkInlinemCardReplaceFileBlock2(MemCard* pMCard, int offset) 
 
     if (mCard.saveToggle == true) {
         DCStoreRange(buf, 0x2000);
-        if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, buf, 0x2000, offset, NULL)) != 1) {
+        if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, buf, 0x2000, offset, NULL)) != true) {
             return false;
         }
         pMCard->pollSize = 0x2000;
@@ -246,7 +247,7 @@ static inline bool UnkInlinemCardReplaceFileBlock2(MemCard* pMCard, int offset) 
 }
 
 static inline bool mcardGetFileTime(MemCard* pMCard, OSCalendarTime* time) {
-    char buffer[544];
+    char buffer[0x200 + 0x20];
 
     s32 val = 0x20 - (s32)&buffer % 32;
     void* buf = (void*)(buffer + val % 32);
@@ -261,12 +262,12 @@ static inline bool mcardGetFileTime(MemCard* pMCard, OSCalendarTime* time) {
 static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
     s32 checksum1;
     s32 checksum2;
-    char buffer[8192];
+    char buffer[0x2000];
     s32 pad;
 
     memcpy(buffer, pMCard->writeBuffer, 0x2000);
 
-    if (UnkInlinemCardReplaceFileBlock(pMCard) == false) {
+    if (!UnkInlinemCardReplaceFileBlock(pMCard)) {
         return false;
     }
 
@@ -286,7 +287,7 @@ static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
 
     simulatorPrepareMessage(S_M_CARD_SV09);
 
-    if (UnkInlinemCardReplaceFileBlock2(pMCard, index << 13) == false) {
+    if (!UnkInlinemCardReplaceFileBlock2(pMCard, index << 13)) {
         memcpy(pMCard->writeBuffer, buffer, 0x2000);
         return false;
     }
@@ -301,7 +302,7 @@ static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
 static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
     s32 pad2;
     s32 checksum;
-    char buffer2[8192];
+    char buffer2[0x2000];
     s32 toggle = 1;
     s32 pad[2];
 
@@ -322,7 +323,7 @@ static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
 
     if (checksum != *(s32*)(pMCard->writeBuffer + 0x106C)) {
         if (toggle == 1) {
-            if (mcardReplaceFileBlock(pMCard, 1) == false) {
+            if (!mcardReplaceFileBlock(pMCard, 1)) {
                 return false;
             }
         } else {
@@ -339,7 +340,7 @@ static bool mcardPoll(MemCard* pMCard);
 
 static inline bool UnkInlinemCardVerifyChecksumFileHeader(MemCard* pMCard) {
     if (pMCard->saveToggle == true) {
-        if (mcardReadyCard(pMCard) == false) {
+        if (!mcardReadyCard(pMCard)) {
             return false;
         }
         if (mcardGCErrorHandler(pMCard, CARDOpen(pMCard->slot, pMCard->file.name, &pMCard->file.fileInfo)) != true) {
@@ -366,7 +367,7 @@ static inline bool UnkInlinemCardVerifyChecksumFileHeader2(MemCard* pMCard, char
 }
 
 static inline bool UnkINlinemCardVerifyChecksumFileHeader3(MemCard* pMCard, char** buffer) {
-    if (xlHeapFree(buffer) == false) {
+    if (!xlHeapFree(buffer)) {
         return false;
     }
     if (pMCard->saveToggle == true) {
@@ -379,7 +380,7 @@ static inline bool UnkINlinemCardVerifyChecksumFileHeader3(MemCard* pMCard, char
 }
 
 static inline bool UnkINlinemCardVerifyChecksumFileHeader4(MemCard* pMCard, char** buffer) {
-    if (xlHeapFree(buffer) == false) {
+    if (!xlHeapFree(buffer)) {
         return false;
     }
     if (pMCard->saveToggle == true) {
@@ -394,18 +395,18 @@ static inline bool UnkINlinemCardVerifyChecksumFileHeader4(MemCard* pMCard, char
 static bool mcardVerifyChecksumFileHeader(MemCard* pMCard) {
     char* buffer;
 
-    if (UnkInlinemCardVerifyChecksumFileHeader(pMCard) == false) {
+    if (!UnkInlinemCardVerifyChecksumFileHeader(pMCard)) {
         return false;
     }
-    if (xlHeapTake(&buffer, 0x30006000) == 0) {
+    if (!xlHeapTake(&buffer, 0x6000 | 0x30000000)) {
         return false;
     }
 
-    if (UnkInlinemCardVerifyChecksumFileHeader2(pMCard, buffer) == false) {
+    if (!UnkInlinemCardVerifyChecksumFileHeader2(pMCard, buffer)) {
         return UnkINlinemCardVerifyChecksumFileHeader3(pMCard, &buffer);
     }
     DCInvalidateRange(buffer, 0x6000);
-    if (mcardCheckChecksumFileHeader(pMCard, buffer) == false) {
+    if (!mcardCheckChecksumFileHeader(pMCard, buffer)) {
         return UnkINlinemCardVerifyChecksumFileHeader3(pMCard, &buffer);
     }
 
@@ -425,7 +426,7 @@ static bool mcardPoll(MemCard* pMCard) {
             }
 
             if (pMCard->pPollFunction != NULL) {
-                if (simulatorTestReset(false, false, false, false) == false) {
+                if (!simulatorTestReset(false, false, false, false)) {
                     return false;
                 } else {
                     pMCard->pPollFunction();
