@@ -50,7 +50,7 @@ static inline bool xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
 }
 
 bool xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName) {
-    if (!xlObjectMake(ppFile, NULL, &gTypeFile)) {
+    if (!xlObjectMake((void**)ppFile, NULL, &gTypeFile)) {
         return false;
     }
 
@@ -62,12 +62,12 @@ bool xlFileOpen(tXL_FILE** ppFile, XlFileType eType, char* szFileName) {
         return true;
     }
 
-    xlObjectFree(ppFile);
+    xlObjectFree((void**)ppFile);
     return false;
 }
 
 bool xlFileClose(tXL_FILE** ppFile) {
-    if (!xlObjectFree(ppFile)) {
+    if (!xlObjectFree((void**)ppFile)) {
         return false;
     }
 

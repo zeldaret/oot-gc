@@ -17,7 +17,7 @@ static inline bool xlObjectFindData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pTyp
 }
 
 static inline bool xlObjectMakeData(__anon_0x5062** ppData, _XL_OBJECTTYPE* pType) {
-    if (!xlListMakeItem(gpListData, ppData)) {
+    if (!xlListMakeItem(gpListData, (void**)ppData)) {
         return false;
     }
 
