@@ -45,6 +45,7 @@ MACROS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\bN64_FRAME_HEIGHT\b"), "240"),
     (re.compile(r"\bATTRIBUTE_ALIGN\b\(.*\)"), ""),
     (re.compile(r"\b_MATH_INLINE\b"), "static inline"),
+    (re.compile(r"\bINIT\b"), ""),
 ]
 
 # Defined preprocessor macros (for conditions)
