@@ -309,9 +309,9 @@ typedef struct __anon_0x5F05A {
 } __anon_0x5F05A; // size = 0x28
 
 typedef union __anon_0x5F2FB {
-    /* 0x0 */ __anon_0x5ED4F b;
-    /* 0x28 */ __anon_0x5F05A s;
-    /* 0x50 */ s64 force_structure_alignment;
+    __anon_0x5ED4F b;
+    __anon_0x5F05A s;
+    s64 force_structure_alignment;
 } __anon_0x5F2FB;
 
 typedef struct __anon_0x5F429 {
@@ -332,8 +332,8 @@ typedef struct __anon_0x5F429 {
 } __anon_0x5F429; // size = 0x18
 
 typedef union __anon_0x5F63B {
-    /* 0x0 */ __anon_0x5F429 s;
-    /* 0x18 */ s64 force_structure_alignment;
+    __anon_0x5F429 s;
+    s64 force_structure_alignment;
 } __anon_0x5F63B;
 
 bool rspFillObjBg(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg);
