@@ -185,7 +185,7 @@ typedef struct _GXData {
     /*  N/A  0x5AA */ GXBool abtWaitPECopy;
 #endif
     /* 0x4F2 0x5AB */ u8 dirtyVAT;
-    /* 0x4F3 0x5AC */ u32 dirtyState;
+    /* 0x4F4 0x5AC */ u32 dirtyState;
 } GXData;
 
 typedef struct _GXVtxDescList {
