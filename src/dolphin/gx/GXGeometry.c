@@ -1,29 +1,34 @@
 #include "dolphin/gx.h"
 
 void __GXSetDirtyState(void) {
+#if IS_MQ
+#define DIRTY_FLAGS gx->dirtyState
+#else
     u32 dirtyFlags = gx->dirtyState;
+#define DIRTY_FLAGS dirtyFlags
+#endif
 
-    if (dirtyFlags & 1) {
+    if (DIRTY_FLAGS & 1) {
         __GXSetSUTexRegs();
     }
 
-    if (dirtyFlags & 2) {
+    if (DIRTY_FLAGS & 2) {
         __GXUpdateBPMask();
     }
 
-    if (dirtyFlags & 4) {
+    if (DIRTY_FLAGS & 4) {
         __GXSetGenMode();
     }
 
-    if (dirtyFlags & 8) {
+    if (DIRTY_FLAGS & 8) {
         __GXSetVCD();
     }
 
-    if (dirtyFlags & 0x10) {
+    if (DIRTY_FLAGS & 0x10) {
         __GXSetVAT();
     }
 
-    if (dirtyFlags & 0x18) {
+    if (DIRTY_FLAGS & 0x18) {
         __GXCalculateVLim();
     }
 
