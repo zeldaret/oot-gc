@@ -309,12 +309,36 @@ typedef struct __anon_0x5F05A {
 } __anon_0x5F05A; // size = 0x28
 
 typedef union __anon_0x5F2FB {
-    /* 0x0 */ struct __anon_0x5ED4F b;
-    /* 0x0 */ struct __anon_0x5F05A s;
-    /* 0x0 */ s64 force_structure_alignment;
+    __anon_0x5ED4F b;
+    __anon_0x5F05A s;
+    s64 force_structure_alignment;
 } __anon_0x5F2FB;
 
-bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, union __anon_0x5F2FB* pBg);
+typedef struct __anon_0x5F429 {
+    /* 0x00 */ s16 objX;
+    /* 0x02 */ u16 scaleW;
+    /* 0x04 */ u16 imageW;
+    /* 0x06 */ u16 paddingX;
+    /* 0x08 */ s16 objY;
+    /* 0x0A */ u16 scaleH;
+    /* 0x0C */ u16 imageH;
+    /* 0x0E */ u16 paddingY;
+    /* 0x10 */ u16 imageStride;
+    /* 0x12 */ u16 imageAdrs;
+    /* 0x14 */ u8 imageFmt;
+    /* 0x15 */ u8 imageSiz;
+    /* 0x16 */ u8 imagePal;
+    /* 0x17 */ u8 imageFlags;
+} __anon_0x5F429; // size = 0x18
+
+typedef union __anon_0x5F63B {
+    __anon_0x5F429 s;
+    s64 force_structure_alignment;
+} __anon_0x5F63B;
+
+bool rspFillObjBg(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg);
+bool rspSetImage(struct Frame* pFrame, Rsp* pRSP, s32 nFormat, s32 nWidth, s32 nSize, s32 nImage);
+bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg);
 bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData);
 bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData);
 bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);

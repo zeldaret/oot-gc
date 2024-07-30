@@ -2453,25 +2453,252 @@ static bool rspParseJPEG_Decode(Rsp* pRSP, RspTask* pTask);
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspRecon420Z.s")
 
-static bool rspParseJPEG_EncodeZ(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_EncodeZ.s")
+static bool rspParseJPEG_EncodeZ(Rsp* pRSP, RspTask* pTask) {
+    s32 y;
+    s32 pad;
+    s16* temp;
+    s16* temp2;
+    u64* system_imb;
+    u32* infoStruct;
+    s32 size;
+    s32 pad2[3];
 
-static bool rspParseJPEG_DecodeZ(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_DecodeZ.s")
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &infoStruct, pTask->nOffsetMBI, NULL)) {
+        return false;
+    }
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &system_imb, infoStruct[0], NULL)) {
+        return false;
+    }
+
+    size = infoStruct[1];
+    rspCreateJPEGArraysZ(pRSP, infoStruct[3], infoStruct[4], infoStruct[5]);
+    temp2 = (s16*)system_imb;
+
+    for (y = 0; y < size; y++) {
+        rspRecon420Z(pRSP, temp2);
+        rspDCTZ(pRSP);
+        rspZigzagDataZ(pRSP, temp2);
+        rspQuantizeZ(pRSP, temp2);
+        temp2 += 0x180;
+    }
+
+    return true;
+}
+
+static bool rspParseJPEG_DecodeZ(Rsp* pRSP, RspTask* pTask) {
+    s32 y;
+    s32 pad;
+    s16* temp;
+    s16* temp2;
+    u64* system_imb;
+    u32* infoStruct;
+    s32 size;
+    s32 pad2[3];
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &infoStruct, pTask->nOffsetMBI, NULL)) {
+        return false;
+    }
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &system_imb, infoStruct[0], NULL)) {
+        return false;
+    }
+
+    size = infoStruct[1];
+    rspCreateJPEGArraysZ(pRSP, infoStruct[3], infoStruct[4], infoStruct[5]);
+    temp2 = (s16*)system_imb;
+
+    for (y = 0; y < size; y++) {
+        rspUndoQuantizeZ(pRSP, temp2);
+        rspUndoZigzagDataZ(pRSP, temp2);
+        rspUndoDCTZ(pRSP);
+        rspUndoRecon420Z(pRSP, temp2);
+        temp2 += 0x180;
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/Matrix4by4Identity.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFillObjSprite.s")
+static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, __anon_0x5F63B* pSprite) {
+    u16* pnData16;
+    u8* pnData8;
+    u8* pObjSprite;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFillObjBgScale.s")
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjSprite, nAddress, NULL)) {
+        return false;
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFillObjBg.s")
+    pnData8 = (u8*)pObjSprite;
+    pnData16 = (u16*)pObjSprite;
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetImage.s")
+    pSprite->s.objX = pnData16[0];
+    pSprite->s.scaleW = pnData16[1];
+    pSprite->s.imageW = pnData16[2];
+    pSprite->s.paddingX = pnData16[3];
+    pSprite->s.objY = pnData16[4];
+    pSprite->s.scaleH = pnData16[5];
+    pSprite->s.imageH = pnData16[6];
+    pSprite->s.paddingY = pnData16[7];
+    pSprite->s.imageStride = pnData16[8];
+    pSprite->s.imageAdrs = pnData16[9];
+    pSprite->s.imageFmt = pnData8[20];
+    pSprite->s.imageSiz = pnData8[21];
+    pSprite->s.imagePal = pnData8[22];
+    pSprite->s.imageFlags = pnData8[23];
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/tmemLoad_B.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/tmemLoad_A.s")
+bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg) {
+    u8* pnData8;
+    u8* pObjBg;
+    u16* pnData16;
+    u32* pnData32;
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjBg, nAddress, NULL)) {
+        return false;
+    }
+
+    pnData8 = (u8*)pObjBg;
+    pnData16 = (u16*)pObjBg;
+    pnData32 = (u32*)pObjBg;
+
+    pBg->s.imageX = pnData16[0];
+    pBg->s.imageW = pnData16[1];
+    pBg->s.frameX = pnData16[2];
+    pBg->s.frameW = pnData16[3];
+    pBg->s.imageY = pnData16[4];
+    pBg->s.imageH = pnData16[5];
+    pBg->s.frameY = pnData16[6];
+    pBg->s.frameH = pnData16[7];
+    pBg->s.imagePtr = pnData32[4];
+    pBg->s.imageLoad = pnData16[10];
+    pBg->s.imageFmt = pnData8[22];
+    pBg->s.imageSiz = pnData8[23];
+    pBg->s.imagePal = pnData16[12];
+    pBg->s.imageFlip = pnData16[13];
+    pBg->s.scaleW = pnData16[14];
+    pBg->s.scaleH = pnData16[15];
+    pBg->s.imageYorig = pnData32[8];
+
+    return true;
+}
+
+bool rspFillObjBg(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg) {
+    u8* pnData8;
+    u8* pObjBg;
+    u16* pnData16;
+    u32* pnData32;
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjBg, nAddress, NULL)) {
+        return false;
+    }
+
+    pnData8 = (u8*)pObjBg;
+    pnData16 = (u16*)pObjBg;
+    pnData32 = (u32*)pObjBg;
+
+    pBg->b.imageX = pnData16[0];
+    pBg->b.imageW = pnData16[1];
+    pBg->b.frameX = pnData16[2];
+    pBg->b.frameW = pnData16[3];
+    pBg->b.imageY = pnData16[4];
+    pBg->b.imageH = pnData16[5];
+    pBg->b.frameY = pnData16[6];
+    pBg->b.frameH = pnData16[7];
+    pBg->b.imagePtr = pnData32[4];
+    pBg->b.imageLoad = pnData16[10];
+    pBg->b.imageFmt = pnData8[22];
+    pBg->b.imageSiz = pnData8[23];
+    pBg->b.imagePal = pnData16[12];
+    pBg->b.imageFlip = pnData16[13];
+    pBg->b.tmemW = pnData16[14];
+    pBg->b.tmemH = pnData16[15];
+    pBg->b.tmemLoadSH = pnData16[16];
+    pBg->b.tmemLoadTH = pnData16[17];
+    pBg->b.tmemSizeW = pnData16[18];
+    pBg->b.tmemSize = pnData16[19];
+
+    return true;
+}
+
+bool rspSetImage(Frame* pFrame, Rsp* pRSP, s32 nFormat, s32 nWidth, s32 nSize, s32 nImage) {
+    FrameBuffer* pBuffer;
+    s32 nAddr;
+
+    pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+    pBuffer->nFormat = nFormat;
+    pBuffer->nWidth = nWidth;
+    pBuffer->nSize = nSize;
+    nAddr = SEGMENT_ADDRESS(pRSP, nImage);
+    pBuffer->nAddress = nAddr;
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pBuffer->pData, nAddr, NULL)) {
+        return false;
+    }
+
+    if (!frameSetBuffer(pFrame, FBT_IMAGE)) {
+        return false;
+    }
+
+    return true;
+}
+
+static bool tmemLoad_B(Frame* pFrame, Rsp* pRSP, u32 imagePtr, s16 loadLines, s16 tmemSH) {
+    FrameBuffer* pBuffer;
+    s32 nAddr;
+
+    pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+    pBuffer->nFormat = 0;
+    pBuffer->nWidth = imageSrcWsize >> 1;
+    pBuffer->nSize = 2;
+    nAddr = SEGMENT_ADDRESS(pRSP, imagePtr);
+    pBuffer->nAddress = nAddr;
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pBuffer->pData, nAddr, NULL)) {
+        return false;
+    }
+
+    if (!frameSetBuffer(pFrame, FBT_IMAGE)) {
+        return false;
+    }
+
+    pFrame->aTile[7].nX0 = 0;
+    pFrame->aTile[7].nY0 = 0;
+    pFrame->aTile[7].nX1 = (tmemSH - 1) * 16;
+    pFrame->aTile[7].nY1 = (loadLines * 4) - 1;
+
+    if (!frameLoadTMEM(pFrame, FLT_TILE, 7)) {
+        return false;
+    }
+
+    return true;
+}
+
+static bool tmemLoad_A(Frame* pFrame, Rsp* pRSP, s32 imagePtr, s16 loadLines, s16 tmemAdrs, s16 tmemSH) {
+    pFrame->aTile[7].nSize = 2;
+    pFrame->aTile[7].nTMEM = tmemAdrs;
+    pFrame->aTile[7].iTLUT = 0;
+    pFrame->aTile[7].nSizeX = tmemSliceWmax;
+    pFrame->aTile[7].nFormat = 0;
+    pFrame->aTile[7].nMaskS = 0;
+    pFrame->aTile[7].nMaskT = 0;
+    pFrame->aTile[7].nModeS = 0;
+    pFrame->aTile[7].nModeT = 0;
+    pFrame->aTile[7].nShiftS = 0;
+    pFrame->aTile[7].nShiftT = 0;
+
+    if (!frameDrawReset(pFrame, 0x1)) {
+        return false;
+    }
+
+    tmemLoad_B(pFrame, pRSP, imagePtr, loadLines, tmemSH);
+
+    NO_INLINE();
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/tmemLoad.s")
 
