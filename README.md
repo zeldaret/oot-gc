@@ -32,7 +32,7 @@ You can install the dependencies with the following commands:
 
 ```
 sudo apt-get update
-sudo apt-get install git ninja python3
+sudo apt-get install git ninja-build python3
 ```
 
 #### macOS
