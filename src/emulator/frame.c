@@ -4731,8 +4731,8 @@ bool frameResetUCode(Frame* pFrame, FrameResetType eType) {
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
     if (eType == FBT_COLOR_SHOW || eType == FBT_COLOR_DRAW) {
     } else if (eType == FBT_DEPTH) {
-            pFrame->nOffsetDepth0 = pFrame->aBuffer[FBT_DEPTH].nAddress & 0x03FFFFFF;
-            pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
+        pFrame->nOffsetDepth0 = pFrame->aBuffer[FBT_DEPTH].nAddress & 0x03FFFFFF;
+        pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
     }
 
     return true;

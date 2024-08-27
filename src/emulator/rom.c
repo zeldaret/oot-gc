@@ -6,8 +6,8 @@
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
 #include "emulator/xlCoreGCN.h"
-#include "emulator/xlHeap.h"
 #include "emulator/xlFile.h"
+#include "emulator/xlHeap.h"
 #include "macros.h"
 
 static bool romMakeFreeCache(Rom* pROM, s32* piCache, RomCacheType eType);
@@ -109,25 +109,26 @@ static bool romGetTagToken(Rom* pROM, tXL_FILE* pFile, RomTokenType* peToken, ch
             }
             if (acToken[0] == '[') {
                 *peToken = RTT_NAME_INVALID;
-                
+
                 do {
                     if (!xlFileGetToken(pFile, &eTypeToken, acToken, sizeof(acToken) - 1)) {
                         return false;
                     }
 
                     if (eTypeToken == XLFTT_LABEL && romTestCode(pROM, acToken) ||
-                        eTypeToken == XLFTT_NUMBER && xlTokenGetInteger(acToken, &nChecksum) && (nChecksum == pROM->nChecksum)) {
+                        eTypeToken == XLFTT_NUMBER && xlTokenGetInteger(acToken, &nChecksum) &&
+                            (nChecksum == pROM->nChecksum)) {
                         *peToken = RTT_NAME;
                     }
-                    
+
                     if (!xlFileGetToken(pFile, &eTypeToken, acToken, sizeof(acToken) - 1)) {
                         return false;
                     }
-        
+
                     if ((acToken[0] != ',') && (acToken[0] != ']')) {
                         return false;
                     }
-                    
+
                     if (acToken[0] == ']') {
                         if (!xlFileMatchToken(pFile, XLFTT_SYMBOL, NULL, 0, "=")) {
                             return false;
@@ -729,7 +730,7 @@ bool romCacheGame(Rom* pROM) {
         } else {
             szName = "";
         }
-    
+
         if (xlFileOpen(&pFile, 1, szName)) {
             nSize = pFile->nSize;
             gpImageBack = (u8*)SYSTEM_RAM(pROM->pHost)->pBuffer + 0x300000;

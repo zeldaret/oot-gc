@@ -1,10 +1,10 @@
 #include "emulator/mcardGCN.h"
+#include "dolphin/card.h"
 #include "emulator/mcardGCN_jumptables.h"
 #include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
 #include "string.h"
-#include "dolphin/card.h"
 
 // "The Legend of Zelda: Ocarina of Time"
 char D_800EA548[] = "ゼルダの伝説：時のオカリナ";
