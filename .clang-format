@@ -23,4 +23,3 @@ AllowShortEnumsOnASingleLine: false
 AlignEscapedNewlines: Left
 AlignTrailingComments: false
 SortIncludes: true
-InsertBraces: true
