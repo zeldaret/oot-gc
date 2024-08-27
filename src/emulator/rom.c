@@ -20,7 +20,16 @@ _XL_OBJECTTYPE gClassROM = {
     (EventFunc)romEvent,
 };
 
-#include "emulator/rom_tables.h"
+#if IS_JP
+#include "ganOffsetBlock_ZLJ.inc"
+#include "ganOffsetBlock_URAZLJ.inc"
+#elif IS_US
+#include "ganOffsetBlock_ZLE.inc"
+#include "ganOffsetBlock_URAZLE.inc"
+#elif IS_EU
+#include "ganOffsetBlock_ZLP.inc"
+#include "ganOffsetBlock_URAZLP.inc"
+#endif
 
 static bool gbProgress;
 static void* gpImageBack;
@@ -513,10 +522,10 @@ static bool romCacheGame(Rom* pROM) {
 
     if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
         if (gnFlagZelda & 2) {
-            pROM->anOffsetBlock = ganOffsetBlock_ZLJ;
+            pROM->anOffsetBlock = (u32*)ganOffsetBlock_ZLJ;
             pROM->nCountOffsetBlocks = 0xC6;
         } else {
-            pROM->anOffsetBlock = ganOffsetBlock_URAZLJ;
+            pROM->anOffsetBlock = (u32*)ganOffsetBlock_URAZLJ;
             pROM->nCountOffsetBlocks = 0xC6;
         }
 
@@ -587,21 +596,21 @@ static bool romCacheGame(Rom* pROM) {
 #if VERSION == CE_J
         if (gnFlagZelda & 2) {
             if (!bIsCZLE) {
-                pROM->anOffsetBlock = ganOffsetBlock_ZLJ;
+                pROM->anOffsetBlock = (u32*)ganOffsetBlock_ZLJ;
                 pROM->nCountOffsetBlocks = 0xC6;
             }
         } else if (!bIsCZLE) {
-            pROM->anOffsetBlock = ganOffsetBlock_URAZLJ;
+            pROM->anOffsetBlock = (u32*)ganOffsetBlock_URAZLJ;
             pROM->nCountOffsetBlocks = 0xC6;
         }
-#elif VERSION == MQ_U || VERSION == CE_U
+#elif IS_US
         if (gnFlagZelda & 2) {
             if (bIsCZLE) {
-                pROM->anOffsetBlock = ganOffsetBlock_ZLE;
+                pROM->anOffsetBlock = (u32*)ganOffsetBlock_ZLE;
                 pROM->nCountOffsetBlocks = 0xC6;
             }
         } else if (bIsCZLE) {
-            pROM->anOffsetBlock = ganOffsetBlock_URAZLE;
+            pROM->anOffsetBlock = (u32*)ganOffsetBlock_URAZLE;
             pROM->nCountOffsetBlocks = 0xC6;
         }
 #endif
@@ -700,11 +709,11 @@ bool romCacheGame(Rom* pROM) {
     if (bZeldaE || bZeldaJ || bZeldaF || bZeldaG || bZeldaI || bZeldaS) {
         if (gnFlagZelda & 2) {
             if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {
-                pROM->anOffsetBlock = ganOffsetBlock_ZLP;
+                pROM->anOffsetBlock = (u32*)ganOffsetBlock_ZLP;
                 pROM->nCountOffsetBlocks = 0xC6;
             }
         } else if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {
-            pROM->anOffsetBlock = ganOffsetBlock_URAZLP;
+            pROM->anOffsetBlock = (u32*)ganOffsetBlock_URAZLP;
             pROM->nCountOffsetBlocks = 0xC6;
         }
 

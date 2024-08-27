@@ -231,7 +231,7 @@ static bool systemSetupGameRAM(System* pSystem) {
                 gnFlagZelda = 5;
                 break;
 
-#elif VERSION == MQ_U || VERSION == CE_U
+#elif IS_US
             case 0x5CAC1CF7:
                 gnFlagZelda = 2;
                 break;
