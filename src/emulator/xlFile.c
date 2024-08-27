@@ -6,7 +6,7 @@
 #include "emulator/xlText.h"
 
 #if IS_EU
-// this variable is inside xlFile.c on CE-EU
+// this is inside xlFile.c on CE-E
 _XL_OBJECTTYPE gTypeFile = {
     "FILE",
     sizeof(tXL_FILE),
