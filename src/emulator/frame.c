@@ -2060,6 +2060,7 @@ static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle) {
     f32 rX1;
     f32 rY1;
 
+    //! @bug `pRectangle->nY1` is using the N64 width instead of the height
     if ((pFrame->aMode[FMT_OTHER1] & 0x300000) == 0x300000 && pRectangle->nX0 <= 16 && pRectangle->nY0 <= 32 &&
         pRectangle->nX1 >= N64_FRAME_WIDTH - 16 && pRectangle->nY1 >= N64_FRAME_WIDTH - 32) {
         bFlag = false;
@@ -4728,10 +4729,12 @@ bool frameResetUCode(Frame* pFrame, FrameResetType eType) {
 }
 
 bool frameSetBuffer(Frame* pFrame, FrameBufferType eType) {
-    if (((u32)(eType - 2) > 1) && (eType == FBT_DEPTH)) {
-        pFrame->nOffsetDepth0 = pFrame->aBuffer[FBT_DEPTH].nAddress & 0x03FFFFFF;
-        pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
+    if (eType == FBT_COLOR_SHOW || eType == FBT_COLOR_DRAW) {
+    } else if (eType == FBT_DEPTH) {
+            pFrame->nOffsetDepth0 = pFrame->aBuffer[FBT_DEPTH].nAddress & 0x03FFFFFF;
+            pFrame->nOffsetDepth1 = pFrame->nOffsetDepth0 + 0x257FC;
     }
+
     return true;
 }
 

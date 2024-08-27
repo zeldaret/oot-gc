@@ -47,39 +47,19 @@ inline void padStack(void) { int pad = 0; }
 #define PAD_STACK() padStack()
 
 #ifdef __MWERKS__
+#define AT_ADDRESS(xyz) : (xyz)
+#define DECL_SECTION(x) __declspec(section x)
+#define WEAK __declspec(weak)
 #define ASM asm
 #else
+#define AT_ADDRESS(xyz)
+#define DECL_SECTION(x)
+#define WEAK
 #define ASM
 #endif
 
-#ifdef __MWERKS__
-#define WEAK __declspec(weak)
-#else
-#define WEAK
-#endif
-
-#ifdef __MWERKS__
-#define INIT __declspec(section ".init")
-#else
-#define INIT
-#endif
-
-#ifdef __MWERKS__
-#define CTORS __declspec(section ".ctors")
-#else
-#define CTORS
-#endif
-
-#ifdef __MWERKS__
-#define DTORS __declspec(section ".dtors")
-#else
-#define DTORS
-#endif
-
-#ifdef __MWERKS__
-#define AT_ADDRESS(xyz) : (xyz)
-#else
-#define AT_ADDRESS(xyz)
-#endif
+#define INIT DECL_SECTION(".init")
+#define CTORS DECL_SECTION(".ctors")
+#define DTORS DECL_SECTION(".dtors")
 
 #endif
