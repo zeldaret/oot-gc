@@ -297,7 +297,9 @@ bool soundSetBufferSize(Sound* pSound, s32 nSize) {
     int iBuffer;
 
     if (nSize % 32 != 0) {
+#if !IS_EU
         xlPostText("SetBufferSize: ERROR: 'nSize' must be a multiple of 32! (%d)\n", "soundGCN.c", 674, nSize);
+#endif
         nSize = (nSize + 0x1F) & ~0x1F;
     }
 

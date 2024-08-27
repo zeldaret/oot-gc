@@ -3,12 +3,17 @@
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
 
+#if IS_EU
+extern _XL_OBJECTTYPE gTypeFile;
+#else
+// this is inside xlFile.c on the european versions
 _XL_OBJECTTYPE gTypeFile = {
     "FILE",
     sizeof(tXL_FILE),
     NULL,
     (EventFunc)xlFileEvent,
 };
+#endif
 
 static DVDOpenCallback gpfOpen;
 static DVDReadCallback gpfRead;
@@ -23,6 +28,8 @@ bool xlFileSetRead(DVDReadCallback pfRead) {
     return true;
 }
 
+#if !IS_EU
+// this function is inside xlFile.c on CE-EU
 bool xlFileGetSize(s32* pnSize, char* szFileName) {
     tXL_FILE* pFile;
 
@@ -40,6 +47,7 @@ bool xlFileGetSize(s32* pnSize, char* szFileName) {
 
     return false;
 }
+#endif
 
 static inline bool xlFileGetFile(tXL_FILE** ppFile, char* szFileName) {
     if (gpfOpen != NULL) {
@@ -122,17 +130,35 @@ bool xlFileSetPosition(tXL_FILE* pFile, s32 nOffset) {
     return false;
 }
 
+#if IS_EU
+bool xlFileGetPosition(tXL_FILE* pFile, s32* pnOffset) {
+    if (pnOffset != NULL) {
+        *pnOffset = pFile->nOffset;
+    }
+
+    return true;
+}
+#endif
+
 bool xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument) {
     switch (nEvent) {
         case 2:
             pFile->nSize = 0;
             pFile->nOffset = 0;
             pFile->pData = NULL;
+#if IS_EU
+            pFile->acLine = NULL;
+#endif
             if (!xlHeapTake(&pFile->pBuffer, 0x1024 | 0x30000000)) {
                 return false;
             }
             break;
         case 3:
+#if IS_EU
+            if ((pFile->acLine != NULL) && !xlHeapFree(&pFile->acLine)) {
+                return 0;
+            }
+#endif
             DVDClose(&pFile->info);
             if (!xlHeapFree(&pFile->pBuffer)) {
                 return false;

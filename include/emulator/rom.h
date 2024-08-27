@@ -8,6 +8,19 @@
 typedef bool UnknownCallbackFunc(void);
 typedef bool ProgressCallbackFunc(f32 progressPercent);
 
+// __anon_0x51047
+typedef enum RomTokenType {
+    RTT_NONE = -1,
+    RTT_CODE = 0,
+    RTT_CODE_INVALID = 1,
+    RTT_NAME = 2,
+    RTT_NAME_INVALID = 3,
+    RTT_DATA_STRING = 4,
+    RTT_DATA_NUMBER = 5,
+    RTT_DONE = 6,
+    RTT_LAST_ = 7,
+} RomTokenType;
+
 // __anon_0x4CF87
 typedef enum RomModeLoad {
     RLM_NONE = -1,
@@ -56,6 +69,15 @@ typedef struct RomLoadState {
     /* 0x2C */ u32 nSizeRead;
 } RomLoadState; // size = 0x30
 
+#if IS_EU
+// __anon_0x504C3
+typedef struct RomTagFile {
+    /* 0x0 */ s32 nMode;
+    /* 0x4 */ s32 nModeSave;
+    /* 0x8 */ tXL_SAVE save;
+} RomTagFile; // size = 0x10
+#endif
+
 // __anon_0x4D873
 typedef struct Rom {
     /* 0x00000 */ void* pHost;
@@ -77,6 +99,10 @@ typedef struct Rom {
     /* 0x10E70 */ u8 acHeader[64];
     /* 0x10EB0 */ u32* anOffsetBlock;
     /* 0x10EB4 */ s32 nCountOffsetBlocks;
+#if IS_EU
+    /* 0x10EB8 */ RomTagFile tagFile;
+    /* 0x10EC8 */ u32 nChecksum;
+#endif
     /* 0x10EB8 */ DVDFileInfo fileInfo;
     /* 0x10EF4 */ s32 offsetToRom;
 } Rom; // size = 0x10EF8

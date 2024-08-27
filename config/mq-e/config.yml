@@ -1,0 +1,69 @@
+# See config.example.yml for documentation.
+name: oot-gc
+object: orig/mq-e/main.dol
+hash: 9155899e1ed86fc2b25113c77d49396c77d24138
+symbols: config/mq-e/symbols.txt
+splits: config/mq-e/splits.txt
+mw_comment_version: 8
+
+extract:
+# xlCoreGCN.c
+- symbol: gTgPcTPL
+  header: gTgPcTPL.inc
+# simGCN.c
+- symbol: gcoverOpen
+  header: gcoverOpen.inc
+- symbol: gnoDisk
+  header: gnoDisk.inc
+- symbol: gretryErr
+  header: gretryErr.inc
+- symbol: gfatalErr
+  header: gfatalErr.inc
+- symbol: gwrongDisk
+  header: gwrongDisk.inc
+- symbol: greadingDisk
+  header: greadingDisk.inc
+- symbol: gyes
+  header: gyes.inc
+- symbol: gno
+  header: gno.inc
+- symbol: gmesgOK
+  header: gmesgOK.inc
+- symbol: gfrench_coverOpen
+  header: gfrench_coverOpen.inc
+- symbol: gfrench_noDisk
+  header: gfrench_noDisk.inc
+- symbol: gfrench_retryErr
+  header: gfrench_retryErr.inc
+- symbol: gfrench_fatalErr
+  header: gfrench_fatalErr.inc
+- symbol: gfrench_wrongDisk
+  header: gfrench_wrongDisk.inc
+- symbol: gfrench_readingDisk
+  header: gfrench_readingDisk.inc
+- symbol: gfrench_yes
+  header: gfrench_yes.inc
+- symbol: gfrench_no
+  header: gfrench_no.inc
+- symbol: gfrench_mesgOK
+  header: gfrench_mesgOK.inc
+- symbol: ggerman_coverOpen
+  header: ggerman_coverOpen.inc
+- symbol: ggerman_noDisk
+  header: ggerman_noDisk.inc
+- symbol: ggerman_retryErr
+  header: ggerman_retryErr.inc
+- symbol: ggerman_fatalErr
+  header: ggerman_fatalErr.inc
+- symbol: ggerman_wrongDisk
+  header: ggerman_wrongDisk.inc
+- symbol: ggerman_readingDisk
+  header: ggerman_readingDisk.inc
+- symbol: ggerman_yes
+  header: ggerman_yes.inc
+- symbol: ggerman_no
+  header: ggerman_no.inc
+- symbol: ggerman_mesgOK
+  header: ggerman_mesgOK.inc
+- symbol: gbar
+  header: gbar.inc

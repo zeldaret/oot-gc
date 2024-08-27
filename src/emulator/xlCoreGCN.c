@@ -37,6 +37,11 @@ static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
         return;
     }
 
+#if VERSION == CE_E
+    rmode = &GXEurgb60Hz480IntDf;
+    rmode->viXOrigin -= 0x20;
+    rmode->viWidth += 0x40;
+#else
     switch (VIGetTvFormat()) {
         case 0:
             rmode = &GXNtsc480IntDf;
@@ -62,13 +67,22 @@ static void xlCoreInitRenderMode(GXRenderModeObj* mode) {
         case 2:
             rmode = &GXMpal480IntDf;
             break;
+#if VERSION == MQ_E
+        case 5:
+            rmode = &GXEurgb60Hz480IntDf;
+            rmode->viXOrigin -= 0x20;
+            rmode->viWidth += 0x40;
+            break;
+#endif
         default:
-            OSPanic("xlCoreGCN.c", 182, "DEMOInit: invalid TV format\n");
+            OSPanic("xlCoreGCN.c", VERSION == MQ_E ? 189 : 182, "DEMOInit: invalid TV format\n");
             break;
     }
+#endif
 
     GXAdjustForOverscan(rmode, &rmodeobj, 0, 0);
     rmode = &rmodeobj;
+    NO_INLINE();
 }
 
 static void xlCoreInitMem(void) {
@@ -237,7 +251,7 @@ int main(int nCount, char** aszArgument) {
         return false;
     }
 
-    OSPanic("xlCoreGCN.c", 577, "CORE DONE!");
+    OSPanic("xlCoreGCN.c", VERSION == CE_E ? 593 : VERSION == MQ_E ? 584 : 577, "CORE DONE!");
     return false;
 }
 

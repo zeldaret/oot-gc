@@ -10,6 +10,7 @@
 #define CE_E 6
 #define IS_MQ (VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E)
 #define IS_CE (VERSION == CE_J || VERSION == CE_U || VERSION == CE_E)
+#define IS_EU (VERSION == MQ_E || VERSION == CE_E)
 
 #define ALIGN_PREV(X, N) ((X) & ~((N) - 1))
 #define ALIGN_NEXT(X, N) ALIGN_PREV(((X) + (N) - 1), N)

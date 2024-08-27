@@ -13,6 +13,25 @@ typedef enum XlFileType {
     XLFT_BINARY = 1,
 } XlFileType;
 
+#if IS_EU
+typedef struct tXL_SAVE {
+    /* 0x0 */ s32 nPosition;
+    /* 0x4 */ s32 nLineNumber;
+} tXL_SAVE; // size = 0x8
+
+typedef struct tXL_FILE {
+    /* 0x00 */ void* pData;
+    /* 0x04 */ char* acLine;
+    /* 0x08 */ void* pBuffer;
+    /* 0x0C */ s32 nAttributes;
+    /* 0x10 */ s32 nSize;
+    /* 0x14 */ s32 nOffset;
+    /* 0x18 */ XlFileType eType;
+    /* 0x1C */ s32 iLine;
+    /* 0x20 */ s32 nLineNumber;
+    /* 0x24 */ DVDFileInfo info;
+} tXL_FILE; // size = 0x60
+#else
 typedef struct tXL_FILE {
     /* 0x00 */ s32 iBuffer;
     /* 0x04 */ void* pData;
@@ -23,6 +42,7 @@ typedef struct tXL_FILE {
     /* 0x18 */ XlFileType eType;
     /* 0x1C */ DVDFileInfo info;
 } tXL_FILE; // size = 0x58
+#endif
 
 bool xlFileSetOpen(DVDOpenCallback pfOpen);
 bool xlFileSetRead(DVDReadCallback pfRead);
