@@ -29,7 +29,7 @@ bool xlFileSetRead(DVDReadCallback pfRead) {
 }
 
 #if !IS_EU
-// this function is inside xlFile.c on CE-E
+// this function is inside xlFile.c on the european versions
 bool xlFileGetSize(s32* pnSize, char* szFileName) {
     tXL_FILE* pFile;
 
