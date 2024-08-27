@@ -189,8 +189,11 @@ static bool systemSetupGameRAM(System* pSystem) {
     }
 
     // Ocarina of Time or Majora's Mask
-    if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || romTestCode(pROM, "NZSJ") ||
-        romTestCode(pROM, "NZSE")) {
+    if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE")
+#if IS_EU
+        || romTestCode(pROM, "NZLP")
+#endif
+        || romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
         switch (nCode) {
 
 #if VERSION == MQ_J
@@ -382,7 +385,11 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
 #endif
 
-    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
+    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")
+#if IS_EU
+               || romTestCode(pROM, "NZLP")
+#endif
+    ) {
         // Ocarina of Time
         gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
 
@@ -622,7 +629,11 @@ static bool systemSetupGameALL(System* pSystem) {
         if (!cpuSetCodeHack(pCPU, 0x80317938, 0x5420FFFE, 0)) {
             return false;
         }
-    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
+    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")
+#if IS_EU
+        || romTestCode(pROM, "NZLP")
+#endif
+) {
         // Ocarina of Time
         pSystem->eTypeROM = SRT_ZELDA1;
         nSizeSound = 0x1000;
@@ -657,7 +668,7 @@ static bool systemSetupGameALL(System* pSystem) {
                 }
             } else
 #if IS_EU
-            if (romTestCode(pROM, "CZLJ"))
+                if (romTestCode(pROM, "CZLJ"))
 #endif
             {
                 if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
@@ -690,7 +701,7 @@ static bool systemSetupGameALL(System* pSystem) {
                 }
             } else
 #if IS_EU
-            if (romTestCode(pROM, "CZLJ"))
+                if (romTestCode(pROM, "CZLJ"))
 #endif
             {
                 if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
@@ -765,10 +776,10 @@ static bool systemSetupGameALL(System* pSystem) {
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
                 mcardOpen(&mCard, MCARD_FILE_NAME, MCARD_COMMENT, mCard.saveIcon, mCard.saveBanner, "ZELDA",
                           &gSystemRomConfigurationList[i].currentControllerConfig, MCARD_FILE_SIZE, 0x8000);
-#if IS_EU
-            mCard.file.game.buffer[2] = gLanguage;
-#endif
             }
+#if IS_EU
+                mCard.file.game.buffer[2] = gLanguage;
+#endif
         } else {
             // debug rom?
 #if IS_EU
@@ -944,14 +955,24 @@ static bool systemSetupGameALL(System* pSystem) {
 
 #if IS_EU
         strcat(buf2, "z_bnr.tpl");
-#endif
+        if (DVDOpen(buf2, &fileInfo) == 1 &&
+            !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+            return false;
+        }
+#else
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
         }
-
+#endif
         DVDClose(&fileInfo);
+
+#if IS_EU
+        simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
+#else
         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#endif
+
         mcardOpen(&mCard, "AF", "Animal Forest", mCard.saveIcon, mCard.saveBanner, "AF",
                   &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
     } else if (romTestCode(pROM, "NBCE")) {
@@ -979,15 +1000,25 @@ static bool systemSetupGameALL(System* pSystem) {
             simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
 #if IS_EU
-            strcat(buf2, "z_bnr.tpl");
+        strcat(buf2, "z_bnr.tpl");
+        if (DVDOpen(buf2, &fileInfo) == 1 &&
+            !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+            return false;
+        }
+#else
+        if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
+            !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+            return false;
+        }
 #endif
-            if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
-                !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
-                return false;
-            }
 
             DVDClose(&fileInfo);
-            simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+
+#if IS_EU
+        simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
+#else
+        simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#endif
             mcardOpen(&mCard, "CRUISE", "Cruise 'n USA", mCard.saveIcon, mCard.saveBanner, "CRUISE",
                       &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
 
@@ -1250,15 +1281,24 @@ static bool systemSetupGameALL(System* pSystem) {
                     simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
 #if IS_EU
-                    strcat(buf2, "z_bnr.tpl");
+        strcat(buf2, "z_bnr.tpl");
+        if (DVDOpen(buf2, &fileInfo) == 1 &&
+            !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+            return false;
+        }
+#else
+        if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
+            !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+            return false;
+        }
 #endif
-                    if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
-                        !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
-                        return false;
-                    }
 
                     DVDClose(&fileInfo);
-                    simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#if IS_EU
+        simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
+#else
+        simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#endif
 
                     mcardOpen(&mCard, "PokemonStadium", "Pokemon Stadium", mCard.saveIcon, mCard.saveBanner,
                               "POKEMONSTADIUM", &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000,

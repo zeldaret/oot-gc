@@ -395,7 +395,11 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
                 break;
             default:
                 nMessage = S_M_DISK_DEFAULT_ERROR;
-                xlPostText("ShowError: Unknown FileInfoStatus: %d", "simGCN.c", VERSION == MQ_J ? 750 : IS_EU ? 865 : 763, nStatus);
+                xlPostText("ShowError: Unknown FileInfoStatus: %d", "simGCN.c",
+                           VERSION == MQ_J ? 750
+                           : IS_EU         ? 865
+                                           : 763,
+                           nStatus);
                 break;
         }
 
@@ -2085,7 +2089,10 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
 bool simulatorDrawMCardText(void) {
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
-        xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", IS_EU ? 1924 : 1623);
+        xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c",
+                   VERSION == CE_E   ? 1924
+                   : VERSION == MQ_E ? 1836
+                                     : 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
 #endif
@@ -2109,7 +2116,10 @@ bool simulatorMCardPollDrawBar(void) {
 
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
-        xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", IS_EU ? 1924 : 1623);
+        xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c",
+                   VERSION == CE_E   ? 1924
+                   : VERSION == MQ_E ? 1836
+                                     : 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
 #endif
@@ -2133,7 +2143,10 @@ bool simulatorMCardPollDrawFormatBar(void) {
 
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
-        xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c", IS_EU ? 1924 : 1623);
+        xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c",
+                   VERSION == CE_E   ? 1924
+                   : VERSION == MQ_E ? 1836
+                                     : 1623);
         simulatorPrepareMessage(S_M_CARD_SV09);
     }
 #endif
