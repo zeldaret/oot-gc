@@ -4,8 +4,10 @@
 #include "emulator/xlHeap.h"
 #include "emulator/xlObject.h"
 #include "emulator/xlText.h"
+#include "string.h"
 
 #if IS_EU
+
 // this is inside xlFileGCN.c on the other versions
 _XL_OBJECTTYPE gTypeFile = {
     "FILE",
@@ -13,15 +15,11 @@ _XL_OBJECTTYPE gTypeFile = {
     NULL,
     (EventFunc)xlFileEvent,
 };
-#endif
 
 static char* gacValidNumber = "0123456789.xXABCDEFabcdef";
 static char* gacValidSymbol = "~!@#$%^&*()-=_+{}[]|\\:;'<>?,./";
 static char* gacValidLabel = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz0123456789";
 
-char* strchr(const char* str, int chr);
-
-#if IS_EU
 // this function is inside xlFileGCN.c on the other versions
 bool xlFileGetSize(s32* pnSize, char* szFileName) {
     tXL_FILE* pFile;
@@ -40,7 +38,6 @@ bool xlFileGetSize(s32* pnSize, char* szFileName) {
 
     return false;
 }
-#endif
 
 bool xlFileGetLine(tXL_FILE* pFile, char* acLine, s32 nSizeLine) {
     s32 iCharacter;
@@ -55,8 +52,10 @@ bool xlFileGetLine(tXL_FILE* pFile, char* acLine, s32 nSizeLine) {
             }
             if (nCharacter == '\r') {
                 xlFileGet(pFile, &nCharacter, 1);
-                if ((nCharacter != '\n') && !xlFileSetPosition(pFile, pFile->nOffset - 1)) {
-                    return false;
+                if (nCharacter != '\n') {
+                    if (!xlFileSetPosition(pFile, pFile->nOffset - 1)) {
+                        return false;
+                    }
                 }
                 break;
             }
@@ -65,8 +64,8 @@ bool xlFileGetLine(tXL_FILE* pFile, char* acLine, s32 nSizeLine) {
 
         acLine[iCharacter] = '\0';
         pFile->nLineNumber++;
-        if ((iCharacter != 0) || (nCharacter == -1)) {
-            return ((iCharacter == 0) && (nCharacter == -1)) ? 0 : 1;
+        if (iCharacter != 0 || nCharacter == -1) {
+            return (iCharacter == 0 && nCharacter == -1) ? 0 : 1;
         }
     }
 }
@@ -81,11 +80,11 @@ bool xlTokenGetInteger(char* acToken, u32* pnValue) {
     iToken = 0;
     bNegate = 0;
 
-    if ((acToken[iToken] == '+') || (acToken[iToken] == '-')) {
+    if (acToken[iToken] == '+' || acToken[iToken] == '-') {
         bNegate = acToken[iToken++] == '-' ? 1 : 0;
     }
 
-    if ((acToken[iToken] == '0') && ((acToken[iToken + 1] == 'X') || (acToken[iToken + 1] == 'x'))) {
+    if (acToken[iToken] == '0' && (acToken[iToken + 1] == 'X' || acToken[iToken + 1] == 'x')) {
         nBase = 0x10;
         iToken += 2;
     } else {
@@ -94,11 +93,11 @@ bool xlTokenGetInteger(char* acToken, u32* pnValue) {
 
     while (acToken[iToken] != '\0') {
         nValue *= nBase;
-        if ((acToken[iToken] >= 'A') && (acToken[iToken] <= 'F')) {
-            nValue += acToken[iToken] - '7';
-        } else if ((acToken[iToken] >= 'a') && (acToken[iToken] <= 'f')) {
-            nValue += acToken[iToken] - 'W';
-        } else if ((acToken[iToken] >= '0') && (acToken[iToken] <= '9')) {
+        if (acToken[iToken] >= 'A' && acToken[iToken] <= 'F') {
+            nValue += acToken[iToken] - 'A' + 10;
+        } else if (acToken[iToken] >= 'a' && acToken[iToken] <= 'f') {
+            nValue += acToken[iToken] - 'a' + 10;
+        } else if (acToken[iToken] >= '0' && acToken[iToken] <= '9') {
             nValue += acToken[iToken] - '0';
         } else {
             return false;
@@ -143,7 +142,7 @@ bool xlFileGetToken(tXL_FILE* pFile, XlFileTokenType* peType, char* acToken, s32
     acLine = pFile->acLine;
 
     while (eType == XLFTT_NONE) {
-        if ((iLine < 0) || (iLine >= 0x100) || (acLine[iLine] == '\0')) {
+        if (iLine < 0 || iLine >= 0x100 || acLine[iLine] == '\0') {
             if (xlFileGetLine(pFile, acLine, 0x100)) {
                 iLine = 0;
             } else {
@@ -152,14 +151,14 @@ bool xlFileGetToken(tXL_FILE* pFile, XlFileTokenType* peType, char* acToken, s32
             }
         }
 
-        while ((acLine[iLine] <= ' ') && (acLine[iLine] != '\0')) {
+        while (acLine[iLine] <= ' ' && acLine[iLine] != '\0') {
             iLine++;
         }
 
         if (acLine[iLine] != '\0') {
-            if ((acLine[iLine] >= '0' && acLine[iLine] <= '9') ||
-                ((acLine[iLine] == '+' || acLine[iLine] == '-') && acLine[iLine + 1] >= '0' &&
-                 acLine[iLine + 1] <= '9')) {
+            if (acLine[iLine] >= '0' && acLine[iLine] <= '9' || (acLine[iLine] == '+' || acLine[iLine] == '-') &&
+                                                                    acLine[iLine + 1] >= '0' &&
+                                                                    acLine[iLine + 1] <= '9') {
                 eType = XLFTT_NUMBER;
                 while (acLine[iLine] != '\0') {
                     if (iToken < nSizeToken) {
@@ -170,8 +169,8 @@ bool xlFileGetToken(tXL_FILE* pFile, XlFileTokenType* peType, char* acToken, s32
                         break;
                     }
                 }
-            } else if (((acLine[iLine] >= 'A') && (acLine[iLine] <= 'Z')) ||
-                       (!(acLine[iLine] < 'a') && (acLine[iLine] <= 'z')) || (acLine[iLine] == '_')) {
+            } else if (acLine[iLine] >= 'A' && acLine[iLine] <= 'Z' || !(acLine[iLine] < 'a') && acLine[iLine] <= 'z' ||
+                       acLine[iLine] == '_') {
                 eType = XLFTT_LABEL;
                 while (acLine[iLine] != '\0') {
                     if (iToken < nSizeToken) {
@@ -185,7 +184,7 @@ bool xlFileGetToken(tXL_FILE* pFile, XlFileTokenType* peType, char* acToken, s32
             } else if (acLine[iLine] == '"') {
                 eType = XLFTT_STRING;
                 iLine++;
-                while ((acLine[iLine] != '\0') && (acLine[iLine] != '"')) {
+                while (acLine[iLine] != '\0' && acLine[iLine] != '"') {
                     if (iToken < nSizeToken) {
                         acToken[iToken++] = acLine[iLine];
                     }
@@ -217,8 +216,8 @@ bool xlFileMatchToken(tXL_FILE* pFile, XlFileTokenType eType, char* acToken, s32
     XlFileTokenType eTypeToken;
     char acTokenLocal[65];
 
-    if ((xlFileGetToken(pFile, &eTypeToken, acTokenLocal, 64) != 0) && (eType == eTypeToken) &&
-        ((szText == NULL) || (xlTextMatch(acTokenLocal, szText) != 0))) {
+    if (xlFileGetToken(pFile, &eTypeToken, acTokenLocal, 64) && eType == eTypeToken &&
+        (szText == NULL || xlTextMatch(acTokenLocal, szText))) {
         if (acToken != NULL) {
             if (nSizeToken < 64) {
                 acTokenLocal[nSizeToken] = '\0';
@@ -242,3 +241,5 @@ bool xlFileGetLineSave(tXL_FILE* pFile, tXL_SAVE* pSave) {
     }
     return false;
 }
+
+#endif

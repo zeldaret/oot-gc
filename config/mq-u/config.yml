@@ -31,8 +31,3 @@ extract:
   header: gno.inc
 - symbol: gmesgOK
   header: gmesgOK.inc
-# rom.c
-- symbol: ganOffsetBlock_ZLE
-  header: ganOffsetBlock_ZLE.inc
-- symbol: ganOffsetBlock_URAZLE
-  header: ganOffsetBlock_URAZLE.inc

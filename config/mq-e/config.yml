@@ -67,11 +67,6 @@ extract:
   header: ggerman_mesgOK.inc
 - symbol: gbar
   header: gbar.inc
-# rom.c
-- symbol: ganOffsetBlock_ZLP
-  header: ganOffsetBlock_ZLP.inc
-- symbol: ganOffsetBlock_URAZLP
-  header: ganOffsetBlock_URAZLP.inc
 
 block_relocations:
 # system.c

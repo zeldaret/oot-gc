@@ -2089,6 +2089,7 @@ bool simulatorTestReset(bool IPL, bool forceMenu, bool allowReset, bool usePrevi
 bool simulatorDrawMCardText(void) {
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
+        //! TODO: this should be an inline function
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c",
                    VERSION == CE_E   ? 1924
                    : VERSION == MQ_E ? 1836
@@ -2116,6 +2117,7 @@ bool simulatorMCardPollDrawBar(void) {
 
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
+        //! TODO: this should be an inline function
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c",
                    VERSION == CE_E   ? 1924
                    : VERSION == MQ_E ? 1836
@@ -2143,6 +2145,7 @@ bool simulatorMCardPollDrawFormatBar(void) {
 
 #if VERSION != MQ_J
     if ((s32)(((TEXPalette*)gpErrorMessageBuffer)->versionNumber) == 0) {
+        //! TODO: this should be an inline function
         xlPostText("Invalid Message Image Data - Assuming SV09", "simGCN.c",
                    VERSION == CE_E   ? 1924
                    : VERSION == MQ_E ? 1836

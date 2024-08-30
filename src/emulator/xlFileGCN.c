@@ -155,8 +155,10 @@ bool xlFileEvent(tXL_FILE* pFile, s32 nEvent, void* pArgument) {
             break;
         case 3:
 #if IS_EU
-            if ((pFile->acLine != NULL) && !xlHeapFree(&pFile->acLine)) {
-                return 0;
+            if (pFile->acLine != NULL) {
+                if (!xlHeapFree(&pFile->acLine)) {
+                    return false;
+                }
             }
 #endif
             DVDClose(&pFile->info);

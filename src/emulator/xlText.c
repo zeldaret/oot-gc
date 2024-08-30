@@ -1,6 +1,8 @@
 #include "dolphin/types.h"
 #include "macros.h"
 
+#if IS_EU
+
 s32 xlTextCopy(char* acTextTarget, char* szTextSource) {
     s32 iCharacter;
 
@@ -37,12 +39,12 @@ bool xlTextMatch(char* acText1, char* acText2) {
             s32 nCharacter2 = *acText2;
 
             upper1 = nCharacter1;
-            if ((nCharacter1 >= 0x61) && (upper1 <= 0x7A)) {
+            if ((nCharacter1 >= 'a') && (upper1 <= 'z')) {
                 upper1 -= 0x20;
             }
 
             upper2 = nCharacter2;
-            if ((nCharacter2 >= 0x61) && (nCharacter2 <= 0x7A)) {
+            if ((nCharacter2 >= 'a') && (nCharacter2 <= 'z')) {
                 upper2 -= 0x20;
             }
 
@@ -58,3 +60,5 @@ bool xlTextMatch(char* acText1, char* acText2) {
     }
     return false;
 }
+
+#endif

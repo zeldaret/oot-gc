@@ -80,32 +80,33 @@ typedef struct RomTagFile {
 
 // __anon_0x4D873
 typedef struct Rom {
-    /* 0x00000 */ void* pHost;
-    /* 0x00004 */ void* pBuffer;
-    /* 0x00008 */ bool bFlip;
-    /* 0x0000C */ bool bLoad;
-    /* 0x00010 */ char acNameFile[513];
-    /* 0x00214 */ u32 nSize;
-    /* 0x00218 */ RomModeLoad eModeLoad;
-    /* 0x0021C */ RomBlock aBlock[4096];
-    /* 0x1021C */ u32 nTick;
-    /* 0x10220 */ u8* pCacheRAM;
-    /* 0x10224 */ u8 anBlockCachedRAM[1024]; // Bitfield, one bit per block
-    /* 0x10624 */ u8 anBlockCachedARAM[2046]; // Bitfield, one bit per block
-    /* 0x10E24 */ RomCopyState copy;
-    /* 0x10E38 */ RomLoadState load;
-    /* 0x10E68 */ s32 nCountBlockRAM;
-    /* 0x10E6C */ s32 nSizeCacheRAM;
-    /* 0x10E70 */ u8 acHeader[64];
-    /* 0x10EB0 */ u32* anOffsetBlock;
-    /* 0x10EB4 */ s32 nCountOffsetBlocks;
+    /*  JP/US     EU   */
+    /* 0x00000 0x00000 */ void* pHost;
+    /* 0x00004 0x00004 */ void* pBuffer;
+    /* 0x00008 0x00008 */ bool bFlip;
+    /* 0x0000C 0x0000C */ bool bLoad;
+    /* 0x00010 0x00010 */ char acNameFile[513];
+    /* 0x00214 0x00214 */ u32 nSize;
+    /* 0x00218 0x00218 */ RomModeLoad eModeLoad;
+    /* 0x0021C 0x0021C */ RomBlock aBlock[4096];
+    /* 0x1021C 0x1021C */ u32 nTick;
+    /* 0x10220 0x10220 */ u8* pCacheRAM;
+    /* 0x10224 0x10224 */ u8 anBlockCachedRAM[1024]; // Bitfield, one bit per block
+    /* 0x10624 0x10624 */ u8 anBlockCachedARAM[2046]; // Bitfield, one bit per block
+    /* 0x10E24 0x10E24 */ RomCopyState copy;
+    /* 0x10E38 0x10E38 */ RomLoadState load;
+    /* 0x10E68 0x10E68 */ s32 nCountBlockRAM;
+    /* 0x10E6C 0x10E6C */ s32 nSizeCacheRAM;
+    /* 0x10E70 0x10E70 */ u8 acHeader[64];
+    /* 0x10EB0 0x10EB0 */ u32* anOffsetBlock;
+    /* 0x10EB4 0x10EB4 */ s32 nCountOffsetBlocks;
 #if IS_EU
-    /* 0x10EB8 */ RomTagFile tagFile;
-    /* 0x10EC8 */ u32 nChecksum;
+    /*   N/A   0x10EB8 */ RomTagFile tagFile;
+    /*   N/A   0x10EC8 */ u32 nChecksum;
 #endif
-    /* 0x10EB8 */ DVDFileInfo fileInfo;
-    /* 0x10EF4 */ s32 offsetToRom;
-} Rom; // size = 0x10EF8
+    /* 0x10EB8 0x10ECC */ DVDFileInfo fileInfo;
+    /* 0x10EF4 0x10F08 */ s32 offsetToRom;
+} Rom; // size = 0x10EF8 (JP/US), 0x10F0C (EU)
 
 bool romGetPC(Rom* pROM, u64* pnPC);
 bool romGetCode(Rom* pROM, char* acCode);
