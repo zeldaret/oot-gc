@@ -426,7 +426,7 @@ static bool mcardPoll(MemCard* pMCard) {
             }
 
             if (pMCard->pPollFunction != NULL) {
-                if (!simulatorTestReset(false, false, false, false)) {
+                if (!SIMULATOR_TEST_RESET(false, false, false, false)) {
                     return false;
                 } else {
                     pMCard->pPollFunction();
@@ -1375,7 +1375,7 @@ bool mcardUpdate(void) {
         prevIndex = 100;
         counter = 0;
         while (true) {
-            if (!simulatorTestReset(false, false, false, false)) {
+            if (!SIMULATOR_TEST_RESET(false, false, false, false)) {
                 return false;
             }
 
@@ -1428,14 +1428,14 @@ bool mcardUpdate(void) {
             }
 
             if (toggle != true && mCard.writeStatus == 0 || mCard.saveToggle != true) {
-                if (!simulatorTestReset(false, false, true, false)) {
+                if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
                     return false;
                 }
 
                 if (gpSystem->eTypeROM == SRT_ZELDA1 && mCard.saveToggle == true) {
                     do {
                         mcardMenu(&mCard, MC_M_SV12, &command);
-                        if (!simulatorTestReset(false, false, true, false)) {
+                        if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
                             return false;
                         }
                     } while (mCard.wait == true);
