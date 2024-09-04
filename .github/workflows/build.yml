@@ -8,6 +8,10 @@ jobs:
   build:
     container: ghcr.io/zeldaret/oot-gc-vc-build:main
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        matching: [true, false]
     defaults:
       run:
         shell: bash
@@ -30,13 +34,21 @@ jobs:
 
     # Build the project
     - name: Build
+      if: matrix.matching
       run: |
         python configure.py --map --binutils /binutils --compilers /compilers
         ninja all_source build/{mq-j,mq-u,mq-e,ce-j,ce-u,ce-e}/progress.json build/report.json
 
+    # Build the project (non-matching)
+    - name: Build (non-matching)
+      if: ${{ !matrix.matching }}
+      run: |
+        python configure.py --map --binutils /binutils --compilers /compilers --non-matching
+        ninja all_source
+
     # Upload progress if we're on the main branch
     - name: Upload progress
-      if: github.ref == 'refs/heads/main'
+      if: matrix.matching && github.ref == 'refs/heads/main'
       continue-on-error: true
       env:
         PROGRESS_SLUG: oot-gc

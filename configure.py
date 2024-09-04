@@ -136,6 +136,7 @@ config.compilers_path = args.compilers
 config.generate_map = args.map
 config.sjiswrap_path = args.sjiswrap
 config.non_matching = args.non_matching
+config.asm_processor = args.non_matching
 
 if not is_windows():
     config.wrapper = args.wrapper
@@ -189,6 +190,8 @@ cflags_base = [
 
 if config.non_matching:
     cflags_base.append("-DNON_MATCHING")
+if config.asm_processor:
+    cflags_base.append("-DASM_PROCESSOR")
 
 ### Helper functions
 

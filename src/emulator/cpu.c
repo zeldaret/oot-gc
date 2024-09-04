@@ -165,7 +165,7 @@ s32 ganMapGPR[] = {
     0x0000001B, 0x0000001C, 0x0000001D, 0x0000001E, 0x0000011C, 0x0000001F, 0x0000011E, 0x0000011F,
 };
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuOpcodeChecksum
 void* jtbl_800EBEF0[25] = {
     &lbl_80030EFC, &lbl_80030F7C, &lbl_80030F7C, &lbl_80030EFC, &lbl_80030EFC, &lbl_80030F7C, &lbl_80030EFC,
@@ -177,7 +177,7 @@ void* jtbl_800EBEF0[25] = {
 void* jtbl_800EBEF0[25] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuOpcodeChecksum
 void* jtbl_800EBF54[64] = {
     &lbl_80030F7C, &lbl_80030EA8, &lbl_80030F58, &lbl_80030F60, &lbl_80030F68, &lbl_80030F68, &lbl_80030F68,
@@ -200,7 +200,7 @@ char D_800EC078[] = "tree range (%p - %p)\n";
 char D_800EC090[] = "total nodes: %d (tree height: %d %d)\n";
 char D_800EC0B8[] = "total memory: %d\n";
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuFindFunction
 void* jtbl_800EC0CC[25] = {
     &lbl_8003381C, &lbl_80033A68, &lbl_80033A68, &lbl_8003381C, &lbl_8003381C, &lbl_80033A68, &lbl_8003381C,
@@ -212,7 +212,7 @@ void* jtbl_800EC0CC[25] = {
 void* jtbl_800EC0CC[25] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuFindFunction
 void* jtbl_800EC130[44] = {
     &lbl_800334D8, &lbl_800335A0, &lbl_80033564, &lbl_80033A5C, &lbl_80033644, &lbl_80033768, &lbl_80033768,
@@ -229,7 +229,7 @@ void* jtbl_800EC130[44] = {0};
 
 char D_800EC1E0[] = "_cpuGCN.c";
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteLoadStoreF
 void* jtbl_800EC1EC[15] = {
     &lbl_8003789C, &lbl_80038010, &lbl_80038010, &lbl_80038010, &lbl_80037AF0,
@@ -240,7 +240,7 @@ void* jtbl_800EC1EC[15] = {
 void* jtbl_800EC1EC[15] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteLoadStore
 void* jtbl_800EC228[12] = {
     &lbl_800383F4, &lbl_800386AC, &lbl_80038E70, &lbl_80038964, &lbl_80038560, &lbl_80038818,
@@ -250,7 +250,7 @@ void* jtbl_800EC228[12] = {
 void* jtbl_800EC228[12] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC258[64] = {
     &lbl_8003C690, &lbl_8003C6CC, &lbl_8003C708, &lbl_8003C754, &lbl_8003C78C, &lbl_8003C85C, &lbl_8003C88C,
@@ -268,7 +268,7 @@ void* jtbl_800EC258[64] = {
 void* jtbl_800EC258[64] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC358[64] = {
     &lbl_8003BEA4, &lbl_8003BED0, &lbl_8003BEFC, &lbl_8003BF28, &lbl_8003BF54, &lbl_8003C030, &lbl_8003C078,
@@ -286,7 +286,7 @@ void* jtbl_800EC358[64] = {
 void* jtbl_800EC358[64] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC458[64] = {
     &lbl_8003B774, &lbl_8003B7A0, &lbl_8003B7CC, &lbl_8003B7F8, &lbl_8003B824, &lbl_8003B8C8, &lbl_8003B8E8,
@@ -304,7 +304,7 @@ void* jtbl_800EC458[64] = {
 void* jtbl_800EC458[64] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC558[64] = {
     &lbl_8003B040, &lbl_8003B06C, &lbl_8003B098, &lbl_8003B0C4, &lbl_8003B0F0, &lbl_8003B198, &lbl_8003B1BC,
@@ -322,7 +322,7 @@ void* jtbl_800EC558[64] = {
 void* jtbl_800EC558[64] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC658[7] = {
     &lbl_8003AD84, &lbl_8003ADD4, &lbl_8003ADF8, &lbl_8003DEAC, &lbl_8003AE14, &lbl_8003AE98, &lbl_8003AEBC,
@@ -331,7 +331,7 @@ void* jtbl_800EC658[7] = {
 void* jtbl_800EC658[7] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC674[9] = {
     &lbl_8003AC94, &lbl_8003ACD8, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003AD0C,
@@ -341,7 +341,7 @@ void* jtbl_800EC674[9] = {
 void* jtbl_800EC674[9] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC698[25] = {
     &lbl_8003AC70, &lbl_8003A824, &lbl_8003A87C, &lbl_8003AC70, &lbl_8003AC70, &lbl_8003A894, &lbl_8003AC70,
@@ -353,7 +353,7 @@ void* jtbl_800EC698[25] = {
 void* jtbl_800EC698[25] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC6FC[20] = {
     &lbl_8003A1A8, &lbl_8003A1D8, &lbl_8003A208, &lbl_8003A254, &lbl_8003DEAC, &lbl_8003DEAC, &lbl_8003DEAC,
@@ -364,7 +364,7 @@ void* jtbl_800EC6FC[20] = {
 void* jtbl_800EC6FC[20] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC74C[64] = {
     &lbl_80039680, &lbl_8003DEAC, &lbl_800396A4, &lbl_800396C8, &lbl_800396EC, &lbl_8003DEAC, &lbl_8003971C,
@@ -382,7 +382,7 @@ void* jtbl_800EC74C[64] = {
 void* jtbl_800EC74C[64] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuExecuteOpcode
 void* jtbl_800EC84C[64] = {
     &lbl_8003965C, &lbl_8003A184, &lbl_8003A4F0, &lbl_8003A558, &lbl_8003A58C, &lbl_8003A61C, &lbl_8003A658,
@@ -561,7 +561,7 @@ void* jtbl_800ED3B0[64] = {
     &lbl_800678FC,
 };
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuCheckDelaySlot
 void* jtbl_800ED4B0[25] = {
     &lbl_800682F0, &lbl_80068360, &lbl_80068360, &lbl_800682F0, &lbl_800682F0, &lbl_80068360, &lbl_800682F0,
@@ -573,7 +573,7 @@ void* jtbl_800ED4B0[25] = {
 void* jtbl_800ED4B0[25] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuCheckDelaySlot
 void* jtbl_800ED514[24] = {
     &lbl_80068270, &lbl_8006829C, &lbl_8006834C, &lbl_80068354, &lbl_8006835C, &lbl_8006835C,
@@ -585,7 +585,7 @@ void* jtbl_800ED514[24] = {
 void* jtbl_800ED514[24] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuGetRegisterCP0
 void* jtbl_800ED574[32] = {
     &lbl_8003551C, &lbl_800352F8, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C, &lbl_8003551C,
@@ -598,7 +598,7 @@ void* jtbl_800ED574[32] = {
 void* jtbl_800ED574[32] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // cpuSetRegisterCP0
 void* jtbl_800ED5F4[32] = {
     &lbl_800356F4, &lbl_800356F8, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4, &lbl_800356F4,
@@ -1778,7 +1778,7 @@ static bool cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCheckDelaySlot.s")
 #else
 static bool cpuCheckDelaySlot(u32 opcode) {
@@ -2241,7 +2241,7 @@ static bool cpuExecuteUpdate(Cpu* pCPU, s32* pnAddressGCN, u32 nCount) {
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteOpcode.s")
 #else
@@ -3891,7 +3891,7 @@ static bool cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressG
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 static bool cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStore.s")
 #else
@@ -4168,7 +4168,7 @@ static bool cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
 #endif
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 static bool cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuExecuteLoadStoreF.s")
 #else
@@ -5108,7 +5108,7 @@ static bool cpuSetCP0_Status(Cpu* pCPU, u64 nStatus, u32 unknown) {
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 bool cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuSetRegisterCP0.s")
 #else
@@ -5169,7 +5169,7 @@ bool cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData) {
 #endif
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 bool cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetRegisterCP0.s")
 #else
@@ -5327,7 +5327,7 @@ bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuReset.s")
 #else
 bool cpuReset(Cpu* pCPU) {
@@ -5823,7 +5823,7 @@ static inline bool cpuTreeFree(CpuFunction* pFunction) {
     return false;
 }
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuFindFunction.s")
 #else
 bool cpuFindFunction(Cpu* pCPU, s32 theAddress, CpuFunction** tree_node) {
@@ -7504,7 +7504,7 @@ static inline s32 treeMemory(Cpu* pCPU) {
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuOpcodeChecksum.s")
 #else
 s32 cpuOpcodeChecksum(u32 opcode) {

@@ -24,7 +24,7 @@ static s16 TMEMSIZE[5] = {
 
 char D_800EE27C[40] = "FrameComplete: Yielded task pending...\n";
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // rspGet32
 void* jtbl_800EE2A4[29] = {
     &lbl_800721A4, &lbl_80072218, &lbl_80072218, &lbl_80072218, &lbl_800721B0, &lbl_80072218,
@@ -37,7 +37,7 @@ void* jtbl_800EE2A4[29] = {
 void* jtbl_800EE2A4[29] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // rspPut32
 void* jtbl_800EE318[8] = {
     &lbl_80072718, &lbl_80072580, &lbl_800725B4, &lbl_800725E8,
@@ -47,7 +47,7 @@ void* jtbl_800EE318[8] = {
 void* jtbl_800EE318[8] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // rspPut32
 void* jtbl_800EE338[29] = {
     &lbl_8007241C, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007242C, &lbl_80072948,
@@ -60,7 +60,7 @@ void* jtbl_800EE338[29] = {
 void* jtbl_800EE338[29] = {0};
 #endif
 
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 // rspParseGBI
 void* jtbl_800EE3AC[11] = {
     &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AE8, &lbl_80072AC0,
@@ -2732,7 +2732,7 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX2.s")
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadMatrix.s")
 #else
 static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
@@ -2926,7 +2926,7 @@ static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask) {
 }
 
 // Matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI.s")
 #else
@@ -3033,7 +3033,7 @@ bool rspPut16(Rsp* pRSP, u32 nAddress, s16* pData) {
 }
 
 // matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut32.s")
 #else
 bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
@@ -3314,7 +3314,7 @@ bool rspGet16(Rsp* pRSP, u32 nAddress, s16* pData) {
 }
 
 // matches but data doesn't
-#ifndef NON_MATCHING
+#ifdef ASM_PROCESSOR
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet32.s")
 #else
 bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
