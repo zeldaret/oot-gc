@@ -29,6 +29,6 @@ $PYTHON tools/asm_processor/asm_processor.py "$IN" > "$TEMP/$STEM.c"
 $CC "$TEMP/$STEM.c" -c -o "$TEMP"
 $PYTHON tools/asm_processor/asm_processor.py "$IN" --post-process "$TEMP/$STEM.o" --assembler "$AS" --asm-prelude include/macros.inc
 # Remove sections that don't work with our reloc hacks
-build/binutils/powerpc-eabi-objcopy --remove-section .mwcats.text --remove-section .comment "$TEMP/$STEM.o" "$OUT"
+${BINUTILS_PATH:-build/binutils}/powerpc-eabi-objcopy --remove-section .mwcats.text --remove-section .comment "$TEMP/$STEM.o" "$OUT"
 # Copy depfile, replacing the first line with the correct input/output files
 ( echo "$OUT: $IN \\"; tail -n +2 "$TEMP/$STEM.d" ) > "${OUT%.*}.d"

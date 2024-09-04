@@ -8,6 +8,9 @@ jobs:
   build:
     container: ghcr.io/zeldaret/oot-gc-vc-build:main
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
     # Checkout the repository (shallow clone)

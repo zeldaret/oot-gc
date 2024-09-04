@@ -49,7 +49,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--binutils",
-    metavar="BINARY",
+    metavar="DIR",
     type=Path,
     help="path to binutils (optional)",
 )
