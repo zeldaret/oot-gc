@@ -1,0 +1,157 @@
+# See config.example.yml for documentation.
+name: oot-gc
+object: orig/mq-e/main.dol
+hash: 9155899e1ed86fc2b25113c77d49396c77d24138
+symbols: config/mq-e/symbols.txt
+splits: config/mq-e/splits.txt
+mw_comment_version: 8
+
+extract:
+# xlCoreGCN.c
+- symbol: gTgPcTPL
+  header: gTgPcTPL.inc
+# simGCN.c
+- symbol: gcoverOpen
+  header: gcoverOpen.inc
+- symbol: gnoDisk
+  header: gnoDisk.inc
+- symbol: gretryErr
+  header: gretryErr.inc
+- symbol: gfatalErr
+  header: gfatalErr.inc
+- symbol: gwrongDisk
+  header: gwrongDisk.inc
+- symbol: greadingDisk
+  header: greadingDisk.inc
+- symbol: gyes
+  header: gyes.inc
+- symbol: gno
+  header: gno.inc
+- symbol: gmesgOK
+  header: gmesgOK.inc
+- symbol: gfrench_coverOpen
+  header: gfrench_coverOpen.inc
+- symbol: gfrench_noDisk
+  header: gfrench_noDisk.inc
+- symbol: gfrench_retryErr
+  header: gfrench_retryErr.inc
+- symbol: gfrench_fatalErr
+  header: gfrench_fatalErr.inc
+- symbol: gfrench_wrongDisk
+  header: gfrench_wrongDisk.inc
+- symbol: gfrench_readingDisk
+  header: gfrench_readingDisk.inc
+- symbol: gfrench_yes
+  header: gfrench_yes.inc
+- symbol: gfrench_no
+  header: gfrench_no.inc
+- symbol: gfrench_mesgOK
+  header: gfrench_mesgOK.inc
+- symbol: ggerman_coverOpen
+  header: ggerman_coverOpen.inc
+- symbol: ggerman_noDisk
+  header: ggerman_noDisk.inc
+- symbol: ggerman_retryErr
+  header: ggerman_retryErr.inc
+- symbol: ggerman_fatalErr
+  header: ggerman_fatalErr.inc
+- symbol: ggerman_wrongDisk
+  header: ggerman_wrongDisk.inc
+- symbol: ggerman_readingDisk
+  header: ggerman_readingDisk.inc
+- symbol: ggerman_yes
+  header: ggerman_yes.inc
+- symbol: ggerman_no
+  header: ggerman_no.inc
+- symbol: ggerman_mesgOK
+  header: ggerman_mesgOK.inc
+- symbol: gbar
+  header: gbar.inc
+
+block_relocations:
+# system.c
+- source: 0x8002D7A4
+- source: 0x8002D7B0
+- source: 0x8002D7D0
+- source: 0x8002D7D8
+- source: 0x8002D80C
+- source: 0x8002D818
+- source: 0x8002D838
+- source: 0x8002D840
+- source: 0x8002D874
+- source: 0x8002D880
+- source: 0x8002D8A0
+- source: 0x8002D8A8
+- source: 0x8002D8FC
+- source: 0x8002D904
+- source: 0x8002D924
+- source: 0x8002D958
+- source: 0x8002D964
+- source: 0x8002D988
+- source: 0x8002D9BC
+- source: 0x8002D9C8
+- source: 0x8002D9EC
+- source: 0x8002DF50
+- source: 0x8002DF58
+- source: 0x8002DF80
+- source: 0x8002DFA8
+- source: 0x8002DFD0
+- source: 0x8002DFF8
+- source: 0x8002E020
+- source: 0x8002E048
+- source: 0x8002E070
+- source: 0x8002E098
+- source: 0x8002E0BC
+- source: 0x8002E0E0
+- source: 0x8002E3EC
+- source: 0x8002E3F8
+- source: 0x8002E524
+- source: 0x8002E530
+- source: 0x8002E618
+- source: 0x8002E620
+- source: 0x8002E644
+- source: 0x8002E668
+- source: 0x8002E68C
+- source: 0x8002E694
+- source: 0x8002E6B8
+- source: 0x8002E6DC
+- source: 0x8002E828
+- source: 0x8002E834
+- source: 0x8002E85C
+- source: 0x8002E884
+- source: 0x8002E8B8
+- source: 0x8002E8C4
+- source: 0x8002E8E8
+- source: 0x8002E914
+- source: 0x8002E948
+- source: 0x8002E954
+- source: 0x8002E998
+- source: 0x8002E9A4
+- source: 0x8002EB1C
+- source: 0x8002EB28
+- source: 0x8002EB50
+- source: 0x8002F114
+- source: 0x8002F120
+- source: 0x8002F148
+- source: 0x8002F170
+- source: 0x8002F194
+- source: 0x8002F1BC
+- source: 0x8002F354
+- source: 0x8002F360
+- source: 0x8002F3C0
+- source: 0x8002F3C8
+- source: 0x8002F3EC
+- source: 0x8002F40C
+- source: 0x8002F418
+- source: 0x8002F43C
+- source: 0x8002F51C
+- source: 0x8002F52C
+- source: 0x8002F688
+- source: 0x8002F694
+- source: 0x8002F6CC
+- source: 0x8002F6DC
+- source: 0x8002F820
+- source: 0x8002F828
+- source: 0x8002F860
+- source: 0x8002F870
+- source: 0x8002F898

@@ -256,47 +256,77 @@ bool movieDrawImage(TEXPalette* tpl, s16 nX0, s16 nY0) {
     return true;
 }
 
-bool movieDrawErrorMessage(MovieMessage movieMessage) {
+static inline void movieDrawErrorMessageImpl(MovieMessage movieMessage, TEXPalette* coverOpen, TEXPalette* wrongDisk,
+                                             TEXPalette* readingDisk, TEXPalette* retryErr, TEXPalette* fatalErr,
+                                             TEXPalette* noDisk) {
     switch (movieMessage) {
         case M_M_DISK_COVER_OPEN:
-            movieDrawImage((TEXPalette*)(u8*)gcoverOpen,
-                           160 - ((TEXPalette*)(u8*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)gcoverOpen)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(coverOpen, 160 - coverOpen->descriptorArray->textureHeader->width / 2,
+                           120 - coverOpen->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_WRONG_DISK:
-            movieDrawImage((TEXPalette*)(u8*)gwrongDisk,
-                           160 - ((TEXPalette*)(u8*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)gwrongDisk)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(wrongDisk, 160 - wrongDisk->descriptorArray->textureHeader->width / 2,
+                           120 - wrongDisk->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_READING_DISK:
-            movieDrawImage((TEXPalette*)(u8*)greadingDisk,
-                           160 - ((TEXPalette*)(u8*)greadingDisk)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)greadingDisk)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(readingDisk, 160 - readingDisk->descriptorArray->textureHeader->width / 2,
+                           120 - readingDisk->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_RETRY_ERROR:
-            movieDrawImage((TEXPalette*)(u8*)gretryErr,
-                           160 - ((TEXPalette*)(u8*)gretryErr)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)gretryErr)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(retryErr, 160 - retryErr->descriptorArray->textureHeader->width / 2,
+                           120 - retryErr->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_FATAL_ERROR:
-            movieDrawImage((TEXPalette*)(u8*)gfatalErr,
-                           160 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(fatalErr, 160 - fatalErr->descriptorArray->textureHeader->width / 2,
+                           120 - fatalErr->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_NO_DISK:
-            movieDrawImage((TEXPalette*)(u8*)gnoDisk,
-                           160 - ((TEXPalette*)(u8*)gnoDisk)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)gnoDisk)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(noDisk, 160 - noDisk->descriptorArray->textureHeader->width / 2,
+                           120 - noDisk->descriptorArray->textureHeader->height / 2);
             break;
         case M_M_DISK_DEFAULT_ERROR:
-            movieDrawImage((TEXPalette*)(u8*)gfatalErr,
-                           160 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                           120 - ((TEXPalette*)(u8*)gfatalErr)->descriptorArray->textureHeader->height / 2);
+            movieDrawImage(fatalErr, 160 - fatalErr->descriptorArray->textureHeader->width / 2,
+                           120 - fatalErr->descriptorArray->textureHeader->height / 2);
             break;
         default:
             break;
     }
+}
 
+bool movieDrawErrorMessage(MovieMessage movieMessage) {
+#if IS_EU
+    if (gLanguage == 1) {
+        movieDrawErrorMessageImpl(movieMessage, (TEXPalette*)(u8*)ggerman_coverOpen,
+                                  (TEXPalette*)(u8*)ggerman_wrongDisk, (TEXPalette*)(u8*)ggerman_readingDisk,
+                                  (TEXPalette*)(u8*)ggerman_retryErr, (TEXPalette*)(u8*)ggerman_fatalErr,
+                                  (TEXPalette*)(u8*)ggerman_noDisk);
+    } else if (gLanguage == 2) {
+        movieDrawErrorMessageImpl(movieMessage, (TEXPalette*)(u8*)gfrench_coverOpen,
+                                  (TEXPalette*)(u8*)gfrench_wrongDisk, (TEXPalette*)(u8*)gfrench_readingDisk,
+                                  (TEXPalette*)(u8*)gfrench_retryErr, (TEXPalette*)(u8*)gfrench_fatalErr,
+                                  (TEXPalette*)(u8*)gfrench_noDisk);
+#if VERSION == CE_E
+    } else if (gLanguage == 3) {
+        movieDrawErrorMessageImpl(movieMessage, (TEXPalette*)(u8*)gspanish_coverOpen,
+                                  (TEXPalette*)(u8*)gspanish_wrongDisk, (TEXPalette*)(u8*)gspanish_readingDisk,
+                                  (TEXPalette*)(u8*)gspanish_retryErr, (TEXPalette*)(u8*)gspanish_fatalErr,
+                                  (TEXPalette*)(u8*)gspanish_noDisk);
+    } else if (gLanguage == 4) {
+        movieDrawErrorMessageImpl(movieMessage, (TEXPalette*)(u8*)gitalian_coverOpen,
+                                  (TEXPalette*)(u8*)gitalian_wrongDisk, (TEXPalette*)(u8*)gitalian_readingDisk,
+                                  (TEXPalette*)(u8*)gitalian_retryErr, (TEXPalette*)(u8*)gitalian_fatalErr,
+                                  (TEXPalette*)(u8*)gitalian_noDisk);
+#endif
+
+    } else
+#endif
+    {
+        movieDrawErrorMessageImpl(movieMessage, (TEXPalette*)(u8*)gcoverOpen, (TEXPalette*)(u8*)gwrongDisk,
+                                  (TEXPalette*)(u8*)greadingDisk, (TEXPalette*)(u8*)gretryErr,
+                                  (TEXPalette*)(u8*)gfatalErr, (TEXPalette*)(u8*)gnoDisk);
+    }
+
+    NO_INLINE();
     return true;
 }
 

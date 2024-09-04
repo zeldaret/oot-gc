@@ -29,7 +29,7 @@
 #define MCARD_FILE_NAME "ZELDA"
 #define MCARD_COMMENT "ゼルダの伝説　時のオカリナＧＣ" // "The Legend of Zelda: Ocarina of Time GC"
 #define MCARD_FILE_SIZE (0xC000 * 2)
-#elif VERSION == MQ_U
+#elif VERSION == MQ_U || VERSION == MQ_E
 #define MCARD_FILE_NAME "ZELDA"
 #define MCARD_COMMENT "Zelda: Ocarina of Time"
 #define MCARD_FILE_SIZE (0xC000 * 2)
@@ -37,7 +37,7 @@
 #define MCARD_FILE_NAME "ZELDA1"
 #define MCARD_COMMENT "ゼルダコレクション" // "Zelda Collection"
 #define MCARD_FILE_SIZE 0xC000
-#elif VERSION == CE_U
+#elif VERSION == CE_U || VERSION == CE_E
 #define MCARD_FILE_NAME "ZELDA1"
 #define MCARD_COMMENT "Zelda: Collector's Edition"
 #define MCARD_FILE_SIZE 0xC000
@@ -152,8 +152,13 @@ u32 nTickMultiplier = 2;
 f32 fTickScale = 1.0;
 u32 gnFlagZelda;
 
+#if IS_EU
+#define Z_ICON_PATH buf1
+#define Z_BNR_PATH buf2
+#else
 #define Z_ICON_PATH "TPL/z_icon.tpl"
 #define Z_BNR_PATH "TPL/z_bnr.tpl"
+#endif
 
 static bool systemSetupGameRAM(System* pSystem) {
     char* szExtra;
@@ -184,8 +189,11 @@ static bool systemSetupGameRAM(System* pSystem) {
     }
 
     // Ocarina of Time or Majora's Mask
-    if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || romTestCode(pROM, "NZSJ") ||
-        romTestCode(pROM, "NZSE")) {
+    if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE")
+#if IS_EU
+        || romTestCode(pROM, "NZLP")
+#endif
+        || romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE")) {
         switch (nCode) {
 
 #if VERSION == MQ_J
@@ -223,7 +231,7 @@ static bool systemSetupGameRAM(System* pSystem) {
                 gnFlagZelda = 5;
                 break;
 
-#elif VERSION == MQ_U || VERSION == CE_U
+#elif IS_US
             case 0x5CAC1CF7:
                 gnFlagZelda = 2;
                 break;
@@ -247,6 +255,35 @@ static bool systemSetupGameRAM(System* pSystem) {
                 gnFlagZelda = 5;
                 break;
 
+#elif IS_EU
+            case 0x5CAC1CF7:
+                gnFlagZelda = 2;
+                break;
+            case 0x5CABE4F4:
+                gnFlagZelda = 2;
+                break;
+            case 0x184CED80:
+                gnFlagZelda = 3;
+                break;
+            case 0x5CAC1C27:
+                gnFlagZelda = 0;
+                break;
+            case 0x5CAC1C8F:
+                gnFlagZelda = 0;
+                break;
+            case 0x5CABE48C:
+                gnFlagZelda = 0;
+                break;
+            case 0x184CED18:
+                gnFlagZelda = 1;
+                break;
+            case 0x54A59B56:
+            case 0x421EB8E9:
+                gnFlagZelda = 4;
+                break;
+            case 0x7E8BEE60:
+                gnFlagZelda = 5;
+                break;
 #endif
         }
 
@@ -348,7 +385,11 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
 #endif
 
-    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
+    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")
+#if IS_EU
+               || romTestCode(pROM, "NZLP")
+#endif
+    ) {
         // Ocarina of Time
         gSystemRomConfigurationList[index].storageDevice = SOT_PIF;
 
@@ -452,6 +493,10 @@ static bool systemSetupGameALL(System* pSystem) {
     s32 i;
     u64 nTimeRetrace;
     char acCode[5];
+#if IS_EU
+    char buf1[30] = "TPL/";
+    char buf2[30] = "TPL/";
+#endif
     DVDFileInfo fileInfo;
     Cpu* pCPU;
     Rom* pROM;
@@ -461,6 +506,29 @@ static bool systemSetupGameALL(System* pSystem) {
     pCPU = SYSTEM_CPU(pSystem);
     pROM = SYSTEM_ROM(pSystem);
     pPIF = SYSTEM_PIF(pSystem);
+
+#if IS_EU
+    if (gLanguage == 1) {
+        strcpy(buf1, "TPL/GERMAN/");
+        strcpy(buf2, "TPL/GERMAN/");
+    } else if (gLanguage == 2) {
+        strcpy(buf1, "TPL/FRENCH/");
+        strcpy(buf2, "TPL/FRENCH/");
+
+#if VERSION == CE_E
+    } else if (gLanguage == 3) {
+        strcpy(buf1, "TPL/SPANISH/");
+        strcpy(buf2, "TPL/SPANISH/");
+    } else if (gLanguage == 4) {
+        strcpy(buf1, "TPL/ITALIAN/");
+        strcpy(buf2, "TPL/ITALIAN/");
+#endif
+
+    } else {
+        strcpy(buf1, "TPL/ENGLISH/");
+        strcpy(buf2, "TPL/ENGLISH/");
+    }
+#endif
 
     if (!xlHeapTake((void**)&mCard.saveIcon, gz_iconSize | 0x30000000)) {
         return false;
@@ -532,6 +600,10 @@ static bool systemSetupGameALL(System* pSystem) {
         pSystem->eTypeROM = SRT_MARIO;
         nSizeSound = 0x1000;
 
+#if IS_EU
+        strcat(buf1, "z_icon.tpl");
+#endif
+
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
@@ -539,6 +611,10 @@ static bool systemSetupGameALL(System* pSystem) {
 
         DVDClose(&fileInfo);
         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+
+#if IS_EU
+        strcat(buf2, "z_bnr.tpl");
+#endif
 
         if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
@@ -553,7 +629,11 @@ static bool systemSetupGameALL(System* pSystem) {
         if (!cpuSetCodeHack(pCPU, 0x80317938, 0x5420FFFE, 0)) {
             return false;
         }
-    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")) {
+    } else if (romTestCode(pROM, "CZLE") || romTestCode(pROM, "CZLJ")
+#if IS_EU
+               || romTestCode(pROM, "NZLP")
+#endif
+    ) {
         // Ocarina of Time
         pSystem->eTypeROM = SRT_ZELDA1;
         nSizeSound = 0x1000;
@@ -586,7 +666,11 @@ static bool systemSetupGameALL(System* pSystem) {
                 if (!cpuSetCodeHack(pCPU, 0x8006E468, 0x97040000, -1)) {
                     return false;
                 }
-            } else {
+            } else
+#if IS_EU
+                if (romTestCode(pROM, "CZLJ"))
+#endif
+            {
                 if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
                     return false;
                 }
@@ -595,6 +679,17 @@ static bool systemSetupGameALL(System* pSystem) {
                     return false;
                 }
             }
+#if IS_EU
+            else if (romTestCode(pROM, "NZLP")) {
+                if (!cpuSetCodeHack(pCPU, 0x80062D64, 0x94639680, -1)) {
+                    return false;
+                }
+
+                if (!cpuSetCodeHack(pCPU, 0x8006E468, 0x97040000, -1)) {
+                    return false;
+                }
+            }
+#endif
         } else {
             if (romTestCode(pROM, "CZLE")) {
                 if (!cpuSetCodeHack(pCPU, 0x8005BB14, ((gnFlagZelda & 2) ? 0x9463D040 : 0x9463D000), -1)) {
@@ -604,7 +699,11 @@ static bool systemSetupGameALL(System* pSystem) {
                 if (!cpuSetCodeHack(pCPU, 0x80066638, 0x97040000, -1)) {
                     return false;
                 }
-            } else {
+            } else
+#if IS_EU
+                if (romTestCode(pROM, "CZLJ"))
+#endif
+            {
                 if (!cpuSetCodeHack(pCPU, 0x8005BB34, 0x9463D040, -1)) {
                     return false;
                 }
@@ -613,12 +712,26 @@ static bool systemSetupGameALL(System* pSystem) {
                     return false;
                 }
             }
+#if IS_EU
+            else if (romTestCode(pROM, "NZLP")) {
+                if (!cpuSetCodeHack(pCPU, 0x8005BB3C, 0x9502000C, -1)) {
+                    return false;
+                }
+
+                if (!cpuSetCodeHack(pCPU, 0x800665E8, 0x97040000, -1)) {
+                    return false;
+                }
+            }
+#endif
         }
 #endif
 
         if (!(gnFlagZelda & 1)) {
             if (!(gnFlagZelda & 2)) {
                 // CE-J/MQ-J?
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -626,6 +739,10 @@ static bool systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
 
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
@@ -637,6 +754,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 mcardOpen(&mCard, MCARD_FILE_NAME, MCARD_COMMENT, mCard.saveIcon, mCard.saveBanner, "ZELDAX",
                           &gSystemRomConfigurationList[i].currentControllerConfig, MCARD_FILE_SIZE, 0x8000);
             } else {
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -644,7 +764,9 @@ static bool systemSetupGameALL(System* pSystem) {
 
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
-
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -655,8 +777,14 @@ static bool systemSetupGameALL(System* pSystem) {
                 mcardOpen(&mCard, MCARD_FILE_NAME, MCARD_COMMENT, mCard.saveIcon, mCard.saveBanner, "ZELDA",
                           &gSystemRomConfigurationList[i].currentControllerConfig, MCARD_FILE_SIZE, 0x8000);
             }
+#if IS_EU
+            mCard.file.game.buffer[2] = gLanguage;
+#endif
         } else {
             // debug rom?
+#if IS_EU
+            strcat(buf1, "z_icon.tpl");
+#endif
             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                 !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                 return false;
@@ -665,6 +793,9 @@ static bool systemSetupGameALL(System* pSystem) {
             DVDClose(&fileInfo);
             simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+            strcat(buf2, "z_bnr.tpl");
+#endif
             if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                 !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                 return false;
@@ -697,6 +828,10 @@ static bool systemSetupGameALL(System* pSystem) {
 
         anMode[4] = 0x17D9;
 
+#if IS_EU
+        strcat(buf1, "z_icon.tpl");
+#endif
+
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
@@ -704,6 +839,10 @@ static bool systemSetupGameALL(System* pSystem) {
 
         DVDClose(&fileInfo);
         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+
+#if IS_EU
+        strcat(buf2, "z_bnr.tpl");
+#endif
 
         if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
@@ -776,6 +915,10 @@ static bool systemSetupGameALL(System* pSystem) {
         pCPU->nCompileFlag |= 0x1010;
     } else if (romTestCode(pROM, "NPWE")) {
         // Pilotwings 64
+
+#if IS_EU
+        strcat(buf1, "z_icon.tpl");
+#endif
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
@@ -784,6 +927,9 @@ static bool systemSetupGameALL(System* pSystem) {
         DVDClose(&fileInfo);
         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+        strcat(buf2, "z_bnr.tpl");
+#endif
         if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
@@ -795,6 +941,10 @@ static bool systemSetupGameALL(System* pSystem) {
                   &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
     } else if (romTestCode(pROM, "NAFJ")) {
         // Animal Forest
+
+#if IS_EU
+        strcat(buf1, "z_icon.tpl");
+#endif
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
@@ -803,13 +953,26 @@ static bool systemSetupGameALL(System* pSystem) {
         DVDClose(&fileInfo);
         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+        strcat(buf2, "z_bnr.tpl");
+        if (DVDOpen(buf2, &fileInfo) == 1 &&
+            !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+            return false;
+        }
+#else
         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
             return false;
         }
-
+#endif
         DVDClose(&fileInfo);
+
+#if IS_EU
+        simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
+#else
         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#endif
+
         mcardOpen(&mCard, "AF", "Animal Forest", mCard.saveIcon, mCard.saveBanner, "AF",
                   &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
     } else if (romTestCode(pROM, "NBCE")) {
@@ -825,6 +988,9 @@ static bool systemSetupGameALL(System* pSystem) {
             }
         } else if (romTestCode(pROM, "NCUE")) {
             // Cruis'n USA
+#if IS_EU
+            strcat(buf1, "z_icon.tpl");
+#endif
             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                 !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                 return false;
@@ -833,13 +999,26 @@ static bool systemSetupGameALL(System* pSystem) {
             DVDClose(&fileInfo);
             simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+            strcat(buf2, "z_bnr.tpl");
+            if (DVDOpen(buf2, &fileInfo) == 1 &&
+                !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+                return false;
+            }
+#else
             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                 !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                 return false;
             }
+#endif
 
             DVDClose(&fileInfo);
+
+#if IS_EU
+            simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
+#else
             simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#endif
             mcardOpen(&mCard, "CRUISE", "Cruise 'n USA", mCard.saveIcon, mCard.saveBanner, "CRUISE",
                       &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
 
@@ -882,6 +1061,9 @@ static bool systemSetupGameALL(System* pSystem) {
                     }
                 }
 
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -890,6 +1072,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -938,6 +1123,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 // Mario Kart 64
                 pSystem->eTypeROM = SRT_MARIOKART;
 
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -946,6 +1134,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -974,6 +1165,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 // Mario Party 1
                 pSystem->eTypeROM = SRT_MARIOPARTY1;
 
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -982,6 +1176,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -995,6 +1192,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 // Mario Party 2
                 pSystem->eTypeROM = SRT_MARIOPARTY2;
 
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -1003,6 +1203,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -1016,6 +1219,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 // Mario Party 3
                 pSystem->eTypeROM = SRT_MARIOPARTY3;
 
+#if IS_EU
+                strcat(buf1, "z_icon.tpl");
+#endif
                 if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -1024,6 +1230,9 @@ static bool systemSetupGameALL(System* pSystem) {
                 DVDClose(&fileInfo);
                 simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                strcat(buf2, "z_bnr.tpl");
+#endif
                 if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                     !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                     return false;
@@ -1036,6 +1245,9 @@ static bool systemSetupGameALL(System* pSystem) {
             } else if (!romTestCode(pROM, "NM3E") && !romTestCode(pROM, "NRIE")) {
                 if (romTestCode(pROM, "NMQE")) {
                     // Paper Mario
+#if IS_EU
+                    strcat(buf1, "z_icon.tpl");
+#endif
                     if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                         !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                         return false;
@@ -1043,7 +1255,9 @@ static bool systemSetupGameALL(System* pSystem) {
 
                     DVDClose(&fileInfo);
                     simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
-
+#if IS_EU
+                    strcat(buf2, "z_bnr.tpl");
+#endif
                     if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                         !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                         return false;
@@ -1055,6 +1269,9 @@ static bool systemSetupGameALL(System* pSystem) {
                     mcardOpen(&mCard, "PaperMario", "Paper Mario", mCard.saveIcon, mCard.saveBanner, "PAPERMARIO",
                               &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000, 0x20000);
                 } else if (romTestCode(pROM, "NPOE")) {
+#if IS_EU
+                    strcat(buf1, "z_icon.tpl");
+#endif
                     if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                         !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                         return false;
@@ -1063,13 +1280,25 @@ static bool systemSetupGameALL(System* pSystem) {
                     DVDClose(&fileInfo);
                     simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                    strcat(buf2, "z_bnr.tpl");
+                    if (DVDOpen(buf2, &fileInfo) == 1 &&
+                        !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
+                        return false;
+                    }
+#else
                     if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                         !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                         return false;
                     }
+#endif
 
                     DVDClose(&fileInfo);
+#if IS_EU
+                    simulatorUnpackTexPalette((TEXPalette*)mCard.saveBanner);
+#else
                     simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
+#endif
 
                     mcardOpen(&mCard, "PokemonStadium", "Pokemon Stadium", mCard.saveIcon, mCard.saveBanner,
                               "POKEMONSTADIUM", &gSystemRomConfigurationList[i].currentControllerConfig, 0x24000,
@@ -1094,6 +1323,9 @@ static bool systemSetupGameALL(System* pSystem) {
                     if (romTestCode(pROM, "NFXE") || romTestCode(pROM, "NFXJ")) {
                         pSystem->eTypeROM = SRT_STARFOX;
 
+#if IS_EU
+                        strcat(buf1, "z_icon.tpl");
+#endif
                         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                             return false;
@@ -1101,7 +1333,9 @@ static bool systemSetupGameALL(System* pSystem) {
 
                         DVDClose(&fileInfo);
                         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
-
+#if IS_EU
+                        strcat(buf2, "z_bnr.tpl");
+#endif
                         if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                             !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                             return false;
@@ -1155,6 +1389,9 @@ static bool systemSetupGameALL(System* pSystem) {
                             return false;
                         }
 
+#if IS_EU
+                        strcat(buf1, "z_icon.tpl");
+#endif
                         if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                             !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                             return false;
@@ -1163,6 +1400,9 @@ static bool systemSetupGameALL(System* pSystem) {
                         DVDClose(&fileInfo);
                         simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                        strcat(buf2, "z_bnr.tpl");
+#endif
                         if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                             !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0, NULL)) {
                             return false;
@@ -1183,6 +1423,9 @@ static bool systemSetupGameALL(System* pSystem) {
                                 return false;
                             }
 
+#if IS_EU
+                            strcat(buf1, "z_icon.tpl");
+#endif
                             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                                 !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0,
                                                   NULL)) {
@@ -1192,6 +1435,9 @@ static bool systemSetupGameALL(System* pSystem) {
                             DVDClose(&fileInfo);
                             simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                            strcat(buf2, "z_bnr.tpl");
+#endif
                             if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                                 !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0,
                                                   NULL)) {
@@ -1221,6 +1467,9 @@ static bool systemSetupGameALL(System* pSystem) {
 
                             pCPU->nCompileFlag |= 0x10;
                         } else if (romTestCode(pROM, "NYSE")) {
+#if IS_EU
+                            strcat(buf1, "z_icon.tpl");
+#endif
                             if (DVDOpen(Z_ICON_PATH, &fileInfo) == 1 &&
                                 !simulatorDVDRead(&fileInfo, mCard.saveIcon, (gz_iconSize + 0x1F) & 0xFFFFFFE0, 0,
                                                   NULL)) {
@@ -1230,6 +1479,9 @@ static bool systemSetupGameALL(System* pSystem) {
                             DVDClose(&fileInfo);
                             simulatorUnpackTexPalette((TEXPalette*)mCard.saveIcon);
 
+#if IS_EU
+                            strcat(buf2, "z_bnr.tpl");
+#endif
                             if (DVDOpen(Z_BNR_PATH, &fileInfo) == 1 &&
                                 !simulatorDVDRead(&fileInfo, mCard.saveBanner, (gz_bnrSize + 0x1F) & 0xFFFFFFE0, 0,
                                                   NULL)) {

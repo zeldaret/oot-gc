@@ -90,6 +90,56 @@ extern u8 gyes[];
 extern u8 yno[];
 extern u8 gmesgOK[];
 
+#if IS_EU
+extern u8 gLanguage;
+
+extern u8 ggerman_coverOpen[];
+extern u8 ggerman_wrongDisk[];
+extern u8 ggerman_readingDisk[];
+extern u8 ggerman_retryErr[];
+extern u8 ggerman_fatalErr[];
+extern u8 ggerman_noDisk[];
+extern u8 ggerman_bar[];
+extern u8 ggerman_yes[];
+extern u8 ggerman_no[];
+extern u8 ggerman_mesgOK[];
+
+extern u8 gfrench_coverOpen[];
+extern u8 gfrench_wrongDisk[];
+extern u8 gfrench_readingDisk[];
+extern u8 gfrench_retryErr[];
+extern u8 gfrench_fatalErr[];
+extern u8 gfrench_noDisk[];
+extern u8 gfrench_bar[];
+extern u8 gfrench_yes[];
+extern u8 gfrench_no[];
+extern u8 gfrench_mesgOK[];
+
+#if VERSION == CE_E
+extern u8 gspanish_coverOpen[];
+extern u8 gspanish_wrongDisk[];
+extern u8 gspanish_readingDisk[];
+extern u8 gspanish_retryErr[];
+extern u8 gspanish_fatalErr[];
+extern u8 gspanish_noDisk[];
+extern u8 gspanish_bar[];
+extern u8 gspanish_yes[];
+extern u8 gspanish_no[];
+extern u8 gspanish_mesgOK[];
+
+extern u8 gitalian_coverOpen[];
+extern u8 gitalian_wrongDisk[];
+extern u8 gitalian_readingDisk[];
+extern u8 gitalian_retryErr[];
+extern u8 gitalian_fatalErr[];
+extern u8 gitalian_noDisk[];
+extern u8 gitalian_bar[];
+extern u8 gitalian_yes[];
+extern u8 gitalian_no[];
+extern u8 gitalian_mesgOK[];
+#endif
+#endif // IS_EU
+
 extern s16 Vert_s16[];
 extern u32 Colors_u32[];
 extern u8 TexCoords_u8[];
