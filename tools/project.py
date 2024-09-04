@@ -548,9 +548,12 @@ def generate_build_ninja(
         mwcc_sjis_implicit.append(transform_dep)
         mwcc_asm_processor_implicit.append(transform_dep)
         mwcc_asm_processor_sjis_implicit.append(transform_dep)
+
+        mwcc_asm_processor_cmd = f'env "BINUTILS_PATH={binutils}" ' + mwcc_asm_processor_cmd
+        mwcc_asm_processor_sjis_cmd = f'env "BINUTILS_PATH={binutils}" ' + mwcc_asm_processor_sjis_cmd
     else:
-        mwcc_asm_processor_cmd = "sh " + mwcc_asm_processor_cmd
-        mwcc_asm_processor_sjis_cmd = "sh " + mwcc_asm_processor_sjis_cmd
+        mwcc_asm_processor_cmd = f'set "BINUTILS_PATH={binutils}" && sh ' + mwcc_asm_processor_cmd
+        mwcc_asm_processor_sjis_cmd = f'set "BINUTILS_PATH={binutils}" && sh ' + mwcc_asm_processor_sjis_cmd
 
     n.comment("Link ELF file")
     n.rule(
