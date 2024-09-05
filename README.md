@@ -1,14 +1,24 @@
 oot-gc  
-[![Build Status]][actions] ![DOL Progress] [![Discord Badge]][discord]
+[![Build Status]][actions] ![mq-j] ![mq-u] ![mq-e] ![ce-j] ![ce-u] ![ce-e] [![Discord Badge]][discord]
 =============
 
 [Build Status]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml/badge.svg
 [actions]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml
 
-[DOL Progress]: https://img.shields.io/endpoint?label=DOL&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
-
 [Discord Badge]: https://img.shields.io/discord/688807550715560050?color=%237289DA&logo=discord&logoColor=%23FFFFFF
 [discord]: https://discord.zelda.deco.mp/
+
+[mq-j]: https://img.shields.io/endpoint?label=mq-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+
+[mq-u]: https://img.shields.io/endpoint?label=mq-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+
+[mq-e]: https://img.shields.io/endpoint?label=mq-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+
+[ce-j]: https://img.shields.io/endpoint?label=ce-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+
+[ce-u]: https://img.shields.io/endpoint?label=ce-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-u%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+
+[ce-e]: https://img.shields.io/endpoint?label=ce-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-e%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
 
 A work-in-progress decompilation of the N64 emulator used in the GameCube releases of The Legend of Zelda: Ocarina of Time.
 
