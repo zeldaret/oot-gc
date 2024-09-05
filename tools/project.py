@@ -521,7 +521,8 @@ def generate_build_ninja(
     gnu_as_implicit = [binutils_implicit or gnu_as, dtk]
 
     # MWCC with asm_processor
-    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd} {mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
+    objcopy = binutils / f"powerpc-eabi-objcopy{EXE}"
+    mwcc_asm_processor_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd} {mwcc} $cflags -MMD" "{gnu_as} $asflags" {objcopy} $in $out'
     mwcc_asm_processor_implicit: List[Optional[Path]] = [
         *mwcc_implicit,
         binutils_implicit or gnu_as,
@@ -530,7 +531,7 @@ def generate_build_ninja(
     ]
 
     # MWCC with asm_processor and UTF-8 to Shift JIS wrapper
-    mwcc_asm_processor_sjis_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{sjiswrap} {mwcc} $cflags -MMD" "{gnu_as} $asflags" $in $out'
+    mwcc_asm_processor_sjis_cmd = f'tools/asm_processor/compile.sh "{wrapper_cmd}{sjiswrap} {mwcc} $cflags -MMD" "{gnu_as} $asflags" {objcopy} $in $out'
     mwcc_asm_processor_sjis_implicit: List[Optional[Path]] = [
         *mwcc_asm_processor_implicit,
         sjiswrap,
@@ -548,12 +549,9 @@ def generate_build_ninja(
         mwcc_sjis_implicit.append(transform_dep)
         mwcc_asm_processor_implicit.append(transform_dep)
         mwcc_asm_processor_sjis_implicit.append(transform_dep)
-
-        mwcc_asm_processor_cmd = f'env "BINUTILS_PATH={binutils}" ' + mwcc_asm_processor_cmd
-        mwcc_asm_processor_sjis_cmd = f'env "BINUTILS_PATH={binutils}" ' + mwcc_asm_processor_sjis_cmd
     else:
-        mwcc_asm_processor_cmd = f'set "BINUTILS_PATH={binutils}" && sh ' + mwcc_asm_processor_cmd
-        mwcc_asm_processor_sjis_cmd = f'set "BINUTILS_PATH={binutils}" && sh ' + mwcc_asm_processor_sjis_cmd
+        mwcc_asm_processor_cmd = "sh " + mwcc_asm_processor_cmd
+        mwcc_asm_processor_sjis_cmd = "sh " + mwcc_asm_processor_sjis_cmd
 
     n.comment("Link ELF file")
     n.rule(
