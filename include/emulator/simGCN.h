@@ -71,6 +71,7 @@ typedef enum SimulatorArgumentType {
 
 extern bool gDVDResetToggle;
 extern bool gbDisplayedError;
+extern bool gButtonDownToggle;
 
 extern void* gpFrame;
 extern void* gpSound;
@@ -164,6 +165,7 @@ bool simulatorDetectController(s32 channel);
 bool simulatorReadPak(s32 channel, u16 address, u8* data);
 bool simulatorWritePak(s32 channel, u16 address, u8* data);
 bool simulatorSetControllerMap(u32* mapData, s32 channel);
+void simulatorReset(bool IPL, bool forceMenu);
 void simulatorResetAndPlayMovie(void);
 bool simulatorDrawErrorMessage(SimulatorMessage simulatorErrorMessage, bool drawBar, s32 percent);
 bool simulatorDVDShowError(s32 nStatus, void*, s32, u32);
