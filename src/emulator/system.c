@@ -1864,7 +1864,7 @@ static inline bool systemTestClassObject(System* pSystem) {
 }
 
 bool systemExecute(System* pSystem, s32 nCount) {
-    if (!cpuExecute(SYSTEM_CPU(pSystem), pSystem->nAddressBreak)) {
+    if (!cpuExecute(SYSTEM_CPU(pSystem), nCount, pSystem->nAddressBreak)) {
         if (!systemTestClassObject(pSystem)) {
             return false;
         }
