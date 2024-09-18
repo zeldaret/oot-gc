@@ -636,14 +636,125 @@ static bool mcardWriteFileHeaderInitial(MemCard* pMCard) {
     return true;
 }
 
-static s32 mcardWriteBufferAsynch(MemCard* pMCard, s32 offset);
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteBufferAsynch.s")
+static bool mcardWriteBufferAsynch(MemCard* pMCard, s32 offset) {
+    OSCalendarTime date;
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReadBufferAsynch.s")
+    if (mCard.saveToggle == true) {
+        if (mCard.writeToggle == true) {
+            OSTicksToCalendarTime(OSGetTime(), &date);
+            if (date.mon != pMCard->file.time.mon || date.mday != pMCard->file.time.mday) {
+                pMCard->file.changedDate = true;
+            }
+            mCard.writeToggle = false;
+            if (!mcardTimeCheck(pMCard)) {
+                mCard.writeToggle = true;
+                return false;
+            }
+            DCStoreRange(pMCard->writeBuffer, 0x2000);
+            if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, 0x2000, offset,
+                                                           NULL)) != true) {
+                mCard.writeToggle = true;
+                return false;
+            }
+        } else {
+            mcardGCErrorHandler(pMCard, CARDGetResultCode(pMCard->slot));
+            if (pMCard->error != MC_E_BUSY) {
+                mCard.writeToggle = true;
+                if (pMCard->error != MC_E_NONE) {
+                    return false;
+                }
+            }
+        }
+    }
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteConfigAsynch.s")
+    return true;
+}
 
-#pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardWriteTimeAsynch.s")
+static bool mcardReadBufferAsynch(MemCard* pMCard, s32 offset) {
+    if (mCard.saveToggle == true) {
+        if (mCard.writeToggle == true) {
+            mCard.writeToggle = false;
+            if (!mcardTimeCheck(pMCard)) {
+                mCard.writeToggle = true;
+                return false;
+            }
+            if (mcardGCErrorHandler(
+                    pMCard, CARDReadAsync(&pMCard->file.fileInfo, pMCard->readBuffer, 0x2000, offset, NULL)) != true) {
+                mCard.writeToggle = true;
+                return false;
+            }
+        } else {
+            mcardGCErrorHandler(pMCard, CARDGetResultCode(pMCard->slot));
+            if (pMCard->error != MC_E_BUSY) {
+                mCard.writeToggle = true;
+                if (pMCard->error != MC_E_NONE) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+static bool mcardWriteConfigAsynch(MemCard* pMCard) {
+    if (mCard.saveToggle == true) {
+        if (mCard.writeToggle == true) {
+            mCard.writeToggle = false;
+            if (!mcardTimeCheck(pMCard)) {
+                mCard.writeToggle = true;
+                return false;
+            }
+            DCStoreRange(pMCard->writeBuffer, 0x2000);
+            if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, 0x2000, 0x2000,
+                                                           NULL)) != true) {
+                mCard.writeToggle = true;
+                return false;
+            }
+        } else {
+            mcardGCErrorHandler(pMCard, CARDGetResultCode(pMCard->slot));
+            if (pMCard->error != MC_E_BUSY) {
+                mCard.writeToggle = true;
+                if (pMCard->error != MC_E_NONE) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+static bool mcardWriteTimeAsynch(MemCard* pMCard) {
+    if (mCard.saveToggle == true) {
+        if (mCard.writeToggle == true) {
+            mCard.writeToggle = false;
+            if (!mcardTimeCheck(pMCard)) {
+                mCard.writeToggle = true;
+                return false;
+            }
+
+            pMCard->file.time = gDate;
+
+            DCStoreRange(pMCard->writeBuffer, 0x2000);
+            if (mcardGCErrorHandler(
+                    pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, 0x2000, 0, NULL)) != true) {
+                mCard.writeToggle = true;
+                return false;
+            }
+        } else {
+            mcardGCErrorHandler(pMCard, CARDGetResultCode(pMCard->slot));
+            if (pMCard->error != MC_E_BUSY) {
+                mCard.writeToggle = true;
+                if (pMCard->error != MC_E_NONE) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardReadGameData.s")
 
