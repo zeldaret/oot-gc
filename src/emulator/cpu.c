@@ -1904,7 +1904,7 @@ static s32 cpuCheckDelaySlot(u32 opcode) {
 #endif
 
 /**
- * @brief Filles a code section of NOPs
+ * @brief Fills a code section of NOPs
  *
  * @param anCode Pointer to fill nops to.
  * @param iCode Position in @code to start filling.
@@ -2678,7 +2678,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             pCPU->nWaitPC = (pCPU->nPC & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
             if (pCPU->nWaitPC == pCPU->nPC - 4) {
                 if (!cpuCheckInterrupts(pCPU)) {
-                    return false;
+                    return 0;
                 }
             }
             break;
@@ -2693,7 +2693,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
             }
             if (pCPU->nWaitPC == pCPU->nPC - 4) {
                 if (!cpuCheckInterrupts(pCPU)) {
-                    return false;
+                    return 0;
                 }
                 break;
             }
@@ -3787,7 +3787,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nTick + 1)) {
-        return false;
+        return 0;
     }
     if (restore) {
         pCPU->aGPR[31].u64 = save;
@@ -3927,7 +3927,7 @@ static s32 cpuExecuteCall(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGC
     //!
     //! For more details, see https://pastebin.com/V6ANmXt8
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
-        return false;
+        return 0;
     }
 
     nDeltaAddress = (u8*)nAddressGCN - (u8*)&anCode[3];
@@ -4539,7 +4539,7 @@ static inline bool cpuFreeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink) {
  * @param nAddressBreak Unused.
  * @return bool true on success, false otherwise.
  */
-bool cpuExecute(Cpu* pCPU, u64 nAddressBreak) {
+bool cpuExecute(Cpu* pCPU, s32 nCount, u64 nAddressBreak) {
     s32 pad1;
     s32 iGPR;
     s32* pnCode;

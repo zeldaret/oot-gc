@@ -350,7 +350,7 @@ struct Cpu {
 bool cpuFreeCachedAddress(Cpu* pCPU, s32 nAddress0, s32 nAddress1);
 bool cpuTestInterrupt(Cpu* pCPU, s32 nMaskIP);
 bool cpuException(Cpu* pCPU, CpuExceptionCode eCode, s32 nMaskIP);
-bool cpuExecute(Cpu* pCPU, u64 nAddressBreak);
+bool cpuExecute(Cpu* pCPU, s32 nCount, u64 nAddressBreak);
 bool cpuSetRegisterCP0(Cpu* pCPU, s32 iRegister, s64 nData);
 bool cpuGetRegisterCP0(Cpu* pCPU, s32 iRegister, s64* pnData);
 bool __cpuERET(Cpu* pCPU);
