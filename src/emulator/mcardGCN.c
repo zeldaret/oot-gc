@@ -381,6 +381,7 @@ static inline bool mcardTimeCheck(MemCard* pMCard) {
             pMCard->error = MC_E_TIME_WRONG;
             return false;
         }
+    }
 
     return true;
 }
@@ -391,6 +392,7 @@ static inline bool mcardFinishCard(MemCard* pMCard) {
             CARDClose(&pMCard->file.fileInfo);
         }
         CARDUnmount(pMCard->slot);
+    }
 
     return true;
 }
