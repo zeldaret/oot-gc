@@ -2335,7 +2335,7 @@ static inline bool cpuExecuteCacheInstruction(Cpu* pCPU) {
     return true;
 }
 
-static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddressGCN) {
+static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddressGCN) {
     s32 pad1[2];
     u64 save;
     s32 restore;
@@ -3801,14 +3801,14 @@ static bool cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddre
 }
 #endif
 
-static bool cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static s32 cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     Rom* pROM;
 
     pROM = SYSTEM_ROM(pCPU->pHost);
 
 #if VERSION != MQ_J
     if (!simulatorTestReset(false, false, false, true)) {
-        return false;
+        return 0;
     }
 #endif
 
@@ -3826,14 +3826,14 @@ static bool cpuExecuteIdle(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressG
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
-        return false;
+        return 0;
     }
 
     pCPU->nTickLast = OSGetTick();
     return nAddressGCN;
 }
 
-static bool cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
+static s32 cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN) {
     nCount = OSGetTick();
 
     if (pCPU->nWaitPC != 0) {
@@ -3850,7 +3850,7 @@ static bool cpuExecuteJump(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressG
     }
 
     if (!cpuExecuteUpdate(pCPU, &nAddressGCN, nCount)) {
-        return false;
+        return 0;
     }
 
     pCPU->nTickLast = OSGetTick();

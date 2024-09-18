@@ -262,7 +262,7 @@ typedef struct CpuOptimize {
 } CpuOptimize; // size = 0x28
 
 typedef struct Cpu Cpu;
-typedef bool (*CpuExecuteFunc)(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
+typedef s32 (*CpuExecuteFunc)(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddressGCN);
 
 // _CPU
 struct Cpu {
