@@ -12,10 +12,10 @@
 static char gMCardCardWorkArea[40960];
 
 MemCard mCard;
-s32 bNoWriteInCurrentFrame[10];
+bool bNoWriteInCurrentFrame[10];
 OSCalendarTime gDate;
 s32 currentIdx = 0;
-s32 bWrite2Card;
+bool bWrite2Card;
 
 static inline bool mcardReadyFile(MemCard* pMCard);
 static inline bool mcardFinishCard(MemCard* pMCard);
@@ -36,14 +36,14 @@ static bool mcardGCErrorHandler(MemCard* pMCard, s32 gcError) {
             return false;
         case CARD_RESULT_NOCARD:
             pMCard->error = MC_E_NOCARD;
-            pMCard->isBroken = 0;
+            pMCard->isBroken = false;
             return false;
         case CARD_RESULT_NOFILE:
             pMCard->error = MC_E_NOFILE;
             return false;
         case CARD_RESULT_IOERROR:
             pMCard->error = MC_E_IOERROR;
-            pMCard->isBroken = 1;
+            pMCard->isBroken = true;
             return false;
         case CARD_RESULT_BROKEN:
             pMCard->error = MC_E_BROKEN;
@@ -216,7 +216,7 @@ static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
     s32 pad2;
     s32 checksum;
     char buffer2[0x2000];
-    s32 toggle = 1;
+    bool toggle = true;
     s32 pad[2];
 
     memcpy(buffer2, pMCard->writeBuffer, 0x2000);
@@ -225,7 +225,7 @@ static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
     mcardCalculateChecksumFileBlock1(pMCard, &checksum);
 
     if (checksum != *(s32*)(pMCard->writeBuffer + 0x28)) {
-        toggle = 0;
+        toggle = false;
         if (mcardReplaceFileBlock(pMCard, 0) == false) {
             return false;
         }
@@ -235,7 +235,7 @@ static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
     mcardCalculateChecksumFileBlock2(pMCard, &checksum);
 
     if (checksum != *(s32*)(pMCard->writeBuffer + 0x106C)) {
-        if (toggle == 1) {
+        if (toggle == true) {
             if (!mcardReplaceFileBlock(pMCard, 1)) {
                 return false;
             }
@@ -810,10 +810,10 @@ bool mcardReadGameData(MemCard* pMCard) {
     s32 checksum1;
     s32 checksum2;
     s32 i;
-    s32 toggle;
+    bool toggle;
     s32 pad;
 
-    toggle = 1;
+    toggle = true;
     if (pMCard->saveToggle == true) {
         strcpy(pMCard->pollMessage, "Reading Game Data");
 
@@ -826,8 +826,8 @@ bool mcardReadGameData(MemCard* pMCard) {
             memcpy(&checksum1, pMCard->writeBuffer, 4);
             mcardCalculateChecksum(pMCard, &checksum2);
             if (checksum1 != checksum2) {
-                if (toggle == 1) {
-                    toggle = 0;
+                if (toggle == true) {
+                    toggle = false;
                     if (!mcardReplaceBlock(pMCard, i)) {
                         pMCard->error = MC_E_CHECKSUM;
                         return false;
@@ -934,7 +934,7 @@ bool mcardReInit(MemCard* pMCard) {
 bool mcardInit(MemCard* pMCard) {
     CARDInit();
 
-    if (pMCard->bufferCreated == 0) {
+    if (!pMCard->bufferCreated) {
         pMCard->file.game.buffer = NULL;
     }
 
@@ -952,7 +952,7 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
     if (pMCard->saveToggle == true) {
         mcardCopyName(pMCard->file.name, name);
 
-        pMCard->file.changedDate = 0;
+        pMCard->file.changedDate = false;
         pMCard->file.fileSize = 0x6000;
         if (mcardReadyFile(pMCard) == true) {
             if (!pMCard->gameIsLoaded) {
@@ -1059,7 +1059,7 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
         pMCard->file.game.size = pMCard->file.gameSize[pMCard->file.currentGame];
         pMCard->file.game.offset = pMCard->file.gameOffset[pMCard->file.currentGame];
         pMCard->file.game.configuration = pMCard->file.gameConfigIndex[pMCard->file.currentGame];
-        pMCard->file.game.writtenConfig = 0;
+        pMCard->file.game.writtenConfig = false;
 
         if (!pMCard->bufferCreated) {
             if (pMCard->file.game.buffer != NULL) {
@@ -1094,11 +1094,11 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
         }
 
         if (!xlHeapTake((void**)&pMCard->file.game.writtenBlocks,
-                        (((u32)(pMCard->file.game.size + 8187) / 8188) * 4) | 0x30000000)) {
+                        (((u32)(pMCard->file.game.size + 8187) / 8188) * sizeof(bool)) | 0x30000000)) {
             return false;
         }
 
-        memset(pMCard->file.game.writtenBlocks, 0, ((u32)(pMCard->file.game.size + 8187) / 8188) * 4);
+        memset(pMCard->file.game.writtenBlocks, 0, ((u32)(pMCard->file.game.size + 8187) / 8188) * sizeof(bool));
         pMCard->writeStatus = 0;
         pMCard->writeIndex = 0;
 
@@ -1121,7 +1121,7 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
                     pMCard->file.game.buffer[0] &= 0xFC;
                 }
             }
-            *pMCard->file.game.writtenBlocks = 1;
+            pMCard->file.game.writtenBlocks[0] = true;
         }
     } else {
         if (gpSystem->eTypeROM == SRT_ZELDA1) {
@@ -1166,7 +1166,7 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
         if (!mcardReadyCard(pMCard)) {
             return false;
         }
-        pMCard->file.changedDate = 0;
+        pMCard->file.changedDate = false;
         if (!mcardGCErrorHandler(pMCard, CARDFreeBlocks(pMCard->slot, &freeBytes, &freeFiles))) {
             return false;
         }
@@ -1323,14 +1323,14 @@ bool mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 
         }
 
         if (!xlHeapTake((void**)&pMCard->file.game.writtenBlocks,
-                        (((u32)(pMCard->file.game.size + 8187) / 8188) * 4) | 0x30000000)) {
+                        (((u32)(pMCard->file.game.size + 8187) / 8188) * sizeof(bool)) | 0x30000000)) {
             return false;
         }
 
         pMCard->file.gameSize[i] = pMCard->file.game.size;
         pMCard->file.gameOffset[i] = pMCard->file.game.offset;
         pMCard->file.gameConfigIndex[i] = defaultConfiguration;
-        pMCard->file.game.writtenConfig = 0;
+        pMCard->file.game.writtenConfig = false;
 
         mcardCopyName(pMCard->file.gameName[i], name);
 
@@ -1404,7 +1404,7 @@ bool mcardCardErase(MemCard* pMCard) {
     slot = pMCard->slot;
     CARDInit();
 
-    if (pMCard->bufferCreated == 0) {
+    if (!pMCard->bufferCreated) {
         pMCard->file.game.buffer = NULL;
     }
 
@@ -1419,7 +1419,7 @@ bool mcardCardErase(MemCard* pMCard) {
 }
 
 bool mcardFileErase(MemCard* pMCard) {
-    if (pMCard->saveToggle == 1) {
+    if (pMCard->saveToggle == true) {
         if (!mcardReadyCard(pMCard)) {
             return false;
         }
@@ -1451,7 +1451,7 @@ bool mcardFileErase(MemCard* pMCard) {
 }
 
 bool mcardGameErase(MemCard* pMCard, s32 index) {
-    if (pMCard->saveToggle == 1) {
+    if (pMCard->saveToggle == true) {
         pMCard->accessType = 2;
         simulatorPrepareMessage(S_M_CARD_SV09);
         pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[index] + 8187) / 8188) << 13) + 0x2000;
@@ -1481,7 +1481,7 @@ bool mcardGameErase(MemCard* pMCard, s32 index) {
 static inline bool mcardFileRelease(MemCard* pMCard) {
     mcardGameRelease(pMCard);
 
-    pMCard->file.changedDate = 0;
+    pMCard->file.changedDate = false;
     memset(pMCard->file.name, 0, ARRAY_COUNT(pMCard->file.name));
     pMCard->file.numberOfGames = 0;
     memset(pMCard->file.gameSize, 0, ARRAY_COUNT(pMCard->file.gameSize));
@@ -1490,7 +1490,7 @@ static inline bool mcardFileRelease(MemCard* pMCard) {
 }
 
 bool mcardGameRelease(MemCard* pMCard) {
-    if (pMCard->bufferCreated == 0) {
+    if (!pMCard->bufferCreated) {
         if (pMCard->file.game.buffer != NULL) {
             if (!xlHeapFree((void**)&pMCard->file.game.buffer)) {
                 return false;
@@ -1507,7 +1507,7 @@ bool mcardGameRelease(MemCard* pMCard) {
         }
     }
 
-    pMCard->file.game.writtenConfig = 0;
+    pMCard->file.game.writtenConfig = false;
     pMCard->file.currentGame = 16;
 
     return true;
@@ -1629,7 +1629,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
                 nextMenuEntry = MC_M_LD07;
                 prevMenuEntry = MC_M_NONE;
                 if ((s32)yes == true) {
-                    pMCard->isBroken = 0;
+                    pMCard->isBroken = false;
                     *pCommand = MC_C_GO_TO_GAME;
                 } else {
                     *pCommand = MC_C_CONTINUE;
@@ -1780,7 +1780,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_SV10:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_SV10) == true) {
@@ -1798,7 +1798,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             break;
         case MC_M_SV12:
             prevMenuEntry = menuEntry;
-            pMCard->wait = 1;
+            pMCard->wait = true;
             if (simulatorDrawErrorMessageWait(S_M_CARD_SV12) == true) {
                 pMCard->wait = false;
                 prevMenuEntry = MC_M_NONE;
@@ -1836,7 +1836,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_IN03:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             if (simulatorDrawErrorMessageWait(S_M_CARD_IN03) == true) {
                 pMCard->wait = false;
                 prevMenuEntry = MC_M_NONE;
@@ -1845,7 +1845,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_IN04_L:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_IN04) == true) {
@@ -1854,7 +1854,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_IN04_S:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_IN04) == true) {
@@ -1904,7 +1904,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_GF03:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_GF03) == true) {
@@ -1914,7 +1914,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_GF04_L:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_GF04) == true) {
@@ -1925,7 +1925,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             }
             break;
         case MC_M_GF04_S:
-            pMCard->wait = 1;
+            pMCard->wait = true;
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_GF04) == true) {
@@ -2037,8 +2037,8 @@ bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand) {
 }
 
 bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
-    static s32 toggle = 1;
-    static s32 toggle2;
+    static bool toggle = true;
+    static bool toggle2;
     s32 i;
     char testByte;
 
@@ -2050,7 +2050,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
 
     if (gpSystem->eTypeROM == SRT_ZELDA1) {
         if (address == 0) {
-            if (toggle != 0 && pMCard->soundToggle == 1) {
+            if (toggle && pMCard->soundToggle == true) {
                 if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
                     pMCard->file.game.buffer[0] &= 0xFC;
                     pMCard->file.game.buffer[0] |= 1;
@@ -2060,7 +2060,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     }
                 }
                 *data = pMCard->file.game.buffer[0];
-                toggle = 0;
+                toggle = false;
             } else if (pMCard->file.game.buffer[0] != testByte) {
                 if ((testByte & 3) == 1) {
                     OSSetSoundMode(OS_SOUND_MODE_STEREO);
@@ -2069,45 +2069,45 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                 }
             }
         }
-        if (pMCard->saveToggle == 1) {
+        if (pMCard->saveToggle == true) {
             //! TODO: fake match
             for (i = (u64)((u32)address / 8188); i < (u32)(address + size + 8187) / 8188; i++) {
-                pMCard->file.game.writtenBlocks[i] = 1;
+                pMCard->file.game.writtenBlocks[i] = true;
             }
 
-            if (size == 0x1450 && toggle2 == 1) {
+            if (size == 0x1450 && toggle2 == true) {
                 toggle2 = 0;
                 simulatorRumbleStop(0);
                 if (!mcardUpdate()) {
                     return false;
                 }
-            } else if (size == 0x1450 && toggle2 == 0) {
-                toggle2 = 1;
+            } else if (size == 0x1450 && toggle2 == false) {
+                toggle2 = true;
             }
-        } else if (size == 0x1450 && toggle2 == 1) {
-            toggle2 = 0;
-            pMCard->saveToggle = 1;
-            pMCard->wait = 0;
+        } else if (size == 0x1450 && toggle2 == true) {
+            toggle2 = false;
+            pMCard->saveToggle = true;
+            pMCard->wait = false;
             mcardOpenDuringGame(pMCard);
-            if (pMCard->saveToggle == 1) {
+            if (pMCard->saveToggle == true) {
                 if (!mcardUpdate()) {
                     return false;
                 }
             }
-        } else if (size == 0x1450 && toggle2 == 0) {
-            toggle2 = 1;
+        } else if (size == 0x1450 && toggle2 == false) {
+            toggle2 = true;
         }
     } else {
-        if (pMCard->saveToggle == 1) {
+        if (pMCard->saveToggle == true) {
             simulatorRumbleStop(0);
             if (!mcardUpdate()) {
                 return false;
             }
         } else {
-            pMCard->saveToggle = 1;
-            pMCard->wait = 0;
+            pMCard->saveToggle = true;
+            pMCard->wait = false;
             mcardOpenDuringGame(pMCard);
-            if (pMCard->saveToggle == 1) {
+            if (pMCard->saveToggle == true) {
                 if (!mcardUpdate()) {
                     return false;
                 }
@@ -2459,7 +2459,7 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
 bool mcardOpenDuringGame(MemCard* pMCard) {
     s32 i;
     MemCardCommand command;
-    s32 loadToggle;
+    bool loadToggle;
 
     gButtonDownToggle = 1;
     if (!pMCard->gameIsLoaded) {
@@ -2739,7 +2739,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                 pMCard->accessType = 2;
                 simulatorPrepareMessage(S_M_CARD_SV09);
                 if (!mcardGameCreate(pMCard, pMCard->saveGameName, pMCard->saveConfiguration, pMCard->saveGameSize)) {
-                    pMCard->isBroken = 1;
+                    pMCard->isBroken = true;
                     continue;
                 }
                 if (!mcardGameSet(pMCard, pMCard->saveGameName)) {
@@ -2892,7 +2892,7 @@ bool mcardStore(MemCard* pMCard) {
                     return true;
                 }
             }
-            return 1;
+            return true;
         } else if (pMCard->writeStatus == 3) {
             pMCard->writeStatus = 4;
             if (pMCard->writeIndex < ((u32)(pMCard->file.game.size + 8187) / 8188)) {
@@ -2937,7 +2937,7 @@ bool mcardStore(MemCard* pMCard) {
 bool mcardUpdate(void) {
     s32 j;
     s32 i;
-    s32 toggle;
+    bool toggle;
     MemCardCommand command;
     s32 prevIndex;
     s32 index;
@@ -2949,7 +2949,7 @@ bool mcardUpdate(void) {
 
     if (mCard.saveToggle == true) {
         for (i = 0; i < (u32)(mCard.file.game.size + 8187) / 8188; i++) {
-            mCard.file.game.writtenBlocks[i] = 1;
+            mCard.file.game.writtenBlocks[i] = true;
         }
 
         prevIndex = 100;
@@ -2967,18 +2967,18 @@ bool mcardUpdate(void) {
                 simulatorDrawMCardText();
             }
 
-            toggle = 0;
+            toggle = false;
             j = (u32)(mCard.file.game.size + 8187) / 8188;
             for (i = 0; i < (u32)j; i++) {
-                if (mCard.file.game.writtenBlocks[i] == 1) {
+                if (mCard.file.game.writtenBlocks[i] == true) {
                     index = i;
                     toggle = true;
                     break;
                 }
             }
 
-            if (toggle != 1) {
-                if (mCard.file.game.writtenConfig == 1) {
+            if (toggle != true) {
+                if (mCard.file.game.writtenConfig == true) {
                     index = j;
                     toggle = true;
                 } else if (mCard.file.changedDate == true) {
