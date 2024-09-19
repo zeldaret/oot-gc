@@ -7,9 +7,14 @@
 #include "stdio.h"
 #include "string.h"
 
-#define ALIGN_BUFFER(buffer) (char*)((buffer) + (0x20 - (s32)(buffer) % 32) % 32)
+#define BLOCK_SIZE 0x2000
 
-static char gMCardCardWorkArea[40960];
+// Helpers for aligning stack buffers
+#define BUFFER_ALIGNMENT 0x20
+#define ALIGN_BUFFER(buffer) \
+    (char*)((buffer) + (BUFFER_ALIGNMENT - (s32)(buffer) % BUFFER_ALIGNMENT) % BUFFER_ALIGNMENT)
+
+static char gMCardCardWorkArea[CARD_WORKAREA_SIZE];
 
 MemCard mCard;
 bool bNoWriteInCurrentFrame[10];
@@ -86,7 +91,7 @@ static bool mcardCalculateChecksum(MemCard* pMCard, s32* checksum) {
 
     if (mCard.saveToggle == true) {
         *checksum = 0;
-        for (i = 1; i != 0x800; i++) {
+        for (i = 1; i != BLOCK_SIZE / sizeof(s32); i++) {
             *checksum += ((s32*)pMCard->writeBuffer)[i];
         }
 
@@ -104,8 +109,8 @@ static bool mcardCalculateChecksumFileBlock1(MemCard* pMCard, s32* checksum) {
     if (mCard.saveToggle == true) {
         *checksum = 0;
 
-        for (i = 0; i != 0x800; i++) {
-            if (i != 10U) {
+        for (i = 0; i != BLOCK_SIZE / sizeof(s32); i++) {
+            if (i != 0x28 / sizeof(s32)) {
                 *checksum += ((s32*)pMCard->writeBuffer)[i];
             }
         }
@@ -124,8 +129,8 @@ static bool mcardCalculateChecksumFileBlock2(MemCard* pMCard, s32* checksum) {
     if (mCard.saveToggle == true) {
         *checksum = 0;
 
-        for (i = 0; i != 0x800; i++) {
-            if (i != 0x41BU) {
+        for (i = 0; i != BLOCK_SIZE / sizeof(s32); i++) {
+            if (i != 0x106C / sizeof(s32)) {
                 *checksum += ((s32*)pMCard->writeBuffer)[i];
             }
         }
@@ -139,27 +144,27 @@ static bool mcardCalculateChecksumFileBlock2(MemCard* pMCard, s32* checksum) {
 }
 
 static bool mcardSaveChecksumFileHeader(MemCard* pMCard, char* buffer) {
-    char buffer2[0x2000];
+    char buffer2[BLOCK_SIZE];
     s32 checksum;
     s32 pad[2];
 
-    memcpy(buffer2, pMCard->writeBuffer, 0x2000);
-    memcpy(pMCard->writeBuffer, buffer, 0x2000);
+    memcpy(buffer2, pMCard->writeBuffer, BLOCK_SIZE);
+    memcpy(pMCard->writeBuffer, buffer, BLOCK_SIZE);
 
     mcardCalculateChecksumFileBlock1(pMCard, &checksum);
 
     memcpy(&buffer[0x28], &checksum, 4);
-    memcpy(pMCard->writeBuffer, buffer + 0x2000, 0x2000);
+    memcpy(pMCard->writeBuffer, buffer + BLOCK_SIZE, BLOCK_SIZE);
     mcardCalculateChecksumFileBlock2(pMCard, &checksum);
 
     memcpy(&buffer[0x306C], &checksum, 4);
-    memcpy(pMCard->writeBuffer, buffer2, 0x2000);
+    memcpy(pMCard->writeBuffer, buffer2, BLOCK_SIZE);
 
     return true;
 }
 
 static inline bool mcardGetFileTime(MemCard* pMCard, OSCalendarTime* time) {
-    char buffer[0x200 + 0x20];
+    char buffer[0x200 + BUFFER_ALIGNMENT];
 
     if (pMCard->saveToggle == true) {
         if (mcardGCErrorHandler(pMCard, CARDRead(&pMCard->file.fileInfo, ALIGN_BUFFER(buffer), 0x200, 0)) != true) {
@@ -175,12 +180,12 @@ static inline bool mcardGetFileTime(MemCard* pMCard, OSCalendarTime* time) {
 static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
     s32 checksum1;
     s32 checksum2;
-    char buffer[0x2000];
+    char buffer[BLOCK_SIZE];
     s32 pad[2];
 
-    memcpy(buffer, pMCard->writeBuffer, 0x2000);
+    memcpy(buffer, pMCard->writeBuffer, BLOCK_SIZE);
 
-    if (!mcardReadAnywhereNoTime(pMCard, 0x4000, 0x2000, pMCard->writeBuffer)) {
+    if (!mcardReadAnywhereNoTime(pMCard, 2 * BLOCK_SIZE, BLOCK_SIZE, pMCard->writeBuffer)) {
         return false;
     }
 
@@ -194,14 +199,14 @@ static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
 
     if (checksum1 != checksum2) {
         pMCard->error = MC_E_CHECKSUM;
-        memcpy(pMCard->writeBuffer, buffer, 0x2000);
+        memcpy(pMCard->writeBuffer, buffer, BLOCK_SIZE);
         return false;
     }
 
     simulatorPrepareMessage(S_M_CARD_SV09);
 
-    if (!mcardWriteAnywhereNoTime(pMCard, index << 13, 0x2000, pMCard->writeBuffer)) {
-        memcpy(pMCard->writeBuffer, buffer, 0x2000);
+    if (!mcardWriteAnywhereNoTime(pMCard, index * BLOCK_SIZE, BLOCK_SIZE, pMCard->writeBuffer)) {
+        memcpy(pMCard->writeBuffer, buffer, BLOCK_SIZE);
         return false;
     }
 
@@ -215,12 +220,12 @@ static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
 static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
     s32 pad2;
     s32 checksum;
-    char buffer2[0x2000];
+    char buffer2[BLOCK_SIZE];
     bool toggle = true;
     s32 pad[2];
 
-    memcpy(buffer2, pMCard->writeBuffer, 0x2000);
-    memcpy(pMCard->writeBuffer, buffer, 0x2000);
+    memcpy(buffer2, pMCard->writeBuffer, BLOCK_SIZE);
+    memcpy(pMCard->writeBuffer, buffer, BLOCK_SIZE);
 
     mcardCalculateChecksumFileBlock1(pMCard, &checksum);
 
@@ -230,7 +235,7 @@ static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
             return false;
         }
     }
-    memcpy(pMCard->writeBuffer, buffer + 0x2000, 0x2000);
+    memcpy(pMCard->writeBuffer, buffer + BLOCK_SIZE, BLOCK_SIZE);
 
     mcardCalculateChecksumFileBlock2(pMCard, &checksum);
 
@@ -244,7 +249,7 @@ static bool mcardCheckChecksumFileHeader(MemCard* pMCard, char* buffer) {
             return false;
         }
     }
-    memcpy(pMCard->writeBuffer, buffer2, 0x2000);
+    memcpy(pMCard->writeBuffer, buffer2, BLOCK_SIZE);
 
     return true;
 }
@@ -255,11 +260,11 @@ static bool mcardVerifyChecksumFileHeader(MemCard* pMCard) {
     if (!mcardReadyFile(pMCard)) {
         return false;
     }
-    if (!xlHeapTake(&buffer, 0x6000 | 0x30000000)) {
+    if (!xlHeapTake(&buffer, 3 * BLOCK_SIZE | 0x30000000)) {
         return false;
     }
 
-    if (!mcardReadAnywhereNoTime(pMCard, 0, 0x6000, buffer)) {
+    if (!mcardReadAnywhereNoTime(pMCard, 0, 3 * BLOCK_SIZE, buffer)) {
         if (!xlHeapFree(&buffer)) {
             return false;
         }
@@ -267,7 +272,7 @@ static bool mcardVerifyChecksumFileHeader(MemCard* pMCard) {
         return false;
     }
 
-    DCInvalidateRange(buffer, 0x6000);
+    DCInvalidateRange(buffer, 3 * BLOCK_SIZE);
 
     if (!mcardCheckChecksumFileHeader(pMCard, buffer)) {
         if (!xlHeapFree(&buffer)) {
@@ -349,7 +354,7 @@ static bool mcardReadyCard(MemCard* pMCard) {
             }
         }
 
-        if (sectorSize != 0x2000) {
+        if (sectorSize != BLOCK_SIZE) {
             pMCard->error = MC_E_SECTOR_SIZE_INVALID;
             return false;
         }
@@ -524,12 +529,12 @@ static bool mcardWriteAnywherePartial(MemCard* pMCard, s32 offset, s32 size, cha
 }
 
 static bool mcardReadFileHeader(MemCard* pMCard) {
-    char buffer[0x6000 + 0x20];
+    char buffer[3 * BLOCK_SIZE + BUFFER_ALIGNMENT];
 
     if (pMCard->saveToggle == true) {
         strcpy(pMCard->pollMessage, "Reading File Header");
 
-        if (!mcardReadAnywhere(pMCard, 0, 0x6000, ALIGN_BUFFER(buffer))) {
+        if (!mcardReadAnywhere(pMCard, 0, 3 * BLOCK_SIZE, ALIGN_BUFFER(buffer))) {
             return false;
         }
 
@@ -542,12 +547,12 @@ static bool mcardReadFileHeader(MemCard* pMCard) {
 }
 
 static bool mcardWriteFileHeader(MemCard* pMCard) {
-    char buffer[0x6000 + 0x20];
+    char buffer[3 * BLOCK_SIZE + BUFFER_ALIGNMENT];
 
     if (pMCard->saveToggle == true) {
         strcpy(pMCard->pollMessage, "Reading File Header");
 
-        if (!mcardReadAnywhere(pMCard, 0, 0x6000, ALIGN_BUFFER(buffer))) {
+        if (!mcardReadAnywhere(pMCard, 0, 3 * BLOCK_SIZE, ALIGN_BUFFER(buffer))) {
             return false;
         }
 
@@ -558,7 +563,7 @@ static bool mcardWriteFileHeader(MemCard* pMCard) {
         mcardSaveChecksumFileHeader(pMCard, ALIGN_BUFFER(buffer));
         strcpy(pMCard->pollMessage, "Writing File Header");
 
-        if (!mcardWriteAnywherePartial(pMCard, 0, 0x6000, ALIGN_BUFFER(buffer), 0, 0x6000)) {
+        if (!mcardWriteAnywherePartial(pMCard, 0, 3 * BLOCK_SIZE, ALIGN_BUFFER(buffer), 0, 3 * BLOCK_SIZE)) {
             return false;
         }
     }
@@ -567,10 +572,10 @@ static bool mcardWriteFileHeader(MemCard* pMCard) {
 }
 
 static bool mcardReadFileHeaderInitial(MemCard* pMCard) {
-    char buffer[0x6000 + 0x20];
+    char buffer[3 * BLOCK_SIZE + BUFFER_ALIGNMENT];
 
     if (pMCard->saveToggle == true) {
-        if (!mcardReadAnywhereNoTime(pMCard, 0, 0x6000, ALIGN_BUFFER(buffer))) {
+        if (!mcardReadAnywhereNoTime(pMCard, 0, 3 * BLOCK_SIZE, ALIGN_BUFFER(buffer))) {
             return false;
         }
 
@@ -584,12 +589,12 @@ static bool mcardReadFileHeaderInitial(MemCard* pMCard) {
 }
 
 static bool mcardWriteFileHeaderInitial(MemCard* pMCard) {
-    char buffer[0x6000 + 0x20];
+    char buffer[3 * BLOCK_SIZE + BUFFER_ALIGNMENT];
 
     if (pMCard->saveToggle == true) {
         strcpy(pMCard->pollMessage, "Writing File Header");
 
-        if (!mcardReadAnywhereNoTime(pMCard, 0, 0x6000, ALIGN_BUFFER(buffer))) {
+        if (!mcardReadAnywhereNoTime(pMCard, 0, 3 * BLOCK_SIZE, ALIGN_BUFFER(buffer))) {
             return false;
         }
 
@@ -600,7 +605,7 @@ static bool mcardWriteFileHeaderInitial(MemCard* pMCard) {
 
         mcardSaveChecksumFileHeader(pMCard, ALIGN_BUFFER(buffer));
 
-        if (!mcardWriteAnywhereNoTime(pMCard, 0, 0x6000, ALIGN_BUFFER(buffer))) {
+        if (!mcardWriteAnywhereNoTime(pMCard, 0, 3 * BLOCK_SIZE, ALIGN_BUFFER(buffer))) {
             return false;
         }
     }
@@ -627,9 +632,9 @@ static bool mcardWriteBufferAsynch(MemCard* pMCard, s32 offset) {
                 mCard.writeToggle = true;
                 return false;
             }
-            DCStoreRange(pMCard->writeBuffer, 0x2000);
-            if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, 0x2000, offset,
-                                                           NULL)) != true) {
+            DCStoreRange(pMCard->writeBuffer, BLOCK_SIZE);
+            if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, BLOCK_SIZE,
+                                                           offset, NULL)) != true) {
                 mCard.writeToggle = true;
                 return false;
             }
@@ -655,8 +660,8 @@ static bool mcardReadBufferAsynch(MemCard* pMCard, s32 offset) {
                 mCard.writeToggle = true;
                 return false;
             }
-            if (mcardGCErrorHandler(
-                    pMCard, CARDReadAsync(&pMCard->file.fileInfo, pMCard->readBuffer, 0x2000, offset, NULL)) != true) {
+            if (mcardGCErrorHandler(pMCard, CARDReadAsync(&pMCard->file.fileInfo, pMCard->readBuffer, BLOCK_SIZE,
+                                                          offset, NULL)) != true) {
                 mCard.writeToggle = true;
                 return false;
             }
@@ -681,16 +686,16 @@ static inline bool mcardWriteConfigPrepareWriteBuffer(MemCard* pMCard) {
         mCard.writeToggle = true;
         return false;
     }
-    if (!mcardReadAnywhere(pMCard, 0x2000, 0x2000, pMCard->writeBuffer)) {
+    if (!mcardReadAnywhere(pMCard, BLOCK_SIZE, BLOCK_SIZE, pMCard->writeBuffer)) {
         mCard.writeToggle = true;
         return false;
     }
 
-    DCInvalidateRange(pMCard->writeBuffer, 0x2000U);
+    DCInvalidateRange(pMCard->writeBuffer, BLOCK_SIZE);
     memcpy(pMCard->writeBuffer + 0x12B1, pMCard->file.gameConfigIndex, 0x40U);
     mcardCalculateChecksumFileBlock2(pMCard, &checksum);
     memcpy(pMCard->writeBuffer + 0x106C, &checksum, 4U);
-    DCStoreRange(pMCard->writeBuffer, 0x2000U);
+    DCStoreRange(pMCard->writeBuffer, BLOCK_SIZE);
 
     return true;
 }
@@ -703,9 +708,9 @@ static bool mcardWriteConfigAsynch(MemCard* pMCard) {
                 mCard.writeToggle = true;
                 return false;
             }
-            DCStoreRange(pMCard->writeBuffer, 0x2000);
-            if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, 0x2000, 0x2000,
-                                                           NULL)) != true) {
+            DCStoreRange(pMCard->writeBuffer, BLOCK_SIZE);
+            if (mcardGCErrorHandler(pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, BLOCK_SIZE,
+                                                           BLOCK_SIZE, NULL)) != true) {
                 mCard.writeToggle = true;
                 return false;
             }
@@ -731,12 +736,12 @@ static inline bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
         mCard.writeToggle = true;
         return false;
     }
-    if (!mcardReadAnywhere(pMCard, 0, 0x2000, pMCard->writeBuffer)) {
+    if (!mcardReadAnywhere(pMCard, 0, BLOCK_SIZE, pMCard->writeBuffer)) {
         mCard.writeToggle = true;
         return false;
     }
 
-    DCInvalidateRange(pMCard->writeBuffer, 0x2000U);
+    DCInvalidateRange(pMCard->writeBuffer, BLOCK_SIZE);
     OSTicksToCalendarTime(OSGetTime(), &gDate);
     // "The Legend of Zelda: Ocarina of Time"
     sprintf(dateString, "ゼルダの伝説：時のオカリナ");
@@ -744,7 +749,7 @@ static inline bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
     memcpy(pMCard->writeBuffer + 0x4C, dateString, 0x20U);
     mcardCalculateChecksumFileBlock1(pMCard, &checksum);
     memcpy(pMCard->writeBuffer + 0x28, &checksum, 4U);
-    DCStoreRange(pMCard->writeBuffer, 0x2000U);
+    DCStoreRange(pMCard->writeBuffer, BLOCK_SIZE);
 
     return true;
 }
@@ -760,9 +765,9 @@ static bool mcardWriteTimeAsynch(MemCard* pMCard) {
 
             pMCard->file.time = gDate;
 
-            DCStoreRange(pMCard->writeBuffer, 0x2000);
+            DCStoreRange(pMCard->writeBuffer, BLOCK_SIZE);
             if (mcardGCErrorHandler(
-                    pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, 0x2000, 0, NULL)) != true) {
+                    pMCard, CARDWriteAsync(&pMCard->file.fileInfo, pMCard->writeBuffer, BLOCK_SIZE, 0, NULL)) != true) {
                 mCard.writeToggle = true;
                 return false;
             }
@@ -785,8 +790,9 @@ static inline bool mcardReplaceBlock(MemCard* pMCard, s32 index) {
     s32 checksum2;
 
     if (!mcardReadAnywhere(pMCard,
-                           pMCard->file.game.offset + 0x6000 + ((u32)(pMCard->file.game.size + 8187) / 8188) * 0x2000,
-                           0x2000, pMCard->writeBuffer)) {
+                           pMCard->file.game.offset + 3 * BLOCK_SIZE +
+                               ((u32)(pMCard->file.game.size + 8187) / 8188) * BLOCK_SIZE,
+                           BLOCK_SIZE, pMCard->writeBuffer)) {
         return false;
     }
 
@@ -799,7 +805,8 @@ static inline bool mcardReplaceBlock(MemCard* pMCard, s32 index) {
     mCard.accessType = 2;
     simulatorPrepareMessage(S_M_CARD_SV09);
 
-    if (!mcardWriteAnywhere(pMCard, pMCard->file.game.offset + 0x6000 + index * 0x2000, 0x2000, pMCard->writeBuffer)) {
+    if (!mcardWriteAnywhere(pMCard, pMCard->file.game.offset + 3 * BLOCK_SIZE + index * BLOCK_SIZE, BLOCK_SIZE,
+                            pMCard->writeBuffer)) {
         return false;
     }
 
@@ -818,7 +825,7 @@ bool mcardReadGameData(MemCard* pMCard) {
         strcpy(pMCard->pollMessage, "Reading Game Data");
 
         for (i = 0; i < (u32)(pMCard->file.game.size + 8187) / 8188; i++) {
-            if (!mcardReadAnywhere(pMCard, pMCard->file.game.offset + 0x6000 + 0x2000 * i, 0x2000,
+            if (!mcardReadAnywhere(pMCard, pMCard->file.game.offset + 3 * BLOCK_SIZE + BLOCK_SIZE * i, BLOCK_SIZE,
                                    pMCard->writeBuffer)) {
                 return false;
             }
@@ -852,7 +859,7 @@ bool mcardReadGameData(MemCard* pMCard) {
 
 static inline bool mcardWriteGameData(MemCard* pMCard, s32 offset) {
     if (pMCard->saveToggle == true) {
-        if (!mcardWriteBufferAsynch(pMCard, 0x6000 + pMCard->file.game.offset + offset)) {
+        if (!mcardWriteBufferAsynch(pMCard, 3 * BLOCK_SIZE + pMCard->file.game.offset + offset)) {
             return false;
         }
     }
@@ -876,9 +883,9 @@ static inline bool mcardWriteGameDataWait(MemCard* pMCard) {
             }
             mcardCalculateChecksum(pMCard, &checksum);
             memcpy(pMCard->writeBuffer, &checksum, 4);
-            if (!mcardWriteAnywherePartial(pMCard, pMCard->file.game.offset + 0x6000 + i * 0x2000, 0x2000,
-                                           pMCard->writeBuffer, i * 0x2000,
-                                           ((u32)(pMCard->file.game.size + 8187) / 8188) * 0x2000)) {
+            if (!mcardWriteAnywherePartial(pMCard, pMCard->file.game.offset + 3 * BLOCK_SIZE + i * BLOCK_SIZE,
+                                           BLOCK_SIZE, pMCard->writeBuffer, i * BLOCK_SIZE,
+                                           ((u32)(pMCard->file.game.size + 8187) / 8188) * BLOCK_SIZE)) {
                 return false;
             }
         }
@@ -890,7 +897,7 @@ static inline bool mcardWriteGameDataWait(MemCard* pMCard) {
 bool mcardWriteGameDataReset(MemCard* pMCard) {
     if (pMCard->saveToggle == true) {
         while (!mCard.writeToggle) {
-            mcardWriteBufferAsynch(pMCard, pMCard->file.game.offset + 0x6000);
+            mcardWriteBufferAsynch(pMCard, pMCard->file.game.offset + 3 * BLOCK_SIZE);
         }
     }
 
@@ -920,11 +927,11 @@ bool mcardReInit(MemCard* pMCard) {
         }
     }
 
-    if (!xlHeapTake((void**)&pMCard->writeBuffer, 0x2000 | 0x30000000)) {
+    if (!xlHeapTake((void**)&pMCard->writeBuffer, BLOCK_SIZE | 0x30000000)) {
         return false;
     }
 
-    if (!xlHeapTake((void**)&pMCard->readBuffer, 0x2000 | 0x30000000)) {
+    if (!xlHeapTake((void**)&pMCard->readBuffer, BLOCK_SIZE | 0x30000000)) {
         return false;
     }
 
@@ -953,7 +960,7 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
         mcardCopyName(pMCard->file.name, name);
 
         pMCard->file.changedDate = false;
-        pMCard->file.fileSize = 0x6000;
+        pMCard->file.fileSize = 3 * BLOCK_SIZE;
         if (mcardReadyFile(pMCard) == true) {
             if (!pMCard->gameIsLoaded) {
                 if (!mcardReadFileHeaderInitial(pMCard)) {
@@ -992,9 +999,9 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
             for (i = 1; i < 16; i++) {
                 if (pMCard->file.gameSize[i] != 0) {
                     pMCard->file.numberOfGames++;
-                    pMCard->file.gameOffset[i] = ((u32)(pMCard->file.gameSize[i - 1] + 8187) / 8188) * 0x2000 + 0x2000 +
-                                                 pMCard->file.gameOffset[i - 1];
-                    pMCard->file.fileSize += ((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * 0x2000 + 0x2000;
+                    pMCard->file.gameOffset[i] = ((u32)(pMCard->file.gameSize[i - 1] + 8187) / 8188) * BLOCK_SIZE +
+                                                 BLOCK_SIZE + pMCard->file.gameOffset[i - 1];
+                    pMCard->file.fileSize += ((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * BLOCK_SIZE + BLOCK_SIZE;
                 }
             }
 
@@ -1153,7 +1160,7 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
     char dateString[32];
     s32 pad[2];
 
-    totalSize = size + 0x6000;
+    totalSize = size + 3 * BLOCK_SIZE;
     if (pMCard->saveToggle == true) {
         if (mcardFileSet(pMCard, name) == true) {
             mcardFileRelease(pMCard);
@@ -1183,7 +1190,7 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
 
         pMCard->file.numberOfGames = 0;
         pMCard->file.currentGame = 16;
-        pMCard->file.fileSize = 0x6000;
+        pMCard->file.fileSize = 3 * BLOCK_SIZE;
 
         for (i = 0; i < 16; i++) {
             pMCard->file.gameSize[i] = 0;
@@ -1221,12 +1228,14 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
         // "The Legend of Zelda: Ocarina of Time"
         sprintf(dateString, "ゼルダの伝説：時のオカリナ");
         memcpy(buffer + 0x4C, dateString, strlen(dateString));
-        TEXGetGXTexObjFromPalette((TEXPalette*)banner, &texObj, 0U);
+
+        TEXGetGXTexObjFromPalette((TEXPalette*)banner, &texObj, 0);
         dataP = (u8*)GXGetTexObjData(&texObj) + 0x80000000;
-        memcpy(buffer + 0x6C, dataP, 0x1800U);
-        TEXGetGXTexObjFromPalette((TEXPalette*)icon, &texObj, 0U);
+        memcpy(buffer + 0x6C, dataP, 0x1800);
+
+        TEXGetGXTexObjFromPalette((TEXPalette*)icon, &texObj, 0);
         dataP = (u8*)GXGetTexObjData(&texObj) + 0x80000000;
-        memcpy(buffer + 0x186C, dataP, 0x1800U);
+        memcpy(buffer + 0x186C, dataP, 0x1800);
 
         fileNo = pMCard->file.fileInfo.fileNo;
         if (!mcardGCErrorHandler(pMCard, CARDGetStatus(pMCard->slot, fileNo, &cardStatus))) {
@@ -1301,7 +1310,7 @@ bool mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 
         if (i == 0) {
             pMCard->file.game.offset = 0;
         } else {
-            pMCard->file.game.offset = 0x2000 + (((u32)(pMCard->file.gameSize[i - 1] + 8187) / 8188) * 0x2000) +
+            pMCard->file.game.offset = BLOCK_SIZE + (((u32)(pMCard->file.gameSize[i - 1] + 8187) / 8188) * BLOCK_SIZE) +
                                        pMCard->file.gameOffset[i - 1];
         }
 
@@ -1335,11 +1344,11 @@ bool mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 
         mcardCopyName(pMCard->file.gameName[i], name);
 
         pMCard->file.numberOfGames += 1;
-        pMCard->file.fileSize += (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * 0x2000) + 0x2000;
+        pMCard->file.fileSize += (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * BLOCK_SIZE) + BLOCK_SIZE;
 
         if (!mcardReadyFile(pMCard)) {
             pMCard->file.numberOfGames -= 1;
-            pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * 0x2000) + 0x2000;
+            pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * BLOCK_SIZE) + BLOCK_SIZE;
             pMCard->file.gameSize[i] = 0;
             pMCard->file.gameOffset[i] = 0;
             memset(pMCard->file.gameName[i], 0, 0x21);
@@ -1349,7 +1358,7 @@ bool mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 
 
         if (!mcardWriteGameDataWait(pMCard)) {
             pMCard->file.numberOfGames -= 1;
-            pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * 0x2000) + 0x2000;
+            pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * BLOCK_SIZE) + BLOCK_SIZE;
             pMCard->file.gameSize[i] = 0;
             pMCard->file.gameOffset[i] = 0;
             memset(pMCard->file.gameName[i], 0, 0x21);
@@ -1359,7 +1368,7 @@ bool mcardGameCreate(MemCard* pMCard, char* name, s32 defaultConfiguration, s32 
         }
         if (mcardWriteFileHeader(pMCard) == 0) {
             pMCard->file.numberOfGames -= 1;
-            pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * 0x2000) + 0x2000;
+            pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[i] + 8187) / 8188) * BLOCK_SIZE) + BLOCK_SIZE;
             pMCard->file.gameSize[i] = 0;
             pMCard->file.gameOffset[i] = 0;
             memset(pMCard->file.gameName[i], 0, 0x21);
@@ -1390,7 +1399,7 @@ bool mcardCardErase(MemCard* pMCard) {
     }
 
     simulatorPrepareMessage(S_M_CARD_IN02);
-    pMCard->pollSize = pMCard->cardSize << 0x11;
+    pMCard->pollSize = pMCard->cardSize << 17;
     pMCard->pPollFunction = simulatorMCardPollDrawFormatBar;
     pMCard->pollPrevBytes = CARDGetXferredBytes(pMCard->slot);
 
@@ -1454,7 +1463,7 @@ bool mcardGameErase(MemCard* pMCard, s32 index) {
     if (pMCard->saveToggle == true) {
         pMCard->accessType = 2;
         simulatorPrepareMessage(S_M_CARD_SV09);
-        pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[index] + 8187) / 8188) << 13) + 0x2000;
+        pMCard->file.fileSize -= (((u32)(pMCard->file.gameSize[index] + 8187) / 8188) * BLOCK_SIZE) + BLOCK_SIZE;
         pMCard->file.gameSize[index] = 0;
         pMCard->file.gameOffset[index] = 0;
         memset(pMCard->file.gameName[index], 0, sizeof(pMCard->file.gameName[index]));
@@ -2233,7 +2242,7 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
                 mcardGameSetNoSave(pMCard, gameSize);
                 return true;
             } else if (command == MC_C_CREATE_GAME) {
-                if (!mcardCheckSpace(pMCard, fileSize + 0x6000)) {
+                if (!mcardCheckSpace(pMCard, fileSize + 3 * BLOCK_SIZE)) {
                     mcardOpenError(pMCard, &command);
                     if (command == MC_C_IPL) {
                         simulatorReset(1, 1);
@@ -2544,7 +2553,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                 pMCard->saveToggle = false;
                 return true;
             } else if (command == MC_C_CREATE_GAME) {
-                if (!mcardCheckSpace(pMCard, pMCard->saveFileSize + 0x6000)) {
+                if (!mcardCheckSpace(pMCard, pMCard->saveFileSize + 3 * BLOCK_SIZE)) {
                     mcardOpenDuringGameError(pMCard, &command);
                     if (command == MC_C_IPL) {
                         simulatorReset(true, true);
@@ -2829,10 +2838,10 @@ bool mcardStore(MemCard* pMCard) {
             }
 
             if (pMCard->writeIndex < ((u32)(pMCard->file.game.size + 8187) / 8188)) {
-                bufferOffset =
-                    0x6000 + pMCard->file.game.offset + ((u32)(pMCard->file.game.size + 8187) / 8188) * 0x2000;
+                bufferOffset = 3 * BLOCK_SIZE + pMCard->file.game.offset +
+                               ((u32)(pMCard->file.game.size + 8187) / 8188) * BLOCK_SIZE;
             } else {
-                bufferOffset = 0x4000;
+                bufferOffset = 2 * BLOCK_SIZE;
             }
             if (!mcardWriteBufferAsynch(pMCard, bufferOffset)) {
                 pMCard->saveToggle = false;
@@ -2846,15 +2855,15 @@ bool mcardStore(MemCard* pMCard) {
         } else if (pMCard->writeStatus == 1) {
             pMCard->writeStatus = 2;
             if (pMCard->writeIndex < ((u32)(pMCard->file.game.size + 8187) / 8188)) {
-                bufferOffset =
-                    0x6000 + pMCard->file.game.offset + ((u32)(pMCard->file.game.size + 8187) / 8188) * 0x2000;
+                bufferOffset = 3 * BLOCK_SIZE + pMCard->file.game.offset +
+                               ((u32)(pMCard->file.game.size + 8187) / 8188) * BLOCK_SIZE;
             } else {
-                bufferOffset = 0x4000;
+                bufferOffset = 2 * BLOCK_SIZE;
             }
             mcardReadBufferAsynch(pMCard, bufferOffset);
             return true;
         } else if (pMCard->writeStatus == 2) {
-            if (memcmp(pMCard->readBuffer, pMCard->writeBuffer, 0x2000U) != 0) {
+            if (memcmp(pMCard->readBuffer, pMCard->writeBuffer, BLOCK_SIZE) != 0) {
                 pMCard->saveToggle = false;
                 if (pMCard->error != MC_E_NOCARD) {
                     mcardMenu(&mCard, MC_M_SV10, &command);
@@ -2864,7 +2873,7 @@ bool mcardStore(MemCard* pMCard) {
             }
             pMCard->writeStatus = 3;
             if (pMCard->writeIndex < (u32)(pMCard->file.game.size + 8187) / 8188) {
-                if (!mcardWriteGameData(pMCard, pMCard->writeIndex * 0x2000)) {
+                if (!mcardWriteGameData(pMCard, pMCard->writeIndex * BLOCK_SIZE)) {
                     simulatorRumbleStop(0);
                     if (pMCard->error != MC_E_NOCARD) {
                         mcardMenu(&mCard, MC_M_SV10, &command);
@@ -2896,16 +2905,17 @@ bool mcardStore(MemCard* pMCard) {
         } else if (pMCard->writeStatus == 3) {
             pMCard->writeStatus = 4;
             if (pMCard->writeIndex < ((u32)(pMCard->file.game.size + 8187) / 8188)) {
-                mcardReadBufferAsynch(pMCard, 0x6000 + pMCard->file.game.offset + pMCard->writeIndex * 0x2000);
+                mcardReadBufferAsynch(pMCard,
+                                      3 * BLOCK_SIZE + pMCard->file.game.offset + pMCard->writeIndex * BLOCK_SIZE);
             } else if (pMCard->writeIndex == ((u32)(pMCard->file.game.size + 8187) / 8188) + 1) {
                 mcardReadBufferAsynch(pMCard, 0);
             } else if (pMCard->writeIndex == ((u32)(pMCard->file.game.size + 8187) / 8188) + 2) {
-                mcardReadBufferAsynch(pMCard, 0x2000);
+                mcardReadBufferAsynch(pMCard, BLOCK_SIZE);
             }
             return true;
         } else if (pMCard->writeStatus == 4) {
             pMCard->writeStatus = 0;
-            if (memcmp(pMCard->readBuffer, pMCard->writeBuffer, 0x2000U) != 0) {
+            if (memcmp(pMCard->readBuffer, pMCard->writeBuffer, BLOCK_SIZE) != 0) {
                 pMCard->saveToggle = false;
                 if (pMCard->error != MC_E_NOCARD) {
                     mcardMenu(&mCard, MC_M_SV10, &command);
@@ -2923,7 +2933,7 @@ bool mcardStore(MemCard* pMCard) {
             return true;
         }
         if (pMCard->writeToggle == true) {
-            DCInvalidateRange(pMCard->readBuffer, 0x2000U);
+            DCInvalidateRange(pMCard->readBuffer, BLOCK_SIZE);
         }
         if (pMCard->writeToggle == true && pMCard->writeStatus == 0) {
             mcardFinishCard(pMCard);
