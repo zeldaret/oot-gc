@@ -1538,7 +1538,7 @@ static bool systemSetupGameALL(System* pSystem) {
         }
     }
 
-    if (mCard.saveToggle == 1) {
+    if (mCard.saveToggle == true) {
         systemSetControllerConfiguration(&gSystemRomConfigurationList[0], mCard.file.game.configuration, false);
     }
 
