@@ -33,6 +33,7 @@
 // Checksums are a simple sum of all 32-bit words in the block, with the exception of the checksum field itself.
 // If the checksum is 0, it is replaced with 1 to avoid having a valid block with all 0s.
 
+// Same as CARD_SYSTEM_BLOCK_SIZE (but signed instead of unsigned)
 #define BLOCK_SIZE 0x2000
 #define HEADER_SIZE (3 * BLOCK_SIZE)
 
