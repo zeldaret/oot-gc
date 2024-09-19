@@ -1,3 +1,32 @@
+/**
+ * @file mcardGCN.c
+ *
+ * The memory card file can hold data for up to 16 games at once (although in practice at most 2 games are used,
+ * for Master Quest). The file starts with a 3 block header, where the first 2 blocks contain the following data:
+ *
+ *   offset   size    description
+ *   -----------------------------
+ *   +0x0000  0x0028  timestamp, as an OSCalendarTime
+ *   +0x0028  0x0004  checksum of the first block
+ *   +0x002C  0x0020  comment string
+ *   +0x004C  0x0020  "date string", always "ゼルダの伝説：時のオカリナ" ("The Legend of Zelda: Ocarina of Time")
+ *   +0x006C  0x1800  banner TPL data
+ *   +0x186C  0x1800  icon TPL data
+ *   +0x306C  0x0004  checksum of the second block
+ *   +0x3070  0x0040  game sizes, 4 bytes per game
+ *   +0x30B0  0x0201  game names, 33 bytes per game (note that the space is too small for all 16 game names)
+ *   +0x32B1  0x0040  game controller configuration, 4 bytes per game
+ *
+ * The third block is used as a temporary space for writing data to the file header. Before writing a header
+ * block, the block data is first written to +0x4000 and read back to verify the card is working correctly.
+ *
+ * After the header, the file contains a sequence of games, where each game has a sequence of game data blocks
+ * followed by 1 extra block. Each game data block contains a 4-byte checksum followed by 0x2000 - 4 = BLOCK_DATA_SIZE
+ * bytes of data. The extra block is used as temporary space when writing similar to extra the header block above.
+ *
+ * Checksums are a simple sum of all 32-bit words in the block, with the exception of the checksum field itself.
+ * If the checksum is 0, it is replaced with 1 to avoid having a valid block with all 0s.
+ */
 #include "emulator/mcardGCN.h"
 #include "dolphin/card.h"
 #include "emulator/mcardGCN_jumptables.h"
@@ -6,32 +35,6 @@
 #include "emulator/xlPostGCN.h"
 #include "stdio.h"
 #include "string.h"
-
-// The memory card file can hold data for up to 16 games at once (although in practice at most 2 games are used,
-// for Master Quest). The file starts with a 3 block header, where the first 2 blocks contain the following data:
-//
-//   offset   size    description
-//   -----------------------------
-//   +0x0000  0x0028  timestamp, as an OSCalendarTime
-//   +0x0028  0x0004  checksum of the first block
-//   +0x002C  0x0020  comment string
-//   +0x004C  0x0020  "date string", always "ゼルダの伝説：時のオカリナ" ("The Legend of Zelda: Ocarina of Time")
-//   +0x006C  0x1800  banner TPL data
-//   +0x186C  0x1800  icon TPL data
-//   +0x306C  0x0004  checksum of the second block
-//   +0x3070  0x0040  game sizes, 4 bytes per game
-//   +0x30B0  0x0201  game names, 33 bytes per game (note that the space is too small for all 16 game names)
-//   +0x32B1  0x0040  game controller configuration, 4 bytes per game
-//
-// The third block is used as a temporary space for writing data to the file header. Before writing a header
-// block, the block data is first written to +0x4000 and read back to verify the card is working correctly.
-//
-// After the header, the file contains a sequence of games, where each game has a sequence of game data blocks
-// followed by 1 extra block. Each game data block contains a 4-byte checksum followed by 0x2000 - 4 = BLOCK_DATA_SIZE
-// bytes of data. The extra block is used as temporary space when writing similar to extra the header block above.
-//
-// Checksums are a simple sum of all 32-bit words in the block, with the exception of the checksum field itself.
-// If the checksum is 0, it is replaced with 1 to avoid having a valid block with all 0s.
 
 // Same as CARD_SYSTEM_BLOCK_SIZE (but signed instead of unsigned)
 #define BLOCK_SIZE 0x2000
