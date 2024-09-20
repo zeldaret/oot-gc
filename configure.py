@@ -41,6 +41,11 @@ parser.add_argument(
     help="create non-matching build for modding",
 )
 parser.add_argument(
+    "--no-asm-processor",
+    action="store_true",
+    help="disable asm_processor for progress calculation",
+)
+parser.add_argument(
     "--build-dir",
     metavar="DIR",
     type=Path,
@@ -143,6 +148,7 @@ config.compilers_path = args.compilers
 config.generate_map = args.map
 config.sjiswrap_path = args.sjiswrap
 config.non_matching = args.non_matching
+config.asm_processor = not args.no_asm_processor
 
 if not is_windows():
     config.wrapper = args.wrapper
