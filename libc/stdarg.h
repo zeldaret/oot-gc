@@ -14,7 +14,7 @@ extern void __builtin_va_info(void*);
 
 void* __va_arg(va_list v_list, unsigned char type);
 
-#if !__MWERKS__
+#ifndef __MWERKS__
 #define _var_arg_typeof(e) 0
 #endif
 
