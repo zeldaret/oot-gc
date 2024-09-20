@@ -43,12 +43,12 @@ jobs:
     - name: Build (non-matching)
       if: ${{ !matrix.matching }}
       run: |
-        python configure.py --map --binutils /binutils --compilers /compilers --non-matching
-        ninja all_source
+        python configure.py --map --binutils /binutils --compilers /compilers --non-matching --no-asm-processor
+        ninja all_source build/{mq-j,mq-u,mq-e,ce-j,ce-u,ce-e}/progress.json build/report.json
 
     # Upload progress if we're on the main branch
     - name: Upload progress
-      if: matrix.matching && github.ref == 'refs/heads/main'
+      if: ${{ !matrix.matching && github.ref == 'refs/heads/main' }}
       continue-on-error: true
       env:
         PROGRESS_SLUG: oot-gc

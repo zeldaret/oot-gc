@@ -250,7 +250,7 @@ s32 anRenderModeDatabaseCycle1[] = {
 
 char D_800EB13C[] = "GetTextureInfo: Unknown texture-format: %d\n";
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 extern void* lbl_8001D3FC;
 extern void* lbl_8001D418;
 extern void* lbl_8001D418;
@@ -268,7 +268,7 @@ void* jtbl_800EB168[10] = {&lbl_8001D3FC, &lbl_8001D418, &lbl_8001D418, &lbl_800
 void* jtbl_800EB168[10] = {0};
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 extern void* lbl_80020074;
 extern void* lbl_80020084;
 extern void* lbl_800200C8;
@@ -289,7 +289,7 @@ void* jtbl_800EB190[10] = {0};
 char D_800EB1B8[] = "frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n";
 char D_800EB1F8[] = "Waiting for valid?\n";
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 extern void* lbl_800297DC;
 extern void* lbl_800297E8;
 extern void* lbl_800297F4;
@@ -307,7 +307,7 @@ void* jtbl_800EB20C[8] = {
 void* jtbl_800EB20C[8] = {0};
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 extern void* lbl_8002986C;
 extern void* lbl_80029878;
 extern void* lbl_80029884;
@@ -468,7 +468,7 @@ static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     return true;
 }
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 static bool frameDrawSetupFog_Zelda1(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
 #else
@@ -611,7 +611,7 @@ static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 static bool frameDrawSetupFog_Default(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
 #else
@@ -759,7 +759,7 @@ static inline bool frameFreePixels(Frame* pFrame, FrameTexture* pTexture) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTexture.s")
 #else
@@ -852,7 +852,7 @@ static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTexture
 #endif
 
 // matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetup2D.s")
 #else
 bool frameDrawSetup2D(Frame* pFrame) {
@@ -924,7 +924,7 @@ static inline void frameSetZMode(Frame* pFrame) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupSP.s")
 #else
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount) {
@@ -1118,7 +1118,7 @@ static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVe
 }
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetCombineColor.s")
 #else
@@ -1183,7 +1183,7 @@ static bool frameGetCombineColor(Frame* pFrame, GXTevColorArg* pnColorTEV, s32 n
 }
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetCombineAlpha.s")
 #else
@@ -1222,7 +1222,7 @@ static bool frameGetCombineAlpha(Frame* pFrame, GXTevAlphaArg* pnAlphaTEV, s32 n
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupDP.s")
 #else
 static bool frameDrawSetupDP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 vertexCount) {
@@ -1514,7 +1514,7 @@ static inline void frameWriteVertex(Vertex* pVertex) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameCheckTriangleDivide.s")
 #else
@@ -1733,7 +1733,7 @@ static bool frameCheckTriangleDivide(Frame* pFrame, Primitive* pPrimitive) {
 }
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T3.s")
 #else
@@ -1789,7 +1789,7 @@ static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T0.s")
 #else
 static bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive) {
@@ -1823,7 +1823,7 @@ static bool frameDrawLine_C0T0(Frame* pFrame, Primitive* pPrimitive) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C1T0.s")
 #else
 static bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive) {
@@ -1865,7 +1865,7 @@ static bool frameDrawLine_C1T0(Frame* pFrame, Primitive* pPrimitive) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T0.s")
 #else
 static bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive) {
@@ -1903,7 +1903,7 @@ static bool frameDrawLine_C2T0(Frame* pFrame, Primitive* pPrimitive) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T2.s")
 #else
 static bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive) {
@@ -1941,7 +1941,7 @@ static bool frameDrawLine_C0T2(Frame* pFrame, Primitive* pPrimitive) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C1T2.s")
 #else
 static bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive) {
@@ -1987,7 +1987,7 @@ static bool frameDrawLine_C1T2(Frame* pFrame, Primitive* pPrimitive) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C2T2.s")
 #else
 static bool frameDrawLine_C2T2(Frame* pFrame, Primitive* pPrimitive) {
@@ -2049,7 +2049,7 @@ static bool frameDrawLine_Setup(Frame* pFrame, Primitive* pPrimitive) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectFill.s")
 #else
 static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle) {
@@ -2140,7 +2140,7 @@ static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture.s")
 #else
@@ -2277,7 +2277,7 @@ static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
 #endif
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawRectTexture_Setup.s")
 #else
@@ -2372,7 +2372,7 @@ static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
 
 bool frameShow(Frame* pFrame) { return true; }
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetScissor.s")
 #else
@@ -2599,7 +2599,7 @@ bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, 
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameNoBlend.s")
 #else
 void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
@@ -2642,7 +2642,7 @@ void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameBlur.s")
 #else
@@ -2700,7 +2700,7 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrame.s")
 #else
 void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
@@ -2798,7 +2798,7 @@ void CopyAndConvertCFB(u16* srcP) {
 
 // matches but data doesn't
 //! TODO: make sFrameObj and cAlpha a static variable in the function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void ZeldaGreyScaleConvert(Frame* pFrame);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaGreyScaleConvert.s")
 #else
@@ -2875,7 +2875,7 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameShrink.s")
 #else
@@ -2994,7 +2994,7 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
 
 // matches but data doesn't
 //! TODO: make sFrameObj a static variable in the function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer);
 #pragma GLOBAL_ASM("asm/non_matchings/frame/ZeldaDrawFrameCamera.s")
 #else
@@ -3412,7 +3412,7 @@ bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer) {
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Panel.s")
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetDepth.s")
 #else
 bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
@@ -3463,7 +3463,7 @@ bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
 }
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameEvent.s")
 #else
@@ -3979,7 +3979,7 @@ bool frameSetFill(Frame* pFrame, bool bFill) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetSize.s")
 #else
 bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY) {
@@ -3999,7 +3999,7 @@ bool frameSetSize(Frame* pFrame, FrameSize eSize, s32 nSizeX, s32 nSizeY) {
 }
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMode.s")
 #else
@@ -4092,7 +4092,7 @@ bool frameGetMode(Frame* pFrame, FrameModeType eType, u32* pnMode) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrix.s")
 #else
 bool frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bLoad, bool bPush, s32 nAddressN64) {
@@ -4270,7 +4270,7 @@ static inline void s16tof32Scaled32Pair(register s16* src, register f32* dst) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadVertex.s")
 #else
 bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
@@ -4608,7 +4608,7 @@ bool frameSetLightCount(Frame* pFrame, s32 nCount) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetLight.s")
 #else
 bool frameSetLight(Frame* pFrame, s32 iLight, s8* pData) {
@@ -4666,7 +4666,7 @@ bool frameSetLookAt(Frame* pFrame, s32 iLookAt, s8* pData) {
 }
 
 // Matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetViewport.s")
 #else
 bool frameSetViewport(Frame* pFrame, s16* pData) {
@@ -4775,7 +4775,7 @@ static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint) 
     return false;
 }
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameSetMatrixHint.s")
 #else
 bool frameSetMatrixHint(Frame* pFrame, FrameMatrixProjection eProjection, s32 nAddressFloat, s32 nAddressFixed,
@@ -4851,7 +4851,7 @@ bool frameInvalidateCache(Frame* pFrame, s32 nOffset0, s32 nOffset1) {
     return true;
 }
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 // matches but data doesn't
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameGetTextureInfo.s")
 #else

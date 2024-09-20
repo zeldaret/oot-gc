@@ -12,7 +12,7 @@ char D_800EA548[] = "ゼルダの伝説：時のオカリナ";
 char D_800EA564[] = "Invalid Memory Card Command %d - Assuming Go To Game";
 char D_800EA59C[] = "mcardGCN.c";
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void* jtbl_800EA5A8[24] = {
     &lbl_80016D74, &lbl_80016D74, &lbl_80016D08, &lbl_80016CE8, &lbl_80016D48, &lbl_80016CF8,
     &lbl_80016D28, &lbl_80016D74, &lbl_80016D74, &lbl_80016D74, &lbl_80016D74, &lbl_80016D74,
@@ -23,7 +23,7 @@ void* jtbl_800EA5A8[24] = {
 void* jtbl_800EA5A8[24] = {0};
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void* jtbl_800EA608[24] = {
     &lbl_80016E54, &lbl_80016E54, &lbl_80016DE8, &lbl_80016DC8, &lbl_80016E28, &lbl_80016DD8,
     &lbl_80016E08, &lbl_80016E54, &lbl_80016E54, &lbl_80016E54, &lbl_80016E54, &lbl_80016E54,
@@ -34,7 +34,7 @@ void* jtbl_800EA608[24] = {
 void* jtbl_800EA608[24] = {0};
 #endif
 
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 void* jtbl_800EA668[50] = {
     &lbl_800177EC, &lbl_80016EF8, &lbl_80016F24, &lbl_80016F54, &lbl_80016F80, &lbl_80016FAC, &lbl_80016FD8,
     &lbl_80017020, &lbl_80017054, &lbl_80017074, &lbl_8001709C, &lbl_800170E8, &lbl_80017134, &lbl_80017158,
@@ -579,7 +579,7 @@ bool mcardCardErase(MemCard* pMCard) {
 }
 
 // matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardFileErase.s")
 #else
 bool mcardFileErase(MemCard* pMCard) {
@@ -741,7 +741,7 @@ bool mcardRead(MemCard* pMCard, s32 address, s32 size, char* data) {
 
 // matches but data doesn't
 //! TODO: define ``yes`` as a static variable inside this function
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardMenu.s")
 #else
 bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pCommand) {
@@ -1180,7 +1180,7 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
 #endif
 
 // matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardOpenError.s")
 #else
 bool mcardOpenError(MemCard* pMCard, MemCardCommand* pCommand) {
@@ -1225,7 +1225,7 @@ bool mcardOpenError(MemCard* pMCard, MemCardCommand* pCommand) {
 #endif
 
 // matches but data doesn't
-#ifdef ASM_PROCESSOR
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/mcardGCN/mcardOpenDuringGameError.s")
 #else
 bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand) {

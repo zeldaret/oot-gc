@@ -97,8 +97,12 @@ class Object:
         obj.ctx_path = build_dir / "src" / f"{base_name}.ctx"
         return obj
 
-    def completed(self, version: str) -> bool:
-        return version in self.completed_versions
+    def completed(self, config: "ProjectConfig", version: str) -> bool:
+        complete = version in self.completed_versions
+        # Don't consider asm_processor objects "complete" if asm_processor is disabled
+        if self.options["asm_processor"] and not config.asm_processor:
+            complete = False
+        return complete
 
 
 class ProgressCategory:
@@ -786,7 +790,7 @@ def generate_build_ninja(
 
             # Add MWCC build rule
             lib_name = obj.options["lib"]
-            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed(version)})")
+            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed(config, version)})")
             if config.asm_processor and obj.options["asm_processor"]:
                 n.build(
                     outputs=obj.src_obj_path,
@@ -873,7 +877,7 @@ def generate_build_ninja(
 
             # Add assembler build rule
             lib_name = obj.options["lib"]
-            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed(version)})")
+            n.comment(f"{obj.name}: {lib_name} (linked {obj.completed(config, version)})")
             n.build(
                 outputs=obj_path,
                 rule="as",
@@ -897,11 +901,7 @@ def generate_build_ninja(
                 link_step.add(obj_path)
                 return
 
-            link_built_obj = obj.completed(version) and (
-                # Don't link asm_processor objects if asm_processor is disabled
-                config.asm_processor
-                or not obj.options["asm_processor"]
-            )
+            link_built_obj = obj.completed(config, version)
             built_obj_path: Optional[Path] = None
             if obj.src_path is not None and obj.src_path.exists():
                 if obj.src_path.suffix in (".c", ".cp", ".cpp"):
@@ -913,7 +913,7 @@ def generate_build_ninja(
                 else:
                     sys.exit(f"Unknown source file type {obj.src_path}")
             else:
-                if config.warn_missing_source or obj.completed(version):
+                if config.warn_missing_source or obj.completed(config, version):
                     print(f"Missing source file {obj.src_path}")
                 link_built_obj = False
 
@@ -1245,7 +1245,7 @@ def generate_objdiff_config(
             progress_categories.append(f"{version}.{category_opt}")
         unit_config["metadata"].update(
             {
-                "complete": obj.completed(version) and not obj.options["asm_processor"],
+                "complete": obj.completed(config, version),
                 "reverse_fn_order": reverse_fn_order,
                 "source_path": obj.src_path,
                 "progress_categories": progress_categories,
@@ -1341,11 +1341,7 @@ def calculate_progress(config: ProjectConfig, version: str) -> None:
                 return
 
             obj = objects.get(build_obj["name"])
-            if (
-                obj is None
-                or not obj.completed(version)
-                or obj.options["asm_processor"]
-            ):
+            if obj is None or not obj.completed(config, version):
                 return
 
             self.code_progress += build_obj["code_size"]
