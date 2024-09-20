@@ -121,8 +121,15 @@ config.versions = [
     for version in ALL_VERSIONS
     if (Path("orig") / version / "main.dol").exists()
 ]
+
+if not config.versions:
+    sys.exit("Error: no main.dol found for any version")
+
 if "ce-j" in config.versions:
     config.default_version = "ce-j"
+else:
+    # Use the earliest version as default
+    config.default_version = config.versions[0]
 
 config.warn_missing_config = True
 config.warn_missing_source = False
