@@ -177,6 +177,7 @@ class ProjectConfig:
             "ldflags",
             "linker_version",
             "libs",
+            "default_version",
         ]
         for attr in required_attrs:
             if getattr(self, attr) is None:
