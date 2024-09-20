@@ -3,9 +3,6 @@
 
 #include "dolphin/types.h"
 
-// eof.h
-#define EOF -1L
-
 extern const u8 __ctype_map[];
 extern const u8 __lower_map[];
 extern const u8 __upper_map[];
