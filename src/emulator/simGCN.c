@@ -1953,7 +1953,7 @@ bool simulatorReadEEPROM(u8 address, u8* data) {
         return false;
     }
 
-    mcardRead(&mCard, (address * 8) & 0x7F8, 8, (char*)data);
+    mcardRead(&mCard, address * 8, 8, (char*)data);
     return true;
 }
 
@@ -1964,7 +1964,7 @@ bool simulatorWriteEEPROM(u8 address, u8* data) {
         return false;
     }
 
-    mcardWrite(&mCard, (address * 8) & 0x7F8, 8, (char*)data);
+    mcardWrite(&mCard, address * 8, 8, (char*)data);
     return true;
 }
 
@@ -2483,9 +2483,9 @@ bool xlMain(void) {
         return false;
     }
 
-    mCard.bufferCreated = 0;
+    mCard.bufferCreated = false;
 #if VERSION != MQ_J
-    mCard.isBroken = 0;
+    mCard.isBroken = false;
 #endif
     mcardInit(&mCard);
 

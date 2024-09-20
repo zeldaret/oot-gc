@@ -1,0 +1,32 @@
+name: Check Format
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository (shallow clone)
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    # Set Git config
+    - name: Git config
+      run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+    # Run formatter
+    - name: Run clang-format
+      run: ./format
+
+    # Cancel if there's a diff
+    - name: Check status
+      run: git diff --name-only --exit-code

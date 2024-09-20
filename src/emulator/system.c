@@ -1538,7 +1538,7 @@ static bool systemSetupGameALL(System* pSystem) {
         }
     }
 
-    if (mCard.saveToggle == 1) {
+    if (mCard.saveToggle == true) {
         systemSetControllerConfiguration(&gSystemRomConfigurationList[0], mCard.file.game.configuration, false);
     }
 
@@ -1864,7 +1864,7 @@ static inline bool systemTestClassObject(System* pSystem) {
 }
 
 bool systemExecute(System* pSystem, s32 nCount) {
-    if (!cpuExecute(SYSTEM_CPU(pSystem), pSystem->nAddressBreak)) {
+    if (!cpuExecute(SYSTEM_CPU(pSystem), nCount, pSystem->nAddressBreak)) {
         if (!systemTestClassObject(pSystem)) {
             return false;
         }
