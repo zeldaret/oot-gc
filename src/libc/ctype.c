@@ -1,5 +1,6 @@
 #include "ctype.h"
 #include "dolphin/types.h"
+#include "stdio.h"
 
 const u8 __ctype_map[256] = {
     __control_char,

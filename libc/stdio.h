@@ -104,23 +104,27 @@ typedef struct {
 #define EOF -1L
 
 enum __ReadProcActions {
-    __GetChar,
-    __UngetChar,
-    __CheckForError
+    __GetAChar,
+    __UngetAChar,
+    __TestForError,
 };
+
+int __StringRead(void* str, int ch, int behavior);
 
 #define _IONBF 0
 #define _IOLBF 1
 #define _IOFBF 2
 
-int puts(const char* s);
-int printf(const char*, ...);
-size_t sprintf(char* s, const char* format, ...);
-size_t vprintf(const char* format, va_list arg);
-size_t vsprintf(char* s, const char* format, va_list arg);
-size_t fread(const void*, size_t memb_size, size_t num_memb, FILE*);
+extern FILE __files[3];
+
+#define stdin (&__files[0])
+#define stdout (&__files[1])
+#define stderr (&__files[2])
+
+int sprintf(char* s, const char* format, ...);
+int vprintf(const char* format, va_list arg);
+int vsprintf(char* s, const char* format, va_list arg);
+
 size_t fwrite(const void*, size_t memb_size, size_t num_memb, FILE*);
-int fseek(FILE* file, long offset, int mode);
-size_t __fwrite(const void*, size_t, size_t, FILE*);
 
 #endif // _STDIO
