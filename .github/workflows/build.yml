@@ -61,6 +61,7 @@ jobs:
 
     # Upload map files
     - name: Upload map
+      if: matrix.matching
       uses: actions/upload-artifact@v4
       with:
         name: combined_maps
@@ -68,6 +69,7 @@ jobs:
 
     # Upload progress report
     - name: Upload report
+      if: ${{ !matrix.matching }}
       uses: actions/upload-artifact@v4
       with:
         name: combined_report
