@@ -311,6 +311,13 @@ dolphin/os/OSResetSW.c:
 	.text       start:0x800A0634 end:0x800A09C0
 	.sbss       start:0x80158C50 end:0x80158C70
 
+dolphin/os/OSRtc.c:
+	.text       start:0x800A09C0 end:0x800A1344
+	.bss        start:0x801544A0 end:0x801544F8
+
+dolphin/os/OSSync.c:
+	.text       start:0x800A1344 end:0x800A13C8
+
 dolphin/os/OSThread.c:
 	.text       start:0x800A13C8 end:0x800A2598
 	.bss        start:0x801544F8 end:0x80154EF0
@@ -511,6 +518,12 @@ dolphin/demo/DEMOStats.c:
 	.sbss       start:0x80158E78 end:0x80158EE0
 	.sdata2     start:0x801595D8 end:0x801595E8
 
+metrotrk/mem_TRK.c:
+	.init       start:0x800033A8 end:0x800033CC
+
+metrotrk/__exception.c:
+	.init       start:0x800033CC end:0x80005300
+
 dolphin/ai/ai.c:
 	.text       start:0x800B7D90 end:0x800B86B0
 	.data       start:0x80116A48 end:0x80116A90
@@ -655,19 +668,10 @@ metrotrk/targimpl.c:
 	.data       start:0x80116F68 end:0x80116F98
 	.bss        start:0x80157950 end:0x80157ED0
 
-metrotrk/mem_TRK.c:
-	.init       start:0x800033A8 end:0x800033CC
-
-metrotrk/__exception.c:
-	.init       start:0x800033CC end:0x80005300
-
 metrotrk/dolphin_trk.c:
 	.init       start:0x80005300 end:0x80005320
 	.text       start:0x800CCAE8 end:0x800CCCDC
 	.data       start:0x80116F98 end:0x80116FD8
-
-libc/ansi_files.c:
-	.data       start:0x80116FF8 end:0x801170D0
 
 metrotrk/mpc_7xx_603e.c:
 	.text       start:0x800CCCDC end:0x800CD04C
@@ -731,6 +735,12 @@ libc/mem_funcs.c:
 
 libc/misc_io.c:
 	.text       start:0x800CE9C8 end:0x800CE9CC
+
+runtime/__mem.c:
+	.init       start:0x80005320 end:0x80005464
+
+libc/ansi_files.c:
+	.data       start:0x80116FF8 end:0x801170D0
 
 libc/printf.c:
 	.text       start:0x800CE9CC end:0x800D03D0
@@ -823,6 +833,3 @@ debugger/DebuggerDriver.c:
 
 debugger/odenotstub.c:
 	.text       start:0x800D2C40 end:0x800D2C48
-
-runtime/__mem.c:
-	.init       start:0x80005320 end:0x80005464
