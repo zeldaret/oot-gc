@@ -109,6 +109,21 @@ char* strncpy(char* dst, const char* src, size_t n) {
     return dst;
 }
 
+char* strcat(char* dst, const char* src) {
+    const u8* p = (u8*)src - 1;
+    u8* q = (u8*)dst - 1;
+
+    while (*++q)
+        ;
+
+    q--;
+
+    while (*++q = *++p)
+        ;
+
+    return (dst);
+}
+
 int strcmp(const char* str1, const char* str2) {
     register u8* left = (u8*)str1;
     register u8* right = (u8*)str2;

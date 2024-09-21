@@ -605,8 +605,224 @@ dolphin/tex/texPalette.c:
 	.text       start:0x800C8BEC end:0x800C8CD0
 	.sdata2     start:0x80159608 end:0x80159610
 
+metrotrk/mainloop.c:
+	.text       start:0x800C8CD0 end:0x800C8E38
+
+metrotrk/nubevent.c:
+	.text       start:0x800C8E38 end:0x800C9094
+	.bss        start:0x80155F50 end:0x80155F80
+
+metrotrk/nubinit.c:
+	.text       start:0x800C9094 end:0x800C9228
+	.rodata     start:0x800D2FA0 end:0x800D2FC0
+
+metrotrk/msg.c:
+	.text       start:0x800C9228 end:0x800C9250
+
+metrotrk/msgbuf.c:
+	.text       start:0x800C9250 end:0x800C9A98
+	.bss        start:0x80155F80 end:0x80157930
+
+metrotrk/serpoll.c:
+	.text       start:0x800C9A98 end:0x800C9C60
+	.bss        start:0x80157930 end:0x80157950
+
+metrotrk/usr_put.c:
+	.text       start:0x800C9C60 end:0x800C9C64
+
+metrotrk/dispatch.c:
+	.text       start:0x800C9C64 end:0x800C9CFC
+	.data       start:0x80116EE0 end:0x80116F68
+
+metrotrk/msghndlr.c:
+	.text       start:0x800C9CFC end:0x800CAF68
+
+metrotrk/support.c:
+	.text       start:0x800CAF68 end:0x800CB3E4
+
+metrotrk/mutex_TRK.c:
+	.text       start:0x800CB3E4 end:0x800CB3FC
+
+metrotrk/notify.c:
+	.text       start:0x800CB3FC end:0x800CB4D4
+
+metrotrk/flush_cache.c:
+	.text       start:0x800CB4D4 end:0x800CB50C
+
+metrotrk/targimpl.c:
+	.text       start:0x800CB50C end:0x800CCAE8
+	.rodata     start:0x800D2FC0 end:0x800D3010
+	.data       start:0x80116F68 end:0x80116F98
+	.bss        start:0x80157950 end:0x80157ED0
+
 metrotrk/mem_TRK.c:
 	.init       start:0x800033A8 end:0x800033CC
 
 metrotrk/__exception.c:
 	.init       start:0x800033CC end:0x80005300
+
+metrotrk/dolphin_trk.c:
+	.init       start:0x80005300 end:0x80005320
+	.text       start:0x800CCAE8 end:0x800CCCDC
+	.data       start:0x80116F98 end:0x80116FD8
+
+libc/ansi_files.c:
+	.data       start:0x80116FF8 end:0x801170D0
+
+metrotrk/mpc_7xx_603e.c:
+	.text       start:0x800CCCDC end:0x800CD04C
+
+metrotrk/main_TRK.c:
+	.text       start:0x800CD04C end:0x800CD09C
+	.bss        start:0x80157ED0 end:0x80157ED4
+
+metrotrk/dolphin_trk_glue.c:
+	.text       start:0x800CD09C end:0x800CD3F4
+
+metrotrk/targcont.c:
+	.text       start:0x800CD3F4 end:0x800CD428
+
+runtime/__va_arg.c:
+	.text       start:0x800CD428 end:0x800CD51C
+
+runtime/global_destructor_chain.c:
+	.text       start:0x800CD51C end:0x800CD564
+	.dtors      start:0x800D2C80 end:0x800D2C84
+	.sbss       start:0x80159098 end:0x801590A0
+
+runtime/runtime.c:
+	.text       start:0x800CD564 end:0x800CDC74
+	.rodata     start:0x800D3010 end:0x800D3028
+
+libc/abort_exit.c:
+	.text       start:0x800CDC74 end:0x800CDD80
+	.bss        start:0x80157ED8 end:0x801580D8
+	.sbss       start:0x801590A0 end:0x801590B8
+
+libc/errno.c:
+	.sbss       start:0x801590B8 end:0x801590C0
+
+libc/ansi_fp.c:
+	.text       start:0x800CDD80 end:0x800CE134
+	.rodata     start:0x800D3028 end:0x800D30B0
+	.sdata2     start:0x80159610 end:0x80159638
+
+libc/buffer_io.c:
+	.text       start:0x800CE134 end:0x800CE234
+
+libc/critical_regions.ppc_eabi.c:
+	.text       start:0x800CE234 end:0x800CE238
+
+libc/ctype.c:
+	.text       start:0x800CE238 end:0x800CE288
+	.rodata     start:0x800D30B0 end:0x800D33B0
+
+libc/direct_io.c:
+	.text       start:0x800CE288 end:0x800CE564
+
+libc/mbstring.c:
+	.text       start:0x800CE564 end:0x800CE5A0
+
+libc/mem.c:
+	.text       start:0x800CE5A0 end:0x800CE6EC
+
+libc/mem_funcs.c:
+	.text       start:0x800CE6EC end:0x800CE9C8
+
+libc/misc_io.c:
+	.text       start:0x800CE9C8 end:0x800CE9CC
+
+libc/printf.c:
+	.text       start:0x800CE9CC end:0x800D03D0
+	.rodata     start:0x800D33B0 end:0x800D33C0
+	.data       start:0x801170D0 end:0x801172F0
+	.sdata      start:0x80158988 end:0x80158990
+	.sdata2     start:0x80159638 end:0x80159640
+
+libc/scanf.c:
+	.text       start:0x800D03D0 end:0x800D0460
+
+libc/string.c:
+	.text       start:0x800D0460 end:0x800D0738
+	.sdata      start:0x80158990 end:0x80158998
+
+libc/strtoul.c:
+	.text       start:0x800D0738 end:0x800D0B44
+	.data       start:0x801172F0 end:0x80117338
+
+libc/float.c:
+	.data       start:0x80117338 end:0x80117340
+
+libc/uart_console_io.c:
+	.text       start:0x800D0B44 end:0x800D0CC4
+	.sbss       start:0x801590C0 end:0x801590C8
+
+libc/wchar_io.c:
+	.text       start:0x800D0CC4 end:0x800D0D44
+
+libc/e_asin.c:
+	.text       start:0x800D0D44 end:0x800D0D4C
+
+libc/e_pow.c:
+	.text       start:0x800D0D4C end:0x800D1584
+	.rodata     start:0x800D33C0 end:0x800D33F0
+	.sdata2     start:0x80159640 end:0x80159750
+
+libc/fminmaxdim.c:
+	.text       start:0x800D1584 end:0x800D1604
+
+libc/s_ceil.c:
+	.text       start:0x800D1604 end:0x800D176C
+	.sdata2     start:0x80159750 end:0x80159760
+
+libc/s_copysign.c:
+	.text       start:0x800D176C end:0x800D1798
+
+libc/s_floor.c:
+	.text       start:0x800D1798 end:0x800D1904
+	.sdata2     start:0x80159760 end:0x80159770
+
+libc/s_frexp.c:
+	.text       start:0x800D1904 end:0x800D19A0
+	.sdata2     start:0x80159770 end:0x80159778
+
+libc/s_ldexp.c:
+	.text       start:0x800D19A0 end:0x800D1B18
+	.sdata2     start:0x80159778 end:0x801597A0
+
+libc/w_pow.c:
+	.text       start:0x800D1B18 end:0x800D1B38
+
+libc/hyperbolicsf.c:
+	.text       start:0x800D1B38 end:0x800D1B40
+
+libc/log10f.c:
+	.text       start:0x800D1B40 end:0x800D1D14
+	.rodata     start:0x800D33F0 end:0x800D3400
+	.sdata2     start:0x801597A0 end:0x801597C0
+
+libc/trigf.c:
+	.text       start:0x800D1D14 end:0x800D2100
+	.ctors      start:0x800D2C60 end:0x800D2C64
+	.rodata     start:0x800D3400 end:0x800D3410
+	.data       start:0x80117340 end:0x80117350
+	.sdata2     start:0x801597C0 end:0x801597D8
+
+libc/common_float_tables.c:
+	.data       start:0x80117350 end:0x80117398
+
+libc/math_inlines.c:
+	.text       start:0x800D2100 end:0x800D2190
+	.sdata2     start:0x801597D8 end:0x801597F0
+
+debugger/AmcExi2Stubs.c:
+	.text       start:0x800D2190 end:0x800D21C0
+
+debugger/DebuggerDriver.c:
+	.text       start:0x800D21C0 end:0x800D2C40
+
+debugger/odenotstub.c:
+	.text       start:0x800D2C40 end:0x800D2C48
+
+runtime/__mem.c:
+	.init       start:0x80005320 end:0x80005464
