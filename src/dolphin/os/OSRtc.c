@@ -1,6 +1,7 @@
 #include "dolphin/OSRtcPriv.h"
 #include "dolphin/exi.h"
 #include "dolphin/os.h"
+#include "macros.h"
 
 #define RTC_CMD_READ 0x20000000
 #define RTC_CMD_WRITE 0xA0000000
@@ -164,6 +165,7 @@ bool __OSUnlockSramEx(bool commit) { return UnlockSram(commit, sizeof(OSSram)); 
 bool __OSSyncSram(void) { return Scb.sync; }
 
 static inline OSSram* __OSLockSramHACK(void) { return LockSram(0); }
+
 u32 OSGetSoundMode(void) {
     OSSram* sram;
     u32 mode;
@@ -189,6 +191,16 @@ void OSSetSoundMode(u32 mode) {
     sram->flags |= mode;
     __OSUnlockSram(true);
 }
+
+#if IS_EU
+u8 OSGetLanguage(void) {
+    OSSram* sram = __OSLockSram();
+    u8 language = sram->language;
+
+    __OSUnlockSram(0);
+    return language;
+}
+#endif
 
 u16 OSGetWirelessID(s32 channel) {
     OSSramEx* sram;
