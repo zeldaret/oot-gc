@@ -106,12 +106,17 @@ void* jtbl_800EE4EC[31] = {
     &lbl_80077778, &lbl_8007685C, &lbl_800767FC,
 };
 
+#ifndef NON_MATCHING
+// rspParseABI4
 void* jtbl_800EE568[27] = {
     &lbl_8008118C, &lbl_80080B40, &lbl_80080B50, &lbl_8008117C, &lbl_80080B6C, &lbl_80080B7C, &lbl_80080B8C,
     &lbl_8008117C, &lbl_80080CF4, &lbl_8008117C, &lbl_80080D20, &lbl_80080D4C, &lbl_80080DB0, &lbl_80080DC0,
     &lbl_80080E2C, &lbl_80080E3C, &lbl_80080E58, &lbl_80080E98, &lbl_80080FFC, &lbl_80081048, &lbl_80081058,
     &lbl_800810A4, &lbl_800810F0, &lbl_8008111C, &lbl_8008112C, &lbl_8008118C, &lbl_8008113C,
 };
+#else
+void* jtbl_800EE568[27] = {0};
+#endif
 
 #ifndef NON_MATCHING
 // rspParseABI3
@@ -3586,7 +3591,136 @@ static bool rspInitAudioDMEM4(Rsp* pRSP) {
     return true;
 }
 
+static inline bool rspAInterleave4(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u16 nLeft = (s32)(nCommandLo >> 16) / 2;
+    u16 nRight = (s32)(nCommandLo & 0xFFFF) / 2;
+    u32 nDMEMOut = pRSP->nAudioDMEMOut[0];
+    u32 iIndex;
+    u32 iIndex2;
+
+    for (iIndex = 0, iIndex2 = 0; iIndex < pRSP->nAudioCount[0]; iIndex++, iIndex2++) {
+        pRSP->anAudioBuffer[nDMEMOut + 2 * iIndex + 0] = pRSP->anAudioBuffer[nLeft + iIndex2];
+        pRSP->anAudioBuffer[nDMEMOut + 2 * iIndex + 1] = pRSP->anAudioBuffer[nRight + iIndex2];
+    }
+
+    return true;
+}
+
+static inline bool rspADMEMMove4(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u16 nDMEMOut = (s32)(nCommandLo >> 16) / 2;
+    u16 nCount = nCommandLo & 0xFFFF;
+    u32 nDMEMIn = (nCommandHi & 0xFFFF) / 2;
+
+    xlHeapCopy(&pRSP->anAudioBuffer[nDMEMOut], &pRSP->anAudioBuffer[nDMEMIn], nCount);
+    return true;
+}
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI4.s")
+#else
+static bool rspParseABI4(Rsp* pRSP, RspTask* pTask) {
+    u32 nCommandLo;
+    u32 nCommandHi;
+    u32* pABI32;
+    u32* pABILast32;
+    u32 nSize;
+    s32 pad[2];
+
+    nSize = pTask->nLengthMBI & 0x7FFFFF;
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
+        return false;
+    }
+    pABILast32 = pABI32 + (nSize >> 2);
+
+    if (nFirstTime_2796) {
+        nFirstTime_2796 = false;
+    }
+
+    while (pABI32 < pABILast32) {
+        nCommandLo = pABI32[1];
+        nCommandHi = pABI32[0];
+        pABI32 += 2;
+        switch (nCommandHi >> 24) {
+            case 0:
+                break;
+            case 1:
+                rspAADPCMDec1Fast(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 2:
+                rspAClearBuffer2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 4:
+                rspANMix2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 5:
+                rspAResample2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 6:
+                rspASResample2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 8:
+                rspASetBuffer2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 10:
+                rspADMEMMove4(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 11:
+                rspALoadADPCM2(pRSP, nCommandLo, nCommandHi);
+                PAD_STACK();
+                break;
+            case 12:
+                rspAMix2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 13:
+                rspAInterleave4(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 14:
+                rspAPoleFilter1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 15:
+                rspASetLoop2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 16:
+                rspADMEMCopy2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 17:
+                rspAHalfCut2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 18:
+                rspASetEnvParam2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 19:
+                rspAEnvMixer2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 20:
+                rspALoadBuffer2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 21:
+                rspASaveBuffer2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 22:
+                rspASetEnvParam22(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 23:
+                rspAPCM8Dec2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 24:
+                rspADistFilter2(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 26:
+                rspAWMEMCopy2(pRSP, nCommandLo, nCommandHi);
+                break;
+            default:
+                return false;
+        }
+    }
+
+    PAD_STACK();
+    PAD_STACK();
+    return true;
+}
+#endif
 
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspCreateJPEGArrays.s")
 
