@@ -127,11 +127,16 @@ void* jtbl_800EE630[24] = {
     &lbl_80084810, &lbl_8008485C, &lbl_8008486C, &lbl_800848B8, &lbl_80084904, &lbl_80084930,
 };
 
+#ifndef NON_MATCHING
+// rspParseABI1
 void* jtbl_800EE690[16] = {
     &lbl_80088B18, &lbl_80088890, &lbl_8008889C, &lbl_80088AD8, &lbl_800888C4, &lbl_80088AE4,
     &lbl_80088914, &lbl_80088970, &lbl_80088984, &lbl_80088AF0, &lbl_80088990, &lbl_800889CC,
     &lbl_80088A38, &lbl_80088A44, &lbl_80088AFC, &lbl_80088ABC,
 };
+#else
+void* jtbl_800EE690[16] = {0};
+#endif
 
 static bool nFirstTime_2148 = true;
 static bool nFirstTime_2648 = true;
@@ -964,6 +969,17 @@ static bool rspLoadADPCMCoefTable2(Rsp* pRSP) {
     return true;
 }
 
+static inline bool rspALoadBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    void* pData;
+    s32 nAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+
+    if (ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nAddress, NULL)) {
+        xlHeapCopy(&pRSP->anAudioBuffer[pRSP->nAudioDMEMIn[0]], pData, pRSP->nAudioCount[1]);
+    }
+
+    return true;
+}
+
 static bool rspAADPCMDec1Fast(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     u8 nFlags;
     u8 ucControl;
@@ -1104,6 +1120,11 @@ static bool rspAADPCMDec1Fast(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
         pStateAddress[i] = pRSP->anAudioBuffer[nDMEMOut - 16 + i];
     }
 
+    return true;
+}
+
+static inline bool rspAClearBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    memset(&pRSP->anAudioBuffer[((nCommandHi & 0xFFFF) + pRSP->nAudioMemOffset) / 2], 0, nCommandLo & 0xFFFF);
     return true;
 }
 
@@ -1269,7 +1290,23 @@ static bool rspAPoleFilter1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
+static bool rspAEnvMixer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspAEnvMixer1.s")
+
+static inline bool rspAInterleave1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u16 nLeft = (s32)((nCommandLo >> 16) + pRSP->nAudioMemOffset) / 2;
+    u16 nRight = (s32)((nCommandLo & 0xFFFF) + pRSP->nAudioMemOffset) / 2;
+    u32 nDMEMOut = pRSP->nAudioDMEMOut[0];
+    u32 iIndex;
+    u32 iIndex2;
+
+    for (iIndex = 0, iIndex2 = 0; iIndex < pRSP->nAudioCount[0]; iIndex++, iIndex2++) {
+        pRSP->anAudioBuffer[nDMEMOut + 2 * iIndex + 0] = pRSP->anAudioBuffer[nLeft + iIndex2];
+        pRSP->anAudioBuffer[nDMEMOut + 2 * iIndex + 1] = pRSP->anAudioBuffer[nRight + iIndex2];
+    }
+
+    return true;
+}
 
 static bool rspAMix1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     u32 i;
@@ -1383,6 +1420,23 @@ static bool rspAResample1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
+static inline bool rspASaveBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u32 nSize = pRSP->nAudioCount[0];
+    u32* pData;
+    s32 nAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+
+    if (ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nAddress, &nSize)) {
+        xlHeapCopy(pData, &pRSP->anAudioBuffer[pRSP->nAudioDMEMOut[0]], nSize * sizeof(s16));
+    }
+
+    return true;
+}
+
+static inline bool rspASegment1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    pRSP->anAudioBaseSegment[(nCommandLo >> 24) & 0xF] = nCommandLo & 0xFFFFFF;
+    return true;
+}
+
 static bool rspASetBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     u16 nDMEMIn = nCommandHi & 0xFFFF;
     u16 nDMEMOut = (nCommandLo >> 16) & 0xFFFF;
@@ -1437,6 +1491,34 @@ static bool rspASetVolume1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
             pRSP->anAudioBuffer[0x1BB] = v;
             pRSP->anAudioBuffer[0x1BC] = t;
             pRSP->anAudioBuffer[0x1BD] = r;
+        }
+    }
+
+    return true;
+}
+
+static inline bool rspASetLoop1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    pRSP->nAudioLoopAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+    return true;
+}
+
+static inline bool rspADMEMMove1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    u32 nDMEMOut = ((nCommandHi & 0xFFFF) + pRSP->nAudioMemOffset) / 2;
+    u16 nCount = nCommandLo & 0xFFFF;
+    u16 nDMEMIn = (s32)((nCommandLo >> 16) + pRSP->nAudioMemOffset) / 2;
+
+    xlHeapCopy(&pRSP->anAudioBuffer[nDMEMIn], &pRSP->anAudioBuffer[nDMEMOut], nCount);
+    return true;
+}
+
+static inline bool rspALoadADPCM1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
+    void* pData;
+    u32 nCount = nCommandHi & 0xFFFFFF;
+    s32 nAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
+
+    if (ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nAddress, NULL)) {
+        if (xlHeapCopy(&pRSP->anAudioBuffer[pRSP->nAudioADPCMOffset / 2], pData, nCount)) {
+            rspLoadADPCMCoefTable1(pRSP);
         }
     }
 
@@ -1523,7 +1605,87 @@ static bool rspParseABI(Rsp* pRSP, RspTask* pTask) {
     return true;
 }
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI1.s")
+#else
+static bool rspParseABI1(Rsp* pRSP, RspTask* pTask) {
+    u32 nCommandLo;
+    u32 nCommandHi;
+    u32* pABI32;
+    u32* pABILast32;
+    u32 nSize;
+
+    nSize = pTask->nLengthMBI & 0x7FFFFF;
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pABI32, pTask->nOffsetMBI, NULL)) {
+        return false;
+    }
+    pABILast32 = pABI32 + (nSize >> 2);
+
+    if (nFirstTime_2148) {
+        nFirstTime_2148 = false;
+    }
+
+    while (pABI32 < pABILast32) {
+        nCommandHi = pABI32[0];
+        nCommandLo = pABI32[1];
+        pABI32 += 2;
+        switch (nCommandHi >> 24) {
+            case 0:
+                break;
+            case 1:
+                rspAADPCMDec1Fast(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 2:
+                rspAClearBuffer1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 4:
+                rspALoadBuffer1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 6:
+                rspASaveBuffer1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 7:
+                rspASegment1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 8:
+                rspASetBuffer1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 10:
+                rspADMEMMove1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 11:
+                rspALoadADPCM1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 12:
+                rspAMix1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 13:
+                rspAInterleave1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 15:
+                rspASetLoop1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 3:
+                rspAEnvMixer1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 5:
+                rspAResample1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 9:
+                rspASetVolume1(pRSP, nCommandLo, nCommandHi);
+                break;
+            case 14:
+                rspAPoleFilter1(pRSP, nCommandLo, nCommandHi);
+                break;
+            default:
+                return false;
+        }
+    }
+
+    return true;
+}
+#endif
 
 static bool rspInitAudioDMEM2(Rsp* pRSP) {
     pRSP->anAudioBuffer = pRSP->pDMEM;
