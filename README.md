@@ -7,9 +7,9 @@ oot-gc
 
 [mq-j]: https://img.shields.io/endpoint?label=mq-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
 
-[mq-u]: https://img.shields.io/endpoint?label=mq-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-u]: https://img.shields.io/endpoint?label=mq-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-u%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
 
-[mq-e]: https://img.shields.io/endpoint?label=mq-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-e]: https://img.shields.io/endpoint?label=mq-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-e%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
 
 [ce-j]: https://img.shields.io/endpoint?label=ce-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
 
