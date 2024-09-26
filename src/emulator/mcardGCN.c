@@ -29,7 +29,6 @@
  */
 #include "emulator/mcardGCN.h"
 #include "dolphin/card.h"
-#include "emulator/mcardGCN_jumptables.h"
 #include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
@@ -72,8 +71,6 @@
 #elif VERSION == MQ_U
 //! TODO: fix the alignment issue
 #define DATE_STRING "%d/%d Save Data\0"
-#elif VERSION == MQ_E
-#define DATE_STRING ""
 #elif VERSION == CE_J
 #define DATE_STRING "ゼルダの伝説：時のオカリナ" // "The Legend of Zelda: Ocarina of Time"
 #elif VERSION == CE_U || VERSION == CE_E
@@ -868,7 +865,7 @@ static inline bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
 
 #if VERSION == MQ_J || VERSION == MQ_U
     sprintf(dateString, DATE_STRING, gDate.mon + 1, gDate.mday);
-#else
+#elif VERSION != MQ_E
     sprintf(dateString, DATE_STRING);
 #endif
 
@@ -1096,19 +1093,19 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
                 if (!mcardReadFileHeaderInitial(pMCard)) {
                     mcardFinishCard(pMCard);
 
-#if VERSION > MQ_U
-                    if (pMCard->error == MC_E_NOCARD) {
-                        mCard.isBroken = false;
-                    } else if (pMCard->isBroken == true) {
-                        pMCard->error = MC_E_IOERROR;
-                        return false;
-                    }
-#elif VERSION == MQ_U
+#if VERSION == MQ_U
                     if (pMCard->error == MC_E_NOCARD || sPrevMemCardError != pMCard->error) {
                         sPrevMemCardError = pMCard->error;
                         mCard.isBroken = false;
                     } else if (pMCard->isBroken == true) {
                         sPrevMemCardError = pMCard->error;
+                        pMCard->error = MC_E_IOERROR;
+                        return false;
+                    }
+#elif VERSION > MQ_U
+                    if (pMCard->error == MC_E_NOCARD) {
+                        mCard.isBroken = false;
+                    } else if (pMCard->isBroken == true) {
                         pMCard->error = MC_E_IOERROR;
                         return false;
                     }
@@ -1124,19 +1121,19 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
                     }
                 }
 
-#if VERSION > MQ_U
-                if (pMCard->error == MC_E_NOCARD) {
-                    mCard.isBroken = false;
-                } else if (pMCard->isBroken == true) {
-                    pMCard->error = MC_E_IOERROR;
-                    return false;
-                }
-#elif VERSION == MQ_U
+#if VERSION == MQ_U
                 if (pMCard->error == MC_E_NOCARD || sPrevMemCardError != pMCard->error) {
                     sPrevMemCardError = pMCard->error;
                     mCard.isBroken = false;
                 } else if (pMCard->isBroken == true) {
                     sPrevMemCardError = pMCard->error;
+                    pMCard->error = MC_E_IOERROR;
+                    return false;
+                }
+#elif VERSION > MQ_U
+                if (pMCard->error == MC_E_NOCARD) {
+                    mCard.isBroken = false;
+                } else if (pMCard->isBroken == true) {
                     pMCard->error = MC_E_IOERROR;
                     return false;
                 }
@@ -1164,9 +1161,11 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
 
 #if VERSION != MQ_J
             if (pMCard->isBroken == true) {
+
 #if VERSION == MQ_U
                 sPrevMemCardError = pMCard->error;
 #endif
+
                 pMCard->error = MC_E_IOERROR;
                 return false;
             }
@@ -1176,19 +1175,19 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
         }
     }
 
-#if VERSION > MQ_U
-    if (pMCard->error == MC_E_NOCARD) {
-        mCard.isBroken = false;
-    } else if (pMCard->isBroken == true) {
-        pMCard->error = MC_E_IOERROR;
-        return false;
-    }
-#elif VERSION == MQ_U
+#if VERSION == MQ_U
     if (pMCard->error == MC_E_NOCARD || sPrevMemCardError != pMCard->error) {
         sPrevMemCardError = pMCard->error;
         mCard.isBroken = false;
     } else if (pMCard->isBroken == true) {
         sPrevMemCardError = pMCard->error;
+        pMCard->error = MC_E_IOERROR;
+        return false;
+    }
+#elif VERSION > MQ_U
+    if (pMCard->error == MC_E_NOCARD) {
+        mCard.isBroken = false;
+    } else if (pMCard->isBroken == true) {
         pMCard->error = MC_E_IOERROR;
         return false;
     }
@@ -1406,7 +1405,7 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
 
 #if VERSION == MQ_J || VERSION == MQ_U
         sprintf(dateString, DATE_STRING, date.mon + 1, date.mday);
-#else
+#elif VERSION != MQ_E
         sprintf(dateString, DATE_STRING);
 #endif
 
@@ -2336,6 +2335,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
         }
     }
 #endif
+
     return true;
 }
 
