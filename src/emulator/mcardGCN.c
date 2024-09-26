@@ -33,13 +33,24 @@
 #include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
+#include "emulator/rsp.h"
 #include "stdio.h"
 #include "string.h"
 
-#if VERSION == CE_E
+#if VERSION == MQ_J
+#define LINE_OFFSET -14
+#elif VERSION == MQ_U
+#define LINE_OFFSET -7
+#elif VERSION == CE_E
 #define LINE_OFFSET 22
 #else
 #define LINE_OFFSET 0
+#endif
+
+#if VERSION == MQ_J || VERSION == MQ_U
+#define ICON_SPEED 2
+#else
+#define ICON_SPEED 3
 #endif
 
 // Same as CARD_SYSTEM_BLOCK_SIZE (but signed instead of unsigned)
@@ -56,7 +67,14 @@
 #define COMMENT_OFFSET 0x2C
 #define COMMENT_SIZE 0x20
 
-#if VERSION == CE_J
+#if VERSION == MQ_J
+#define DATE_STRING "%d月%d日のセーブデータです" // "The Legend of Zelda: Ocarina of Time"
+#elif VERSION == MQ_U
+//! TODO: fix the alignment issue
+#define DATE_STRING "%d/%d Save Data\0"
+#elif VERSION == MQ_E
+#define DATE_STRING ""
+#elif VERSION == CE_J
 #define DATE_STRING "ゼルダの伝説：時のオカリナ" // "The Legend of Zelda: Ocarina of Time"
 #elif VERSION == CE_U || VERSION == CE_E
 //! TODO: fix the alignment issue
@@ -100,6 +118,10 @@ OSCalendarTime gDate;
 s32 currentIdx = 0;
 bool bWrite2Card;
 
+#if VERSION == MQ_U
+static MemCardError sPrevMemCardError = MC_E_NONE;
+#endif
+
 static inline bool mcardReadyFile(MemCard* pMCard);
 static inline bool mcardFinishCard(MemCard* pMCard);
 static inline bool mcardReadAnywhereNoTime(MemCard* pMCard, s32 offset, s32 size, char* buffer);
@@ -119,14 +141,18 @@ static bool mcardGCErrorHandler(MemCard* pMCard, s32 gcError) {
             return false;
         case CARD_RESULT_NOCARD:
             pMCard->error = MC_E_NOCARD;
+#if VERSION != MQ_J
             pMCard->isBroken = false;
+#endif
             return false;
         case CARD_RESULT_NOFILE:
             pMCard->error = MC_E_NOFILE;
             return false;
         case CARD_RESULT_IOERROR:
             pMCard->error = MC_E_IOERROR;
+#if VERSION != MQ_J
             pMCard->isBroken = true;
+#endif
             return false;
         case CARD_RESULT_BROKEN:
             pMCard->error = MC_E_BROKEN;
@@ -281,16 +307,20 @@ static bool mcardReplaceFileBlock(MemCard* pMCard, s32 index) {
         return false;
     }
 
+#if VERSION != MQ_J
     simulatorPrepareMessage(S_M_CARD_SV09);
+#endif
 
     if (!mcardWriteAnywhereNoTime(pMCard, index * BLOCK_SIZE, BLOCK_SIZE, pMCard->writeBuffer)) {
         memcpy(pMCard->writeBuffer, buffer, BLOCK_SIZE);
         return false;
     }
 
+#if VERSION != MQ_J
     if (index == 0) {
         mcardGetFileTime(pMCard, &pMCard->file.time);
     }
+#endif
 
     return true;
 }
@@ -394,11 +424,12 @@ static bool mcardPoll(MemCard* pMCard) {
             }
 
             if (pMCard->pPollFunction != NULL) {
+#if VERSION != MQ_J
                 if (!SIMULATOR_TEST_RESET(false, false, false, false)) {
                     return false;
-                } else {
-                    pMCard->pPollFunction();
                 }
+#endif
+                pMCard->pPollFunction();
             }
         }
     }
@@ -412,10 +443,13 @@ static bool mcardReadyCard(MemCard* pMCard) {
 
     if (mCard.saveToggle == true) {
         mcardGCErrorHandler(pMCard, CARDProbeEx(pMCard->slot, &pMCard->cardSize, &sectorSize));
+
+#if VERSION != MQ_J
         if (pMCard->isBroken == true && pMCard->error != MC_E_NOCARD) {
             pMCard->error = MC_E_IOERROR;
             return false;
         }
+#endif
 
         while (pMCard->error == MC_E_BUSY) {
             mcardGCErrorHandler(pMCard, CARDProbeEx(pMCard->slot, &pMCard->cardSize, &sectorSize));
@@ -831,7 +865,12 @@ static inline bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
     DCInvalidateRange(pMCard->writeBuffer, BLOCK_SIZE);
 
     OSTicksToCalendarTime(OSGetTime(), &gDate);
+
+#if VERSION == MQ_J || VERSION == MQ_U
+    sprintf(dateString, DATE_STRING, gDate.mon + 1, gDate.mday);
+#else
     sprintf(dateString, DATE_STRING);
+#endif
 
     memcpy(pMCard->writeBuffer + TIMESTAMP_OFFSET, (void*)&gDate, TIMESTAMP_SIZE);
     memcpy(pMCard->writeBuffer + DATE_STRING_OFFSET, dateString, DATE_STRING_SIZE);
@@ -1056,12 +1095,24 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
             if (!pMCard->gameIsLoaded) {
                 if (!mcardReadFileHeaderInitial(pMCard)) {
                     mcardFinishCard(pMCard);
+
+#if VERSION > MQ_U
                     if (pMCard->error == MC_E_NOCARD) {
                         mCard.isBroken = false;
                     } else if (pMCard->isBroken == true) {
                         pMCard->error = MC_E_IOERROR;
                         return false;
                     }
+#elif VERSION == MQ_U
+                    if (pMCard->error == MC_E_NOCARD || sPrevMemCardError != pMCard->error) {
+                        sPrevMemCardError = pMCard->error;
+                        mCard.isBroken = false;
+                    } else if (pMCard->isBroken == true) {
+                        sPrevMemCardError = pMCard->error;
+                        pMCard->error = MC_E_IOERROR;
+                        return false;
+                    }
+#endif
                     return false;
                 }
             } else if (!mcardReadFileHeader(pMCard)) {
@@ -1072,12 +1123,24 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
                         pMCard->error = MC_E_TIME_WRONG;
                     }
                 }
+
+#if VERSION > MQ_U
                 if (pMCard->error == MC_E_NOCARD) {
                     mCard.isBroken = false;
                 } else if (pMCard->isBroken == true) {
                     pMCard->error = MC_E_IOERROR;
                     return false;
                 }
+#elif VERSION == MQ_U
+                if (pMCard->error == MC_E_NOCARD || sPrevMemCardError != pMCard->error) {
+                    sPrevMemCardError = pMCard->error;
+                    mCard.isBroken = false;
+                } else if (pMCard->isBroken == true) {
+                    sPrevMemCardError = pMCard->error;
+                    pMCard->error = MC_E_IOERROR;
+                    return false;
+                }
+#endif
                 return false;
             }
 
@@ -1098,21 +1161,38 @@ bool mcardFileSet(MemCard* pMCard, char* name) {
 
             pMCard->file.currentGame = 16;
             mcardFinishCard(pMCard);
+
+#if VERSION != MQ_J
             if (pMCard->isBroken == true) {
+#if VERSION == MQ_U
+                sPrevMemCardError = pMCard->error;
+#endif
                 pMCard->error = MC_E_IOERROR;
                 return false;
             }
+#endif
 
             return true;
         }
     }
 
+#if VERSION > MQ_U
     if (pMCard->error == MC_E_NOCARD) {
         mCard.isBroken = false;
     } else if (pMCard->isBroken == true) {
         pMCard->error = MC_E_IOERROR;
         return false;
     }
+#elif VERSION == MQ_U
+    if (pMCard->error == MC_E_NOCARD || sPrevMemCardError != pMCard->error) {
+        sPrevMemCardError = pMCard->error;
+        mCard.isBroken = false;
+    } else if (pMCard->isBroken == true) {
+        sPrevMemCardError = pMCard->error;
+        pMCard->error = MC_E_IOERROR;
+        return false;
+    }
+#endif
 
     return false;
 }
@@ -1138,6 +1218,12 @@ static inline bool mcardGameSetNoSave(MemCard* pMCard, s32 size) {
     memset(pMCard->file.game.buffer, 0, size);
     return true;
 }
+
+#if VERSION == MQ_J
+#define IS_OOT true
+#else
+#define IS_OOT gpSystem->eTypeROM == SRT_ZELDA1
+#endif
 
 bool mcardGameSet(MemCard* pMCard, char* name) {
     s32 i;
@@ -1222,7 +1308,7 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
             pMCard->file.game.writtenBlocks[0] = true;
         }
     } else {
-        if (gpSystem->eTypeROM == SRT_ZELDA1) {
+        if (IS_OOT) {
             if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
                 pMCard->file.game.buffer[0] &= 0xFC;
                 pMCard->file.game.buffer[0] |= 1;
@@ -1317,7 +1403,13 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
         memcpy(buffer + COMMENT_OFFSET, comment, strlen(comment));
 
         OSTicksToCalendarTime(OSGetTime(), &date);
+
+#if VERSION == MQ_J || VERSION == MQ_U
+        sprintf(dateString, DATE_STRING, date.mon + 1, date.mday);
+#else
         sprintf(dateString, DATE_STRING);
+#endif
+
         memcpy(buffer + DATE_STRING_OFFSET, dateString, strlen(dateString));
 
         TEXGetGXTexObjFromPalette((TEXPalette*)banner, &texObj, 0);
@@ -1338,11 +1430,11 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
         CARDSetIconAddress(&cardStatus, BANNER_TPL_OFFSET);
         CARDSetBannerFormat(&cardStatus, 2);
         CARDSetIconFormat(&cardStatus, 0, 2);
-        CARDSetIconSpeed(&cardStatus, 0, 3);
+        CARDSetIconSpeed(&cardStatus, 0, ICON_SPEED);
         CARDSetIconFormat(&cardStatus, 1, 2);
-        CARDSetIconSpeed(&cardStatus, 1, 3);
+        CARDSetIconSpeed(&cardStatus, 1, ICON_SPEED);
         CARDSetIconFormat(&cardStatus, 2, 2);
-        CARDSetIconSpeed(&cardStatus, 2, 3);
+        CARDSetIconSpeed(&cardStatus, 2, ICON_SPEED);
         CARDSetIconAnim(&cardStatus, CARD_STAT_ANIM_BOUNCE);
 
         if (!mcardGCErrorHandler(pMCard, CARDSetStatusAsync(pMCard->slot, fileNo, &cardStatus, NULL))) {
@@ -1648,7 +1740,9 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             if (simulatorDrawErrorMessageWait(S_M_CARD_LD02) == true) {
                 yes = false;
                 nextMenuEntry = MC_M_LD07;
+#if VERSION != MQ_J
                 pMCard->isBroken = true;
+#endif
                 *pCommand = MC_C_CONTINUE;
             }
             break;
@@ -1725,11 +1819,15 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             break;
         case MC_M_LD07:
             if (simulatorDrawYesNoMessage(S_M_CARD_LD07, &yes) == true) {
+#if VERSION != MQ_J
                 pMCard->wait = false;
+#endif
                 nextMenuEntry = MC_M_LD07;
                 prevMenuEntry = MC_M_NONE;
                 if ((s32)yes == true) {
+#if VERSION != MQ_J
                     pMCard->isBroken = false;
+#endif
                     *pCommand = MC_C_GO_TO_GAME;
                 } else {
                     *pCommand = MC_C_CONTINUE;
@@ -1754,7 +1852,9 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             prevMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_SV02) == true) {
                 nextMenuEntry = MC_M_SV_SHARE;
+#if VERSION != MQ_J
                 pMCard->isBroken = true;
+#endif
                 *pCommand = MC_C_CONTINUE;
             }
             break;
@@ -1949,7 +2049,12 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_IN04) == true) {
+#if VERSION == MQ_J
+                pMCard->wait = false;
+                nextMenuEntry = prevMenuEntry = MC_M_NONE;
+#else
                 nextMenuEntry = MC_M_LD02;
+#endif
                 *pCommand = MC_C_CONTINUE;
             }
             break;
@@ -1958,7 +2063,12 @@ bool mcardMenu(MemCard* pMCard, MemCardMessage menuEntry, MemCardCommand* pComma
             prevMenuEntry = menuEntry;
             nextMenuEntry = menuEntry;
             if (simulatorDrawErrorMessageWait(S_M_CARD_IN04) == true) {
+#if VERSION == MQ_J
+                pMCard->wait = false;
+                nextMenuEntry = prevMenuEntry = MC_M_NONE;
+#else
                 nextMenuEntry = MC_M_SV02;
+#endif
                 *pCommand = MC_C_CONTINUE;
             }
             break;
@@ -2136,6 +2246,12 @@ bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand) {
     return true;
 }
 
+#if VERSION == MQ_J
+#define MCARDWRITE_IS_OOT gpSystem->eTypeROM == SRT_ZELDA1
+#else
+#define MCARDWRITE_IS_OOT true
+#endif
+
 bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
     static bool toggle = true;
     static bool toggle2;
@@ -2169,6 +2285,9 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                 }
             }
         }
+#if VERSION == MQ_J
+    }
+#endif
         if (pMCard->saveToggle == true) {
             //! TODO: fake match
             for (i = (u64)((u32)address / BLOCK_DATA_SIZE);
@@ -2176,16 +2295,16 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                 pMCard->file.game.writtenBlocks[i] = true;
             }
 
-            if (size == 0x1450 && toggle2 == true) {
+            if (size == 0x1450 && MCARDWRITE_IS_OOT && toggle2 == true) {
                 toggle2 = 0;
                 simulatorRumbleStop(0);
                 if (!mcardUpdate()) {
                     return false;
                 }
-            } else if (size == 0x1450 && toggle2 == false) {
+            } else if (size == 0x1450 && MCARDWRITE_IS_OOT && toggle2 == false) {
                 toggle2 = true;
             }
-        } else if (size == 0x1450 && toggle2 == true) {
+        } else if (size == 0x1450 && MCARDWRITE_IS_OOT && toggle2 == true) {
             toggle2 = false;
             pMCard->saveToggle = true;
             pMCard->wait = false;
@@ -2195,9 +2314,10 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     return false;
                 }
             }
-        } else if (size == 0x1450 && toggle2 == false) {
+        } else if (size == 0x1450 && MCARDWRITE_IS_OOT && toggle2 == false) {
             toggle2 = true;
         }
+#if VERSION != MQ_J
     } else {
         if (pMCard->saveToggle == true) {
             simulatorRumbleStop(0);
@@ -2215,6 +2335,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
             }
         }
     }
+#endif
     return true;
 }
 
@@ -2496,7 +2617,9 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
             pMCard->accessType = 2;
             simulatorPrepareMessage(S_M_CARD_SV09);
             if (!mcardGameCreate(pMCard, gameName, *defaultConfiguration, gameSize)) {
+#if VERSION != MQ_J
                 pMCard->isBroken = true;
+#endif
                 continue;
             }
             if (!mcardGameSet(pMCard, gameName)) {
@@ -2507,7 +2630,7 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
                     mcardGameSetNoSave(pMCard, gameSize);
                     return true;
                 } else {
-                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", 3858 + LINE_OFFSET,
+                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", VERSION == MQ_J ? 3843 : 3858 + LINE_OFFSET,
                                command);
                     mcardGameSetNoSave(pMCard, gameSize);
                     return true;
@@ -2525,11 +2648,12 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
                         return true;
                     } else {
                         xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                   3887 + LINE_OFFSET, command);
+                                   VERSION == MQ_J ? 3872 : 3887 + LINE_OFFSET, command);
                         mcardGameSetNoSave(pMCard, gameSize);
                         return true;
                     }
                 }
+#if VERSION != MQ_J
                 pMCard->accessType = 2;
                 simulatorPrepareMessage(S_M_CARD_SV09);
                 if (!mcardGameCreate(pMCard, gameName, *defaultConfiguration, gameSize)) {
@@ -2550,13 +2674,14 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
                         return true;
                     }
                 }
+#endif
             } else if (command == MC_C_CONTINUE) {
                 continue;
             } else if (command == MC_C_GO_TO_GAME) {
                 mcardGameSetNoSave(pMCard, gameSize);
                 return true;
             } else {
-                xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", 3941 + LINE_OFFSET,
+                xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", VERSION == MQ_J ? 3892 : 3941 + LINE_OFFSET,
                            command);
                 mcardGameSetNoSave(pMCard, gameSize);
                 return true;
@@ -2612,7 +2737,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                         return true;
                     } else {
                         xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                   4006 + LINE_OFFSET, command);
+                                   VERSION == MQ_J ? 3957 : 4006 + LINE_OFFSET, command);
                         pMCard->saveToggle = false;
                         return true;
                     }
@@ -2635,7 +2760,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                         return true;
                     } else {
                         xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                   4033 + LINE_OFFSET, command);
+                                   VERSION == MQ_J ? 3984 : 4033 + LINE_OFFSET, command);
                         pMCard->saveToggle = false;
                         return true;
                     }
@@ -2649,7 +2774,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                         return true;
                     } else {
                         xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                   4052 + LINE_OFFSET, command);
+                                   VERSION == MQ_J ? 4003 : 4052 + LINE_OFFSET, command);
                         pMCard->saveToggle = false;
                         return true;
                     }
@@ -2673,7 +2798,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                         return true;
                     } else {
                         xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                   4093 + LINE_OFFSET, command);
+                                   VERSION == MQ_J ? 4044 : 4093 + LINE_OFFSET, command);
                         pMCard->saveToggle = false;
                         return true;
                     }
@@ -2698,7 +2823,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                             return true;
                         } else {
                             xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                       4125 + LINE_OFFSET, command);
+                                       VERSION == MQ_J ? 4076 : 4125 + LINE_OFFSET, command);
                             pMCard->saveToggle = false;
                             return true;
                         }
@@ -2712,7 +2837,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                             return true;
                         } else {
                             xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                       4144 + LINE_OFFSET, command);
+                                       VERSION == MQ_J ? 4095 : 4144 + LINE_OFFSET, command);
                             pMCard->saveToggle = false;
                             return true;
                         }
@@ -2725,13 +2850,13 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                 } else if (command == MC_C_CONTINUE) {
                     continue;
                 } else {
-                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", 4164 + LINE_OFFSET,
+                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", VERSION == MQ_J ? 4115 : 4164 + LINE_OFFSET,
                                command);
                     pMCard->saveToggle = false;
                     return true;
                 }
             } else {
-                xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", 4171 + LINE_OFFSET,
+                xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", VERSION == MQ_J ? 4122 : 4171 + LINE_OFFSET,
                            command);
                 pMCard->saveToggle = false;
                 return true;
@@ -2751,7 +2876,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                             return true;
                         } else {
                             xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                       4200 + LINE_OFFSET, command);
+                                       VERSION == MQ_J ? 4151 : 4200 + LINE_OFFSET, command);
                             pMCard->saveToggle = false;
                             return true;
                         }
@@ -2774,7 +2899,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                             return true;
                         } else {
                             xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                       4227 + LINE_OFFSET, command);
+                                       VERSION == MQ_J ? 4178 : 4227 + LINE_OFFSET, command);
                             pMCard->saveToggle = false;
                             return true;
                         }
@@ -2788,7 +2913,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                             return true;
                         } else {
                             xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
-                                       4246 + LINE_OFFSET, command);
+                                       VERSION == MQ_J ? 4197 : 4246 + LINE_OFFSET, command);
                             pMCard->saveToggle = false;
                             return true;
                         }
@@ -2801,7 +2926,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                 } else if (command == MC_C_CONTINUE) {
                     continue;
                 } else {
-                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", 4265 + LINE_OFFSET,
+                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", VERSION == MQ_J ? 4216 : 4265 + LINE_OFFSET,
                                command);
                     pMCard->saveToggle = false;
                     return true;
@@ -2821,6 +2946,70 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                 break;
             }
         }
+
+#if VERSION == MQ_J
+        if (i == 16) {
+            pMCard->accessType = 2;
+            simulatorPrepareMessage(S_M_CARD_SV09);
+            if (!mcardGameCreate(pMCard, pMCard->saveGameName, pMCard->saveConfiguration, pMCard->saveGameSize)) {
+                mcardOpenDuringGameError(pMCard, &command);
+                if (command == MC_C_CONTINUE) {
+                    continue;
+                } else if (command == MC_C_GO_TO_GAME) {
+                    pMCard->saveToggle = false;
+                    return true;
+                } else {
+                     xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c", 4255,
+                           command);
+                    pMCard->saveToggle = false;
+                    return true;
+                }
+            }
+            if (!mcardGameSet(pMCard, pMCard->saveGameName)) {
+                mcardOpenDuringGameError(pMCard, &command);
+                if (command == MC_C_CONTINUE) {
+                    continue;
+                } else if (command == MC_C_GO_TO_GAME) {
+                    pMCard->saveToggle = false;
+                    return true;
+                } else {
+                    xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
+                               4275, command);
+                    pMCard->saveToggle = false;
+                    return true;
+                }
+            }
+        } else if (!mcardGameSet(pMCard, pMCard->saveGameName)) {
+            mcardOpenDuringGameError(pMCard, &command);
+            if (command == MC_C_DELETE_GAME) {
+                if (!mcardGameErase(pMCard, i)) {
+                    mcardOpenDuringGameError(pMCard, &command);
+                    if (command == MC_C_CONTINUE) {
+                        continue;
+                    } else if (command == MC_C_GO_TO_GAME) {
+                        pMCard->saveToggle = false;
+                        return true;
+                    } else {
+                        xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
+                                   4302, command);
+                        pMCard->saveToggle = false;
+                        return true;
+                    }
+                    continue;
+                }
+            } else if (command == MC_C_CONTINUE) {
+                continue;
+            } else if (command == MC_C_GO_TO_GAME) {
+                pMCard->saveToggle = false;
+                return true;
+            } else {
+                xlPostText("Invalid Memory Card Command %d - Assuming Go To Game", "mcardGCN.c",
+                           4320, command);
+                pMCard->saveToggle = false;
+                return true;
+            }
+        }
+#else
         if (i == 16) {
             pMCard->accessType = 2;
             simulatorPrepareMessage(S_M_CARD_SV09);
@@ -2892,6 +3081,7 @@ bool mcardOpenDuringGame(MemCard* pMCard) {
                 return true;
             }
         }
+#endif
 
         pMCard->gameIsLoaded = true;
         pMCard->accessType = 0;
@@ -3061,14 +3251,23 @@ bool mcardStore(MemCard* pMCard) {
     return true;
 }
 
+
 bool mcardUpdate(void) {
     s32 j;
     s32 i;
     bool toggle;
     MemCardCommand command;
+#if VERSION != MQ_J
     s32 prevIndex;
     s32 index;
     s32 counter;
+#endif
+
+#if VERSION == MQ_J
+#define CHECK_NUM_DATA_BLOCKS NUM_DATA_BLOCKS(mCard.file.game.size)
+#else
+#define CHECK_NUM_DATA_BLOCKS (u32)j
+#endif
 
     command = MC_C_NONE;
     mCard.saveToggle = true;
@@ -3079,11 +3278,43 @@ bool mcardUpdate(void) {
             mCard.file.game.writtenBlocks[i] = true;
         }
 
+#if VERSION != MQ_J
         prevIndex = 100;
         counter = 0;
+#endif
+
         while (true) {
             if (!SIMULATOR_TEST_RESET(false, false, false, false)) {
                 return false;
+            }
+
+#if VERSION != MQ_J
+            mcardStore(&mCard);
+
+            if (mCard.writeStatus != 0) {
+                mCard.accessType = 2;
+                simulatorPrepareMessage(S_M_CARD_SV09);
+                simulatorDrawMCardText();
+            }
+#endif
+
+            toggle = false;
+            j = NUM_DATA_BLOCKS(mCard.file.game.size);
+            for (i = 0; i < CHECK_NUM_DATA_BLOCKS; i++) {
+                if (mCard.file.game.writtenBlocks[i] == true) {
+#if VERSION != MQ_J
+                    index = i;
+#endif
+                    toggle = true;
+                    break;
+                }
+            }
+
+#if VERSION == MQ_J
+            if (mCard.file.game.writtenConfig == true) {
+                toggle = true;
+            } else if (mCard.file.changedDate == true) {
+                toggle = true;
             }
 
             mcardStore(&mCard);
@@ -3093,17 +3324,7 @@ bool mcardUpdate(void) {
                 simulatorPrepareMessage(S_M_CARD_SV09);
                 simulatorDrawMCardText();
             }
-
-            toggle = false;
-            j = NUM_DATA_BLOCKS(mCard.file.game.size);
-            for (i = 0; i < (u32)j; i++) {
-                if (mCard.file.game.writtenBlocks[i] == true) {
-                    index = i;
-                    toggle = true;
-                    break;
-                }
-            }
-
+#else
             if (toggle != true) {
                 if (mCard.file.game.writtenConfig == true) {
                     index = j;
@@ -3128,6 +3349,7 @@ bool mcardUpdate(void) {
                 counter = 0;
                 mCard.saveToggle = false;
             }
+#endif
 
             if (mCard.saveToggle == false) {
                 mCard.saveToggle = true;
@@ -3139,7 +3361,7 @@ bool mcardUpdate(void) {
                     return false;
                 }
 
-                if (gpSystem->eTypeROM == SRT_ZELDA1 && mCard.saveToggle == true) {
+                if (IS_OOT && mCard.saveToggle == true) {
                     do {
                         mcardMenu(&mCard, MC_M_SV12, &command);
                         if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
