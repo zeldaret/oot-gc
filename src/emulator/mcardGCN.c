@@ -68,7 +68,7 @@
 #define COMMENT_SIZE 0x20
 
 #if VERSION == MQ_J
-#define DATE_STRING "%d月%d日のセーブデータです" // "The Legend of Zelda: Ocarina of Time"
+#define DATE_STRING "%d月%d日のセーブデータです" // "This is the save data from MM/DD"
 #elif VERSION == MQ_U
 //! TODO: fix the alignment issue
 #define DATE_STRING "%d/%d Save Data\0"
