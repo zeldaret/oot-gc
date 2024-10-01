@@ -132,7 +132,7 @@ Run `tools/decompme.py <c-file> <asm-file>` (e.g. `tools/decompme.py src/emulato
 ### Permuter
 
 To import a function for [decomp-permuter](https://github.com/simonlindholm/decomp-permuter), ensure `powerpc-eabi-objdump` binary
-is on your `PATH` (for instance by adding `tools/binutils` from this project) and run something like
+is on your `PATH` (for instance by adding `build/binutils` from this project) and run something like
 
 ```sh
 path/to/permuter/import.py src/emulator/THPRead.c asm/non_matchings/THPRead/Reader.s
