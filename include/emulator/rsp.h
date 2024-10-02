@@ -258,10 +258,10 @@ typedef struct Rsp {
     /* 0x39B0 */ s16* QYTable;
     /* 0x39B4 */ s16* QCbTable;
     /* 0x39B8 */ s16* QCrTable;
-    /* 0x39BC */ s32* Zigzag;
+    /* 0x39BC */ int* Zigzag;
     /* 0x39C0 */ struct __anon_0x58360* rgbaBuf;
     /* 0x39C4 */ struct __anon_0x583EE* yuvBuf;
-    /* 0x39C8 */ s32* dctBuf;
+    /* 0x39C8 */ int* dctBuf;
 } Rsp; // size = 0x39CC
 
 typedef struct __anon_0x5ED4F {
