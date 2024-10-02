@@ -4756,7 +4756,7 @@ static bool Matrix4by4Identity(Mtx44Ptr matrix4b4) {
 }
 #endif
 
-static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, __anon_0x5F63B* pSprite) {
+static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, uObjSprite* pSprite) {
     u16* pnData16;
     u8* pnData8;
     u8* pObjSprite;
@@ -4786,7 +4786,7 @@ static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, __anon_0x5F63B* pSprite) {
     return true;
 }
 
-bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg) {
+bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, uObjBg* pBg) {
     u8* pnData8;
     u8* pObjBg;
     u16* pnData16;
@@ -4821,7 +4821,7 @@ bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg) {
     return true;
 }
 
-bool rspFillObjBg(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg) {
+bool rspFillObjBg(Rsp* pRSP, s32 nAddress, uObjBg* pBg) {
     u8* pnData8;
     u8* pObjBg;
     u16* pnData16;
@@ -5064,7 +5064,7 @@ static inline bool guS2DEmuSetScissor(u32 ulx, u32 uly, u32 lrx, u32 lry, u8 fla
 #else
 // Similar to
 // https://github.com/decompals/ultralib/blob/1616482098e51d2e1906e198bf1bde14e8fc5e90/src/gu/us2dex_emu.c#L177
-static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, __anon_0x5F2FB* pBG) {
+static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, uObjBg* pBG) {
     s32 pad;
 
     s16 frameX0, frameX1, framePtrY0, frameRemain;
@@ -5353,7 +5353,7 @@ static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, __anon_0x5F2FB* pBG) {
 }
 #endif
 
-bool rspFillObjTxtr(Rsp* pRSP, s32 nAddress, __anon_0x5FC1B* pTxtr, u32* pLoadType) {
+bool rspFillObjTxtr(Rsp* pRSP, s32 nAddress, uObjTxtr* pTxtr, u32* pLoadType) {
     u32* pnData32;
     u16* pnData16;
     u8* pTxtrBlock;
@@ -5419,7 +5419,7 @@ static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     u16 nSizLineBytes;
     f32 fDeltaS;
     f32 fDeltaT;
-    __anon_0x5F63B objSprite;
+    uObjSprite objSprite;
     Tile* pTile;
     Rectangle primitive;
     s32 nClampSetting;
@@ -5528,8 +5528,8 @@ static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjRectangleR.s")
 
 bool rspBgRectCopy(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
-    union __anon_0x5F2FB bg;
-    union __anon_0x5F2FB bgScale;
+    uObjBg bg;
+    uObjBg bgScale;
     u32 nOldMode1;
     u32 nOldMode2;
 

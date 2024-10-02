@@ -3247,7 +3247,7 @@ bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
     u32 nCommandHi;
     Rsp* pRSP;
     s32 done;
-    union __anon_0x5F2FB bg;
+    uObjBg bg;
 
     pnGBI = *ppnGBI;
     for (count = 0; count < ARRAY_COUNT(GBIcode); count++) {
