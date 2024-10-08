@@ -1,0 +1,77 @@
+{
+    "configurations": [
+        {
+            "name": "mq-j",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/mq-j/include"
+            ],
+            "defines": ["VERSION=MQ_J"]
+        },
+        {
+            "name": "mq-u",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/mq-u/include"
+            ],
+            "defines": ["VERSION=MQ_U"]
+        },
+        {
+            "name": "mq-e",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/mq-e/include"
+            ],
+            "defines": ["VERSION=MQ_E"]
+        },
+        {
+            "name": "ce-j",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/ce-j/include"
+            ],
+            "defines": ["VERSION=CE_J"]
+        },
+        {
+            "name": "ce-u",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/ce-u/include"
+            ],
+            "defines": ["VERSION=CE_U"]
+        },
+        {
+            "name": "ce-e",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/ce-e/include"
+            ],
+            "defines": ["VERSION=CE_E"]
+        }
+    ],
+    "version": 4
+}
