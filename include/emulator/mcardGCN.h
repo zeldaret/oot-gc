@@ -148,7 +148,9 @@ typedef struct _MCARD {
     /* 0x7A4 */ bool bufferCreated;
     /* 0x7A8 */ s32 cardSize;
     /* 0x7AC */ bool wait;
+#if VERSION != MQ_J
     /* 0x7B0 */ bool isBroken;
+#endif
     /* 0x7B4 */ s32 saveConfiguration;
 } MemCard; // size = 0x7B8
 
