@@ -79,26 +79,13 @@ To get objdiff to work properly you also need to add the path to the folder cont
 
 1. Clone the repo using `git clone https://github.com/zeldaret/oot-gc`.
 
-2. Extract the following TGC archive containing the N64 emulator from the disc of the version you want to build:
-
-  * `mq-j`: `zlj_f.tgc`
-  * `mq-u`: `zlj_f.tgc`
-  * `mq-e`: `zlj_f.tgc`
-  * `ce-j`: `120903_zelda.tgc`
-  * `ce-u`: `zelda_ENG_090903.tgc`
-  * `ce-e`: `zelda_PAL_093003.tgc`
-
-  Then, extract the DOL file from the TGC archive and place it in the repo as `orig/<version>/main.dol`.
-
-  You can use [Dolphin](https://dolphin-emu.org) to perform both of these extraction steps:
-  first, right click on the `.iso` file, select "Properties", go to the "Filesystem" tab, find the correct
-  `.tgc` file, then right-click and select "Extract File..." and extract it to your games folder.
-  Then, right-click the extracted `.tgc` file in Dolphin, select "Properties", go to the "Filesystem" tab,
-  right-click the "Disc" and select "Extract System Data..." to extract the DOL file.
+2. Copy the disc image of the version you want to decompile into the appropriate `orig/*` directory. _(Supported formats: ISO (GCM), RVZ, WIA, WBFS, CISO, NFS, GCZ, TGC)_
 
 3. Run `python3 configure.py` to generate the build. (Note: on Windows you might need to run ``python configure.py``.)
 
 4. Run `ninja` to build the `ce-j` version, or run `ninja <version>` to build another version.
+
+5. After the initial build, you can delete the disc image(s) from the `orig/*` directories.
 
 ## Development Tools
 

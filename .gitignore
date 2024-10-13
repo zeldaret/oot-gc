@@ -26,3 +26,7 @@ __pycache__/
 
 # Permuter artifacts
 nonmatchings/
+
+# Original files
+orig/*/*
+!orig/*/.gitkeep

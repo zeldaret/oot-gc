@@ -14,6 +14,7 @@
 
 import argparse
 import sys
+import glob
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -112,7 +113,12 @@ args = parser.parse_args()
 
 config = ProjectConfig()
 
-# Only configure versions for which main.dol exists
+
+# Only configure versions for which an orig file exists
+def version_exists(version: str) -> bool:
+    return glob.glob(str(Path("orig") / version / "*")) != []
+
+
 ALL_VERSIONS = [
     "mq-j",
     "mq-u",
@@ -124,11 +130,11 @@ ALL_VERSIONS = [
 config.versions = [
     version
     for version in ALL_VERSIONS
-    if (Path("orig") / version / "main.dol").exists()
+    if version_exists(version)
 ]
 
 if not config.versions:
-    sys.exit("Error: no main.dol found for any version")
+    sys.exit("Error: no orig files found for any version")
 
 if "ce-j" in config.versions:
     config.default_version = "ce-j"
@@ -160,8 +166,8 @@ if args.no_asm:
 
 config.binutils_tag = "2.42-1"
 config.compilers_tag = "20231018"
-config.dtk_tag = "v0.8.3"
-config.objdiff_tag = "v2.0.0-beta.5"
+config.dtk_tag = "v1.1.3"
+config.objdiff_tag = "v2.3.2"
 config.sjiswrap_tag = "v1.1.1"
 config.wibo_tag = "0.6.11"
 config.linker_version = "GC/1.1"

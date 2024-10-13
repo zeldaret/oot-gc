@@ -1,6 +1,7 @@
 # See config.example.yml for documentation.
 name: oot-gc
-object: orig/mq-e/main.dol
+object_base: orig/mq-e
+object: files/zlj_f.tgc:sys/main.dol
 hash: 9155899e1ed86fc2b25113c77d49396c77d24138
 symbols: config/mq-e/symbols.txt
 splits: config/mq-e/splits.txt
