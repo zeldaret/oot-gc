@@ -35,6 +35,10 @@
 #define AUDIO_SEGMENT_ADDRESS(pRSP, nOffsetRDRAM) \
     (pRSP->anAudioBaseSegment[((nOffsetRDRAM) >> 24) & 0xF] + ((nOffsetRDRAM) & 0xFFFFFF))
 
+#define G_OBJLT_TXTRBLOCK 0x00001033
+#define G_OBJLT_TXTRTILE 0x00FC1034
+#define G_OBJLT_TLUT 0x00000030
+
 typedef enum RspAudioUCodeType {
     RUT_NOCODE = -1,
     RUT_ABI1 = 0,
@@ -264,7 +268,7 @@ typedef struct Rsp {
     /* 0x39C8 */ int* dctBuf;
 } Rsp; // size = 0x39CC
 
-typedef struct __anon_0x5ED4F {
+typedef struct uObjBg_t {
     /* 0x00 */ u16 imageX;
     /* 0x02 */ u16 imageW;
     /* 0x04 */ s16 frameX;
@@ -285,9 +289,9 @@ typedef struct __anon_0x5ED4F {
     /* 0x22 */ u16 tmemLoadTH;
     /* 0x24 */ u16 tmemSizeW;
     /* 0x26 */ u16 tmemSize;
-} __anon_0x5ED4F; // size = 0x28
+} uObjBg_t; // size = 0x28
 
-typedef struct __anon_0x5F05A {
+typedef struct uObjScaleBg_t {
     /* 0x00 */ u16 imageX;
     /* 0x02 */ u16 imageW;
     /* 0x04 */ s16 frameX;
@@ -306,15 +310,15 @@ typedef struct __anon_0x5F05A {
     /* 0x1E */ u16 scaleH;
     /* 0x20 */ s32 imageYorig;
     /* 0x24 */ u8 padding[4];
-} __anon_0x5F05A; // size = 0x28
+} uObjScaleBg_t; // size = 0x28
 
-typedef union __anon_0x5F2FB {
-    __anon_0x5ED4F b;
-    __anon_0x5F05A s;
+typedef union uObjBg {
+    uObjBg_t b;
+    uObjScaleBg_t s;
     s64 force_structure_alignment;
-} __anon_0x5F2FB;
+} uObjBg;
 
-typedef struct __anon_0x5F429 {
+typedef struct uObjSprite_t {
     /* 0x00 */ s16 objX;
     /* 0x02 */ u16 scaleW;
     /* 0x04 */ u16 imageW;
@@ -329,16 +333,56 @@ typedef struct __anon_0x5F429 {
     /* 0x15 */ u8 imageSiz;
     /* 0x16 */ u8 imagePal;
     /* 0x17 */ u8 imageFlags;
-} __anon_0x5F429; // size = 0x18
+} uObjSprite_t; // size = 0x18
 
-typedef union __anon_0x5F63B {
-    __anon_0x5F429 s;
+typedef union uObjSprite {
+    uObjSprite_t s;
     s64 force_structure_alignment;
-} __anon_0x5F63B;
+} uObjSprite;
 
-bool rspFillObjBg(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg);
+typedef struct uObjTxtrBlock_t {
+    /* 0x00 */ u32 type;
+    /* 0x04 */ u32 image;
+    /* 0x08 */ u16 tmem;
+    /* 0x0A */ u16 tsize;
+    /* 0x0C */ u16 tline;
+    /* 0x0E */ u16 sid;
+    /* 0x10 */ u32 flag;
+    /* 0x14 */ u32 mask;
+} uObjTxtrBlock_t; // size = 0x18
+
+typedef struct uObjTxtrTile_t {
+    /* 0x00 */ u32 type;
+    /* 0x04 */ u32 image;
+    /* 0x08 */ u16 tmem;
+    /* 0x0A */ u16 twidth;
+    /* 0x0C */ u16 theight;
+    /* 0x0E */ u16 sid;
+    /* 0x10 */ u32 flag;
+    /* 0x14 */ u32 mask;
+} uObjTxtrTile_t; // size = 0x18
+
+typedef struct uObjTxtrTLUT_t {
+    /* 0x00 */ u32 type;
+    /* 0x04 */ u32 image;
+    /* 0x08 */ u16 phead;
+    /* 0x0A */ u16 pnum;
+    /* 0x0C */ u16 zero;
+    /* 0x0E */ u16 sid;
+    /* 0x10 */ u32 flag;
+    /* 0x14 */ u32 mask;
+} uObjTxtrTLUT_t; // size = 0x18
+
+typedef union uObjTxtr {
+    uObjTxtrBlock_t block;
+    uObjTxtrTile_t tile;
+    uObjTxtrTLUT_t tlut;
+    s64 force_structure_alignment;
+} uObjTxtr;
+
+bool rspFillObjBg(Rsp* pRSP, s32 nAddress, uObjBg* pBg);
 bool rspSetImage(struct Frame* pFrame, Rsp* pRSP, s32 nFormat, s32 nWidth, s32 nSize, s32 nImage);
-bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, __anon_0x5F2FB* pBg);
+bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, uObjBg* pBg);
 bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData);
 bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData);
 bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1);
