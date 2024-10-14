@@ -159,10 +159,13 @@ static bool nFirstTime_2757 = true;
 static bool nFirstTime_2796 = true;
 
 static s32 counter;
+
+// TODO: initialize as 0 << 2
 static u16 scissorX0;
 static u16 scissorY0;
-static u16 scissorX1 = 0x500;
-static u16 scissorY1 = 0x3C0;
+static u16 scissorX1 = N64_FRAME_WIDTH << 2;
+static u16 scissorY1 = N64_FRAME_HEIGHT << 2;
+
 static u8 flagBilerp;
 static u32 rdpSetTimg_w0;
 static u32 rdpSetTile_w0;
