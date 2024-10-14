@@ -5,17 +5,17 @@ oot-gc
 [Build Status]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml/badge.svg
 [actions]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml
 
-[mq-j]: https://decomp.dev/zeldaret/oot-gc/mq-j.png?mode=shield&label=mq-j
+[mq-j]: https://decomp.dev/zeldaret/oot-gc/mq-j.svg?mode=shield&label=mq-j
 
-[mq-u]: https://decomp.dev/zeldaret/oot-gc/mq-u.png?mode=shield&label=mq-u
+[mq-u]: https://decomp.dev/zeldaret/oot-gc/mq-u.svg?mode=shield&label=mq-u
 
-[mq-e]: https://decomp.dev/zeldaret/oot-gc/mq-e.png?mode=shield&label=mq-e
+[mq-e]: https://decomp.dev/zeldaret/oot-gc/mq-e.svg?mode=shield&label=mq-e
 
-[ce-j]: https://decomp.dev/zeldaret/oot-gc/ce-j.png?mode=shield&label=ce-j
+[ce-j]: https://decomp.dev/zeldaret/oot-gc/ce-j.svg?mode=shield&label=ce-j
 
-[ce-u]: https://decomp.dev/zeldaret/oot-gc/ce-u.png?mode=shield&label=ce-u
+[ce-u]: https://decomp.dev/zeldaret/oot-gc/ce-u.svg?mode=shield&label=ce-u
 
-[ce-e]: https://decomp.dev/zeldaret/oot-gc/ce-e.png?mode=shield&label=ce-e
+[ce-e]: https://decomp.dev/zeldaret/oot-gc/ce-e.svg?mode=shield&label=ce-e
 
 [Discord Badge]: https://img.shields.io/discord/688807550715560050?color=%237289DA&logo=discord&logoColor=%23FFFFFF
 [discord]: https://discord.zelda.deco.mp/
