@@ -362,7 +362,6 @@ typedef struct uObjTxtrTile_t {
     /* 0x14 */ u32 mask;
 } uObjTxtrTile_t; // size = 0x18
 
-// uObjTxtrTLUT_t
 typedef struct uObjTxtrTLUT_t {
     /* 0x00 */ u32 type;
     /* 0x04 */ u32 image;
