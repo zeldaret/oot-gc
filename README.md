@@ -5,17 +5,17 @@ oot-gc
 [Build Status]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml/badge.svg
 [actions]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml
 
-[mq-j]: https://img.shields.io/endpoint?label=mq-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-j]: https://decomp.dev/zeldaret/oot-gc/mq-j.png?mode=shield&label=mq-j
 
-[mq-u]: https://img.shields.io/endpoint?label=mq-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-u%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-u]: https://decomp.dev/zeldaret/oot-gc/mq-u.png?mode=shield&label=mq-u
 
-[mq-e]: https://img.shields.io/endpoint?label=mq-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-e%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-e]: https://decomp.dev/zeldaret/oot-gc/mq-e.png?mode=shield&label=mq-e
 
-[ce-j]: https://img.shields.io/endpoint?label=ce-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[ce-j]: https://decomp.dev/zeldaret/oot-gc/ce-j.png?mode=shield&label=ce-j
 
-[ce-u]: https://img.shields.io/endpoint?label=ce-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-u%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[ce-u]: https://decomp.dev/zeldaret/oot-gc/ce-u.png?mode=shield&label=ce-u
 
-[ce-e]: https://img.shields.io/endpoint?label=ce-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-e%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[ce-e]: https://decomp.dev/zeldaret/oot-gc/ce-e.png?mode=shield&label=ce-e
 
 [Discord Badge]: https://img.shields.io/discord/688807550715560050?color=%237289DA&logo=discord&logoColor=%23FFFFFF
 [discord]: https://discord.zelda.deco.mp/
