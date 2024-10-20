@@ -204,6 +204,7 @@ cflags_base = [
     "-sym on",
     "-i include",
     "-i libc",
+    "-i src",
 ]
 
 if config.non_matching:
