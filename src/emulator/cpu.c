@@ -1970,7 +1970,6 @@ static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* an
 
 /**
  * @brief The main MIPS->PPC Dynamic recompiler.
- * Largely unfinished.
  *
  * @param pCPU The emulated VR4300.
  * @param pnAddress The address to recompile.
