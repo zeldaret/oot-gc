@@ -15,6 +15,11 @@
 #include "macros.h"
 #include "math.h"
 
+static inline bool cpuNoBranchTo(CpuFunction* pFunction, s32 addressN64);
+static inline bool cpuCutStoreLoad(Cpu* pCPU, s32 currentAddress, s32 source);
+static inline bool cpuCutStoreLoadF(Cpu* pCPU, s32 currentAddress, s32 source);
+static inline bool cpuStackOffset(Cpu* pCPU, s32 currentAddress, s32* anCode, s32 source, s32 target);
+static bool cpuNextInstruction(Cpu* pCPU, s32 addressN64, s32 opcode, s32* anCode, s32* iCode);
 static inline bool cpuMakeCachedAddress(Cpu* pCPU, s32 nAddressN64, s32 nAddressHost, CpuFunction* pFunction);
 static bool cpuFindCachedAddress(Cpu* pCPU, s32 nAddressN64, s32* pnAddressHost);
 static bool cpuSetTLB(Cpu* pCPU, s32 iEntry);
@@ -472,6 +477,8 @@ char D_800ECDB0[] = "ERROR: C.NGE_L\n";
 char D_800ECDC0[] = "ERROR: C.LE_L\n";
 char D_800ECDD0[] = "ERROR: C.NGT_L\n";
 
+#ifndef NON_MATCHING
+// cpuGetPPC
 void* jtbl_800ECDE0[64] = {
     &lbl_8005A1E0, &lbl_8005A204, &lbl_8005A228, &lbl_8005A24C, &lbl_8005A270, &lbl_8005A280, &lbl_8005A2A4,
     &lbl_8005A2B4, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_8005A2D8, &lbl_8005A2E8,
@@ -485,6 +492,7 @@ void* jtbl_800ECDE0[64] = {
     &lbl_8005A678,
 };
 
+// cpuGetPPC
 void* jtbl_800ECEE0[64] = {
     &lbl_80059DC0, &lbl_80059DE4, &lbl_80059E08, &lbl_80059E2C, &lbl_80059E50, &lbl_80059E60, &lbl_80059E84,
     &lbl_80059E94, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80059EB8, &lbl_80059EC8,
@@ -498,6 +506,7 @@ void* jtbl_800ECEE0[64] = {
     &lbl_8005A1A4,
 };
 
+// cpuGetPPC
 void* jtbl_800ECFE0[64] = {
     &lbl_80054BD4, &lbl_80054EF0, &lbl_80055204, &lbl_80055520, &lbl_80055834, &lbl_800559F0, &lbl_80055BC8,
     &lbl_80055C54, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80055E2C, &lbl_80055FEC,
@@ -511,6 +520,7 @@ void* jtbl_800ECFE0[64] = {
     &lbl_80059974,
 };
 
+// cpuGetPPC
 void* jtbl_800ED0E0[64] = {
     &lbl_8004F91C, &lbl_8004FC44, &lbl_8004FF64, &lbl_8005028C, &lbl_800505AC, &lbl_80050770, &lbl_80050950,
     &lbl_800509E4, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80050BC4, &lbl_80050D88,
@@ -524,10 +534,12 @@ void* jtbl_800ED0E0[64] = {
     &lbl_80054780,
 };
 
+// cpuGetPPC
 void* jtbl_800ED1E0[7] = {
     &lbl_8004E8E8, &lbl_8004EA44, &lbl_8004EBC0, &lbl_8004F0A8, &lbl_8004ECB0, &lbl_8004EE70, &lbl_8004EFE4,
 };
 
+// cpuGetPPC
 void* jtbl_800ED1FC[25] = {
     &lbl_8004E810, &lbl_80067F34, &lbl_80067F34, &lbl_8004E810, &lbl_8004E810, &lbl_80067F34, &lbl_8004E810,
     &lbl_8004E810, &lbl_80067F34, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_8004E810,
@@ -535,12 +547,14 @@ void* jtbl_800ED1FC[25] = {
     &lbl_8004E810, &lbl_8004E810, &lbl_8004E810, &lbl_80067F34,
 };
 
+// cpuGetPPC
 void* jtbl_800ED260[20] = {
     &lbl_800496CC, &lbl_80049998, &lbl_80049C64, &lbl_80049F5C, &lbl_8004B55C, &lbl_8004B55C, &lbl_8004B55C,
     &lbl_8004B55C, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_80067F34, &lbl_8004B55C,
     &lbl_80067F34, &lbl_8004B55C, &lbl_8004A254, &lbl_8004A700, &lbl_8004ABAC, &lbl_8004B084,
 };
 
+// cpuGetPPC
 void* jtbl_800ED2B0[64] = {
     &lbl_8003F290, &lbl_800496A0, &lbl_8003F524, &lbl_8003F780, &lbl_8003F9D0, &lbl_800496A0, &lbl_8003FDBC,
     &lbl_800401A8, &lbl_80040594, &lbl_800407BC, &lbl_800496A0, &lbl_800496A0, &lbl_80067F34, &lbl_80067F34,
@@ -554,6 +568,7 @@ void* jtbl_800ED2B0[64] = {
     &lbl_800493D4,
 };
 
+// cpuGetPPC
 void* jtbl_800ED3B0[64] = {
     &lbl_8003F268, &lbl_800496A8, &lbl_8004B564, &lbl_8004B80C, &lbl_8004BD30, &lbl_8004C2FC, &lbl_8004C730,
     &lbl_8004C9FC, &lbl_8004CCC8, &lbl_8004D2D4, &lbl_8004D900, &lbl_8004DC14, &lbl_8004DF58, &lbl_8004E1A0,
@@ -566,6 +581,7 @@ void* jtbl_800ED3B0[64] = {
     &lbl_80067F34, &lbl_80065A94, &lbl_80067F30, &lbl_80067F30, &lbl_800669E0, &lbl_80066A00, &lbl_80067F30,
     &lbl_800678FC,
 };
+#endif
 
 #ifndef NON_MATCHING
 // cpuCheckDelaySlot
@@ -1783,8 +1799,27 @@ static bool cpuCompile_LWR(Cpu* pCPU, s32* addressGCN) {
     return true;
 }
 
+static inline bool cpuFindBranchOffset(CpuFunction* pFunction, s32* pnOffset, s32 nAddress, s32* anCode) {
+    s32 iJump;
+
+    if (anCode == NULL) {
+        *pnOffset = 0;
+        return true;
+    }
+
+    for (iJump = 0; iJump < pFunction->nCountJump; iJump++) {
+        if (pFunction->aJump[iJump].nAddressN64 == nAddress) {
+            *pnOffset = pFunction->aJump[iJump].nOffsetHost;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // Matches but data doesn't
 #ifndef NON_MATCHING
+static s32 cpuCheckDelaySlot(u32 opcode);
 #pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuCheckDelaySlot.s")
 #else
 /**
@@ -1911,14 +1946,30 @@ static s32 cpuCheckDelaySlot(u32 opcode) {
  * @param number The amount of NOPs to fill.
  */
 static inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
-    while (*iCode != number) {
-        anCode[(*iCode)++] = 0x60000000;
+    if (anCode == NULL) {
+        *iCode += number;
+    } else {
+        while (number-- != 0) {
+            anCode[(*iCode)++] = 0x60000000;
+        }
     }
 }
 
+#ifndef NON_MATCHING
+static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* anCode, s32* piCode, bool bSlot);
+#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetPPC.s")
+#else
+#define EMIT_PPC(i, instruction)       \
+    do {                               \
+        if (anCode != NULL) {          \
+            anCode[i++] = instruction; \
+        } else {                       \
+            i++;                       \
+        }                              \
+    } while (0)
+
 /**
  * @brief The main MIPS->PPC Dynamic recompiler.
- * Largely unfinished.
  *
  * @param pCPU The emulated VR4300.
  * @param pnAddress The address to recompile.
@@ -1928,8 +1979,5767 @@ static inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
  * @param bSlot true if we are recompiling a delay slot.
  * @return bool true on success, false otherwise.
  */
-static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* anCode, s32* piCode, bool bSlot);
-#pragma GLOBAL_ASM("asm/non_matchings/cpu/cpuGetPPC.s")
+static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* anCode, s32* piCode, bool bSlot) {
+    s32 nSize;
+    s32 iHack;
+    bool bInterpret;
+    s32 iCode;
+    s32 pad1;
+    s32 iJump;
+    s32 nAddress;
+    s32 nReturnAddress;
+    s32 nDeltaAddress;
+    bool bFlag;
+    s32 nAddressJump;
+    s32 nOffset;
+    u32 nOpcode;
+    u32 nOpcodePrev;
+    u32 nOpcodeNext;
+    u32* pnOpcode;
+    s32 prev;
+    s32 iRegisterA;
+    s32 iRegisterB;
+    s32 iRegisterC;
+    s32 nTemp1;
+    s32 nTemp2;
+    s32 nTemp3;
+    bool update;
+    s32 iUpdate;
+    s32 nTarget;
+    s32 var_r24;
+    s32 var_r22;
+    bool var_r17;
+    bool var_r3;
+    u8 pad2[0x54];
+
+    bFlag = true;
+    prev = 0;
+    update = false;
+
+    if (ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &pnOpcode, *pnAddress, NULL)) {
+        nAddress = *pnAddress;
+        nOpcode = pnOpcode[0];
+        nOpcodeNext = pnOpcode[1];
+        nOpcodePrev = pnOpcode[-1];
+
+        bInterpret = false;
+        *pnAddress += 4;
+
+        for (iHack = 0; iHack < pCPU->nCountCodeHack; iHack++) {
+            if (pCPU->aCodeHack[iHack].nAddress == nAddress && pCPU->aCodeHack[iHack].nOpcodeOld == nOpcode) {
+                if (pCPU->aCodeHack[iHack].nOpcodeNew == 0xFFFFFFFF) {
+                    bInterpret = true;
+                } else {
+                    nOpcode = pCPU->aCodeHack[iHack].nOpcodeNew;
+                }
+            }
+            if (pCPU->aCodeHack[iHack].nAddress == nAddress + 4 && pCPU->aCodeHack[iHack].nOpcodeOld == nOpcodeNext) {
+                if (pCPU->aCodeHack[iHack].nOpcodeNew != 0xFFFFFFFF) {
+                    nOpcodeNext = pCPU->aCodeHack[iHack].nOpcodeNew;
+                }
+            }
+
+            if (pCPU->aCodeHack[iHack].nAddress == nAddress - 4 && pCPU->aCodeHack[iHack].nOpcodeOld == nOpcodePrev) {
+                if (pCPU->aCodeHack[iHack].nOpcodeNew != 0xFFFFFFFF) {
+                    nOpcodePrev = pCPU->aCodeHack[iHack].nOpcodeNew;
+                }
+            }
+        }
+
+        iCode = *piCode;
+        nAddressJump = -1;
+        pCPU->nOptimize.addr_check = 0;
+        if (iCode == 0) {
+            pCPU->nOptimize.addr_last = -1;
+            if (!bInterpret && cpuCheckDelaySlot(nOpcode) == 0) {
+                if (((s32)(pFunction->nAddress1 - pFunction->nAddress0) >> 2) + 1 > 25) {
+                    bInterpret = true;
+                } else {
+                    update = true;
+                }
+            }
+            if (anCode != NULL) {
+                anCode[iCode++] = 0x3CA00000 | ((u32)pFunction >> 16);
+                anCode[iCode++] = 0x60A50000 | ((u32)pFunction & 0xFFFF);
+                anCode[iCode++] = 0x90A30000 + (OFFSETOF(pCPU, pFunctionLast) & 0xFFFF);
+                anCode[iCode++] = 0x80C50000 + OFFSETOF(pFunction, timeToLive);
+                anCode[iCode++] = 0x2C060000;
+                anCode[iCode++] = 0x41820008;
+                anCode[iCode++] = 0x90850000 + OFFSETOF(pFunction, timeToLive);
+            } else {
+                iCode += 7;
+            }
+            if (update) {
+                if (anCode != NULL) {
+                    anCode[iCode++] = 0x80A30000 + OFFSETOF(pCPU, nRetrace);
+                    anCode[iCode++] = 0x80C30000 + OFFSETOF(pCPU, nRetraceUsed);
+                    anCode[iCode++] = 0x7CA62850;
+                    anCode[iCode++] = 0x2C050002;
+                    anCode[iCode++] = 0x41800014;
+                    anCode[iCode++] = 0x3CA00000 | ((u32)nAddress >> 16);
+                    anCode[iCode++] = 0x60A50000 | ((u32)nAddress & 0xFFFF);
+                    anCode[iCode++] = 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1;
+                    iUpdate = iCode++;
+                } else {
+                    iCode += 9;
+                }
+            }
+            *piCode = iCode;
+        } else {
+            prev = cpuCheckDelaySlot(nOpcodePrev);
+        }
+
+        var_r17 = nOpcode != 0 && (prev != 0 || bSlot) ? true : false;
+        if (!bInterpret) {
+            if (anCode == NULL || var_r17) {
+                pCPU->nOptimize.destGPR_check = 0;
+                pCPU->nOptimize.destFPR_check = 0;
+                pCPU->nOptimize.addr_last = -1;
+                pCPU->nOptimize.checkNext = 0;
+            }
+
+            switch (MIPS_OP(nOpcode)) {
+                case 0x00: // special
+                    switch (MIPS_FUNCT(nOpcode)) {
+                        case 0x00: // sll
+                            if (nOpcode != 0) {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                                if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                    iRegisterA = 5;
+                                }
+                                if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterB = 6;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterB << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                nTemp1 = MIPS_SA(nOpcode);
+                                nTemp2 = 31 - nTemp1;
+                                EMIT_PPC(iCode, 0x54000000 | (iRegisterB << 21) | (iRegisterA << 16) | (nTemp1 << 11) |
+                                                    (nTemp2 << 1));
+                                if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                    pCPU->nOptimize.destGPR_check = 2;
+                                    pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                    pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    EMIT_PPC(iCode,
+                                             0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            } else {
+                                EMIT_PPC(iCode, 0x60000000);
+                            }
+                            break;
+                        case 0x02: // srl
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            nTemp1 = MIPS_SA(nOpcode);
+                            nTemp2 = 32 - nTemp1;
+                            EMIT_PPC(iCode, 0x54000000 | (iRegisterB << 21) | (iRegisterA << 16) | (nTemp2 << 11) |
+                                                (nTemp1 << 6) | 0x3E);
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x03: // sra
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            nTemp1 = MIPS_SA(nOpcode);
+                            EMIT_PPC(iCode, 0x7C000670 | (iRegisterB << 21) | (iRegisterA << 16) | (nTemp1 << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x04: // sllv
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x70000000 | (iRegisterC << 21) | (iRegisterC << 16) | 0x1F);
+                            EMIT_PPC(iCode, 0x7C000030 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x06: // srlv
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x70000000 | (iRegisterC << 21) | (iRegisterC << 16) | 0x1F);
+                            EMIT_PPC(iCode, 0x7C000430 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x07: // srav
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x70000000 | (iRegisterC << 21) | (iRegisterC << 16) | 0x1F);
+                            EMIT_PPC(iCode, 0x7C000630 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x08: // jr
+                            if (nOpcodeNext != 0) {
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                    return false;
+                                }
+                                *pnAddress -= 4;
+                            }
+                            if (MIPS_RS(nOpcode) != 31) {
+                                pCPU->nOptimize.validCheck = 0;
+                            }
+                            if (MIPS_RS(nOpcode) == 31 && !(pCPU->nFlagCODE & 2)) {
+                                if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    iRegisterA = 5;
+                                    EMIT_PPC(iCode,
+                                             0x80A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                                EMIT_PPC(iCode, 0x7C0803A6 | ((iRegisterA & 0x1F) << 21));
+                                EMIT_PPC(iCode, 0x4E800020);
+                            } else {
+                                if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    EMIT_PPC(iCode,
+                                             0x80A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                } else {
+                                    EMIT_PPC(iCode, 0x7C050378 | (iRegisterA << 21) | (iRegisterA << 11));
+                                }
+                                EMIT_PPC(iCode,
+                                         0x48000000 | (((u32)pCPU->pfJump - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            }
+                            break;
+                        case 0x09: // jalr
+                            if (nOpcodeNext != 0) {
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                    return false;
+                                }
+                                *pnAddress -= 4;
+                            }
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, pFunctionLast));
+                            EMIT_PPC(iCode, 0x3CE08000);
+                            EMIT_PPC(iCode, 0x80C50000 + OFFSETOF(pFunction, timeToLive));
+                            EMIT_PPC(iCode, 0x7CC63B78);
+                            EMIT_PPC(iCode, 0x3CE00000 | (((u32)nAddress + 8) >> 16));
+                            EMIT_PPC(iCode, 0x90C50000 + OFFSETOF(pFunction, timeToLive));
+                            EMIT_PPC(iCode, 0x60E70000 | (((u32)nAddress + 8) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x90E30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            if ((iRegisterB = ganMapGPR[31]) & 0x100) {
+                                nReturnAddress = (u32)&anCode[iCode] + 20;
+                                EMIT_PPC(iCode, 0x3CA00000 | ((u32)nReturnAddress >> 16));
+                                EMIT_PPC(iCode, 0x60A50000 | ((u32)nReturnAddress & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                            } else {
+                                u32 temp; // TODO: fake match
+
+                                nReturnAddress = (u32)&anCode[iCode] + 16;
+                                temp = nReturnAddress;
+                                EMIT_PPC(iCode, 0x3C000000 | ((u32)nReturnAddress >> 16) | (iRegisterB << 21));
+                                EMIT_PPC(iCode,
+                                         0x60000000 | ((u32)temp & 0xFFFF) | (iRegisterB << 21) | (iRegisterB << 16));
+                            }
+                            if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, 0x80A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iCode, 0x7C050378 | (iRegisterA << 21) | (iRegisterA << 11));
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfJump - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            if (anCode != NULL) {
+                                anCode[iCode++] = 0x3CA00000 | ((u32)pFunction >> 16);
+                                anCode[iCode++] = 0x60A50000 | ((u32)pFunction & 0xFFFF);
+                                anCode[iCode++] = 0x90A30000 + (OFFSETOF(pCPU, pFunctionLast) & 0xFFFF);
+                                anCode[iCode++] = 0x3CE08000;
+                                anCode[iCode++] = 0x80C50000 + OFFSETOF(pFunction, timeToLive);
+                                anCode[iCode++] = 0x7CC63878;
+                                anCode[iCode++] = 0x2C060000;
+                                anCode[iCode++] = 0x41820008;
+                                anCode[iCode++] = 0x90850000 + OFFSETOF(pFunction, timeToLive);
+                            } else {
+                                iCode += 9;
+                            }
+                            iJump = iCode++;
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (iCode - iJump) * 4;
+                            }
+                            EMIT_PPC(iJump, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            break;
+                        case 0x0C: // syscall
+                        case 0x0D: // break
+                        case 0x0F: // sync
+                            break;
+                        case 0x10: // mfhi
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, 0x80A30000 | ((OFFSETOF(pCPU, nHi) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, nHi) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, nHi) + 4));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, nHi) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) & 0xFFFF));
+                            }
+                            break;
+                        case 0x11: // mthi
+                            if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, 0x80A30000 | ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nHi) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, nHi) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, nHi) + 4));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, nHi) & 0xFFFF));
+                            }
+                            break;
+                        case 0x12: // mflo
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, 0x80A30000 | ((OFFSETOF(pCPU, nLo) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, nLo) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, nLo) + 4));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, nLo) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) & 0xFFFF));
+                            }
+                            break;
+                        case 0x13: // mtlo
+                            if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, 0x80A30000 | ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nLo) + 4) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, nLo) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, nLo) + 4));
+                                EMIT_PPC(iCode, 0x80A30000 | (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x90A30000 | (OFFSETOF(pCPU, nLo) & 0xFFFF));
+                            }
+                            break;
+                        case 0x14: // dsllv
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DSLLV_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x16: // dsrlv
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DSRLV_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x17: // dsrav
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DSRAV_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x18: // mult
+                            iRegisterA = 5;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            EMIT_PPC(iCode, 0x7C0001D6 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nLo) + 4) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x7C000096 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nHi) + 4) & 0xFFFF));
+                            break;
+                        case 0x19: // multu
+                            iRegisterA = 5;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            EMIT_PPC(iCode, 0x7C0001D6 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nLo) + 4) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x7C000016 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nHi) + 4) & 0xFFFF));
+                            break;
+                        case 0x1A: // div
+                            iRegisterA = 5;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            EMIT_PPC(iCode, 0x7C0003D6 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nLo) + 4) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x7CA501D6 | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x7CA50050 | (iRegisterB << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nHi) + 4) & 0xFFFF));
+                            break;
+                        case 0x1B: // divu
+                            iRegisterA = 5;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            EMIT_PPC(iCode, 0x7C000396 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nLo) + 4) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x7CA501D6 | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x7CA50050 | (iRegisterB << 11));
+                            EMIT_PPC(iCode, 0x90A30000 | ((OFFSETOF(pCPU, nHi) + 4) & 0xFFFF));
+                            break;
+                        case 0x1C: // dmult
+                            if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x9421FFC0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x91210010);
+                            EMIT_PPC(iCode, 0x91410018);
+                            EMIT_PPC(iCode, 0x91610020);
+                            EMIT_PPC(iCode, 0x91810028);
+                            EMIT_PPC(iCode, 0x91C10030);
+                            EMIT_PPC(iCode, 0x91E10038);
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81030004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81E30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DMULT_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x81210010);
+                            EMIT_PPC(iCode, 0x81410018);
+                            EMIT_PPC(iCode, 0x81610020);
+                            EMIT_PPC(iCode, 0x81810028);
+                            EMIT_PPC(iCode, 0x81C10030);
+                            EMIT_PPC(iCode, 0x81E10038);
+                            EMIT_PPC(iCode, 0x38210040);
+                            break;
+                        case 0x1D: // dmultu
+                            if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x9421FFD0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x91210010);
+                            EMIT_PPC(iCode, 0x91410018);
+                            EMIT_PPC(iCode, 0x91610020);
+                            EMIT_PPC(iCode, 0x91810028);
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81030004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x48000000 |
+                                                ((cpuCompile_DMULTU_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x81210010);
+                            EMIT_PPC(iCode, 0x81410018);
+                            EMIT_PPC(iCode, 0x81610020);
+                            EMIT_PPC(iCode, 0x81810028);
+                            EMIT_PPC(iCode, 0x38210030);
+                            break;
+                        case 0x1E: // ddiv
+                            if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x9421FFC0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x91210010);
+                            EMIT_PPC(iCode, 0x91410018);
+                            EMIT_PPC(iCode, 0x91610020);
+                            EMIT_PPC(iCode, 0x91810028);
+                            EMIT_PPC(iCode, 0x91C10030);
+                            EMIT_PPC(iCode, 0x91E10038);
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81230004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81430000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81630004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81E30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DDIV_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x81210010);
+                            EMIT_PPC(iCode, 0x81410018);
+                            EMIT_PPC(iCode, 0x81610020);
+                            EMIT_PPC(iCode, 0x81810028);
+                            EMIT_PPC(iCode, 0x81C10030);
+                            EMIT_PPC(iCode, 0x81E10038);
+                            EMIT_PPC(iCode, 0x38210040);
+                            break;
+                        case 0x1F: // ddivu
+                            if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            EMIT_PPC(iCode, 0x9421FFD0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x91210010);
+                            EMIT_PPC(iCode, 0x91410018);
+                            EMIT_PPC(iCode, 0x91610020);
+                            EMIT_PPC(iCode, 0x91810028);
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81230004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81430000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81630004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DDIVU_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x81210010);
+                            EMIT_PPC(iCode, 0x81410018);
+                            EMIT_PPC(iCode, 0x81610020);
+                            EMIT_PPC(iCode, 0x81810028);
+                            EMIT_PPC(iCode, 0x38210030);
+                            break;
+                        case 0x20: { // add
+                            bool var_r10;
+
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+
+                            var_r10 = false;
+                            var_r3 = false;
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                                var_r3 = true;
+                            }
+
+                            if (MIPS_RS(nOpcode) == 0) {
+                                if (MIPS_RT(nOpcode) == 31 && !(pCPU->nFlagCODE & 4)) {
+                                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                    var_r10 = true;
+                                    pCPU->nFlagCODE |= 8;
+                                } else if (!var_r3) {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) |
+                                                            (iRegisterB << 11));
+                                    }
+                                } else {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                        pCPU->nOptimize.destGPR_check = 2;
+                                        pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                    }
+                                }
+
+                                if (MIPS_RD(nOpcode) == 31) {
+                                    pCPU->nFlagCODE |= 2;
+                                    if (pCPU->nFlagCODE & 8) {
+                                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                            iRegisterB = 6;
+                                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) &
+                                                                          0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                                    }
+                                }
+                            } else if (MIPS_RT(nOpcode) == 0) {
+                                if ((MIPS_RS(nOpcode) == 31) && !(pCPU->nFlagCODE & 4)) {
+                                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                    var_r10 = true;
+                                    pCPU->nFlagCODE |= 8;
+                                } else if (!var_r3) {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) |
+                                                            (iRegisterB << 11));
+                                    }
+                                } else {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                        pCPU->nOptimize.destGPR_check = 2;
+                                        pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                    }
+                                }
+
+                                if (MIPS_RD(nOpcode) == 31) {
+                                    pCPU->nFlagCODE |= 2;
+                                    if (pCPU->nFlagCODE & 8) {
+                                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                            iRegisterB = 6;
+                                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) &
+                                                                          0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                                    }
+                                }
+                            } else {
+                                if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    iRegisterB = 6;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterB << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterC = 7;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterC << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                EMIT_PPC(iCode,
+                                         0x7C000214 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                                var_r10 = true;
+                            }
+                            if (var_r10 && (ganMapGPR[MIPS_RD(nOpcode)] & 0x100)) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        }
+                        case 0x21: { // addu
+                            bool var_r10;
+
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+
+                            var_r10 = false;
+                            var_r3 = false;
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                                var_r3 = true;
+                            }
+
+                            if (MIPS_RS(nOpcode) == 0) {
+                                if (MIPS_RT(nOpcode) == 31 && !(pCPU->nFlagCODE & 4)) {
+                                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                    var_r10 = true;
+                                    pCPU->nFlagCODE |= 8;
+                                } else if (!var_r3) {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) |
+                                                            (iRegisterB << 11));
+                                    }
+                                } else {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                        pCPU->nOptimize.destGPR_check = 2;
+                                        pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                    }
+                                }
+
+                                if (MIPS_RD(nOpcode) == 31) {
+                                    pCPU->nFlagCODE |= 2;
+                                    if (pCPU->nFlagCODE & 8) {
+                                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                            iRegisterB = 6;
+                                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) &
+                                                                          0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                                    }
+                                }
+                            } else if (MIPS_RT(nOpcode) == 0) {
+                                if ((MIPS_RS(nOpcode) == 31) && !(pCPU->nFlagCODE & 4)) {
+                                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                    var_r10 = true;
+                                    pCPU->nFlagCODE |= 8;
+                                } else if (!var_r3) {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) |
+                                                            (iRegisterB << 11));
+                                    }
+                                } else {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                        pCPU->nOptimize.destGPR_check = 2;
+                                        pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                    }
+                                }
+
+                                if (MIPS_RD(nOpcode) == 31) {
+                                    pCPU->nFlagCODE |= 2;
+                                    if (pCPU->nFlagCODE & 8) {
+                                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                            iRegisterB = 6;
+                                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) &
+                                                                          0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                                    }
+                                }
+                            } else {
+                                if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    iRegisterB = 6;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterB << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterC = 7;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterC << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                EMIT_PPC(iCode,
+                                         0x7C000214 | (iRegisterA << 21) | (iRegisterB << 16) | (iRegisterC << 11));
+                                var_r10 = true;
+                            }
+                            if (var_r10 && (ganMapGPR[MIPS_RD(nOpcode)] & 0x100)) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        }
+                        case 0x22: // sub
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C000050 | (iRegisterA << 21) | (iRegisterC << 16) | (iRegisterB << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x23: // subu
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C000050 | (iRegisterA << 21) | (iRegisterC << 16) | (iRegisterB << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x24: // and
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C000038 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x25: { // or
+                            bool var_r10;
+
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+
+                            var_r10 = false;
+                            var_r3 = false;
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                                var_r3 = true;
+                            }
+
+                            if (MIPS_RS(nOpcode) == 0) {
+                                if (MIPS_RT(nOpcode) == 31 && !(pCPU->nFlagCODE & 4)) {
+                                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                    var_r10 = true;
+                                    pCPU->nFlagCODE |= 8;
+                                } else if (!var_r3) {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) |
+                                                            (iRegisterB << 11));
+                                    }
+                                } else {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                        pCPU->nOptimize.destGPR_check = 2;
+                                        pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                    }
+                                }
+
+                                if (MIPS_RD(nOpcode) == 31) {
+                                    pCPU->nFlagCODE |= 2;
+                                    if (pCPU->nFlagCODE & 8) {
+                                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                            iRegisterB = 6;
+                                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) &
+                                                                          0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                                    }
+                                }
+                            } else if (MIPS_RT(nOpcode) == 0) {
+                                if ((MIPS_RS(nOpcode) == 31) && !(pCPU->nFlagCODE & 4)) {
+                                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                    var_r10 = true;
+                                    pCPU->nFlagCODE |= 8;
+                                } else if (!var_r3) {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) |
+                                                            (iRegisterB << 11));
+                                    }
+                                } else {
+                                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                        EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                        pCPU->nOptimize.destGPR_check = 2;
+                                        pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                            (OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4));
+                                    }
+                                }
+
+                                if (MIPS_RD(nOpcode) == 31) {
+                                    pCPU->nFlagCODE |= 2;
+                                    if (pCPU->nFlagCODE & 8) {
+                                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                            iRegisterB = 6;
+                                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) &
+                                                                          0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                                    }
+                                }
+                            } else {
+                                if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    iRegisterB = 6;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterB << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterC = 7;
+                                    if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                        EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                            (iRegisterC << 16) |
+                                                            (pCPU->nOptimize.destGPR_mapping << 11));
+                                    } else {
+                                        EMIT_PPC(iCode,
+                                                 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                    }
+                                }
+                                EMIT_PPC(iCode,
+                                         0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                                var_r10 = true;
+                            }
+                            if (var_r10 && (ganMapGPR[MIPS_RD(nOpcode)] & 0x100)) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        }
+                        case 0x26: // xor
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C000278 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x27: // nor
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C0000F8 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterC << 11));
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x2A: // slt
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x4180000C);
+                            EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21));
+                            EMIT_PPC(iCode, 0x42800008);
+                            EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | 1);
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x2B: // sltu
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if ((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100) {
+                                iRegisterA = 5;
+                            }
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                iRegisterC = 7;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x7C000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                            EMIT_PPC(iCode, 0x4180000C);
+                            EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21));
+                            EMIT_PPC(iCode, 0x42800008);
+                            EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | 1);
+                            if (ganMapGPR[MIPS_RD(nOpcode)] & 0x100) {
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RD(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                            break;
+                        case 0x2C: // dadd
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            iRegisterA = MIPS_RD(nOpcode);
+                            EMIT_PPC(iCode, 0x9421FFF0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DADD_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30004 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x38210010);
+                            if (!((iRegisterA = ganMapGPR[iRegisterA]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x2D: // daddu
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            iRegisterA = MIPS_RD(nOpcode);
+                            EMIT_PPC(iCode, 0x9421FFF0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DADDU_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30004 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x38210010);
+                            if (!((iRegisterA = ganMapGPR[iRegisterA]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x2E: // dsub
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            iRegisterA = MIPS_RD(nOpcode);
+                            EMIT_PPC(iCode, 0x9421FFF0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DSUB_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30004 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x38210010);
+                            if (!((iRegisterA = ganMapGPR[iRegisterA]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x2F: // dsubu
+                            if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode)) || pCPU->nFlagRAM & (1 << MIPS_RT(nOpcode))) {
+                                pCPU->nFlagRAM |= (1 << MIPS_RD(nOpcode));
+                            } else {
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            }
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            if (!((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            }
+                            iRegisterA = MIPS_RD(nOpcode);
+                            EMIT_PPC(iCode, 0x9421FFF0);
+                            EMIT_PPC(iCode, 0x91010008);
+                            EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80E30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode,
+                                     0x48000000 | ((cpuCompile_DSUBU_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x90A30004 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, aGPR[iRegisterA]));
+                            EMIT_PPC(iCode, 0x81010008);
+                            EMIT_PPC(iCode, 0x38210010);
+                            if (!((iRegisterA = ganMapGPR[iRegisterA]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x30: // tge
+                        case 0x31: // tgeu
+                        case 0x32: // tlt
+                        case 0x33: // tltu
+                        case 0x34: // teq
+                        case 0x36: // tne
+                            break;
+                        case 0x38: // dsll
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            nTemp1 = MIPS_SA(nOpcode);
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x54A50000 | (nTemp1 << 11) | ((31 - nTemp1) << 1));
+                            EMIT_PPC(iCode, 0x50C50000 | (nTemp1 << 11) | ((32 - nTemp1) << 6) | (31 << 1));
+                            EMIT_PPC(iCode, 0x54C60000 | (nTemp1 << 11) | ((31 - nTemp1) << 1));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x3A: // dsrl
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            nTemp1 = MIPS_SA(nOpcode);
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x54C60000 | ((32 - nTemp1) << 11) | (nTemp1 << 6) | (31 << 1));
+                            EMIT_PPC(iCode, 0x50A60000 | ((32 - nTemp1) << 11) | ((nTemp1 - 1) << 1));
+                            EMIT_PPC(iCode, 0x54A50000 | ((32 - nTemp1) << 11) | (nTemp1 << 6) | (31 << 1));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x3B: // dsra
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            nTemp1 = MIPS_SA(nOpcode);
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x54C60000 | ((32 - nTemp1) << 11) | (nTemp1 << 6) | (31 << 1));
+                            EMIT_PPC(iCode, 0x50A60000 | ((32 - nTemp1) << 11) | ((nTemp1 - 1) << 1));
+                            EMIT_PPC(iCode, 0x7CA50670 | (nTemp1 << 11));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x3C: // dsll32
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            nTemp1 = MIPS_SA(nOpcode) + 32;
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            while (nTemp1 > 0) {
+                                if (nTemp1 > 31) {
+                                    nTemp2 = 31;
+                                    nTemp1 -= 31;
+                                } else {
+                                    nTemp2 = nTemp1;
+                                    nTemp1 = 0;
+                                }
+                                EMIT_PPC(iCode, 0x54A50000 | (nTemp2 << 11) | ((31 - nTemp2) << 1));
+                                EMIT_PPC(iCode, 0x50C50000 | (nTemp2 << 11) | ((32 - nTemp2) << 6) | (31 << 1));
+                                EMIT_PPC(iCode, 0x54C60000 | (nTemp2 << 11) | ((31 - nTemp2) << 1));
+                            }
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x3E: // dsrl32
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            nTemp1 = MIPS_SA(nOpcode) + 32;
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            while (nTemp1 > 0) {
+                                if (nTemp1 > 31) {
+                                    nTemp2 = 31;
+                                    nTemp1 -= 31;
+                                } else {
+                                    nTemp2 = nTemp1;
+                                    nTemp1 = 0;
+                                }
+                                EMIT_PPC(iCode, 0x54C60000 | ((32 - nTemp2) << 11) | (nTemp2 << 6) | (31 << 1));
+                                EMIT_PPC(iCode, 0x50A60000 | ((32 - nTemp2) << 11) | ((nTemp2 - 1) << 1));
+                                EMIT_PPC(iCode, 0x54A50000 | ((32 - nTemp2) << 11) | (nTemp2 << 6) | (31 << 1));
+                            }
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        case 0x3F: // dsra32
+                            pCPU->nFlagRAM &= ~(1 << MIPS_RD(nOpcode));
+                            if (!((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterC << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                            nTemp1 = MIPS_SA(nOpcode) + 32;
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                            while (nTemp1 > 0) {
+                                if (nTemp1 > 31) {
+                                    nTemp2 = 31;
+                                    nTemp1 -= 31;
+                                } else {
+                                    nTemp2 = nTemp1;
+                                    nTemp1 = 0;
+                                }
+                                EMIT_PPC(iCode, 0x54C60000 | ((32 - nTemp2) << 11) | (nTemp2 << 6) | (31 << 1));
+                                EMIT_PPC(iCode, 0x50A60000 | ((32 - nTemp2) << 11) | ((nTemp2 - 1) << 1));
+                                EMIT_PPC(iCode, 0x7CA50670 | (nTemp2 << 11));
+                            }
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            EMIT_PPC(iCode, 0x90C30004 + OFFSETOF(pCPU, aGPR[MIPS_RD(nOpcode)]));
+                            if (!((iRegisterA = ganMapGPR[MIPS_RD(nOpcode)]) & 0x100)) {
+                                EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            }
+                            break;
+                        default:
+                            bFlag = false;
+                            break;
+                    }
+                    break;
+                case 0x01: // regimm
+                    switch (MIPS_RT(nOpcode)) {
+                        case 0x00: // bltz
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            EMIT_PPC(iJump, 0x40800000 | (((iCode - iJump) & 0x3FFF) << 2));
+                            break;
+                        case 0x01: // bgez
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            EMIT_PPC(iJump, 0x41800000 | (((iCode - iJump) & 0x3FFF) << 2));
+                            break;
+                        case 0x02: // bltzl
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                return false;
+                            }
+                            EMIT_PPC(iJump, 0x40800000 | (((iCode - iJump) & 0x3FFF) << 2));
+                            break;
+                        case 0x03: // bgezl
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                return false;
+                            }
+                            EMIT_PPC(iJump, 0x41800000 | (((iCode - iJump) & 0x3FFF) << 2));
+                            break;
+                        case 0x08: // tgei
+                        case 0x09: // tgeiu
+                        case 0x0A: // tlti
+                        case 0x0B: // tltiu
+                        case 0x0C: // teqi
+                        case 0x0E: // tnei
+                            break;
+                        case 0x10: // bltzal
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode;
+                            iCode++;
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)(nAddress + 8) >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)(nAddress + 8) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            if (ganMapGPR[31] & 0x100) {
+                                iCode += 3;
+                            } else {
+                                iCode += 2;
+                            }
+                            var_r24 = (u32)&anCode[iCode];
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            var_r22 = (u32)&anCode[iCode];
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            EMIT_PPC(iJump, 0x40800000 | (((iCode - iJump) * 4) & 0xFFFC));
+
+                            iJump += 3;
+                            nReturnAddress = (u32)&anCode[iCode] + (var_r22 - var_r24);
+                            if ((iRegisterB = ganMapGPR[31]) & 0x100) {
+                                EMIT_PPC(iJump, 0x3CA00000 | ((u32)nReturnAddress >> 16));
+                                EMIT_PPC(iJump, 0x60A50000 | ((u32)nReturnAddress & 0xFFFF));
+                                EMIT_PPC(iJump, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iJump, 0x3C000000 | ((u32)nReturnAddress >> 16) | (iRegisterB << 21));
+                                EMIT_PPC(iJump, 0x60000000 | ((u32)nReturnAddress & 0xFFFF) | (iRegisterB << 21) |
+                                                    (iRegisterB << 16));
+                            }
+                            break;
+                        case 0x11: // bgezal
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)(nAddress + 8) >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)(nAddress + 8) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            if (ganMapGPR[31] & 0x100) {
+                                iCode += 3;
+                            } else {
+                                iCode += 2;
+                            }
+                            var_r24 = (u32)&anCode[iCode];
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            var_r22 = (u32)&anCode[iCode];
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            EMIT_PPC(iJump, 0x41800000 | (((iCode - iJump) * 4) & 0xFFFC));
+
+                            iJump += 3;
+                            nReturnAddress = (u32)&anCode[iCode] + (var_r22 - var_r24);
+                            if ((iRegisterB = ganMapGPR[31]) & 0x100) {
+                                EMIT_PPC(iJump, 0x3CA00000 | ((u32)nReturnAddress >> 16));
+                                EMIT_PPC(iJump, 0x60A50000 | ((u32)nReturnAddress & 0xFFFF));
+                                EMIT_PPC(iJump, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iJump, 0x3C000000 | ((u32)nReturnAddress >> 16) | (iRegisterB << 21));
+                                EMIT_PPC(iJump, 0x60000000 | ((u32)nReturnAddress & 0xFFFF) | (iRegisterB << 21) |
+                                                    (iRegisterB << 16));
+                            }
+                            break;
+                        case 0x12: // bltzall
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)(nAddress + 8) >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)(nAddress + 8) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            if (ganMapGPR[31] & 0x100) {
+                                iCode += 3;
+                            } else {
+                                iCode += 2;
+                            }
+                            var_r24 = (u32)&anCode[iCode];
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            var_r22 = (u32)&anCode[iCode];
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                return false;
+                            }
+                            EMIT_PPC(iJump, 0x40800000 | (((iCode - iJump) * 4) & 0xFFFC));
+
+                            iJump += 3;
+                            nReturnAddress = (u32)&anCode[iCode] + (var_r22 - var_r24);
+                            if ((iRegisterB = ganMapGPR[31]) & 0x100) {
+                                EMIT_PPC(iJump, 0x3CA00000 | ((u32)nReturnAddress >> 16));
+                                EMIT_PPC(iJump, 0x60A50000 | ((u32)nReturnAddress & 0xFFFF));
+                                EMIT_PPC(iJump, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iJump, 0x3C000000 | ((u32)nReturnAddress >> 16) | (iRegisterB << 21));
+                                EMIT_PPC(iJump, 0x60000000 | ((u32)nReturnAddress & 0xFFFF) | (iRegisterB << 21) |
+                                                    (iRegisterB << 16));
+                            }
+                            break;
+                        case 0x13: // bgezall
+                            nAddressJump = *pnAddress + MIPS_IMM_S16(nOpcode) * 4;
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                iRegisterB = 6;
+                                if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                    EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                        (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                                } else {
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                            }
+                            EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+
+                            iJump = iCode++;
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)(nAddress + 8) >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)(nAddress + 8) & 0xFFFF));
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            if (ganMapGPR[31] & 0x100) {
+                                iCode += 3;
+                            } else {
+                                iCode += 2;
+                            }
+                            var_r24 = (u32)&anCode[iCode];
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+
+                            var_r22 = (u32)&anCode[iCode];
+                            if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                return false;
+                            }
+                            if (anCode != NULL) {
+                                nDeltaAddress = (nOffset - iCode) * 4;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                return false;
+                            }
+                            EMIT_PPC(iJump, 0x41800000 | (((iCode - iJump) * 4) & 0xFFFC));
+
+                            iJump += 3;
+                            nReturnAddress = (u32)&anCode[iCode] + (var_r22 - var_r24);
+                            if ((iRegisterB = ganMapGPR[31]) & 0x100) {
+                                EMIT_PPC(iJump, 0x3CA00000 | ((u32)nReturnAddress >> 16));
+                                EMIT_PPC(iJump, 0x60A50000 | ((u32)nReturnAddress & 0xFFFF));
+                                EMIT_PPC(iJump, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iJump, 0x3C000000 | ((u32)nReturnAddress >> 16) | (iRegisterB << 21));
+                                EMIT_PPC(iJump, 0x60000000 | ((u32)nReturnAddress & 0xFFFF) | (iRegisterB << 21) |
+                                                    (iRegisterB << 16));
+                            }
+                            break;
+                        default:
+                            bFlag = false;
+                            break;
+                    }
+                    break;
+                case 0x02: // j
+                    nAddressJump = (*pnAddress & 0xF0000000) | (MIPS_TARGET(nOpcode) << 2);
+                    if (pFunction->nAddress0 <= nAddressJump && nAddressJump < pFunction->nAddress1) {
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                            return false;
+                        }
+                        *pnAddress -= 4;
+                        if (nAddressJump == nAddress) {
+                            if (anCode != NULL) {
+                                anCode[iCode++] = 0x3CA00000 | ((u32)nAddress >> 16);
+                                anCode[iCode++] = 0x60A50000 | ((u32)nAddress & 0xFFFF);
+                            } else {
+                                iCode += 2;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfIdle - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                        if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                            return false;
+                        }
+                        if (anCode != NULL) {
+                            nDeltaAddress = (nOffset - iCode) * 4;
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    } else {
+                        if (nOpcodeNext != 0) {
+                            if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                return false;
+                            }
+                            *pnAddress -= 4;
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddressJump >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddressJump & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfJump - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        nAddressJump = -1;
+                    }
+                    break;
+                case 0x03: // jal
+                    nTarget = MIPS_TARGET(nOpcode) << 2;
+                    if (nOpcodeNext != 0) {
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                            return false;
+                        }
+                        *pnAddress -= 4;
+                    }
+                    EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, pFunctionLast));
+                    EMIT_PPC(iCode, 0x3CE08000);
+                    EMIT_PPC(iCode, 0x80C50000 + OFFSETOF(pFunction, timeToLive));
+                    EMIT_PPC(iCode, 0x7CC63B78);
+                    EMIT_PPC(iCode, 0x3CE00000 | ((u32)(nAddress + 8) >> 16));
+                    EMIT_PPC(iCode, 0x90C50000 + OFFSETOF(pFunction, timeToLive));
+                    EMIT_PPC(iCode, 0x60E70000 | ((u32)(nAddress + 8) & 0xFFFF));
+                    EMIT_PPC(iCode, 0x90E30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                    nAddressJump = (*pnAddress & 0xF0000000) | nTarget;
+                    if ((iRegisterB = ganMapGPR[31]) & 0x100) {
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddressJump >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddressJump & 0xFFFF));
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                    } else {
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddressJump >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddressJump & 0xFFFF));
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfCall - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                    if (pFunction->callerID_flag == 0x16) {
+                        pFunction->block[pFunction->callerID_total].N64address = nAddressJump;
+                    }
+                    if (pFunction->callerID_flag != 0x21) {
+                        pFunction->callerID_total++;
+                    }
+                    if (anCode != NULL) {
+                        anCode[iCode++] = 0x3CA00000 | ((u32)pFunction >> 16);
+                        anCode[iCode++] = 0x60A50000 | ((u32)pFunction & 0xFFFF);
+                        anCode[iCode++] = 0x90A30000 + (OFFSETOF(pCPU, pFunctionLast) & 0xFFFF);
+                        anCode[iCode++] = 0x3CE08000;
+                        anCode[iCode++] = 0x80C50000 + OFFSETOF(pFunction, timeToLive);
+                        anCode[iCode++] = 0x7CC63878;
+                        anCode[iCode++] = 0x2C060000;
+                        anCode[iCode++] = 0x41820008;
+                        anCode[iCode++] = 0x90850000 + OFFSETOF(pFunction, timeToLive);
+                    } else {
+                        iCode += 9;
+                    }
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (iCode - iJump) * 4;
+                    }
+                    if (anCode != NULL) {
+                        anCode[iJump] = 0x48000000 | (nDeltaAddress & 0x03FFFFFC);
+                    }
+                    nAddressJump = -1;
+                    break;
+                case 0x04: // beq
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if (MIPS_RS(nOpcode) == MIPS_RT(nOpcode)) {
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                            return false;
+                        }
+                        *pnAddress -= 4;
+                        if (nAddressJump == nAddress) {
+                            if (anCode != NULL) {
+                                anCode[iCode++] = 0x3CA00000 | ((u32)nAddress >> 16);
+                                anCode[iCode++] = 0x60A50000 | ((u32)nAddress & 0xFFFF);
+                            } else {
+                                iCode += 2;
+                            }
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfIdle - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                        if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                            return false;
+                        }
+                        if (anCode != NULL) {
+                            nDeltaAddress = (nOffset - iCode) * 4;
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    } else {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterC = 7;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x7C000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                        iJump = iCode++;
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                            return false;
+                        }
+                        *pnAddress -= 4;
+
+                        if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                            return false;
+                        }
+                        if (anCode != NULL) {
+                            nDeltaAddress = (nOffset - iCode) * 4;
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                        EMIT_PPC(iJump, 0x40820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    }
+                    break;
+                case 0x05: // bne
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterC = 7;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterC << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x7C000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                        return false;
+                    }
+                    *pnAddress -= 4;
+
+                    if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (nOffset - iCode) * 4;
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    EMIT_PPC(iJump, 0x41820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    break;
+                case 0x06: // blez
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                        return false;
+                    }
+                    *pnAddress -= 4;
+
+                    if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (nOffset - iCode) * 4;
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    EMIT_PPC(iJump, 0x41810000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    break;
+                case 0x07: // bgtz
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                        return false;
+                    }
+                    *pnAddress -= 4;
+
+                    if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (nOffset - iCode) * 4;
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    EMIT_PPC(iJump, 0x40810000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    break;
+                case 0x08: { // addi
+                    bool var_r10;
+
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+                    var_r10 = false;
+                    var_r3 = false;
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                        var_r3 = true;
+                    }
+                    nTemp1 = MIPS_IMM_U16(nOpcode);
+                    if ((s16)nTemp1 == 0) {
+                        if ((MIPS_RS(nOpcode) == 31) && !(pCPU->nFlagCODE & 4)) {
+                            EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            var_r10 = true;
+                            pCPU->nFlagCODE |= 8;
+                        } else if (!var_r3) {
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            } else {
+                                EMIT_PPC(iCode,
+                                         0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterB << 11));
+                            }
+                        } else {
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            } else {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                        }
+                        if (MIPS_RT(nOpcode) == 31) {
+                            pCPU->nFlagCODE |= 2;
+                            if (pCPU->nFlagCODE & 8) {
+                                if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    iRegisterB = 6;
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                            }
+                        }
+                    } else if (MIPS_RS(nOpcode) == 0) {
+                        EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | nTemp1);
+                        var_r10 = true;
+                    } else {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | (iRegisterB << 16) | nTemp1);
+                        var_r10 = true;
+                    }
+                    if (var_r10 && (ganMapGPR[MIPS_RT(nOpcode)] & 0x100)) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                    }
+                    break;
+                }
+                case 0x09: { // addiu
+                    bool var_r10;
+
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+
+                    var_r10 = false;
+                    var_r3 = false;
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                        var_r3 = true;
+                    }
+                    nTemp1 = MIPS_IMM_U16(nOpcode);
+                    if ((s16)nTemp1 == 0) {
+                        if ((MIPS_RS(nOpcode) == 31) && !(pCPU->nFlagCODE & 4)) {
+                            EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                            var_r10 = true;
+                            pCPU->nFlagCODE |= 8;
+                        } else if (!var_r3) {
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                            } else {
+                                EMIT_PPC(iCode,
+                                         0x7C000378 | (iRegisterB << 21) | (iRegisterA << 16) | (iRegisterB << 11));
+                            }
+                        } else {
+                            if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                pCPU->nOptimize.destGPR_check = 2;
+                                pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                                pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            } else {
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) +
+                                                    (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                            }
+                        }
+                        if (MIPS_RT(nOpcode) == 31) {
+                            pCPU->nFlagCODE |= 2;
+                            if (pCPU->nFlagCODE & 8) {
+                                if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                                    iRegisterB = 6;
+                                    EMIT_PPC(iCode,
+                                             0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterB << 21)) + OFFSETOF(pCPU, nReturnAddrLast));
+                            }
+                        }
+                    } else if (MIPS_RS(nOpcode) == 0) {
+                        EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | nTemp1);
+                        var_r10 = true;
+                    } else if (!cpuNextInstruction(pCPU, nAddress, nOpcode, anCode, &iCode)) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | (iRegisterB << 16) | nTemp1);
+                        var_r10 = true;
+                    }
+                    if (var_r10 && (ganMapGPR[MIPS_RT(nOpcode)] & 0x100)) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                    }
+                    break;
+                }
+                case 0x0A: // slti
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                    }
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                    EMIT_PPC(iCode, 0x4180000C);
+                    EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21));
+                    EMIT_PPC(iCode, 0x42800008);
+                    EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | 1);
+                    if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                    }
+                    break;
+                case 0x0B: // sltiu
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                    }
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x38E00000 | MIPS_IMM_U16(nOpcode));
+                    EMIT_PPC(iCode, 0x7C003840 | (iRegisterB << 16));
+                    EMIT_PPC(iCode, 0x4180000C);
+                    EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21));
+                    EMIT_PPC(iCode, 0x42800008);
+                    EMIT_PPC(iCode, 0x38000000 | (iRegisterA << 21) | 1);
+                    if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                    }
+                    break;
+                case 0x0C: // andi
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                    }
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x70000000 | (iRegisterB << 21) | (iRegisterA << 16) | MIPS_IMM_U16(nOpcode));
+                    if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                    }
+                    break;
+                case 0x0D: // ori
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+                    if (!cpuNextInstruction(pCPU, nAddress, nOpcode, anCode, &iCode)) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x60000000 | (iRegisterB << 21) | (iRegisterA << 16) | MIPS_IMM_U16(nOpcode));
+                        if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                            pCPU->nOptimize.destGPR_check = 2;
+                            pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                            pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    break;
+                case 0x0E: // xori
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                    }
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x68000000 | (iRegisterB << 21) | (iRegisterA << 16) | MIPS_IMM_U16(nOpcode));
+                    if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                    }
+                    break;
+                case 0x0F: // lui
+                    if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), &nSize)) {
+                        return false;
+                    }
+                    nTemp1 = MIPS_IMM_U16(nOpcode);
+                    if ((u32)nTemp1 >= 0x8000 && (u32)nTemp1 <= (0x8000 | (nSize >> 16))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+                    if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterA = 5;
+                    }
+                    EMIT_PPC(iCode, 0x3C000000 | (iRegisterA << 21) | nTemp1);
+                    if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                        pCPU->nOptimize.destGPR_check = 2;
+                        pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                        pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                        EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        pCPU->nOptimize.checkType = 0x3E8;
+                        pCPU->nOptimize.checkNext = nAddress;
+                    }
+                    break;
+                case 0x10: // cop0
+                    switch (MIPS_FUNCT(nOpcode)) {
+                        case 0x01: // tlbr
+                        case 0x02: // tlbwi
+                        case 0x05: // tlbwr
+                        case 0x08: // tlbp
+                        case 0x18: // eret
+                            break;
+                        default:
+                            switch (MIPS_RS(nOpcode)) {
+                                case 0x00: // mfc0
+                                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                                    break;
+                                case 0x01: // dmfc0
+                                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                                    break;
+                                case 0x04: // mtc0
+                                    break;
+                                case 0x05: // dmtc0
+                                    break;
+                                case 0x08: // dmtc0
+                                    if ((s32)MIPS_RS(nOpcode) >= 4 || (s32)MIPS_RS(nOpcode) < 0) {
+                                        bFlag = false;
+                                    }
+                                    break;
+                                default:
+                                    bFlag = false;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 0x11: // cop1
+                    if ((nOpcode & 0x7FF) == 0 && MIPS_FMT(nOpcode) < 0x10) {
+                        switch ((u8)MIPS_FMT(nOpcode)) {
+                            case 0x00: // mfc1
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                                if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterA = 5;
+                                }
+                                iRegisterB = MIPS_FS(nOpcode);
+                                if (iRegisterB % 2 == 1) {
+                                    EMIT_PPC(iCode,
+                                             (0x80030000 | (iRegisterA << 21)) + OFFSETOF(pCPU, aFPR[iRegisterB - 1]));
+                                } else {
+                                    EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                        (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                }
+                                if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                                    pCPU->nOptimize.destGPR_check = 2;
+                                    pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                                    pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    EMIT_PPC(iCode,
+                                             0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                                break;
+                            case 0x01: // dmfc1
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                                iRegisterB = MIPS_FS(nOpcode);
+                                EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                                EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                EMIT_PPC(iCode, 0x90C30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                    EMIT_PPC(iCode, 0x7CC03378 | (iRegisterA << 16));
+                                }
+                                break;
+                            case 0x02: // cfc1
+                                pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                                if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterA = 5;
+                                }
+                                iRegisterB = MIPS_FS(nOpcode);
+                                EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) + OFFSETOF(pCPU, anFCR[iRegisterB]));
+                                if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                                    pCPU->nOptimize.destGPR_check = 2;
+                                    pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                                    pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                                    EMIT_PPC(iCode,
+                                             0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                                }
+                                break;
+                            case 0x04: // mtc1
+                                iRegisterB = MIPS_FS(nOpcode);
+                                if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                    if (iRegisterB % 2 == 1) {
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aFPR[iRegisterB - 1]));
+                                    } else {
+                                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                    }
+                                } else {
+                                    if (iRegisterB % 2 == 1) {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            OFFSETOF(pCPU, aFPR[iRegisterB - 1]));
+                                    } else {
+                                        EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                    }
+                                }
+                                break;
+                            case 0x05: // dmtc1
+                                if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                                    EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) +
+                                                        (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                }
+                                iRegisterB = MIPS_FS(nOpcode);
+                                EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                                EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                EMIT_PPC(iCode, 0x90C30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                break;
+                            case 0x06: // ctc1
+                                if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                                    iRegisterA = 5;
+                                }
+                                iRegisterB = MIPS_FS(nOpcode);
+                                if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                                    EMIT_PPC(iCode, (0x80030000 | (iRegisterA << 21)) +
+                                                        (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                                }
+                                EMIT_PPC(iCode, (0x90030000 | (iRegisterA << 21)) + OFFSETOF(pCPU, anFCR[iRegisterB]));
+                                break;
+                            default:
+                                bFlag = false;
+                                break;
+                        }
+                    } else if (MIPS_FMT(nOpcode) == 0x08) {
+                        switch (MIPS_FT(nOpcode)) {
+                            case 0x00: // bc1f
+                                nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                                EMIT_PPC(iCode, 0x3CA00080);
+                                EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, anFCR[31]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x7CC62839);
+                                iJump = iCode++;
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                    return false;
+                                }
+                                *pnAddress -= 4;
+                                if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                    return false;
+                                }
+                                if (anCode != NULL) {
+                                    nDeltaAddress = (nOffset - iCode) * 4;
+                                }
+                                EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                                EMIT_PPC(iJump, 0x40820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                                break;
+                            case 0x01: // bc1t
+                                nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                                EMIT_PPC(iCode, 0x3CA00080);
+                                EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, anFCR[31]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x7CC62839);
+                                iJump = iCode++;
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                    return false;
+                                }
+                                *pnAddress -= 4;
+                                if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                    return false;
+                                }
+                                if (anCode != NULL) {
+                                    nDeltaAddress = (nOffset - iCode) * 4;
+                                }
+                                EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                                EMIT_PPC(iJump, 0x41820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                                break;
+                            case 0x02: // bc1fl
+                                nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                                EMIT_PPC(iCode, 0x3CA00080);
+                                EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, anFCR[31]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x7CC62839);
+                                iJump = iCode++;
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                    return false;
+                                }
+                                *pnAddress -= 4;
+                                if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                    return false;
+                                }
+                                if (anCode != NULL) {
+                                    nDeltaAddress = (nOffset - iCode) * 4;
+                                }
+                                EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                    return false;
+                                }
+                                EMIT_PPC(iJump, 0x40820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                                break;
+                            case 0x03: // bc1tl
+                                nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                                EMIT_PPC(iCode, 0x3CA00080);
+                                EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, anFCR[31]) & 0xFFFF));
+                                EMIT_PPC(iCode, 0x7CC62839);
+                                iJump = iCode++;
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                                    return false;
+                                }
+                                *pnAddress -= 4;
+                                if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                                    return false;
+                                }
+                                if (anCode != NULL) {
+                                    nDeltaAddress = (nOffset - iCode) * 4;
+                                }
+                                EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                                if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                                    return false;
+                                }
+                                EMIT_PPC(iJump, 0x41820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                                break;
+                            default:
+                                bFlag = false;
+                                break;
+                        }
+                    } else {
+                        switch ((u8)MIPS_FMT(nOpcode)) {
+                            case 0x10: // s
+                                switch (MIPS_FUNCT(nOpcode)) {
+                                    case 0x00: // add.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (iRegisterB != iRegisterC) {
+                                            if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                                EMIT_PPC(iCode, 0x60000000);
+                                            } else {
+                                                EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                    ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                            }
+                                        }
+                                        EMIT_PPC(iCode, 0xEC00002A | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 11));
+                                        EMIT_PPC(iCode, (0xD0030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) + 4) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x01: // sub.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xEC000028 | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 11));
+                                        EMIT_PPC(iCode, (0xD0030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) + 4) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x02: // mul.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (iRegisterB != iRegisterC) {
+                                            if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                                EMIT_PPC(iCode, 0x60000000);
+                                            } else {
+                                                EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                    ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                            }
+                                        }
+                                        EMIT_PPC(iCode, 0xEC000032 | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 6));
+                                        EMIT_PPC(iCode, (0xD0030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) + 4) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x03: // div.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xEC000024 | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 11));
+                                        EMIT_PPC(iCode, (0xD0030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) + 4) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x04: // sqrt.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 0x48000000 |
+                                                     ((cpuCompile_S_SQRT_function - (u32)&anCode[iCode]) & 0x03FFFFFC) |
+                                                     1);
+                                        EMIT_PPC(iCode, 0xD0230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x05: // abs.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000210 | (iRegisterA << 21) | (iRegisterB << 11));
+                                        EMIT_PPC(iCode, (0xD0030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) + 4) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x06: // mov.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        EMIT_PPC(iCode, 0xD0230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x07: // neg.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000050 | (iRegisterA << 21) | (iRegisterB << 11));
+                                        EMIT_PPC(iCode, (0xD0030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) + 4) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x0C: // round.w.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        }
+                                        EMIT_PPC(iCode, 0x38A00000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_ROUND_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        break;
+                                    case 0x0D: // trunc.w.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        }
+                                        EMIT_PPC(iCode, 0x38A00000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_TRUNC_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        break;
+                                    case 0x0E: // ceil.w.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        OSReport(D_800EC980, nAddress);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 0x48000000 |
+                                                     ((cpuCompile_CEIL_W_function - (u32)&anCode[iCode]) & 0x03FFFFFC) |
+                                                     1);
+                                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x0F: // floor.w.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        OSReport(D_800EC99C, nAddress);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        }
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_FLOOR_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x20: // cvt.s.s
+                                        OSReport(D_800EC9BC);
+                                        break;
+                                    case 0x21: // cvt.d.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        EMIT_PPC(iCode, 0xD8230000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                                        break;
+                                    case 0x24: // cvt.w.s
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC0230000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        }
+                                        EMIT_PPC(iCode, 0x38A00000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_TRUNC_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        break;
+                                    case 0x30: // c.f.s
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x31: // c.un.s
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x32: // c.eq.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x33: // c.ueq.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x34: // c.olt.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x35: // c.ult.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x36: // c.ole.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x37: // c.ule.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x38: // c.sf.s
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x39: // c.ngle.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3A: // c.seq.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3B: // c.ngl.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3C: // c.lt.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3D: // c.nge.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3E: // c.le.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3F: // c.ngt.s
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterB << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterB]) + 4) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC0030000 | (iRegisterC << 21)) +
+                                                                ((OFFSETOF(pCPU, aFPR[iRegisterC]) + 4) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    default:
+                                        bFlag = false;
+                                        break;
+                                }
+                                break;
+                            case 0x11: // d
+                                switch (MIPS_FUNCT(nOpcode)) {
+                                    case 0x00: // add.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (iRegisterB != iRegisterC) {
+                                            if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                                EMIT_PPC(iCode, 0x60000000);
+                                            } else {
+                                                EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                    (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                            }
+                                        }
+                                        EMIT_PPC(iCode, 0xFC00002A | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 11));
+                                        EMIT_PPC(iCode, (0xD8030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aFPR[iRegisterA]) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x01: // sub.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000028 | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 11));
+                                        EMIT_PPC(iCode, (0xD8030000 | (iRegisterA << 21)) +
+                                                            ((OFFSETOF(pCPU, aFPR[iRegisterA]) & 0xFFFF) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x02: // mul.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (iRegisterB != iRegisterC) {
+                                            if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                                EMIT_PPC(iCode, 0x60000000);
+                                            } else {
+                                                EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                    (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                            }
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000032 | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 6));
+                                        EMIT_PPC(iCode, (0xD8030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aFPR[iRegisterA]) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x03: // div.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000024 | (iRegisterA << 21) | (iRegisterB << 16) |
+                                                            (iRegisterC << 11));
+                                        EMIT_PPC(iCode, (0xD8030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aFPR[iRegisterA]) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x04: // sqrt.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 0x48000000 |
+                                                     ((cpuCompile_D_SQRT_function - (u32)&anCode[iCode]) & 0x03FFFFFC) |
+                                                     1);
+                                        EMIT_PPC(iCode, 0xD8230000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                                        break;
+                                    case 0x05: // abs.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000210 | (iRegisterA << 21) | (iRegisterB << 11));
+                                        EMIT_PPC(iCode, (0xD8030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aFPR[iRegisterA]) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x06: // mov.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        EMIT_PPC(iCode, 0xD8230000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                                        break;
+                                    case 0x07: // neg.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000050 | (iRegisterA << 21) | (iRegisterB << 11));
+                                        EMIT_PPC(iCode, (0xD8030000 | (iRegisterA << 21)) +
+                                                            (OFFSETOF(pCPU, aFPR[iRegisterA]) & 0xFFFF));
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = iRegisterA;
+                                        break;
+                                    case 0x0C: // round.w.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        }
+                                        EMIT_PPC(iCode, 0x38A00000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_ROUND_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        break;
+                                    case 0x0D: // trunc.w.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        }
+                                        EMIT_PPC(iCode, 0x38A00000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_TRUNC_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        break;
+                                    case 0x0E: // ceil.w.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        OSReport(D_800EC9CC, nAddress);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        }
+                                        EMIT_PPC(iCode,
+                                                 0x48000000 |
+                                                     ((cpuCompile_CEIL_W_function - (u32)&anCode[iCode]) & 0x03FFFFFC) |
+                                                     1);
+                                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x0F: // floor.w.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        OSReport(D_800EC9E8, nAddress);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        }
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_FLOOR_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x20: // cvt.s.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        EMIT_PPC(iCode, 0xD0230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x21: // cvt.d.d
+                                        OSReport(D_800ECA08);
+                                        break;
+                                    case 0x24: // cvt.w.d
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0xFC200090 | (iRegisterB << 11));
+                                        } else {
+                                            EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        }
+                                        EMIT_PPC(iCode, 0x38A00000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_TRUNC_W_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        break;
+                                    case 0x30: // c.f.d
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x31: // c.un.d
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x32: // c.eq.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x33: // c.ueq.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x34: // c.olt.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x35: // c.ult.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x36: // c.ole.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x37: // c.ule.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x38: // c.sf.d
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x39: // c.ngle.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3A: // c.seq.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3B: // c.ngl.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3C: // c.lt.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3D: // c.nge.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4080000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3E: // c.le.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    case 0x3F: // c.ngt.d
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        iRegisterC = MIPS_FT(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterB)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterB << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterB]) & 0xFFFF));
+                                        }
+                                        if (cpuCutStoreLoadF(pCPU, nAddress, iRegisterC)) {
+                                            EMIT_PPC(iCode, 0x60000000);
+                                        } else {
+                                            EMIT_PPC(iCode, (0xC8030000 | (iRegisterC << 21)) +
+                                                                (OFFSETOF(pCPU, aFPR[iRegisterC]) & 0xFFFF));
+                                        }
+                                        EMIT_PPC(iCode, 0xFC000040 | (iRegisterB << 16) | (iRegisterC << 11));
+                                        EMIT_PPC(iCode, 0x4C401382);
+                                        EMIT_PPC(iCode, 0x4082000C);
+                                        EMIT_PPC(iCode, 0x64A50080);
+                                        EMIT_PPC(iCode, 0x42800008);
+                                        EMIT_PPC(iCode, 0x54A5024E);
+                                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, anFCR[31]));
+                                        break;
+                                    default:
+                                        bFlag = false;
+                                        break;
+                                }
+                                break;
+                            case 0x14: // w
+                                switch (MIPS_FUNCT(nOpcode)) {
+                                    case 0x00: // add.w
+                                        OSReport(D_800ECA18);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x01: // sub.w
+                                        OSReport(D_800ECA28);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x02: // mul.w
+                                        OSReport(D_800ECA38);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x03: // div.w
+                                        OSReport(D_800ECA48);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x04: // sqrt.w
+                                        OSReport(D_800ECA58);
+                                        break;
+                                    case 0x05: // abs.w
+                                        OSReport(D_800ECA68);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x06: // mov.w
+                                        OSReport(D_800ECA78);
+                                        break;
+                                    case 0x07: // neg.w
+                                        OSReport(D_800ECA88);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x0C: // round.l.w
+                                        OSReport(D_800ECA98);
+                                        break;
+                                    case 0x0D: // trunc.l.w
+                                        OSReport(D_800ECAAC);
+                                        break;
+                                    case 0x0E: // ceil.l.w
+                                        OSReport(D_800ECAC0);
+                                        break;
+                                    case 0x0F: // floor.l.w
+                                        OSReport(D_800ECAD4);
+                                        break;
+                                    case 0x20: // cvt.s.w
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_W_CVT_SD_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        EMIT_PPC(iCode, 0xD0230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x21: // cvt.d.w
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_W_CVT_SD_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        EMIT_PPC(iCode, 0xD8230000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                                        break;
+                                    case 0x24: // cvt.w.w
+                                        OSReport(D_800ECAE8);
+                                        break;
+                                    case 0x30: // c.f.w
+                                        OSReport(D_800ECAF8);
+                                        break;
+                                    case 0x31: // c.un.w
+                                        OSReport(D_800ECB08);
+                                        break;
+                                    case 0x32: // c.eq.w
+                                        OSReport(D_800ECB18);
+                                        break;
+                                    case 0x33: // c.ueq.w
+                                        OSReport(D_800ECB28);
+                                        break;
+                                    case 0x34: // c.olt.w
+                                        OSReport(D_800ECB38);
+                                        break;
+                                    case 0x35: // c.ult.w
+                                        OSReport(D_800ECB48);
+                                        break;
+                                    case 0x36: // c.ole.w
+                                        OSReport(D_800ECB58);
+                                        break;
+                                    case 0x37: // c.ule.w
+                                        OSReport(D_800ECB68);
+                                        break;
+                                    case 0x38: // c.sf.w
+                                        OSReport(D_800ECB78);
+                                        break;
+                                    case 0x39: // c.ngle.w
+                                        OSReport(D_800ECB88);
+                                        break;
+                                    case 0x3A: // c.seq.w
+                                        OSReport(D_800ECB9C);
+                                        break;
+                                    case 0x3B: // c.ngl.w
+                                        OSReport(D_800ECBAC);
+                                        break;
+                                    case 0x3C: // c.lt.w
+                                        OSReport(D_800ECBBC);
+                                        break;
+                                    case 0x3D: // c.nge.w
+                                        OSReport(D_800ECBCC);
+                                        break;
+                                    case 0x3E: // c.le.w
+                                        OSReport(D_800ECBDC);
+                                        break;
+                                    case 0x3F: // c.ngt.w
+                                        OSReport(D_800ECBEC);
+                                        break;
+                                    default:
+                                        bFlag = false;
+                                        break;
+                                }
+                                break;
+                            case 0x15: // l
+                                switch (MIPS_FUNCT(nOpcode)) {
+                                    case 0x00: // add.l
+                                        OSReport(D_800ECBFC);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x01: // sub.l
+                                        OSReport(D_800ECC0C);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x02: // mul.l
+                                        OSReport(D_800ECC1C);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x03: // div.l
+                                        OSReport(D_800ECC2C);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x04: // sqrt.l
+                                        OSReport(D_800ECC3C);
+                                        break;
+                                    case 0x05: // abs.l
+                                        OSReport(D_800ECC4C);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x06: // mov.l
+                                        OSReport(D_800ECC5C);
+                                        break;
+                                    case 0x07: // neg.l
+                                        OSReport(D_800ECC6C);
+                                        pCPU->nOptimize.destFPR_check = 2;
+                                        pCPU->nOptimize.destFPR = MIPS_FD(nOpcode);
+                                        break;
+                                    case 0x0C: // round.l.l
+                                        OSReport(D_800ECC7C);
+                                        break;
+                                    case 0x0D: // trunc.l.l
+                                        OSReport(D_800ECC90);
+                                        break;
+                                    case 0x0E: // ceil.l.l
+                                        OSReport(D_800ECCA4);
+                                        break;
+                                    case 0x0F: // floor.l.l
+                                        OSReport(D_800ECCB8);
+                                        break;
+                                    case 0x20: // cvt.s.l
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_L_CVT_SD_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        EMIT_PPC(iCode, 0xFC200818);
+                                        EMIT_PPC(iCode, 0xD0230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                                        break;
+                                    case 0x21: // cvt.d.l
+                                        iRegisterA = MIPS_FD(nOpcode);
+                                        iRegisterB = MIPS_FS(nOpcode);
+                                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                                        EMIT_PPC(iCode, 0x80C30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                                        EMIT_PPC(iCode, 0x48000000 |
+                                                            ((cpuCompile_L_CVT_SD_function - (u32)&anCode[iCode]) &
+                                                             0x03FFFFFC) |
+                                                            1);
+                                        EMIT_PPC(iCode, 0xD8230000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                                        break;
+                                    case 0x24: // cvt.w.l
+                                        OSReport(D_800ECCCC);
+                                        break;
+                                    case 0x30: // cvt.l.l
+                                        OSReport(D_800ECCDC);
+                                        break;
+                                    case 0x31: // c.f.l
+                                        OSReport(D_800ECCEC);
+                                        break;
+                                    case 0x32: // c.un.l
+                                        OSReport(D_800ECCFC);
+                                        break;
+                                    case 0x33: // c.eq.l
+                                        OSReport(D_800ECD0C);
+                                        break;
+                                    case 0x34: // c.ueq.l
+                                        OSReport(D_800ECD1C);
+                                        break;
+                                    case 0x35: // c.ult.l
+                                        OSReport(D_800ECD2C);
+                                        break;
+                                    case 0x36: // c.ole.l
+                                        OSReport(D_800ECD3C);
+                                        break;
+                                    case 0x37: // c.ule.l
+                                        OSReport(D_800ECD4C);
+                                        break;
+                                    case 0x38: // c.sf.l
+                                        OSReport(D_800ECD5C);
+                                        break;
+                                    case 0x39: // c.ngle.l
+                                        OSReport(D_800ECD6C);
+                                        break;
+                                    case 0x3A: // c.seq.l
+                                        OSReport(D_800ECD80);
+                                        break;
+                                    case 0x3B: // c.ngl.l
+                                        OSReport(D_800ECD90);
+                                        break;
+                                    case 0x3C: // c.lt.l
+                                        OSReport(D_800ECDA0);
+                                        break;
+                                    case 0x3D: // c.nge.l
+                                        OSReport(D_800ECDB0);
+                                        break;
+                                    case 0x3E: // c.le.l
+                                        OSReport(D_800ECDC0);
+                                        break;
+                                    case 0x3F: // c.ngt.l
+                                        OSReport(D_800ECDD0);
+                                        break;
+                                    default:
+                                        bFlag = false;
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                case 0x12: // cop2
+                    bFlag = false;
+                    break;
+                case 0x13: // cop1x
+                    bFlag = false;
+                    break;
+                case 0x14: // beql
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if (MIPS_RS(nOpcode) == MIPS_RT(nOpcode)) {
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                            return false;
+                        }
+                        *pnAddress -= 4;
+                        if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                            return false;
+                        }
+                        if (anCode != NULL) {
+                            nDeltaAddress = (nOffset - iCode) * 4;
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    } else {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterC = 7;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x7C000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                        iJump = iCode++;
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                            return false;
+                        }
+                        *pnAddress -= 4;
+
+                        if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                            return false;
+                        }
+                        if (anCode != NULL) {
+                            nDeltaAddress = (nOffset - iCode) * 4;
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                        if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                            return false;
+                        }
+                        EMIT_PPC(iJump, 0x40820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    }
+                    break;
+                case 0x15: // bnel
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    if ((iRegisterC = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                        iRegisterC = 7;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterC << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x7C000000 | (iRegisterB << 16) | (iRegisterC << 11));
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                        return false;
+                    }
+                    *pnAddress -= 4;
+
+                    if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (nOffset - iCode) * 4;
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                        return false;
+                    }
+                    EMIT_PPC(iJump, 0x41820000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    break;
+                case 0x16: // blezl
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                        return false;
+                    }
+                    *pnAddress -= 4;
+
+                    if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (nOffset - iCode) * 4;
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                        return false;
+                    }
+                    EMIT_PPC(iJump, 0x41810000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    break;
+                case 0x17: // bgtzl
+                    nAddressJump = *pnAddress + (MIPS_IMM_S16(nOpcode) * 4);
+                    if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                        iRegisterB = 6;
+                        if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) | (iRegisterB << 16) |
+                                                (pCPU->nOptimize.destGPR_mapping << 11));
+                        } else {
+                            EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    }
+                    EMIT_PPC(iCode, 0x2C000000 | (iRegisterB << 16));
+                    iJump = iCode++;
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, true)) {
+                        return false;
+                    }
+                    *pnAddress -= 4;
+
+                    if (!cpuFindBranchOffset(pFunction, &nOffset, nAddressJump, anCode)) {
+                        return false;
+                    }
+                    if (anCode != NULL) {
+                        nDeltaAddress = (nOffset - iCode) * 4;
+                    }
+                    EMIT_PPC(iCode, 0x48000000 | (nDeltaAddress & 0x03FFFFFC));
+                    if (!cpuGetPPC(pCPU, pnAddress, pFunction, anCode, &iCode, false)) {
+                        return false;
+                    }
+                    EMIT_PPC(iJump, 0x40810000 | (((iCode - iJump) & 0x3FFF) << 2));
+                    break;
+                case 0x18: // daddi
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+                    if (!((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                        EMIT_PPC(iCode,
+                                 (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                    }
+                    iRegisterB = MIPS_RT(nOpcode);
+                    EMIT_PPC(iCode, 0x9421FFF0);
+                    EMIT_PPC(iCode, 0x91010008);
+                    EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                    EMIT_PPC(iCode, 0x38E00000 | MIPS_IMM_U16(nOpcode));
+                    EMIT_PPC(iCode, 0x39000000);
+                    EMIT_PPC(iCode, 0x7CE70734);
+                    EMIT_PPC(iCode, 0x2C070000);
+                    EMIT_PPC(iCode, 0x4080000C);
+                    EMIT_PPC(iCode, 0x3900FFFF);
+                    EMIT_PPC(iCode, 0x7D080734);
+                    EMIT_PPC(iCode, 0x7CA53814);
+                    EMIT_PPC(iCode, 0x7CC64114);
+                    EMIT_PPC(iCode, 0x90A30004 + OFFSETOF(pCPU, aGPR[iRegisterB]));
+                    EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, aGPR[iRegisterB]));
+                    EMIT_PPC(iCode, 0x81010008);
+                    EMIT_PPC(iCode, 0x38210010);
+                    if (!((iRegisterB = ganMapGPR[iRegisterB]) & 0x100)) {
+                        EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterB << 16));
+                    }
+                    break;
+                case 0x19: // daddiu
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        pCPU->nFlagRAM |= (1 << MIPS_RT(nOpcode));
+                    } else {
+                        pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    }
+                    if (!((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                        EMIT_PPC(iCode,
+                                 (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                    }
+                    iRegisterB = MIPS_RT(nOpcode);
+                    EMIT_PPC(iCode, 0x9421FFF0);
+                    EMIT_PPC(iCode, 0x91010008);
+                    EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                    EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                    EMIT_PPC(iCode, 0x38E00000 | MIPS_IMM_U16(nOpcode));
+                    EMIT_PPC(iCode, 0x39000000);
+                    EMIT_PPC(iCode, 0x7CE70734);
+                    EMIT_PPC(iCode, 0x2C070000);
+                    EMIT_PPC(iCode, 0x4080000C);
+                    EMIT_PPC(iCode, 0x3900FFFF);
+                    EMIT_PPC(iCode, 0x7D080734);
+                    EMIT_PPC(iCode, 0x7CA53814);
+                    EMIT_PPC(iCode, 0x7CC64114);
+                    EMIT_PPC(iCode, 0x90A30004 + OFFSETOF(pCPU, aGPR[iRegisterB]));
+                    EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, aGPR[iRegisterB]));
+                    EMIT_PPC(iCode, 0x81010008);
+                    EMIT_PPC(iCode, 0x38210010);
+                    if (!((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                        EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterB << 16));
+                    }
+                    break;
+                case 0x1F: // library call
+                    if (libraryFunctionReplaced(SYSTEM_LIBRARY(pCPU->pHost), MIPS_IMM_U16(nOpcode))) {
+                        pCPU->nFlagCODE |= 1;
+                        pFunction->nAddress1 = nAddress + 8;
+                    }
+                    break;
+                case 0x1A: // ldl
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x1B: // ldr
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x27: // lwu
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x20: // lb
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+
+                        if (!cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterB << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x88070000 | (iRegisterA << 21) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x7C000774 | (iRegisterA << 21) | (iRegisterA << 16));
+                        if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                            pCPU->nOptimize.destGPR_check = 2;
+                            pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                            pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800010);
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_LB_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterA << 16));
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x21: // lh
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+
+                        if (!cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterB << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0xA0070000 | (iRegisterA << 21) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x7C000734 | (iRegisterA << 21) | (iRegisterA << 16));
+                        if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                            pCPU->nOptimize.destGPR_check = 2;
+                            pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                            pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800010);
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_LH_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterA << 16));
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x22: // lwl
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        EMIT_PPC(iCode, 0x9421FFE8);
+                        EMIT_PPC(iCode, 0x91210008);
+                        EMIT_PPC(iCode, 0x91410010);
+                        if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C050378 | (iRegisterA << 21) | (iRegisterA << 11));
+                        }
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x38E70000 | MIPS_IMM_U16(nOpcode));
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x81230004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C090378 | (iRegisterB << 21) | (iRegisterB << 11));
+                        }
+                        EMIT_PPC(iCode,
+                                 0x48000000 | ((cpuCompile_LWL_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x91230004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7D204B78 | (iRegisterB << 16));
+                        }
+                        EMIT_PPC(iCode, 0x81210008);
+                        EMIT_PPC(iCode, 0x81410010);
+                        EMIT_PPC(iCode, 0x38210018);
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x23: // lw
+                    if ((nOpcode & 0xFFFF0000) == 0x8FBF0000) { // lw $ra, 0x????($sp)
+                        if ((pCPU->nFlagCODE & 4) && (pCPU->nFlagCODE >> 16) == MIPS_IMM_U16(nOpcode)) {
+                            pCPU->nFlagCODE &= ~2;
+                            if (prev != 0x457) {
+                                pCPU->nFlagCODE &= ~4;
+                                pCPU->nFlagCODE &= 0xFFFF;
+                            }
+                        }
+                    }
+                    if (gpSystem->eTypeROM == SRT_ZELDA2) {
+                        if (nOpcode == 0x8FBF0014 && nOpcodePrev == 0 && nOpcodeNext == 0x27BD0018) {
+                            if (nAddress == 0x8018570C || nAddress == 0x8018628C || nAddress == 0x8017FB5C ||
+                                nAddress == 0x8018624C || nAddress == 0x801C0F14 || nAddress == 0x801B9DF4 ||
+                                nAddress == 0x801B9D94) {
+                                pCPU->nFlagCODE |= 2;
+                            }
+                        } else if (nOpcode == 0x8FBF0014 && nOpcodePrev == 0x24E40014 && nOpcodeNext == 0x27BD0018) {
+                            pCPU->nFlagCODE |= 2;
+                        } else if (nOpcode == 0x8FBF0014 && nOpcodePrev == 0x00603025 && nOpcodeNext == 0x27BD0050) {
+                            pCPU->nFlagCODE |= 2;
+                        } else if (nOpcode == 0x8FBF001C && nOpcodePrev == 0x248419C4 && nOpcodeNext == 0x8FB00018) {
+                            pCPU->nFlagCODE |= 2;
+                        }
+                    } else if (gpSystem->eTypeROM == SRT_MARIOPARTY1) {
+                        if (nOpcode == 0x8C9F0004 && nOpcodePrev == 0x8C9D0000 && nOpcodeNext == 0x8C900008) {
+                            pCPU->nFlagCODE |= 2;
+                        }
+                    } else if (gpSystem->eTypeROM == SRT_STARFOX) {
+                        if (nOpcode == 0x8FBF003C && nOpcodePrev == 0 && nOpcodeNext == 0xAFB20040) {
+                            pCPU->nFlagCODE |= 2;
+                        }
+                    }
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+
+                        if (!cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterB << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x80070000 | (iRegisterA << 21) | MIPS_IMM_U16(nOpcode));
+                        if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                            pCPU->nOptimize.destGPR_check = 2;
+                            pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                            pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800010);
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_LW_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterA << 16));
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x24: // lbu
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+
+                        if (!cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterB << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x88070000 | (iRegisterA << 21) | MIPS_IMM_U16(nOpcode));
+                        if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                            pCPU->nOptimize.destGPR_check = 2;
+                            pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                            pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800010);
+                        EMIT_PPC(iCode,
+                                 0x48000000 | ((cpuCompile_LBU_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterA << 16));
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x25: // lhu
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+
+                        if (!cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterB << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0xA0070000 | (iRegisterA << 21) | MIPS_IMM_U16(nOpcode));
+                        if (ganMapGPR[MIPS_RT(nOpcode)] & 0x100) {
+                            pCPU->nOptimize.destGPR_check = 2;
+                            pCPU->nOptimize.destGPR = MIPS_RT(nOpcode);
+                            pCPU->nOptimize.destGPR_mapping = iRegisterA;
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                        }
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800010);
+                        EMIT_PPC(iCode,
+                                 0x48000000 | ((cpuCompile_LHU_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7CA02B78 | (iRegisterA << 16));
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x26: // lwr
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        EMIT_PPC(iCode, 0x9421FFE8);
+                        EMIT_PPC(iCode, 0x91210008);
+                        EMIT_PPC(iCode, 0x91410010);
+                        if ((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C050378 | (iRegisterA << 21) | (iRegisterA << 11));
+                        }
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x38E70000 | MIPS_IMM_U16(nOpcode));
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x81230004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C090378 | (iRegisterB << 21) | (iRegisterB << 11));
+                        }
+                        EMIT_PPC(iCode,
+                                 0x48000000 | ((cpuCompile_LWR_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x91230004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7D204B78 | (iRegisterB << 16));
+                        }
+                        EMIT_PPC(iCode, 0x81210008);
+                        EMIT_PPC(iCode, 0x81410010);
+                        EMIT_PPC(iCode, 0x38210018);
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x28: // sb
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        var_r3 = true;
+                        if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterC = 7;
+                            var_r3 = false;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        if (!var_r3 || !cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), -1)) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterC << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x98070000 | (iRegisterB << 21) | MIPS_IMM_U16(nOpcode));
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800020);
+                        EMIT_PPC(iCode, 0x9421FFF0);
+                        EMIT_PPC(iCode, 0x91010008);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x81030004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C080378 | (iRegisterA << 21) | (iRegisterA << 11));
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_SB_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        EMIT_PPC(iCode, 0x81010008);
+                        EMIT_PPC(iCode, 0x38210010);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    break;
+                case 0x29: // sh
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        var_r3 = true;
+                        if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterC = 7;
+                            var_r3 = false;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        if (!var_r3 || !cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), -1)) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterC << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0xB0070000 | (iRegisterB << 21) | MIPS_IMM_U16(nOpcode));
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800020);
+                        EMIT_PPC(iCode, 0x9421FFF0);
+                        EMIT_PPC(iCode, 0x91010008);
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x81030004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C080378 | (iRegisterA << 21) | (iRegisterA << 11));
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_SH_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        EMIT_PPC(iCode, 0x81010008);
+                        EMIT_PPC(iCode, 0x38210010);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    break;
+                case 0x2A: // swl
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                            EMIT_PPC(iCode,
+                                     (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                        } else {
+                            EMIT_PPC(iCode, 0x7C050378 | (iRegisterB << 21) | (iRegisterB << 11));
+                        }
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x38E70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x38C00018);
+                        EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        EMIT_PPC(iCode, 0x7CA53430);
+                        EMIT_PPC(iCode, 0x98A70000);
+                        EMIT_PPC(iCode, 0x38C6FFF8);
+                        EMIT_PPC(iCode, 0x54E507BF);
+                        EMIT_PPC(iCode, 0x38E70001);
+                        EMIT_PPC(iCode, 0x4082FFE8);
+                    }
+                    break;
+                case 0x2B: // sw
+                    if ((nOpcode & 0xFFFF0000) == 0xAFBF0000) { // sw $ra, ????($sp)
+                        if (!(pCPU->nFlagCODE & 4)) {
+                            pCPU->nFlagCODE |= 4;
+                            pCPU->nFlagCODE |= MIPS_IMM_U16(nOpcode) << 16;
+                        }
+                    }
+                    if (gpSystem->eTypeROM == SRT_MARIOPARTY1) {
+                        if (nOpcode == 0xAC9F0004 && nOpcodePrev == 0xAC9D0000 && nOpcodeNext == 0xAC900008) {
+                            EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                            if (ganMapGPR[31] & 0x100) {
+                                EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                            } else {
+                                EMIT_PPC(iCode, 0x7CA02B78 | (ganMapGPR[31] << 16));
+                            }
+                            pCPU->nFlagCODE |= 2;
+                        }
+                    } else if (gpSystem->eTypeROM == SRT_STARFOX && nOpcode == 0xAFBF003C &&
+                               nOpcodePrev == 0x0080A025 && nOpcodeNext == 0xAFB00018) {
+                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, nReturnAddrLast));
+                        if (ganMapGPR[31] & 0x100) {
+                            EMIT_PPC(iCode, 0x90A30000 + ((OFFSETOF(pCPU, aGPR[31]) + 4) & 0xFFFF));
+                        } else {
+                            EMIT_PPC(iCode, 0x7CA02B78 | (ganMapGPR[31] << 16));
+                        }
+                        pCPU->nFlagCODE |= 2;
+                    }
+                    if (nOpcode == 0xACBF011C) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RT(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        var_r3 = true;
+                        if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterC = 7;
+                            var_r3 = false;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        if (!var_r3 || !cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), -1)) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterC << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x90070000 | (iRegisterB << 21) | MIPS_IMM_U16(nOpcode));
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRam - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 2);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800020);
+                        EMIT_PPC(iCode, 0x9421FFF0);
+                        EMIT_PPC(iCode, 0x91010008);
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x81030004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        } else
+                            EMIT_PPC(iCode, 0x7C080378 | (iRegisterB << 21) | (iRegisterB << 11));
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_SW_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        EMIT_PPC(iCode, 0x81010008);
+                        EMIT_PPC(iCode, 0x38210010);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    }
+                    break;
+                case 0x2C: // sdl
+                case 0x2D: // sdr
+                    break;
+                case 0x2E: // swr
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if (!((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100)) {
+                            EMIT_PPC(iCode, ((0x90030000 | (iRegisterA << 21)) +
+                                             (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4)));
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                        } else
+                            EMIT_PPC(iCode, 0x7C050378 | (iRegisterB << 21) | (iRegisterB << 11));
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x38E70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x38C00000);
+                        EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        EMIT_PPC(iCode, 0x7CA53430);
+                        EMIT_PPC(iCode, 0x98A70000);
+                        EMIT_PPC(iCode, 0x38C60008);
+                        EMIT_PPC(iCode, 0x54E507BF);
+                        EMIT_PPC(iCode, 0x38E7FFFF);
+                        EMIT_PPC(iCode, 0x4082FFE8);
+                    }
+                    break;
+                case 0x2F: // cache
+                    EMIT_PPC(iCode, 0x60000000);
+                    break;
+                case 0x30: // sc
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x31: // lwc1
+                    if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRamF - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 4);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        iRegisterA = MIPS_RT(nOpcode);
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800010);
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_LW_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (iRegisterA % 2 == 1) {
+                            EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aFPR[iRegisterA - 1]));
+                        } else {
+                            EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    } else {
+                        if (!((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                            EMIT_PPC(iCode,
+                                     (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                        }
+                        iRegisterB = MIPS_RT(nOpcode);
+                        if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), &nSize)) {
+                            return false;
+                        }
+                        EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                        EMIT_PPC(iCode, 0x3CE08000);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CE08000 | ((nSize >> 16) - 1));
+                        EMIT_PPC(iCode, 0x60E7FFFF);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x41810024);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else
+                            EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x42800028);
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x38A00000 | iRegisterB);
+                        EMIT_PPC(iCode, 0x70A50001);
+                        EMIT_PPC(iCode, 0x41820010);
+                        EMIT_PPC(iCode, 0x80A70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aFPR[iRegisterB - 1]));
+                        EMIT_PPC(iCode, 0x4280000C);
+                        EMIT_PPC(iCode, 0x80A70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                    }
+                    break;
+                case 0x34: // lld
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x35: // ldc1
+                    if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRamF - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 4);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        iRegisterA = MIPS_RT(nOpcode);
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800014);
+                        EMIT_PPC(iCode,
+                                 0x48000000 | ((cpuCompile_LDC_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                        EMIT_PPC(iCode, 0x90C30000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    } else {
+                        if (!((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                            EMIT_PPC(iCode,
+                                     (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                        }
+                        iRegisterB = MIPS_RT(nOpcode);
+                        if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), &nSize)) {
+                            return false;
+                        }
+                        EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                        EMIT_PPC(iCode, 0x3CE08000);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CE08000 | ((nSize >> 16) - 1));
+                        EMIT_PPC(iCode, 0x60E7FFFF);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x41810024);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else
+                            EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x42800018);
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x80A70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                        EMIT_PPC(iCode, 0x80A70000 | (MIPS_IMM_U16(nOpcode) + 4));
+                        EMIT_PPC(iCode, 0x90A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                    }
+                    break;
+                case 0x37: // ld
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        if ((iRegisterA = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterA = 5;
+                        }
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        iRegisterC = 7;
+                        if (!cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), MIPS_RT(nOpcode))) {
+                            EMIT_PPC(iCode, 0x7C004214 | (iRegisterC << 21) | (iRegisterB << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x80A70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        EMIT_PPC(iCode, 0x80070000 | (iRegisterA << 21) | (MIPS_IMM_U16(nOpcode) + 4));
+                        EMIT_PPC(iCode,
+                                 (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]) + 4));
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRamF - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 4);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    }
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x38: // sc
+                    break;
+                case 0x39: // swc1
+                    if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRamF - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 4);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        iRegisterA = MIPS_RT(nOpcode);
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x41800020);
+                        EMIT_PPC(iCode, 0x9421FFF0);
+                        EMIT_PPC(iCode, 0x91010008);
+                        if (iRegisterA % 2 == 1) {
+                            EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aFPR[iRegisterA - 1]));
+                        } else {
+                            EMIT_PPC(iCode, 0x81030000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                        }
+                        EMIT_PPC(iCode, 0x48000000 | ((cpuCompile_SW_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        EMIT_PPC(iCode, 0x81010008);
+                        EMIT_PPC(iCode, 0x38210010);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    } else {
+                        if (!((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                            EMIT_PPC(iCode,
+                                     (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                        }
+                        iRegisterB = MIPS_RT(nOpcode);
+                        if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), &nSize)) {
+                            return false;
+                        }
+                        EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                        EMIT_PPC(iCode, 0x3CE08000);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CE08000 | ((nSize >> 16) - 1));
+                        EMIT_PPC(iCode, 0x60E7FFFF);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x41810024);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else
+                            EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x42800024);
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x38A00000 | iRegisterB);
+                        EMIT_PPC(iCode, 0x70A50001);
+                        EMIT_PPC(iCode, 0x4182000C);
+                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aFPR[iRegisterB - 1]));
+                        EMIT_PPC(iCode, 0x42800008);
+                        EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                        EMIT_PPC(iCode, 0x90A70000 | MIPS_IMM_U16(nOpcode));
+                    }
+                    break;
+                case 0x3C: // scd
+                    pCPU->nFlagRAM &= ~(1 << MIPS_RT(nOpcode));
+                    break;
+                case 0x3D: // sdc1
+                    if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRamF - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 4);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    } else if (pCPU->nCompileFlag & 1) {
+                        iRegisterA = MIPS_RT(nOpcode);
+                        if ((iRegisterB = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterB << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80C30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        EMIT_PPC(iCode, 0x38A00000 | (iRegisterB << 16) | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x54A6843E);
+                        EMIT_PPC(iCode, 0x7CC648AE);
+                        EMIT_PPC(iCode, 0x2C060080);
+                        EMIT_PPC(iCode, 0x4180002C);
+                        EMIT_PPC(iCode, 0x9421FFE8);
+                        EMIT_PPC(iCode, 0x91010008);
+                        EMIT_PPC(iCode, 0x91210010);
+                        EMIT_PPC(iCode, 0x81030000 + OFFSETOF(pCPU, aFPR[iRegisterA]));
+                        EMIT_PPC(iCode, 0x81230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
+                        EMIT_PPC(iCode,
+                                 0x48000000 | ((cpuCompile_SDC_function - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        EMIT_PPC(iCode, 0x81010008);
+                        EMIT_PPC(iCode, 0x81210010);
+                        EMIT_PPC(iCode, 0x38210018);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x42800020);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else {
+                            EMIT_PPC(iCode, 0x42800010);
+                            EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                            EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                            EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        }
+                    } else {
+                        if (!((iRegisterA = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100)) {
+                            EMIT_PPC(iCode,
+                                     (0x90030000 | (iRegisterA << 21)) + (OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4));
+                        }
+                        iRegisterB = MIPS_RT(nOpcode);
+                        if (!ramGetSize(SYSTEM_RAM(pCPU->pHost), &nSize)) {
+                            return false;
+                        }
+                        EMIT_PPC(iCode, 0x80A30004 + OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]));
+                        EMIT_PPC(iCode, 0x3CE08000);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CE08000 | ((nSize >> 16) - 1));
+                        EMIT_PPC(iCode, 0x60E7FFFF);
+                        EMIT_PPC(iCode, 0x7C072840);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x41810024);
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        } else
+                            EMIT_PPC(iCode, 0x41810014);
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x42800018);
+                        EMIT_PPC(iCode, 0x7CE54214);
+                        EMIT_PPC(iCode, 0x80A30000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
+                        EMIT_PPC(iCode, 0x90A70000 | MIPS_IMM_U16(nOpcode));
+                        EMIT_PPC(iCode, 0x80A30000 + (OFFSETOF(pCPU, aFPR[iRegisterB]) + 4));
+                        EMIT_PPC(iCode, 0x90A70000 | (MIPS_IMM_U16(nOpcode) + 4));
+                    }
+                    break;
+                case 0x3F: // sd
+                    if (pCPU->nFlagRAM & (1 << MIPS_RS(nOpcode))) {
+                        var_r3 = true;
+                        if ((iRegisterC = ganMapGPR[MIPS_RS(nOpcode)]) & 0x100) {
+                            iRegisterC = 7;
+                            var_r3 = false;
+                            if (cpuCutStoreLoad(pCPU, nAddress, MIPS_RS(nOpcode))) {
+                                EMIT_PPC(iCode, 0x7C000378 | (pCPU->nOptimize.destGPR_mapping << 21) |
+                                                    (iRegisterC << 16) | (pCPU->nOptimize.destGPR_mapping << 11));
+                            } else {
+                                EMIT_PPC(iCode, 0x80E30000 + ((OFFSETOF(pCPU, aGPR[MIPS_RS(nOpcode)]) + 4) & 0xFFFF));
+                            }
+                        }
+                        if (!var_r3 || !cpuStackOffset(pCPU, nAddress, anCode, MIPS_RS(nOpcode), -1)) {
+                            EMIT_PPC(iCode, 0x7CE04214 | (iRegisterC << 16));
+                        } else {
+                            EMIT_PPC(iCode, 0x60000000);
+                        }
+                        EMIT_PPC(iCode, 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        EMIT_PPC(iCode, 0x90C70000 | MIPS_IMM_U16(nOpcode));
+                        if ((iRegisterB = ganMapGPR[MIPS_RT(nOpcode)]) & 0x100) {
+                            iRegisterB = 6;
+                            EMIT_PPC(iCode, 0x80C30004 + OFFSETOF(pCPU, aGPR[MIPS_RT(nOpcode)]));
+                        }
+                        EMIT_PPC(iCode, 0x90070000 | (iRegisterB << 21) | (MIPS_IMM_U16(nOpcode) + 4));
+                    } else if (pCPU->nCompileFlag & 0x10) {
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C00000);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                        EMIT_PPC(iCode, 0x3CA00000 | ((u32)nAddress >> 16));
+                        EMIT_PPC(iCode, 0x60A50000 | ((u32)nAddress & 0xFFFF));
+                        EMIT_PPC(iCode, 0x48000000 | (((u32)pCPU->pfRamF - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1);
+                        if (pCPU->nCompileFlag & 0x100) {
+                            cpuCompileNOP(anCode, &iCode, 4);
+                        } else {
+                            cpuCompileNOP(anCode, &iCode, 3);
+                        }
+                        if (var_r17) {
+                            EMIT_PPC(iCode, 0x38C0FFFF);
+                            EMIT_PPC(iCode, 0x90C30000 + OFFSETOF(pCPU, nWaitPC));
+                        }
+                    }
+                    break;
+                default:
+                    bFlag = false;
+                    break;
+            }
+        }
+
+        if (!bFlag) {
+            return false;
+        }
+        if (!bSlot && pFunction->pfCode == NULL) {
+            if (nAddressJump != -1 && anCode == NULL) {
+                pFunction->aJump[pFunction->nCountJump++].nAddressN64 = nAddressJump;
+            }
+            for (iJump = 0; iJump < pFunction->nCountJump; iJump++) {
+                if (pFunction->aJump[iJump].nAddressN64 == nAddress) {
+                    pFunction->aJump[iJump].nOffsetHost = *piCode;
+                }
+            }
+        }
+        if (iCode == *piCode) {
+            if (anCode != NULL) {
+                if (var_r17) {
+                    anCode[iCode++] = 0x38C00000;
+                    anCode[iCode++] = 0x90C30000 + OFFSETOF(pCPU, nWaitPC);
+                }
+                anCode[iCode++] = 0x3CA00000 | ((u32)nAddress >> 16);
+                anCode[iCode++] = 0x60A50000 | ((u32)nAddress & 0xFFFF);
+                anCode[iCode++] = 0x48000000 | (((u32)pCPU->pfStep - (u32)&anCode[iCode]) & 0x03FFFFFC) | 1;
+            } else {
+                iCode += var_r17 ? 5 : 3;
+            }
+            if ((pCPU->nFlagCODE & 1) && anCode == NULL && pFunction->pfCode == NULL) {
+                iCode += 6;
+                *pnAddress = pFunction->nAddress1 + 4;
+            }
+            if (var_r17) {
+                if (anCode != NULL) {
+                    anCode[iCode++] = 0x38C0FFFF;
+                    anCode[iCode++] = 0x90C30000 + OFFSETOF(pCPU, nWaitPC);
+                } else {
+                    iCode += 2;
+                }
+            }
+        }
+
+        if (update) {
+            pCPU->nOptimize.addr_last = -1;
+            if (anCode != NULL) {
+                anCode[iUpdate] = 0x42800000 | (((iCode - iUpdate) * 4) & 0xFFFC);
+            }
+        }
+
+        *piCode = iCode;
+        if (anCode != NULL) {
+            if (var_r17) {
+                pCPU->nOptimize.destGPR_check = 0;
+                pCPU->nOptimize.destFPR_check = 0;
+                pCPU->nOptimize.checkNext = 0;
+            } else if (pCPU->nOptimize.destGPR_check == 2) {
+                pCPU->nOptimize.destGPR_check = 1;
+                pCPU->nOptimize.destFPR_check = 0;
+            } else if (pCPU->nOptimize.destFPR_check == 2) {
+                pCPU->nOptimize.destFPR_check = 1;
+                pCPU->nOptimize.destGPR_check = 0;
+            } else {
+                pCPU->nOptimize.destGPR_check = 0;
+                pCPU->nOptimize.destFPR_check = 0;
+            }
+        }
+
+        if (var_r17 || pCPU->nOptimize.addr_check == 0) {
+            pCPU->nOptimize.addr_last = -1;
+        }
+
+        return true;
+    } else {
+        return false;
+    }
+}
+#endif
 
 /**
  * @brief Creates a new recompiled function block.
@@ -2035,7 +7845,10 @@ bool cpuMakeFunction(Cpu* pCPU, CpuFunction** ppFunction, s32 nAddressN64) {
                 return false;
             }
         }
-        cpuCompileNOP(anCode, &iCode, iCode0);
+
+        while (iCode != iCode0) {
+            anCode[iCode++] = 0x60000000;
+        }
 
         pFunction->callerID_flag = 0x21;
         pFunction->pfCode = anCode;
@@ -2141,6 +7954,70 @@ static inline bool cpuNoBranchTo(CpuFunction* pFunction, s32 addressN64) {
         if (pFunction->aJump[i].nAddressN64 == addressN64) {
             return false;
         }
+    }
+
+    return true;
+}
+
+static inline bool cpuCutStoreLoad(Cpu* pCPU, s32 currentAddress, s32 source) {
+    if (pCPU->nOptimize.validCheck == 0) {
+        return false;
+    }
+    if (pCPU->nOptimize.destGPR_check == 0) {
+        return false;
+    }
+    if (source != pCPU->nOptimize.destGPR) {
+        return false;
+    }
+
+    if (!cpuNoBranchTo(pCPU->pFunctionLast, currentAddress)) {
+        pCPU->nOptimize.destGPR_check = 0;
+        return false;
+    }
+
+    pCPU->nOptimize.destGPR_check = 0;
+    return true;
+}
+
+static inline bool cpuCutStoreLoadF(Cpu* pCPU, s32 currentAddress, s32 source) {
+    if (pCPU->nOptimize.validCheck == 0) {
+        return false;
+    }
+    if (pCPU->nOptimize.destFPR_check == 0) {
+        return false;
+    }
+    if (source != pCPU->nOptimize.destFPR) {
+        return false;
+    }
+
+    if (!cpuNoBranchTo(pCPU->pFunctionLast, currentAddress)) {
+        pCPU->nOptimize.destFPR_check = 0;
+        return false;
+    }
+
+    pCPU->nOptimize.destFPR_check = 0;
+    return true;
+}
+
+static inline bool cpuStackOffset(Cpu* pCPU, s32 currentAddress, s32* anCode, s32 source, s32 target) {
+    if (anCode == NULL) {
+        return false;
+    }
+    if (pCPU->nOptimize.validCheck == 0) {
+        return false;
+    }
+
+    if (!cpuNoBranchTo(pCPU->pFunctionLast, currentAddress)) {
+        return false;
+    }
+
+    pCPU->nOptimize.addr_check = 1;
+    if (source == target) {
+        pCPU->nOptimize.addr_last = -1;
+        return false;
+    } else if (pCPU->nOptimize.addr_last != source) {
+        pCPU->nOptimize.addr_last = source;
+        return false;
     }
 
     return true;
@@ -4019,7 +9896,7 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
                     }
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
                 anCode[count++] = 0x88070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
                 anCode[count++] = 0x7C000774 | (iRegisterA << 21) | (iRegisterA << 16);
                 if (ganMapGPR[MIPS_RT(*opcode)] & 0x100) {
@@ -4136,7 +10013,7 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
                         anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                     }
                 }
-                anCode[count++] = 0x7CE00000 | (iRegisterB << 16) | 0x4214;
+                anCode[count++] = 0x7CE04214 | (iRegisterB << 16);
                 anCode[count++] = 0x98070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
                 break;
             case 0x29: // sh
@@ -4156,7 +10033,7 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
                         anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                     }
                 }
-                anCode[count++] = 0x7CE00000 | (iRegisterB << 16) | 0x4214;
+                anCode[count++] = 0x7CE04214 | (iRegisterB << 16);
                 anCode[count++] = 0xB0070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
                 break;
             case 0x2B: // sw
@@ -4176,7 +10053,7 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
                         anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                     }
                 }
-                anCode[count++] = 0x7CE00000 | (iRegisterB << 16) | 0x4214;
+                anCode[count++] = 0x7CE04214 | (iRegisterB << 16);
                 anCode[count++] = 0x90070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
                 break;
             default:
@@ -4300,7 +10177,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                     anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
 
                 if (rt % 2 == 1) {
                     anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
@@ -4320,11 +10197,11 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                     anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
                 if (rt % 2 == 1) {
                     anCode[count++] = 0x80A30000 + OFFSETOF(pCPU, aFPR[rt - 1]);
                 } else {
-                    anCode[count++] = 0x80A30000 + OFFSETOF(pCPU, aFPR[rt]) + 4;
+                    anCode[count++] = 0x80A30000 + (OFFSETOF(pCPU, aFPR[rt]) + 4);
                 }
                 anCode[count++] = 0x90A70000 | MIPS_IMM_U16(*opcode);
                 break;
@@ -4338,7 +10215,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                     anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
                 anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
                 anCode[count++] = 0x90A30000 + OFFSETOF(pCPU, aFPR[rt]);
                 anCode[count++] = 0x80A70000 | (MIPS_IMM_U16(*opcode) + 4);
@@ -4354,7 +10231,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                     anCode[count++] = 0x7C000038 | (iRegisterB << 21) | (iRegisterB << 16) | (9 << 11);
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
                 anCode[count++] = 0x80A30000 + OFFSETOF(pCPU, aFPR[rt]);
                 anCode[count++] = 0x90A70000 | MIPS_IMM_U16(*opcode);
                 anCode[count++] = 0x80A30000 + (OFFSETOF(pCPU, aFPR[rt]) + 4);
@@ -4377,7 +10254,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                     }
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
                 anCode[count++] = 0x80A70000 | MIPS_IMM_U16(*opcode);
                 anCode[count++] = 0x90A30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]);
                 anCode[count++] = 0x80070000 | (iRegisterA << 21) | (MIPS_IMM_U16(*opcode) + 4);
@@ -4397,7 +10274,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                     }
                 }
 
-                anCode[count++] = 0x7C000000 | (7 << 21) | (iRegisterB << 16) | (8 << 11) | 0x214;
+                anCode[count++] = 0x7C000214 | (7 << 21) | (iRegisterB << 16) | (8 << 11);
                 anCode[count++] = 0x80C30000 + OFFSETOF(pCPU, aGPR[MIPS_RT(*opcode)]);
                 anCode[count++] = 0x90C70000 | MIPS_IMM_U16(*opcode);
 
@@ -4485,7 +10362,7 @@ static bool cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFun
 
     for (iGPR = 1; iGPR < 32; iGPR++) {
         if (!(ganMapGPR[iGPR] & 0x100)) {
-            nData = OFFSETOF(pCPU, aGPR[iGPR]) + 4;
+            nData = (OFFSETOF(pCPU, aGPR[iGPR]) + 4);
             *pnCode++ = 0x90030000 | (ganMapGPR[iGPR] << 21) | nData; // lwz ri,(aGPR[i] + 4)(r3)
         }
     }
@@ -4510,7 +10387,7 @@ static bool cpuMakeLink(Cpu* pCPU, CpuExecuteFunc* ppfLink, CpuExecuteFunc pfFun
     *pnCode++ = 0x38000000 | (ganMapGPR[0] << 21); // li r0,0
     for (iGPR = 1; iGPR < 32; iGPR++) {
         if (!(ganMapGPR[iGPR] & 0x100)) {
-            nData = OFFSETOF(pCPU, aGPR[iGPR]) + 4;
+            nData = (OFFSETOF(pCPU, aGPR[iGPR]) + 4);
             *pnCode++ = 0x80030000 | (ganMapGPR[iGPR] << 21) | nData; // stw ri,(aGPR[i] + 4)(r3)
         }
     }
@@ -4628,7 +10505,7 @@ bool cpuExecute(Cpu* pCPU, s32 nCount, u64 nAddressBreak) {
 
         for (iGPR = 0; iGPR < ARRAY_COUNT(ganMapGPR); iGPR++) {
             if (!(ganMapGPR[iGPR] & 0x100)) {
-                nData = OFFSETOF(pCPU, aGPR[iGPR]) + 4;
+                nData = (OFFSETOF(pCPU, aGPR[iGPR]) + 4);
                 *pnCode++ = 0x80030000 | (ganMapGPR[iGPR] << 21) | nData; // lwz ri,(aGPR[i] + 4)(r3)
             }
         }
