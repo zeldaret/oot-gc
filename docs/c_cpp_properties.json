@@ -8,7 +8,6 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/mq-j/include"
             ],
             "defines": ["VERSION=MQ_J"]
@@ -21,7 +20,6 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/mq-u/include"
             ],
             "defines": ["VERSION=MQ_U"]
@@ -34,7 +32,6 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/mq-e/include"
             ],
             "defines": ["VERSION=MQ_E"]
@@ -47,7 +44,6 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/ce-j/include"
             ],
             "defines": ["VERSION=CE_J"]
@@ -60,7 +56,6 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/ce-u/include"
             ],
             "defines": ["VERSION=CE_U"]
@@ -73,7 +68,6 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/ce-e/include"
             ],
             "defines": ["VERSION=CE_E"]

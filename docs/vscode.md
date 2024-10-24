@@ -48,7 +48,6 @@ A more complete `c_cpp_properties.json` with configurations for all supported ve
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/libc",
-                "${workspaceFolder}/src",
                 "${workspaceFolder}/build/ce-j/include"
             ],
             "defines": ["VERSION=CE_J"]
