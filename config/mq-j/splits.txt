@@ -125,7 +125,7 @@ emulator/system.c:
 emulator/cpu.c:
 	.text       start:0x80030724 end:0x8006B6F0
 	.data       start:0x800ECB20 end:0x800EEB80
-	.bss        start:0x80131DB8 end:0x80186FB0
+	.bss        start:0x80131DB8 end:0x80131FB0
 	.sdata      start:0x8018B340 end:0x8018B500
 	.sbss       start:0x8018B970 end:0x8018B9F0
 	.sdata2     start:0x8018C1E0 end:0x8018C210
@@ -219,7 +219,7 @@ emulator/_frameGCNcc.c:
 emulator/_buildtev.c:
 	.text       start:0x80097E6C end:0x8009B284
 	.data       start:0x800F1920 end:0x800F1AE8
-	.bss        start:0x80186FB0 end:0x80187280
+	.bss        start:0x80131FB0 end:0x80187280
 	.sdata      start:0x8018B690 end:0x8018B6A0
 	.sdata2     start:0x8018C318 end:0x8018C320
 

@@ -8318,7 +8318,7 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
                 anCode[count++] = 0x90070000 | (iRegisterA << 21) | MIPS_IMM_U16(*opcode);
                 break;
             default:
-                OSPanic("_cpuGCN.c", 4725, "");
+                OSPanic("_cpuGCN.c", VERSION == MQ_J ? 4721 : 4725, "");
                 break;
         }
     } else {
@@ -8540,7 +8540,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
                 anCode[count++] = 0x90070000 | (iRegisterA << 21) | (MIPS_IMM_U16(*opcode) + 4);
                 break;
             default:
-                OSPanic("_cpuGCN.c", 5181, "");
+                OSPanic("_cpuGCN.c", VERSION == MQ_J ? 5177 : 5181, "");
                 break;
         }
     } else {
