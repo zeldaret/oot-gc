@@ -201,3 +201,18 @@ block_relocations:
 - source: 0x800301E0
 - source: 0x800301F0
 - source: 0x80030218
+# cpu.c
+- source: 0x800336BC
+- source: 0x800336C4
+- source: 0x80033724
+- source: 0x8003372C
+- source: 0x80033738
+- source: 0x80033EC8
+- source: 0x80033EF8
+- source: 0x80033EFC
+- source: 0x80033F30
+- source: 0x80033F44
+- source: 0x80033F84
+- source: 0x80033F88
+- source: 0x80033FBC
+- source: 0x80033FD0
