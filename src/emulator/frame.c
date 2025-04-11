@@ -5275,7 +5275,242 @@ bool frameLoadTLUT(Frame* pFrame, s32 nCount, s32 iTile) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTMEM.s")
+bool frameLoadTMEM(Frame* pFrame, FrameLoadType eType, s32 iTile) {
+    bool bFlip;
+    s32 iTMEM;
+    s32 var_r0;
+    s32 nSize;
+    s32 nStep;
+    s32 nDelta;
+    s32 iScan;
+    s32 nOffset;
+    Tile* pTile;
+    u8 nData8;
+    u16 nData16;
+    u32 nData32;
+    u32 nData64[2];
+    u32 nSum;
+    u64* pSource;
+    s32 nCount;
+    s32 nScanFull;
+    int nScanPart;
+    u8* pSource8;
+    u16* pSource16;
+    u32* pSource32;
+
+    s32 i;
+    s32 temp_r3;
+    s32 temp_r10;
+    s32 pad[3];
+
+    frameDrawReset(pFrame, 1);
+
+    if (gpSystem->eTypeROM == SRT_ZELDA2 &&
+        (pFrame->aBuffer[FBT_IMAGE].nAddress == 0x500 || pFrame->aBuffer[FBT_IMAGE].nAddress == 0x7DA800)) {
+        CopyAndConvertCFB(pFrame->aBuffer[FBT_IMAGE].pData);
+    }
+
+    pSource = (u64*)((u32)pFrame->aBuffer[FBT_IMAGE].pData & ~3);
+    pFrame->iTileLoad = iTile;
+    pTile = &pFrame->aTile[iTile];
+    iTMEM = pTile->nTMEM & 0x1FF;
+    if (eType == FLT_BLOCK) {
+        var_r0 = 0;
+    } else {
+        var_r0 = 2;
+    }
+
+    switch (pFrame->aBuffer[FBT_IMAGE].nSize) {
+        case G_IM_SIZ_4b:
+            nSize = (pTile->nX1 + 1) >> 4;
+            nOffset =
+                ((pTile->nX0 >> var_r0) >> 1) + ((pFrame->aBuffer[FBT_IMAGE].nWidth + 1) >> 1) * (pTile->nY0 >> var_r0);
+            break;
+        case G_IM_SIZ_8b:
+            nSize = (pTile->nX1 + 1) >> 3;
+            nOffset = (pTile->nX0 >> var_r0) + pFrame->aBuffer[FBT_IMAGE].nWidth * (pTile->nY0 >> var_r0);
+            break;
+        case G_IM_SIZ_16b:
+            nSize = (pTile->nX1 + 1) >> 2;
+            nOffset = ((pTile->nX0 >> var_r0) << 1) + (pFrame->aBuffer[FBT_IMAGE].nWidth << 1) * (pTile->nY0 >> var_r0);
+            break;
+        case G_IM_SIZ_32b:
+            nSize = (pTile->nX1 + 1) >> 1;
+            nOffset = ((pTile->nX0 >> var_r0) << 2) + (pFrame->aBuffer[FBT_IMAGE].nWidth << 2) * (pTile->nY0 >> var_r0);
+            break;
+        default:
+            return false;
+    }
+
+    pSource = (u64*)((u8*)pSource + nOffset);
+    pFrame->nAddressLoad = (pFrame->aBuffer[FBT_IMAGE].nAddress & 0x7FFFFF) + nOffset;
+    nSum = 0;
+    if (eType == FLT_BLOCK) {
+        nDelta = pTile->nY1;
+        if (nDelta == 0) {
+            while (nSize-- != 0) {
+                nData64[0] = ((u32*)pSource)[0];
+                nData64[1] = ((u32*)pSource)[1];
+                pSource++;
+
+                nSum += nData64[0];
+                nSum += nData64[1];
+                nSum ^= iTMEM;
+
+                pFrame->TMEM.data.u32[2 * iTMEM + 0] = nData64[0];
+                pFrame->TMEM.data.u32[2 * iTMEM + 1] = nData64[1];
+
+                iTMEM = (iTMEM + 1) & 0x1FF;
+            }
+        } else {
+            nStep = 0;
+            while (nSize != 0) {
+                while (nSize != 0 && (nStep & 0x800) == 0) {
+                    nData64[0] = ((u32*)pSource)[0];
+                    nData64[1] = ((u32*)pSource)[1];
+                    pSource++;
+
+                    nSum += nData64[0];
+                    nSum += nData64[1];
+                    nSum ^= iTMEM;
+
+                    pFrame->TMEM.data.u32[2 * iTMEM + 0] = nData64[0];
+                    pFrame->TMEM.data.u32[2 * iTMEM + 1] = nData64[1];
+
+                    iTMEM = (iTMEM + 1) & 0x1FF;
+                    nStep += nDelta;
+                    nSize--;
+                }
+                nStep -= 0x800;
+                if (pFrame->aBuffer[FBT_IMAGE].nSize == 3) {
+                    bFlip = 0;
+                    while (nSize != 0 && (nStep & 0x800) == 0) {
+                        nData64[0] = ((u32*)pSource)[0];
+                        nData64[1] = ((u32*)pSource)[1];
+                        pSource++;
+
+                        nSum += nData64[0];
+                        nSum += nData64[1];
+                        nSum ^= iTMEM;
+
+                        temp_r3 = iTMEM + (bFlip ? -1 : 1);
+                        pFrame->TMEM.data.u32[2 * temp_r3 + 0] = nData64[0];
+                        pFrame->TMEM.data.u32[2 * temp_r3 + 1] = nData64[1];
+
+                        iTMEM = (iTMEM + 1) & 0x1FF;
+                        nStep += nDelta;
+                        nSize--;
+                        bFlip ^= 1;
+                    }
+                } else {
+                    while (nSize != 0 && (nStep & 0x800) == 0) {
+                        nData64[0] = ((u32*)pSource)[0];
+                        nData64[1] = ((u32*)pSource)[1];
+                        pSource++;
+
+                        nSum += nData64[0];
+                        nSum += nData64[1];
+                        nSum ^= iTMEM;
+
+                        pFrame->TMEM.data.u32[2 * iTMEM + 0] = nData64[1];
+                        pFrame->TMEM.data.u32[2 * iTMEM + 1] = nData64[0];
+
+                        iTMEM = (iTMEM + 1) & 0x1FF;
+                        nStep += nDelta;
+                        nSize--;
+                    }
+                }
+                nStep -= 0x800;
+            }
+        }
+    } else {
+        nCount = ((pTile->nY1 - pTile->nY0) + 4) >> 2;
+        nScanFull = pFrame->aBuffer[FBT_IMAGE].nWidth;
+        nScanPart = ((pTile->nX1 - pTile->nX0) + 4) >> 2;
+        switch (pFrame->aBuffer[FBT_IMAGE].nSize) {
+            case G_IM_SIZ_4b:
+            case G_IM_SIZ_8b:
+                if (nScanPart >= pTile->nSizeX * 8) {
+                    nScanPart = pTile->nSizeX * 8;
+                }
+                iTMEM <<= 3;
+                for (iScan = 0; iScan < nCount; iScan++) {
+                    pSource8 = (u8*)pSource;
+                    for (i = 0; i != nScanPart; i++) {
+                        if (iScan & 1) {
+                            temp_r10 = iTMEM ^ 4;
+                        } else {
+                            temp_r10 = iTMEM;
+                        }
+                        nData8 = *pSource8;
+                        nSum += nData8;
+                        nSum ^= iTMEM;
+                        pFrame->TMEM.data.u8[temp_r10] = nData8;
+                        pSource8++;
+                        iTMEM = (iTMEM + 1) & 0xFFF;
+                    }
+                    pSource = (u64*)((u8*)pSource + nScanFull);
+                    iTMEM += (pTile->nSizeX * 8) - nScanPart;
+                    iTMEM &= 0xFFF;
+                }
+                break;
+            case G_IM_SIZ_16b:
+                if (nScanPart >= pTile->nSizeX * 4) {
+                    nScanPart = pTile->nSizeX * 4;
+                }
+                iTMEM <<= 2;
+                for (iScan = 0; iScan < nCount; iScan++) {
+                    pSource16 = (u16*)pSource;
+                    for (i = 0; i != nScanPart; i++) {
+                        if (iScan & 1) {
+                            temp_r10 = iTMEM ^ 2;
+                        } else {
+                            temp_r10 = iTMEM;
+                        }
+                        nData16 = *pSource16;
+                        nSum += nData16;
+                        nSum ^= iTMEM;
+                        pFrame->TMEM.data.u16[temp_r10] = nData16;
+                        pSource16++;
+                        iTMEM = (iTMEM + 1) & 0x7FF;
+                    }
+                    pSource = (u64*)((u16*)pSource + nScanFull);
+                    iTMEM = (iTMEM + ((pTile->nSizeX * 4) - nScanPart)) & 0x7FF;
+                }
+                break;
+            case G_IM_SIZ_32b:
+                if (nScanPart >= pTile->nSizeX * 4) {
+                    nScanPart = pTile->nSizeX * 4;
+                }
+                iTMEM <<= 1;
+                for (iScan = 0; iScan < nCount; iScan++) {
+                    pSource32 = (u32*)pSource;
+                    for (i = 0; i != nScanPart; i++) {
+                        if (iScan & 1) {
+                            temp_r10 = iTMEM ^ 2;
+                        } else {
+                            temp_r10 = iTMEM;
+                        }
+                        nData32 = *pSource32;
+                        nSum += nData32;
+                        nSum ^= iTMEM;
+                        pFrame->TMEM.data.u32[temp_r10] = nData32;
+                        pSource32++;
+                        iTMEM = (iTMEM + 1) & 0x3FF;
+                    }
+                    pSource = (u64*)((u32*)pSource + nScanFull);
+                    iTMEM += (pTile->nSizeX * 4) - nScanPart;
+                    iTMEM &= 0x3FF;
+                }
+                break;
+            default:
+                return false;
+        }
+    }
+
+    pFrame->nCodePixel = nSum;
+    return true;
+}
 
 bool frameSetLightCount(Frame* pFrame, s32 nCount) {
     pFrame->nCountLight = nCount;
