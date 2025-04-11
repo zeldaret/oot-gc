@@ -39,6 +39,20 @@
 #define G_OBJLT_TXTRTILE 0x00FC1034
 #define G_OBJLT_TLUT 0x00000030
 
+#define G_IM_SIZ_4b 0
+#define G_IM_SIZ_8b 1
+#define G_IM_SIZ_16b 2
+#define G_IM_SIZ_32b 3
+
+#define G_IM_FMT_RGBA 0
+#define G_IM_FMT_YUV 1
+#define G_IM_FMT_CI 2
+#define G_IM_FMT_IA 3
+#define G_IM_FMT_I 4
+
+#define G_TX_WRAP (1 << 0)
+#define G_TX_CLAMP (1 << 1)
+
 typedef enum RspAudioUCodeType {
     RUT_NOCODE = -1,
     RUT_ABI1 = 0,
