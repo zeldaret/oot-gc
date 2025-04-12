@@ -3201,7 +3201,7 @@ void CopyAndConvertCFB(u16* srcP) {
     }
 }
 
-void ZeldaGreyScaleConvert(Frame* pFrame) {
+static void ZeldaGreyScaleConvert(Frame* pFrame) {
     Mtx matrix;
     void* dataP;
     s32 pad[9];
@@ -4549,7 +4549,7 @@ bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
     return false;
 }
 
-bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
+static bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
     s32 temp_r4;
 
     switch (nEvent) {

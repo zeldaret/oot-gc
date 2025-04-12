@@ -18,6 +18,7 @@ static bool frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive);
 static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle);
 static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle);
 static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
+static bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
 void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
 
 _XL_OBJECTTYPE gClassFrame = {

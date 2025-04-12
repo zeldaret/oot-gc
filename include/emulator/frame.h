@@ -355,7 +355,6 @@ extern GXTexCoordID ganNameTexCoord[];
 
 bool frameDrawSetup2D(Frame* pFrame);
 bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
-bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
 
 void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData);
 void ZeldaDrawFrame(Frame* pFrame, u16* pData);
