@@ -2959,20 +2959,7 @@ bool frameEnd(Frame* pFrame) {
     }
 
     if (gpSystem->eTypeROM == SRT_DRMARIO && pFrame->bGrabbedFrame) {
-#if VERSION == MQ_J
-        //! TODO: find something better
-        GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
-        GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
-        pData = gnTempBuffer;
-        DCInvalidateRange(pData, N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16));
-        GXCopyTex(pData, GX_FALSE);
-        sCopyFrameSyncReceived = false;
-        GXSetDrawSync(FRAME_SYNC_TOKEN);
-        while (!sCopyFrameSyncReceived) {}
-#else
-        pData = pFrame->nTempBuffer;
-        CopyCFB(pData);
-#endif
+        CopyCFB(TEMP_BUFFER);
         pFrame->bGrabbedFrame = false;
     }
 
