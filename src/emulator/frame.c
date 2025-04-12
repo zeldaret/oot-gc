@@ -43,15 +43,8 @@ static inline bool frameResetCache(Frame* pFrame);
 static bool frameSetupCache(Frame* pFrame);
 void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
 
-const s32 D_800D31C0[] = {
-    0x00000006, 0x00000000, 0x00000005, 0x00020000, 0x00000004, 0x00030000, 0x00000003, 0x00038000,
-    0x00000002, 0x0003C000, 0x00000001, 0x0003E000, 0x00000000, 0x0003F000, 0x00000000, 0x0003F800,
-};
-
-static char D_800EA838[] = "Frame-Buffer";
-
 _XL_OBJECTTYPE gClassFrame = {
-    D_800EA838,
+    "Frame-Buffer",
     sizeof(Frame),
     NULL,
     (EventFunc)frameEvent,
@@ -78,10 +71,6 @@ u32 ganNameColor[] = {
     0, 1, 2, 3, 4, 5, 6, 7,
 };
 
-static u8 sRemapI[] = {
-    0, 2, 4, 6, 8, 10, 12, 15,
-};
-
 GXTexMapID ganNamePixel[] = {
     GX_TEXMAP0, GX_TEXMAP1, GX_TEXMAP2, GX_TEXMAP3, GX_TEXMAP4, GX_TEXMAP5, GX_TEXMAP6, GX_TEXMAP7,
 };
@@ -94,13 +83,27 @@ GXTexCoordID ganNameTexCoord[] = {
     GX_TEXCOORD0, GX_TEXCOORD1, GX_TEXCOORD2, GX_TEXCOORD3, GX_TEXCOORD4, GX_TEXCOORD5, GX_TEXCOORD6, GX_TEXCOORD7,
 };
 
-char D_800EA8D8[] = "TEXRRR (obsolete)";
-char D_800EA8EC[] = "TEXGGG (obsolete)";
-char D_800EA900[] = "TEXBBB (obsolete)";
-
 char* gaszNameColor[] = {
-    "CPREV", "APREV", "C0",  "A0",   "C1",    "A1",   "C2",       "A2",       "TEXC",     "TEXA",
-    "RASC",  "RASA",  "ONE", "HALF", "KONST", "ZERO", D_800EA8D8, D_800EA8EC, D_800EA900, "GX_CC_KONST",
+    "CPREV",
+    "APREV",
+    "C0",
+    "A0",
+    "C1",
+    "A1",
+    "C2",
+    "A2",
+    "TEXC",
+    "TEXA",
+    "RASC",
+    "RASA",
+    "ONE",
+    "HALF",
+    "KONST",
+    "ZERO",
+    "TEXRRR (obsolete)",
+    "TEXGGG (obsolete)",
+    "TEXBBB (obsolete)",
+    "GX_CC_KONST",
 };
 
 char* gaszNameAlpha[] = {
@@ -123,10 +126,6 @@ FrameDrawFunc gapfDrawLine[6] = {
     (FrameDrawFunc)frameDrawLine_C0T2, (FrameDrawFunc)frameDrawLine_C1T2, (FrameDrawFunc)frameDrawLine_C2T2,
 };
 
-s32 nCopyFrame;
-s32 nLastFrame;
-bool bSkip;
-s32 nCounter;
 s32 gnCountMapHack;
 bool gNoSwapBuffer;
 static u16 sTempZBuf[N64_FRAME_WIDTH * N64_FRAME_HEIGHT / 16][4][4] ATTRIBUTE_ALIGN(32);
@@ -138,54 +137,6 @@ s32 sZBufShift[] = {
 
 char* gaszNameColorType[] = {
     "FOG", "FILL", "BLEND", "PRIMITIVE", "ENVIRONMENT",
-};
-
-static GXTexObj sFrameObj1;
-static GXTexObj sFrameObj2;
-static GXTexObj sFrameObj_1564;
-static GXTexObj sFrameObj_1565;
-static GXTexObj sFrameObj_1568;
-static u32 line_1582[N64_FRAME_WIDTH / 4][4][4];
-static u16 line_1606[N64_FRAME_WIDTH / 4][4][4];
-static u16 line_1630[N64_FRAME_WIDTH / 4][4][4];
-static GXTexObj sFrameObj_1647;
-static u8 cAlpha = 0x0F;
-static GXTexObj sFrameObj_1660;
-static GXTexObj frameObj_1663;
-static GXTexObj frameObj_1673;
-
-s32 sCommandCodes_1679[] = {
-    0xF5500000, 0x07080200, 0xE6000000, 0x00000000, 0xF3000000, 0x073BF01A, 0xE7000000, 0x00000000,
-};
-
-s32 sCommandCodes_1702[] = {
-    0xE7000000, 0x00000000, 0xEF000CF0, 0x0F0A4004, 0xFB000000,
-    0xFFFFFFFF, 0xFC12FE25, 0xFFFFFBFD, 0xFF10013F, 0x804096C0,
-};
-
-s32 sCommandCodes2[] = {
-    0xE7000000, 0x00000000, 0xE7000000, 0x00000000, 0xEF000CF0,
-    0x0F0A0004, 0xFCFFFFFF, 0xFFFCFE7F, 0xFF88013F, 0x80784600,
-};
-
-static u16 tempLine[ZELDA_PAUSE_EQUIP_PLAYER_WIDTH / 4][4][4];
-
-s32 GBIcode[] = {
-    0xED000000,
-    0x0B000000,
-    0x0A000000,
-};
-
-s32 GBIcode2D2[] = {
-    0xB9000000, 0xBA000000, 0xE7000000, 0xBA000000, 0xC1000000, 0xE7000000, 0x02000000,
-};
-
-s32 GBIcode3D1[] = {
-    0xBA000000, 0xFC000000, 0xB9000000, 0xBA000000, 0xB9000000,
-};
-
-s32 GBIcode3D2[] = {
-    0xE7000000, 0xBA000000, 0xFC000000, 0xB9000000, 0xBA000000, 0xB9000000,
 };
 
 s32 anRenderModeDatabaseCycle2[] = {
@@ -247,105 +198,6 @@ s32 anRenderModeDatabaseCycle1[] = {
     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000,
 };
-
-char D_800EB13C[] = "GetTextureInfo: Unknown texture-format: %d\n";
-char D_800EB1B8[] = "frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n";
-char D_800EB1F8[] = "Waiting for valid?\n";
-char D_800EB2AC[] = "LoadTexture: Unknown FILTER mode (%d)\n";
-char D_800EB2D4[] = "MakeTexture: 'aTexture' is exhausted!";
-
-static char D_80134E58[] = "frame.c";
-
-const f32 D_80135E00 = 0.0f;
-const f32 D_80135E04 = 0.25f;
-const f32 D_80135E08 = 2.0f;
-const f64 D_80135E10 = 4503601774854144.0;
-const f32 D_80135E18 = 0.0625f;
-const f32 D_80135E1C = 0.0078125f;
-const f32 D_80135E20 = 4096.0f;
-const f32 D_80135E24 = 4194304.0f;
-const f64 D_80135E28 = 4503599627370496.0;
-const f32 D_80135E30 = 0.5f;
-const f32 D_80135E34 = 3.0f;
-const f32 D_80135E38 = 1.0f;
-const f64 D_80135E40 = 0.5;
-const f64 D_80135E48 = 3.0;
-const f32 D_80135E50 = 0.2267303466796875f;
-const f32 D_80135E54 = 0.3183135986328125f;
-const f32 D_80135E58 = 0.00624f;
-const f32 D_80135E5C = 0.006242f;
-const f32 D_80135E60 = 640.0f;
-const f32 D_80135E64 = 480.0f;
-const f32 D_80135E68 = 320.0f;
-const f32 D_80135E6C = 240.0f;
-const f64 D_80135E70 = 262143.0;
-const f64 D_80135E78 = 43.52;
-const f32 D_80135E80 = 80.0f;
-const f32 D_80135E84 = 31.0f;
-const f32 D_80135E88 = 0.015625f;
-const f32 D_80135E8C = 143.0f;
-const f32 D_80135E90 = 0.859375f;
-const f32 D_80135E94 = 0.95f;
-const f32 D_80135E98 = 0.9f;
-const f32 D_80135E9C = 0.85f;
-const f32 D_80135EA0 = 0.8f;
-const f32 D_80135EA4 = -1.0;
-const f32 D_80135EA8 = 319.0f;
-const f32 D_80135EAC = 239.0f;
-const f32 D_80135EB0 = -1001.0;
-const f32 D_80135EB4 = -53.0;
-const f32 D_80135EB8 = -3080.0;
-const f32 D_80135EBC = 6067.0f;
-const f32 D_80135EC0 = -31.0;
-const f32 D_80135EC4 = 1669.0f;
-const f32 D_80135EC8 = 1000.0f;
-const f32 D_80135ECC = 32000.0f;
-const f32 D_80135ED0 = 30.0f;
-const f32 D_80135ED4 = 1.3333334f;
-const f32 D_80135ED8 = 0.1f;
-const f32 D_80135EDC = 0.0015f;
-const f32 D_80135EE0 = 65536.0f;
-const f32 D_80135EE4 = 1001.0f;
-const f32 D_80135EE8 = 500.0f;
-const f32 D_80135EEC = 970.0f;
-const f32 D_80135EF0 = 59.0f;
-const f32 D_80135EF4 = 990.0f;
-const f32 D_80135EF8 = 0.21f;
-const f32 D_80135EFC = 0.35f;
-const f32 D_80135F00 = 12800.0f;
-const f32 D_80135F04 = 0.6f;
-const f32 D_80135F08 = 0.7f;
-const f32 D_80135F0C = 44.0f;
-const f32 D_80135F10 = 0.13f;
-const f32 D_80135F14 = 45.0f;
-const f32 D_80135F18 = 15.0f;
-const f32 D_80135F1C = 0.38f;
-const f32 D_80135F20 = 900.0f;
-const f32 D_80135F24 = 350.0f;
-const f32 D_80135F28 = 10.0f;
-const f32 D_80135F2C = 200.0f;
-const f32 D_80135F30 = 128000.0f;
-const f32 D_80135F34 = -25344.0;
-const f32 D_80135F38 = 25600.0f;
-const f32 D_80135F3C = 2200.0f;
-const f32 D_80135F40 = 0.575f;
-const f32 D_80135F44 = 0.75f;
-const f32 D_80135F48 = -21077.0;
-const f32 D_80135F4C = 21333.0f;
-const f32 D_80135F50 = -90.0;
-const f32 D_80135F54 = 258.0f;
-const f32 D_80135F58 = 0.45f;
-const f32 D_80135F5C = -667.0;
-const f32 D_80135F60 = 688.0f;
-const f32 D_80135F64 = 0.00390625f;
-const f32 D_80135F68 = 860.0f;
-const f32 D_80135F6C = 0.15f;
-const f32 D_80135F70 = 140.0f;
-const f32 D_80135F74 = 0.28f;
-const f32 D_80135F78 = 0.72f;
-const f32 D_80135F7C = 0.26f;
-const f32 D_80135F80 = 8.44f;
-const f64 D_80135F88 = 8.44;
 
 static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
     MatrixHint* pHint = &pFrame->aMatrixHint[iHint];
@@ -1220,6 +1072,10 @@ static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, 
                 linePixX = 0;
                 lineStep = 2;
                 while (iPixelX < nSizeTextureX) {
+                    static u8 sRemapI[] = {
+                        0, 2, 4, 6, 8, 10, 12, 15,
+                    };
+
                     if (iPixelX < nSizeX) {
                         nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + ((linePixX ^ nFlip) >> 1)];
                         if (lineStep < 0) {
@@ -2796,6 +2652,7 @@ static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
     f32 rS1;
     f32 rT1;
     s32 pad;
+    static s32 nCounter;
 
     if (gpSystem->eTypeROM == SRT_DRMARIO) {
         if (pRectangle->nX0 == 0 && pRectangle->nY0 == 0 && pRectangle->nX1 == 1208 && pRectangle->nY1 == 20) {
@@ -2949,6 +2806,8 @@ static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
     if (bFlag) {
         for (iIndex = 0; iTile <= nCount; iTile++, iIndex++) {
             if (frameLoadTile(pFrame, &pTexture[iTile], iTile | (iIndex << 4))) {
+                static bool bSkip;
+
                 if (gpSystem->eTypeROM == SRT_ZELDA2 && pTexture[iTile]->nAddress == 0x784600 &&
                     pRectangle->nX1 == 1280) {
                     bSkip = true;
@@ -2961,6 +2820,7 @@ static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
                         bSkip = true;
                     }
                 }
+
                 if (bSkip) {
                     if (pRectangle->nY1 == 960) {
                         bSkip = false;
@@ -3076,7 +2936,7 @@ bool frameBegin(Frame* pFrame, s32 nCountVertex) {
         gbFrameBegin = false;
 
         while (gbFrameValid) {
-            OSReport(D_800EB1F8);
+            OSReport("Waiting for valid?\n");
         }
 
         if (!SIMULATOR_TEST_RESET(false, false, true, false)) {
@@ -3133,7 +2993,7 @@ bool frameEnd(Frame* pFrame) {
     pCPU = SYSTEM_CPU(gpSystem);
 
     if (gbFrameBegin) {
-        OSReport(D_800EB1B8);
+        OSReport("frameEnd: INTERNAL ERROR: Called when 'gbFrameBegin' is TRUE!\n");
     }
     gbFrameBegin = true;
 
@@ -3223,9 +3083,14 @@ bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, 
     return true;
 }
 
+// Variables from unused function ZeldaDrawFrameZTexture
+static GXTexObj sFrameObj1_1562;
+static GXTexObj sFrameObj2_1563;
+
 void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
     Mtx matrix;
     u32 pad[8];
+    static GXTexObj sFrameObj;
 
     frameDrawSetup2D(pFrame);
     GXSetNumTevStages(1);
@@ -3239,9 +3104,9 @@ void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData) {
     GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
-    GXInitTexObj(&sFrameObj_1564, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
-    GXInitTexObjLOD(&sFrameObj_1564, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
-    GXLoadTexObj(&sFrameObj_1564, GX_TEXMAP0);
+    GXInitTexObj(&sFrameObj, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj, GX_TEXMAP0);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -3264,6 +3129,7 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     Mtx matrix;
     s32 pad[8];
     GXColor color;
+    static GXTexObj sFrameObj;
 
     color.r = 255;
     color.g = 255;
@@ -3286,9 +3152,9 @@ void ZeldaDrawFrameBlur(Frame* pFrame, u16* pData) {
     GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
-    GXInitTexObj(&sFrameObj_1565, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
-    GXInitTexObjLOD(&sFrameObj_1565, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
-    GXLoadTexObj(&sFrameObj_1565, GX_TEXMAP0);
+    GXInitTexObj(&sFrameObj, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj, GX_TEXMAP0);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -3315,6 +3181,7 @@ void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
     Mtx matrix;
     u32 pad[8];
     GXColor color;
+    static GXTexObj sFrameObj;
 
     color.r = 255;
     color.g = 255;
@@ -3337,9 +3204,9 @@ void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
     GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
-    GXInitTexObj(&sFrameObj_1568, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
-    GXInitTexObjLOD(&sFrameObj_1568, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
-    GXLoadTexObj(&sFrameObj_1568, GX_TEXMAP0);
+    GXInitTexObj(&sFrameObj, pData, N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj, GX_TEXMAP0);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -3362,6 +3229,10 @@ void ZeldaDrawFrame(Frame* pFrame, u16* pData) {
     frameDrawReset(pFrame, 0x47F2D);
 }
 
+// Variables from unused functions ConvertZ and ConvertCFB
+static u32 line_1582[N64_FRAME_WIDTH / 4][4][4];
+static u16 line_1606[N64_FRAME_WIDTH / 4][4][4];
+
 static inline void CopyCFB(u16* srcP) {
     GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
     GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB565, GX_TRUE);
@@ -3378,6 +3249,7 @@ void CopyAndConvertCFB(u16* srcP) {
     s32 y;
     s32 x;
     u16 val;
+    static u16 line[N64_FRAME_WIDTH / 4][4][4];
 
     GXSetTexCopySrc(0, 0, GC_FRAME_WIDTH, GC_FRAME_HEIGHT);
     GXSetTexCopyDst(N64_FRAME_WIDTH, N64_FRAME_HEIGHT, GX_TF_RGB5A3, GX_TRUE);
@@ -3390,12 +3262,12 @@ void CopyAndConvertCFB(u16* srcP) {
 
     dataEndP = srcP + N64_FRAME_WIDTH * N64_FRAME_HEIGHT;
     while (srcP < dataEndP) {
-        xlHeapCopy(&line_1630, srcP, sizeof(line_1630));
+        xlHeapCopy(&line, srcP, sizeof(line));
 
         for (y = 0; y < 4; y++) {
             for (tile = 0; tile < N64_FRAME_WIDTH / 4; tile++) {
                 for (x = 0; x < 4; x++, srcP++) {
-                    val = line_1630[tile][y][x];
+                    val = line[tile][y][x];
                     *srcP = (val << 1) | 1;
                 }
             }
@@ -3408,6 +3280,8 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     void* dataP;
     s32 pad[9];
     GXColor color;
+    static GXTexObj sFrameObj;
+    static u8 cAlpha = 15;
 
     dataP = DemoCurrentBuffer;
     color.r = 192;
@@ -3448,9 +3322,9 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
-    GXInitTexObj(&sFrameObj_1647, dataP, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_I8, GX_CLAMP, GX_CLAMP, GX_FALSE);
-    GXInitTexObjLOD(&sFrameObj_1647, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
-    GXLoadTexObj(&sFrameObj_1647, GX_TEXMAP0);
+    GXInitTexObj(&sFrameObj, dataP, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_I8, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&sFrameObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&sFrameObj, GX_TEXMAP0);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -3473,6 +3347,9 @@ void ZeldaGreyScaleConvert(Frame* pFrame) {
     frameDrawReset(pFrame, 0x47F2D);
 }
 
+// Variables from unused function ZeldaDrawFrameHiRes
+static GXTexObj sFrameObj_1660;
+
 void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     Mtx matrix;
     s32 pad;
@@ -3483,6 +3360,7 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     f32 scale;
     void* frameBuffer;
     GXColor color;
+    static GXTexObj frameObj;
 
     frameBuffer = DemoCurrentBuffer;
     nX0 = posX;
@@ -3559,10 +3437,9 @@ void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
-    GXInitTexObj(&frameObj_1663, frameBuffer, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP,
-                 GX_FALSE);
-    GXInitTexObjLOD(&frameObj_1663, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
-    GXLoadTexObj(&frameObj_1663, GX_TEXMAP0);
+    GXInitTexObj(&frameObj, frameBuffer, GC_FRAME_WIDTH, GC_FRAME_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&frameObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&frameObj, GX_TEXMAP0);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -3589,6 +3466,7 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     Mtx matrix;
     GXColor color;
     s32 pad[6];
+    static GXTexObj frameObj;
 
     frameDrawSetup2D(pFrame);
     color.r = 255;
@@ -3610,10 +3488,9 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     GXSetZCompLoc(GX_TRUE);
     PSMTXIdentity(matrix);
     GXLoadTexMtxImm(matrix, 30, GX_MTX2x4);
-    GXInitTexObj(&frameObj_1673, buffer, ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, GX_TF_I8, GX_CLAMP, GX_CLAMP,
-                 GX_FALSE);
-    GXInitTexObjLOD(&frameObj_1673, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
-    GXLoadTexObj(&frameObj_1673, GX_TEXMAP0);
+    GXInitTexObj(&frameObj, buffer, ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, GX_TF_I8, GX_CLAMP, GX_CLAMP, GX_FALSE);
+    GXInitTexObjLOD(&frameObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, GX_FALSE, GX_FALSE, GX_ANISO_1);
+    GXLoadTexObj(&frameObj, GX_TEXMAP0);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -3639,16 +3516,19 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
 //! TODO: make sCommandCodes a static variable in the function
 bool frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi) {
     u32 i;
+    static s32 sCommandCodes[] = {
+        0xF5500000, 0x07080200, 0xE6000000, 0x00000000, 0xF3000000, 0x073BF01A, 0xE7000000, 0x00000000,
+    };
 
     if ((*pnCommandLo == 0x0F000000) && (*pnCommandHi == 0xFD500000)) {
         u32* tmp = (u32*)*pnGBI;
-        for (i = 0; i < ARRAY_COUNT(sCommandCodes_1679); i++) {
-            if (tmp[i] != sCommandCodes_1679[i]) {
+        for (i = 0; i < ARRAY_COUNT(sCommandCodes); i++) {
+            if (tmp[i] != sCommandCodes[i]) {
                 break;
             }
         }
 
-        if (i == ARRAY_COUNT(sCommandCodes_1679)) {
+        if (i == ARRAY_COUNT(sCommandCodes)) {
             ZeldaGreyScaleConvert(pFrame);
             sSpecialZeldaHackON = 1;
         }
@@ -3670,6 +3550,16 @@ bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 n
     u32 i;
     u32* pGBI;
     s32 pad[2];
+    static s32 sCommandCodes[] = {
+        0xE7000000, 0x00000000, 0xEF000CF0, 0x0F0A4004, 0xFB000000,
+        0xFFFFFFFF, 0xFC12FE25, 0xFFFFFBFD, 0xFF10013F, 0x804096C0,
+    };
+    static s32 sCommandCodes2[] = {
+        0xE7000000, 0x00000000, 0xE7000000, 0x00000000, 0xEF000CF0,
+        0x0F0A0004, 0xFCFFFFFF, 0xFFFCFE7F, 0xFF88013F, 0x80784600,
+    };
+    static s32 nCopyFrame;
+    static s32 nLastFrame;
 
     if (pBuffer->nAddress == pFrame->aBuffer[FBT_DEPTH].nAddress) {
         pFrame->nHackCount += 1;
@@ -3679,13 +3569,13 @@ bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 n
 
     if ((s32)pFrame->nHackCount > 1) {
         pGBI = (u32*)&pnGBI[-5];
-        for (i = 0; i < ARRAY_COUNT(sCommandCodes_1702); i++) {
-            if (pGBI[i] != sCommandCodes_1702[i] && !(i == 9 && (pGBI[9] == 0x80383C80 || pGBI[9] == 0x80383AC0))) {
+        for (i = 0; i < ARRAY_COUNT(sCommandCodes); i++) {
+            if (pGBI[i] != sCommandCodes[i] && !(i == 9 && (pGBI[9] == 0x80383C80 || pGBI[9] == 0x80383AC0))) {
                 break;
             }
         }
 
-        if (i == ARRAY_COUNT(sCommandCodes_1702)) {
+        if (i == ARRAY_COUNT(sCommandCodes)) {
             if (!pFrame->bHackPause) {
                 nCopyFrame = 1;
             }
@@ -3751,6 +3641,7 @@ bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nC
     u32 low2;
     u32 high2;
     u16* srcP;
+    static u16 tempLine[ZELDA_PAUSE_EQUIP_PLAYER_WIDTH / 4][4][4];
 
     for (i = 0; i < sNumAddr; i++) {
         if (nCommandLo == sConstantBufAddr[i]) {
@@ -3834,6 +3725,11 @@ bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
     Rsp* pRSP;
     s32 done;
     uObjBg bg;
+    static s32 GBIcode[] = {
+        0xED000000,
+        0x0B000000,
+        0x0A000000,
+    };
 
     pnGBI = *ppnGBI;
     for (count = 0; count < ARRAY_COUNT(GBIcode); count++) {
@@ -4014,6 +3910,15 @@ bool frameHackCIMG_Panel(Rdp* pRDP, Frame* pFrame, FrameBuffer* pBuffer, u64** p
     u16* pBitmap16;
     u8* pBitmap8;
     s32 pad1[10];
+    static s32 GBIcode2D2[] = {
+        0xB9000000, 0xBA000000, 0xE7000000, 0xBA000000, 0xC1000000, 0xE7000000, 0x02000000,
+    };
+    static s32 GBIcode3D1[] = {
+        0xBA000000, 0xFC000000, 0xB9000000, 0xBA000000, 0xB9000000,
+    };
+    static s32 GBIcode3D2[] = {
+        0xE7000000, 0xBA000000, 0xFC000000, 0xB9000000, 0xBA000000, 0xB9000000,
+    };
 
     pRSP = SYSTEM_RSP(pRDP->pHost);
     pnGBI = *ppnGBI;
@@ -4975,7 +4880,7 @@ static bool frameMakeTexture(Frame* pFrame, FrameTexture** ppTexture) {
     }
 
     if (iTextureUsed == ARRAY_COUNTU(pFrame->anTextureUsed)) {
-        xlPostText(D_800EB2D4, D_80134E58, 554);
+        xlPostText("MakeTexture: 'aTexture' is exhausted!", "frame.c", 554);
         return false;
     }
 
