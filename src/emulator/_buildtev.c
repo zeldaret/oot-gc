@@ -33,35 +33,6 @@ static GXTevAlphaArg sUsualAArgs[] = {
     GX_CA_ZERO,
 };
 
-static s32 texelType[2][4] = {
-    {0x00000001, 0x00000002, 0x00000008, 0x00000009},
-    {0x00000001, 0x00000002, 0x00000004, 0x00000002},
-};
-
-static s32 lightType[2][2] = {
-    {0x00000004, 0x0000000B},
-    {0x00000004, 0x00000004},
-};
-
-char D_800F0568[] = "TEXCOORD0 twice -> should NOT happen!\n";
-char D_800F0590[] = "TEXCOORD1 twice -> should NOT happen!\n";
-char D_800F05B8[] = "BAD MODE in two-texture, no C texture\n";
-char D_800F05E0[] = "case of multi-texture, with C value being a texture -> NOT HANDLED!\n";
-
-static CombineModeTev tevStages;
-
-static s32 zeroType[] = {
-    0x0000000F,
-    0x00000007,
-};
-
-char D_80135408[6] = "NOO!!";
-
-const s32 D_801360D8[2] = {
-    0x00000000,
-    0x00000000,
-};
-
 // special ``memset`` function?
 inline void BuildTevMemset(void* ptr, int value, size_t num) {
     u8* p = ptr;
@@ -143,7 +114,7 @@ void SetAlpha(u8* stageValues, u32 alphaVal, u8 cycle, u32 colorVal, u32 color2V
     }
 }
 
-s32 AddAlphaTevOrder(CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
+static s32 AddAlphaTevOrder(CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
     s32 ret = 0;
 
     if (foundTypes & 3) {
@@ -173,7 +144,804 @@ s32 AddAlphaTevOrder(CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
     return ret;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/_buildtev/SetupStage.s")
+static inline void AddColorTevOrder(CombineModeTev* tvP, s32 foundTypes, s32 curStage) {
+    if (foundTypes & 3) {
+        if (foundTypes & 1) {
+            tvP->tevOrder[curStage].coordID = GX_TEXCOORD0;
+            tvP->tevOrder[curStage].mapID = GX_TEXMAP0;
+        } else {
+            tvP->tevOrder[curStage].coordID = GX_TEXCOORD1;
+            tvP->tevOrder[curStage].mapID = GX_TEXMAP1;
+        }
+    }
+
+    if (foundTypes & 0x400) {
+        tvP->tevOrder[curStage].chanID = GX_COLOR0A0;
+    }
+}
+
+s32 SetupStage(CombineModeTev* tvP, u8* stageValues, s32 type) {
+    static s32 zeroType[2] = {15, 7};
+    static s32 texelType[2][4] = {{1, 2, 8, 9}, {1, 2, 4, 2}};
+    static s32 lightType[2][2] = {{4, 11}, {4, 4}};
+    s32 zero = zeroType[type];
+    s32 curStage = tvP->numStages;
+    s32 textureFoundPos = 0;
+    s32 numFound[2] = {0};
+    s32 retStages = 1;
+    s32 ret;
+    int i;
+    s32 num;
+    int j;
+    s32 foundTypes;
+    int texelNum;
+    int temp_r3;
+    s32 pad;
+
+    num = texelType[1][type + 2];
+    foundTypes = 0;
+
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < num; i++) {
+            if (texelType[type][i] == stageValues[j]) {
+                texelNum = i & 1;
+                foundTypes |= 1 << texelNum;
+                textureFoundPos |= 1 << (j + (texelNum << 2));
+                numFound[texelNum]++;
+            }
+        }
+
+        for (i = 0; i < 2; i++) {
+            if (lightType[type][i] == stageValues[j]) {
+                foundTypes |= 0x400;
+                textureFoundPos |= 1 << (j + 8);
+            }
+        }
+    }
+
+    if (stageValues[0] == zero && stageValues[1] == zero && stageValues[2] == zero) {
+        tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+        if (type == 0) {
+            tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+            AddColorTevOrder(tvP, foundTypes, curStage);
+        } else {
+            ret = AddAlphaTevOrder(tvP, foundTypes, curStage);
+            curStage += ret;
+            retStages += ret;
+            tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+        }
+    } else if (stageValues[1] == zero && stageValues[3] == zero) {
+        tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+        if ((foundTypes & 3) == 3) {
+            if (type == 0) {
+                s32 mask = 1;
+                if (textureFoundPos & 0x10) {
+                    mask = 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[0]];
+                curStage++;
+                retStages++;
+                mask = ~mask;
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][2] = GX_CC_CPREV;
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[2]];
+            } else if (tvP->tevOrder[curStage].coordID == GX_TEXCOORD_NULL) {
+                s32 mask = 1;
+                if (textureFoundPos & 0x10) {
+                    mask = 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[0]];
+                curStage++;
+                retStages++;
+                mask = ~mask;
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][2] = GX_CA_APREV;
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[2]];
+            } else if (tvP->tevOrder[curStage].coordID == GX_TEXCOORD0) {
+                s32 index1 = 0;
+                s32 index2 = 2;
+                if (textureFoundPos & 0x10) {
+                    index1 = 2;
+                    index2 = 0;
+                }
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[index1]];
+                retStages++;
+                curStage++;
+                if (tvP->tevOrder[curStage].coordID == GX_TEXCOORD0) {
+                    OSReport("TEXCOORD0 twice -> should NOT happen!\n");
+                }
+                tvP->tevOrder[curStage].coordID = GX_TEXCOORD1;
+                tvP->tevOrder[curStage].mapID = GX_TEXMAP1;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][2] = GX_CA_APREV;
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[index2]];
+            } else {
+                s32 index1 = 0;
+                s32 index2 = 2;
+                tvP->tevOrder[curStage].coordID = GX_TEXCOORD1;
+                tvP->tevOrder[curStage].mapID = GX_TEXMAP1;
+                if (textureFoundPos & 1) {
+                    index1 = 2;
+                    index2 = 0;
+                }
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[index1]];
+                curStage++;
+                retStages++;
+                if (tvP->tevOrder[curStage].coordID == GX_TEXCOORD1) {
+                    OSReport("TEXCOORD1 twice -> should NOT happen!\n");
+                }
+                tvP->tevOrder[curStage].coordID = GX_TEXCOORD0;
+                tvP->tevOrder[curStage].mapID = GX_TEXMAP0;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][2] = GX_CA_APREV;
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[index2]];
+            }
+        } else if (type == 0) {
+            tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+            tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+            AddColorTevOrder(tvP, foundTypes, curStage);
+        } else {
+            ret = AddAlphaTevOrder(tvP, foundTypes, curStage);
+            curStage += ret;
+            retStages += ret;
+            tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+            tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+        }
+    } else if (stageValues[1] == stageValues[3]) {
+        tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+        if ((foundTypes & 3) == 3) {
+            if (type == 0) {
+                s32 flag = 0;
+
+                tvP->tevOrder[curStage].coordID = GX_TEXCOORD0;
+                tvP->tevOrder[curStage].mapID = GX_TEXMAP0;
+
+                for (i = 0; i < 4; i++) {
+                    if (stageValues[i] == 1) {
+                        flag |= 1;
+                        tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[i]];
+                        stageValues[i] = 0;
+                    } else if (stageValues[i] == 8) {
+                        flag |= 2;
+                        tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[i]];
+                        stageValues[i] = 7;
+                    }
+                }
+
+                if (flag == 3) {
+                    OSReport("NOO!!");
+                }
+
+                tvP->tevColorArg[curStage][3] = GX_CC_TEXC;
+                curStage++;
+                retStages++;
+                AddColorTevOrder(tvP, (foundTypes & ~3) | 2, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][0] = gColorArgs[stageValues[1]];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+            } else if (tvP->tevOrder[curStage].coordID == GX_TEXCOORD1) {
+                tvP->tevAlphaArg[curStage][3] = GX_CA_TEXA;
+                for (i = 0; i < 4; i++) {
+                    if (stageValues[i] == 2) {
+                        stageValues[i] = 8;
+                    }
+                }
+                curStage++;
+                retStages++;
+                ret = AddAlphaTevOrder(tvP, foundTypes & ~2, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevAlphaArg[curStage][0] = gAlphaArgs[stageValues[1]];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+            } else {
+                tvP->tevOrder[curStage].coordID = GX_TEXCOORD0;
+                tvP->tevOrder[curStage].mapID = GX_TEXMAP0;
+                tvP->tevAlphaArg[curStage][3] = GX_CA_TEXA;
+                for (i = 0; i < 4; i++) {
+                    if (stageValues[i] == 1) {
+                        stageValues[i] = 8;
+                    }
+                }
+                curStage++;
+                retStages++;
+                ret = AddAlphaTevOrder(tvP, foundTypes & ~1, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevAlphaArg[curStage][0] = gAlphaArgs[stageValues[1]];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+            }
+        } else if (type == 0) {
+            tvP->tevColorArg[curStage][0] = gColorArgs[stageValues[1]];
+            tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+            tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+            AddColorTevOrder(tvP, foundTypes, curStage);
+        } else {
+            ret = AddAlphaTevOrder(tvP, foundTypes, curStage);
+            curStage += ret;
+            retStages += ret;
+            tvP->tevAlphaArg[curStage][0] = gAlphaArgs[stageValues[1]];
+            tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+            tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+        }
+    } else {
+        s32 mask = 0xFFFF;
+        if ((foundTypes & 3) == 0) {
+            if (type == 0) {
+                if (textureFoundPos & 0xD00) {
+                    tvP->tevOrder[curStage].chanID = GX_COLOR0A0;
+                }
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+                curStage++;
+                retStages++;
+                if (textureFoundPos & 0x200) {
+                    tvP->tevOrder[curStage].chanID = GX_COLOR0A0;
+                }
+                tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+            } else {
+                if (textureFoundPos & 0xD00) {
+                    tvP->tevOrder[curStage].chanID = GX_COLOR0A0;
+                }
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+                curStage++;
+                retStages++;
+                if (textureFoundPos & 0x200) {
+                    tvP->tevOrder[curStage].chanID = GX_COLOR0A0;
+                }
+                tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+            }
+        } else if ((foundTypes & 3) != 3) {
+            temp_r3 = 10 << ((foundTypes & 2) << 1);
+            if ((textureFoundPos & temp_r3) == temp_r3) {
+                if (type == 0) {
+                    if (!(textureFoundPos & 0xE00)) {
+                        mask ^= 0x400;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+                    mask = 0xFFFF;
+                    if (!(textureFoundPos & 0x55)) {
+                        mask ^= 3;
+                    }
+                    curStage++;
+                    retStages++;
+                    if (!(textureFoundPos & 0x500)) {
+                        mask ^= 0x400;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+                } else {
+                    if (!(textureFoundPos & 0x400)) {
+                        mask ^= 0x400;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+                    mask = 0xFFFF;
+                    if (!(textureFoundPos & 0x55)) {
+                        mask ^= 3;
+                    }
+                    curStage++;
+                    retStages++;
+                    if (!(textureFoundPos & 0x500)) {
+                        mask ^= 0x400;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+                }
+            } else if (type == 0) {
+                if (!(textureFoundPos & 0xD00)) {
+                    mask ^= 0x400;
+                }
+                if (!(textureFoundPos & 0xDD)) {
+                    mask ^= 3;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0x66)) {
+                    mask ^= 3;
+                }
+                curStage++;
+                retStages++;
+                if (!(textureFoundPos & 0x600)) {
+                    mask ^= 0x400;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+            } else {
+                if (!(textureFoundPos & 0xD00)) {
+                    mask ^= 0x400;
+                }
+                if (!(textureFoundPos & 0xDD)) {
+                    mask ^= 3;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0x66)) {
+                    mask ^= 3;
+                }
+                curStage++;
+                retStages++;
+                if (!(textureFoundPos & 0x600)) {
+                    mask ^= 0x400;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+            }
+        } else if (!(textureFoundPos & 0x44)) {
+            if (!(textureFoundPos & 0x22) || ((textureFoundPos & 0xA) == 0xA) || ((textureFoundPos & 0xA0) == 0xA0)) {
+                if (type == 0) {
+                    if (!(textureFoundPos & 0xE00)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x80) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+                    curStage++;
+                    retStages++;
+                    mask = 0xFFFF;
+                    if (!(textureFoundPos & 0x500)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x50) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+                } else {
+                    if (!(textureFoundPos & 0xE00)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x80) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+                    mask = 0xFFFF;
+                    curStage++;
+                    retStages++;
+                    if (!(textureFoundPos & 0x500)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x50) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+                }
+            } else if (!(textureFoundPos & 0x11) || !(textureFoundPos & 0x88) || ((textureFoundPos & 0x90) == 0x90) ||
+                       ((textureFoundPos & 9) == 9)) {
+                if (type == 0) {
+                    if (!(textureFoundPos & 0xD00)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x90) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+                    mask = 0xFFFF;
+                    if (textureFoundPos & 0x20) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    curStage++;
+                    retStages++;
+                    if (!(textureFoundPos & 0x600)) {
+                        mask ^= 0x400;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+                } else {
+                    if (!(textureFoundPos & 0xD00)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x90) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+                    mask = 0xFFFF;
+                    if (textureFoundPos & 0x20) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    curStage++;
+                    retStages++;
+                    if (!(textureFoundPos & 0x600)) {
+                        mask ^= 0x400;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+                }
+            } else if (((textureFoundPos & 0x30) == 0x30) || ((textureFoundPos & 3) == 3)) {
+                if (type == 0) {
+                    if (!(textureFoundPos & 0x500)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x10) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    mask |= 0x400;
+                    if (!(textureFoundPos & 0x600)) {
+                        mask ^= 0x400;
+                    }
+                    curStage++;
+                    retStages++;
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                    tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                    tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+                    mask = 0xFFFF;
+                    if (!(textureFoundPos & 0x800)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x80) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    curStage++;
+                    retStages++;
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                    tvP->tevColorArg[curStage][1] = GX_CC_ONE;
+                    tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[3]];
+                    tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+                } else {
+                    if (!(textureFoundPos & 0x500)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x10) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    mask |= 0x400;
+                    if (!(textureFoundPos & 0x600)) {
+                        mask ^= 0x400;
+                    }
+                    curStage++;
+                    retStages++;
+                    ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                    curStage += ret;
+                    retStages += ret;
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                    tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                    tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+                    mask = 0xFFFF;
+                    if (!(textureFoundPos & 0x800)) {
+                        mask ^= 0x400;
+                    }
+                    if (textureFoundPos & 0x80) {
+                        mask ^= 1;
+                    } else {
+                        mask ^= 2;
+                    }
+                    curStage++;
+                    retStages++;
+                    AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                    tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                    tvP->tevAlphaArg[curStage][1] = GX_CA_KONST;
+                    tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[3]];
+                    tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+                }
+            } else {
+                OSReport("BAD MODE in two-texture, no C texture\n");
+            }
+        } else if (!(textureFoundPos & 0xE) || !(textureFoundPos & 0xE0)) {
+            if (type == 0) {
+                if (textureFoundPos & 0x10) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[0]];
+                mask = 0xFFFF;
+                curStage++;
+                retStages++;
+                if (!(textureFoundPos & 0xD00)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0xC0) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                tvP->tevColorArg[curStage][1] = GX_CC_CPREV;
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = gColorArgs[stageValues[3]];
+                mask = 0xFFFF;
+                curStage++;
+                retStages++;
+                if (!(textureFoundPos & 0x600)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x60) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+            } else {
+                if (textureFoundPos & 0x10) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[0]];
+                curStage++;
+                retStages++;
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0xD00)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0xC0) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[3];
+                tvP->tevAlphaArg[curStage][1] = GX_CA_APREV;
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = gAlphaArgs[stageValues[3]];
+                curStage++;
+                retStages++;
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0x600)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x60) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[1];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+            }
+        } else if (!(textureFoundPos & 0x33) || ((textureFoundPos & 0x40) && !(textureFoundPos & 3)) ||
+                   ((textureFoundPos & 4) && !(textureFoundPos & 0x30))) {
+            if (type == 0) {
+                if (!(textureFoundPos & 0x300)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x30) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[0]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                curStage++;
+                retStages++;
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0x600)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x60) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                tvP->tevColorArg[curStage][1] = gColorArgs[stageValues[1]];
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[2]];
+                tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+                curStage++;
+                retStages++;
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0x800)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x80) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                AddColorTevOrder(tvP, foundTypes & mask, curStage);
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevColorArg[curStage][1] = GX_CC_ONE;
+                tvP->tevColorArg[curStage][2] = gColorArgs[stageValues[3]];
+                tvP->tevColorArg[curStage][3] = GX_CC_CPREV;
+            } else {
+                if (!(textureFoundPos & 0x300)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x30) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[0]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                curStage++;
+                retStages++;
+                mask = 0xFFFF;
+                if (!(textureFoundPos & 0x600)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x60) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[2];
+                tvP->tevAlphaArg[curStage][1] = gAlphaArgs[stageValues[1]];
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[2]];
+                tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+                mask = 0xFFFF;
+                curStage++;
+                retStages++;
+                if (!(textureFoundPos & 0x800)) {
+                    mask ^= 0x400;
+                }
+                if (textureFoundPos & 0x80) {
+                    mask ^= 1;
+                } else {
+                    mask ^= 2;
+                }
+                ret = AddAlphaTevOrder(tvP, foundTypes & mask, curStage);
+                curStage += ret;
+                retStages += ret;
+                tvP->tevColorOpP[curStage][type] = sUsualOps[0];
+                tvP->tevAlphaArg[curStage][1] = GX_CA_KONST;
+                tvP->tevAlphaArg[curStage][2] = gAlphaArgs[stageValues[3]];
+                tvP->tevAlphaArg[curStage][3] = GX_CA_APREV;
+            }
+        } else {
+            OSReport("case of multi-texture, with C value being a texture -> NOT HANDLED!\n");
+        }
+    }
+
+    return retStages;
+}
 
 void BuildCycle(CombineModeTev* tvP, u8 (*stageValues)[4]) {
     s32 numCParts;
@@ -199,6 +967,7 @@ void BuildCycle(CombineModeTev* tvP, u8 (*stageValues)[4]) {
 }
 
 CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alpha2, u32 numCycles) {
+    static CombineModeTev tevStages;
     u8 stageValues[2][2][4];
     s32 i;
     s32 j;
