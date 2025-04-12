@@ -745,8 +745,840 @@ static inline bool frameFreeTLUT(Frame* pFrame, FrameTexture* pTexture) {
     return true;
 }
 
-static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, bool bReload);
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameMakePixels.s")
+// See https://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro13/index13.8.html
+static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, bool bReload) {
+    void* aPixel;
+    s32 nSizeLine;
+    s32 nFlip;
+    s32 nSize;
+    s32 temp;
+    s32 temp2;
+    s32 pad;
+    s32 nCount;
+    s32 nMode;
+    s32 nSizeX;
+    s32 nSizeY;
+    s32 nSource;
+    s32 nTarget;
+    s32 iPixelX;
+    s32 iPixelY;
+    s32 iTarget;
+    u8 nData8;
+    u16 nData16;
+    u32 nData32;
+    s32 nSizeTextureX;
+    s32 nSizeTextureY;
+    s32 lineX;
+    s32 lineY;
+    s32 linePixX;
+    s32 lineStep;
+    s32 tmemStart;
+    s32 tmemEnd;
+    s32 __nSizeX;
+    s32 __nSizeY;
+    u32 rgb[3];
+    u32 yuv[3];
+    bool var_r29;
+    bool var_r14;
+
+    if (bReload) {
+        nSizeX = pTexture->nSizeX;
+        nSizeY = pTexture->nSizeY;
+    } else {
+        nMode = 0;
+        pTexture->nMode = 0x1000;
+        pTexture->eWrapT = GX_MAX_TEXWRAPMODE;
+        pTexture->eWrapS = GX_MAX_TEXWRAPMODE;
+
+        if ((pTile->nModeS & G_TX_CLAMP) || pTile->nMaskS == 0) {
+            nMode |= 1;
+            nSizeX = (pTile->nX1 >> 2) - (pTile->nX0 >> 2) + 1;
+            if (nSizeX < 0) {
+                nSizeX = -nSizeX;
+            }
+        } else {
+            nSizeX = 1 << pTile->nMaskS;
+        }
+
+        if ((pTile->nModeT & G_TX_CLAMP) || pTile->nMaskT == 0) {
+            nMode |= 2;
+            nSizeY = (pTile->nY1 >> 2) - (pTile->nY0 >> 2) + 1;
+            if (nSizeY < 0) {
+                nSizeY = -nSizeY;
+            }
+        } else {
+            nSizeY = 1 << pTile->nMaskT;
+        }
+
+        if (nSizeX + nSizeY > 399) {
+            __nSizeX = nSizeX;
+            __nSizeY = nSizeY;
+
+            if (nMode & 1) {
+                nSizeX = 1 << pTile->nMaskS;
+            } else {
+                nSizeX = (pTile->nX1 >> 2) - (pTile->nX0 >> 2) + 1;
+            }
+
+            if (nSizeX <= 0 || nSizeX > 128) {
+                nSizeX = __nSizeX;
+            } else {
+                pTexture->nMode |= 1;
+            }
+
+            if (nMode & 2) {
+                nSizeY = 1 << pTile->nMaskT;
+            } else {
+                nSizeY = (pTile->nY1 >> 2) - (pTile->nY0 >> 2) + 1;
+            }
+
+            if (nSizeY <= 0 || nSizeY > 128) {
+                nSizeY = __nSizeY;
+            } else {
+                pTexture->nMode |= 2;
+            }
+        }
+    }
+
+    if (pTile->nMaskS > 0) {
+        lineX = 1 << pTile->nMaskS;
+    } else {
+        lineX = nSizeX + 1;
+    }
+
+    if (pTile->nMaskT > 0) {
+        lineY = 1 << pTile->nMaskT;
+    } else {
+        lineY = nSizeY + 1;
+    }
+
+    if (pTile->nModeS & G_TX_WRAP) {
+        var_r29 = true;
+    } else {
+        var_r29 = false;
+    }
+
+    if (pTile->nModeT & G_TX_WRAP) {
+        var_r14 = true;
+    } else {
+        var_r14 = false;
+    }
+
+    if ((pTexture->nSizeX = nSizeX) <= 0 || (pTexture->nSizeY = nSizeY) <= 0) {
+        pTexture->nSizeY = 0;
+        pTexture->nSizeX = 0;
+        return false;
+    }
+
+    if (pTile->nFormat == G_IM_FMT_RGBA && pTile->nSize == G_IM_SIZ_4b) {
+        pTile->nFormat = G_IM_FMT_IA;
+    }
+    if (pTile->nFormat == G_IM_FMT_I && pTile->nSize == G_IM_SIZ_16b) {
+        pTile->nFormat = G_IM_FMT_IA;
+    }
+
+    if (pTile->nFormat == G_IM_FMT_RGBA) {
+        if (pTile->nSize == G_IM_SIZ_16b) {
+            nCount = 2;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_RGB5A3;
+                if ((pTexture->nSizeX & 3) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 3) & ~3;
+                }
+                if ((pTexture->nSizeY & 3) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((pTexture->nSizeX * pTexture->nSizeY * 2) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            tmemStart = nSource = pTile->nTMEM * 4;
+            nSizeLine = pTile->nSizeX * 4;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 2);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 1;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData16 = pFrame->TMEM.data.u16[(nSource & 0x7FF) + (linePixX ^ nFlip)];
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 2)) * 16;
+                    iTarget = (iPixelX & 3) + (iPixelY & 3) * 4 + temp;
+                    if (nData16 & 1) {
+                        ((u16*)aPixel)[iTarget] = (((nData16 >> 11) & 0x1F) << 10) | (((nData16 >> 6) & 0x1F) << 5) |
+                                                  ((nData16 >> 1) & 0x1F) | 0x8000;
+                    } else {
+                        ((u16*)aPixel)[iTarget] =
+                            (((nData16 >> 12) & 0xF) << 8) | (((nData16 >> 7) & 0xF) << 4) | ((nData16 >> 2) & 0xF);
+                    }
+                    iPixelX++;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 2;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 2;
+                    }
+                }
+            }
+        } else if (pTile->nSize == G_IM_SIZ_32b) {
+            nCount = 4;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_RGBA8;
+                if ((pTexture->nSizeX & 3) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 3) & ~3;
+                }
+                if ((pTexture->nSizeY & 3) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((pTexture->nSizeX * pTexture->nSizeY * 4) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            tmemStart = nSource = pTile->nTMEM * 4;
+            nSizeLine = pTile->nSizeX * 4;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 2);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 1;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData32 = pFrame->TMEM.data.u32[(nSource & 0x3FF) + (linePixX ^ nFlip)];
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 2)) * 32;
+                    iTarget = (iPixelX & 3) + (iPixelY & 3) * 4 + temp;
+                    ((u16*)aPixel)[iTarget] = ((nData32 & 0xFF) << 8) | (nData32 >> 24);
+                    ((u16*)aPixel)[iTarget + 16] = (((nData32 >> 16) & 0xFF) << 8) | ((nData32 >> 8) & 0xFF);
+                    iPixelX += 1;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 2;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 2;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+    } else if (pTile->nFormat == G_IM_FMT_CI) {
+        if (pTile->nSize == G_IM_SIZ_8b) {
+            nCount = 1;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_C8;
+                if ((pTexture->nSizeX & 7) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 7) & ~7;
+                }
+                if ((pTexture->nSizeY & 3) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    (pTexture->nSizeX * pTexture->nSizeY + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            tmemStart = nSource = pTile->nTMEM * 8;
+            nSizeLine = pTile->nSizeX * 8;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            if (!frameMakeTLUT(pFrame, pTexture, 0x100, 0, bReload)) {
+                return false;
+            }
+
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 3);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 1;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + (linePixX ^ nFlip)];
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 3)) * 32;
+                    iTarget = (iPixelX & 7) + (iPixelY & 3) * 8 + temp;
+                    ((u8*)aPixel)[iTarget] = nData8;
+                    iPixelX += 1;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 4;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 4;
+                    }
+                }
+            }
+        } else if (pTile->nSize == G_IM_SIZ_4b) {
+            nCount = 1;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_C4;
+                if ((pTexture->nSizeX & 7) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 7) & ~7;
+                }
+                if ((pTexture->nSizeY & 7) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 7) & ~7;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((((pTexture->nSizeX + 1) >> 1) * pTexture->nSizeY) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            nSizeLine = pTile->nSizeX * 8;
+            tmemStart = nSource = pTile->nTMEM * 8;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            if (!frameMakeTLUT(pFrame, pTexture, 0x10, pTile->iTLUT * 0x10, bReload)) {
+                return false;
+            }
+
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 3) * (nSizeTextureX >> 3);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 2;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + ((linePixX ^ nFlip) >> 1)];
+                        linePixX += lineStep;
+                        if (lineStep < 0) {
+                            nData8 = (nData8 << 4) | (nData8 >> 4);
+                        }
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 3)) * 32;
+                    iTarget = ((iPixelX >> 1) & 3) + (iPixelY & 7) * 4 + temp;
+                    ((u8*)aPixel)[iTarget] = nData8;
+                    iPixelX += 2;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 8;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 8;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+    } else if (pTile->nFormat == G_IM_FMT_IA) {
+        if (pTile->nSize == G_IM_SIZ_16b) {
+            nCount = 2;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_IA8;
+                if ((pTexture->nSizeX & 3) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 3) & ~3;
+                }
+                if ((pTexture->nSizeY & 3) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((pTexture->nSizeX * pTexture->nSizeY * 2) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            nSizeLine = pTile->nSizeX * 4;
+            nSource = pTile->nTMEM * 4;
+            tmemStart = nSource = pTile->nTMEM * 4;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 2);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 1;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData16 = pFrame->TMEM.data.u16[(nSource & 0x7FF) + (linePixX ^ nFlip)];
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 2)) * 16;
+                    iTarget = (iPixelX & 3) + (iPixelY & 3) * 4 + temp;
+                    ((u16*)aPixel)[iTarget] = ((nData16 & 0xFF) << 8) | ((nData16 >> 8) & 0xFF);
+                    iPixelX += 1;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 2;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 2;
+                    }
+                }
+            }
+        } else if (pTile->nSize == G_IM_SIZ_8b) {
+            nCount = 1;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_IA4;
+                if ((pTexture->nSizeX & 7) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 7) & ~7;
+                }
+                if ((pTexture->nSizeY & 3) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((pTexture->nSizeX * pTexture->nSizeY) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            tmemStart = nSource = pTile->nTMEM * 8;
+            nSizeLine = pTile->nSizeX * 8;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 3);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 1;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + (linePixX ^ nFlip)];
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 3)) * 32;
+                    iTarget = (iPixelX & 7) + (iPixelY & 3) * 8 + temp;
+                    ((u8*)aPixel)[iTarget] = ((nData8 & 0xF) << 4) | ((nData8 >> 4) & 0xF);
+                    iPixelX += 1;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 4;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 4;
+                    }
+                }
+            }
+        } else if (pTile->nSize == G_IM_SIZ_4b) {
+            nCount = 1;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_IA4;
+                if ((pTexture->nSizeX & 7) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 7) & ~7;
+                }
+                if ((pTexture->nSizeY & 7) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 7) & ~7;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((pTexture->nSizeX * pTexture->nSizeY) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            nSizeLine = pTile->nSizeX * 8;
+            tmemStart = nSource = pTile->nTMEM * 8;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 3);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 2;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + ((linePixX ^ nFlip) >> 1)];
+                        if (lineStep < 0) {
+                            nData8 = (nData8 >> 4) | (nData8 << 4);
+                        }
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+
+                    temp = (nTarget + (iPixelX >> 3)) * 32;
+                    iTarget = (iPixelX & 7) + (iPixelY & 3) * 8 + temp;
+                    ((u8*)aPixel)[iTarget] = ((((nData8 >> 4) & 1) * 0xF) << 4) | sRemapI[(nData8 >> 5) & 7];
+                    temp = (nTarget + ((iPixelX + 1) >> 3)) * 32;
+                    iTarget = ((iPixelX + 1) & 7) + (iPixelY & 3) * 8 + temp;
+                    ((u8*)aPixel)[iTarget] = ((((nData8 >> 0) & 1) * 0xF) << 4) | sRemapI[(nData8 >> 1) & 7];
+                    iPixelX += 2;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 8;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 8;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+    } else if (pTile->nFormat == G_IM_FMT_I) {
+        if (pTile->nSize == G_IM_SIZ_8b) {
+            nCount = 1;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_I8;
+                if ((pTexture->nSizeX & 7) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 7) & ~7;
+                }
+                if ((pTexture->nSizeY & 3) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((pTexture->nSizeX * pTexture->nSizeY) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            tmemStart = nSource = pTile->nTMEM * 8;
+            nSizeLine = pTile->nSizeX * 8;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 2) * (nSizeTextureX >> 3);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 1;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + (linePixX ^ nFlip)];
+                        linePixX += lineStep;
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 3)) * 32;
+                    iTarget = (iPixelX & 7) + (iPixelY & 3) * 8 + temp;
+                    ((u8*)aPixel)[iTarget] = nData8;
+                    iPixelX += 1;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 4;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 4;
+                    }
+                }
+            }
+        } else if (pTile->nSize == G_IM_SIZ_4b) {
+            nCount = 1;
+            if (bReload) {
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            } else {
+                pTexture->eFormat = GX_TF_I4;
+                if ((pTexture->nSizeX & 7) != 0) {
+                    pTexture->nSizeX = (pTexture->nSizeX + 7) & ~7;
+                }
+                if ((pTexture->nSizeY & 7) != 0) {
+                    pTexture->nSizeY = (pTexture->nSizeY + 7) & ~7;
+                }
+                if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                    ((((pTexture->nSizeX + 1) >> 1) * pTexture->nSizeY) + 0x7FF) / 0x800)) {
+                    return false;
+                }
+                aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+            }
+
+            nSizeLine = pTile->nSizeX * 8;
+            tmemStart = nSource = pTile->nTMEM * 8;
+            tmemEnd = tmemStart + (nSizeLine * lineY);
+            iPixelY = nFlip = 0;
+            nSizeTextureX = pTexture->nSizeX;
+            nSizeTextureY = pTexture->nSizeY;
+            while (iPixelY < nSizeTextureY) {
+                nTarget = (iPixelY >> 3) * (nSizeTextureX >> 3);
+                iPixelX = 0;
+                linePixX = 0;
+                lineStep = 2;
+                while (iPixelX < nSizeTextureX) {
+                    if (iPixelX < nSizeX) {
+                        nData8 = pFrame->TMEM.data.u8[(nSource & 0xFFF) + ((linePixX ^ nFlip) >> 1)];
+                        linePixX += lineStep;
+                        if (lineStep < 0) {
+                            nData8 = (nData8 >> 4) | (nData8 << 4);
+                        }
+                        if (linePixX >= lineX || linePixX < 0) {
+                            if (var_r29) {
+                                lineStep = -lineStep;
+                                linePixX += lineStep;
+                            } else {
+                                linePixX = 0;
+                            }
+                        }
+                    }
+                    temp = (nTarget + (iPixelX >> 3)) * 32;
+                    iTarget = ((iPixelX >> 1) & 3) + (iPixelY & 7) * 4 + temp;
+                    ((u8*)aPixel)[iTarget] = nData8 & 0xFF;
+                    iPixelX += 2;
+                }
+                iPixelY += 1;
+                if (iPixelY < nSizeY) {
+                    nSource += nSizeLine;
+                    if (nSource >= tmemEnd || nSource < tmemStart) {
+                        if (var_r14) {
+                            nSizeLine = -nSizeLine;
+                            nSource += nSizeLine;
+                        } else {
+                            if (nSource % 2 == tmemStart % 2) {
+                                nFlip ^= 8;
+                            }
+                            nSource = tmemStart;
+                        }
+                    } else {
+                        nFlip ^= 8;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+    } else if (pTile->nFormat == G_IM_FMT_YUV) {
+        nCount = 2;
+        if (bReload) {
+            aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+        } else {
+            pTexture->eFormat = GX_TF_RGB5A3;
+            if ((pTexture->nSizeX & 3) != 0) {
+                pTexture->nSizeX = (pTexture->nSizeX + 3) & ~3;
+            }
+            if ((pTexture->nSizeY & 3) != 0) {
+                pTexture->nSizeY = (pTexture->nSizeY + 3) & ~3;
+            }
+            if (!packTakeBlocks(&pTexture->iPackPixel, pFrame->anPackPixel, ARRAY_COUNT(pFrame->anPackPixel),
+                                ((pTexture->nSizeX * pTexture->nSizeY * 2) + 0x7FF) / 0x800)) {
+                return false;
+            }
+            aPixel = (u8*)pFrame->aPixelData + ((pTexture->iPackPixel & 0xFFFF) << 11);
+        }
+
+        nFlip = 0;
+        iPixelY = 0;
+        nSizeY >>= 1;
+        tmemStart = pTile->nTMEM * 4;
+        nSizeLine = pTile->nSizeX * 4;
+        nSizeTextureX = pTexture->nSizeX;
+        nSizeTextureY = pTexture->nSizeY;
+        while (iPixelY < nSizeY) {
+            // TODO: Uses of `termEnd`, `nSource`, and `temp2` are probably fake
+            tmemEnd = (iPixelY & 3) * 4;
+            nTarget = (iPixelY >> 2) * (nSizeTextureX >> 2);
+            iPixelX = 0;
+            while (iPixelX < nSizeX) {
+                nSource = iPixelY * nSizeLine;
+                nSource += tmemStart;
+                temp2 = iPixelX ^ nFlip;
+                nData16 = pFrame->TMEM.data.u16[temp2 + nSource];
+                yuv[0] = nData16 & 0xFF;
+                yuv[1] = (nData16 >> 8) & 0xFF;
+
+                nData16 = pFrame->TMEM.data.u16[temp2 + nSource + 1];
+                yuv[2] = (nData16 >> 8) & 0xFF;
+                frameConvertYUVtoRGB(yuv, rgb);
+
+                temp = (nTarget + (iPixelX >> 2)) * 16;
+                iTarget = ((iPixelX & 3) + tmemEnd) + temp;
+                ((u16*)aPixel)[iTarget] =
+                    (((rgb[0] >> 1) & 0xF) << 8) | (((rgb[1] >> 1) & 0xF) << 4) | ((rgb[2] >> 1) & 0xF) | 0x7000;
+
+                yuv[0] = nData16 & 0xFF;
+                frameConvertYUVtoRGB(yuv, rgb);
+                ((u16*)aPixel)[iTarget + 1] =
+                    (((rgb[0] >> 1) & 0xF) << 8) | (((rgb[1] >> 1) & 0xF) << 4) | ((rgb[2] >> 1) & 0xF) | 0x7000;
+
+                iPixelX += 2;
+            }
+            nFlip ^= 2;
+            iPixelY += 1;
+        }
+    }
+
+    DCStoreRange(aPixel, pTexture->nSizeX * pTexture->nSizeY * nCount);
+    return true;
+}
 
 static inline bool frameFreePixels(Frame* pFrame, FrameTexture* pTexture) {
     if (!frameFreeTLUT(pFrame, pTexture)) {
@@ -3349,6 +4181,8 @@ void PanelDrawBG8(u16* BG, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX,
             }
         }
     }
+
+    NO_INLINE();
 }
 
 void PanelDrawBG16(u16* BG, u16* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool flip) {
@@ -3369,6 +4203,8 @@ void PanelDrawBG16(u16* BG, u16* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 pos
             }
         }
     }
+
+    NO_INLINE();
 }
 
 void PanelDrawFR3D(u16* FR, u16* LUT, u8* bitmap, s32 sizeX, s32 sizeY, s32 posX, s32 posY, bool first) {
@@ -3409,7 +4245,678 @@ bool frameHackTIMG_Panel(Frame* pFrame, FrameBuffer* pBuffer) {
     return false;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameHackCIMG_Panel.s")
+bool frameHackCIMG_Panel(Rdp* pRDP, Frame* pFrame, FrameBuffer* pBuffer, u64** ppnGBI) {
+    Rsp* pRSP;
+    u64* pnGBI;
+    s32 count;
+    s32 nAddress;
+    s32 sizeX;
+    s32 posX;
+    u32 nCommandLo;
+    u32 nCommandHi;
+    u16* BG;
+    u16* FR;
+    u16* pLUT;
+    u16* pBitmap16;
+    u8* pBitmap8;
+    s32 pad1[10];
+
+    pRSP = SYSTEM_RSP(pRDP->pHost);
+    pnGBI = *ppnGBI;
+
+    if (pBuffer->nAddress == 0x358800) {
+        s32 iTile;
+        s32 nCount;
+        Rectangle rect;
+
+        pFrame->bFrameOn = true;
+        FR = pFrame->nTempBuffer;
+        pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[7]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[7]);
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[11]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[11]);
+        iTile = (nCommandLo >> 24) & 7;
+        nCount = (nCommandLo >> 14) & 0x3FF;
+        if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+            return false;
+        }
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[16]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[16]);
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[18]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[18]);
+        iTile = (nCommandLo >> 24) & 0x7;
+        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+            return false;
+        }
+        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+        pBitmap8 = pFrame->aBuffer[FBT_IMAGE].pData;
+        PanelDrawFR3D(FR, pLUT, pBitmap8, N64_FRAME_WIDTH, N64_FRAME_HEIGHT - 8, 0, 7, true);
+
+        pnGBI += 20;
+        do {
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            pnGBI++;
+        } while ((nCommandHi & 0xFF000000) != 0xBA000000);
+
+        nCommandHi = GBI_COMMAND_HI(pnGBI);
+        nCommandLo = GBI_COMMAND_LO(pnGBI);
+        pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+        iTile = (nCommandLo >> 24) & 7;
+        nCount = (nCommandLo >> 14) & 0x3FF;
+        if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+            return false;
+        }
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        pnGBI += 5;
+        while (true) {
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            nCommandLo = GBI_COMMAND_LO(pnGBI);
+            if ((nCommandHi & 0xFF000000) == 0xFD000000) {
+                pBuffer->nFormat = (nCommandHi >> 21) & 7;
+                pBuffer->nSize = (nCommandHi >> 19) & 3;
+                pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+                nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+                if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+                    return false;
+                }
+
+                nCommandLo = GBI_COMMAND_LO(&pnGBI[2]);
+                nCommandHi = GBI_COMMAND_HI(&pnGBI[2]);
+                iTile = (nCommandLo >> 24) & 7;
+                pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+                pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+                pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+                pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+                pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+                pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+                pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+                pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+                pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+                if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+                    return false;
+                }
+                pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+                pBitmap8 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+                nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+                nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+                rect.nX0 = (nCommandLo >> 12) & 0xFFF;
+                rect.nY0 = nCommandLo & 0xFFF;
+                rect.nX1 = (nCommandHi >> 12) & 0xFFF;
+                rect.nY1 = nCommandHi & 0xFFF;
+                sizeX = (rect.nX1 - rect.nX0) >> 2;
+                if (sizeX % 32 != 0) {
+                    sizeX = ((sizeX / 32) + 1) * 32;
+                }
+                PanelDrawFR3D(FR, pLUT, pBitmap8, sizeX, (rect.nY1 - rect.nY0) >> 2, rect.nX0 >> 2, (rect.nY0 >> 2) + 7,
+                              false);
+            }
+
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            pnGBI++;
+            if ((nCommandHi & 0xFF000000) == 0xBA000000) {
+                while (true) {
+                    nCommandHi = GBI_COMMAND_HI(pnGBI);
+                    if ((nCommandHi & 0xFF000000) == 0xFD000000) {
+                        if ((GBI_COMMAND_HI(&pnGBI[4]) & 0xFF000000) == 0xF0000000) {
+                            nCommandLo = GBI_COMMAND_LO(pnGBI);
+
+                            pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+                            pBuffer->nFormat = (nCommandHi >> 21) & 7;
+                            pBuffer->nSize = (nCommandHi >> 19) & 3;
+                            pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+                            nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+                            if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+                                return false;
+                            }
+
+                            nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+                            nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+                            iTile = (nCommandLo >> 24) & 7;
+                            nCount = (nCommandLo >> 14) & 0x3FF;
+                            if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+                                return false;
+                            }
+                            pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+                        } else {
+                            nCommandHi = GBI_COMMAND_HI(pnGBI);
+                            nCommandLo = GBI_COMMAND_LO(pnGBI);
+
+                            pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+                            pBuffer->nFormat = (nCommandHi >> 21) & 7;
+                            pBuffer->nSize = (nCommandHi >> 19) & 3;
+                            pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+                            nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+                            if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+                                return false;
+                            }
+
+                            nCommandHi = GBI_COMMAND_HI(&pnGBI[2]);
+                            nCommandLo = GBI_COMMAND_LO(&pnGBI[2]);
+                            iTile = (nCommandLo >> 24) & 7;
+                            pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+                            pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+                            pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+                            pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+                            pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+                            pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+                            pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+                            pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+                            pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+                            if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+                                return false;
+                            }
+                            pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+                            pBitmap8 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+                            nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+                            nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+                            rect.nX0 = (nCommandLo >> 12) & 0xFFF;
+                            rect.nY0 = nCommandLo & 0xFFF;
+                            rect.nX1 = (nCommandHi >> 12) & 0xFFF;
+                            rect.nY1 = nCommandHi & 0xFFF;
+                            sizeX = (rect.nX1 - rect.nX0) >> 2;
+                            if (sizeX % 32 != 0) {
+                                sizeX = ((sizeX / 32) + 1) * 32;
+                            }
+                            posX = rect.nX0 >> 2;
+                            if (posX == 252 && (rect.nY0 >> 2) == 170 && sizeX == 64) {
+                                sizeX = 96;
+                            }
+                            PanelDrawFR3D(FR, pLUT, pBitmap8, sizeX, (rect.nY1 - rect.nY0) >> 2, posX,
+                                          (rect.nY0 >> 2) + 7, false);
+                        }
+                    }
+
+                    nCommandHi = GBI_COMMAND_HI(pnGBI);
+                    pnGBI++;
+                    if ((nCommandHi & 0xFF000000) == 0x06000000) {
+                        *ppnGBI = pnGBI;
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    for (count = 0; count < ARRAY_COUNT(GBIcode3D1); count++) {
+        if ((GBI_COMMAND_HI(&pnGBI[count]) & 0xFF000000) != GBIcode3D1[count]) {
+            break;
+        }
+    }
+
+    if (count == ARRAY_COUNT(GBIcode3D1)) {
+        Tile* pTile;
+        s32 iTile;
+        s32 nCount;
+
+        *ppnGBI = &pnGBI[count];
+        pnGBI = *ppnGBI;
+        nCommandHi = GBI_COMMAND_HI(pnGBI);
+        nCommandLo = GBI_COMMAND_LO(pnGBI);
+        while (true) {
+            if (nCommandHi != 0xFF10013F || nCommandLo != 0x80245D00) {
+                switch (nCommandHi & 0xFF000000) { /* irregular */
+                    case 0xFD000000:
+                        pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+                        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+                        pBuffer->nSize = (nCommandHi >> 19) & 3;
+                        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+                        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+                        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+                            return false;
+                        }
+                        break;
+                    case 0xF5000000:
+                        iTile = (nCommandLo >> 24) & 7;
+                        pTile = &pFrame->aTile[iTile];
+                        pTile->nSize = (nCommandHi >> 19) & 3;
+                        pTile->nTMEM = nCommandHi & 0x1FF;
+                        pTile->iTLUT = (nCommandLo >> 20) & 0xF;
+                        pTile->nSizeX = (nCommandHi >> 9) & 0x1FF;
+                        pTile->nFormat = (nCommandHi >> 21) & 7;
+                        pTile->nMaskS = (nCommandLo >> 4) & 0xF;
+                        pTile->nMaskT = (nCommandLo >> 14) & 0xF;
+                        pTile->nModeS = (nCommandLo >> 8) & 3;
+                        pTile->nModeT = (nCommandLo >> 18) & 3;
+                        pTile->nShiftS = nCommandLo & 0xF;
+                        pTile->nShiftT = (nCommandLo >> 10) & 0xF;
+                        pTile->nCodePixel = pFrame->nCodePixel;
+                        pFrame->lastTile = iTile;
+                        frameDrawReset(pFrame, 1);
+                        break;
+                    case 0xF4000000:
+                        iTile = (nCommandLo >> 24) & 7;
+                        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+                        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+                        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+                        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+                        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+                        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+                        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+                        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+                        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+                        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+                            return false;
+                        }
+                        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+                        break;
+                    case 0xF3000000:
+                        iTile = (nCommandLo >> 24) & 7;
+                        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+                        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+                        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+                        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+                        pFrame->n2dLoadTexType = G_OBJLT_TXTRBLOCK;
+                        if (!frameLoadTMEM(pFrame, FLT_BLOCK, iTile)) {
+                            return false;
+                        }
+                        break;
+                    case 0xF0000000:
+                        iTile = (nCommandLo >> 24) & 7;
+                        nCount = (nCommandLo >> 14) & 0x3FF;
+                        if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+                            return false;
+                        }
+                        break;
+                    case 0xF2000000:
+                        iTile = (nCommandLo >> 24) & 7;
+                        pTile = &pFrame->aTile[iTile];
+                        pTile->nX0 = (nCommandHi >> 12) & 0xFFF;
+                        pTile->nY0 = nCommandHi & 0xFFF;
+                        pTile->nX1 = (nCommandLo >> 12) & 0xFFF;
+                        pTile->nY1 = nCommandLo & 0xFFF;
+                        frameDrawReset(pFrame, 1);
+                        break;
+                    case 0xE4000000:
+                    default:
+                        break;
+                }
+                nCommandHi = GBI_COMMAND_HI(pnGBI);
+                nCommandLo = GBI_COMMAND_LO(pnGBI);
+                pnGBI++;
+            } else {
+                break;
+            }
+        }
+
+        *ppnGBI = pnGBI;
+        return true;
+    }
+
+    for (count = 0; count < ARRAY_COUNT(GBIcode3D2); count++) {
+        if ((GBI_COMMAND_HI(&pnGBI[count]) & 0xFF000000) != GBIcode3D2[count]) {
+            break;
+        }
+    }
+
+    if (count == ARRAY_COUNT(GBIcode3D2)) {
+        s32 iTile;
+        s32 nCount;
+        Rectangle rect;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[10]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[10]);
+        BG = pBuffer->pData;
+        pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[12]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[12]);
+        iTile = (nCommandLo >> 24) & 7;
+        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+            return false;
+        }
+        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+        pBitmap16 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[14]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[14]);
+        rect.nX0 = (nCommandLo >> 12) & 0xFFF;
+        rect.nY0 = nCommandLo & 0xFFF;
+        rect.nX1 = (nCommandHi >> 12) & 0xFFF;
+        rect.nY1 = nCommandHi & 0xFFF;
+        PanelDrawBG16(BG, pBitmap16, ((rect.nX1 - rect.nX0) >> 2) + 1, ((rect.nY1 - rect.nY0) >> 2) + 1, rect.nX0 >> 2,
+                      rect.nY0 >> 2, true);
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[20]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[20]);
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[22]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[22]);
+        iTile = (nCommandLo >> 24) & 7;
+        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+            return false;
+        }
+        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+        pBitmap16 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[24]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[24]);
+        rect.nX0 = (nCommandLo >> 12) & 0xFFF;
+        rect.nY0 = nCommandLo & 0xFFF;
+        rect.nX1 = (nCommandHi >> 12) & 0xFFF;
+        rect.nY1 = nCommandHi & 0xFFF;
+        PanelDrawBG16(BG, pBitmap16, ((rect.nX1 - rect.nX0) >> 2) + 1, ((rect.nY1 - rect.nY0) >> 2) + 1, rect.nX0 >> 2,
+                      rect.nY0 >> 2, false);
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[29]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[29]);
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[33]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[33]);
+        iTile = (nCommandLo >> 24) & 7;
+        nCount = (nCommandLo >> 14) & 0x3FF;
+        if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[38]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[38]);
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[40]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[40]);
+        iTile = (nCommandLo >> 24) & 7;
+        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+            return false;
+        }
+        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+        pBitmap8 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[42]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[42]);
+        rect.nX1 = (nCommandLo >> 12) & 0xFFF;
+        rect.nY1 = nCommandLo & 0xFFF;
+        PanelDrawBG8(BG, pLUT, pBitmap8, 128, 192, rect.nX1 >> 2, rect.nY1 >> 2, false);
+
+        pnGBI += 45;
+        do {
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            pnGBI++;
+        } while ((nCommandHi & 0xFF000000) != 0xBA000000);
+
+        nCommandHi = GBI_COMMAND_HI(pnGBI);
+        nCommandLo = GBI_COMMAND_LO(pnGBI);
+        pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+        iTile = (nCommandLo >> 24) & 7;
+        nCount = (nCommandLo >> 14) & 0x3FF;
+        if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[9]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[9]);
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[11]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[11]);
+        iTile = (nCommandLo >> 24) & 7;
+        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+            return false;
+        }
+        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+        pBitmap8 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[13]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[13]);
+        rect.nX1 = (nCommandLo >> 12) & 0xFFF;
+        rect.nY1 = nCommandLo & 0xFFF;
+        PanelDrawBG8(BG, pLUT, pBitmap8, 128, 192, (rect.nX1 >> 2) - 20, rect.nY1 >> 2, true);
+
+        pnGBI += 16;
+        do {
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            pnGBI++;
+        } while ((nCommandHi & 0xFF000000) != 0xBA000000);
+
+        nCommandHi = GBI_COMMAND_HI(pnGBI);
+        nCommandLo = GBI_COMMAND_LO(pnGBI);
+        pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+        iTile = (nCommandLo >> 24) & 7;
+        nCount = (nCommandLo >> 14) & 0x3FF;
+        if (!frameLoadTLUT(pFrame, nCount, iTile)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[9]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[9]);
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+        pBuffer->nFormat = (nCommandHi >> 21) & 7;
+        pBuffer->nSize = (nCommandHi >> 19) & 3;
+        pBuffer->nWidth = (nCommandHi & 0xFFF) + 1;
+        nAddress = pBuffer->nAddress = SEGMENT_ADDRESS(SYSTEM_RSP(pRDP->pHost), nCommandLo);
+        if (!ramGetBuffer(SYSTEM_RAM(pRDP->pHost), &pBuffer->pData, nAddress, NULL)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[11]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[11]);
+        iTile = (nCommandLo >> 24) & 7;
+        pFrame->aTile[iTile].nX0 = (nCommandHi >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
+        pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
+        pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
+        pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
+        pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
+        pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
+        pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
+        pFrame->nLastY1 = pFrame->aTile[iTile].nY1;
+        if (!frameLoadTMEM(pFrame, FLT_TILE, iTile)) {
+            return false;
+        }
+        pFrame->aTile[pFrame->lastTile].nCodePixel = pFrame->nCodePixel;
+        pBitmap8 = pFrame->aBuffer[FBT_IMAGE].pData;
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[13]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[13]);
+        rect.nX1 = (nCommandLo >> 12) & 0xFFF;
+        rect.nY1 = nCommandLo & 0xFFF;
+        PanelDrawBG8(BG, pLUT, pBitmap8, 64, 72, rect.nX1 >> 2, rect.nY1 >> 2, false);
+
+        pnGBI += 16;
+        do {
+            nCommandHi = GBI_COMMAND_HI(pnGBI);
+            pnGBI++;
+        } while ((nCommandHi & 0xFF000000) != 0xBA000000);
+
+        *ppnGBI = pnGBI;
+        return true;
+    }
+
+    for (count = 0; count < ARRAY_COUNT(GBIcode2D2); count++) {
+        if ((GBI_COMMAND_HI(&pnGBI[count]) & 0xFF000000) != GBIcode2D2[count]) {
+            break;
+        }
+    }
+
+    if (count == ARRAY_COUNT(GBIcode2D2)) {
+        uObjBg bg;
+        uObjTxtr objTxtr;
+        u32 nLoadType;
+        FrameBuffer* pBG;
+        s32 pad2[6];
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[4]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[4]);
+        BG = pBuffer->pData;
+        pBG = &pFrame->aBuffer[FBT_IMAGE];
+        if (!rspFillObjTxtr(pRSP, SEGMENT_ADDRESS(pRSP, nCommandLo), &objTxtr, &nLoadType)) {
+            return false;
+        }
+        if (!rspSetImage(pFrame, pRSP, G_IM_FMT_RGBA, 1, G_IM_SIZ_16b, objTxtr.block.image)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[6]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[6]);
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+        rspFillObjBg(pRSP, SEGMENT_ADDRESS(pRSP, nCommandLo), &bg);
+        nAddress = pBG->nAddress = SEGMENT_ADDRESS(pRSP, bg.b.imagePtr);
+        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pBG->pData, nAddress, NULL)) {
+            return false;
+        }
+        pBitmap8 = pBG->pData;
+        PanelDrawBG8(BG, pLUT, pBitmap8, bg.b.imageW >> 2, bg.b.imageH >> 2, bg.b.frameX >> 2, bg.b.frameY >> 2,
+                     bg.b.imageFlip);
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[9]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[9]);
+        if (!rspFillObjTxtr(pRSP, SEGMENT_ADDRESS(pRSP, nCommandLo), &objTxtr, &nLoadType)) {
+            return false;
+        }
+        if (!rspSetImage(pFrame, pRSP, G_IM_FMT_RGBA, 1, G_IM_SIZ_16b, objTxtr.block.image)) {
+            return false;
+        }
+
+        nCommandHi = GBI_COMMAND_HI(&pnGBI[11]);
+        nCommandLo = GBI_COMMAND_LO(&pnGBI[11]);
+        pLUT = pFrame->aBuffer[FBT_IMAGE].pData;
+        rspFillObjBg(pRSP, SEGMENT_ADDRESS(pRSP, nCommandLo), &bg);
+        nAddress = pBG->nAddress = SEGMENT_ADDRESS(pRSP, bg.b.imagePtr);
+        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pBG->pData, nAddress, NULL)) {
+            return false;
+        }
+        pBitmap8 = pBG->pData;
+        PanelDrawBG8(BG, pLUT, pBitmap8, bg.b.imageW >> 2, bg.b.imageH >> 2, (bg.b.frameX >> 2) - 20, bg.b.frameY >> 2,
+                     bg.b.imageFlip);
+
+        *ppnGBI = pnGBI + 12;
+        return true;
+    }
+
+    return false;
+}
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
@@ -4600,7 +6107,242 @@ bool frameLoadTLUT(Frame* pFrame, s32 nCount, s32 iTile) {
     return true;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameLoadTMEM.s")
+bool frameLoadTMEM(Frame* pFrame, FrameLoadType eType, s32 iTile) {
+    bool bFlip;
+    s32 iTMEM;
+    s32 var_r0;
+    s32 nSize;
+    s32 nStep;
+    s32 nDelta;
+    s32 iScan;
+    s32 nOffset;
+    Tile* pTile;
+    u8 nData8;
+    u16 nData16;
+    u32 nData32;
+    u32 nData64[2];
+    u32 nSum;
+    u64* pSource;
+    s32 nCount;
+    s32 nScanFull;
+    int nScanPart;
+    u8* pSource8;
+    u16* pSource16;
+    u32* pSource32;
+
+    s32 i;
+    s32 temp_r3;
+    s32 temp_r10;
+    s32 pad[3];
+
+    frameDrawReset(pFrame, 1);
+
+    if (gpSystem->eTypeROM == SRT_ZELDA2 &&
+        (pFrame->aBuffer[FBT_IMAGE].nAddress == 0x500 || pFrame->aBuffer[FBT_IMAGE].nAddress == 0x7DA800)) {
+        CopyAndConvertCFB(pFrame->aBuffer[FBT_IMAGE].pData);
+    }
+
+    pSource = (u64*)((u32)pFrame->aBuffer[FBT_IMAGE].pData & ~3);
+    pFrame->iTileLoad = iTile;
+    pTile = &pFrame->aTile[iTile];
+    iTMEM = pTile->nTMEM & 0x1FF;
+    if (eType == FLT_BLOCK) {
+        var_r0 = 0;
+    } else {
+        var_r0 = 2;
+    }
+
+    switch (pFrame->aBuffer[FBT_IMAGE].nSize) {
+        case G_IM_SIZ_4b:
+            nSize = (pTile->nX1 + 1) >> 4;
+            nOffset =
+                ((pTile->nX0 >> var_r0) >> 1) + ((pFrame->aBuffer[FBT_IMAGE].nWidth + 1) >> 1) * (pTile->nY0 >> var_r0);
+            break;
+        case G_IM_SIZ_8b:
+            nSize = (pTile->nX1 + 1) >> 3;
+            nOffset = (pTile->nX0 >> var_r0) + pFrame->aBuffer[FBT_IMAGE].nWidth * (pTile->nY0 >> var_r0);
+            break;
+        case G_IM_SIZ_16b:
+            nSize = (pTile->nX1 + 1) >> 2;
+            nOffset = ((pTile->nX0 >> var_r0) << 1) + (pFrame->aBuffer[FBT_IMAGE].nWidth << 1) * (pTile->nY0 >> var_r0);
+            break;
+        case G_IM_SIZ_32b:
+            nSize = (pTile->nX1 + 1) >> 1;
+            nOffset = ((pTile->nX0 >> var_r0) << 2) + (pFrame->aBuffer[FBT_IMAGE].nWidth << 2) * (pTile->nY0 >> var_r0);
+            break;
+        default:
+            return false;
+    }
+
+    pSource = (u64*)((u8*)pSource + nOffset);
+    pFrame->nAddressLoad = (pFrame->aBuffer[FBT_IMAGE].nAddress & 0x7FFFFF) + nOffset;
+    nSum = 0;
+    if (eType == FLT_BLOCK) {
+        nDelta = pTile->nY1;
+        if (nDelta == 0) {
+            while (nSize-- != 0) {
+                nData64[0] = ((u32*)pSource)[0];
+                nData64[1] = ((u32*)pSource)[1];
+                pSource++;
+
+                nSum += nData64[0];
+                nSum += nData64[1];
+                nSum ^= iTMEM;
+
+                pFrame->TMEM.data.u32[2 * iTMEM + 0] = nData64[0];
+                pFrame->TMEM.data.u32[2 * iTMEM + 1] = nData64[1];
+
+                iTMEM = (iTMEM + 1) & 0x1FF;
+            }
+        } else {
+            nStep = 0;
+            while (nSize != 0) {
+                while (nSize != 0 && (nStep & 0x800) == 0) {
+                    nData64[0] = ((u32*)pSource)[0];
+                    nData64[1] = ((u32*)pSource)[1];
+                    pSource++;
+
+                    nSum += nData64[0];
+                    nSum += nData64[1];
+                    nSum ^= iTMEM;
+
+                    pFrame->TMEM.data.u32[2 * iTMEM + 0] = nData64[0];
+                    pFrame->TMEM.data.u32[2 * iTMEM + 1] = nData64[1];
+
+                    iTMEM = (iTMEM + 1) & 0x1FF;
+                    nStep += nDelta;
+                    nSize--;
+                }
+                nStep -= 0x800;
+                if (pFrame->aBuffer[FBT_IMAGE].nSize == 3) {
+                    bFlip = 0;
+                    while (nSize != 0 && (nStep & 0x800) == 0) {
+                        nData64[0] = ((u32*)pSource)[0];
+                        nData64[1] = ((u32*)pSource)[1];
+                        pSource++;
+
+                        nSum += nData64[0];
+                        nSum += nData64[1];
+                        nSum ^= iTMEM;
+
+                        temp_r3 = iTMEM + (bFlip ? -1 : 1);
+                        pFrame->TMEM.data.u32[2 * temp_r3 + 0] = nData64[0];
+                        pFrame->TMEM.data.u32[2 * temp_r3 + 1] = nData64[1];
+
+                        iTMEM = (iTMEM + 1) & 0x1FF;
+                        nStep += nDelta;
+                        nSize--;
+                        bFlip ^= 1;
+                    }
+                } else {
+                    while (nSize != 0 && (nStep & 0x800) == 0) {
+                        nData64[0] = ((u32*)pSource)[0];
+                        nData64[1] = ((u32*)pSource)[1];
+                        pSource++;
+
+                        nSum += nData64[0];
+                        nSum += nData64[1];
+                        nSum ^= iTMEM;
+
+                        pFrame->TMEM.data.u32[2 * iTMEM + 0] = nData64[1];
+                        pFrame->TMEM.data.u32[2 * iTMEM + 1] = nData64[0];
+
+                        iTMEM = (iTMEM + 1) & 0x1FF;
+                        nStep += nDelta;
+                        nSize--;
+                    }
+                }
+                nStep -= 0x800;
+            }
+        }
+    } else {
+        nCount = ((pTile->nY1 - pTile->nY0) + 4) >> 2;
+        nScanFull = pFrame->aBuffer[FBT_IMAGE].nWidth;
+        nScanPart = ((pTile->nX1 - pTile->nX0) + 4) >> 2;
+        switch (pFrame->aBuffer[FBT_IMAGE].nSize) {
+            case G_IM_SIZ_4b:
+            case G_IM_SIZ_8b:
+                if (nScanPart >= pTile->nSizeX * 8) {
+                    nScanPart = pTile->nSizeX * 8;
+                }
+                iTMEM <<= 3;
+                for (iScan = 0; iScan < nCount; iScan++) {
+                    pSource8 = (u8*)pSource;
+                    for (i = 0; i != nScanPart; i++) {
+                        if (iScan & 1) {
+                            temp_r10 = iTMEM ^ 4;
+                        } else {
+                            temp_r10 = iTMEM;
+                        }
+                        nData8 = *pSource8;
+                        nSum += nData8;
+                        nSum ^= iTMEM;
+                        pFrame->TMEM.data.u8[temp_r10] = nData8;
+                        pSource8++;
+                        iTMEM = (iTMEM + 1) & 0xFFF;
+                    }
+                    pSource = (u64*)((u8*)pSource + nScanFull);
+                    iTMEM += (pTile->nSizeX * 8) - nScanPart;
+                    iTMEM &= 0xFFF;
+                }
+                break;
+            case G_IM_SIZ_16b:
+                if (nScanPart >= pTile->nSizeX * 4) {
+                    nScanPart = pTile->nSizeX * 4;
+                }
+                iTMEM <<= 2;
+                for (iScan = 0; iScan < nCount; iScan++) {
+                    pSource16 = (u16*)pSource;
+                    for (i = 0; i != nScanPart; i++) {
+                        if (iScan & 1) {
+                            temp_r10 = iTMEM ^ 2;
+                        } else {
+                            temp_r10 = iTMEM;
+                        }
+                        nData16 = *pSource16;
+                        nSum += nData16;
+                        nSum ^= iTMEM;
+                        pFrame->TMEM.data.u16[temp_r10] = nData16;
+                        pSource16++;
+                        iTMEM = (iTMEM + 1) & 0x7FF;
+                    }
+                    pSource = (u64*)((u16*)pSource + nScanFull);
+                    iTMEM = (iTMEM + ((pTile->nSizeX * 4) - nScanPart)) & 0x7FF;
+                }
+                break;
+            case G_IM_SIZ_32b:
+                if (nScanPart >= pTile->nSizeX * 4) {
+                    nScanPart = pTile->nSizeX * 4;
+                }
+                iTMEM <<= 1;
+                for (iScan = 0; iScan < nCount; iScan++) {
+                    pSource32 = (u32*)pSource;
+                    for (i = 0; i != nScanPart; i++) {
+                        if (iScan & 1) {
+                            temp_r10 = iTMEM ^ 2;
+                        } else {
+                            temp_r10 = iTMEM;
+                        }
+                        nData32 = *pSource32;
+                        nSum += nData32;
+                        nSum ^= iTMEM;
+                        pFrame->TMEM.data.u32[temp_r10] = nData32;
+                        pSource32++;
+                        iTMEM = (iTMEM + 1) & 0x3FF;
+                    }
+                    pSource = (u64*)((u32*)pSource + nScanFull);
+                    iTMEM += (pTile->nSizeX * 4) - nScanPart;
+                    iTMEM &= 0x3FF;
+                }
+                break;
+            default:
+                return false;
+        }
+    }
+
+    pFrame->nCodePixel = nSum;
+    return true;
+}
 
 bool frameSetLightCount(Frame* pFrame, s32 nCount) {
     pFrame->nCountLight = nCount;
