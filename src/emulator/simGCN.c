@@ -201,7 +201,6 @@ bool gbReset;
             simulatorUnpackTexPalette((TEXPalette*)gpErrorMessageBuffer);                       \
         }                                                                                       \
     }
-#define TPL / "TPL/"
 
 bool simulatorGXInit(void) {
     s32 i;
@@ -355,7 +354,15 @@ void simulatorUnpackTexPalette(TEXPalette* pal) {
     }
 }
 
-static inline void __simulatorDEMODoneRender(void) {
+static void simulatorDEMOSwapBuffers(void) {
+    if ((void*)DemoCurrentBuffer == (void*)DemoFrameBuffer1) {
+        DemoCurrentBuffer = DemoFrameBuffer2;
+    } else {
+        DemoCurrentBuffer = DemoFrameBuffer1;
+    }
+}
+
+static void simulatorDEMODoneRender(void) {
     if (DemoStatEnable != 0) {
         GXDrawDone();
         DEMOUpdateStats(1);
@@ -371,15 +378,8 @@ static inline void __simulatorDEMODoneRender(void) {
     VISetNextFrameBuffer(DemoCurrentBuffer);
     VIFlush();
     VIWaitForRetrace();
-
-    if ((void*)DemoCurrentBuffer == (void*)DemoFrameBuffer1) {
-        DemoCurrentBuffer = DemoFrameBuffer2;
-    } else {
-        DemoCurrentBuffer = DemoFrameBuffer1;
-    }
+    simulatorDEMOSwapBuffers();
 }
-
-void simulatorDEMODoneRender(void) { __simulatorDEMODoneRender(); }
 
 bool gButtonDownToggle = false;
 bool gDVDResetToggle = false;
@@ -691,7 +691,7 @@ bool simulatorDrawImage(TEXPalette* tpl, s32 nX0, s32 nY0, bool drawBar, s32 per
         GXEnd();
     }
 
-    __simulatorDEMODoneRender();
+    simulatorDEMODoneRender();
     frameDrawReset(gpFrame, 0x5FFED);
 
     PAD_STACK();
@@ -900,7 +900,7 @@ bool simulatorDrawYesNoImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Mess
     GXTexCoord1x8(3);
     GXEnd();
 
-    __simulatorDEMODoneRender();
+    simulatorDEMODoneRender();
     frameDrawReset(gpFrame, 0x5FFED);
 
     PAD_STACK();
@@ -1040,7 +1040,7 @@ bool simulatorDrawOKImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Message
     GXTexCoord1x8(3);
     GXEnd();
 
-    __simulatorDEMODoneRender();
+    simulatorDEMODoneRender();
     frameDrawReset(gpFrame, 0x5FFED);
 
     PAD_STACK();
@@ -1470,7 +1470,7 @@ void simulatorResetAndPlayMovie(void) {
 
         DEMOBeforeRender();
         MovieDraw();
-        __simulatorDEMODoneRender();
+        simulatorDEMODoneRender();
         VISetBlack(false);
         GXSetCopyClear(color, 0);
         movieTestReset(false, false);
@@ -2085,10 +2085,10 @@ bool xlMain(void) {
     VIWaitForRetrace();
 
     xlCoreBeforeRender();
-    __simulatorDEMODoneRender();
+    simulatorDEMODoneRender();
 
     xlCoreBeforeRender();
-    __simulatorDEMODoneRender();
+    simulatorDEMODoneRender();
 
     VIWaitForRetrace();
     VISetBlack(false);
