@@ -342,10 +342,14 @@ typedef struct Frame {
     /* 0x3D123 */ u8 iTileDrawn;
     /* 0x3D124 */ GXColor aColor[FCT_COUNT];
     /* 0x3D138 */ u32 nModeVtx;
+#if VERSION != MQ_J
     /* 0x3D13C */ u16* nTempBuffer;
     /* 0x3D140 */ u16* nCopyBuffer;
+#endif
     /* 0x3D144 */ u32* nLensBuffer;
+#if VERSION != MQ_J
     /* 0x3D148 */ u16* nCameraBuffer;
+#endif
 } Frame; // size = 0x3D150
 
 extern _XL_OBJECTTYPE gClassFrame;
@@ -355,7 +359,6 @@ extern GXTexCoordID ganNameTexCoord[];
 
 bool frameDrawSetup2D(Frame* pFrame);
 bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, s32 nSizeY);
-bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
 
 void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData);
 void ZeldaDrawFrame(Frame* pFrame, u16* pData);

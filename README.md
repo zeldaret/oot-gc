@@ -5,17 +5,17 @@ oot-gc
 [Build Status]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml/badge.svg
 [actions]: https://github.com/zeldaret/oot-gc/actions/workflows/build.yml
 
-[mq-j]: https://img.shields.io/endpoint?label=mq-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-j]: https://decomp.dev/zeldaret/oot-gc/mq-j.svg?mode=shield&label=mq-j
 
-[mq-u]: https://img.shields.io/endpoint?label=mq-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-u%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-u]: https://decomp.dev/zeldaret/oot-gc/mq-u.svg?mode=shield&label=mq-u
 
-[mq-e]: https://img.shields.io/endpoint?label=mq-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fmq-e%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[mq-e]: https://decomp.dev/zeldaret/oot-gc/mq-e.svg?mode=shield&label=mq-e
 
-[ce-j]: https://img.shields.io/endpoint?label=ce-j&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-j%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[ce-j]: https://decomp.dev/zeldaret/oot-gc/ce-j.svg?mode=shield&label=ce-j
 
-[ce-u]: https://img.shields.io/endpoint?label=ce-u&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-u%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[ce-u]: https://decomp.dev/zeldaret/oot-gc/ce-u.svg?mode=shield&label=ce-u
 
-[ce-e]: https://img.shields.io/endpoint?label=ce-e&url=https%3A%2F%2Fprogress.decomp.club%2Fdata%2Foot-gc%2Fce-e%2Fdol%2F%3Fmode%3Dshield%26measure%3Dcode
+[ce-e]: https://decomp.dev/zeldaret/oot-gc/ce-e.svg?mode=shield&label=ce-e
 
 [Discord Badge]: https://img.shields.io/discord/688807550715560050?color=%237289DA&logo=discord&logoColor=%23FFFFFF
 [discord]: https://discord.zelda.deco.mp/
@@ -79,26 +79,13 @@ To get objdiff to work properly you also need to add the path to the folder cont
 
 1. Clone the repo using `git clone https://github.com/zeldaret/oot-gc`.
 
-2. Extract the following TGC archive containing the N64 emulator from the disc of the version you want to build:
-
-  * `mq-j`: `zlj_f.tgc`
-  * `mq-u`: `zlj_f.tgc`
-  * `mq-e`: `zlj_f.tgc`
-  * `ce-j`: `120903_zelda.tgc`
-  * `ce-u`: `zelda_ENG_090903.tgc`
-  * `ce-e`: `zelda_PAL_093003.tgc`
-
-  Then, extract the DOL file from the TGC archive and place it in the repo as `orig/<version>/main.dol`.
-
-  You can use [Dolphin](https://dolphin-emu.org) to perform both of these extraction steps:
-  first, right click on the `.iso` file, select "Properties", go to the "Filesystem" tab, find the correct
-  `.tgc` file, then right-click and select "Extract File..." and extract it to your games folder.
-  Then, right-click the extracted `.tgc` file in Dolphin, select "Properties", go to the "Filesystem" tab,
-  right-click the "Disc" and select "Extract System Data..." to extract the DOL file.
+2. Copy the disc image of the version you want to decompile into the appropriate `orig/*` directory. _(Supported formats: ISO (GCM), RVZ, WIA, WBFS, CISO, NFS, GCZ, TGC)_
 
 3. Run `python3 configure.py` to generate the build. (Note: on Windows you might need to run ``python configure.py``.)
 
 4. Run `ninja` to build the `ce-j` version, or run `ninja <version>` to build another version.
+
+5. After the initial build, you can delete the disc image(s) from the `orig/*` directories.
 
 ## Development Tools
 
@@ -132,7 +119,7 @@ Run `tools/decompme.py <c-file> <asm-file>` (e.g. `tools/decompme.py src/emulato
 ### Permuter
 
 To import a function for [decomp-permuter](https://github.com/simonlindholm/decomp-permuter), ensure `powerpc-eabi-objdump` binary
-is on your `PATH` (for instance by adding `tools/binutils` from this project) and run something like
+is on your `PATH` (for instance by adding `build/binutils` from this project) and run something like
 
 ```sh
 path/to/permuter/import.py src/emulator/THPRead.c asm/non_matchings/THPRead/Reader.s

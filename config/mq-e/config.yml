@@ -1,6 +1,7 @@
 # See config.example.yml for documentation.
 name: oot-gc
-object: orig/mq-e/main.dol
+object_base: orig/mq-e
+object: files/zlj_f.tgc:sys/main.dol
 hash: 9155899e1ed86fc2b25113c77d49396c77d24138
 symbols: config/mq-e/symbols.txt
 splits: config/mq-e/splits.txt
@@ -69,7 +70,7 @@ extract:
   header: gbar.inc
 
 block_relocations:
-# system.c
+# systemSetupGameALL
 - source: 0x8002D7A4
 - source: 0x8002D7B0
 - source: 0x8002D7D0
@@ -124,6 +125,7 @@ block_relocations:
 - source: 0x8002E8E8
 - source: 0x8002E914
 - source: 0x8002E948
+- source: 0x8002E978
 - source: 0x8002E954
 - source: 0x8002E998
 - source: 0x8002E9A4
@@ -155,3 +157,18 @@ block_relocations:
 - source: 0x8002F860
 - source: 0x8002F870
 - source: 0x8002F898
+# cpuFindFunction
+- source: 0x80032D3C
+- source: 0x80032D44
+- source: 0x80032DA4
+- source: 0x80032DAC
+- source: 0x80032DB8
+- source: 0x80033548
+- source: 0x80033578
+- source: 0x8003357C
+- source: 0x800335B0
+- source: 0x800335C4
+- source: 0x80033604
+- source: 0x80033608
+- source: 0x8003363C
+- source: 0x80033650

@@ -1,6 +1,7 @@
 # See config.example.yml for documentation.
 name: oot-gc
-object: orig/ce-e/main.dol
+object_base: orig/ce-e
+object: files/tgc/zelda_PAL_093003.tgc:sys/main.dol
 hash: 8c5c365ae2df34c4cb27e86eb1cf30f2a2e4cd1b
 symbols: config/ce-e/symbols.txt
 splits: config/ce-e/splits.txt

@@ -1,6 +1,7 @@
 # See config.example.yml for documentation.
 name: oot-gc
-object: orig/mq-j/main.dol
+object_base: orig/mq-j
+object: files/zlj_f.tgc:sys/main.dol
 hash: 7bfa2acdf675b5c5442890688d1e0293817ad63f
 symbols: config/mq-j/symbols.txt
 splits: config/mq-j/splits.txt
@@ -31,3 +32,97 @@ extract:
   header: gno.inc
 - symbol: gmesgOK
   header: gmesgOK.inc
+
+block_relocations:
+# systemSetupGameALL
+- source: 0x8002DD28
+- source: 0x8002DD34
+- source: 0x8002DD54
+- source: 0x8002DD5C
+- source: 0x8002DD7C
+- source: 0x8002DD88
+- source: 0x8002DDAC
+- source: 0x8002E274
+- source: 0x8002E27C
+- source: 0x8002E29C
+- source: 0x8002E2A4
+- source: 0x8002E2CC
+- source: 0x8002E2F4
+- source: 0x8002E31C
+- source: 0x8002E344
+- source: 0x8002E36C
+- source: 0x8002E394
+- source: 0x8002E3BC
+- source: 0x8002E3E4
+- source: 0x8002E408
+- source: 0x8002E42C
+- source: 0x8002E44C
+- source: 0x8002E454
+- source: 0x8002E708
+- source: 0x8002E714
+- source: 0x8002E828
+- source: 0x8002E834
+- source: 0x8002E91C
+- source: 0x8002E924
+- source: 0x8002E948
+- source: 0x8002E96C
+- source: 0x8002E990
+- source: 0x8002E998
+- source: 0x8002E9BC
+- source: 0x8002E9E0
+- source: 0x8002EB14
+- source: 0x8002EB20
+- source: 0x8002EB48
+- source: 0x8002EB70
+- source: 0x8002EBA4
+- source: 0x8002EBB0
+- source: 0x8002EBD4
+- source: 0x8002EC00
+- source: 0x8002EC34
+- source: 0x8002EC40
+- source: 0x8002EC64
+- source: 0x8002EC84
+- source: 0x8002EC90
+- source: 0x8002EDD4
+- source: 0x8002EDE0
+- source: 0x8002EE08
+- source: 0x8002F354
+- source: 0x8002F360
+- source: 0x8002F388
+- source: 0x8002F3B0
+- source: 0x8002F3D4
+- source: 0x8002F3FC
+- source: 0x8002F57C
+- source: 0x8002F588
+- source: 0x8002F5E8
+- source: 0x8002F5F0
+- source: 0x8002F614
+- source: 0x8002F634
+- source: 0x8002F640
+- source: 0x8002F664
+- source: 0x8002F744
+- source: 0x8002F754
+- source: 0x8002F898
+- source: 0x8002F8A4
+- source: 0x8002F8DC
+- source: 0x8002F8EC
+- source: 0x8002FA18
+- source: 0x8002FA20
+- source: 0x8002FA58
+- source: 0x8002FA68
+- source: 0x8002FA90
+# cpuFindFunction
+- source: 0x80032C28
+- source: 0x80032C30
+- source: 0x80032C90
+- source: 0x80032C98
+- source: 0x80032CA4
+- source: 0x80033434
+- source: 0x80033464
+- source: 0x80033468
+- source: 0x8003349C
+- source: 0x800334B0
+- source: 0x800334F0
+- source: 0x800334F4
+- source: 0x80033528
+- source: 0x8003353C

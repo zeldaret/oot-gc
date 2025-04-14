@@ -20,6 +20,7 @@ INCLUDE_DIRS = [
     Path("."),
     Path("include"),
     Path("libc"),
+    Path("src"),
 ]
 COMPILER_NAME = "mwcc_233_159"
 # We don't set -inline deferred because otherwise the reversed function order

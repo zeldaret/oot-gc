@@ -361,7 +361,7 @@ bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode) {
             pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
             pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
 
-            pFrame->n2dLoadTexType = 0xFC1034;
+            pFrame->n2dLoadTexType = G_OBJLT_TXTRTILE;
             pFrame->nLastX0 = pFrame->aTile[iTile].nX0;
             pFrame->nLastY0 = pFrame->aTile[iTile].nY0;
             pFrame->nLastX1 = pFrame->aTile[iTile].nX1;
@@ -379,7 +379,7 @@ bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode) {
             pFrame->aTile[iTile].nY0 = nCommandHi & 0xFFF;
             pFrame->aTile[iTile].nX1 = (nCommandLo >> 12) & 0xFFF;
             pFrame->aTile[iTile].nY1 = nCommandLo & 0xFFF;
-            pFrame->n2dLoadTexType = 0x1033;
+            pFrame->n2dLoadTexType = G_OBJLT_TXTRBLOCK;
             if (!frameLoadTMEM(pFrame, FLT_BLOCK, iTile)) {
                 return false;
             }

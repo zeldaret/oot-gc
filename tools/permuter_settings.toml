@@ -1,6 +1,6 @@
 compiler_type = "mwcc"
-compiler_command = "wibo tools/mwcc_compiler/GC/1.1/mwcceppc.exe -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -inline auto,deferred -nodefaults -msgstyle gcc -Iinclude -Ilibc -c"
-assembler_command = "tools/binutils/powerpc-eabi-as -mgekko"
+compiler_command = "build/tools/wibo build/compilers/GC/1.1/mwcceppc.exe -Cpp_exceptions off -proc gekko -fp hardware -fp_contract on -enum int -align powerpc -nosyspath -RTTI off -str reuse -multibyte -O4,p -inline auto,deferred -nodefaults -msgstyle gcc -Iinclude -Ilibc -c"
+assembler_command = "build/binutils/powerpc-eabi-as -mgekko"
 asm_prelude_file = "include/macros.inc"
 
 [preserve_macros]
