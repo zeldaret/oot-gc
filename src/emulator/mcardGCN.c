@@ -53,7 +53,7 @@
 #define LN(mq_j, ce_j) (ce_j + 22)
 #endif
 
-#if VERSION == MQ_J || VERSION == MQ_U
+#if IS_MQ
 #define ICON_SPEED 2
 #else
 #define ICON_SPEED 3
@@ -76,14 +76,12 @@
 #if VERSION == MQ_J
 // "This is the save data from MM/DD"
 #define DATE_STRING "%d月%d日のセーブデータです"
-#elif VERSION == MQ_U
-//! TODO: fix the alignment issue
+#elif VERSION == MQ_U || VERSION == MQ_E
 #define DATE_STRING "%d/%d Save Data\0"
 #elif VERSION == CE_J
 // "The Legend of Zelda: Ocarina of Time"
 #define DATE_STRING "ゼルダの伝説：時のオカリナ"
 #elif VERSION == CE_U || VERSION == CE_E
-//! TODO: fix the alignment issue
 #define DATE_STRING "OCARINA OF TIME\0"
 #endif
 
@@ -746,12 +744,12 @@ static bool mcardWriteBufferAsynch(MemCard* pMCard, s32 offset) {
     if (mCard.saveToggle == true) {
         if (mCard.writeToggle == true) {
             OSTicksToCalendarTime(OSGetTime(), &date);
-#if VERSION < CE_E
+#if IS_EU
+            pMCard->file.changedDate = true;
+#else
             if (date.mon != pMCard->file.time.mon || date.mday != pMCard->file.time.mday) {
                 pMCard->file.changedDate = true;
             }
-#else
-            pMCard->file.changedDate = true;
 #endif
             mCard.writeToggle = false;
             if (!mcardTimeCheck(pMCard)) {
@@ -855,7 +853,7 @@ static bool mcardWriteConfigAsynch(MemCard* pMCard) {
     return true;
 }
 
-static inline bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
+static bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
     char dateString[32];
     s32 checksum;
 
@@ -874,7 +872,20 @@ static inline bool mcardWriteTimePrepareWriteBuffer(MemCard* pMCard) {
 
 #if VERSION == MQ_J || VERSION == MQ_U
     sprintf(dateString, DATE_STRING, gDate.mon + 1, gDate.mday);
-#elif VERSION != MQ_E
+#elif VERSION == MQ_E
+    if (gLanguage == 1) {
+        sprintf(dateString, "%d/%d Speicherstand\0", gDate.mon + 1, gDate.mday);
+    } else if (gLanguage == 2) {
+        sprintf(dateString, "Sauvegarde du %d/%d\0", gDate.mday, gDate.mon + 1);
+    } else if (gLanguage == 3) {
+        sprintf(dateString, "Datos guardados el %d/%d\0", gDate.mday, gDate.mon + 1);
+    } else if (gLanguage == 4) {
+        sprintf(dateString, "Dati Salvati %d/%d\0", gDate.mday, gDate.mon + 1);
+    } else {
+        sprintf(dateString, DATE_STRING, gDate.mon + 1, gDate.mday);
+    }
+    PAD_STACK();
+#else
     sprintf(dateString, DATE_STRING);
 #endif
 
@@ -1412,7 +1423,19 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
 
 #if VERSION == MQ_J || VERSION == MQ_U
         sprintf(dateString, DATE_STRING, date.mon + 1, date.mday);
-#elif VERSION != MQ_E
+#elif VERSION == MQ_E
+        if (gLanguage == 1) {
+            sprintf(dateString, "%d/%d Speicherstand\0", date.mon + 1, date.mday);
+        } else if (gLanguage == 2) {
+            sprintf(dateString, "Sauvegarde du %d/%d\0", date.mday, date.mon + 1);
+        } else if (gLanguage == 3) {
+            sprintf(dateString, "Datos guardados el %d/%d\0", date.mday, date.mon + 1);
+        } else if (gLanguage == 4) {
+            sprintf(dateString, "Dati Salvati %d/%d\0", date.mday, date.mon + 1);
+        } else {
+            sprintf(dateString, DATE_STRING, date.mon + 1, date.mday);
+        }
+#else
         sprintf(dateString, DATE_STRING);
 #endif
 
