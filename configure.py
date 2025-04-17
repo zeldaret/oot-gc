@@ -126,6 +126,9 @@ ALL_VERSIONS = [
     "ce-j",
     "ce-u",
     "ce-e",
+    # "mm-j",
+    # "mm-u",
+    # "mm-e",
 ]
 config.versions = [
     version
