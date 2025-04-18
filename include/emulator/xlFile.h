@@ -3,8 +3,10 @@
 
 #include "dolphin.h"
 #include "emulator/xlFileGCN.h"
+#include "macros.h"
 
-#if IS_EU
+#if IS_OOT_EU || IS_MM
+
 typedef enum XlFileTokenType {
     XLFTT_NONE = -1,
     XLFTT_LABEL = 0,
@@ -22,6 +24,7 @@ bool xlFileSkipLine(tXL_FILE* pFile);
 bool xlFileGetToken(tXL_FILE* pFile, XlFileTokenType* peType, char* acToken, s32 nSizeToken);
 bool xlFileMatchToken(tXL_FILE* pFile, XlFileTokenType eType, char* acToken, s32 nSizeToken, char* szText);
 bool xlFileGetLineSave(tXL_FILE* pFile, tXL_SAVE* pSave);
+
 #endif
 
 #endif
