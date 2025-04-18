@@ -256,101 +256,108 @@ typedef struct Rectangle {
 
 // __anon_0x24C38
 typedef struct Frame {
-    /* 0x00000 */ u32 anCIMGAddresses[8];
-    /* 0x00020 */ u16 nNumCIMGAddresses;
-    /* 0x00024 */ bool bBlurOn;
-    /* 0x00028 */ bool bHackPause;
-    /* 0x0002C */ s32 nHackCount;
-    /* 0x00030 */ s32 nFrameCounter;
-    /* 0x00034 */ bool bPauseThisFrame;
-    /* 0x00038 */ bool bCameFromBomberNotes;
-    /* 0x0003C */ bool bInBomberNotes;
-    /* 0x00040 */ s32 bShrinking; // bitfield (not a bool)
-    /* 0x00044 */ bool bSnapShot;
-    /* 0x00048 */ bool bUsingLens;
-    /* 0x0004C */ u8 cBlurAlpha;
-    /* 0x00050 */ bool bBlurredThisFrame;
-    /* 0x00054 */ s32 nFrameCIMGCalls;
-    /* 0x00058 */ bool bModifyZBuffer;
-    /* 0x0005C */ bool bOverrideDepth;
-    /* 0x00060 */ s32 nZBufferSets;
-    /* 0x00064 */ s32 nLastFrameZSets;
-    /* 0x00068 */ bool bPauseBGDrawn;
-    /* 0x0006C */ bool bFrameOn;
-    /* 0x00070 */ bool bBackBufferDrawn;
-    /* 0x00074 */ bool bGrabbedFrame;
-    /* 0x00078 */ u64* pnGBI;
-    /* 0x0007C */ u32 nFlag;
-    /* 0x00080 */ f32 rScaleX;
-    /* 0x00084 */ f32 rScaleY;
-    /* 0x00088 */ u32 nCountFrames;
-    /* 0x0008C */ u32 nMode;
-    /* 0x00090 */ u32 aMode[FMT_COUNT];
-    /* 0x000B8 */ Viewport viewport;
-    /* 0x000C8 */ FrameBuffer aBuffer[FBT_COUNT];
-    /* 0x00118 */ u32 nOffsetDepth0;
-    /* 0x0011C */ u32 nOffsetDepth1;
-    /* 0x00120 */ s32 nWidthLine;
-    /* 0x00124 */ f32 rDepth;
-    /* 0x00128 */ f32 rDelta;
-    /* 0x0012C */ FrameDrawFunc aDraw[4];
-    /* 0x0013C */ s32 nCountLight;
-    /* 0x00140 */ Light aLight[8];
-    /* 0x00320 */ LookAt lookAt;
-    /* 0x00354 */ s32 nCountVertex;
-    /* 0x00358 */ Vertex aVertex[80];
-    /* 0x00C18 */ TextureMemory TMEM;
-    /* 0x01C18 */ void* aPixelData;
-    /* 0x01C1C */ void* aColorData;
-    /* 0x01C20 */ s32 nBlocksPixel;
-    /* 0x01C24 */ s32 nBlocksMaxPixel;
-    /* 0x01C28 */ s32 nBlocksColor;
-    /* 0x01C2C */ s32 nBlocksMaxColor;
-    /* 0x01C30 */ s32 nBlocksTexture;
-    /* 0x01C34 */ s32 nBlocksMaxTexture;
-    /* 0x01C38 */ u32 anPackPixel[48];
-    /* 0x01CF8 */ u32 anPackColor[320];
-    /* 0x021F8 */ u32 nAddressLoad;
-    /* 0x021FC */ u32 nCodePixel;
-    /* 0x02200 */ u32 nTlutCode[16];
-    /* 0x02240 */ FrameTexture aTexture[2048];
-    /* 0x38240 */ u32 anTextureUsed[64];
-    /* 0x38340 */ FrameTexture* apTextureCached[4096];
-    /* 0x3C340 */ s32 iTileLoad;
-    /* 0x3C344 */ u32 n2dLoadTexType;
-    /* 0x3C348 */ s32 nLastX0;
-    /* 0x3C34C */ s32 nLastY0;
-    /* 0x3C350 */ s32 nLastX1;
-    /* 0x3C354 */ s32 nLastY1;
-    /* 0x3C358 */ Tile aTile[8];
-    /* 0x3C4B8 */ s32 anSizeX[FS_COUNT];
-    /* 0x3C4C0 */ s32 anSizeY[FS_COUNT];
-    /* 0x3C4C8 */ s32 iHintMatrix;
-    /* 0x3C4CC */ s32 iMatrixModel;
-    /* 0x3C4D0 */ s32 iHintProjection;
-    /* 0x3C4D4 */ Mtx44 matrixView;
-    /* 0x3C514 */ s32 iHintLast;
-    /* 0x3C518 */ s32 iHintHack;
-    /* 0x3C51C */ FrameMatrixProjection eTypeProjection;
-    /* 0x3C520 */ Mtx44 aMatrixModel[10];
-    /* 0x3C7A0 */ Mtx44 matrixProjection;
-    /* 0x3C7E0 */ Mtx44 matrixProjectionExtra;
-    /* 0x3C820 */ MatrixHint aMatrixHint[64];
-    /* 0x3D120 */ u8 primLODmin;
-    /* 0x3D121 */ u8 primLODfrac;
-    /* 0x3D122 */ u8 lastTile;
-    /* 0x3D123 */ u8 iTileDrawn;
-    /* 0x3D124 */ GXColor aColor[FCT_COUNT];
-    /* 0x3D138 */ u32 nModeVtx;
-#if VERSION != MQ_J
-    /* 0x3D13C */ u16* nTempBuffer;
-    /* 0x3D140 */ u16* nCopyBuffer;
+    /*   OoT      MM   */
+    /* 0x00000 0x00000 */ u32 anCIMGAddresses[8];
+    /* 0x00020 0x00020 */ u16 nNumCIMGAddresses;
+    /* 0x00024 0x00024 */ bool bBlurOn;
+    /* 0x00028 0x00028 */ bool bHackPause;
+    /* 0x0002C 0x0002C */ s32 nHackCount;
+    /* 0x00030 0x00030 */ s32 nFrameCounter;
+    /* 0x00034 0x00034 */ bool bPauseThisFrame;
+    /* 0x00038 0x00038 */ bool bCameFromBomberNotes;
+    /* 0x0003C 0x0003C */ bool bInBomberNotes;
+    /* 0x00040 0x00040 */ s32 bShrinking; // bitfield (not a bool)
+    /* 0x00044 0x00044 */ s32 bSnapShot; // bitfield (not a bool)
+    /* 0x00048 0x00048 */ bool bUsingLens;
+    /* 0x0004C 0x0004C */ u8 cBlurAlpha;
+    /* 0x00050 0x00050 */ bool bBlurredThisFrame;
+    /* 0x00054 0x00054 */ s32 nFrameCIMGCalls;
+    /* 0x00058 0x00058 */ bool bModifyZBuffer;
+#if IS_OOT
+    /* 0x0005C   N/A   */ bool bOverrideDepth;
 #endif
-    /* 0x3D144 */ u32* nLensBuffer;
-#if VERSION != MQ_J
-    /* 0x3D148 */ u16* nCameraBuffer;
+    /* 0x00060 0x0005C */ s32 nZBufferSets;
+    /* 0x00064 0x00060 */ s32 nLastFrameZSets;
+    /* 0x00068 0x00064 */ bool bPauseBGDrawn;
+#if IS_OOT
+    /* 0x0006C   N/A   */ bool bFrameOn;
+    /* 0x00070   N/A   */ bool bBackBufferDrawn;
+    /* 0x00074   N/A   */ bool bGrabbedFrame;
 #endif
-} Frame; // size = 0x3D150
+    /* 0x00078 0x00068 */ u64* pnGBI;
+    /* 0x0007C 0x0006C */ u32 nFlag;
+    /* 0x00080 0x00070 */ f32 rScaleX;
+    /* 0x00084 0x00074 */ f32 rScaleY;
+    /* 0x00088 0x00078 */ u32 nCountFrames;
+    /* 0x0008C 0x0007C */ u32 nMode;
+    /* 0x00090 0x00080 */ u32 aMode[FMT_COUNT];
+    /* 0x000B8 0x000A8 */ Viewport viewport;
+    /* 0x000C8 0x000B8 */ FrameBuffer aBuffer[FBT_COUNT];
+    /* 0x00118 0x00108 */ u32 nOffsetDepth0;
+    /* 0x0011C 0x0010C */ u32 nOffsetDepth1;
+    /* 0x00120 0x00110 */ s32 nWidthLine;
+    /* 0x00124 0x00114 */ f32 rDepth;
+    /* 0x00128 0x00118 */ f32 rDelta;
+    /* 0x0012C 0x0011C */ FrameDrawFunc aDraw[4];
+    /* 0x0013C 0x0012C */ s32 nCountLight;
+    /* 0x00140 0x00130 */ Light aLight[8];
+    /* 0x00320 0x00310 */ LookAt lookAt;
+    /* 0x00354 0x00344 */ s32 nCountVertex;
+    /* 0x00358 0x00348 */ Vertex aVertex[80];
+    /* 0x00C18 0x00C08 */ TextureMemory TMEM;
+    /* 0x01C18 0x01C08 */ void* aPixelData;
+    /* 0x01C1C 0x01C0C */ void* aColorData;
+    /* 0x01C20 0x01C10 */ s32 nBlocksPixel;
+    /* 0x01C24 0x01C14 */ s32 nBlocksMaxPixel;
+    /* 0x01C28 0x01C18 */ s32 nBlocksColor;
+    /* 0x01C2C 0x01C1C */ s32 nBlocksMaxColor;
+    /* 0x01C30 0x01C20 */ s32 nBlocksTexture;
+    /* 0x01C34 0x01C24 */ s32 nBlocksMaxTexture;
+    /* 0x01C38 0x01C28 */ u32 anPackPixel[48];
+    /* 0x01CF8 0x01CE8 */ u32 anPackColor[320];
+    /* 0x021F8 0x021E8 */ u32 nAddressLoad;
+    /* 0x021FC 0x021EC */ u32 nCodePixel;
+    /* 0x02200 0x021F0 */ u32 nTlutCode[16];
+    /* 0x02240 0x02230 */ FrameTexture aTexture[2048];
+    /* 0x38240 0x38230 */ u32 anTextureUsed[64];
+    /* 0x38340 0x38330 */ FrameTexture* apTextureCached[4096];
+    /* 0x3C340 0x3C330 */ s32 iTileLoad;
+    /* 0x3C344 0x3C334 */ u32 n2dLoadTexType;
+    /* 0x3C348 0x3C338 */ s32 nLastX0;
+    /* 0x3C34C 0x3C33C */ s32 nLastY0;
+    /* 0x3C350 0x3C340 */ s32 nLastX1;
+    /* 0x3C354 0x3C344 */ s32 nLastY1;
+    /* 0x3C358 0x3C348 */ Tile aTile[8];
+    /* 0x3C4B8 0x3C4A8 */ s32 anSizeX[FS_COUNT];
+    /* 0x3C4C0 0x3C4B0 */ s32 anSizeY[FS_COUNT];
+    /* 0x3C4C8 0x3C4B8 */ s32 iHintMatrix;
+    /* 0x3C4CC 0x3C4BC */ s32 iMatrixModel;
+    /* 0x3C4D0 0x3C4C0 */ s32 iHintProjection;
+    /* 0x3C4D4 0x3C4C4 */ Mtx44 matrixView;
+    /* 0x3C514 0x3C504 */ s32 iHintLast;
+    /* 0x3C518 0x3C508 */ s32 iHintHack;
+    /* 0x3C51C 0x3C50C */ FrameMatrixProjection eTypeProjection;
+    /* 0x3C520 0x3C510 */ Mtx44 aMatrixModel[10];
+    /* 0x3C7A0 0x3C790 */ Mtx44 matrixProjection;
+    /* 0x3C7E0 0x3C7D0 */ Mtx44 matrixProjectionExtra;
+    /* 0x3C820 0x3C810 */ MatrixHint aMatrixHint[64];
+    /* 0x3D120 0x3D110 */ u8 primLODmin;
+    /* 0x3D121 0x3D111 */ u8 primLODfrac;
+    /* 0x3D122 0x3D112 */ u8 lastTile;
+    /* 0x3D123 0x3D113 */ u8 iTileDrawn;
+    /* 0x3D124 0x3D114 */ GXColor aColor[FCT_COUNT];
+    /* 0x3D138 0x3D128 */ u32 nModeVtx;
+#if IS_MQ_US || IS_MQ_EU || IS_CE
+    /* 0x3D13C 0x3D12C */ u16* nTempBuffer;
+    /* 0x3D140 0x3D130 */ u16* nCopyBuffer;
+#endif
+#if IS_OOT
+    /* 0x3D144   N/A   */ u32* nLensBuffer;
+#endif
+#if IS_MQ_US || IS_MQ_EU || IS_CE
+    /* 0x3D148 0x3D134 */ u16* nCameraBuffer;
+#endif
+} Frame; // size = 0x3D150 0x3D138
 
 extern _XL_OBJECTTYPE gClassFrame;
 extern bool gNoSwapBuffer;
