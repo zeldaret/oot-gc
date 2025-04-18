@@ -92,23 +92,42 @@ bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode) {
                     static s32 nZCount;
                     static s32 nZBufferCount;
 
-                    if (BLUR_COUNT_CHECK) {
+#if IS_OOT
+                    if (nAddress == 0x0042EEC0 || nAddress == 0x003A9480 || nAddress == 0x003A92C0) {
                         nBlurCount = nCount;
                     }
-                    if (nAddress == NOTE_COUNT_ADDR) {
+                    if (nAddress == 0x00780000) {
                         nNoteCount = nCount;
                     }
-                    if (!BOMBER_ZBUFFER_CHECK && pFrame->bCameFromBomberNotes) {
+                    if (!(nAddress == 0x004096C0 || nAddress == 0x00383C80 || nAddress == 0x00383AC0) &&
+                        pFrame->bCameFromBomberNotes) {
                         nZCount += 1;
                     } else {
                         nZCount = 0;
                         pFrame->bCameFromBomberNotes = false;
                     }
-                    if (BOMBER_ZBUFFER_CHECK) {
+                    if (nAddress == 0x004096C0 || nAddress == 0x00383C80 || nAddress == 0x00383AC0) {
                         nZBufferCount = nCount;
                         pFrame->nZBufferSets++;
                     }
-#if IS_MM
+#else
+                    if (nAddress == 0x007B5000) {
+                        nBlurCount = nCount;
+                    }
+                    if (nAddress == 0x00780500) {
+                        nNoteCount = nCount;
+                    }
+                    if (nAddress != 0x0078F800 && pFrame->bCameFromBomberNotes) {
+                        nZCount += 1;
+                    } else {
+                        nZCount = 0;
+                        pFrame->bCameFromBomberNotes = false;
+                    }
+                    if (nAddress == 0x0078F800) {
+                        nZBufferCount = nCount;
+                        pFrame->nZBufferSets++;
+                    }
+
                     if (pFrame->nZBufferSets == 3) {
                         if (!(pFrame->bSnapShot & ~0xFFFF)) {
                             pFrame->bSnapShot |= ~0xFFFF;
@@ -117,7 +136,13 @@ bool rdpParseGBI(Rdp* pRDP, u64** ppnGBI, RspUCodeType eTypeUCode) {
                         pFrame->bSnapShot &= 0xFFFF;
                     }
 #endif
-                    if (nAddress == COMMAND_CODES_ADDR) {
+
+#if IS_OOT
+                    if (nAddress == 0x00784600)
+#else
+                    if (nAddress == 0x0003E000)
+#endif
+                    {
                         static u32 sCommandCodes[] = {
                             0xED000000,
                             0x005003C0,
