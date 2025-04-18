@@ -3,6 +3,19 @@
 #include "emulator/xlHeap.h"
 #include "stddef.h"
 
+#if IS_MM_JP
+
+GXTevColorArg gColorArgs[16] = {
+    GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXC, GX_CC_C1,   GX_CC_RASC, GX_CC_C2, GX_CC_ONE, GX_CC_APREV,
+    GX_CC_TEXA,  GX_CC_TEXA, GX_CC_A1,   GX_CC_RASA, GX_CC_A2,   GX_CC_A0, GX_CC_C0,  GX_CC_ZERO,
+};
+
+GXTevAlphaArg gAlphaArgs[10] = {
+    GX_CA_A0, GX_CA_TEXA, GX_CA_TEXA, GX_CA_A1, GX_CA_RASA, GX_CA_A2, GX_CA_KONST, GX_CA_ZERO, GX_CA_APREV, GX_CA_A0,
+};
+
+#else
+
 GXTevColorArg gColorArgs[16] = {
     GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXC, GX_CC_C1,   GX_CC_RASC, GX_CC_C2,  GX_CC_ONE, GX_CC_APREV,
     GX_CC_TEXA,  GX_CC_TEXA, GX_CC_A1,   GX_CC_RASA, GX_CC_A2,   GX_CC_ONE, GX_CC_C0,  GX_CC_ZERO,
@@ -11,6 +24,8 @@ GXTevColorArg gColorArgs[16] = {
 GXTevAlphaArg gAlphaArgs[10] = {
     GX_CA_KONST, GX_CA_TEXA, GX_CA_TEXA, GX_CA_A1, GX_CA_RASA, GX_CA_A2, GX_CA_KONST, GX_CA_ZERO, GX_CA_APREV, GX_CA_A0,
 };
+
+#endif
 
 static TevColorOp sUsualOps[] = {
     {GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, 0, GX_TEVPREV},
@@ -59,6 +74,7 @@ void SetColor(u8* stageValues, u32 colorVal, u8 cycle) {
                 stageValues[i] = 9;
             }
         } else {
+#if IS_OOT
             if (stageValues[i] == 0) {
                 stageValues[i] = 0xF;
             } else if (stageValues[i] == 7 && gpSystem->eTypeROM == SRT_ZELDA2) {
@@ -66,6 +82,17 @@ void SetColor(u8* stageValues, u32 colorVal, u8 cycle) {
             } else if (stageValues[i] == 7) {
                 stageValues[i] = 0xF;
             }
+#else
+            if (stageValues[i] == 0) {
+                stageValues[i] = 0xF;
+            } else if (stageValues[i] == 7) {
+                if (gpSystem->eTypeROM == SRT_ZELDA2) {
+                    stageValues[i] = 6;
+                } else {
+                    stageValues[i] = 0xF;
+                }
+            }
+#endif
         }
 
         if (stageValues[i] == 0x1F) {
@@ -976,7 +1003,7 @@ CombineModeTev* BuildCombineModeTev(u32 color1, u32 alpha1, u32 color2, u32 alph
 
     BuildTevMemset(&tevStages, 0, sizeof(CombineModeTev));
 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < TEV_COUNT; i++) {
         tevStages.tevOrder[i].coordID = GX_TEXCOORD_NULL;
         tevStages.tevOrder[i].mapID = GX_TEXMAP_NULL;
         tevStages.tevOrder[i].chanID = GX_COLOR_NULL;
