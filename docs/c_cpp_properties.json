@@ -71,6 +71,42 @@
                 "${workspaceFolder}/build/ce-e/include"
             ],
             "defines": ["VERSION=CE_E"]
+        },
+        {
+            "name": "mm-j",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/mm-j/include"
+            ],
+            "defines": ["VERSION=MM_J"]
+        },
+        {
+            "name": "mm-u",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/mm-u/include"
+            ],
+            "defines": ["VERSION=MM_U"]
+        },
+        {
+            "name": "mm-e",
+            "intelliSenseMode": "${default}",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/libc",
+                "${workspaceFolder}/build/mm-e/include"
+            ],
+            "defines": ["VERSION=MM_E"]
         }
     ],
     "version": 4

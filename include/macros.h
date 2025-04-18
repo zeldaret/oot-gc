@@ -8,6 +8,9 @@
 #define CE_J 4
 #define CE_U 5
 #define CE_E 6
+#define MM_J 7
+#define MM_U 8
+#define MM_E 9
 #define IS_MQ (VERSION == MQ_J || VERSION == MQ_U || VERSION == MQ_E)
 #define IS_CE (VERSION == CE_J || VERSION == CE_U || VERSION == CE_E)
 #define IS_JP (VERSION == MQ_J || VERSION == CE_J)

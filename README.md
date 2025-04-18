@@ -24,12 +24,15 @@ A work-in-progress decompilation of the N64 emulator used in the GameCube releas
 
 Supported versions:
 
-- `mq-j`: Master Quest - Japan
-- `mq-u`: Master Quest - North America
-- `mq-e`: Master Quest - Europe/Australia
-- `ce-j`: Collector's Edition - Japan
-- `ce-u`: Collector's Edition - North America
-- `ce-e`: Collector's Edition - Europe/Australia
+- `mq-j`: Ocarina of Time (Master Quest) - Japan
+- `mq-u`: Ocarina of Time (Master Quest) - North America
+- `mq-e`: Ocarina of Time (Master Quest) - Europe/Australia
+- `ce-j`: Ocarina of Time (Collector's Edition) - Japan
+- `ce-u`: Ocarina of Time (Collector's Edition) - North America
+- `ce-e`: Ocarina of Time (Collector's Edition) - Europe/Australia
+- `mm-j`: Majora's Mask (Collector's Edition) - Japan
+- `mm-u`: Majora's Mask (Collector's Edition) - North America
+- `mm-e`: Majora's Mask (Collector's Edition) - Europe/Australia
 
 Currently the decompilation mainly targets the `ce-j` version, as the
 Collector's Edition disks also contain an ELF file where symbols and other

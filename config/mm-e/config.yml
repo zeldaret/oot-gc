@@ -1,0 +1,108 @@
+# See config.example.yml for documentation.
+name: mm-gc
+object_base: orig/mm-e
+object: files/tgc/majora_PAL_100403c.tgc:sys/main.dol
+hash: 30f8168de4766c4ff8735d9c64327a728fe4fe32
+symbols: config/mm-e/symbols.txt
+splits: config/mm-e/splits.txt
+mw_comment_version: 8
+
+extract:
+# xlCoreGCN.c
+- symbol: gTgPcTPL
+  header: gTgPcTPL.inc
+# simGCN.c
+- symbol: gbar
+  header: gbar.inc
+
+block_relocations:
+# systemSetupGameALL
+- source: 0x8002DC10
+- source: 0x8002DC1C
+- source: 0x8002DC3C
+- source: 0x8002DC44
+- source: 0x8002DC78
+- source: 0x8002DC84
+- source: 0x8002DCA4
+- source: 0x8002DCAC
+- source: 0x8002DCE0
+- source: 0x8002DCEC
+- source: 0x8002DD0C
+- source: 0x8002DD14
+- source: 0x8002DD68
+- source: 0x8002DD70
+- source: 0x8002DD90
+- source: 0x8002DDC4
+- source: 0x8002DDD0
+- source: 0x8002DDF4
+- source: 0x8002DE28
+- source: 0x8002DE34
+- source: 0x8002DE58
+- source: 0x8002E6CC
+- source: 0x8002E6D8
+- source: 0x8002E804
+- source: 0x8002E810
+- source: 0x8002E8F8
+- source: 0x8002E900
+- source: 0x8002E924
+- source: 0x8002E948
+- source: 0x8002E96C
+- source: 0x8002E974
+- source: 0x8002E998
+- source: 0x8002E9BC
+- source: 0x8002EB08
+- source: 0x8002EB14
+- source: 0x8002EB3C
+- source: 0x8002EB64
+- source: 0x8002EB98
+- source: 0x8002EBA4
+- source: 0x8002EBC8
+- source: 0x8002EBF4
+- source: 0x8002EC28
+- source: 0x8002EC34
+- source: 0x8002EC58
+- source: 0x8002EC78
+- source: 0x8002EC84
+- source: 0x8002EE2C
+- source: 0x8002EE38
+- source: 0x8002EE60
+- source: 0x8002F530
+- source: 0x8002F53C
+- source: 0x8002F564
+- source: 0x8002F58C
+- source: 0x8002F5B0
+- source: 0x8002F5D8
+- source: 0x8002F770
+- source: 0x8002F77C
+- source: 0x8002F7DC
+- source: 0x8002F7E4
+- source: 0x8002F808
+- source: 0x8002F828
+- source: 0x8002F834
+- source: 0x8002F858
+- source: 0x8002F938
+- source: 0x8002F948
+- source: 0x8002FAA4
+- source: 0x8002FAB0
+- source: 0x8002FAE8
+- source: 0x8002FAF8
+- source: 0x8002FC3C
+- source: 0x8002FC44
+- source: 0x8002FC7C
+- source: 0x8002FC8C
+- source: 0x8002FCB4
+- source: 0x8002FF78
+- source: 0x8002FF84
+# cpuFindFunction
+- source: 0x80033520
+- source: 0x80033528
+- source: 0x80033534
+- source: 0x80033CC4
+- source: 0x80033CF4
+- source: 0x80033CF8
+- source: 0x80033D2C
+- source: 0x80033D40
+- source: 0x80033D80
+- source: 0x80033D84
+- source: 0x80033DB8
+- source: 0x80033DCC

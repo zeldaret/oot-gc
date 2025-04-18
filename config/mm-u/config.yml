@@ -1,0 +1,127 @@
+# See config.example.yml for documentation.
+name: mm-gc
+object_base: orig/mm-u
+object: files/tgc/majora_ENG_091003.tgc:sys/main.dol
+hash: 43b6037ba444ae9758767b3b9fcbae4837509e6f
+symbols: config/mm-u/symbols.txt
+splits: config/mm-u/splits.txt
+mw_comment_version: 8
+
+extract:
+# xlCoreGCN.c
+- symbol: gTgPcTPL
+  header: gTgPcTPL.inc
+# simGCN.c
+- symbol: gcoverOpen
+  header: gcoverOpen.inc
+- symbol: gnoDisk
+  header: gnoDisk.inc
+- symbol: gretryErr
+  header: gretryErr.inc
+- symbol: gfatalErr
+  header: gfatalErr.inc
+- symbol: gwrongDisk
+  header: gwrongDisk.inc
+- symbol: greadingDisk
+  header: greadingDisk.inc
+- symbol: gbar
+  header: gbar.inc
+- symbol: gyes
+  header: gyes.inc
+- symbol: gno
+  header: gno.inc
+- symbol: gmesgOK
+  header: gmesgOK.inc
+
+block_relocations:
+# systemSetupGameALL
+- source: 0x8002D244
+- source: 0x8002D250
+- source: 0x8002D270
+- source: 0x8002D278
+- source: 0x8002D2AC
+- source: 0x8002D2B8
+- source: 0x8002D2D8
+- source: 0x8002D2E0
+- source: 0x8002D314
+- source: 0x8002D320
+- source: 0x8002D340
+- source: 0x8002D348
+- source: 0x8002D39C
+- source: 0x8002D3A4
+- source: 0x8002D3C4
+- source: 0x8002D3F8
+- source: 0x8002D404
+- source: 0x8002D428
+- source: 0x8002D45C
+- source: 0x8002D468
+- source: 0x8002D48C
+- source: 0x8002DCC4
+- source: 0x8002DCD0
+- source: 0x8002DDFC
+- source: 0x8002DE08
+- source: 0x8002DEF0
+- source: 0x8002DEF8
+- source: 0x8002DF1C
+- source: 0x8002DF40
+- source: 0x8002DF64
+- source: 0x8002DF6C
+- source: 0x8002DF90
+- source: 0x8002DFB4
+- source: 0x8002E100
+- source: 0x8002E10C
+- source: 0x8002E134
+- source: 0x8002E15C
+- source: 0x8002E190
+- source: 0x8002E19C
+- source: 0x8002E1C0
+- source: 0x8002E1EC
+- source: 0x8002E220
+- source: 0x8002E22C
+- source: 0x8002E250
+- source: 0x8002E270
+- source: 0x8002E27C
+- source: 0x8002E424
+- source: 0x8002E430
+- source: 0x8002E458
+- source: 0x8002EB28
+- source: 0x8002EB34
+- source: 0x8002EB5C
+- source: 0x8002EB84
+- source: 0x8002EBA8
+- source: 0x8002EBD0
+- source: 0x8002ED68
+- source: 0x8002ED74
+- source: 0x8002EDD4
+- source: 0x8002EDDC
+- source: 0x8002EE00
+- source: 0x8002EE20
+- source: 0x8002EE2C
+- source: 0x8002EE50
+- source: 0x8002EF30
+- source: 0x8002EF40
+- source: 0x8002F09C
+- source: 0x8002F0A8
+- source: 0x8002F0E0
+- source: 0x8002F0F0
+- source: 0x8002F234
+- source: 0x8002F23C
+- source: 0x8002F274
+- source: 0x8002F284
+- source: 0x8002F2AC
+- source: 0x8002F570
+- source: 0x8002F57C
+# cpuFindFunction
+- source: 0x80032ABC
+- source: 0x80032AC4
+- source: 0x80032AD0
+- source: 0x80033260
+- source: 0x80033290
+- source: 0x80033294
+- source: 0x800332C8
+- source: 0x800332DC
+- source: 0x8003331C
+- source: 0x80033320
+- source: 0x80033354
+- source: 0x80033368
+# - source: 0x80033AE0
