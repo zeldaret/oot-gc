@@ -1,5 +1,6 @@
 #include "emulator/soundGCN.h"
 #include "emulator/simGCN.h"
+#include "emulator/snddvdtrk.h"
 #include "emulator/xlFileGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
@@ -297,7 +298,7 @@ bool soundSetBufferSize(Sound* pSound, s32 nSize) {
     int iBuffer;
 
     if (nSize % 32 != 0) {
-#if !IS_EU
+#if IS_OOT_JP || IS_OOT_US
         xlPostText("SetBufferSize: ERROR: 'nSize' must be a multiple of 32! (%d)\n", "soundGCN.c", 674, nSize);
 #endif
         nSize = (nSize + 0x1F) & ~0x1F;
@@ -406,6 +407,15 @@ bool soundPlayBeep(Sound* pSound, SoundBeep iBeep) {
 
     return true;
 }
+
+#if IS_MM
+bool soundPlayOcarinaTune(void) {
+    InitDVDTrackList();
+    AddDVDTrack("confirm.adp");
+    PlayDVDTrack(0, -1, 0, 0);
+    return true;
+}
+#endif
 
 bool soundEvent(Sound* pSound, s32 nEvent, void* pArgument) {
     int iBuffer;
