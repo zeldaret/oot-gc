@@ -1078,10 +1078,12 @@ bool frameLoadTMEM(Frame* pFrame, FrameLoadType eType, s32 iTile) {
 
     frameDrawReset(pFrame, 1);
 
+#if IS_OOT
     if (gpSystem->eTypeROM == SRT_ZELDA2 &&
         (pFrame->aBuffer[FBT_IMAGE].nAddress == 0x500 || pFrame->aBuffer[FBT_IMAGE].nAddress == 0x7DA800)) {
         CopyAndConvertCFB(pFrame->aBuffer[FBT_IMAGE].pData);
     }
+#endif
 
     pSource = (u64*)((u32)pFrame->aBuffer[FBT_IMAGE].pData & ~3);
     pFrame->iTileLoad = iTile;
