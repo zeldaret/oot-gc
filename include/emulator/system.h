@@ -71,7 +71,12 @@ typedef enum SystemRomType {
     SRT_MARIOPARTY2 = 9,
     SRT_MARIOPARTY3 = 10,
     SRT_DRMARIO = 11,
-    SRT_UNKNOWN = 12,
+#if IS_MM
+    SRT_KIRBY = 12,
+    SRT_PILOTWING = 13,
+    SRT_SLICRADIC = 14,
+#endif
+    SRT_UNKNOWN,
 } SystemRomType;
 
 // __anon_0x370F1
@@ -147,7 +152,9 @@ typedef struct System {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ SystemObjectType storageDevice;
     /* 0x74 */ u8 anException[16];
+#if VERSION != MM_J
     /* 0x84 */ bool bJapaneseVersion;
+#endif
 } System; // size = 0x88
 
 // __anon_0x3459E
@@ -182,6 +189,7 @@ typedef struct SystemRomConfig {
 extern u32 nTickMultiplier;
 extern f32 fTickScale;
 extern u32 gnFlagZelda;
+extern SystemRomConfig gSystemRomConfigurationList[1];
 
 bool systemCopyROM(System* pSystem, s32 nOffsetRAM, s32 nOffsetROM, s32 nSize, SystemCopyCallbackFunc pCallback);
 bool systemSetMode(System* pSystem, SystemMode eMode);
