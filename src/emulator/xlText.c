@@ -1,7 +1,7 @@
 #include "dolphin/types.h"
 #include "macros.h"
 
-#if IS_EU
+#if IS_OOT_EU || IS_MM
 
 s32 xlTextCopy(char* acTextTarget, char* szTextSource) {
     s32 iCharacter;

@@ -33,10 +33,9 @@
 #include "emulator/simGCN.h"
 #include "emulator/xlHeap.h"
 #include "emulator/xlPostGCN.h"
+#include "macros.h"
 #include "stdio.h"
 #include "string.h"
-
-#define UNK_LINE 0
 
 // Line numbers for different versions
 #if VERSION == MQ_J

@@ -2,6 +2,7 @@
 #define _XL_FILE_GCN_H
 
 #include "dolphin.h"
+#include "macros.h"
 
 typedef bool (*DVDOpenCallback)(char*, DVDFileInfo*);
 typedef bool (*DVDReadCallback)(DVDFileInfo*, void*, s32, s32, DVDCallback);
@@ -13,7 +14,7 @@ typedef enum XlFileType {
     XLFT_BINARY = 1,
 } XlFileType;
 
-#if IS_EU
+#if IS_OOT_EU || IS_MM
 typedef struct tXL_SAVE {
     /* 0x0 */ s32 nPosition;
     /* 0x4 */ s32 nLineNumber;

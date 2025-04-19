@@ -6,7 +6,7 @@
 #include "emulator/xlText.h"
 #include "string.h"
 
-#if IS_EU
+#if IS_OOT_EU || IS_MM
 
 // this is inside xlFileGCN.c on the other versions
 _XL_OBJECTTYPE gTypeFile = {

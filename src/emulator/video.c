@@ -14,6 +14,12 @@ bool videoPut8(Video* pVideo, u32 nAddress, s8* pData) { return false; }
 
 bool videoPut16(Video* pVideo, u32 nAddress, s16* pData) { return false; }
 
+#if IS_OOT
+#define SIZE_X (pVideo->nSizeX)
+#else
+#define SIZE_X (pVideo->nScaleX * 320) / 512
+#endif
+
 bool videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
     void* pRAM;
     Frame* pFrame;
@@ -84,13 +90,13 @@ bool videoPut32(Video* pVideo, u32 nAddress, s32* pData) {
             break;
         case 0x30:
             pVideo->nScaleX = *pData & 0xFFF;
-            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 240) / 1024)) {
+            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, SIZE_X, (s32)(pVideo->nScaleY * 240) / 1024)) {
                 return false;
             }
             break;
         case 0x34:
             pVideo->nScaleY = *pData & 0xFFF;
-            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, pVideo->nSizeX, (s32)(pVideo->nScaleY * 240) / 1024)) {
+            if (!frameSetSize(SYSTEM_FRAME(pVideo->pHost), 0, SIZE_X, (s32)(pVideo->nScaleY * 240) / 1024)) {
                 return false;
             }
             break;

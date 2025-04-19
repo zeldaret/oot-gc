@@ -294,7 +294,7 @@ static inline void movieDrawErrorMessageImpl(MovieMessage movieMessage, TEXPalet
 }
 
 bool movieDrawErrorMessage(MovieMessage movieMessage) {
-#if IS_EU
+#if IS_OOT_EU
     if (gLanguage == 1) {
         movieDrawErrorMessageImpl(movieMessage, (TEXPalette*)(u8*)ggerman_coverOpen,
                                   (TEXPalette*)(u8*)ggerman_wrongDisk, (TEXPalette*)(u8*)ggerman_readingDisk,
