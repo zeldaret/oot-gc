@@ -1376,8 +1376,8 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
                 }
             }
             pMCard->file.game.writtenBlocks[0] = true;
-        } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
 #if IS_MM
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
             char* buffer = pMCard->file.game.buffer + 0x18000;
             testInt = (s32*)buffer;
 
@@ -1399,8 +1399,8 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
                     pMCard->file.game.buffer[0] &= 0xFC;
                 }
             }
-        } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
 #if IS_MM
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
             char* buffer = pMCard->file.game.buffer + 0x18000;
             testInt = (s32*)buffer;
 
