@@ -7,5 +7,11 @@
 set -euo pipefail
 
 VERSION=${1:-ce-j}
-ninja "build/$VERSION/oot-gc.elf"
-build/tools/dtk dol diff "config/$VERSION/config.yml" "build/$VERSION/oot-gc.elf"
+if [[ "$VERSION" = mm-* ]]
+then
+    GAME="mm"
+else
+    GAME="oot"
+fi
+ninja "build/$VERSION/$GAME-gc.elf"
+build/tools/dtk dol diff "config/$VERSION/config.yml" "build/$VERSION/$GAME-gc.elf"
