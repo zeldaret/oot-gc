@@ -932,14 +932,14 @@ static bool romCopyUpdate(Rom* pROM) {
 
 static bool romCacheAllBlocks(Rom* pROM) {
     s32 iCache;
-    s32 iBlock;
+    u32 iBlock;
     u32 iBlockLast;
 
-    u32 temp_r27 = (u32)(pROM->nSize - 1) / 0x2000;
-    iBlockLast = pROM->nTick = temp_r27 + 1;
+    iBlockLast = (u32)(pROM->nSize - 1) / 0x2000;
+    pROM->nTick = iBlockLast + 1;
 
-    for (iBlock = 0; iBlock < iBlockLast; iBlock++) {
-        pROM->aBlock[iBlock].nTickUsed = temp_r27 - iBlock;
+    for (iBlock = 0; iBlock < iBlockLast + 1; iBlock++) {
+        pROM->aBlock[iBlock].nTickUsed = iBlockLast - iBlock;
 
         if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
             return false;
