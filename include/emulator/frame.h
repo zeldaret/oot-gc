@@ -347,14 +347,14 @@ typedef struct Frame {
     /* 0x3D123 0x3D113 */ u8 iTileDrawn;
     /* 0x3D124 0x3D114 */ GXColor aColor[FCT_COUNT];
     /* 0x3D138 0x3D128 */ u32 nModeVtx;
-#if IS_OOT && VERSION != MQ_J || IS_MM
+#if VERSION != MQ_J
     /* 0x3D13C 0x3D12C */ u16* nTempBuffer;
     /* 0x3D140 0x3D130 */ u16* nCopyBuffer;
 #endif
 #if IS_OOT
     /* 0x3D144   N/A   */ u32* nLensBuffer;
 #endif
-#if IS_OOT && VERSION != MQ_J || IS_MM
+#if VERSION != MQ_J
     /* 0x3D148 0x3D134 */ u16* nCameraBuffer;
 #endif
 } Frame; // size = 0x3D150 0x3D138
