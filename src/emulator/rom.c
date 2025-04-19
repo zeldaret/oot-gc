@@ -24,7 +24,6 @@ _XL_OBJECTTYPE gClassROM = {
 
 static bool gbProgress;
 static void* gpImageBack;
-static s32 iImage;
 
 #if IS_EU
 static bool romGetTagToken(Rom* pROM, tXL_FILE* pFile, RomTokenType* peToken, char* acData) {
@@ -431,6 +430,8 @@ static bool romLoadRange(Rom* pROM, s32 begin, s32 end, s32* blockCount, s32 whi
 }
 
 static bool romCacheGame_ZELDA(f32 rProgress) {
+    static s32 iImage;
+
     s32 nSize;
     Mtx44 matrix44;
     GXTexObj textureObject;
@@ -929,23 +930,22 @@ static bool romCopyUpdate(Rom* pROM) {
     return true;
 }
 
-static inline bool romLoadFullOrPartLoop(Rom* pROM) {
-    s32 i;
+static bool romCacheAllBlocks(Rom* pROM) {
     s32 iCache;
-    u32 temp_r27;
-    u32 temp_r30;
+    u32 iBlock;
+    u32 iBlockLast;
 
-    temp_r27 = (u32)(pROM->nSize - 1) / 0x2000;
-    temp_r30 = pROM->nTick = temp_r27 + 1;
+    iBlockLast = (u32)(pROM->nSize - 1) / 0x2000;
+    pROM->nTick = iBlockLast + 1;
 
-    for (i = 0; i < temp_r30; i++) {
-        pROM->aBlock[i].nTickUsed = temp_r27 - i;
+    for (iBlock = 0; iBlock < iBlockLast + 1; iBlock++) {
+        pROM->aBlock[iBlock].nTickUsed = iBlockLast - iBlock;
 
         if (!romMakeFreeCache(pROM, &iCache, RCT_RAM)) {
             return false;
         }
 
-        if (!romLoadBlock(pROM, i, iCache, NULL)) {
+        if (!romLoadBlock(pROM, iBlock, iCache, NULL)) {
             return false;
         }
     }
@@ -977,7 +977,7 @@ static bool romLoadFullOrPart(Rom* pROM) {
             pROM->anBlockCachedARAM[i] = 0;
         }
 
-        if ((s32)pROM->nSize < (pROM->nSizeCacheRAM + 0xFFA000) && !romLoadFullOrPartLoop(pROM)) {
+        if ((s32)pROM->nSize < (pROM->nSizeCacheRAM + 0xFFA000) && !romCacheAllBlocks(pROM)) {
             return false;
         }
     } else {
