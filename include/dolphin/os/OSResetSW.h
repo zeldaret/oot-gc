@@ -1,11 +1,20 @@
-#ifndef _DOLPHIN_OSRESETSW
-#define _DOLPHIN_OSRESETSW
+#ifndef _DOLPHIN_OSRESETSW_H_
+#define _DOLPHIN_OSRESETSW_H_
 
-#include "dolphin/os/OSContext.h"
 #include "dolphin/types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef void (*OSResetCallback)(void);
 
+OSResetCallback OSSetResetCallback(OSResetCallback callback);
+bool OSGetResetSwitchState(void);
 bool OSGetResetButtonState(void);
 
-#endif // _DOLPHIN_OSRESETSW
+#ifdef __cplusplus
+}
+#endif
+
+#endif

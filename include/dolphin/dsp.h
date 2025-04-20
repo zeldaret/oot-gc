@@ -1,7 +1,6 @@
 #ifndef _DOLPHIN_DSP_H_
 #define _DOLPHIN_DSP_H_
 
-#include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 
 #define DSP_TASK_FLAG_CLEARALL 0x00000000
@@ -13,11 +12,14 @@
 #define DSP_TASK_STATE_YIELD 2
 #define DSP_TASK_STATE_DONE 3
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void (*DSPCallback)(void* task);
+typedef struct STRUCT_DSP_TASK DSPTaskInfo;
 
-typedef struct DSPTaskInfo DSPTaskInfo;
-
-struct DSPTaskInfo {
+typedef struct STRUCT_DSP_TASK {
     /* 0x00 */ volatile u32 state;
     /* 0x04 */ volatile u32 priority;
     /* 0x08 */ volatile u32 flags;
@@ -37,22 +39,28 @@ struct DSPTaskInfo {
     /* 0x3C */ DSPTaskInfo* prev;
     /* 0x40 */ OSTime t_context;
     /* 0x48 */ OSTime t_task;
-};
+} DSPTaskInfo;
 
-extern DSPTaskInfo* __DSP_tmp_task;
-extern DSPTaskInfo* __DSP_last_task;
-extern DSPTaskInfo* __DSP_first_task;
-extern DSPTaskInfo* __DSP_curr_task;
-
-void DSPInit(void);
-u32 DSPCheckMailFromDSP(void);
 u32 DSPCheckMailToDSP(void);
+u32 DSPCheckMailFromDSP(void);
+u32 DSPReadCPUToDSPMbox(void);
 u32 DSPReadMailFromDSP(void);
-void DSPSendMailToDSP(u32 msg);
+void DSPSendMailToDSP(u32 mail);
+void DSPAssertInt(void);
+void DSPInit(void);
+bool DSPCheckInit(void);
+void DSPReset(void);
+void DSPHalt(void);
+void DSPUnhalt(void);
+u32 DSPGetDMAStatus(void);
 DSPTaskInfo* DSPAddTask(DSPTaskInfo* task);
-void __DSPHandler(__OSInterrupt interrupt, OSContext* context);
-void __DSP_debug_printf(const char* fmt, ...);
-void __DSP_exec_task(DSPTaskInfo* curr, DSPTaskInfo* next);
-void __DSP_remove_task(DSPTaskInfo* task);
+DSPTaskInfo* DSPCancelTask(DSPTaskInfo* task);
+DSPTaskInfo* DSPAssertTask(DSPTaskInfo* task);
+
+DSPTaskInfo* __DSPGetCurrentTask(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

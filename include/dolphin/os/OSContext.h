@@ -1,7 +1,11 @@
-#ifndef _DOLPHIN_OSCONTEXT
-#define _DOLPHIN_OSCONTEXT
+#ifndef _DOLPHIN_OSCONTEXT_H_
+#define _DOLPHIN_OSCONTEXT_H_
 
 #include "dolphin/types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define __OS_CONTEXT_FRAME 768
 
@@ -131,38 +135,39 @@
 #define OS_CONTEXT_STATE_FPSAVED 0x01u
 
 typedef struct OSContext {
-    u32 gpr[32];
-    u32 cr;
-    u32 lr;
-    u32 ctr;
-    u32 xer;
-
-    f64 fpr[32];
-
-    u32 fpscr_pad;
-    u32 fpscr;
-
-    u32 srr0;
-    u32 srr1;
-
-    u16 mode;
-    u16 state;
-
-    u32 gqr[8];
-    u32 psf_pad;
-    f64 psf[32];
-
+    /* 0x000 */ u32 gpr[32];
+    /* 0x080 */ u32 cr;
+    /* 0x084 */ u32 lr;
+    /* 0x088 */ u32 ctr;
+    /* 0x08C */ u32 xer;
+    /* 0x090 */ f64 fpr[32];
+    /* 0x190 */ u32 fpscr_pad;
+    /* 0x194 */ u32 fpscr;
+    /* 0x198 */ u32 srr0;
+    /* 0x19C */ u32 srr1;
+    /* 0x1A0 */ u16 mode;
+    /* 0x1A2 */ u16 state;
+    /* 0x1A4 */ u32 gqr[8];
+    /* 0x1C4 */ u32 psf_pad;
+    /* 0x1C8 */ f64 psf[32];
 } OSContext;
 
-void OSSaveFPUContext(register OSContext* fpuContext);
-void OSSetCurrentContext(register OSContext* context);
-OSContext* OSGetCurrentContext(void);
-u32 OSSaveContext(register OSContext* context);
-void OSLoadContext(register OSContext* context);
 u32 OSGetStackPointer(void);
-void OSClearContext(register OSContext* context);
-void OSInitContext(register OSContext* context, register u32 pc, register u32 newsp);
 void OSDumpContext(OSContext* context);
-void __OSContextInit(void);
+void OSLoadContext(OSContext* context);
+u32 OSSaveContext(OSContext* context);
+void OSClearContext(OSContext* context);
+OSContext* OSGetCurrentContext(void);
+void OSSetCurrentContext(OSContext* context);
+void OSLoadFPUContext(OSContext* fpucontext);
+void OSSaveFPUContext(OSContext* fpucontext);
+u32 OSSwitchStack(u32 newsp);
+int OSSwitchFiber(u32 pc, u32 newsp);
+void OSInitContext(OSContext* context, u32 pc, u32 newsp);
+void OSFillFPUContext(OSContext* context);
 
-#endif // _DOLPHIN_OSCONTEXT
+#ifdef __cplusplus
+}
+#endif
+
+#endif

@@ -26,10 +26,23 @@ typedef double f64;
 typedef volatile f32 vf32;
 typedef volatile f64 vf64;
 
+typedef char* Ptr;
+
 typedef int bool;
 
 #define false 0
 #define true 1
+
+#if defined(__MWERKS__)
+#define AT_ADDRESS(addr) : (addr)
+#elif defined(__GNUC__)
+// #define AT_ADDRESS(addr) __attribute__((address((addr))))
+#define AT_ADDRESS(addr) // was removed in GCC. define in linker script instead.
+#elif __INTELLISENSE__
+#define AT_ADDRESS(addr)
+#else
+#error unknown compiler
+#endif
 
 #ifdef __MWERKS__
 #define ATTRIBUTE_ALIGN(num) __attribute__((aligned(num)))
@@ -37,6 +50,15 @@ typedef int bool;
 #define ATTRIBUTE_ALIGN(num)
 #endif
 
-#define NULL (void*)0
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
+
+#include "libc/ctype.h"
+#include "libc/stdarg.h"
+#include "libc/stdio.h"
+#include "libc/string.h"
+
+#include "cmath.h"
 
 #endif

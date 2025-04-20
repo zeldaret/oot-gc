@@ -2,27 +2,33 @@
 #define _DOLPHIN_GX_GXTRANSFORM_H_
 
 #include "dolphin/gx/GXEnum.h"
-#include "dolphin/mtx.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define GX_PROJECTION_SZ 7
+#define GX_VIEWPORT_SZ 6
 
-void __GXSetProjection(void);
-void GXSetProjection(const Mtx44 proj, GXProjectionType type);
-void GXSetProjectionv(const f32* proj);
-void WriteMTXPS4x3(register volatile void* dst, register const Mtx src);
-void WriteMTXPS3x3(register volatile void* dst, register const Mtx src);
-void WriteMTXPS4x2(register volatile void* dst, register const Mtx src);
-void GXLoadPosMtxImm(Mtx mtx, u32 id);
-void GXLoadNrmMtxImm(Mtx mtx, u32 id);
+void GXProject(f32 x, f32 y, f32 z, const Mtx mtx, const f32* pm, const f32* vp, f32* sx, f32* sy, f32* sz);
+void GXSetProjection(const Mtx44 mtx, GXProjectionType type);
+void GXSetProjectionv(const f32* ptr);
+void GXLoadPosMtxImm(const Mtx mtx, u32 id);
+void GXLoadPosMtxIndx(u16 mtx_indx, u32 id);
+void GXLoadNrmMtxImm(const Mtx mtx, u32 id);
+void GXLoadNrmMtxImm3x3(const f32 mtx[3][3], u32 id);
+void GXLoadNrmMtxIndx3x3(u16 mtx_indx, u32 id);
 void GXSetCurrentMtx(u32 id);
-void GXLoadTexMtxImm(const Mtx mtx, u32 id, GXTexMtxType type);
-void __GXSetViewport(void);
+void GXLoadTexMtxImm(const f32 mtx[][4], u32 id, GXTexMtxType type);
+void GXLoadTexMtxIndx(u16 mtx_indx, u32 id, GXTexMtxType type);
 void GXSetViewportJitter(f32 left, f32 top, f32 wd, f32 ht, f32 nearz, f32 farz, u32 field);
-void GXSetViewport(f32 left, f32 top, f32 width, f32 height, f32 nearZ, f32 farZ);
-void GXSetScissor(u32 left, u32 top, u32 width, u32 height);
-void GXGetScissor(u32* left, u32* top, u32* width, u32* height);
-void GXSetScissorBoxOffset(s32 x, s32 y);
+void GXSetViewport(f32 left, f32 top, f32 wd, f32 ht, f32 nearz, f32 farz);
+void GXSetScissorBoxOffset(s32 x_off, s32 y_off);
 void GXSetClipMode(GXClipMode mode);
-void __GXSetMatrixIndex(GXAttr index);
+void GXSetZScaleOffset(f32 scale, f32 offset);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

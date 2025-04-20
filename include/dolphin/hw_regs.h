@@ -1,10 +1,29 @@
-#ifndef _DOLPHIN_HW_REGS
-#define _DOLPHIN_HW_REGS
+#ifndef _DOLPHIN_HW_REGS_H_
+#define _DOLPHIN_HW_REGS_H_
 
 #include "dolphin/types.h"
-#include "macros.h"
 
-vu16 __VIRegs[59] AT_ADDRESS(0xCC002000);
+#ifdef __MWERKS__
+volatile u16 __VIRegs[59] AT_ADDRESS(0xCC002000);
+volatile u32 __PIRegs[12] AT_ADDRESS(0xCC003000);
+volatile u16 __MEMRegs[64] AT_ADDRESS(0xCC004000);
+volatile u16 __DSPRegs[] AT_ADDRESS(0xCC005000);
+volatile u32 __DIRegs[] AT_ADDRESS(0xCC006000);
+volatile u32 __SIRegs[0x100] AT_ADDRESS(0xCC006400);
+volatile u32 __EXIRegs[0x40] AT_ADDRESS(0xCC006800);
+volatile u32 __AIRegs[8] AT_ADDRESS(0xCC006C00);
+#else
+#define __VIRegs ((volatile u16*)0xCC002000)
+#define __PIRegs ((volatile u32*)0xCC003000)
+#define __MEMRegs ((volatile u16*)0xCC004000)
+#define __DSPRegs ((volatile u16*)0xCC005000)
+#define __DIRegs ((volatile u32*)0xCC006000)
+#define __SIRegs ((volatile u32*)0xCC006400)
+#define __EXIRegs ((volatile u32*)0xCC006800)
+#define __AIRegs ((volatile u32*)0xCC006C00)
+#endif
+
+// Offsets for __VIRegs
 
 // offsets for __VIRegs[i]
 #define VI_VERT_TIMING (0)
@@ -70,10 +89,7 @@ vu16 __VIRegs[59] AT_ADDRESS(0xCC002000);
 
 #define VI_WIDTH (56)
 
-vu32 __PIRegs[12] AT_ADDRESS(0xCC003000);
-
 // offsets for __PIRegs[i]
-
 #define PI_INTRPT_SRC (0) // interrupt cause
 #define PI_INTRPT_MASK (1) // interrupt mask
 #define PI_FIFO_START (3) // FIFO base start
@@ -99,8 +115,6 @@ vu32 __PIRegs[12] AT_ADDRESS(0xCC003000);
 #define PI_INTRPT_HSP (0x2000) // high speed port
 #define PI_INTRPT_RSWST (0x10000) // reset switch state (1 when pressed)
 
-vu16 __MEMRegs[64] AT_ADDRESS(0xCC004000);
-
 // offsets for __MEMRegs[i]
 #define MEM_PROT_1 (0) // protected region 1
 #define MEM_PROT_2 (2) // protected region 1
@@ -115,8 +129,6 @@ vu16 __MEMRegs[64] AT_ADDRESS(0xCC004000);
 #define MEM_INTRPT_ADDR_HI (18) // address that caused interrupt
 
 #define MEM_UNK_FLAG (20) // unknown memory flag, set in __OSInitMemoryProtection
-
-vu16 __DSPRegs[32] AT_ADDRESS(0xCC005000);
 
 // offsets for __DSPRegs[i]
 #define DSP_MAILBOX_IN_HI (0)
@@ -142,8 +154,6 @@ vu16 __DSPRegs[32] AT_ADDRESS(0xCC005000);
 
 #define DSP_DMA_START_FLAG (0x8000) // set to start DSP
 
-vu32 __DIRegs[16] AT_ADDRESS(0xCC006000);
-
 // offsets for __DIRegs[i]
 #define DI_STATUS (0)
 #define DI_COVER_STATUS (1) // cover status - 0=normal, 1=interrupt/open
@@ -155,8 +165,6 @@ vu32 __DIRegs[16] AT_ADDRESS(0xCC006000);
 #define DI_CONTROL (7)
 #define DI_MM_BUF (8) // Main memory buffer
 #define DI_CONFIG (9)
-
-vu32 __SIRegs[64] AT_ADDRESS(0xCC006400);
 
 // offsets for __SIRegs[i]
 // Channel 0/Joy-channel 1
@@ -183,8 +191,6 @@ vu32 __SIRegs[64] AT_ADDRESS(0xCC006400);
 
 #define SI_IO_BUFFER (32) // start of buffer (32 to 63)
 
-vu32 __EXIRegs[16] AT_ADDRESS(0xCC006800);
-
 // offsets for __EXIRegs[i]
 // Channel 0
 #define EXI_CHAN_0_STAT (0) // parameters/status
@@ -204,8 +210,6 @@ vu32 __EXIRegs[16] AT_ADDRESS(0xCC006800);
 #define EXI_CHAN_2_LEN (12) // DMA transfer length
 #define EXI_CHAN_2_CONTROL (13) // control register
 #define EXI_CHAN_2_IMM (14) // immediate data
-
-vu32 __AIRegs[8] AT_ADDRESS(0xCC006C00);
 
 // offsets for __AIRegs[i]
 #define AI_CONTROL (0) // control
@@ -238,4 +242,4 @@ vu32 __AIRegs[8] AT_ADDRESS(0xCC006C00);
 #define FP15 fp15
 #define FP31 fp31
 
-#endif // _DOLPHIN_HW_REGS
+#endif

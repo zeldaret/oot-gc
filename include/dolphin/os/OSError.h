@@ -1,8 +1,14 @@
-#ifndef _DOLPHIN_OSERROR
-#define _DOLPHIN_OSERROR
+#ifndef _DOLPHIN_OSERROR_H_
+#define _DOLPHIN_OSERROR_H_
 
-#include "dolphin/os/OSException.h"
-#include "dolphin/types.h"
+#include "dolphin/os/OSContext.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef u16 OSError;
+typedef void (*OSErrorHandler)(OSError error, OSContext* context, ...);
 
 #define OS_ERROR_SYSTEM_RESET 0
 #define OS_ERROR_MACHINE_CHECK 1
@@ -19,17 +25,14 @@
 #define OS_ERROR_BREAKPOINT 12
 #define OS_ERROR_SYSTEM_INTERRUPT 13
 #define OS_ERROR_THERMAL_INTERRUPT 14
-#define OS_ERROR_PROTECTION 15
-#define OS_ERROR_FPE 16
+#define OS_ERROR_MAX (OS_ERROR_THERMAL_INTERRUPT + 3)
 
-#define OS_ERROR_MAX (OS_ERROR_FPE + 1)
-
-typedef u16 OSError;
-typedef void (*OSErrorHandler)(OSError error, OSContext* context, ...);
-
-void OSReport(const char* msg, ...);
-void OSPanic(const char* file, int line, const char* msg, ...);
 OSErrorHandler OSSetErrorHandler(OSError error, OSErrorHandler handler);
-void __OSUnhandledException(__OSException exception, OSContext* context, u32 dsisr, u32 dar);
+extern u32 __OSFpscrEnableBits;
+extern OSErrorHandler __OSErrorTable[OS_ERROR_MAX];
 
-#endif // _DOLPHIN_OSERROR
+#ifdef __cplusplus
+}
+#endif
+
+#endif

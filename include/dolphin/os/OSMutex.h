@@ -1,20 +1,33 @@
-#ifndef _DOLPHIN_OSMUTEX
-#define _DOLPHIN_OSMUTEX
+#ifndef _DOLPHIN_OSMUTEX_H_
+#define _DOLPHIN_OSMUTEX_H_
 
 #include "dolphin/os/OSThread.h"
-#include "dolphin/types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct OSMutex {
-    OSThreadQueue queue;
-    OSThread* thread; // the current owner
-    s32 count; // lock count
-    OSMutexLink link; // for OSThread.queueMutex
+    /* 0x00 */ OSThreadQueue queue;
+    /* 0x08 */ OSThread* thread;
+    /* 0x0C */ s32 count;
+    /* 0x10 */ OSMutexLink link;
 };
 
-struct OSCond {
+typedef struct OSCond {
     OSThreadQueue queue;
-};
+} OSCond;
 
-void __OSUnlockAllMutex(OSThread* thread);
+void OSInitMutex(OSMutex* mutex);
+void OSLockMutex(OSMutex* mutex);
+void OSUnlockMutex(OSMutex* mutex);
+bool OSTryLockMutex(OSMutex* mutex);
+void OSInitCond(OSCond* cond);
+void OSWaitCond(OSCond* cond, OSMutex* mutex);
+void OSSignalCond(OSCond* cond);
 
-#endif // _DOLPHIN_OSMUTEX
+#ifdef __cplusplus
+}
+#endif
+
+#endif
