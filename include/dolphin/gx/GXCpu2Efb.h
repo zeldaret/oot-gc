@@ -11,5 +11,6 @@ void GXPokeAlphaMode(GXCompare func, u8 threshold);
 void GXPokeAlphaRead(GXAlphaReadMode mode);
 void GXPokeDstAlpha(GXBool enable, u8 alpha);
 void GXPokeZMode(GXBool compare_enable, GXCompare func, GXBool update_enable);
+void GXPeekZ(u16 x, u16 y, u32* z);
 
 #endif

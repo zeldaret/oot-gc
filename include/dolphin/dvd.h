@@ -3,6 +3,37 @@
 
 #include "dolphin/types.h"
 
+#define DVD_ASSERTMSGLINE(line, cond, msg) \
+    if (!(cond))                           \
+    OSPanic(__FILE__, line, msg)
+
+#define DVD_ASSERTMSG1LINE(line, cond, msg, arg1) \
+    if (!(cond))                                  \
+    OSPanic(__FILE__, line, msg, arg1)
+
+#define DVD_ASSERTMSG2LINE(line, cond, msg, arg1, arg2) \
+    if (!(cond))                                        \
+    OSPanic(__FILE__, line, msg, arg1, arg2)
+
+// DVD Commands
+#define DVD_COMMAND_NONE 0
+#define DVD_COMMAND_READ 1
+#define DVD_COMMAND_SEEK 2
+#define DVD_COMMAND_CHANGE_DISK 3
+#define DVD_COMMAND_BSREAD 4
+#define DVD_COMMAND_READID 5
+#define DVD_COMMAND_INITSTREAM 6
+#define DVD_COMMAND_CANCELSTREAM 7
+#define DVD_COMMAND_STOP_STREAM_AT_END 8
+#define DVD_COMMAND_REQUEST_AUDIO_ERROR 9
+#define DVD_COMMAND_REQUEST_PLAY_ADDR 10
+#define DVD_COMMAND_REQUEST_START_ADDR 11
+#define DVD_COMMAND_REQUEST_LENGTH 12
+#define DVD_COMMAND_AUDIO_BUFFER_CONFIG 13
+#define DVD_COMMAND_INQUIRY 14
+#define DVD_COMMAND_BS_CHANGE_DISK 15
+#define DVD_COMMAND_UNK_16 16
+
 typedef struct {
     char gameName[4];
     char company[2];
@@ -74,13 +105,15 @@ bool DVDSetAutoInvalidation(bool autoInval);
 void DVDResume(void);
 bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback);
 bool DVDCancelStreamAsync(DVDCommandBlock* block, DVDCBCallback callback);
+s32 DVDGetStreamErrorStatus(DVDCommandBlock* block);
 s32 DVDCancel(DVDCommandBlock* block);
-s32 DVDGetDriveStatus(void);
 bool DVDCheckDisk(void);
 DVDDiskID* DVDGetCurrentDiskID(void);
 bool DVDCompareDiskID(const DVDDiskID* discID1, const DVDDiskID* discID2);
 void __DVDLowSetWAType(u32 type, u32 location);
 bool DVDReadAbsAsyncForBS(DVDCommandBlock* block, void* addr, s32 length, s32 offset, DVDCBCallback callback);
+s32 DVDStopStreamAtEndAsync(DVDCommandBlock* block, DVDCBCallback callback) ;
+s32 DVDGetStreamErrorStatusAsync(DVDCommandBlock* block, DVDCBCallback callback);
 
 #define DVDReadAsync(fileInfo, addr, length, offset, callback) \
     DVDReadAsyncPrio((fileInfo), (addr), (length), (offset), (callback), 2)

@@ -31,7 +31,11 @@ typedef int bool;
 #define false 0
 #define true 1
 
+#ifdef __MWERKS__
 #define ATTRIBUTE_ALIGN(num) __attribute__((aligned(num)))
+#else
+#define ATTRIBUTE_ALIGN(num)
+#endif
 
 #define NULL (void*)0
 
