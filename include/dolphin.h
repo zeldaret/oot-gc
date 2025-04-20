@@ -18,8 +18,8 @@
 #include "dolphin/pad.h"
 #include "dolphin/perf.h"
 #include "dolphin/si.h"
+#include "dolphin/texPalette.h"
 #include "dolphin/types.h"
 #include "dolphin/vi.h"
-#include "dolphin/texPalette.h"
 
 #endif

@@ -4,8 +4,8 @@
 #include "intrinsics.h"
 #include "macros.h"
 
-#include "dolphin/private/__vi.h"
 #include "dolphin/private/__os.h"
+#include "dolphin/private/__vi.h"
 
 typedef struct VITiming {
     /* 0x00 */ u8 equ;

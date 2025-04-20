@@ -92,7 +92,7 @@ static void DoReset() {
         ASSERTLINE(559, 0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
         chanBit = (PAD_CHAN0_BIT >> ResettingChan);
         ResettingBits &= ~chanBit;
-        
+
         memset(&Origin[ResettingChan], 0, sizeof(PADStatus));
         SIGetTypeAsync(ResettingChan, PADTypeAndStatusCallback);
     }

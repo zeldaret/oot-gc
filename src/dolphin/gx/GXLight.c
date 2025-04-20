@@ -14,7 +14,7 @@ typedef struct {
 } __GXLightObjInt_struct;
 
 #define GXCOLOR_AS_U32(color) (*((u32*)&(color)))
-#define GX_BITFIELD_TRUNC(field, pos, size, value) (__rlwimi((value), (field), 0, (pos), (pos) + (size) - 1))
+#define GX_BITFIELD_TRUNC(field, pos, size, value) (__rlwimi((field), (value), 0, (pos), (pos) + (size) - 1))
 #define GX_SET_TRUNC(reg, x, st, end) GX_BITFIELD_TRUNC((reg), (st), ((end) - (st) + 1), (x))
 
 void GXSetChanAmbColor(GXChannelID chan, GXColor amb_color) {

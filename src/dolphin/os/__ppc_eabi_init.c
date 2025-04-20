@@ -1,6 +1,6 @@
 #include "dolphin/base/PPCArch.h"
-#include "macros.h"
 #include "dolphin/private/__os.h"
+#include "macros.h"
 
 void __OSPSInit(void);
 void __OSCacheInit(void);

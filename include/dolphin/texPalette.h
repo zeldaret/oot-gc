@@ -20,7 +20,7 @@ typedef struct {
     u16 width;
     u32 format;
     Ptr data;
-    GXTexWrapMode wrapS; 
+    GXTexWrapMode wrapS;
     GXTexWrapMode wrapT;
     GXTexFilter minFilter;
     GXTexFilter magFilter;

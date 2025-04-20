@@ -1,8 +1,8 @@
 #include "__ppc_eabi_linker.h"
+#include "dolphin/db/DBInterface.h"
+#include "dolphin/os.h"
 #include "macros.h"
 #include "string.h"
-#include "dolphin/os.h"
-#include "dolphin/db/DBInterface.h"
 
 #include "dolphin/private/__os.h"
 
