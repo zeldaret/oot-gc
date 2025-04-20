@@ -21,6 +21,7 @@ typedef u32 OSTick;
 #include "dolphin/os/OSException.h"
 #include "dolphin/os/OSExec.h"
 #include "dolphin/os/OSFont.h"
+#include "dolphin/os/OSFastCast.h"
 #include "dolphin/os/OSIC.h"
 #include "dolphin/os/OSInterrupt.h"
 #include "dolphin/os/OSL2.h"
@@ -274,43 +275,6 @@ extern int __OSInIPL;
 #endif
 
 #define ASSERT(cond) ASSERTLINE(__LINE__, cond)
-
-// ---
-
-#define OS_GQR_F32 0x0000
-#define OS_GQR_U8 0x0004
-#define OS_GQR_U16 0x0005
-#define OS_GQR_S8 0x0006
-#define OS_GQR_S16 0x0007
-
-#define OS_FASTCAST_U8 2
-#define OS_FASTCAST_U16 3
-#define OS_FASTCAST_S8 4
-#define OS_FASTCAST_S16 5
-
-static inline void OSInitFastCast(void) {
-#ifdef __MWERKS__
-    // clang-format off
-    asm {
-        li      r3, OS_GQR_U8
-        oris    r3, r3, OS_GQR_U8
-        mtspr   GQR2, r3
-
-        li      r3, OS_GQR_U16
-        oris    r3, r3, OS_GQR_U16
-        mtspr   GQR3, r3
-
-        li      r3, OS_GQR_S8
-        oris    r3, r3, OS_GQR_S8
-        mtspr   GQR4, r3
-
-        li      r3, OS_GQR_S16
-        oris    r3, r3, OS_GQR_S16
-        mtspr   GQR5, r3
-    }
-    // clang-format off
-#endif
-}
 
 #ifdef __cplusplus
 }

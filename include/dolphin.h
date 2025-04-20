@@ -20,5 +20,6 @@
 #include "dolphin/si.h"
 #include "dolphin/types.h"
 #include "dolphin/vi.h"
+#include "dolphin/texPalette.h"
 
 #endif

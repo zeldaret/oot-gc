@@ -16,6 +16,12 @@ typedef struct {
     s32 usedCount;
 } OSMessageQueue;
 
+typedef void* OSMessage;
+
+// Flags to turn blocking on/off when sending/receiving message
+#define OS_MESSAGE_NOBLOCK 0
+#define OS_MESSAGE_BLOCK 1
+
 void OSInitMessageQueue(OSMessageQueue* mq, void* msgArray, s32 msgCount);
 int OSSendMessage(OSMessageQueue* mq, void* msg, s32 flags);
 int OSReceiveMessage(OSMessageQueue* mq, void* msg, s32 flags);

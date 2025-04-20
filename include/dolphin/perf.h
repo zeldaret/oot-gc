@@ -47,7 +47,7 @@ typedef struct {
     s32 lastSample;
     u32 end;
     u32 cachemisscycles;
-} Frame;
+} PerfFrame;
 
 typedef struct {
     char* name;
@@ -88,7 +88,7 @@ void PERFToggleDrawRASBar(void);
 void PERFShutDown(void);
 void PERFSetDrawFrames(u32 frames);
 
-extern Frame* PERFFrames;
+extern PerfFrame* PERFFrames;
 extern u32 PERFCurrFrame;
 extern PerfEvent* PERFEvents;
 extern u32 PERFNumEvents;
