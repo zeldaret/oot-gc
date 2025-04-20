@@ -218,14 +218,13 @@ u32 gnTickReset;
 bool gbReset;
 
 #if IS_OOT
-#define PREFIX_TPL "TPL/"
-#define buf
+#define TPL_DIR "TPL/"
 
-#define simulatorOpenMessage(msg, fileName, size, fileInfo, ...)                                \
+#define simulatorOpenMessage(msg, fileName, size, fileInfo, buffer)                             \
     {                                                                                           \
         if (simulatorMessageCurrent != msg) {                                                   \
             simulatorMessageCurrent = msg;                                                      \
-            if (DVDOpen(fileName, &fileInfo) == 1) {                                            \
+            if (DVDOpen("TPL/" fileName, &fileInfo) == 1) {                                     \
                 simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(size), 0, NULL); \
             }                                                                                   \
             DVDClose(&fileInfo);                                                                \
@@ -233,7 +232,7 @@ bool gbReset;
         }                                                                                       \
     }
 #else
-#define PREFIX_TPL
+#define TPL_DIR
 
 #define simulatorOpenMessage(msg, fileName, size, fileInfo, buffer)                             \
     {                                                                                           \
@@ -1150,7 +1149,7 @@ bool simulatorDrawYesNoImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Mess
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA6, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_POS_XYZ, GX_TEX_ST, GX_F32, 0U);
 
     GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
     GXPosition3f32(0.0f, 0.0f, 0.0f);
@@ -1486,7 +1485,7 @@ bool simulatorDrawOKImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Message
     GXSetBlendMode(GX_BM_NONE, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_TEX_ST, GX_RGBA6, 0U);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_POS_XYZ, GX_TEX_ST, GX_F32, 0U);
 
     GXBegin(GX_QUADS, GX_VTXFMT0, 4U);
     GXPosition3f32(0.0f, 0.0f, 0.0f);
@@ -1660,15 +1659,15 @@ bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage) {
 
     switch (simulatorErrorMessage) {
         case S_M_CARD_IN02:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_in02.tpl", gmsg_in02Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_in02.tpl", gmsg_in02Size, fileInfo, buf);
             break;
 
         case S_M_CARD_SV09:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv09.tpl", gmsg_sv09Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv09.tpl", gmsg_sv09Size, fileInfo, buf);
             break;
 
         case S_M_CARD_GF02:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_gf02.tpl", gmsg_gf02Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_gf02.tpl", gmsg_gf02Size, fileInfo, buf);
             break;
 
         default:
@@ -1759,35 +1758,35 @@ bool simulatorDrawYesNoMessage(SimulatorMessage simulatorMessage, bool* yes) {
 
     switch (simulatorMessage) {
         case S_M_CARD_LD05_2:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_ld05_2.tpl", gmsg_ld05_2Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_ld05_2.tpl", gmsg_ld05_2Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_LD06_4:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_ld06_4.tpl", gmsg_ld06_4Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_ld06_4.tpl", gmsg_ld06_4Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_LD07:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_ld07.tpl", gmsg_ld07Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_ld07.tpl", gmsg_ld07Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_GF01:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_gf01.tpl", gmsg_gf01Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_gf01.tpl", gmsg_gf01Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_IN01:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_in01.tpl", gmsg_in01Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_in01.tpl", gmsg_in01Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_SV06_4:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_sv06_4.tpl", gmsg_sv06_4Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_sv06_4.tpl", gmsg_sv06_4Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_SV06_5:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_sv06_5.tpl", gmsg_sv06_5Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_sv06_5.tpl", gmsg_sv06_5Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         case S_M_CARD_SV08:
-            simulatorOpenMessage(simulatorMessage, PREFIX_TPL "msg_sv08.tpl", gmsg_sv08Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorMessage, TPL_DIR "msg_sv08.tpl", gmsg_sv08Size, fileInfo, buf);
             return simulatorDrawYesNoMessageLoop((TEXPalette*)gpErrorMessageBuffer, yes);
 
         default:
@@ -1850,120 +1849,119 @@ bool simulatorDrawErrorMessageWait(SimulatorMessage simulatorErrorMessage) {
 
     switch (simulatorErrorMessage) {
         case S_M_CARD_LD01:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld01.tpl", gmsg_ld01Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld01.tpl", gmsg_ld01Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD02:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld02.tpl", gmsg_ld02Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld02.tpl", gmsg_ld02Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD03:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld03.tpl", gmsg_ld03Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld03.tpl", gmsg_ld03Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD04:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld04.tpl", gmsg_ld04Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld04.tpl", gmsg_ld04Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD05_1:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld05_1.tpl", gmsg_ld05_1Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld05_1.tpl", gmsg_ld05_1Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD06_1:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld06_1.tpl", gmsg_ld06_1Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld06_1.tpl", gmsg_ld06_1Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD06_2:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld06_2.tpl", gmsg_ld06_2Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld06_2.tpl", gmsg_ld06_2Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_LD06_3:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_ld06_3.tpl", gmsg_ld06_3Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_ld06_3.tpl", gmsg_ld06_3Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_GF03:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_gf03.tpl", gmsg_gf03Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_gf03.tpl", gmsg_gf03Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_GF04:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_gf04.tpl", gmsg_gf04Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_gf04.tpl", gmsg_gf04Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_GF05:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_gf05.tpl", gmsg_gf05Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_gf05.tpl", gmsg_gf05Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_GF06:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_gf06.tpl", gmsg_gf06Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_gf06.tpl", gmsg_gf06Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_IN03:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_in03.tpl", gmsg_in03Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_in03.tpl", gmsg_in03Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_IN04:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_in04.tpl", gmsg_in04Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_in04.tpl", gmsg_in04Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_IN05:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_in05.tpl", gmsg_in05Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_in05.tpl", gmsg_in05Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV01:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv01.tpl", gmsg_sv01Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv01.tpl", gmsg_sv01Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV01_2:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv01_2.tpl", gmsg_sv01_2Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv01_2.tpl", gmsg_sv01_2Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV02:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv02.tpl", gmsg_sv02Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv02.tpl", gmsg_sv02Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV03:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv03.tpl", gmsg_sv03Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv03.tpl", gmsg_sv03Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV04:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv04.tpl", gmsg_sv04Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv04.tpl", gmsg_sv04Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV05_1:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv05_1.tpl", gmsg_sv05_1Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv05_1.tpl", gmsg_sv05_1Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV06_1:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv06_1.tpl", gmsg_sv06_1Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv06_1.tpl", gmsg_sv06_1Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV06_2:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv06_2.tpl", gmsg_sv06_2Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv06_2.tpl", gmsg_sv06_2Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV06_3:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv06_3.tpl", gmsg_sv06_3Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv06_3.tpl", gmsg_sv06_3Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV07:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv07.tpl", gmsg_sv07Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv07.tpl", gmsg_sv07Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV10:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv10.tpl", gmsg_sv10Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv10.tpl", gmsg_sv10Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV11:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv11.tpl", gmsg_sv11Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv11.tpl", gmsg_sv11Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV12:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv12.tpl", gmsg_sv12Size, fileInfo, buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv12.tpl", gmsg_sv12Size, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         case S_M_CARD_SV_SHARE:
-            simulatorOpenMessage(simulatorErrorMessage, PREFIX_TPL "msg_sv_share.tpl", gmsg_sv_shareSize, fileInfo,
-                                 buf);
+            simulatorOpenMessage(simulatorErrorMessage, TPL_DIR "msg_sv_share.tpl", gmsg_sv_shareSize, fileInfo, buf);
             return simulatorDrawOKMessageLoop((TEXPalette*)gmesgOK);
 
         default:
@@ -2124,16 +2122,16 @@ bool simulatorReadController(s32 channel, u32* anData, u8* ptx) {
             subStickTest *= -1.0f;
         }
         if ((subStickTest > 1.1f) || (subStickTest < (1.0f / 1.1f))) {
-            if (nDirButton & 0x100) {
+            if (nDirButton & DEMO_SUBSTICK_UP) {
                 *anData |= gContMap[channel][GCN_BTN_CSTICK_UP];
             }
-            if (nDirButton & 0x200) {
+            if (nDirButton & DEMO_SUBSTICK_DOWN) {
                 *anData |= gContMap[channel][GCN_BTN_CSTICK_DOWN];
             }
-            if (nDirButton & 0x400) {
+            if (nDirButton & DEMO_SUBSTICK_LEFT) {
                 *anData |= gContMap[channel][GCN_BTN_CSTICK_LEFT];
             }
-            if (nDirButton & 0x800) {
+            if (nDirButton & DEMO_SUBSTICK_RIGHT) {
                 *anData |= gContMap[channel][GCN_BTN_CSTICK_RIGHT];
             }
         }
@@ -2166,22 +2164,22 @@ bool simulatorReadController(s32 channel, u32* anData, u8* ptx) {
 #if IS_MM
         if (gpSystem->eTypeROM == SRT_ZELDA2) {
             if (nCurrButton & PAD_BUTTON_UP && !(nCurrButton & (PAD_TRIGGER_Z | PAD_BUTTON_A | PAD_BUTTON_X))) {
-                if (!(nDirButton & 0xF00)) {
+                if (!(nDirButton & DEMO_SUBSTICK_ALL)) {
                     *anData |= gContMap[channel][GCN_BTN_DPAD_UP];
                 }
             }
             if (nCurrButton & PAD_BUTTON_DOWN && !(nCurrButton & (PAD_TRIGGER_Z | PAD_BUTTON_A | PAD_BUTTON_X))) {
-                if (!(nDirButton & 0xF00)) {
+                if (!(nDirButton & DEMO_SUBSTICK_ALL)) {
                     *anData |= gContMap[channel][GCN_BTN_DPAD_DOWN];
                 }
             }
             if (nCurrButton & PAD_BUTTON_LEFT && !(nCurrButton & (PAD_TRIGGER_Z | PAD_BUTTON_A | PAD_BUTTON_X))) {
-                if (!(nDirButton & 0xF00)) {
+                if (!(nDirButton & DEMO_SUBSTICK_ALL)) {
                     *anData |= gContMap[channel][GCN_BTN_DPAD_LEFT];
                 }
             }
             if (nCurrButton & PAD_BUTTON_RIGHT && !(nCurrButton & (PAD_TRIGGER_Z | PAD_BUTTON_A | PAD_BUTTON_X))) {
-                if (!(nDirButton & 0xF00)) {
+                if (!(nDirButton & DEMO_SUBSTICK_ALL)) {
                     *anData |= gContMap[channel][GCN_BTN_DPAD_RIGHT];
                 }
             }
