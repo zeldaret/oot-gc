@@ -73,6 +73,12 @@ extern u16 gnTempBuffer[];
 #define TEMP_BUFFER pFrame->nTempBuffer
 #endif
 
+#if VERSION == MM_J
+#define CAMERA_BUFFER_SIZE (ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT)
+#else
+#define CAMERA_BUFFER_SIZE (ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT * sizeof(u16))
+#endif
+
 #if IS_MM
 f32 gFarVal;
 f32 gNearVal;
@@ -3873,8 +3879,8 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
             case 0x4B4:
                 nX0 = 102.0f;
                 nY0 = 56.0f;
-                nX1 = nX0 + (f32)(width * 0.7224999999999999);
-                nY1 = nY0 + (f32)(height * 0.7224999999999999);
+                nX1 = nX0 + (f32)(width * 0.7225);
+                nY1 = nY0 + (f32)(height * 0.7225);
                 break;
             case 0x500:
                 nX0 = 111.0f;
@@ -4241,11 +4247,7 @@ bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
 static inline void ZeldaCopyCamera(u16* buffer) {
     GXSetTexCopySrc(ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT - 10, ZELDA2_CAMERA_WIDTH * 2, ZELDA2_CAMERA_HEIGHT * 2);
     GXSetTexCopyDst(ZELDA2_CAMERA_WIDTH, ZELDA2_CAMERA_HEIGHT, GX_TF_I8, GX_TRUE);
-#if IS_MM_JP || IS_MM_EU
-    DCInvalidateRange(buffer, ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT);
-#else
-    DCInvalidateRange(buffer, ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT * sizeof(u16));
-#endif
+    DCInvalidateRange(buffer, CAMERA_BUFFER_SIZE);
     GXCopyTex(buffer, GX_FALSE);
     GXPixModeSync();
 }
@@ -5095,12 +5097,6 @@ bool frameGetDepth(Frame* pFrame, u16* pnData, s32 nAddress) {
 
     return false;
 }
-
-#if VERSION == MM_J
-#define CAMERA_BUFFER_SIZE 0x5000
-#else
-#define CAMERA_BUFFER_SIZE 0xA000
-#endif
 
 static bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
     s32 temp_r4;
