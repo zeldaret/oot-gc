@@ -38,7 +38,6 @@ static DVDCommandBlock* PopWaitingQueuePrio(s32 prio) {
 
     enabled = OSDisableInterrupts();
     q = (DVDCommandBlock*)&WaitingQueue[prio];
-    ASSERTLINE(87, q->next != q);
 
     tmp = q->next;
     q->next = tmp->next;

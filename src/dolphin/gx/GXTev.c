@@ -39,10 +39,6 @@ void GXSetTevOp(GXTevStageID id, GXTevMode mode) {
     u32* atmp;
     u32 tevReg;
 
-    CHECK_GXBEGIN(420, "GXSetTevOp");
-    ASSERTMSGLINE(421, id < GX_MAX_TEVSTAGE, "GXSetTevColor*: Invalid Tev Stage Index");
-    ASSERTMSGLINE(422, mode <= GX_PASSCLR, "GXSetTevOp: Invalid Tev Mode");
-
     if (id == GX_TEVSTAGE0) {
         ctmp = (u32*)TEVCOpTableST0 + mode;
         atmp = (u32*)TEVAOpTableST0 + mode;
@@ -67,13 +63,6 @@ void GXSetTevOp(GXTevStageID id, GXTevMode mode) {
 void GXSetTevColorIn(GXTevStageID stage, GXTevColorArg a, GXTevColorArg b, GXTevColorArg c, GXTevColorArg d) {
     u32 tevReg;
 
-    CHECK_GXBEGIN(578, "GXSetTevColorIn");
-    ASSERTMSGLINE(579, stage < GX_MAX_TEVSTAGE, "GXSetTevColor*: Invalid Tev Stage Index");
-    ASSERTMSGLINE(580, a <= GX_CC_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-    ASSERTMSGLINE(581, b <= GX_CC_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-    ASSERTMSGLINE(582, c <= GX_CC_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-    ASSERTMSGLINE(583, d <= GX_CC_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-
     tevReg = __GXData->tevc[stage];
     __SET_REG_FIELD(tevReg, 4, 12, a);
     __SET_REG_FIELD(tevReg, 4, 8, b);
@@ -87,13 +76,6 @@ void GXSetTevColorIn(GXTevStageID stage, GXTevColorArg a, GXTevColorArg b, GXTev
 
 void GXSetTevAlphaIn(GXTevStageID stage, GXTevAlphaArg a, GXTevAlphaArg b, GXTevAlphaArg c, GXTevAlphaArg d) {
     u32 tevReg;
-
-    CHECK_GXBEGIN(614, "GXSetTevAlphaIn");
-    ASSERTMSGLINE(615, stage < GX_MAX_TEVSTAGE, "GXSetTevAlpha*: Invalid Tev Stage Index");
-    ASSERTMSGLINE(616, a <= GX_CA_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-    ASSERTMSGLINE(617, b <= GX_CA_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-    ASSERTMSGLINE(618, c <= GX_CA_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
-    ASSERTMSGLINE(619, d <= GX_CA_ZERO, "GXSetTev*In: A/B/C/D argument out of range");
 
     tevReg = __GXData->teva[stage];
     __SET_REG_FIELD(tevReg, 3, 13, a);
@@ -109,9 +91,6 @@ void GXSetTevAlphaIn(GXTevStageID stage, GXTevAlphaArg a, GXTevAlphaArg b, GXTev
 void GXSetTevColorOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale scale, GXBool clamp,
                      GXTevRegID out_reg) {
     u32 tevReg;
-
-    CHECK_GXBEGIN(653, "GXSetTevColorOp");
-    ASSERTMSGLINE(654, stage < GX_MAX_TEVSTAGE, "GXSetTevColor*: Invalid Tev Stage Index");
 
     tevReg = __GXData->tevc[stage];
     __SET_REG_FIELD(tevReg, 1, 18, op & 1);
@@ -134,9 +113,6 @@ void GXSetTevAlphaOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale 
                      GXTevRegID out_reg) {
     u32 tevReg;
 
-    CHECK_GXBEGIN(699, "GXSetTevAlphaOp");
-    ASSERTMSGLINE(700, stage < GX_MAX_TEVSTAGE, "GXSetTevAlpha*: Invalid Tev Stage Index");
-
     tevReg = __GXData->teva[stage];
     __SET_REG_FIELD(tevReg, 1, 18, op & 1);
     if (op <= 1) {
@@ -157,8 +133,6 @@ void GXSetTevAlphaOp(GXTevStageID stage, GXTevOp op, GXTevBias bias, GXTevScale 
 void GXSetTevColor(GXTevRegID id, GXColor color) {
     u32 regRA;
     u32 regBG;
-
-    CHECK_GXBEGIN(0x182, "GXSetTevColor");
 
     regRA = 0;
     SET_REG_FIELD(regRA, 11, 0, color.r);
@@ -184,13 +158,6 @@ void GXSetTevColorS10(GXTevRegID id, GXColorS10 color) {
     u32 regRA;
     u32 regBG;
 
-    ASSERTMSGLINE(0x1A7, color.r >= -1024 && color.r < 1024, "GXSetTevColorS10: Color not in range -1024 to +1023");
-    ASSERTMSGLINE(0x1A8, color.g >= -1024 && color.g < 1024, "GXSetTevColorS10: Color not in range -1024 to +1023");
-    ASSERTMSGLINE(0x1A9, color.b >= -1024 && color.b < 1024, "GXSetTevColorS10: Color not in range -1024 to +1023");
-    ASSERTMSGLINE(0x1AA, color.a >= -1024 && color.a < 1024, "GXSetTevColorS10: Color not in range -1024 to +1023");
-
-    CHECK_GXBEGIN(0x1AC, "GXSetTevColorS10");
-
     regRA = 0;
     SET_REG_FIELD(regRA, 11, 0, color.r & 0x7FF);
     SET_REG_FIELD(regRA, 11, 12, color.a & 0x7FF);
@@ -213,8 +180,6 @@ void GXSetTevKColor(GXTevKColorID id, GXColor color) {
     u32 regRA;
     u32 regBG;
 
-    CHECK_GXBEGIN(0x1DD, "GXSetTevKColor");
-
     regRA = 0;
     SET_REG_FIELD(regRA, 8, 0, color.r);
     SET_REG_FIELD(regRA, 8, 12, color.a);
@@ -235,9 +200,6 @@ void GXSetTevKColor(GXTevKColorID id, GXColor color) {
 void GXSetTevKColorSel(GXTevStageID stage, GXTevKColorSel sel) {
     u32* Kreg;
 
-    CHECK_GXBEGIN(872, "GXSetTevKColorSel");
-    ASSERTMSGLINE(873, stage < GX_MAX_TEVSTAGE, "GXSetTevKColor*: Invalid Tev Stage Index");
-
     Kreg = &__GXData->tevKsel[stage >> 1];
     if (stage & 1) {
         SET_REG_FIELD(*Kreg, 5, 14, sel);
@@ -251,9 +213,6 @@ void GXSetTevKColorSel(GXTevStageID stage, GXTevKColorSel sel) {
 
 void GXSetTevKAlphaSel(GXTevStageID stage, GXTevKAlphaSel sel) {
     u32* Kreg;
-
-    CHECK_GXBEGIN(905, "GXSetTevKAlphaSel");
-    ASSERTMSGLINE(906, stage < GX_MAX_TEVSTAGE, "GXSetTevKColor*: Invalid Tev Stage Index");
 
     Kreg = &__GXData->tevKsel[stage >> 1];
     if (stage & 1) {
@@ -269,9 +228,6 @@ void GXSetTevKAlphaSel(GXTevStageID stage, GXTevKAlphaSel sel) {
 void GXSetTevSwapMode(GXTevStageID stage, GXTevSwapSel ras_sel, GXTevSwapSel tex_sel) {
     u32* pTevReg;
 
-    CHECK_GXBEGIN(942, "GXSetTevSwapMode");
-    ASSERTMSGLINE(943, stage < GX_MAX_TEVSTAGE, "GXSetTevSwapMode: Invalid Tev Stage Index");
-
     pTevReg = &__GXData->teva[stage];
     SET_REG_FIELD(*pTevReg, 2, 0, ras_sel);
     SET_REG_FIELD(*pTevReg, 2, 2, tex_sel);
@@ -283,19 +239,12 @@ void GXSetTevSwapMode(GXTevStageID stage, GXTevSwapSel ras_sel, GXTevSwapSel tex
 void GXSetTevSwapModeTable(GXTevSwapSel table, GXTevColorChan red, GXTevColorChan green, GXTevColorChan blue,
                            GXTevColorChan alpha) {
     u32* Kreg;
-#if !DEBUG
+
     // not a real variable, but needed to match release
     int index = table * 2;
-#endif
 
-    CHECK_GXBEGIN(978, "GXSetTevSwapModeTable");
-    ASSERTMSGLINE(979, table < GX_MAX_TEVSWAP, "GXSetTevSwapModeTable: Invalid Swap Selection Index");
-
-#if DEBUG
-    Kreg = &__GXData->tevKsel[table * 2];
-#else
     Kreg = &__GXData->tevKsel[index];
-#endif
+
     SET_REG_FIELD(*Kreg, 2, 0, red);
     SET_REG_FIELD(*Kreg, 2, 2, green);
 
@@ -312,7 +261,6 @@ void GXSetTevSwapModeTable(GXTevSwapSel table, GXTevColorChan red, GXTevColorCha
 void GXSetAlphaCompare(GXCompare comp0, u8 ref0, GXAlphaOp op, GXCompare comp1, u8 ref1) {
     u32 reg;
 
-    CHECK_GXBEGIN(1046, "GXSetAlphaCompare");
     reg = 0xF3000000;
 
     SET_REG_FIELD(reg, 8, 0, ref0);
@@ -330,8 +278,6 @@ void GXSetZTexture(GXZTexOp op, GXTexFmt fmt, u32 bias) {
     u32 zenv1;
     u32 type;
 
-    CHECK_GXBEGIN(1077, "GXSetZTexture");
-
     zenv0 = 0;
     SET_REG_FIELD(zenv0, 24, 0, bias);
     SET_REG_FIELD(zenv0, 8, 24, 0xF4);
@@ -348,7 +294,7 @@ void GXSetZTexture(GXZTexOp op, GXTexFmt fmt, u32 bias) {
             type = 2;
             break;
         default:
-            ASSERTMSGLINE(1089, 0, "GXSetZTexture: Invalid z-texture format");
+
             type = 2;
             break;
     }
@@ -367,13 +313,6 @@ void GXSetTevOrder(GXTevStageID stage, GXTexCoordID coord, GXTexMapID map, GXCha
     u32 tmap;
     u32 tcoord;
     static int c2r[] = {0, 1, 0, 1, 0, 1, 7, 5, 6};
-
-    CHECK_GXBEGIN(1131, "GXSetTevOrder");
-    ASSERTMSGLINE(1132, stage < GX_MAX_TEVSTAGE, "GXSetTevOrder: Invalid Tev Stage Index");
-    ASSERTMSGLINE(1134, coord < GX_MAX_TEXCOORD || coord == GX_TEXCOORD_NULL, "GXSetTevOrder: Invalid Texcoord");
-    ASSERTMSGLINE(1136, (map & ~GX_TEX_DISABLE) < GX_MAX_TEXMAP || map == GX_TEXMAP_NULL,
-                  "GXSetTevOrder: Invalid Tex Map");
-    ASSERTMSGLINE(1138, color >= GX_COLOR0A0 && color <= GX_COLOR_NULL, "GXSetTevOrder: Invalid Color Channel ID");
 
     ptref = &__GXData->tref[stage / 2];
     __GXData->texmapId[stage] = map;
@@ -407,9 +346,7 @@ void GXSetTevOrder(GXTevStageID stage, GXTexCoordID coord, GXTexMapID map, GXCha
 }
 
 void GXSetNumTevStages(u8 nStages) {
-    CHECK_GXBEGIN(1187, "GXSetNumTevStages");
 
-    ASSERTMSGLINE(1189, nStages != 0 && nStages <= 16, "GXSetNumTevStages: Exceed max number of tex stages");
     SET_REG_FIELD(__GXData->genMode, 4, 10, nStages - 1);
     __GXData->dirtyState |= 4;
 }

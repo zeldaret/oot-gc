@@ -185,10 +185,8 @@ void GXSetFogRangeAdj(GXBool enable, u16 center, const GXFogAdjTable* table) {
     u32 range_adj;
     u32 range_c;
 
-    CHECK_GXBEGIN(331, "GXSetFogRangeAdj");
-
     if (enable) {
-        ASSERTMSGLINE(334, table != NULL, "GXSetFogRangeAdj: table pointer is null");
+
         for (i = 0; i < 10; i += 2) {
             range_adj = 0;
             SET_REG_FIELD(range_adj, 12, 0, table->r[i]);
@@ -209,20 +207,10 @@ void GXSetBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor ds
     u32 reg;
     u32 blend_en;
 
-    CHECK_GXBEGIN(375, "GXSetBlendMode");
-
     reg = __GXData->cmode0;
 
-#if DEBUG
-    blend_en = type == GX_BM_BLEND || type == GX_BM_SUBTRACT;
-#endif
-
     __SET_REG_FIELD(reg, 1, 11, (type == GX_BM_SUBTRACT));
-#if DEBUG
-    __SET_REG_FIELD(reg, 1, 0, blend_en);
-#else
     __SET_REG_FIELD(reg, 1, 0, type);
-#endif
     __SET_REG_FIELD(reg, 1, 1, (type == GX_BM_LOGIC));
     __SET_REG_FIELD(reg, 4, 12, op);
     __SET_REG_FIELD(reg, 3, 8, src_factor);
@@ -235,7 +223,6 @@ void GXSetBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor ds
 
 void GXSetColorUpdate(GXBool update_enable) {
     u32 reg;
-    CHECK_GXBEGIN(419, "GXSetColorUpdate");
 
     reg = __GXData->cmode0;
 
@@ -248,7 +235,6 @@ void GXSetColorUpdate(GXBool update_enable) {
 
 void GXSetAlphaUpdate(GXBool update_enable) {
     u32 reg;
-    CHECK_GXBEGIN(432, "GXSetAlphaUpdate");
 
     reg = __GXData->cmode0;
 
@@ -261,7 +247,6 @@ void GXSetAlphaUpdate(GXBool update_enable) {
 
 void GXSetZMode(GXBool compare_enable, GXCompare func, GXBool update_enable) {
     u32 reg;
-    CHECK_GXBEGIN(459, "GXSetZMode");
 
     reg = __GXData->zmode;
 
@@ -275,7 +260,7 @@ void GXSetZMode(GXBool compare_enable, GXCompare func, GXBool update_enable) {
 }
 
 void GXSetZCompLoc(GXBool before_tex) {
-    CHECK_GXBEGIN(474, "GXSetZCompLoc");
+
     SET_REG_FIELD(__GXData->peCtrl, 1, 6, before_tex);
     GX_WRITE_RAS_REG(__GXData->peCtrl);
     __GXData->bpSentNot = 0;
@@ -286,9 +271,8 @@ void GXSetPixelFmt(GXPixelFmt pix_fmt, GXZFmt16 z_fmt) {
     u8 aa;
     static u32 p2f[8] = {0, 1, 2, 3, 4, 4, 4, 5};
 
-    CHECK_GXBEGIN(511, "GXSetPixelFmt");
     oldPeCtrl = __GXData->peCtrl;
-    ASSERTMSGLINE(515, pix_fmt >= GX_PF_RGB8_Z24 && pix_fmt <= GX_PF_YUV420, "Invalid Pixel format");
+
     SET_REG_FIELD(__GXData->peCtrl, 3, 0, p2f[pix_fmt]);
     SET_REG_FIELD(__GXData->peCtrl, 3, 3, z_fmt);
 
@@ -313,7 +297,6 @@ void GXSetPixelFmt(GXPixelFmt pix_fmt, GXZFmt16 z_fmt) {
 
 void GXSetDither(GXBool dither) {
     u32 reg;
-    CHECK_GXBEGIN(556, "GXSetDither");
 
     reg = __GXData->cmode0;
 
@@ -326,7 +309,6 @@ void GXSetDither(GXBool dither) {
 
 void GXSetDstAlpha(GXBool enable, u8 alpha) {
     u32 reg;
-    CHECK_GXBEGIN(581, "GXSetDstAlpha");
 
     reg = __GXData->cmode1;
 
@@ -341,7 +323,6 @@ void GXSetDstAlpha(GXBool enable, u8 alpha) {
 void GXSetFieldMask(GXBool odd_mask, GXBool even_mask) {
     u32 reg;
 
-    CHECK_GXBEGIN(608, "GXSetFieldMask");
     reg = 0;
     SET_REG_FIELD(reg, 1, 0, even_mask);
     SET_REG_FIELD(reg, 1, 1, odd_mask);
@@ -353,7 +334,6 @@ void GXSetFieldMask(GXBool odd_mask, GXBool even_mask) {
 void GXSetFieldMode(GXBool field_mode, GXBool half_aspect_ratio) {
     u32 reg;
 
-    CHECK_GXBEGIN(637, "GXSetFieldMode");
     SET_REG_FIELD(__GXData->lpSize, 1, 22, half_aspect_ratio);
     GX_WRITE_RAS_REG(__GXData->lpSize);
     __GXFlushTextureState();

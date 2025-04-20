@@ -25,18 +25,7 @@ static inline void GXSetTexCoordGen(GXTexCoordID dst_coord, GXTexGenType func, G
 }
 
 void GXBegin(GXPrimitive type, GXVtxFmt vtxfmt, u16 nverts);
-
-static inline void GXEnd(void) {
-#if DEBUG
-    extern GXBool __GXinBegin;
-    extern void OSPanic(char* file, int line, char* msg, ...);
-    if (!__GXinBegin) {
-        OSPanic(__FILE__, 118, "GXEnd: called without a GXBegin");
-    }
-    __GXinBegin = GX_FALSE;
-#endif
-}
-
+static inline void GXEnd(void) {}
 void GXSetLineWidth(u8 width, GXTexOffset texOffsets);
 void GXSetPointSize(u8 pointSize, GXTexOffset texOffsets);
 void GXEnableTexOffsets(GXTexCoordID coord, u8 line_enable, u8 point_enable);

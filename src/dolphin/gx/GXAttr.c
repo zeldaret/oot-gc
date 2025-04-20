@@ -215,7 +215,7 @@ void __GXCalculateVLim(void) {
 }
 
 void GXClearVtxDesc(void) {
-    CHECK_GXBEGIN(543, "GXClearVtxDesc");
+
     __GXData->vcdLo = 0;
     SET_REG_FIELD(__GXData->vcdLo, 2, 9, 1);
     __GXData->vcdHi = 0;
@@ -298,19 +298,10 @@ void GXSetVtxAttrFmt(GXVtxFmt vtxfmt, GXAttr attr, GXCompCnt cnt, GXCompType typ
     u32* vb;
     u32* vc;
 
-    CHECK_GXBEGIN(666, "GXSetVtxAttrFmt");
-    CHECK_VTXFMT(667, vtxfmt);
-    CHECK_ATTRNAME4(671, attr);
-    CHECK_FRAC(672, frac);
-
     va = &__GXData->vatA[vtxfmt];
     vb = &__GXData->vatB[vtxfmt];
     vc = &__GXData->vatC[vtxfmt];
     SETVAT(va, vb, vc, attr, cnt, type, frac);
-
-#ifdef DEBUG
-    __GXVerifyVATImm(attr, cnt, type, frac);
-#endif
 
     __GXData->dirtyState |= 0x10;
     __GXData->dirtyVAT |= (u8)(1 << (u8)vtxfmt);
@@ -321,21 +312,12 @@ void GXSetVtxAttrFmtv(GXVtxFmt vtxfmt, const GXVtxAttrFmtList* list) {
     u32* vb;
     u32* vc;
 
-    CHECK_GXBEGIN(713, "GXSetVtxAttrFmtv");
-    CHECK_LISTPTR(714, list);
-    CHECK_VTXFMT(715, vtxfmt);
-
     va = &__GXData->vatA[vtxfmt];
     vb = &__GXData->vatB[vtxfmt];
     vc = &__GXData->vatC[vtxfmt];
 
     while (list->attr != GX_VA_NULL) {
-        CHECK_ATTRNAME4(725, list->attr);
-        CHECK_FRAC(726, list->frac);
         SETVAT(va, vb, vc, list->attr, list->cnt, list->type, list->frac);
-#ifdef DEBUG
-        __GXVerifyVATImm(list->attr, list->cnt, list->type, list->frac);
-#endif
         list++;
     }
     __GXData->dirtyState |= 0x10;
@@ -361,12 +343,10 @@ void GXSetArray(GXAttr attr, void* base_ptr, u8 stride) {
     GXAttr cpAttr;
     u32 phyAddr;
 
-    CHECK_GXBEGIN(963, "GXSetArray");
     if (attr == GX_VA_NBT) {
         attr = GX_VA_NRM;
     }
 
-    CHECK_ATTRNAME5(966, attr);
     cpAttr = attr - GX_VA_POS;
     phyAddr = (u32)base_ptr & ~0xC0000000;
 
@@ -385,10 +365,7 @@ void GXSetArray(GXAttr attr, void* base_ptr, u8 stride) {
     }
 }
 
-void GXInvalidateVtxCache(void) {
-    CHECK_GXBEGIN(988, "GXInvalidateVtxCache");
-    GX_WRITE_U8(0x48);
-}
+void GXInvalidateVtxCache(void) { GX_WRITE_U8(0x48); }
 
 void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc src_param, u32 mtx, GXBool normalize,
                        u32 pt_texmtx) {
@@ -397,9 +374,6 @@ void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc sr
     u32 bumprow; // unused
     u32 form;
     GXAttr mtxIdAttr;
-
-    CHECK_GXBEGIN(1030, "GXSetTexCoordGen");
-    ASSERTMSGLINE(1031, dst_coord < GX_MAX_TEXCOORD, "GXSetTexCoordGen: Invalid coordinate Id");
 
     form = 0;
     row = 5;
@@ -472,7 +446,7 @@ void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc sr
             bumprow;
             break;
         default:
-            ASSERTMSGLINE(1059, 0, "GXSetTexCoordGen: Invalid source parameter");
+
             break;
     }
 
@@ -497,8 +471,7 @@ void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc sr
         case GX_TG_BUMP5:
         case GX_TG_BUMP6:
         case GX_TG_BUMP7:
-            ASSERTMSGLINE(1091, src_param >= 12 && src_param <= 18,
-                          "GXSetTexCoordGen:  Bump source texture value is invalid");
+
             SET_REG_FIELD(reg, 1, 1, 0);
             SET_REG_FIELD(reg, 1, 2, form);
             SET_REG_FIELD(reg, 3, 4, 1);
@@ -517,7 +490,7 @@ void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc sr
             SET_REG_FIELD(reg, 5, 7, 2);
             break;
         default:
-            ASSERTMSGLINE(1113, 0, "GXSetTexCoordGen:  Invalid function");
+
             break;
     }
 
@@ -559,7 +532,7 @@ void GXSetTexCoordGen2(GXTexCoordID dst_coord, GXTexGenType func, GXTexGenSrc sr
 }
 
 void GXSetNumTexGens(u8 nTexGens) {
-    CHECK_GXBEGIN(1172, "GXSetNumTexGens");
+
     SET_REG_FIELD(__GXData->genMode, 4, 0, nTexGens);
     GX_WRITE_XF_REG(0x3F, nTexGens);
     __GXData->dirtyState |= 4;

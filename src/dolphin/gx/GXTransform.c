@@ -159,8 +159,6 @@ void GXLoadPosMtxImm(const Mtx mtx, u32 id) {
     u32 reg;
     u32 addr;
 
-    CHECK_GXBEGIN(507, "GXLoadPosMtxImm");
-
     addr = id * 4;
     reg = addr | 0xB0000;
 
@@ -173,8 +171,6 @@ void GXLoadNrmMtxImm(const Mtx mtx, u32 id) {
     u32 reg;
     u32 addr;
 
-    CHECK_GXBEGIN(588, "GXLoadNrmMtxImm");
-
     addr = id * 3 + 0x400;
     reg = addr | 0x80000;
 
@@ -184,7 +180,7 @@ void GXLoadNrmMtxImm(const Mtx mtx, u32 id) {
 }
 
 void GXSetCurrentMtx(u32 id) {
-    CHECK_GXBEGIN(708, "GXSetCurrentMtx");
+
     SET_REG_FIELD(__GXData->matIdxA, 6, 0, id);
     __GXSetMatrixIndex(GX_VA_PNMTXIDX);
 }
@@ -194,11 +190,8 @@ void GXLoadTexMtxImm(const f32 mtx[][4], u32 id, GXTexMtxType type) {
     u32 addr;
     u32 count;
 
-    CHECK_GXBEGIN(741, "GXLoadTexMtxImm");
-
     if (id >= GX_PTTEXMTX0) {
         addr = (id - GX_PTTEXMTX0) * 4 + 0x500;
-        ASSERTMSGLINE(751, type == GX_MTX3x4, "GXLoadTexMtx: Invalid matrix type");
     } else {
         addr = id * 4;
     }
@@ -334,12 +327,6 @@ void GXSetScissor(u32 left, u32 top, u32 wd, u32 ht) {
     u32 bm;
     u32 rt;
 
-    CHECK_GXBEGIN(1048, "GXSetScissor");
-    ASSERTMSGLINE(1049, left < 1706, "GXSetScissor: Left origin > 1708");
-    ASSERTMSGLINE(1050, top < 1706, "GXSetScissor: top origin > 1708");
-    ASSERTMSGLINE(1051, left + wd < 1706, "GXSetScissor: right edge > 1708");
-    ASSERTMSGLINE(1052, top + ht < 1706, "GXSetScissor: bottom edge > 1708");
-
     tp = top + 342;
     lf = left + 342;
     bm = tp + ht - 1;
@@ -372,11 +359,6 @@ void GXSetScissorBoxOffset(s32 x_off, s32 y_off) {
     u32 hx;
     u32 hy;
 
-    CHECK_GXBEGIN(1119, "GXSetScissorBoxOffset");
-
-    ASSERTMSGLINE(1122, (u32)(x_off + 342) < 2048, "GXSetScissorBoxOffset: Invalid X offset");
-    ASSERTMSGLINE(1124, (u32)(y_off + 342) < 2048, "GXSetScissorBoxOffset: Invalid Y offset");
-
     hx = (u32)(x_off + 342) >> 1;
     hy = (u32)(y_off + 342) >> 1;
 
@@ -388,7 +370,7 @@ void GXSetScissorBoxOffset(s32 x_off, s32 y_off) {
 }
 
 void GXSetClipMode(GXClipMode mode) {
-    CHECK_GXBEGIN(1151, "GXSetClipMode");
+
     GX_WRITE_XF_REG(5, mode);
     __GXData->bpSentNot = 1;
 }

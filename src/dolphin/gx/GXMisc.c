@@ -95,8 +95,6 @@ void GXSetDrawSync(u16 token) {
     bool enabled;
     u32 reg;
 
-    CHECK_GXBEGIN(430, "GXSetDrawSync");
-
     enabled = OSDisableInterrupts();
     reg = token | 0x48000000;
     GX_WRITE_RAS_REG(reg);
@@ -117,7 +115,6 @@ void GXSetDrawDone(void) {
     u32 reg;
     bool enabled;
 
-    CHECK_GXBEGIN(488, "GXSetDrawDone");
     enabled = OSDisableInterrupts();
     reg = 0x45000002;
     GX_WRITE_RAS_REG(reg);
@@ -142,7 +139,7 @@ void GXDrawDone(void) {
 }
 
 void GXPixModeSync(void) {
-    CHECK_GXBEGIN(601, "GXPixModeSync");
+
     GX_WRITE_RAS_REG(__GXData->peCtrl);
     __GXData->bpSentNot = 0;
 }

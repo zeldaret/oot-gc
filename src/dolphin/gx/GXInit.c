@@ -357,18 +357,13 @@ GXFifoObj* GXInit(void* base, u32 size) {
 
     {
         u32 reg = 0;
-#if DEBUG
-        s32 regAddr;
-#endif
+
         GX_SET_CP_REG(3, reg);
 
         SET_REG_FIELD(__GXData->perfSel, 4, 4, 0);
         GX_WRITE_U8(0x8);
         GX_WRITE_U8(0x20);
         GX_WRITE_U32(__GXData->perfSel);
-#if DEBUG
-        regAddr = -12;
-#endif
 
         reg = 0;
         GX_WRITE_XF_REG(6, reg);

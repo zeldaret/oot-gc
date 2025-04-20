@@ -89,7 +89,6 @@ static void DoReset() {
 
     ResettingChan = __cntlzw(ResettingBits);
     if (ResettingChan != 32) {
-        ASSERTLINE(559, 0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
         chanBit = (PAD_CHAN0_BIT >> ResettingChan);
         ResettingBits &= ~chanBit;
 
@@ -144,8 +143,6 @@ static void UpdateOrigin(s32 chan) {
 }
 
 static void PADOriginCallback(s32 chan, u32 error, OSContext* context) {
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-    ASSERT(chan == ResettingChan);
     if (!(error & (SI_ERROR_UNDER_RUN | SI_ERROR_OVER_RUN | SI_ERROR_NO_RESPONSE | SI_ERROR_COLLISION))) {
         UpdateOrigin(ResettingChan);
         PADEnable(ResettingChan);
@@ -154,7 +151,6 @@ static void PADOriginCallback(s32 chan, u32 error, OSContext* context) {
 }
 
 static void PADOriginUpdateCallback(s32 chan, u32 error, OSContext* context) {
-    ASSERT(0 <= chan && chan < SI_MAX_CHAN);
 
     if (!(EnabledBits & (PAD_CHAN0_BIT >> chan))) {
         return;
@@ -170,9 +166,6 @@ static void PADOriginUpdateCallback(s32 chan, u32 error, OSContext* context) {
 }
 
 static void PADProbeCallback(s32 chan, u32 error, OSContext* context) {
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-    ASSERT(chan == ResettingChan);
-    ASSERT((Type[chan] & SI_WIRELESS_CONT_MASK) == SI_WIRELESS_CONT && !(Type[chan] & SI_WIRELESS_LITE));
     if (!(error & (SI_ERROR_UNDER_RUN | SI_ERROR_OVER_RUN | SI_ERROR_NO_RESPONSE | SI_ERROR_COLLISION))) {
         PADEnable(ResettingChan);
         WaitingBits |= PAD_CHAN0_BIT >> ResettingChan;
@@ -185,9 +178,6 @@ static void PADTypeAndStatusCallback(s32 chan, u32 type) {
     u32 recalibrate;
     bool rc = true;
     u32 error;
-
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-    ASSERT(chan == ResettingChan);
 
     chanBit = PAD_CHAN0_BIT >> ResettingChan;
     error = type & 0xFF;

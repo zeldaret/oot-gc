@@ -75,13 +75,6 @@ static void GXCPInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
 void GXInitFifoBase(GXFifoObj* fifo, void* base, u32 size) {
     __GXFifoObj* realFifo = (__GXFifoObj*)fifo;
 
-    ASSERTMSGLINE(LINE(542, 542, 546), realFifo != CPUFifo, "GXInitFifoBase: fifo is attached to CPU");
-    ASSERTMSGLINE(LINE(544, 544, 548), realFifo != GPFifo, "GXInitFifoBase: fifo is attached to GP");
-    ASSERTMSGLINE(LINE(546, 546, 550), ((u32)base & 0x1F) == 0, "GXInitFifoBase: base must be 32B aligned");
-    ASSERTMSGLINE(LINE(548, 548, 552), base != NULL, "GXInitFifoBase: base pointer is NULL");
-    ASSERTMSGLINE(LINE(550, 550, 554), (size & 0x1F) == 0, "GXInitFifoBase: size must be 32B aligned");
-    ASSERTMSGLINE(LINE(552, 552, 556), size >= 0x10000, "GXInitFifoBase: fifo is not large enough");
-
     realFifo->base = base;
     realFifo->top = (u8*)base + size - 4;
     realFifo->size = size;
@@ -93,15 +86,6 @@ void GXInitFifoBase(GXFifoObj* fifo, void* base, u32 size) {
 void GXInitFifoPtrs(GXFifoObj* fifo, void* readPtr, void* writePtr) {
     __GXFifoObj* realFifo = (__GXFifoObj*)fifo;
     bool enabled;
-
-    ASSERTMSGLINE(LINE(592, 592, 596), realFifo != CPUFifo, "GXInitFifoPtrs: fifo is attached to CPU");
-    ASSERTMSGLINE(LINE(594, 594, 598), realFifo != GPFifo, "GXInitFifoPtrs: fifo is attached to GP");
-    ASSERTMSGLINE(LINE(596, 596, 600), ((u32)readPtr & 0x1F) == 0, "GXInitFifoPtrs: readPtr not 32B aligned");
-    ASSERTMSGLINE(LINE(598, 598, 602), ((u32)writePtr & 0x1F) == 0, "GXInitFifoPtrs: writePtr not 32B aligned");
-    ASSERTMSGLINE(LINE(601, 601, 605), realFifo->base <= readPtr && readPtr < realFifo->top,
-                  "GXInitFifoPtrs: readPtr not in fifo range");
-    ASSERTMSGLINE(LINE(604, 604, 608), realFifo->base <= writePtr && writePtr < realFifo->top,
-                  "GXInitFifoPtrs: writePtr not in fifo range");
 
     enabled = OSDisableInterrupts();
     realFifo->rdPtr = readPtr;
@@ -115,13 +99,6 @@ void GXInitFifoPtrs(GXFifoObj* fifo, void* readPtr, void* writePtr) {
 
 void GXInitFifoLimits(GXFifoObj* fifo, u32 hiWatermark, u32 loWatermark) {
     __GXFifoObj* realFifo = (__GXFifoObj*)fifo;
-
-    ASSERTMSGLINE(LINE(641, 641, 645), realFifo != GPFifo, "GXInitFifoLimits: fifo is attached to GP");
-    ASSERTMSGLINE(LINE(643, 643, 647), (hiWatermark & 0x1F) == 0, "GXInitFifoLimits: hiWatermark not 32B aligned");
-    ASSERTMSGLINE(LINE(645, 645, 649), (loWatermark & 0x1F) == 0, "GXInitFifoLimits: loWatermark not 32B aligned");
-    ASSERTMSGLINE(LINE(647, 647, 651), hiWatermark < realFifo->top - realFifo->base,
-                  "GXInitFifoLimits: hiWatermark too large");
-    ASSERTMSGLINE(LINE(649, 649, 653), loWatermark < hiWatermark, "GXInitFifoLimits: hiWatermark below lo watermark");
 
     realFifo->hiWatermark = hiWatermark;
     realFifo->loWatermark = loWatermark;

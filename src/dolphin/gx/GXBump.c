@@ -28,10 +28,10 @@ void GXSetTevIndirect(GXTevStageID tev_stage, GXIndTexStageID ind_stage, GXIndTe
     SET_REG_FIELD(reg, 8, 24, tev_stage + 16);
     GX_WRITE_SOME_REG5(GX_LOAD_BP_REG, reg);
     __GXData->bpSentNot = GX_FALSE;
+    NO_INLINE();
 }
 
 void GXSetIndTexCoordScale(GXIndTexStageID ind_state, GXIndTexScale scale_s, GXIndTexScale scale_t) {
-    CHECK_GXBEGIN(249, "GXSetIndTexScale");
 
     switch (ind_state) {
         case GX_INDTEXSTAGE0:
@@ -59,15 +59,14 @@ void GXSetIndTexCoordScale(GXIndTexStageID ind_state, GXIndTexScale scale_s, GXI
             GX_WRITE_SOME_REG5(GX_LOAD_BP_REG, __GXData->IndTexScale1);
             break;
         default:
-            ASSERTMSGLINE(277, 0, "GXSetIndTexCoordScale: Invalid Indirect Stage Id");
+
             break;
     }
     __GXData->bpSentNot = 0;
 }
 
 void GXSetNumIndStages(u8 nIndStages) {
-    CHECK_GXBEGIN(353, "GXSetNumIndStages");
-    ASSERTMSGLINE(355, nIndStages <= 4, "GXSetNumIndStages: Exceeds max. number of indirect texture stages");
+
     SET_REG_FIELD(__GXData->genMode, 3, 16, nIndStages);
     __GXData->dirtyState |= 6;
 }

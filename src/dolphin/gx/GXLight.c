@@ -22,8 +22,6 @@ void GXSetChanAmbColor(GXChannelID chan, GXColor amb_color) {
     u32 rgb;
     u32 colIdx;
 
-    CHECK_GXBEGIN(661, "GXSetChanAmbColor");
-
     switch (chan) {
 #if IS_MQ
         case GX_COLOR0:
@@ -70,7 +68,7 @@ void GXSetChanAmbColor(GXChannelID chan, GXColor amb_color) {
             colIdx = 1;
             break;
         default:
-            ASSERTMSGLINE(731, 0, "GXSetChanAmbColor: Invalid Channel Id");
+
             return;
     }
 
@@ -83,8 +81,6 @@ void GXSetChanMatColor(GXChannelID chan, GXColor mat_color) {
     u32 reg;
     u32 rgb;
     u32 colIdx;
-
-    CHECK_GXBEGIN(762, "GXSetChanMatColor");
 
     switch (chan) {
 #if IS_MQ
@@ -132,7 +128,7 @@ void GXSetChanMatColor(GXChannelID chan, GXColor mat_color) {
             colIdx = 1;
             break;
         default:
-            ASSERTMSGLINE(832, 0, "GXSetChanMatColor: Invalid Channel Id");
+
             return;
     }
 
@@ -142,8 +138,6 @@ void GXSetChanMatColor(GXChannelID chan, GXColor mat_color) {
 }
 
 void GXSetNumChans(u8 nChans) {
-    CHECK_GXBEGIN(857, "GXSetNumChans");
-    ASSERTMSGLINE(858, nChans <= 2, "GXSetNumChans: nChans > 2");
 
     SET_REG_FIELD(__GXData->genMode, 3, 4, nChans);
     GX_WRITE_XF_REG(9, nChans);
@@ -155,21 +149,7 @@ void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc amb_src, GXColorS
     u32 reg;
     u32 idx;
 
-    CHECK_GXBEGIN(892, "GXSetChanCtrl");
-
-    ASSERTMSGLINE(895, chan >= GX_COLOR0 && chan <= GX_COLOR1A1, "GXSetChanCtrl: Invalid Channel Id");
-
-#if DEBUG
-    if (chan == GX_COLOR0A0)
-        idx = 0;
-    else if (chan == GX_COLOR1A1)
-        idx = 1;
-    else
-        idx = chan;
-#else
     idx = chan & 0x3;
-#endif
-
     reg = 0;
     SET_REG_FIELD(reg, 1, 1, enable);
     SET_REG_FIELD(reg, 1, 0, mat_src);

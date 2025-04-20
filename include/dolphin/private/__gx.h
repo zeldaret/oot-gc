@@ -370,10 +370,6 @@ extern void* __peReg;
 extern void* __cpReg;
 extern void* __piReg;
 
-#if DEBUG
-extern GXBool __GXinBegin;
-#endif
-
 #define GX_GET_MEM_REG(offset) (*(volatile u16*)((volatile u16*)(__memReg) + (offset)))
 #define GX_GET_CP_REG(offset) (*(volatile u16*)((volatile u16*)(__cpReg) + (offset)))
 #define GX_GET_PE_REG(offset) (*(volatile u16*)((volatile u16*)(__peReg) + (offset)))

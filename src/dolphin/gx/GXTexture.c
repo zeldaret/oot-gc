@@ -94,8 +94,7 @@ static inline void __GXGetTexTileShift(GXTexFmt fmt, u32* rowTileS, u32* colTile
             break;
         default:
             *rowTileS = *colTileS = 0;
-            ASSERTMSGLINEV(444, 0, "%s: invalid texture format", "GX");
-            break;
+            ;
     }
 }
 
@@ -124,23 +123,6 @@ void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFm
     u32 rowC;
     u32 colC;
     __GXTexObjInt* t = (__GXTexObjInt*)obj;
-
-    ASSERTMSGLINE(565, obj, "Texture Object Pointer is null");
-    CHECK_GXBEGIN(567, "GXInitTexObj");
-    ASSERTMSGLINEV(568, width <= 1024, "%s: width too large", "GXInitTexObj");
-    ASSERTMSGLINEV(569, height <= 1024, "%s: height too large", "GXInitTexObj");
-    ASSERTMSGLINEV(571, !(format & _GX_TF_CTF), "%s: invalid texture format", "GXInitTexObj");
-
-#if DEBUG
-    if (wrap_s != GX_CLAMP || mipmap) {
-        u32 mask = 1 << (31 - __cntlzw(width));
-        ASSERTMSGLINEV(581, width == mask, "%s: width must be a power of 2", "GXInitTexObj");
-    }
-    if (wrap_t != GX_CLAMP || mipmap) {
-        u32 mask = 1 << (31 - __cntlzw(height));
-        ASSERTMSGLINEV(586, height == mask, "%s: height must be a power of 2", "GXInitTexObj");
-    }
-#endif
 
     memset(t, 0, 0x20);
     SET_REG_FIELD(t->mode0, 2, 0, wrap_s);
@@ -173,7 +155,6 @@ void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFm
     SET_REG_FIELD(t->image0, 10, 0, width - 1);
     SET_REG_FIELD(t->image0, 10, 10, height - 1);
     SET_REG_FIELD(t->image0, 4, 20, format & 0xF);
-    ASSERTMSGLINEV(654, ((u32)image_ptr & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTexObj", "image");
     imageBase = (u32)((u32)image_ptr >> 5) & 0x01FFFFFF;
     SET_REG_FIELD(t->image3, 21, 0, imageBase);
 
@@ -210,7 +191,6 @@ void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFm
             colT = 3;
             break;
         default:
-            ASSERTMSGLINEV(699, 0, "%s: invalid texture format", "GXPreLoadEntireTexture");
             t->loadFmt = 2;
             rowT = 2;
             colT = 2;
@@ -227,8 +207,6 @@ void GXInitTexObjCI(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXCIT
                     GXTexWrapMode wrap_t, GXBool mipmap, u32 tlut_name) {
     __GXTexObjInt* t = (__GXTexObjInt*)obj;
 
-    ASSERTMSGLINE(737, obj, "Texture Object Pointer is null");
-    CHECK_GXBEGIN(739, "GXInitTexObjCI");
     GXInitTexObj(obj, image_ptr, width, height, format, wrap_s, wrap_t, mipmap);
     t->flags &= 0xFFFFFFFD;
     t->tlutName = tlut_name;
@@ -241,9 +219,6 @@ void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, 
     u8 lmax;
     __GXTexObjInt* t = (__GXTexObjInt*)obj;
 
-    ASSERTMSGLINE(776, obj, "Texture Object Pointer is null");
-    CHECK_GXBEGIN(778, "GXInitTexObjLOD");
-
     if (lod_bias < -4.0f) {
         lod_bias = -4.0f;
     } else if (lod_bias >= 4.0f) {
@@ -252,9 +227,7 @@ void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, 
 
     lbias = 32.0f * lod_bias;
     SET_REG_FIELD(t->mode0, 8, 9, lbias);
-    ASSERTMSG1LINE(791, (u32)mag_filt <= 1, "%s: invalid mag_filt value", "GXInitTexObjLOD");
     SET_REG_FIELD(t->mode0, 1, 4, (mag_filt == GX_LINEAR) ? 1 : 0);
-    ASSERTMSG1LINE(795, (u32)min_filt <= 5, "%s: invalid min_filt value", "GXInitTexObjLOD");
     SET_REG_FIELD(t->mode0, 3, 5, GX2HWFiltConv[min_filt]);
     SET_REG_FIELD(t->mode0, 1, 8, do_edge_lod ? 0 : 1);
     SET_REG_FIELD(t->mode0, 1, 17, 0);
@@ -281,21 +254,18 @@ void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, 
 void* GXGetTexObjData(const GXTexObj* to) {
     const __GXTexObjInt* t = (const __GXTexObjInt*)to;
 
-    ASSERTMSGLINE(1108, to, "Texture Object Pointer is null");
     return (void*)(GET_REG_FIELD(t->image3, 21, 0) << 5);
 }
 
 GXTexFmt GXGetTexObjFmt(const GXTexObj* to) {
     const __GXTexObjInt* t = (const __GXTexObjInt*)to;
 
-    ASSERTMSGLINE(1126, to, "Texture Object Pointer is null");
     return t->fmt;
 }
 
 GXBool GXGetTexObjMipMap(const GXTexObj* to) {
     const __GXTexObjInt* t = (const __GXTexObjInt*)to;
 
-    ASSERTMSGLINE(1144, to, "Texture Object Pointer is null");
     return (t->flags & 1) == 1;
 }
 
@@ -306,11 +276,6 @@ void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID id) {
     __GXTlutRegionInt* tlr;
     __GXTexObjInt* t = (__GXTexObjInt*)obj;
     __GXTexRegionInt* r = (__GXTexRegionInt*)region;
-
-    ASSERTMSGLINE(0x3FE, obj, "Texture Object Pointer is null");
-    ASSERTMSGLINE(0x3FE, region, "TexRegion Object Pointer is null");
-    CHECK_GXBEGIN(0x400, "GXLoadTexObjPreLoaded");
-    ASSERTMSGLINEV(0x401, id < 8, "%s: invalid texture map ID", "GXLoadTexObj");
 
     SET_REG_FIELD(t->mode0, 8, 24, GXTexMode0Ids[id]);
     SET_REG_FIELD(t->mode1, 8, 24, GXTexMode1Ids[id]);
@@ -327,10 +292,7 @@ void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID id) {
     GX_WRITE_RAS_REG(t->image3);
 
     if (!(t->flags & 2)) {
-        ASSERTMSGLINEV(0x413, __GXData->tlutRegionCallback, "%s: Tex/Tlut Region Callback not set",
-                       "GXLoadTexObj/PreLoaded");
         tlr = (__GXTlutRegionInt*)__GXData->tlutRegionCallback(t->tlutName);
-        ASSERTMSGLINEV(0x415, tlr, "%s: Tex/Tlut Region Callback returns NULL", "GXLoadTexObj/PreLoaded");
 
         SET_REG_FIELD(tlr->tlutObj.tlut, 8, 24, GXTexTlutIds[id]);
         GX_WRITE_RAS_REG(tlr->tlutObj.tlut);
@@ -344,21 +306,13 @@ void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID id) {
 void GXLoadTexObj(GXTexObj* obj, GXTexMapID id) {
     GXTexRegion* r;
 
-    CHECK_GXBEGIN(1318, "GXLoadTexObj");
-    ASSERTMSGLINEV(1319, id < 8, "%s: invalid texture map ID", "GXLoadTexObj");
-    ASSERTMSGLINEV(1324, __GXData->texRegionCallback, "%s: Tex/Tlut Region Callback not set", "GXLoadTexObj");
     r = __GXData->texRegionCallback(obj, id);
-    ASSERTMSGLINEV(1326, r, "%s: Tex/Tlut Region Callback returns NULL", "GXLoadTexObj");
     GXLoadTexObjPreLoaded(obj, r, id);
 }
 
 void GXInitTlutObj(GXTlutObj* tlut_obj, void* lut, GXTlutFmt fmt, u16 n_entries) {
     __GXTlutObjInt* t = (__GXTlutObjInt*)tlut_obj;
 
-    ASSERTMSGLINE(1350, tlut_obj, "TLut Object Pointer is null");
-    CHECK_GXBEGIN(1351, "GXInitTlutObj");
-    ASSERTMSGLINEV(1354, n_entries <= 0x4000, "%s: number of entries exceeds maximum", "GXInitTlutObj");
-    ASSERTMSGLINEV(1356, ((u32)lut & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTlutObj", "Tlut");
     t->tlut = 0;
     SET_REG_FIELD(t->tlut, 2, 10, fmt);
     SET_REG_FIELD(t->loadTlut0, 21, 0, ((u32)lut & 0x3FFFFFFF) >> 5);
@@ -371,11 +325,7 @@ void GXLoadTlut(GXTlutObj* tlut_obj, u32 tlut_name) {
     u32 tlut_offset;
     __GXTlutObjInt* t = (__GXTlutObjInt*)tlut_obj;
 
-    ASSERTMSGLINE(1432, tlut_obj, "TLut Object Pointer is null");
-    CHECK_GXBEGIN(1434, "GXLoadTlut");
-    ASSERTMSGLINEV(1435, __GXData->tlutRegionCallback, "%s: Tex/Tlut Region Callback not set", "GXLoadTlut");
     r = (__GXTlutRegionInt*)__GXData->tlutRegionCallback(tlut_name);
-    ASSERTMSGLINEV(1437, r, "%s: Tex/Tlut Region Callback returns NULL", "GXLoadTlut");
 
     __GXFlushTextureState();
     GX_WRITE_RAS_REG(t->loadTlut0);
@@ -391,13 +341,6 @@ void GXInitTexCacheRegion(GXTexRegion* region, u8 is_32b_mipmap, u32 tmem_even, 
     u32 WidthExp2;
     __GXTexRegionInt* t = (__GXTexRegionInt*)region;
 
-    ASSERTMSGLINE(1484, region, "TexRegion Object Pointer is null");
-    CHECK_GXBEGIN(1486, "GXInitTexCacheRegion");
-    ASSERTMSGLINEV(1488, (tmem_even & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTexCacheRegion",
-                   "tmem even");
-    ASSERTMSGLINEV(1490, (tmem_odd & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTexCacheRegion",
-                   "tmem odd");
-
     switch (size_even) {
         case GX_TEXCACHE_32K:
             WidthExp2 = 3;
@@ -408,9 +351,7 @@ void GXInitTexCacheRegion(GXTexRegion* region, u8 is_32b_mipmap, u32 tmem_even, 
         case GX_TEXCACHE_512K:
             WidthExp2 = 5;
             break;
-        default:
-            ASSERTMSGLINEV(1498, 0, "%s: Invalid %s size", "GXInitTexCacheRegion", "tmem even");
-            break;
+        default:;
     }
 
     t->image1 = 0;
@@ -432,9 +373,7 @@ void GXInitTexCacheRegion(GXTexRegion* region, u8 is_32b_mipmap, u32 tmem_even, 
         case GX_TEXCACHE_NONE:
             WidthExp2 = 0;
             break;
-        default:
-            ASSERTMSGLINEV(1514, 0, "%s: Invalid %s size", "GXInitTexCacheRegion", "tmem odd");
-            break;
+        default:;
     }
 
     t->image2 = 0;
@@ -448,10 +387,6 @@ void GXInitTexCacheRegion(GXTexRegion* region, u8 is_32b_mipmap, u32 tmem_even, 
 void GXInitTlutRegion(GXTlutRegion* region, u32 tmem_addr, GXTlutSize tlut_size) {
     __GXTlutRegionInt* t = (__GXTlutRegionInt*)region;
 
-    ASSERTMSGLINE(1652, region, "TLutRegion Object Pointer is null");
-    CHECK_GXBEGIN(1654, "GXInitTlutRegion");
-    ASSERTMSGLINEV(1655, (tmem_addr & 0x1FF) == 0, "%s: tmem pointer is not aligned to 512B", "GXInitTlutRegion");
-    ASSERTMSGLINEV(1656, tlut_size <= 0x400, "%s: tlut size exceeds 16K", "GXInitTlutRegion");
     t->loadTlut1 = 0;
     tmem_addr -= 0x80000;
     SET_REG_FIELD(t->loadTlut1, 10, 0, tmem_addr >> 9);
@@ -463,7 +398,6 @@ void GXInvalidateTexAll(void) {
     u32 reg0;
     u32 reg1;
 
-    CHECK_GXBEGIN(1755, "GXInvalidateTexAll");
     reg0 = 0x66001000;
     reg1 = 0x66001100;
     __GXFlushTextureState();

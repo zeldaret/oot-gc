@@ -19,6 +19,7 @@
 #include "dolphin/perf.h"
 #include "dolphin/si.h"
 #include "dolphin/texPalette.h"
+#include "dolphin/thp.h"
 #include "dolphin/types.h"
 #include "dolphin/vi.h"
 

@@ -86,7 +86,6 @@ void GXAdjustForOverscan(const GXRenderModeObj* rIn, GXRenderModeObj* rOut, u16 
 }
 
 void GXSetDispCopySrc(u16 left, u16 top, u16 wd, u16 ht) {
-    CHECK_GXBEGIN(1235, "GXSetDispCopySrc");
 
     __GXData->cpDispSrc = 0;
     SET_REG_FIELD(__GXData->cpDispSrc, 10, 0, left);
@@ -100,7 +99,6 @@ void GXSetDispCopySrc(u16 left, u16 top, u16 wd, u16 ht) {
 }
 
 void GXSetTexCopySrc(u16 left, u16 top, u16 wd, u16 ht) {
-    CHECK_GXBEGIN(1263, "GXSetTexCopySrc");
 
     __GXData->cpTexSrc = 0;
     SET_REG_FIELD(__GXData->cpTexSrc, 10, 0, left);
@@ -116,9 +114,6 @@ void GXSetTexCopySrc(u16 left, u16 top, u16 wd, u16 ht) {
 void GXSetDispCopyDst(u16 wd, u16 ht) {
     u16 stride;
 
-    ASSERTMSGLINE(1293, (wd & 0xF) == 0, "GXSetDispCopyDst: Width must be a multiple of 16");
-    CHECK_GXBEGIN(1294, "GXSetDispCopyDst");
-
     stride = (int)wd * 2;
     __GXData->cpDispStride = 0;
     SET_REG_FIELD(__GXData->cpDispStride, 10, 0, (stride >> 5));
@@ -132,11 +127,8 @@ void GXSetTexCopyDst(u16 wd, u16 ht, GXTexFmt fmt, GXBool mipmap) {
     u32 peTexFmt;
     u32 peTexFmtH;
 
-    CHECK_GXBEGIN(1327, "GXSetTexCopyDst");
-
     __GXData->cpTexZ = 0;
     peTexFmt = fmt & 0xF;
-    ASSERTMSGLINEV(1358, peTexFmt < 13, "%s: invalid texture format", "GXSetTexCopyDst");
 
     if (fmt == GX_TF_Z16) {
         peTexFmt = 0xB;
@@ -170,7 +162,7 @@ void GXSetTexCopyDst(u16 wd, u16 ht, GXTexFmt fmt, GXBool mipmap) {
 }
 
 void GXSetDispCopyFrame2Field(GXCopyMode mode) {
-    CHECK_GXBEGIN(1410, "GXSetDispCopyFrame2Field");
+
     SET_REG_FIELD(__GXData->cpDisp, 2, 12, mode);
     SET_REG_FIELD(__GXData->cpTex, 2, 12, 0);
 }
@@ -178,8 +170,6 @@ void GXSetDispCopyFrame2Field(GXCopyMode mode) {
 void GXSetCopyClamp(GXFBClamp clamp) {
     u8 clmpB;
     u8 clmpT;
-
-    CHECK_GXBEGIN(1431, "GXSetCopyClamp");
 
     clmpT = (clamp & GX_CLAMP_TOP) == 1;
     clmpB = (clamp & GX_CLAMP_BOTTOM) == 2;
@@ -220,7 +210,6 @@ static u32 __GXGetNumXfbLines(u32 efbHt, u32 iScale) {
 
 u16 GXGetNumXfbLines(u16 efbHeight, f32 yScale) {
     u32 iScale;
-    ASSERTMSGLINE(1486, yScale >= 1.0f, "GXGetNumXfbLines: Vertical scale must be >= 1.0");
 
     iScale = (u32)(256.0f / yScale) & 0x1FF;
     return __GXGetNumXfbLines(efbHeight, iScale);
@@ -232,10 +221,6 @@ f32 GXGetYScaleFactor(u16 efbHeight, u16 xfbHeight) {
     u32 iScale;
     u32 tgtHt;
     u32 realHt;
-
-    ASSERTMSGLINE(1510, xfbHeight <= 1024, "GXGetYScaleFactor: Display copy only supports up to 1024 lines.\n");
-    ASSERTMSGLINE(1512, efbHeight <= xfbHeight,
-                  "GXGetYScaleFactor: EFB height should not be greater than XFB height.\n");
 
     tgtHt = xfbHeight;
     yScale = (f32)xfbHeight / (f32)efbHeight;
@@ -267,10 +252,6 @@ u32 GXSetDispCopyYScale(f32 vscale) {
     u32 ht;
     u32 reg;
 
-    CHECK_GXBEGIN(1557, "GXSetDispCopyYScale");
-
-    ASSERTMSGLINE(1559, vscale >= 1.0f, "GXSetDispCopyYScale: Vertical scale must be >= 1.0");
-
     iScale = (u32)(256.0f / vscale) & 0x1FF;
     enable = (iScale != 256);
 
@@ -286,9 +267,6 @@ u32 GXSetDispCopyYScale(f32 vscale) {
 
 void GXSetCopyClear(GXColor clear_clr, u32 clear_z) {
     u32 reg;
-
-    CHECK_GXBEGIN(1596, "GXSetCopyClear");
-    ASSERTMSGLINE(1598, clear_z <= 0xFFFFFF, "GXSetCopyClear: Z clear value is out of range");
 
     reg = 0;
     SET_REG_FIELD(reg, 8, 0, clear_clr.r);
@@ -313,8 +291,6 @@ void GXSetCopyFilter(GXBool aa, const u8 sample_pattern[12][2], GXBool vf, const
     u32 msLoc[4];
     u32 coeff0;
     u32 coeff1;
-
-    CHECK_GXBEGIN(1641, "GXSetCopyFilter");
 
     if (aa != 0) {
         msLoc[0] = 0;
@@ -392,22 +368,13 @@ void GXSetCopyFilter(GXBool aa, const u8 sample_pattern[12][2], GXBool vf, const
     __GXData->bpSentNot = 0;
 }
 
-void GXSetDispCopyGamma(GXGamma gamma) {
-    CHECK_GXBEGIN(1741, "GXSetDispCopyGamma");
-    SET_REG_FIELD(__GXData->cpDisp, 2, 7, gamma);
-}
+void GXSetDispCopyGamma(GXGamma gamma) { SET_REG_FIELD(__GXData->cpDisp, 2, 7, gamma); }
 
 void GXCopyDisp(void* dest, GXBool clear) {
     u32 reg;
     u32 tempPeCtrl;
     u32 phyAddr;
     u8 changePeCtrl;
-
-    CHECK_GXBEGIN(1833, "GXCopyDisp");
-
-#if DEBUG
-    __GXVerifCopy(dest, clear);
-#endif
 
     if (clear) {
         reg = __GXData->zmode;
@@ -463,11 +430,6 @@ void GXCopyTex(void* dest, GXBool clear) {
     u32 phyAddr;
     u8 changePeCtrl;
 
-    CHECK_GXBEGIN(1916, "GXCopyTex");
-
-#if DEBUG
-    __GXVerifCopy(dest, clear);
-#endif
     if (clear) {
         reg = __GXData->zmode;
         SET_REG_FIELD(reg, 1, 0, 1);
@@ -527,7 +489,6 @@ void GXCopyTex(void* dest, GXBool clear) {
 void GXClearBoundingBox(void) {
     u32 reg;
 
-    CHECK_GXBEGIN(2003, "GXClearBoundingBox");
     reg = 0x550003FF;
     GX_WRITE_RAS_REG(reg);
     reg = 0x560003FF;
