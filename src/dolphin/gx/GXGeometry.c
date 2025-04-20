@@ -1,115 +1,130 @@
 #include "dolphin/gx.h"
 
+#include "dolphin/private/__gx.h"
+
 void __GXSetDirtyState(void) {
 #if IS_MQ
-#define DIRTY_FLAGS gx->dirtyState
+#define dState __GXData->dirtyState
 #else
-    u32 dirtyFlags = gx->dirtyState;
-#define DIRTY_FLAGS dirtyFlags
+    u32 dState = __GXData->dirtyState;
 #endif
 
-    if (DIRTY_FLAGS & 1) {
+    if (dState & 1) {
         __GXSetSUTexRegs();
     }
-
-    if (DIRTY_FLAGS & 2) {
+    if (dState & 2) {
         __GXUpdateBPMask();
     }
-
-    if (DIRTY_FLAGS & 4) {
+    if (dState & 4) {
         __GXSetGenMode();
     }
-
-    if (DIRTY_FLAGS & 8) {
+    if (dState & 8) {
         __GXSetVCD();
     }
-
-    if (DIRTY_FLAGS & 0x10) {
+    if (dState & 0x10) {
         __GXSetVAT();
     }
-
-    if (DIRTY_FLAGS & 0x18) {
+    if (dState & 0x18) {
         __GXCalculateVLim();
     }
 
-    gx->dirtyState = 0;
+    __GXData->dirtyState = 0;
 }
 
-void GXBegin(GXPrimitive type, GXVtxFmt fmt, u16 vert_num) {
-    if (gx->dirtyState) {
+void GXBegin(GXPrimitive type, GXVtxFmt vtxfmt, u16 nverts) {
+    ASSERTMSGLINE(359, vtxfmt < GX_MAX_VTXFMT, "GXBegin: Format Index is out of range");
+    ASSERTMSGLINE(360, !__GXinBegin, "GXBegin: called inside another GXBegin/GXEnd");
+
+    if (__GXData->dirtyState != 0) {
         __GXSetDirtyState();
     }
 
-    if (GX_CHECK_FLUSH()) {
+#if DEBUG
+    if (!__GXData->inDispList) {
+        __GXVerifyState(vtxfmt);
+    }
+    __GXinBegin = 1;
+#endif
+
+    if (*(u32*)&__GXData->vNumNot == 0) { // checks both vNum and bpSentNot
         __GXSendFlushPrim();
     }
-
-    GX_WRITE_U8(fmt | type);
-    GX_WRITE_U16(vert_num);
+    GX_WRITE_U8(vtxfmt | type);
+    GX_WRITE_U16(nverts);
 }
 
 void __GXSendFlushPrim(void) {
     u32 i;
-    u32 sz = (gx->vNum * gx->vLim);
+    u32 numD = __GXData->vNum * __GXData->vLim;
 
     GX_WRITE_U8(0x98);
-    GX_WRITE_U16(gx->vNum);
-
-    for (i = 0; i < sz; i += 4) {
+    GX_WRITE_U16(__GXData->vNum);
+    for (i = 0; i < numD; i += 4) {
         GX_WRITE_U32(0);
     }
-
-    gx->bpSentNot = GX_TRUE;
+    __GXData->bpSentNot = 1;
 }
 
-void GXSetLineWidth(u8 width, GXTexOffset offsets) {
-    GX_SET_REG(gx->lpSize, width, 24, 31);
-    GX_SET_REG(gx->lpSize, offsets, 13, 15);
-
-    GX_BP_LOAD_REG(gx->lpSize);
-
-    gx->bpSentNot = GX_FALSE;
+void GXSetLineWidth(u8 width, GXTexOffset texOffsets) {
+    CHECK_GXBEGIN(440, "GXSetLineWidth");
+    SET_REG_FIELD(__GXData->lpSize, 8, 0, width);
+    SET_REG_FIELD(__GXData->lpSize, 3, 16, texOffsets);
+    GX_WRITE_RAS_REG(__GXData->lpSize);
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetPointSize(u8 size, GXTexOffset offsets) {
-    GX_SET_REG(gx->lpSize, size, 16, 23);
-    GX_SET_REG(gx->lpSize, offsets, 10, 12);
-
-    GX_BP_LOAD_REG(gx->lpSize);
-
-    gx->bpSentNot = GX_FALSE;
+void GXSetPointSize(u8 pointSize, GXTexOffset texOffsets) {
+    CHECK_GXBEGIN(484, "GXSetPointSize");
+    SET_REG_FIELD(__GXData->lpSize, 8, 8, pointSize);
+    SET_REG_FIELD(__GXData->lpSize, 3, 19, texOffsets);
+    GX_WRITE_RAS_REG(__GXData->lpSize);
+    __GXData->bpSentNot = 0;
 }
 
-void GXEnableTexOffsets(GXTexCoordID coord, GXBool line, GXBool point) {
-    GX_SET_REG(gx->suTs0[coord], line, 13, 13);
-    GX_SET_REG(gx->suTs0[coord], point, 12, 12);
+void GXEnableTexOffsets(GXTexCoordID coord, u8 line_enable, u8 point_enable) {
+    CHECK_GXBEGIN(529, "GXEnableTexOffsets");
 
-    GX_BP_LOAD_REG(gx->suTs0[coord]);
+    ASSERTMSGLINE(531, coord < GX_MAX_TEXCOORD, "GXEnableTexOffsets: Invalid coordinate Id");
 
-    gx->bpSentNot = GX_FALSE;
+    SET_REG_FIELD(__GXData->suTs0[coord], 1, 18, line_enable);
+    SET_REG_FIELD(__GXData->suTs0[coord], 1, 19, point_enable);
+    GX_WRITE_RAS_REG(__GXData->suTs0[coord]);
+    __GXData->bpSentNot = 0;
 }
 
 void GXSetCullMode(GXCullMode mode) {
+    GXCullMode hwMode;
+
+    CHECK_GXBEGIN(557, "GXSetCullMode");
+
     switch (mode) {
         case GX_CULL_FRONT:
-            mode = GX_CULL_BACK;
+            hwMode = GX_CULL_BACK;
             break;
         case GX_CULL_BACK:
-            mode = GX_CULL_FRONT;
+            hwMode = GX_CULL_FRONT;
+            break;
+        default:
+            hwMode = mode;
             break;
     }
 
-    GX_SET_REG(gx->genMode, mode, 16, 17);
-    gx->dirtyState |= 4;
+    SET_REG_FIELD(__GXData->genMode, 2, 14, hwMode);
+    __GXData->dirtyState |= 4;
 }
 
 void GXSetCoPlanar(GXBool enable) {
-    GX_SET_REG(gx->genMode, enable, 12, 12);
-    GX_BP_LOAD_REG(0xFE080000);
-    GX_BP_LOAD_REG(gx->genMode);
+    u32 reg;
+
+    CHECK_GXBEGIN(613, "GXSetCoPlanar");
+
+    SET_REG_FIELD(__GXData->genMode, 1, 19, enable);
+    reg = 0xFE080000;
+    GX_WRITE_RAS_REG(reg);
+    GX_WRITE_RAS_REG(__GXData->genMode);
 }
 
 void __GXSetGenMode(void) {
-    GX_BP_LOAD_REG(gx->genMode);
-    gx->bpSentNot = GX_FALSE;
+    GX_WRITE_RAS_REG(__GXData->genMode);
+    __GXData->bpSentNot = 0;
 }

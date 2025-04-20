@@ -1,14 +1,76 @@
 #include "dolphin/vi.h"
-#include "dolphin/OSRtcPriv.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "intrinsics.h"
 #include "macros.h"
 
+#include "dolphin/private/__vi.h"
+#include "dolphin/private/__os.h"
+
+typedef struct VITiming {
+    /* 0x00 */ u8 equ;
+    /* 0x02 */ u16 acv;
+    /* 0x04 */ u16 prbOdd;
+    /* 0x06 */ u16 prbEven;
+    /* 0x08 */ u16 psbOdd;
+    /* 0x0A */ u16 psbEven;
+    /* 0x0C */ u8 bs1;
+    /* 0x0D */ u8 bs2;
+    /* 0x0E */ u8 bs3;
+    /* 0x0F */ u8 bs4;
+    /* 0x10 */ u16 be1;
+    /* 0x12 */ u16 be2;
+    /* 0x14 */ u16 be3;
+    /* 0x16 */ u16 be4;
+    /* 0x18 */ u16 numHalfLines;
+    /* 0x1A */ u16 hlw;
+    /* 0x1C */ u8 hsy;
+    /* 0x1D */ u8 hcs;
+    /* 0x1E */ u8 hce;
+    /* 0x1F */ u8 hbe640;
+    /* 0x20 */ u16 hbs640;
+    /* 0x24 */ u8 hbeCCIR656;
+    /* 0x26 */ u16 hbsCCIR656;
+} VITiming; // size = 0x28
+
+typedef struct VIPositionInfo {
+    /* 0x00 */ u16 dispPosX;
+    /* 0x02 */ u16 dispPosY;
+    /* 0x04 */ u16 dispSizeX;
+    /* 0x06 */ u16 dispSizeY;
+    /* 0x08 */ u16 adjDispPosX;
+    /* 0x0A */ u16 adjDispPosY;
+    /* 0x0C */ u16 adjDispSizeY;
+    /* 0x0E */ u16 adjPanPosY;
+    /* 0x10 */ u16 adjPanSizeY;
+    /* 0x12 */ u16 fbSizeX;
+    /* 0x14 */ u16 fbSizeY;
+    /* 0x16 */ u16 panPosX;
+    /* 0x18 */ u16 panPosY;
+    /* 0x1A */ u16 panSizeX;
+    /* 0x1C */ u16 panSizeY;
+    /* 0x20 */ VIXFBMode xfbMode;
+    /* 0x24 */ u32 nonInter;
+    /* 0x28 */ u32 tv;
+    /* 0x2C */ u8 wordPerLine;
+    /* 0x2D */ u8 std;
+    /* 0x2E */ u8 wpl;
+    /* 0x30 */ u32 bufAddr;
+    /* 0x34 */ u32 tfbb;
+    /* 0x38 */ u32 bfbb;
+    /* 0x3C */ u8 xof;
+    /* 0x40 */ bool isBlack;
+    /* 0x44 */ bool is3D;
+    /* 0x48 */ u32 rbufAddr;
+    /* 0x4C */ u32 rtfbb;
+    /* 0x50 */ u32 rbfbb;
+    /* 0x54 */ VITiming* timing;
+} VIPositionInfo; // size = 0x58
+
 #define VI_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define VI_MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define IS_LOWER_16MB(x) ((x) < 16 * 1024 * 1024)
-#define ToPhysical(fb) (u32)(((u32)(fb)) & 0x3FFFFFFF)
+#define ToPhysical(fb) (u32)(((u32)(fb)) & ~0xC0000000)
 #define ONES(x) ((1 << (x)) - 1)
 #define VI_BITMASK(index) (1ull << (63 - (index)))
 
@@ -40,7 +102,7 @@ static vu64 changed;
 static vu32 shdwChangeMode;
 static vu64 shdwChanged;
 
-static VITimingInfo* CurrTiming;
+static VITiming* CurrTiming;
 static u32 CurrTvMode;
 
 static u32 NextBufAddr;
@@ -53,7 +115,7 @@ static vu16 shdwRegs[59];
 
 static VIPositionInfo HorVer;
 // clang-format off
-static VITimingInfo timing[10] = { 
+static VITiming timing[10] = { 
     { // NTSC INT
         6, 240, 24, 25, 3, 2, 12, 13, 12, 13, 520, 519, 520, 519, 525, 429, 64, 71, 105, 162, 373, 122, 412,
     },
@@ -212,7 +274,7 @@ VIRetraceCallback VISetPostRetraceCallback(VIRetraceCallback callback) {
     return oldCallback;
 }
 
-static VITimingInfo* getTiming(VITVMode mode) {
+static VITiming* getTiming(VITVMode mode) {
     switch (mode) {
         case VI_TVMODE_NTSC_INT:
             return &timing[0];
@@ -254,7 +316,7 @@ static VITimingInfo* getTiming(VITVMode mode) {
 }
 
 void __VIInit(VITVMode mode) {
-    VITimingInfo* tm;
+    VITiming* tm;
     u32 nonInter;
     vu32 a;
     u32 tv, tvForReg;
@@ -449,7 +511,7 @@ void VIWaitForRetrace(void) {
     OSRestoreInterrupts(interrupt);
 }
 
-static inline void setInterruptRegs(VITimingInfo* tm) {
+static inline void setInterruptRegs(VITiming* tm) {
     u16 vct, hct, borrow;
 
     vct = (u16)(tm->numHalfLines / 2);
@@ -477,7 +539,7 @@ static inline void setPicConfig(u16 fbSizeX, VIXFBMode xfbMode, u16 panPosX, u16
     changed |= VI_BITMASK(VI_HSW);
 }
 
-static inline void setBBIntervalRegs(VITimingInfo* tm) {
+static inline void setBBIntervalRegs(VITiming* tm) {
     u16 val;
 
     val = (u16)((((u32)(tm->bs1))) | (((u32)(tm->be1)) << 5));
@@ -584,7 +646,7 @@ static void setFbbRegs(VIPositionInfo* hv, u32* tfbb, u32* bfbb, u32* rtfbb, u32
     }
 }
 
-static inline void setHorizontalRegs(VITimingInfo* tm, u16 dispPosX, u16 dispSizeX) {
+static inline void setHorizontalRegs(VITiming* tm, u16 dispPosX, u16 dispSizeX) {
     u32 hbe, hbs, hbeLo, hbeHi;
 
     regs[VI_HORIZ_TIMING_0U] = (u16)tm->hlw;
@@ -671,8 +733,8 @@ static inline void PrintDebugPalCaution(void) {
     }
 }
 
-void VIConfigure(GXRenderModeObj* rm) {
-    VITimingInfo* tm;
+void VIConfigure(const GXRenderModeObj* rm) {
+    VITiming* tm;
     u32 regDspCfg;
     bool enabled;
     u32 newNonInter, tvInBootrom, tvInGame;
@@ -822,7 +884,7 @@ void VISetNextFrameBuffer(void* fb) {
 
 void VISetBlack(bool isBlack) {
     int interrupt;
-    VITimingInfo* tm;
+    VITiming* tm;
 
     interrupt = OSDisableInterrupts();
     HorVer.isBlack = isBlack;
@@ -883,7 +945,7 @@ u32 VIGetNextField(void) {
 
 u32 VIGetCurrentLine(void) {
     u32 line;
-    VITimingInfo* tm;
+    VITiming* tm;
     int interrupt;
 
     tm = CurrTiming;

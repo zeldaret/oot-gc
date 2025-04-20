@@ -1,144 +1,150 @@
 #include "dolphin.h"
 #include "math.h"
 
+#include "dolphin/private/__gx.h"
+
+//! TODO: figure out why this is required for CE
+#define GX_BITFIELD(field, pos, size, value) \
+    (__rlwimi((field), (value), 31 - (pos) - (size) + 1, (pos), (pos) + (size) - 1))
+#define GX_BITFIELD_SET(field, pos, size, value) ((field) = GX_BITFIELD(field, pos, size, value))
+#define GX_SET_REG(reg, x, st, end) GX_BITFIELD_SET((reg), (st), ((end) - (st) + 1), (x))
+
 void GXSetFog(GXFogType type, f32 startz, f32 endz, f32 nearz, f32 farz, GXColor color) {
-#if IS_MQ
-    u32 fogColorReg;
-    u32 fogParamReg0;
-    u32 fogParamReg1;
-    u32 fogParamReg2;
-    u32 fogParamReg3;
+    u32 fogclr;
+    u32 fog0;
+    u32 fog1;
+    u32 fog2;
+    u32 fog3;
+    f32 A;
+    f32 B;
+    f32 B_mant;
+    f32 C;
     f32 a;
     f32 c;
-    u32 a_bits;
-    u32 c_bits;
-#else
-    f32 a;
-    f32 c;
-    u32 a_bits;
-    u32 c_bits;
-    u32 fogColorReg = 0;
-    u32 fogParamReg0 = 0;
-    u32 fogParamReg1 = 0;
-    u32 fogParamReg2 = 0;
-    u32 fogParamReg3 = 0;
+    u32 B_expn;
+    u32 b_m;
+    u32 b_s;
+    u32 a_hex;
+    u32 c_hex;
+#if IS_CE
+    u32 fsel;
+    u32 proj;
 
-    u32 fsel = type & 7;
-    bool isOrtho = (type >> 3) & 1;
+    fogclr = 0;
+    fog0 = 0;
+    fog1 = 0;
+    fog2 = 0;
+    fog3 = 0;
 
-    if (isOrtho) {
+    fsel = type & 7;
+    proj = (type >> 3) & 1;
+
+    if (proj) {
         if (farz == nearz || endz == startz) {
             a = 0.0f;
             c = 0.0f;
         } else {
-            a = (1.0f / (endz - startz)) * (farz - nearz);
-            c = (1.0f / (endz - startz)) * (startz - nearz);
+            A = (1.0f / (endz - startz));
+            a = A * (farz - nearz);
+            c = A * (startz - nearz);
         }
     } else
 #endif
-
     {
-        f32 tmpA;
-        f32 tmpB;
-        f32 tmpC;
-        u32 expB;
-        u32 magB;
-        u32 shiftB;
-
         if (farz == nearz || endz == startz) {
-            tmpA = 0.0f;
-            tmpB = 0.5f;
-            tmpC = 0.0f;
+            A = 0.0f;
+            B = 0.5f;
+            C = 0.0f;
         } else {
-            tmpA = (farz * nearz) / ((farz - nearz) * (endz - startz));
-            tmpB = farz / (farz - nearz);
-            tmpC = startz / (endz - startz);
+            A = (farz * nearz) / ((farz - nearz) * (endz - startz));
+            B = farz / (farz - nearz);
+            C = startz / (endz - startz);
         }
 
-        expB = 0;
-        while (tmpB > 1.0) {
-            tmpB /= 2.0f;
-            expB++;
+        B_mant = B;
+        B_expn = 0;
+        while (B_mant > 1.0) {
+            B_mant /= 2.0f;
+            B_expn++;
         }
-        while (tmpB > 0.0f && tmpB < 0.5) {
-            tmpB *= 2.0f;
-            expB--;
+        while (B_mant > 0.0f && B_mant < 0.5) {
+            B_mant *= 2.0f;
+            B_expn--;
         }
 
-        a = tmpA / (1 << expB + 1);
-        magB = 8388638.0f * tmpB;
-        shiftB = expB + 1;
-        c = tmpC;
+        a = A / (f32)(1 << (B_expn + 1));
+        b_m = 8.388638e6f * B_mant;
+        b_s = B_expn + 1;
+        c = C;
 
 #if IS_MQ
-        fogParamReg1 = 0;
-        SET_REG_FIELD(fogParamReg1, 24, 0, magB);
-        SET_REG_FIELD(fogParamReg1, 8, 24, 0xEF);
+        fog1 = 0;
+        SET_REG_FIELD(fog1, 24, 0, b_m);
+        SET_REG_FIELD(fog1, 8, 24, 0xEF);
 
-        fogParamReg2 = 0;
-        SET_REG_FIELD(fogParamReg2, 5, 0, shiftB);
-        SET_REG_FIELD(fogParamReg2, 8, 24, 0xF0);
+        fog2 = 0;
+        SET_REG_FIELD(fog2, 5, 0, b_s);
+        SET_REG_FIELD(fog2, 8, 24, 0xF0);
 #else
-        GX_SET_REG(fogParamReg1, magB, GX_BP_FOGPARAM1_B_MAG_ST, GX_BP_FOGPARAM1_B_MAG_END);
-        GX_SET_REG(fogParamReg2, shiftB, GX_BP_FOGPARAM2_B_SHIFT_ST, GX_BP_FOGPARAM2_B_SHIFT_END);
+        GX_SET_REG(fog1, b_m, 8, 31);
+        GX_SET_REG(fog2, b_s, 27, 31);
 
-        GX_SET_REG(fogParamReg1, GX_BP_REG_FOGPARAM1, 0, 7);
-        GX_SET_REG(fogParamReg2, GX_BP_REG_FOGPARAM2, 0, 7);
+        GX_SET_REG(fog1, 239, 0, 7);
+        GX_SET_REG(fog2, 240, 0, 7);
 #endif
     }
 
-    a_bits = *(u32*)&a;
-    c_bits = *(u32*)&c;
+    a_hex = *(u32*)&a;
+    c_hex = *(u32*)&c;
 
 #if IS_MQ
-    fogParamReg0 = 0;
-    SET_REG_FIELD(fogParamReg0, 11, 0, (a_bits >> 12) & 0x7FF);
-    SET_REG_FIELD(fogParamReg0, 8, 11, (a_bits >> 23) & 0xFF);
-    SET_REG_FIELD(fogParamReg0, 1, 19, (a_bits >> 31));
-    SET_REG_FIELD(fogParamReg0, 8, 24, 0xEE);
+    fog0 = 0;
+    SET_REG_FIELD(fog0, 11, 0, (a_hex >> 12) & 0x7FF);
+    SET_REG_FIELD(fog0, 8, 11, (a_hex >> 23) & 0xFF);
+    SET_REG_FIELD(fog0, 1, 19, (a_hex >> 31));
+    SET_REG_FIELD(fog0, 8, 24, 0xEE);
 
-    fogParamReg3 = 0;
-    SET_REG_FIELD(fogParamReg3, 11, 0, (c_bits >> 12) & 0x7FF);
-    SET_REG_FIELD(fogParamReg3, 8, 11, (c_bits >> 23) & 0xFF);
-    SET_REG_FIELD(fogParamReg3, 1, 19, (c_bits >> 31));
-    SET_REG_FIELD(fogParamReg3, 1, 20, 0);
-    SET_REG_FIELD(fogParamReg3, 3, 21, type);
-    SET_REG_FIELD(fogParamReg3, 8, 24, 0xF1);
+    fog3 = 0;
+    SET_REG_FIELD(fog3, 11, 0, (c_hex >> 12) & 0x7FF);
+    SET_REG_FIELD(fog3, 8, 11, (c_hex >> 23) & 0xFF);
+    SET_REG_FIELD(fog3, 1, 19, (c_hex >> 31));
+    SET_REG_FIELD(fog3, 1, 20, 0);
+    SET_REG_FIELD(fog3, 3, 21, type);
+    SET_REG_FIELD(fog3, 8, 24, 0xF1);
 
-    fogColorReg = 0;
-    SET_REG_FIELD(fogColorReg, 8, 0, color.b);
-    SET_REG_FIELD(fogColorReg, 8, 8, color.g);
-    SET_REG_FIELD(fogColorReg, 8, 16, color.r);
-    SET_REG_FIELD(fogColorReg, 8, 24, 0xF2);
+    fogclr = 0;
+    SET_REG_FIELD(fogclr, 8, 0, color.b);
+    SET_REG_FIELD(fogclr, 8, 8, color.g);
+    SET_REG_FIELD(fogclr, 8, 16, color.r);
+    SET_REG_FIELD(fogclr, 8, 24, 0xF2);
 #else
-    GX_SET_REG(fogParamReg0, a_bits >> 12, GX_BP_FOGPARAM0_A_MANT_ST, GX_BP_FOGPARAM0_A_MANT_END);
-    GX_SET_REG(fogParamReg0, a_bits >> 23, GX_BP_FOGPARAM0_A_EXP_ST, GX_BP_FOGPARAM0_A_EXP_END);
-    GX_SET_REG(fogParamReg0, a_bits >> 31, GX_BP_FOGPARAM0_A_SIGN_ST, GX_BP_FOGPARAM0_A_SIGN_END);
+    GX_SET_REG(fog0, a_hex >> 12, 21, 31);
+    GX_SET_REG(fog0, a_hex >> 23, 13, 20);
+    GX_SET_REG(fog0, a_hex >> 31, 12, 12);
 
-    GX_SET_REG(fogParamReg0, GX_BP_REG_FOGPARAM0, 0, 7);
+    GX_SET_REG(fog0, 238, 0, 7);
 
-    GX_SET_REG(fogParamReg3, c_bits >> 12, GX_BP_FOGPARAM3_C_MANT_ST, GX_BP_FOGPARAM3_C_MANT_END);
-    GX_SET_REG(fogParamReg3, c_bits >> 23, GX_BP_FOGPARAM3_C_EXP_ST, GX_BP_FOGPARAM3_C_EXP_END);
-    GX_SET_REG(fogParamReg3, c_bits >> 31, GX_BP_FOGPARAM3_C_SIGN_ST, GX_BP_FOGPARAM3_C_SIGN_END);
+    GX_SET_REG(fog3, c_hex >> 12, 21, 31);
+    GX_SET_REG(fog3, c_hex >> 23, 13, 20);
+    GX_SET_REG(fog3, c_hex >> 31, 12, 12);
 
-    GX_SET_REG(fogParamReg3, isOrtho, GX_BP_FOGPARAM3_PROJ_ST, GX_BP_FOGPARAM3_PROJ_END);
-    GX_SET_REG(fogParamReg3, fsel, GX_BP_FOGPARAM3_FSEL_ST, GX_BP_FOGPARAM3_FSEL_END);
+    GX_SET_REG(fog3, proj, 11, 11);
+    GX_SET_REG(fog3, fsel, 8, 10);
 
-    GX_SET_REG(fogParamReg3, GX_BP_REG_FOGPARAM3, 0, 7);
+    GX_SET_REG(fog3, 241, 0, 7);
 
-    GX_SET_REG(fogColorReg, color.b, GX_BP_FOGCOLOR_RGB_ST + 16, GX_BP_FOGCOLOR_RGB_END);
-    GX_SET_REG(fogColorReg, color.g, (GX_BP_FOGCOLOR_RGB_ST + 8), (GX_BP_FOGCOLOR_RGB_END - 8));
-    GX_SET_REG(fogColorReg, color.r, (GX_BP_FOGCOLOR_RGB_ST + 0), (GX_BP_FOGCOLOR_RGB_END - 16));
-    GX_SET_REG(fogColorReg, GX_BP_REG_FOGCOLOR, 0, 7);
+    GX_SET_REG(fogclr, color.b, 8 + 16, 31);
+    GX_SET_REG(fogclr, color.g, (8 + 8), (31 - 8));
+    GX_SET_REG(fogclr, color.r, (8 + 0), (31 - 16));
+    GX_SET_REG(fogclr, 242, 0, 7);
 #endif
 
-    GX_BP_LOAD_REG(fogParamReg0);
-    GX_BP_LOAD_REG(fogParamReg1);
-    GX_BP_LOAD_REG(fogParamReg2);
-    GX_BP_LOAD_REG(fogParamReg3);
-    GX_BP_LOAD_REG(fogColorReg);
-
-    gx->bpSentNot = GX_FALSE;
+    GX_WRITE_RAS_REG(fog0);
+    GX_WRITE_RAS_REG(fog1);
+    GX_WRITE_RAS_REG(fog2);
+    GX_WRITE_RAS_REG(fog3);
+    GX_WRITE_RAS_REG(fogclr);
+    __GXData->bpSentNot = 0;
 }
 
 void GXInitFogAdjTable(GXFogAdjTable* table, u16 width, const Mtx44 proj) {
@@ -174,137 +180,186 @@ void GXInitFogAdjTable(GXFogAdjTable* table, u16 width, const Mtx44 proj) {
     }
 }
 
-void GXSetFogRangeAdj(GXBool enable, u16 center, GXFogAdjTable* table) {
-    u32 fogRangeReg;
-    u32 fogRangeRegK;
+void GXSetFogRangeAdj(GXBool enable, u16 center, const GXFogAdjTable* table) {
     u32 i;
+    u32 range_adj;
+    u32 range_c;
+
+    CHECK_GXBEGIN(331, "GXSetFogRangeAdj");
 
     if (enable) {
-        for (i = 0; i < ARRAY_COUNT(table->r); i += 2) {
-            fogRangeRegK = 0;
-            GX_SET_REG(fogRangeRegK, table->r[i], GX_BP_FOGRANGEK_HI_ST, GX_BP_FOGRANGEK_HI_END);
-            GX_SET_REG(fogRangeRegK, table->r[i + 1], GX_BP_FOGRANGEK_LO_ST, GX_BP_FOGRANGEK_LO_END);
-            GX_SET_REG(fogRangeRegK, GX_BP_REG_FOGRANGEK0 + (i / 2), 0, 7);
-            GX_BP_LOAD_REG(fogRangeRegK);
+        ASSERTMSGLINE(334, table != NULL, "GXSetFogRangeAdj: table pointer is null");
+        for (i = 0; i < 10; i += 2) {
+            range_adj = 0;
+            SET_REG_FIELD(range_adj, 12, 0, table->r[i]);
+            SET_REG_FIELD(range_adj, 12, 12, table->r[i + 1]);
+            SET_REG_FIELD(range_adj, 8, 24, (i >> 1) + 0xE9);
+            GX_WRITE_RAS_REG(range_adj);
         }
     }
-
-    fogRangeReg = 0;
-    GX_SET_REG(fogRangeReg, center + 342, GX_BP_FOGRANGE_CENTER_ST, GX_BP_FOGRANGE_CENTER_END);
-    GX_SET_REG(fogRangeReg, enable, GX_BP_FOGRANGE_ENABLED_ST, GX_BP_FOGRANGE_ENABLED_END);
-    GX_SET_REG(fogRangeReg, GX_BP_REG_FOGRANGE, 0, 7);
-    GX_BP_LOAD_REG(fogRangeReg);
-
-    gx->bpSentNot = GX_FALSE;
+    range_c = 0;
+    SET_REG_FIELD(range_c, 10, 0, center + 342);
+    SET_REG_FIELD(range_c, 1, 10, enable);
+    SET_REG_FIELD(range_c, 8, 24, 0xE8);
+    GX_WRITE_RAS_REG(range_c);
+    __GXData->bpSentNot = 0;
 }
 
 void GXSetBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor, GXLogicOp op) {
-    u32 blendModeReg = gx->cmode0;
-    GX_SET_REG2(blendModeReg, type == GX_BM_SUBTRACT, GX_BP_BLENDMODE_SUBTRACT_ST, GX_BP_BLENDMODE_SUBTRACT_END);
-    GX_SET_REG2(blendModeReg, type, GX_BP_BLENDMODE_ENABLE_ST, GX_BP_BLENDMODE_ENABLE_END);
-    GX_SET_REG2(blendModeReg, type == GX_BM_LOGIC, GX_BP_BLENDMODE_LOGIC_OP_ST, GX_BP_BLENDMODE_LOGIC_OP_END);
-    GX_SET_REG2(blendModeReg, op, GX_BP_BLENDMODE_LOGICMODE_ST, GX_BP_BLENDMODE_LOGICMODE_END);
-    GX_SET_REG2(blendModeReg, src_factor, GX_BP_BLENDMODE_SRCFACTOR_ST, GX_BP_BLENDMODE_SRCFACTOR_END);
-    GX_SET_REG2(blendModeReg, dst_factor, GX_BP_BLENDMODE_DSTFACTOR_ST, GX_BP_BLENDMODE_DSTFACTOR_END);
+    u32 reg;
+    u32 blend_en;
 
-    GX_BP_LOAD_REG(blendModeReg);
-    gx->cmode0 = blendModeReg;
+    CHECK_GXBEGIN(375, "GXSetBlendMode");
 
-    gx->bpSentNot = false;
+    reg = __GXData->cmode0;
+
+#if DEBUG
+    blend_en = type == GX_BM_BLEND || type == GX_BM_SUBTRACT;
+#endif
+
+    __SET_REG_FIELD(reg, 1, 11, (type == GX_BM_SUBTRACT));
+#if DEBUG
+    __SET_REG_FIELD(reg, 1, 0, blend_en);
+#else
+    __SET_REG_FIELD(reg, 1, 0, type);
+#endif
+    __SET_REG_FIELD(reg, 1, 1, (type == GX_BM_LOGIC));
+    __SET_REG_FIELD(reg, 4, 12, op);
+    __SET_REG_FIELD(reg, 3, 8, src_factor);
+    __SET_REG_FIELD(reg, 3, 5, dst_factor);
+    GX_WRITE_RAS_REG(reg);
+
+    __GXData->cmode0 = reg;
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetColorUpdate(GXBool updateEnable) {
-    u32 blendModeReg = gx->cmode0;
-    GX_SET_REG2(blendModeReg, updateEnable, GX_BP_BLENDMODE_COLOR_UPDATE_ST, GX_BP_BLENDMODE_COLOR_UPDATE_END);
-    GX_BP_LOAD_REG(blendModeReg);
-    gx->cmode0 = blendModeReg;
-    gx->bpSentNot = GX_FALSE;
+void GXSetColorUpdate(GXBool update_enable) {
+    u32 reg;
+    CHECK_GXBEGIN(419, "GXSetColorUpdate");
+
+    reg = __GXData->cmode0;
+
+    __SET_REG_FIELD(reg, 1, 3, update_enable);
+    GX_WRITE_RAS_REG(reg);
+
+    __GXData->cmode0 = reg;
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetAlphaUpdate(GXBool updateEnable) {
-    u32 blendModeReg = gx->cmode0;
-    GX_SET_REG2(blendModeReg, updateEnable, GX_BP_BLENDMODE_ALPHA_UPDATE_ST, GX_BP_BLENDMODE_ALPHA_UPDATE_END);
-    GX_BP_LOAD_REG(blendModeReg);
-    gx->cmode0 = blendModeReg;
-    gx->bpSentNot = GX_FALSE;
+void GXSetAlphaUpdate(GXBool update_enable) {
+    u32 reg;
+    CHECK_GXBEGIN(432, "GXSetAlphaUpdate");
+
+    reg = __GXData->cmode0;
+
+    __SET_REG_FIELD(reg, 1, 4, update_enable);
+    GX_WRITE_RAS_REG(reg);
+
+    __GXData->cmode0 = reg;
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetZMode(GXBool compareEnable, GXCompare func, GXBool updateEnable) {
-    u32 zModeReg = gx->zmode;
-    GX_SET_REG2(zModeReg, compareEnable, GX_BP_ZMODE_TEST_ENABLE_ST, GX_BP_ZMODE_TEST_ENABLE_END);
-    GX_SET_REG2(zModeReg, func, GX_BP_ZMODE_COMPARE_ST, GX_BP_ZMODE_COMPARE_END);
-    GX_SET_REG2(zModeReg, updateEnable, GX_BP_ZMODE_UPDATE_ENABLE_ST, GX_BP_ZMODE_UPDATE_ENABLE_END);
-    GX_BP_LOAD_REG(zModeReg);
-    gx->zmode = zModeReg;
-    gx->bpSentNot = GX_FALSE;
+void GXSetZMode(GXBool compare_enable, GXCompare func, GXBool update_enable) {
+    u32 reg;
+    CHECK_GXBEGIN(459, "GXSetZMode");
+
+    reg = __GXData->zmode;
+
+    __SET_REG_FIELD(reg, 1, 0, compare_enable);
+    __SET_REG_FIELD(reg, 3, 1, func);
+    __SET_REG_FIELD(reg, 1, 4, update_enable);
+    GX_WRITE_RAS_REG(reg);
+
+    __GXData->zmode = reg;
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetZCompLoc(GXBool beforeTex) {
-    GX_SET_REG(gx->peCtrl, beforeTex, GX_BP_ZCONTROL_BEFORE_TEX_ST, GX_BP_ZCONTROL_BEFORE_TEX_END);
-    GX_BP_LOAD_REG(gx->peCtrl);
-    gx->bpSentNot = GX_FALSE;
+void GXSetZCompLoc(GXBool before_tex) {
+    CHECK_GXBEGIN(474, "GXSetZCompLoc");
+    SET_REG_FIELD(__GXData->peCtrl, 1, 6, before_tex);
+    GX_WRITE_RAS_REG(__GXData->peCtrl);
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetPixelFmt(GXPixelFmt pixelFmt, GXZFmt16 zFmt) {
-    GXBool isZ16;
-    static u32 p2f[GX_MAX_PIXELFMT] = {GX_PF_RGB8_Z24, GX_PF_RGBA6_Z24, GX_PF_RGB565_Z16, GX_PF_Z24,
-                                       GX_PF_Y8,       GX_PF_Y8,        GX_PF_Y8,         GX_PF_U8};
+void GXSetPixelFmt(GXPixelFmt pix_fmt, GXZFmt16 z_fmt) {
+    u32 oldPeCtrl;
+    u8 aa;
+    static u32 p2f[8] = {0, 1, 2, 3, 4, 4, 4, 5};
 
-    const u32 zControlRegOld = gx->peCtrl;
+    CHECK_GXBEGIN(511, "GXSetPixelFmt");
+    oldPeCtrl = __GXData->peCtrl;
+    ASSERTMSGLINE(515, pix_fmt >= GX_PF_RGB8_Z24 && pix_fmt <= GX_PF_YUV420, "Invalid Pixel format");
+    SET_REG_FIELD(__GXData->peCtrl, 3, 0, p2f[pix_fmt]);
+    SET_REG_FIELD(__GXData->peCtrl, 3, 3, z_fmt);
 
-    GX_SET_REG(gx->peCtrl, p2f[pixelFmt], GX_BP_ZCONTROL_PIXEL_FMT_ST, GX_BP_ZCONTROL_PIXEL_FMT_END);
-    GX_SET_REG(gx->peCtrl, zFmt, GX_BP_ZCONTROL_Z_FMT_ST, GX_BP_ZCONTROL_Z_FMT_END);
-
-    if (zControlRegOld != gx->peCtrl) {
-        GX_BP_LOAD_REG(gx->peCtrl);
-        isZ16 = (pixelFmt == GX_PF_RGB565_Z16) ? GX_TRUE : GX_FALSE;
-        GX_SET_REG(gx->genMode, isZ16, GX_BP_GENMODE_MULTISAMPLE_ST, GX_BP_GENMODE_MULTISAMPLE_END);
-        gx->dirtyState |= GX_DIRTY_GEN_MODE;
+    if (oldPeCtrl != __GXData->peCtrl) {
+        GX_WRITE_RAS_REG(__GXData->peCtrl);
+        if (pix_fmt == GX_PF_RGB565_Z16)
+            aa = 1;
+        else
+            aa = 0;
+        SET_REG_FIELD(__GXData->genMode, 1, 9, aa);
+        __GXData->dirtyState |= 4;
     }
 
-    if (p2f[pixelFmt] == GX_PF_Y8) {
-        SET_REG_FIELD(gx->cmode1, 2, 9, (pixelFmt - 4) & 0x3);
-        SET_REG_FIELD(gx->cmode1, 8, 24, 0x42);
-        GX_BP_LOAD_REG(gx->cmode1);
+    if (p2f[pix_fmt] == 4) {
+        SET_REG_FIELD(__GXData->cmode1, 2, 9, (pix_fmt - 4) & 0x3);
+        SET_REG_FIELD(__GXData->cmode1, 8, 24, 0x42);
+        GX_WRITE_RAS_REG(__GXData->cmode1);
     }
 
-    gx->bpSentNot = false;
+    __GXData->bpSentNot = 0;
 }
 
 void GXSetDither(GXBool dither) {
-    u32 blendModeReg = gx->cmode0;
-    GX_SET_REG(blendModeReg, dither, GX_BP_BLENDMODE_DITHER_ST, GX_BP_BLENDMODE_DITHER_END);
-    GX_BP_LOAD_REG(blendModeReg);
-    gx->cmode0 = blendModeReg;
-    gx->bpSentNot = GX_FALSE;
+    u32 reg;
+    CHECK_GXBEGIN(556, "GXSetDither");
+
+    reg = __GXData->cmode0;
+
+    SET_REG_FIELD(reg, 1, 2, dither);
+    GX_WRITE_RAS_REG(reg);
+
+    __GXData->cmode0 = reg;
+    __GXData->bpSentNot = 0;
 }
 
 void GXSetDstAlpha(GXBool enable, u8 alpha) {
-    u32 dstAlpha = gx->cmode1;
-    GX_SET_REG2(dstAlpha, alpha, GX_BP_DSTALPHA_ALPHA_ST, GX_BP_DSTALPHA_ALPHA_END);
-    GX_SET_REG2(dstAlpha, enable, GX_BP_DSTALPHA_ENABLE_ST, GX_BP_DSTALPHA_ENABLE_END);
-    GX_BP_LOAD_REG(dstAlpha);
-    gx->cmode1 = dstAlpha;
-    gx->bpSentNot = GX_FALSE;
+    u32 reg;
+    CHECK_GXBEGIN(581, "GXSetDstAlpha");
+
+    reg = __GXData->cmode1;
+
+    __SET_REG_FIELD(reg, 8, 0, alpha);
+    __SET_REG_FIELD(reg, 1, 8, enable);
+    GX_WRITE_RAS_REG(reg);
+
+    __GXData->cmode1 = reg;
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetFieldMask(GXBool enableEven, GXBool enableOdd) {
-    u32 fieldMaskReg = 0;
-    GX_SET_REG(fieldMaskReg, enableOdd, GX_BP_FIELDMASK_ODD_ST, GX_BP_FIELDMASK_ODD_END);
-    GX_SET_REG(fieldMaskReg, enableEven, GX_BP_FIELDMASK_EVEN_ST, GX_BP_FIELDMASK_EVEN_END);
-    GX_SET_REG(fieldMaskReg, GX_BP_REG_FIELDMASK, 0, 7);
+void GXSetFieldMask(GXBool odd_mask, GXBool even_mask) {
+    u32 reg;
 
-    GX_BP_LOAD_REG(fieldMaskReg);
-    gx->bpSentNot = GX_FALSE;
+    CHECK_GXBEGIN(608, "GXSetFieldMask");
+    reg = 0;
+    SET_REG_FIELD(reg, 1, 0, even_mask);
+    SET_REG_FIELD(reg, 1, 1, odd_mask);
+    SET_REG_FIELD(reg, 8, 24, 0x44);
+    GX_WRITE_RAS_REG(reg);
+    __GXData->bpSentNot = 0;
 }
 
-void GXSetFieldMode(GXBool texLOD, GXBool adjustAR) {
-    GX_SET_REG(gx->lpSize, adjustAR, GX_BP_LINEPTWIDTH_ADJUST_ST, GX_BP_LINEPTWIDTH_ADJUST_END);
-    GX_BP_LOAD_REG(gx->lpSize);
+void GXSetFieldMode(GXBool field_mode, GXBool half_aspect_ratio) {
+    u32 reg;
 
+    CHECK_GXBEGIN(637, "GXSetFieldMode");
+    SET_REG_FIELD(__GXData->lpSize, 1, 22, half_aspect_ratio);
+    GX_WRITE_RAS_REG(__GXData->lpSize);
     __GXFlushTextureState();
-    GX_BP_LOAD_REG(GX_BP_REG_FIELDMODE << 24 | texLOD);
+    reg = field_mode | 0x68000000;
+    GX_WRITE_RAS_REG(reg);
     __GXFlushTextureState();
 }
 
-bool __GXSetRange(f32, f32) {}
+void __GXSetRange(f32 nearz, f32 fgSideX) {}

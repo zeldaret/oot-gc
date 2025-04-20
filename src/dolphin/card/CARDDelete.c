@@ -3,6 +3,8 @@
 #include "dolphin/dvd.h"
 #include "dolphin/os.h"
 
+#include "dolphin/private/__card.h"
+
 static void DeleteCallback(s32 chan, s32 result) {
     CARDControl* card;
     CARDCallback callback;
@@ -28,7 +30,7 @@ error:
     }
 }
 
-s32 CARDDeleteAsync(s32 chan, char* fileName, CARDCallback callback) {
+s32 CARDDeleteAsync(s32 chan, const char* fileName, CARDCallback callback) {
     CARDControl* card;
     s32 fileNo;
     s32 result;

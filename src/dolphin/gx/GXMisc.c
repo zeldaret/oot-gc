@@ -1,7 +1,9 @@
-#include "dolphin/base.h"
+#include "dolphin/base/PPCArch.h"
 #include "dolphin/gx.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
+
+#include "dolphin/private/__gx.h"
 
 static GXDrawSyncCallback TokenCB;
 static GXDrawDoneCallback DrawDoneCB;
@@ -14,29 +16,29 @@ void GXSetMisc(GXMiscToken token, u32 val) {
             break;
 
         case GX_MT_XF_FLUSH:
-            gx->vNum = val;
-            gx->vNumNot = !gx->vNum;
-            gx->bpSentNot = GX_TRUE;
+            __GXData->vNum = val;
+            __GXData->vNumNot = !__GXData->vNum;
+            __GXData->bpSentNot = GX_TRUE;
 
-            if (gx->vNum) {
-                gx->dirtyState |= GX_DIRTY_VCD;
+            if (__GXData->vNum) {
+                __GXData->dirtyState |= 8;
             }
             break;
 
         case GX_MT_DL_SAVE_CONTEXT:
-            gx->dlSaveContext = (val != 0);
+            __GXData->dlSaveContext = (val != 0);
             break;
 
 #if IS_CE
         case GX_MT_ABORT_WAIT_COPYOUT:
-            gx->abtWaitPECopy = (val != 0);
+            __GXData->abtWaitPECopy = (val != 0);
             break;
 #endif
     }
 }
 
 void GXFlush(void) {
-    if (gx->dirtyState) {
+    if (__GXData->dirtyState) {
         __GXSetDirtyState();
     }
     GX_WRITE_U32(0);
@@ -50,7 +52,7 @@ void GXFlush(void) {
     PPCSync();
 }
 
-static inline void __GXAbortWait(u32 clocks) {
+static void __GXAbortWait(u32 clocks) {
     OSTime time0, time1;
     time0 = OSGetTime();
 
@@ -59,21 +61,21 @@ static inline void __GXAbortWait(u32 clocks) {
     } while (time1 - time0 <= clocks / 4);
 }
 
-static inline void __GXAbortWaitPECopyDone(void) {
+static void __GXAbortWaitPECopyDone(void) {
     u32 peCnt0, peCnt1;
 
-    peCnt0 = GXReadMEMReg(0x28, 0x27);
+    peCnt0 = __GXReadMEMCounterU32(0x28, 0x27);
     do {
         peCnt1 = peCnt0;
         __GXAbortWait(32);
 
-        peCnt0 = GXReadMEMReg(0x28, 0x27);
+        peCnt0 = __GXReadMEMCounterU32(0x28, 0x27);
     } while (peCnt0 != peCnt1);
 }
 
 void __GXAbort(void) {
 #if IS_CE
-    if (gx->abtWaitPECopy && GXGetGPFifo()) {
+    if (__GXData->abtWaitPECopy && GXGetGPFifo()) {
         __GXAbortWaitPECopyDone();
     }
 #endif
@@ -90,19 +92,20 @@ void GXAbortFrame(void) {
 }
 
 void GXSetDrawSync(u16 token) {
+    bool enabled;
     u32 reg;
-    bool interrupts;
 
-    interrupts = OSDisableInterrupts();
+    CHECK_GXBEGIN(430, "GXSetDrawSync");
+
+    enabled = OSDisableInterrupts();
     reg = token | 0x48000000;
-    GX_BP_LOAD_REG(reg);
-    GX_SET_REG(reg, token, 16, 31);
-    GX_SET_REG(reg, 0x47, 0, 7);
-    GX_BP_LOAD_REG(reg);
-
+    GX_WRITE_RAS_REG(reg);
+    SET_REG_FIELD(reg, 16, 0, token);
+    SET_REG_FIELD(reg, 8, 24, 0x47);
+    GX_WRITE_RAS_REG(reg);
     GXFlush();
-    OSRestoreInterrupts(interrupts);
-    gx->bpSentNot = GX_FALSE;
+    OSRestoreInterrupts(enabled);
+    __GXData->bpSentNot = 0;
 }
 
 u16 GXReadDrawSync(void) {
@@ -112,18 +115,18 @@ u16 GXReadDrawSync(void) {
 
 void GXSetDrawDone(void) {
     u32 reg;
-    bool interrupts;
+    bool enabled;
 
-    interrupts = OSDisableInterrupts();
+    CHECK_GXBEGIN(488, "GXSetDrawDone");
+    enabled = OSDisableInterrupts();
     reg = 0x45000002;
-    GX_BP_LOAD_REG(reg);
-
+    GX_WRITE_RAS_REG(reg);
     GXFlush();
-    DrawDone = GX_FALSE;
-    OSRestoreInterrupts(interrupts);
+    DrawDone = 0;
+    OSRestoreInterrupts(enabled);
 }
 
-static inline void GXWaitDrawDone(void) {
+static void GXWaitDrawDone(void) {
     bool interrupts;
     interrupts = OSDisableInterrupts();
     while (!DrawDone) {
@@ -139,72 +142,82 @@ void GXDrawDone(void) {
 }
 
 void GXPixModeSync(void) {
-    GX_BP_LOAD_REG(gx->peCtrl);
-    gx->bpSentNot = GX_FALSE;
+    CHECK_GXBEGIN(601, "GXPixModeSync");
+    GX_WRITE_RAS_REG(__GXData->peCtrl);
+    __GXData->bpSentNot = 0;
 }
 
-void GXPokeAlphaMode(GXCompare func, u8 threshold) { GX_SET_PE_REG(3, func << 8 | threshold); }
+void GXPokeAlphaMode(GXCompare func, u8 threshold) {
+    u32 reg;
+
+    reg = (func << 8) | threshold;
+    GX_SET_PE_REG(3, reg);
+}
 
 void GXPokeAlphaRead(GXAlphaReadMode mode) {
-    u32 reg = 0;
-    GX_SET_REG(reg, mode, 30, 31);
-    GX_SET_REG(reg, 1, 29, 29);
+    u32 reg;
+
+    reg = 0;
+    SET_REG_FIELD(reg, 2, 0, mode);
+    SET_REG_FIELD(reg, 1, 2, 1);
     GX_SET_PE_REG(4, reg);
 }
 
-void GXPokeAlphaUpdate(GXBool doUpdate) {
-    u32 reg;
-    reg = GX_GET_PE_REG(1);
-    GX_SET_REG(reg, doUpdate, 27, 27);
-    GX_SET_PE_REG(1, reg);
-}
-
-void GXPokeBlendMode(GXBlendMode mode, GXBlendFactor srcFactor, GXBlendFactor destFactor, GXLogicOp op) {
+void GXPokeAlphaUpdate(GXBool update_enable) {
     u32 reg;
 
     reg = GX_GET_PE_REG(1);
-    GX_SET_REG(reg, (mode == GX_BM_BLEND) || (mode == GX_BM_SUBTRACT), 31, 31);
-    GX_SET_REG(reg, (mode == GX_BM_SUBTRACT), 20, 20);
-    GX_SET_REG(reg, (mode == GX_BM_LOGIC), 30, 30);
-    GX_SET_REG(reg, op, 16, 19);
-    GX_SET_REG(reg, srcFactor, 21, 23);
-    GX_SET_REG(reg, destFactor, 24, 26);
-    GX_SET_REG(reg, 0x41, 0, 7);
+    SET_REG_FIELD(reg, 1, 4, update_enable);
     GX_SET_PE_REG(1, reg);
 }
 
-void GXPokeColorUpdate(GXBool doUpdate) {
+void GXPokeBlendMode(GXBlendMode type, GXBlendFactor src_factor, GXBlendFactor dst_factor, GXLogicOp op) {
     u32 reg;
+
     reg = GX_GET_PE_REG(1);
-    GX_SET_REG(reg, doUpdate, 28, 28);
+    SET_REG_FIELD(reg, 1, 0, (type == GX_BM_BLEND) || (type == GX_BM_SUBTRACT));
+    SET_REG_FIELD(reg, 1, 11, (type == GX_BM_SUBTRACT));
+    SET_REG_FIELD(reg, 1, 1, (type == GX_BM_LOGIC));
+    SET_REG_FIELD(reg, 4, 12, op);
+    SET_REG_FIELD(reg, 3, 8, src_factor);
+    SET_REG_FIELD(reg, 3, 5, dst_factor);
+    SET_REG_FIELD(reg, 8, 24, 0x41);
     GX_SET_PE_REG(1, reg);
 }
 
-void GXPokeDstAlpha(GXBool doEnable, u8 alpha) {
+void GXPokeColorUpdate(GXBool update_enable) {
     u32 reg;
-    reg = 0;
-    GX_SET_REG(reg, alpha, 24, 31);
-    GX_SET_REG(reg, doEnable, 23, 23);
+
+    reg = GX_GET_PE_REG(1);
+    SET_REG_FIELD(reg, 1, 3, update_enable);
+    GX_SET_PE_REG(1, reg);
+}
+
+void GXPokeDstAlpha(GXBool enable, u8 alpha) {
+    u32 reg = 0;
+
+    SET_REG_FIELD(reg, 8, 0, alpha);
+    SET_REG_FIELD(reg, 1, 8, enable);
     GX_SET_PE_REG(2, reg);
 }
 
-void GXPokeDither(GXBool doDither) {
+void GXPokeDither(GXBool dither) {
     u32 reg;
+
     reg = GX_GET_PE_REG(1);
-    GX_SET_REG(reg, doDither, 29, 29);
+    SET_REG_FIELD(reg, 1, 2, dither);
     GX_SET_PE_REG(1, reg);
 }
 
-void GXPokeZMode(GXBool doCompare, GXCompare func, GXBool doUpdate) {
-    u32 reg;
-    reg = 0;
-    GX_SET_REG(reg, doCompare, 31, 31);
-    GX_SET_REG(reg, func, 28, 30);
-    GX_SET_REG(reg, doUpdate, 27, 27);
+void GXPokeZMode(GXBool compare_enable, GXCompare func, GXBool update_enable) {
+    u32 reg = 0;
+
+    SET_REG_FIELD(reg, 1, 0, compare_enable);
+    SET_REG_FIELD(reg, 3, 1, func);
+    SET_REG_FIELD(reg, 1, 4, update_enable);
     GX_SET_PE_REG(0, reg);
 }
 
-#if IS_MM
 void GXPeekZ(u16 x, u16 y, u32* z) {
     u32 addr = (u32)OSPhysicalToUncached(0x08000000);
 
@@ -213,7 +226,6 @@ void GXPeekZ(u16 x, u16 y, u32* z) {
     SET_REG_FIELD(addr, 2, 22, 1);
     *z = *(u32*)addr;
 }
-#endif
 
 GXDrawSyncCallback GXSetDrawSyncCallback(GXDrawSyncCallback callback) {
     GXDrawSyncCallback prevCB;
@@ -228,21 +240,19 @@ GXDrawSyncCallback GXSetDrawSyncCallback(GXDrawSyncCallback callback) {
 
 static void GXTokenInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
     u16 token;
-    OSContext exceptContext;
+    OSContext exceptionContext;
     u32 reg;
 
     token = GX_GET_PE_REG(7);
-
-    if (TokenCB) {
-        OSClearContext(&exceptContext);
-        OSSetCurrentContext(&exceptContext);
+    if (TokenCB != NULL) {
+        OSClearContext(&exceptionContext);
+        OSSetCurrentContext(&exceptionContext);
         TokenCB(token);
-        OSClearContext(&exceptContext);
+        OSClearContext(&exceptionContext);
         OSSetCurrentContext(context);
     }
-
     reg = GX_GET_PE_REG(5);
-    GX_SET_REG(reg, 1, 29, 29);
+    SET_REG_FIELD(reg, 1, 2, 1);
     GX_SET_PE_REG(5, reg);
 }
 
@@ -258,41 +268,34 @@ GXDrawDoneCallback GXSetDrawDoneCallback(GXDrawDoneCallback callback) {
 }
 
 static void GXFinishInterruptHandler(__OSInterrupt interrupt, OSContext* context) {
-    OSContext exceptContext;
+    OSContext exceptionContext;
     u32 reg;
 
     reg = GX_GET_PE_REG(5);
-    GX_SET_REG(reg, 1, 28, 28);
+    SET_REG_FIELD(reg, 1, 3, 1);
     GX_SET_PE_REG(5, reg);
-
-    DrawDone = GX_TRUE;
-
-    if (DrawDoneCB) {
-        OSClearContext(&exceptContext);
-        OSSetCurrentContext(&exceptContext);
+    DrawDone = 1;
+    if (DrawDoneCB != NULL) {
+        OSClearContext(&exceptionContext);
+        OSSetCurrentContext(&exceptionContext);
         DrawDoneCB();
-        OSClearContext(&exceptContext);
+        OSClearContext(&exceptionContext);
         OSSetCurrentContext(context);
     }
-
     OSWakeupThread(&FinishQueue);
 }
 
 void __GXPEInit(void) {
     u32 reg;
-
-    __OSSetInterruptHandler(__OS_INTERRUPT_PI_PE_TOKEN, GXTokenInterruptHandler);
-    __OSSetInterruptHandler(__OS_INTERRUPT_PI_PE_FINISH, GXFinishInterruptHandler);
-
+    __OSSetInterruptHandler(0x12, GXTokenInterruptHandler);
+    __OSSetInterruptHandler(0x13, GXFinishInterruptHandler);
     OSInitThreadQueue(&FinishQueue);
-
-    __OSUnmaskInterrupts(OS_INTERRUPTMASK_PI_PE_TOKEN);
-    __OSUnmaskInterrupts(OS_INTERRUPTMASK_PI_PE_FINISH);
-
+    __OSUnmaskInterrupts(0x2000);
+    __OSUnmaskInterrupts(0x1000);
     reg = GX_GET_PE_REG(5);
-    GX_SET_REG(reg, 1, 29, 29);
-    GX_SET_REG(reg, 1, 28, 28);
-    GX_SET_REG(reg, 1, 31, 31);
-    GX_SET_REG(reg, 1, 30, 30);
+    SET_REG_FIELD(reg, 1, 2, 1);
+    SET_REG_FIELD(reg, 1, 3, 1);
+    SET_REG_FIELD(reg, 1, 0, 1);
+    SET_REG_FIELD(reg, 1, 1, 1);
     GX_SET_PE_REG(5, reg);
 }

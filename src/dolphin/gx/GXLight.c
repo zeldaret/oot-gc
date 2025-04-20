@@ -1,125 +1,194 @@
 #include "dolphin/gx.h"
 #include "math.h"
 
-void GXSetChanAmbColor(GXChannelID channel, GXColor color) {
+#include "dolphin/private/__gx.h"
+
+// GXLightObj private data
+typedef struct {
+    u32 reserved[3];
+    u32 Color;
+    f32 a[3];
+    f32 k[3];
+    f32 lpos[3];
+    f32 ldir[3];
+} __GXLightObjInt_struct;
+
+#define GXCOLOR_AS_U32(color) (*((u32*)&(color)))
+#define GX_BITFIELD_TRUNC(field, pos, size, value) (__rlwimi((value), (field), 0, (pos), (pos) + (size) - 1))
+#define GX_SET_TRUNC(reg, x, st, end) GX_BITFIELD_TRUNC((reg), (st), ((end) - (st) + 1), (x))
+
+void GXSetChanAmbColor(GXChannelID chan, GXColor amb_color) {
     u32 reg;
     u32 rgb;
-    u32 colorID;
-    u8 alpha;
+    u32 colIdx;
 
-    switch (channel) {
+    CHECK_GXBEGIN(661, "GXSetChanAmbColor");
+
+    switch (chan) {
+#if IS_MQ
         case GX_COLOR0:
-            rgb = gx->ambColor[GX_COLOR0];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
-            colorID = GX_COLOR0;
+            reg = __GXData->ambColor[GX_COLOR0];
+            rgb = GXCOLOR_AS_U32(amb_color) >> 8;
+            SET_REG_FIELD(reg, 24, 8, rgb);
+            colIdx = 0;
             break;
         case GX_COLOR1:
-            rgb = gx->ambColor[GX_COLOR1];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
-            colorID = GX_COLOR1;
+            reg = __GXData->ambColor[GX_COLOR1];
+            rgb = GXCOLOR_AS_U32(amb_color) >> 8;
+            SET_REG_FIELD(reg, 24, 8, rgb);
+            colIdx = 1;
             break;
+#else
+        //! TODO: figure out why this is different on CE
+        case GX_COLOR0:
+            rgb = __GXData->ambColor[GX_COLOR0];
+            reg = GX_SET_TRUNC(GXCOLOR_AS_U32(amb_color) & ~0xFF, rgb, 24, 31);
+            colIdx = GX_COLOR0;
+            break;
+        case GX_COLOR1:
+            rgb = __GXData->ambColor[GX_COLOR1];
+            reg = GX_SET_TRUNC(GXCOLOR_AS_U32(amb_color) & ~0xFF, rgb, 24, 31);
+            colIdx = GX_COLOR1;
+            break;
+#endif
         case GX_ALPHA0:
-            reg = gx->ambColor[GX_COLOR0];
-            reg = GX_SET_TRUNC(reg, color.a, 24, 31);
-            colorID = GX_COLOR0;
+            reg = __GXData->ambColor[GX_COLOR0];
+            SET_REG_FIELD(reg, 8, 0, amb_color.a);
+            colIdx = 0;
             break;
         case GX_ALPHA1:
-            reg = gx->ambColor[GX_COLOR1];
-            reg = GX_SET_TRUNC(reg, color.a, 24, 31);
-            colorID = GX_COLOR1;
+            reg = __GXData->ambColor[GX_COLOR1];
+            SET_REG_FIELD(reg, 8, 0, amb_color.a);
+            colIdx = 1;
             break;
         case GX_COLOR0A0:
-            reg = GX_COLOR_AS_U32(color);
-            colorID = GX_COLOR0;
+            reg = GXCOLOR_AS_U32(amb_color);
+            colIdx = 0;
             break;
         case GX_COLOR1A1:
-            reg = GX_COLOR_AS_U32(color);
-            colorID = GX_COLOR1;
+            reg = GXCOLOR_AS_U32(amb_color);
+            colIdx = 1;
             break;
         default:
+            ASSERTMSGLINE(731, 0, "GXSetChanAmbColor: Invalid Channel Id");
             return;
     }
 
-    GX_XF_LOAD_REG(GX_XF_REG_AMBIENT0 + colorID, reg);
-    gx->bpSentNot = GX_TRUE;
-    gx->ambColor[colorID] = reg;
+    GX_WRITE_XF_REG(colIdx + 10, reg);
+    __GXData->bpSentNot = 1;
+    __GXData->ambColor[colIdx] = reg;
 }
 
-void GXSetChanMatColor(GXChannelID channel, GXColor color) {
-    u32 reg = 0;
+void GXSetChanMatColor(GXChannelID chan, GXColor mat_color) {
+    u32 reg;
     u32 rgb;
-    GXChannelID colorID;
+    u32 colIdx;
 
-    switch (channel) {
+    CHECK_GXBEGIN(762, "GXSetChanMatColor");
+
+    switch (chan) {
+#if IS_MQ
         case GX_COLOR0:
-            rgb = gx->matColor[GX_COLOR0];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
-            colorID = GX_COLOR0;
+            reg = __GXData->matColor[GX_COLOR0];
+            rgb = GXCOLOR_AS_U32(mat_color) >> 8;
+            SET_REG_FIELD(reg, 24, 8, rgb);
+            colIdx = 0;
             break;
         case GX_COLOR1:
-            rgb = gx->matColor[GX_COLOR1];
-            reg = GX_SET_TRUNC(GX_COLOR_AS_U32(color) & ~0xFF, rgb, 24, 31);
-            colorID = GX_COLOR1;
+            reg = __GXData->matColor[GX_COLOR1];
+            rgb = GXCOLOR_AS_U32(mat_color) >> 8;
+            SET_REG_FIELD(reg, 24, 8, rgb);
+            colIdx = 1;
             break;
+#else
+        //! TODO: figure out why this is different on CE
+        case GX_COLOR0:
+            rgb = __GXData->matColor[GX_COLOR0];
+            reg = GX_SET_TRUNC(GXCOLOR_AS_U32(mat_color) & ~0xFF, rgb, 24, 31);
+            colIdx = GX_COLOR0;
+            break;
+        case GX_COLOR1:
+            rgb = __GXData->matColor[GX_COLOR1];
+            reg = GX_SET_TRUNC(GXCOLOR_AS_U32(mat_color) & ~0xFF, rgb, 24, 31);
+            colIdx = GX_COLOR1;
+            break;
+#endif
         case GX_ALPHA0:
-            reg = gx->matColor[GX_COLOR0];
-            reg = GX_SET_TRUNC(reg, color.a, 24, 31);
-            colorID = GX_COLOR0;
+            reg = __GXData->matColor[GX_COLOR0];
+            SET_REG_FIELD(reg, 8, 0, mat_color.a);
+            colIdx = 0;
             break;
         case GX_ALPHA1:
-            reg = gx->matColor[GX_COLOR1];
-            reg = GX_SET_TRUNC(reg, color.a, 24, 31);
-            colorID = GX_COLOR1;
+            reg = __GXData->matColor[GX_COLOR1];
+            SET_REG_FIELD(reg, 8, 0, mat_color.a);
+            colIdx = 1;
             break;
         case GX_COLOR0A0:
-            reg = GX_COLOR_AS_U32(color);
-            colorID = GX_COLOR0;
+            reg = GXCOLOR_AS_U32(mat_color);
+            colIdx = 0;
             break;
         case GX_COLOR1A1:
-            reg = GX_COLOR_AS_U32(color);
-            colorID = GX_COLOR1;
+            reg = GXCOLOR_AS_U32(mat_color);
+            colIdx = 1;
             break;
         default:
+            ASSERTMSGLINE(832, 0, "GXSetChanMatColor: Invalid Channel Id");
             return;
     }
 
-    GX_XF_LOAD_REG(GX_XF_REG_MATERIAL0 + colorID, reg);
-    gx->bpSentNot = GX_TRUE;
-    gx->matColor[colorID] = reg;
+    GX_WRITE_XF_REG(colIdx + 12, reg);
+    __GXData->bpSentNot = 1;
+    __GXData->matColor[colIdx] = reg;
 }
 
-void GXSetNumChans(u8 count) {
-    GX_SET_REG(gx->genMode, count, 25, 27);
-    GX_XF_LOAD_REG(GX_XF_REG_NUMCOLORS, count);
-    gx->dirtyState |= GX_DIRTY_GEN_MODE;
+void GXSetNumChans(u8 nChans) {
+    CHECK_GXBEGIN(857, "GXSetNumChans");
+    ASSERTMSGLINE(858, nChans <= 2, "GXSetNumChans: nChans > 2");
+
+    SET_REG_FIELD(__GXData->genMode, 3, 4, nChans);
+    GX_WRITE_XF_REG(9, nChans);
+    __GXData->dirtyState |= 4;
 }
 
-void GXSetChanCtrl(GXChannelID channel, GXBool doEnable, GXColorSrc ambSrc, GXColorSrc matSrc, u32 mask,
-                   GXDiffuseFn diffFunc, GXAttnFn attnFunc) {
-    const u32 colorID = (u32)channel & 0x3;
-    u32 reg = 0;
+void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc amb_src, GXColorSrc mat_src, u32 light_mask,
+                   GXDiffuseFn diff_fn, GXAttnFn attn_fn) {
+    u32 reg;
+    u32 idx;
 
-    GX_SET_REG(reg, doEnable, GX_XF_CLR0CTRL_LIGHT_ST, GX_XF_CLR0CTRL_LIGHT_END);
-    GX_SET_REG(reg, matSrc, GX_XF_CLR0CTRL_MTXSRC_ST, GX_XF_CLR0CTRL_MTXSRC_END);
-    GX_SET_REG(reg, ambSrc, GX_XF_CLR0CTRL_AMBSRC_ST, GX_XF_CLR0CTRL_AMBSRC_END);
-    GX_SET_REG(reg, (attnFunc == GX_AF_SPEC ? GX_DF_NONE : diffFunc), GX_XF_CLR0CTRL_DIFATTN_ST,
-               GX_XF_CLR0CTRL_DIFATTN_END);
-    GX_SET_REG(reg, (attnFunc != GX_AF_NONE), GX_XF_CLR0CTRL_ATTNENABLE_ST, GX_XF_CLR0CTRL_ATTNENABLE_END);
-    GX_SET_REG(reg, (attnFunc != GX_AF_SPEC), GX_XF_CLR0CTRL_ATTNSEL_ST, GX_XF_CLR0CTRL_ATTNSEL_END);
+    CHECK_GXBEGIN(892, "GXSetChanCtrl");
 
-    // why are we unmasking bits we're about to overwrite?
+    ASSERTMSGLINE(895, chan >= GX_COLOR0 && chan <= GX_COLOR1A1, "GXSetChanCtrl: Invalid Channel Id");
 
-    reg = (reg & ~(0xF << 2)) | ((mask & 0xF) << 2);
+#if DEBUG
+    if (chan == GX_COLOR0A0)
+        idx = 0;
+    else if (chan == GX_COLOR1A1)
+        idx = 1;
+    else
+        idx = chan;
+#else
+    idx = chan & 0x3;
+#endif
 
-    reg = (reg & ~(0xF << 11)) | (((mask >> 4) & 0xF) << 11);
+    reg = 0;
+    SET_REG_FIELD(reg, 1, 1, enable);
+    SET_REG_FIELD(reg, 1, 0, mat_src);
+    SET_REG_FIELD(reg, 1, 6, amb_src);
 
-    GX_XF_LOAD_REG(GX_XF_REG_COLOR0CNTRL + colorID, reg);
+    SET_REG_FIELD(reg, 2, 7, (attn_fn == 0) ? 0 : diff_fn);
+    SET_REG_FIELD(reg, 1, 9, (attn_fn != 2));
+    SET_REG_FIELD(reg, 1, 10, (attn_fn != 0));
 
-    if (channel == GX_COLOR0A0) {
-        GX_XF_LOAD_REG(GX_XF_REG_ALPHA0CNTRL, reg);
-    } else if (channel == GX_COLOR1A1) {
-        GX_XF_LOAD_REG(GX_XF_REG_ALPHA1CNTRL, reg);
+    __OLD_SET_REG_FIELD(reg, 4, 2, light_mask & 0xF);
+    __OLD_SET_REG_FIELD(reg, 4, 11, (light_mask >> 4) & 0xF);
+
+    GX_WRITE_XF_REG(idx + 14, reg);
+
+    if (chan == GX_COLOR0A0) {
+        GX_WRITE_XF_REG(16, reg);
+    } else if (chan == GX_COLOR1A1) {
+        GX_WRITE_XF_REG(17, reg);
     }
 
-    gx->bpSentNot = GX_TRUE;
+    __GXData->bpSentNot = 1;
 }

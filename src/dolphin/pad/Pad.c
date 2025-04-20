@@ -39,7 +39,10 @@ static u32 RecalibrateBits;
 static u32 WaitingBits;
 static u32 CheckingBits;
 static u32 PendingBits;
+
+#if IS_CE
 static u32 BarrelBits;
+#endif
 
 static void (*SamplingCallback)(void);
 
@@ -81,21 +84,18 @@ static inline void PADDisable(s32 chan) {
     OSRestoreInterrupts(enabled);
 }
 
-static inline void DoReset(void) {
+static void DoReset() {
     u32 chanBit;
 
     ResettingChan = __cntlzw(ResettingBits);
-    if (ResettingChan == 32) {
-        return;
+    if (ResettingChan != 32) {
+        ASSERTLINE(559, 0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
+        chanBit = (PAD_CHAN0_BIT >> ResettingChan);
+        ResettingBits &= ~chanBit;
+        
+        memset(&Origin[ResettingChan], 0, sizeof(PADStatus));
+        SIGetTypeAsync(ResettingChan, PADTypeAndStatusCallback);
     }
-
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-
-    chanBit = PAD_CHAN0_BIT >> ResettingChan;
-    ResettingBits &= ~chanBit;
-
-    memset(&Origin[ResettingChan], 0, sizeof(PADStatus));
-    SIGetTypeAsync(ResettingChan, (SITypeAndStatusCallback)PADTypeAndStatusCallback);
 }
 
 static void UpdateOrigin(s32 chan) {
@@ -267,9 +267,6 @@ bool PADReset(u32 mask) {
     bool enabled;
     u32 diableBits;
 
-    ASSERTMSG((mask & ~(PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT)) == 0,
-              "PADReset(): invalid mask");
-
     enabled = OSDisableInterrupts();
 
     mask |= PendingBits;
@@ -293,6 +290,10 @@ bool PADReset(u32 mask) {
         DoReset();
     }
     OSRestoreInterrupts(enabled);
+
+#if IS_CE
+    NO_INLINE();
+#endif
     return true;
 }
 
@@ -300,8 +301,6 @@ bool PADRecalibrate(u32 mask) {
     bool enabled;
     u32 disableBits;
 
-    ASSERTMSG((mask & ~(PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT)) == 0,
-              "PADReset(): invalid mask");
     enabled = OSDisableInterrupts();
 
     mask |= PendingBits;
@@ -324,6 +323,10 @@ bool PADRecalibrate(u32 mask) {
         DoReset();
     }
     OSRestoreInterrupts(enabled);
+
+#if IS_CE
+    NO_INLINE();
+#endif
     return true;
 }
 
@@ -409,7 +412,7 @@ u32 PADRead(PADStatus* status) {
 
                 if (!(CheckingBits & chanBit)) {
                     CheckingBits |= chanBit;
-                    SIGetTypeAsync(chan, (SITypeAndStatusCallback)PADReceiveCheckCallback);
+                    SIGetTypeAsync(chan, PADReceiveCheckCallback);
                 }
                 continue;
             }

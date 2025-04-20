@@ -1,9 +1,10 @@
-#include "dolphin/OSRtcPriv.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "dolphin/pad.h"
 #include "dolphin/vi.h"
 #include "macros.h"
+
+#include "dolphin/private/__os.h"
 
 extern void __OSReboot(u32 resetCode, u32 bootDol);
 extern void __OSStopAudioSystem(void);
@@ -50,7 +51,7 @@ void OSRegisterResetFunction(OSResetFunctionInfo* func) {
     tmp->next = func;
 }
 
-static inline bool __OSCallResetFunctions(u32 arg0) {
+static int __OSCallResetFunctions(bool final) {
     OSResetFunctionInfo* iter;
     s32 retCode = 0;
 
@@ -60,7 +61,7 @@ static inline bool __OSCallResetFunctions(u32 arg0) {
     for (iter = ResetFunctionQueue.first; iter != NULL && retCode == false; iter = iter->next)
 #endif
     {
-        retCode |= !iter->func(arg0);
+        retCode |= !iter->func(final);
     }
     retCode |= !__OSSyncSram();
     if (retCode) {
@@ -112,8 +113,6 @@ lbl_803831A8:
 #endif // clang-format on
 }
 
-OSThreadQueue __OSActiveThreadQueue AT_ADDRESS(OS_BASE_CACHED | 0x00DC);
-
 inline void KillThreads(void) {
     OSThread* thread;
     OSThread* next;
@@ -131,11 +130,11 @@ inline void KillThreads(void) {
     }
 }
 
-void __OSDoHotReset(s32 arg0) {
+void __OSDoHotReset(u32 resetCode) {
     OSDisableInterrupts();
     __VIRegs[1] = 0;
     ICFlashInvalidate();
-    Reset(arg0 * 8);
+    Reset(resetCode * 8);
 }
 
 void OSResetSystem(int reset, u32 resetCode, bool forceMenu) {

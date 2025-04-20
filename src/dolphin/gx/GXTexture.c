@@ -3,6 +3,45 @@
 #include "intrinsics.h"
 #include "string.h"
 
+#include "dolphin/private/__gx.h"
+
+// GXTexObj internal data
+typedef struct __GXTexObjInt_struct {
+    u32 mode0;
+    u32 mode1;
+    u32 image0;
+    u32 image3;
+    void* userData;
+    GXTexFmt fmt;
+    u32 tlutName;
+    u16 loadCnt;
+    u8 loadFmt;
+    u8 flags;
+} __GXTexObjInt;
+
+// GXTexRegion internal data
+typedef struct __GXTexRegionInt_struct {
+    u32 image1;
+    u32 image2;
+    u16 sizeEven;
+    u16 sizeOdd;
+    u8 is32bMipmap;
+    u8 isCached;
+} __GXTexRegionInt;
+
+// GXTlutObj internal data
+typedef struct __GXTlutObjInt_struct {
+    u32 tlut;
+    u32 loadTlut0;
+    u16 numEntries;
+} __GXTlutObjInt;
+
+// GXTlutRegion internal data
+typedef struct __GXTlutRegionInt_struct {
+    u32 loadTlut1;
+    __GXTlutObjInt tlutObj;
+} __GXTlutRegionInt;
+
 static u8 GXTexMode0Ids[8] = {0x80, 0x81, 0x82, 0x83, 0xA0, 0xA1, 0xA2, 0xA3};
 static u8 GXTexMode1Ids[8] = {0x84, 0x85, 0x86, 0x87, 0xA4, 0xA5, 0xA6, 0xA7};
 static u8 GXTexImage0Ids[8] = {0x88, 0x89, 0x8A, 0x8B, 0xA8, 0xA9, 0xAa, 0xAb};
@@ -15,15 +54,15 @@ static u8 GX2HWFiltConv[8] = {0x00, 0x04, 0x01, 0x05, 0x02, 0x06, 0, 0};
 
 #define GET_TILE_COUNT(a, b) (((a) + (1 << (b)) - 1) >> (b))
 
-static inline void __GXGetTexTileShift(GXTexFmt format, u32* widthTiles, u32* heightTiles) {
-    switch (format) {
+static inline void __GXGetTexTileShift(GXTexFmt fmt, u32* rowTileS, u32* colTileS) {
+    switch (fmt) {
         case GX_TF_I4:
         case 0x8:
         case GX_TF_CMPR:
         case GX_CTF_R4:
         case GX_CTF_Z4:
-            *widthTiles = 3;
-            *heightTiles = 3;
+            *rowTileS = 3;
+            *colTileS = 3;
             break;
         case GX_TF_I8:
         case GX_TF_IA4:
@@ -36,8 +75,8 @@ static inline void __GXGetTexTileShift(GXTexFmt format, u32* widthTiles, u32* he
         case GX_CTF_B8:
         case GX_CTF_Z8M:
         case GX_CTF_Z8L:
-            *widthTiles = 3;
-            *heightTiles = 2;
+            *rowTileS = 3;
+            *colTileS = 2;
             break;
         case GX_TF_IA8:
         case GX_TF_RGB565:
@@ -50,56 +89,72 @@ static inline void __GXGetTexTileShift(GXTexFmt format, u32* widthTiles, u32* he
         case GX_CTF_RG8:
         case GX_CTF_GB8:
         case GX_CTF_Z16L:
-            *widthTiles = 2;
-            *heightTiles = 2;
+            *rowTileS = 2;
+            *colTileS = 2;
             break;
         default:
-            *widthTiles = *heightTiles = 0;
+            *rowTileS = *colTileS = 0;
+            ASSERTMSGLINEV(444, 0, "%s: invalid texture format", "GX");
             break;
     }
 }
 
-void __GetImageTileCount(GXTexFmt format, u16 width, u16 height, u32* a, u32* b, u32* c) {
-    u32 widthTiles, heightTiles;
+void __GetImageTileCount(GXTexFmt fmt, u16 wd, u16 ht, u32* rowTiles, u32* colTiles, u32* cmpTiles) {
+    u32 texRowShift;
+    u32 texColShift;
 
-    __GXGetTexTileShift(format, &widthTiles, &heightTiles);
-
-    if (width <= 0) {
-        width = 1;
+    __GXGetTexTileShift(fmt, &texRowShift, &texColShift);
+    if (wd == 0) {
+        wd = 1;
     }
-
-    if (height <= 0) {
-        height = 1;
+    if (ht == 0) {
+        ht = 1;
     }
-
-    *a = GET_TILE_COUNT(width, widthTiles);
-    *b = GET_TILE_COUNT(height, heightTiles);
-    *c = (format == GX_TF_RGBA8 || format == GX_TF_Z24X8) ? 2 : 1;
+    *rowTiles = (wd + (1 << texRowShift) - 1) >> texRowShift;
+    *colTiles = (ht + (1 << texColShift) - 1) >> texColShift;
+    *cmpTiles = (fmt == GX_TF_RGBA8 || fmt == GX_TF_Z24X8) ? 2 : 1;
 }
 
-void GXInitTexObj(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXTexFmt format, GXTexWrapMode sWrap,
-                  GXTexWrapMode tWrap, GXBool useMIPmap) {
-#if IS_MQ
+void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFmt format, GXTexWrapMode wrap_s,
+                  GXTexWrapMode wrap_t, GXBool mipmap) {
     u32 imageBase;
     u32 maxLOD;
     u16 rowT;
     u16 colT;
     u32 rowC;
     u32 colC;
-    GXTexObjPriv* internal = (GXTexObjPriv*)obj;
+    __GXTexObjInt* t = (__GXTexObjInt*)obj;
 
-    memset(internal, 0, 0x20);
-    SET_REG_FIELD(internal->mode0, 2, 0, sWrap);
-    SET_REG_FIELD(internal->mode0, 2, 2, tWrap);
-    SET_REG_FIELD(internal->mode0, 1, 4, 1);
-    if (useMIPmap != 0) {
+    ASSERTMSGLINE(565, obj, "Texture Object Pointer is null");
+    CHECK_GXBEGIN(567, "GXInitTexObj");
+    ASSERTMSGLINEV(568, width <= 1024, "%s: width too large", "GXInitTexObj");
+    ASSERTMSGLINEV(569, height <= 1024, "%s: height too large", "GXInitTexObj");
+    ASSERTMSGLINEV(571, !(format & _GX_TF_CTF), "%s: invalid texture format", "GXInitTexObj");
+
+#if DEBUG
+    if (wrap_s != GX_CLAMP || mipmap) {
+        u32 mask = 1 << (31 - __cntlzw(width));
+        ASSERTMSGLINEV(581, width == mask, "%s: width must be a power of 2", "GXInitTexObj");
+    }
+    if (wrap_t != GX_CLAMP || mipmap) {
+        u32 mask = 1 << (31 - __cntlzw(height));
+        ASSERTMSGLINEV(586, height == mask, "%s: height must be a power of 2", "GXInitTexObj");
+    }
+#endif
+
+    memset(t, 0, 0x20);
+    SET_REG_FIELD(t->mode0, 2, 0, wrap_s);
+    SET_REG_FIELD(t->mode0, 2, 2, wrap_t);
+    SET_REG_FIELD(t->mode0, 1, 4, 1);
+
+    if (mipmap) {
         u8 lmax;
-        internal->flags |= 1;
+        t->flags |= 1;
 
         if (format == 8 || format == 9 || format == 10) {
-            internal->mode0 = (internal->mode0 & 0xFFFFFF1F) | 0xA0;
+            SET_REG_FIELD(t->mode0, 3, 5, 5);
         } else {
-            internal->mode0 = (internal->mode0 & 0xFFFFFF1F) | 0xC0;
+            SET_REG_FIELD(t->mode0, 3, 5, 6);
         }
 
         if (width > height) {
@@ -107,54 +162,56 @@ void GXInitTexObj(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXTexFmt
         } else {
             maxLOD = 31 - __cntlzw(height);
         }
+
         lmax = 16.0f * maxLOD;
-        SET_REG_FIELD(internal->mode1, 8, 8, lmax);
+        SET_REG_FIELD(t->mode1, 8, 8, lmax);
     } else {
-        internal->mode0 = (internal->mode0 & 0xFFFFFF1F) | 0x80;
+        SET_REG_FIELD(t->mode0, 3, 5, 4);
     }
-    internal->format = format;
 
-    SET_REG_FIELD(internal->image0, 10, 0, width - 1);
-    SET_REG_FIELD(internal->image0, 10, 10, height - 1);
-    SET_REG_FIELD(internal->image0, 4, 20, format & 0xF);
-
-    imageBase = (u32)((u32)imagePtr >> 5) & 0x01FFFFFF;
-    SET_REG_FIELD(internal->image3, 21, 0, imageBase);
+    t->fmt = format;
+    SET_REG_FIELD(t->image0, 10, 0, width - 1);
+    SET_REG_FIELD(t->image0, 10, 10, height - 1);
+    SET_REG_FIELD(t->image0, 4, 20, format & 0xF);
+    ASSERTMSGLINEV(654, ((u32)image_ptr & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTexObj", "image");
+    imageBase = (u32)((u32)image_ptr >> 5) & 0x01FFFFFF;
+    SET_REG_FIELD(t->image3, 21, 0, imageBase);
 
     switch (format & 0xF) {
-        case 0:
+        case GX_TF_I4:
         case 8:
-            internal->loadFormat = 1;
+            t->loadFmt = 1;
             rowT = 3;
             colT = 3;
             break;
-        case 1:
-        case 2:
+        case GX_TF_I8:
+        case GX_TF_IA4:
         case 9:
-            internal->loadFormat = 2;
+            t->loadFmt = 2;
             rowT = 3;
             colT = 2;
             break;
-        case 3:
-        case 4:
-        case 5:
+        case GX_TF_IA8:
+        case GX_TF_RGB565:
+        case GX_TF_RGB5A3:
         case 10:
-            internal->loadFormat = 2;
+            t->loadFmt = 2;
             rowT = 2;
             colT = 2;
             break;
-        case 6:
-            internal->loadFormat = 3;
+        case GX_TF_RGBA8:
+            t->loadFmt = 3;
             rowT = 2;
             colT = 2;
             break;
-        case 14:
-            internal->loadFormat = 0;
+        case GX_TF_CMPR:
+            t->loadFmt = 0;
             rowT = 3;
             colT = 3;
             break;
         default:
-            internal->loadFormat = 2;
+            ASSERTMSGLINEV(699, 0, "%s: invalid texture format", "GXPreLoadEntireTexture");
+            t->loadFmt = 2;
             rowT = 2;
             colT = 2;
             break;
@@ -162,489 +219,425 @@ void GXInitTexObj(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXTexFmt
 
     rowC = (width + (1 << rowT) - 1) >> rowT;
     colC = (height + (1 << colT) - 1) >> colT;
-    internal->loadCount = (rowC * colC) & 0x7FFF;
-    internal->flags |= 2;
-#else
-    u32 imageBase;
-    u16 a, b;
-    u32 c, d;
-
-    GXTexObjPriv* internal = (GXTexObjPriv*)obj;
-    memset(internal, 0, sizeof(*internal));
-
-    GX_SET_REG(internal->mode0, sWrap, 30, 31);
-    GX_SET_REG(internal->mode0, tWrap, 28, 29);
-    GX_SET_REG(internal->mode0, GX_TRUE, 27, 27);
-
-    if (useMIPmap) {
-        u32 maxDimSize;
-        internal->flags |= 1;
-        if (format == 8 || format == 9 || format == 10) {
-            GX_SET_REG(internal->mode0, 5, 24, 26);
-        } else {
-            GX_SET_REG(internal->mode0, 6, 24, 26);
-        }
-
-        maxDimSize = width > height ? 31 - __cntlzw(width) : 31 - __cntlzw(height);
-
-        GX_SET_REG(internal->mode1, (maxDimSize) * 16.f, 16, 23);
-    } else {
-        GX_SET_REG(internal->mode0, 4, 24, 26);
-    }
-
-    internal->format = format;
-    GX_SET_REG(internal->image0, width - 1, 22, 31);
-    GX_SET_REG(internal->image0, height - 1, 12, 21);
-
-    GX_SET_REG(internal->image0, format & 0xF, 8, 11);
-    imageBase = (u32)imagePtr >> 5;
-    GX_SET_REG(internal->image3, imageBase, 11, 31);
-
-    switch (format & 0xF) {
-        case 0:
-        case 8:
-            internal->loadFormat = 1;
-            a = 3;
-            b = 3;
-            break;
-        case 1:
-        case 2:
-        case 9:
-            internal->loadFormat = 2;
-            a = 3;
-            b = 2;
-            break;
-        case 3:
-        case 4:
-        case 5:
-        case 10:
-            internal->loadFormat = 2;
-            a = 2;
-            b = 2;
-            break;
-        case 6:
-            internal->loadFormat = 3;
-            a = 2;
-            b = 2;
-            break;
-        case 0xE:
-            internal->loadFormat = 0;
-            a = 3;
-            b = 3;
-            break;
-        default:
-            internal->loadFormat = 2;
-            a = 2;
-            b = 2;
-            break;
-    }
-
-    internal->loadCount = (GET_TILE_COUNT(width, a) * GET_TILE_COUNT(height, b)) & 0x7FFF;
-
-    internal->flags |= 2;
-#endif
+    t->loadCnt = (rowC * colC) & 0x7FFF;
+    t->flags |= 2;
 }
 
-void GXInitTexObjCI(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXCITexFmt format, GXTexWrapMode sWrap,
-                    GXTexWrapMode tWrap, GXBool useMIPmap, u32 tlutName) {
-    GXTexObjPriv* internal = (GXTexObjPriv*)obj;
+void GXInitTexObjCI(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXCITexFmt format, GXTexWrapMode wrap_s,
+                    GXTexWrapMode wrap_t, GXBool mipmap, u32 tlut_name) {
+    __GXTexObjInt* t = (__GXTexObjInt*)obj;
 
-    GXInitTexObj(obj, imagePtr, width, height, format, sWrap, tWrap, useMIPmap);
-
-    internal->flags &= ~2;
-    internal->tlutName = tlutName;
+    ASSERTMSGLINE(737, obj, "Texture Object Pointer is null");
+    CHECK_GXBEGIN(739, "GXInitTexObjCI");
+    GXInitTexObj(obj, image_ptr, width, height, format, wrap_s, wrap_t, mipmap);
+    t->flags &= 0xFFFFFFFD;
+    t->tlutName = tlut_name;
 }
 
-void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter minFilter, GXTexFilter maxFilter, f32 minLOD, f32 maxLOD, f32 lodBias,
-                     GXBool doBiasClamp, GXBool doEdgeLOD, GXAnisotropy maxAniso) {
-    GXTexObjPriv* internal = (GXTexObjPriv*)obj;
-    u8 reg1;
-    u8 reg2;
+void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias,
+                     u8 bias_clamp, u8 do_edge_lod, GXAnisotropy max_aniso) {
+    u8 lbias;
+    u8 lmin;
+    u8 lmax;
+    __GXTexObjInt* t = (__GXTexObjInt*)obj;
 
-    if (lodBias < -4.0f) {
-        lodBias = -4.0f;
-    } else if (lodBias >= 4.0f) {
-        lodBias = 3.99f;
+    ASSERTMSGLINE(776, obj, "Texture Object Pointer is null");
+    CHECK_GXBEGIN(778, "GXInitTexObjLOD");
+
+    if (lod_bias < -4.0f) {
+        lod_bias = -4.0f;
+    } else if (lod_bias >= 4.0f) {
+        lod_bias = 3.99f;
     }
 
-    GX_SET_REG(internal->mode0, (u8)(lodBias * 32.0f), 15, 22);
+    lbias = 32.0f * lod_bias;
+    SET_REG_FIELD(t->mode0, 8, 9, lbias);
+    ASSERTMSG1LINE(791, (u32)mag_filt <= 1, "%s: invalid mag_filt value", "GXInitTexObjLOD");
+    SET_REG_FIELD(t->mode0, 1, 4, (mag_filt == GX_LINEAR) ? 1 : 0);
+    ASSERTMSG1LINE(795, (u32)min_filt <= 5, "%s: invalid min_filt value", "GXInitTexObjLOD");
+    SET_REG_FIELD(t->mode0, 3, 5, GX2HWFiltConv[min_filt]);
+    SET_REG_FIELD(t->mode0, 1, 8, do_edge_lod ? 0 : 1);
+    SET_REG_FIELD(t->mode0, 1, 17, 0);
+    SET_REG_FIELD(t->mode0, 1, 18, 0);
+    SET_REG_FIELD(t->mode0, 2, 19, max_aniso);
+    SET_REG_FIELD(t->mode0, 1, 21, bias_clamp);
 
-#if IS_MQ
-    SET_REG_FIELD(internal->mode0, 1, 4, (maxFilter == GX_LINEAR) ? 1 : 0);
-    SET_REG_FIELD(internal->mode0, 3, 5, GX2HWFiltConv[minFilter]);
-    SET_REG_FIELD(internal->mode0, 1, 8, doEdgeLOD ? 0 : 1);
-    internal->mode0 &= 0xFFFDFFFF;
-    internal->mode0 &= 0xFFFBFFFF;
-    SET_REG_FIELD(internal->mode0, 2, 19, maxAniso);
-    SET_REG_FIELD(internal->mode0, 1, 21, doBiasClamp);
-#else
-    GX_SET_REG(internal->mode0, maxFilter == 1 ? 1 : 0, 27, 27);
-    GX_SET_REG(internal->mode0, GX2HWFiltConv[minFilter], 24, 26);
-    GX_SET_REG(internal->mode0, doEdgeLOD ? 0 : 1, 23, 23);
-    GX_SET_REG(internal->mode0, 0, 14, 14);
-    GX_SET_REG(internal->mode0, 0, 13, 13);
-    GX_SET_REG(internal->mode0, maxAniso, 11, 12);
-    GX_SET_REG(internal->mode0, doBiasClamp, 10, 10);
-#endif
-
-    if (minLOD < 0.0f) {
-        minLOD = 0.0f;
-    } else if (minLOD > 10.0f) {
-        minLOD = 10.0f;
+    if (min_lod < 0.0f) {
+        min_lod = 0.0f;
+    } else if (min_lod > 10.0f) {
+        min_lod = 10.0f;
     }
-    reg1 = minLOD * 16.0f;
-
-    if (maxLOD < 0.0f) {
-        maxLOD = 0.0f;
-    } else if (maxLOD > 10.0f) {
-        maxLOD = 10.0f;
+    lmin = 16.0f * min_lod;
+    if (max_lod < 0.0f) {
+        max_lod = 0.0f;
+    } else if (max_lod > 10.0f) {
+        max_lod = 10.0f;
     }
-    reg2 = maxLOD * 16.0f;
-
-    GX_SET_REG(internal->mode1, reg1, 24, 31);
-    GX_SET_REG(internal->mode1, reg2, 16, 23);
+    lmax = 16.0f * max_lod;
+    SET_REG_FIELD(t->mode1, 8, 0, lmin);
+    SET_REG_FIELD(t->mode1, 8, 8, lmax);
 }
 
-#if IS_MM
-void GXInitTexObjData(GXTexObj* obj, void* image_ptr) {
-    u32 imageBase;
-    GXTexObjPriv* t = (GXTexObjPriv*)obj;
+void* GXGetTexObjData(const GXTexObj* to) {
+    const __GXTexObjInt* t = (const __GXTexObjInt*)to;
 
-    imageBase = ((u32)image_ptr >> 5) & 0x01FFFFFF;
-    SET_REG_FIELD(t->image3, 21, 0, imageBase);
-}
-#endif
-
-void* GXGetTexObjData(GXTexObj* tex_obj) {
-    GXTexObjPriv* t = (GXTexObjPriv*)tex_obj;
+    ASSERTMSGLINE(1108, to, "Texture Object Pointer is null");
     return (void*)(GET_REG_FIELD(t->image3, 21, 0) << 5);
 }
 
-GXTexFmt GXGetTexObjFmt(GXTexObj* obj) {
-    GXTexObjPriv* pObj = (GXTexObjPriv*)obj;
-    return pObj->format;
+GXTexFmt GXGetTexObjFmt(const GXTexObj* to) {
+    const __GXTexObjInt* t = (const __GXTexObjInt*)to;
+
+    ASSERTMSGLINE(1126, to, "Texture Object Pointer is null");
+    return t->fmt;
 }
 
-GXBool GXGetTexObjMipMap(GXTexObj* obj) {
-    GXTexObjPriv* internal = (GXTexObjPriv*)obj;
-    return (internal->flags & 1) == 1;
+GXBool GXGetTexObjMipMap(const GXTexObj* to) {
+    const __GXTexObjInt* t = (const __GXTexObjInt*)to;
+
+    ASSERTMSGLINE(1144, to, "Texture Object Pointer is null");
+    return (t->flags & 1) == 1;
 }
 
-void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID map) {
+void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID id) {
 #if IS_CE
-    u8 stackManipulation[0x18];
+    u32 pad[6];
 #endif
+    __GXTlutRegionInt* tlr;
+    __GXTexObjInt* t = (__GXTexObjInt*)obj;
+    __GXTexRegionInt* r = (__GXTexRegionInt*)region;
 
-    GXTexObjPriv* internalObj = (GXTexObjPriv*)obj;
-    GXTexRegionPriv* internalRegion = (GXTexRegionPriv*)region;
+    ASSERTMSGLINE(0x3FE, obj, "Texture Object Pointer is null");
+    ASSERTMSGLINE(0x3FE, region, "TexRegion Object Pointer is null");
+    CHECK_GXBEGIN(0x400, "GXLoadTexObjPreLoaded");
+    ASSERTMSGLINEV(0x401, id < 8, "%s: invalid texture map ID", "GXLoadTexObj");
 
-    GX_SET_REG(internalObj->mode0, GXTexMode0Ids[map], 0, 7);
-    GX_SET_REG(internalObj->mode1, GXTexMode1Ids[map], 0, 7);
-    GX_SET_REG(internalObj->image0, GXTexImage0Ids[map], 0, 7);
+    SET_REG_FIELD(t->mode0, 8, 24, GXTexMode0Ids[id]);
+    SET_REG_FIELD(t->mode1, 8, 24, GXTexMode1Ids[id]);
+    SET_REG_FIELD(t->image0, 8, 24, GXTexImage0Ids[id]);
+    SET_REG_FIELD(r->image1, 8, 24, GXTexImage1Ids[id]);
+    SET_REG_FIELD(r->image2, 8, 24, GXTexImage2Ids[id]);
+    SET_REG_FIELD(t->image3, 8, 24, GXTexImage3Ids[id]);
 
-    GX_SET_REG(internalRegion->unk0, GXTexImage1Ids[map], 0, 7);
-    GX_SET_REG(internalRegion->unk4, GXTexImage2Ids[map], 0, 7);
+    GX_WRITE_RAS_REG(t->mode0);
+    GX_WRITE_RAS_REG(t->mode1);
+    GX_WRITE_RAS_REG(t->image0);
+    GX_WRITE_RAS_REG(r->image1);
+    GX_WRITE_RAS_REG(r->image2);
+    GX_WRITE_RAS_REG(t->image3);
 
-    GX_SET_REG(internalObj->image3, GXTexImage3Ids[map], 0, 7);
+    if (!(t->flags & 2)) {
+        ASSERTMSGLINEV(0x413, __GXData->tlutRegionCallback, "%s: Tex/Tlut Region Callback not set",
+                       "GXLoadTexObj/PreLoaded");
+        tlr = (__GXTlutRegionInt*)__GXData->tlutRegionCallback(t->tlutName);
+        ASSERTMSGLINEV(0x415, tlr, "%s: Tex/Tlut Region Callback returns NULL", "GXLoadTexObj/PreLoaded");
 
-    GX_BP_LOAD_REG(internalObj->mode0);
-    GX_BP_LOAD_REG(internalObj->mode1);
-    GX_BP_LOAD_REG(internalObj->image0);
-    GX_BP_LOAD_REG(internalRegion->unk0);
-    GX_BP_LOAD_REG(internalRegion->unk4);
-    GX_BP_LOAD_REG(internalObj->image3);
-
-    if ((internalObj->flags & 2) == 0) {
-        GXTlutObjPriv* tlut = (GXTlutObjPriv*)gx->tlutRegionCallback(internalObj->tlutName);
-        GX_SET_REG(tlut->unk4, GXTexTlutIds[map], 0, 7);
-
-        GX_BP_LOAD_REG(tlut->unk4);
+        SET_REG_FIELD(tlr->tlutObj.tlut, 8, 24, GXTexTlutIds[id]);
+        GX_WRITE_RAS_REG(tlr->tlutObj.tlut);
     }
-
-    gx->tImage0[map] = internalObj->image0;
-    gx->tMode0[map] = internalObj->mode0;
-
-    gx->dirtyState |= GX_DIRTY_SU_TEX;
-    gx->bpSentNot = GX_FALSE;
+    __GXData->tImage0[id] = t->image0;
+    __GXData->tMode0[id] = t->mode0;
+    __GXData->dirtyState |= 1;
+    __GXData->bpSentNot = 0;
 }
 
-void GXLoadTexObj(GXTexObj* obj, GXTexMapID map) {
-    GXTexRegion* ret = (GXTexRegion*)gx->texRegionCallback(obj, map);
+void GXLoadTexObj(GXTexObj* obj, GXTexMapID id) {
+    GXTexRegion* r;
 
-    GXLoadTexObjPreLoaded(obj, ret, map);
+    CHECK_GXBEGIN(1318, "GXLoadTexObj");
+    ASSERTMSGLINEV(1319, id < 8, "%s: invalid texture map ID", "GXLoadTexObj");
+    ASSERTMSGLINEV(1324, __GXData->texRegionCallback, "%s: Tex/Tlut Region Callback not set", "GXLoadTexObj");
+    r = __GXData->texRegionCallback(obj, id);
+    ASSERTMSGLINEV(1326, r, "%s: Tex/Tlut Region Callback returns NULL", "GXLoadTexObj");
+    GXLoadTexObjPreLoaded(obj, r, id);
 }
 
-void GXInitTlutObj(GXTlutObj* obj, void* table, GXTlutFmt format, u16 numEntries) {
-    GXTlutObjPriv* internal = (GXTlutObjPriv*)obj;
+void GXInitTlutObj(GXTlutObj* tlut_obj, void* lut, GXTlutFmt fmt, u16 n_entries) {
+    __GXTlutObjInt* t = (__GXTlutObjInt*)tlut_obj;
 
-    internal->unk0 = 0;
-
-    GX_SET_REG(internal->unk0, format, 20, 21);
-    GX_SET_REG(internal->unk4, ((u32)table & 0x3FFFFFFF) >> 5, 11, 31);
-    GX_SET_REG(internal->unk4, 100, 0, 7);
-
-    internal->numEntries = numEntries;
+    ASSERTMSGLINE(1350, tlut_obj, "TLut Object Pointer is null");
+    CHECK_GXBEGIN(1351, "GXInitTlutObj");
+    ASSERTMSGLINEV(1354, n_entries <= 0x4000, "%s: number of entries exceeds maximum", "GXInitTlutObj");
+    ASSERTMSGLINEV(1356, ((u32)lut & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTlutObj", "Tlut");
+    t->tlut = 0;
+    SET_REG_FIELD(t->tlut, 2, 10, fmt);
+    SET_REG_FIELD(t->loadTlut0, 21, 0, ((u32)lut & 0x3FFFFFFF) >> 5);
+    SET_REG_FIELD(t->loadTlut0, 8, 24, 0x64);
+    t->numEntries = n_entries;
 }
 
-void GXLoadTlut(GXTlutObj* obj, u32 tlutName) {
-    GXTlutObjPriv* internal = (GXTlutObjPriv*)obj;
-    GXTlutRegionPriv* ret = (GXTlutRegionPriv*)gx->tlutRegionCallback(tlutName);
-    u32 reg;
+void GXLoadTlut(GXTlutObj* tlut_obj, u32 tlut_name) {
+    __GXTlutRegionInt* r;
+    u32 tlut_offset;
+    __GXTlutObjInt* t = (__GXTlutObjInt*)tlut_obj;
+
+    ASSERTMSGLINE(1432, tlut_obj, "TLut Object Pointer is null");
+    CHECK_GXBEGIN(1434, "GXLoadTlut");
+    ASSERTMSGLINEV(1435, __GXData->tlutRegionCallback, "%s: Tex/Tlut Region Callback not set", "GXLoadTlut");
+    r = (__GXTlutRegionInt*)__GXData->tlutRegionCallback(tlut_name);
+    ASSERTMSGLINEV(1437, r, "%s: Tex/Tlut Region Callback returns NULL", "GXLoadTlut");
 
     __GXFlushTextureState();
-
-    GX_BP_LOAD_REG(internal->unk4);
-    GX_BP_LOAD_REG(ret->unk0);
-
+    GX_WRITE_RAS_REG(t->loadTlut0);
+    GX_WRITE_RAS_REG(r->loadTlut1);
     __GXFlushTextureState();
-
-    reg = ret->unk0 & 0x3FF;
-    GX_SET_REG(internal->unk0, reg, 22, 31);
-
-    ret->tlutObj = *internal;
+    tlut_offset = r->loadTlut1 & 0x3FF;
+    SET_REG_FIELD(t->tlut, 10, 0, tlut_offset);
+    r->tlutObj = *t;
 }
 
-void GXInitTexCacheRegion(GXTexRegion* region, GXBool is32bMIPmap, u32 memEven, GXTexCacheSize sizeEven, u32 memOdd,
-                          GXTexCacheSize sizeOdd) {
-    GXTexRegionPriv* internal = (GXTexRegionPriv*)region;
+void GXInitTexCacheRegion(GXTexRegion* region, u8 is_32b_mipmap, u32 tmem_even, GXTexCacheSize size_even, u32 tmem_odd,
+                          GXTexCacheSize size_odd) {
+    u32 WidthExp2;
+    __GXTexRegionInt* t = (__GXTexRegionInt*)region;
 
-    u32 reg;
-    switch (sizeEven) {
-        case 0:
-            reg = 3;
+    ASSERTMSGLINE(1484, region, "TexRegion Object Pointer is null");
+    CHECK_GXBEGIN(1486, "GXInitTexCacheRegion");
+    ASSERTMSGLINEV(1488, (tmem_even & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTexCacheRegion",
+                   "tmem even");
+    ASSERTMSGLINEV(1490, (tmem_odd & 0x1F) == 0, "%s: %s pointer not aligned to 32B", "GXInitTexCacheRegion",
+                   "tmem odd");
+
+    switch (size_even) {
+        case GX_TEXCACHE_32K:
+            WidthExp2 = 3;
             break;
-        case 1:
-            reg = 4;
+        case GX_TEXCACHE_128K:
+            WidthExp2 = 4;
             break;
-        case 2:
-            reg = 5;
+        case GX_TEXCACHE_512K:
+            WidthExp2 = 5;
+            break;
+        default:
+            ASSERTMSGLINEV(1498, 0, "%s: Invalid %s size", "GXInitTexCacheRegion", "tmem even");
             break;
     }
 
-    internal->unk0 = 0;
+    t->image1 = 0;
+    SET_REG_FIELD(t->image1, 15, 0, tmem_even >> 5);
+    SET_REG_FIELD(t->image1, 3, 15, WidthExp2);
+    SET_REG_FIELD(t->image1, 3, 18, WidthExp2);
+    SET_REG_FIELD(t->image1, 1, 21, 0);
 
-    GX_SET_REG(internal->unk0, memEven >> 5, 17, 31);
-    GX_SET_REG(internal->unk0, reg, 14, 16);
-    GX_SET_REG(internal->unk0, reg, 11, 13);
-    GX_SET_REG(internal->unk0, 0, 10, 10);
-
-    switch (sizeOdd) {
-        case 0:
-            reg = 3;
+    switch (size_odd) {
+        case GX_TEXCACHE_32K:
+            WidthExp2 = 3;
             break;
-        case 1:
-            reg = 4;
+        case GX_TEXCACHE_128K:
+            WidthExp2 = 4;
             break;
-        case 2:
-            reg = 5;
+        case GX_TEXCACHE_512K:
+            WidthExp2 = 5;
             break;
-        case 3:
-            reg = 0;
+        case GX_TEXCACHE_NONE:
+            WidthExp2 = 0;
+            break;
+        default:
+            ASSERTMSGLINEV(1514, 0, "%s: Invalid %s size", "GXInitTexCacheRegion", "tmem odd");
             break;
     }
 
-    internal->unk4 = 0;
-    GX_SET_REG(internal->unk4, memOdd >> 5, 17, 31);
-    GX_SET_REG(internal->unk4, reg, 14, 16);
-    GX_SET_REG(internal->unk4, reg, 11, 13);
-
-    internal->unkC = is32bMIPmap;
-    internal->unkD = 1;
+    t->image2 = 0;
+    SET_REG_FIELD(t->image2, 15, 0, tmem_odd >> 5);
+    SET_REG_FIELD(t->image2, 3, 15, WidthExp2);
+    SET_REG_FIELD(t->image2, 3, 18, WidthExp2);
+    t->is32bMipmap = is_32b_mipmap;
+    t->isCached = 1;
 }
 
-void GXInitTlutRegion(GXTlutRegion* region, u32 memAddr, GXTlutSize tlutSize) {
-    GXTlutRegionPriv* internal = (GXTlutRegionPriv*)region;
+void GXInitTlutRegion(GXTlutRegion* region, u32 tmem_addr, GXTlutSize tlut_size) {
+    __GXTlutRegionInt* t = (__GXTlutRegionInt*)region;
 
-    internal->unk0 = 0;
-    GX_SET_REG(internal->unk0, (memAddr - 0x80000) >> 9, 22, 31);
-    GX_SET_REG(internal->unk0, tlutSize, 11, 21);
-    GX_SET_REG(internal->unk0, 0x65, 0, 7);
+    ASSERTMSGLINE(1652, region, "TLutRegion Object Pointer is null");
+    CHECK_GXBEGIN(1654, "GXInitTlutRegion");
+    ASSERTMSGLINEV(1655, (tmem_addr & 0x1FF) == 0, "%s: tmem pointer is not aligned to 512B", "GXInitTlutRegion");
+    ASSERTMSGLINEV(1656, tlut_size <= 0x400, "%s: tlut size exceeds 16K", "GXInitTlutRegion");
+    t->loadTlut1 = 0;
+    tmem_addr -= 0x80000;
+    SET_REG_FIELD(t->loadTlut1, 10, 0, tmem_addr >> 9);
+    SET_REG_FIELD(t->loadTlut1, 11, 10, tlut_size);
+    SET_REG_FIELD(t->loadTlut1, 8, 24, 0x65);
 }
 
 void GXInvalidateTexAll(void) {
+    u32 reg0;
+    u32 reg1;
+
+    CHECK_GXBEGIN(1755, "GXInvalidateTexAll");
+    reg0 = 0x66001000;
+    reg1 = 0x66001100;
     __GXFlushTextureState();
-    GX_BP_LOAD_REG(0x66001000);
-    GX_BP_LOAD_REG(0x66001100);
+    GX_WRITE_RAS_REG(reg0);
+    GX_WRITE_RAS_REG(reg1);
     __GXFlushTextureState();
 }
 
-GXTexRegionCallback GXSetTexRegionCallback(GXTexRegionCallback func) {
-    GXTexRegionCallback oldFunc = gx->texRegionCallback;
+GXTexRegionCallback GXSetTexRegionCallback(GXTexRegionCallback f) {
+    GXTexRegionCallback oldcb = __GXData->texRegionCallback;
 
-    gx->texRegionCallback = func;
-
-    return oldFunc;
+    __GXData->texRegionCallback = f;
+    return oldcb;
 }
 
-GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback func) {
-    GXTlutRegionCallback oldFunc = gx->tlutRegionCallback;
+GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback f) {
+    GXTlutRegionCallback oldcb = __GXData->tlutRegionCallback;
 
-    gx->tlutRegionCallback = func;
-
-    return oldFunc;
+    __GXData->tlutRegionCallback = f;
+    return oldcb;
 }
 
-void __SetSURegs(u32 texImgIndex, u32 setUpRegIndex) {
-    u32 a1;
-    u32 a2;
-    GXBool b;
-    GXBool c;
+static void __SetSURegs(u32 tmap, u32 tcoord) {
+    u32 w;
+    u32 h;
+    u8 s_bias;
+    u8 t_bias;
 
-    a1 = GX_GET_REG(gx->tImage0[texImgIndex], 22, 31);
-    a2 = (gx->tImage0[texImgIndex] & (0x3FF << 10)) >> 10;
-
-    GX_SET_REG(gx->suTs0[setUpRegIndex], a1, 16, 31);
-    GX_SET_REG(gx->suTs1[setUpRegIndex], a2, 16, 31);
-
-    b = GX_GET_REG(gx->tMode0[texImgIndex], 30, 31) == 1;
-    c = GX_GET_REG(gx->tMode0[texImgIndex], 28, 29) == 1;
-
-    GX_SET_REG(gx->suTs0[setUpRegIndex], b, 15, 15);
-    GX_SET_REG(gx->suTs1[setUpRegIndex], c, 15, 15);
-
-    GX_BP_LOAD_REG(gx->suTs0[setUpRegIndex]);
-    GX_BP_LOAD_REG(gx->suTs1[setUpRegIndex]);
-
-    gx->bpSentNot = GX_FALSE;
+    w = GET_REG_FIELD(__GXData->tImage0[tmap], 10, 0);
+    h = GET_REG_FIELD(__GXData->tImage0[tmap], 10, 10);
+    SET_REG_FIELD(__GXData->suTs0[tcoord], 16, 0, w);
+    SET_REG_FIELD(__GXData->suTs1[tcoord], 16, 0, h);
+    s_bias = GET_REG_FIELD(__GXData->tMode0[tmap], 2, 0) == 1;
+    t_bias = GET_REG_FIELD(__GXData->tMode0[tmap], 2, 2) == 1;
+    SET_REG_FIELD(__GXData->suTs0[tcoord], 1, 16, s_bias);
+    SET_REG_FIELD(__GXData->suTs1[tcoord], 1, 16, t_bias);
+    GX_WRITE_RAS_REG(__GXData->suTs0[tcoord]);
+    GX_WRITE_RAS_REG(__GXData->suTs1[tcoord]);
+    __GXData->bpSentNot = 0;
 }
 
-#pragma dont_inline on
 void __GXSetSUTexRegs(void) {
+    u32 nStages;
+    u32 nIndStages;
     u32 i;
-    u32 b;
-    u32 a;
-    u32 c;
-    u32 d;
-    u32 stackFiller;
-    if (gx->tcsManEnab != 0xFf) {
-        a = GX_GET_REG(gx->genMode, 18, 21) + 1;
-        b = GX_GET_REG(gx->genMode, 13, 15);
-        for (i = 0; i < b; i++) {
+    u32 map;
+    u32 tmap;
+    u32 coord;
+    u32* ptref;
+
+    if (__GXData->tcsManEnab != 0xFF) {
+        nStages = GET_REG_FIELD(__GXData->genMode, 4, 10) + 1;
+        nIndStages = GET_REG_FIELD(__GXData->genMode, 3, 16);
+        for (i = 0; i < nIndStages; i++) {
             switch (i) {
                 case 0:
-                    c = GX_GET_REG(gx->iref, 29, 31);
-                    d = GX_GET_REG(gx->iref, 26, 28);
+                    tmap = GET_REG_FIELD(__GXData->iref, 3, 0);
+                    coord = GET_REG_FIELD(__GXData->iref, 3, 3);
                     break;
                 case 1:
-                    c = GX_GET_REG(gx->iref, 23, 25);
-                    d = GX_GET_REG(gx->iref, 20, 22);
+                    tmap = GET_REG_FIELD(__GXData->iref, 3, 6);
+                    coord = GET_REG_FIELD(__GXData->iref, 3, 9);
                     break;
                 case 2:
-                    c = GX_GET_REG(gx->iref, 17, 19);
-                    d = GX_GET_REG(gx->iref, 14, 16);
+                    tmap = GET_REG_FIELD(__GXData->iref, 3, 12);
+                    coord = GET_REG_FIELD(__GXData->iref, 3, 15);
                     break;
                 case 3:
-                    c = GX_GET_REG(gx->iref, 11, 13);
-                    d = GX_GET_REG(gx->iref, 8, 10);
+                    tmap = GET_REG_FIELD(__GXData->iref, 3, 18);
+                    coord = GET_REG_FIELD(__GXData->iref, 3, 21);
                     break;
             }
-
-            if (!(gx->tcsManEnab & (1 << d))) {
-                __SetSURegs(c, d);
+            if (!(__GXData->tcsManEnab & (1 << coord))) {
+                __SetSURegs(tmap, coord);
             }
         }
 
-        for (i = 0; i < a; i++) {
-            u32* g = &gx->tref[i / 2];
-
-            c = gx->texmapId[i] & ~0x100;
-
+        i = 0;
+        for (i = 0; i < nStages; i++) {
+            ptref = &__GXData->tref[i / 2];
+            map = __GXData->texmapId[i];
+            tmap = map & 0xFFFFFEFF;
             if (i & 1) {
-                d = GX_GET_REG(*g, 14, 16);
+                coord = GET_REG_FIELD(*ptref, 3, 15);
             } else {
-                d = GX_GET_REG(*g, 26, 28);
+                coord = GET_REG_FIELD(*ptref, 3, 3);
             }
-
-            if (c != 0xFf && !(gx->tcsManEnab & (1 << d)) && gx->tevTcEnab & (1 << i)) {
-                __SetSURegs(c, d);
+            if ((tmap != 0xFF) && !(__GXData->tcsManEnab & (1 << coord)) && (__GXData->tevTcEnab & (1 << i))) {
+                __SetSURegs(tmap, coord);
             }
         }
     }
 }
-#pragma dont_inline reset
 
 void __GXSetTmemConfig(u32 config) {
     switch (config) {
-
 #if IS_CE
         case 2:
-            GX_BP_LOAD_REG(0x8C0d8000);
-            GX_BP_LOAD_REG(0x900DC000);
+            GX_WRITE_RAS_REG(0x8c0d8000);
+            GX_WRITE_RAS_REG(0x900dc000);
 
-            GX_BP_LOAD_REG(0x8D0d8800);
-            GX_BP_LOAD_REG(0x910DC800);
+            GX_WRITE_RAS_REG(0x8d0d8800);
+            GX_WRITE_RAS_REG(0x910dc800);
 
-            GX_BP_LOAD_REG(0x8E0d9000);
-            GX_BP_LOAD_REG(0x920DD000);
+            GX_WRITE_RAS_REG(0x8e0d9000);
+            GX_WRITE_RAS_REG(0x920dd000);
 
-            GX_BP_LOAD_REG(0x8F0d9800);
-            GX_BP_LOAD_REG(0x930DD800);
+            GX_WRITE_RAS_REG(0x8f0d9800);
+            GX_WRITE_RAS_REG(0x930dd800);
 
-            GX_BP_LOAD_REG(0xAC0DA000);
-            GX_BP_LOAD_REG(0xB00DC400);
+            GX_WRITE_RAS_REG(0xac0da000);
+            GX_WRITE_RAS_REG(0xb00dc400);
 
-            GX_BP_LOAD_REG(0xAD0DA800);
-            GX_BP_LOAD_REG(0xB10DCC00);
+            GX_WRITE_RAS_REG(0xad0da800);
+            GX_WRITE_RAS_REG(0xb10dcc00);
 
-            GX_BP_LOAD_REG(0xAE0DB000);
-            GX_BP_LOAD_REG(0xB20DD400);
+            GX_WRITE_RAS_REG(0xae0db000);
+            GX_WRITE_RAS_REG(0xb20dd400);
 
-            GX_BP_LOAD_REG(0xAF0DB800);
-            GX_BP_LOAD_REG(0xB30DDC00);
+            GX_WRITE_RAS_REG(0xaf0db800);
+            GX_WRITE_RAS_REG(0xb30ddc00);
             break;
 #endif
-
         case 1:
-            GX_BP_LOAD_REG(0x8C0d8000);
-            GX_BP_LOAD_REG(0x900DC000);
+            GX_WRITE_RAS_REG(0x8c0d8000);
+            GX_WRITE_RAS_REG(0x900dc000);
 
-            GX_BP_LOAD_REG(0x8D0d8800);
-            GX_BP_LOAD_REG(0x910DC800);
+            GX_WRITE_RAS_REG(0x8d0d8800);
+            GX_WRITE_RAS_REG(0x910dc800);
 
-            GX_BP_LOAD_REG(0x8E0d9000);
-            GX_BP_LOAD_REG(0x920DD000);
+            GX_WRITE_RAS_REG(0x8e0d9000);
+            GX_WRITE_RAS_REG(0x920dd000);
 
-            GX_BP_LOAD_REG(0x8F0d9800);
-            GX_BP_LOAD_REG(0x930DD800);
+            GX_WRITE_RAS_REG(0x8f0d9800);
+            GX_WRITE_RAS_REG(0x930dd800);
 
-            GX_BP_LOAD_REG(0xAC0DA000);
-            GX_BP_LOAD_REG(0xB00DE000);
+            GX_WRITE_RAS_REG(0xac0da000);
+            GX_WRITE_RAS_REG(0xb00de000);
 
-            GX_BP_LOAD_REG(0xAD0DA800);
-            GX_BP_LOAD_REG(0xB10DE800);
+            GX_WRITE_RAS_REG(0xad0da800);
+            GX_WRITE_RAS_REG(0xb10de800);
 
-            GX_BP_LOAD_REG(0xAE0DB000);
-            GX_BP_LOAD_REG(0xB20DF000);
+            GX_WRITE_RAS_REG(0xae0db000);
+            GX_WRITE_RAS_REG(0xb20df000);
 
-            GX_BP_LOAD_REG(0xAF0DB800);
-            GX_BP_LOAD_REG(0xB30DF800);
+            GX_WRITE_RAS_REG(0xaf0db800);
+            GX_WRITE_RAS_REG(0xb30df800);
 
             break;
         case 0:
         default:
-            GX_BP_LOAD_REG(0x8C0d8000);
-            GX_BP_LOAD_REG(0x900DC000);
+            GX_WRITE_RAS_REG(0x8c0d8000);
+            GX_WRITE_RAS_REG(0x900dc000);
 
-            GX_BP_LOAD_REG(0x8D0d8400);
-            GX_BP_LOAD_REG(0x910DC400);
+            GX_WRITE_RAS_REG(0x8d0d8400);
+            GX_WRITE_RAS_REG(0x910dc400);
 
-            GX_BP_LOAD_REG(0x8E0d8800);
-            GX_BP_LOAD_REG(0x920DC800);
+            GX_WRITE_RAS_REG(0x8e0d8800);
+            GX_WRITE_RAS_REG(0x920dc800);
 
-            GX_BP_LOAD_REG(0x8F0d8c00);
-            GX_BP_LOAD_REG(0x930DCC00);
+            GX_WRITE_RAS_REG(0x8f0d8c00);
+            GX_WRITE_RAS_REG(0x930dcc00);
 
-            GX_BP_LOAD_REG(0xAC0D9000);
-            GX_BP_LOAD_REG(0xB00DD000);
+            GX_WRITE_RAS_REG(0xac0d9000);
+            GX_WRITE_RAS_REG(0xb00dd000);
 
-            GX_BP_LOAD_REG(0xAD0D9400);
-            GX_BP_LOAD_REG(0xB10DD400);
+            GX_WRITE_RAS_REG(0xad0d9400);
+            GX_WRITE_RAS_REG(0xb10dd400);
 
-            GX_BP_LOAD_REG(0xAE0D9800);
-            GX_BP_LOAD_REG(0xB20DD800);
+            GX_WRITE_RAS_REG(0xae0d9800);
+            GX_WRITE_RAS_REG(0xb20dd800);
 
-            GX_BP_LOAD_REG(0xAF0D9C00);
-            GX_BP_LOAD_REG(0xB30DDC00);
+            GX_WRITE_RAS_REG(0xaf0d9c00);
+            GX_WRITE_RAS_REG(0xb30ddc00);
 
             break;
     }

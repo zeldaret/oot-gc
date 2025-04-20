@@ -1,10 +1,12 @@
 #include "dolphin/card.h"
 
+#include "dolphin/private/__card.h"
+
 void WriteCallback(s32 channel, s32 result);
 void EraseCallback(s32 channel, s32 result);
 s32 __CARDUpdateFatBlock(s32 channel, u16* fat, CARDCallback callback);
 
-u16* __CARDGetFatBlock(CARDControl* card) { return card->currentFat; }
+void* __CARDGetFatBlock(CARDControl* card) { return card->currentFat; }
 
 void WriteCallback(s32 channel, s32 result) {
     CARDControl* card;

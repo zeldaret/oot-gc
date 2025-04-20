@@ -1,9 +1,10 @@
 #include "dolphin/dvd.h"
-#include "dolphin/DVDPriv.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
 #include "dolphin/types.h"
 #include "string.h"
+
+#include "dolphin/private/__dvd.h"
 
 // required to match
 #define DVD_MIN(a, b) (((a) > (b)) ? (b) : (a))
@@ -75,7 +76,7 @@ static DVDCommandBlock DummyCommandBlock;
 static OSAlarm ResetAlarm;
 
 static bool DVDInitialized = false;
-static DVDOptionalCommandChecker checkOptionalCommand = defaultOptionalCommandChecker;
+static DVDCommandChecker checkOptionalCommand = defaultOptionalCommandChecker;
 
 static void defaultOptionalCommandChecker(DVDCommandBlock* block, DVDLowCallback cb) {}
 
@@ -99,7 +100,7 @@ void DVDInit() {
     if (bootInfo->magic == OS_BOOTINFO_MAGIC_JTAG) {
         OSReport("load fst\n");
         __fstLoad();
-    } else if (bootInfo->magic != 0xD15EA5E) {
+    } else if (bootInfo->magic != OS_BOOTINFO_MAGIC) {
         FirstTimeInBootrom = true;
     }
 }
@@ -1249,13 +1250,13 @@ bool DVDCancelAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     return true;
 }
 
-s32 DVDCancel(DVDCommandBlock* block) {
+s32 DVDCancel(volatile DVDCommandBlock* block) {
     bool result;
     s32 state;
     u32 command;
     bool enabled;
 
-    result = DVDCancelAsync(block, cbForCancelSync);
+    result = DVDCancelAsync((void*)block, cbForCancelSync);
 
     if (result == false) {
         return -1;
@@ -1399,4 +1400,4 @@ void __DVDPrepareResetAsync(DVDCBCallback callback) {
     OSRestoreInterrupts(enabled);
 }
 
-bool __DVDTestAlarm(OSAlarm* alarm) { return (alarm == &ResetAlarm) ? true : __DVDLowTestAlarm(alarm); }
+bool __DVDTestAlarm(const OSAlarm* alarm) { return (alarm == &ResetAlarm) ? true : __DVDLowTestAlarm(alarm); }

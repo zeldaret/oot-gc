@@ -1,8 +1,8 @@
-#include "dolphin/OSRtcPriv.h"
 #include "dolphin/os.h"
 #include "dolphin/si.h"
 
-vu32 __SIRegs[64] AT_ADDRESS(0xCC006400);
+#include "dolphin/private/__os.h"
+#include "dolphin/private/__si.h"
 
 extern OSTime __OSGetSystemTime();
 
@@ -48,7 +48,7 @@ static u32 Type[SI_MAX_CHAN] = {
 static OSTime TypeTime[SI_MAX_CHAN];
 static OSTime XferTime[SI_MAX_CHAN];
 
-static SITypeAndStatusCallback TypeCallback[SI_MAX_CHAN][4];
+static SITypeCallback TypeCallback[SI_MAX_CHAN][4];
 static __OSInterruptHandler RDSTHandler[4];
 
 u32 __PADFixBits;
@@ -521,7 +521,7 @@ bool SITransfer(s32 chan, void* output, u32 outputBytes, void* input, u32 inputB
 }
 
 static inline void CallTypeAndStatusCallback(s32 chan, u32 type) {
-    SITypeAndStatusCallback callback;
+    SITypeCallback callback;
     int i;
 
     for (i = 0; i < 4; ++i) {
@@ -630,7 +630,7 @@ u32 SIGetType(s32 chan) {
     return type;
 }
 
-u32 SIGetTypeAsync(s32 chan, SITypeAndStatusCallback callback) {
+u32 SIGetTypeAsync(s32 chan, SITypeCallback callback) {
     bool enabled;
     u32 type;
 

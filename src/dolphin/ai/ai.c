@@ -1,6 +1,7 @@
 #include "dolphin/ai.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
+#include "macros.h"
 
 #if IS_MQ
 char* __AIVersion = "<< Dolphin SDK - AI\trelease build: Sep  5 2002 05:34:25 (0x2301) >>";
@@ -71,18 +72,18 @@ inline void AIResetStreamSampleCount(void) {
 
 inline void AISetStreamTrigger(u32 trigger) { __AIRegs[AI_INTRPT_TIMING] = trigger; }
 
-void AISetStreamPlayState(u32 playState) {
+void AISetStreamPlayState(u32 state) {
     s32 previousInterruptState;
     u8 rightVolume;
     u8 leftVolume;
 
     // If the requested state is the same as the current state, do nothing
-    if (playState == AIGetStreamPlayState()) {
+    if (state == AIGetStreamPlayState()) {
         return;
     }
 
     // If the sample rate is 0 and the requested state is play, initialize the sample rate converter
-    if (AIGetStreamSampleRate() == 0 && playState == true) {
+    if (AIGetStreamSampleRate() == 0 && state == true) {
         rightVolume = AIGetStreamVolRight();
         leftVolume = AIGetStreamVolLeft();
 
@@ -107,7 +108,7 @@ void AISetStreamPlayState(u32 playState) {
         AISetStreamVolRight(leftVolume);
     } else {
         // Set the state bit in the control register to the requested state
-        __AIRegs[AI_CONTROL] = (__AIRegs[AI_CONTROL] & ~AI_CONTROL_PLAY_STATE) | playState;
+        __AIRegs[AI_CONTROL] = (__AIRegs[AI_CONTROL] & ~AI_CONTROL_PLAY_STATE) | state;
     }
 }
 

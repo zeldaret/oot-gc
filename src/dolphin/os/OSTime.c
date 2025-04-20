@@ -1,6 +1,8 @@
 #include "dolphin/os.h"
 #include "macros.h"
 
+#include "dolphin/private/__os.h"
+
 #define OS_TIME_MONTH_MAX 12
 #define OS_TIME_WEEK_DAY_MAX 7
 #define OS_TIME_YEAR_DAY_MAX 365
@@ -95,8 +97,6 @@ static void GetDates(s32 days, OSCalendarTime* cal) {
     cal->mon = month;
     cal->mday = days - p_days[month] + 1;
 }
-
-#define BIAS (2000 * 365 + (2000 + 3) / 4 - (2000 - 1) / 100 + (2000 - 1) / 400)
 
 #pragma push
 #pragma dont_inline on
