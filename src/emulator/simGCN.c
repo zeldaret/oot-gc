@@ -224,7 +224,7 @@ bool gbReset;
     {                                                                                           \
         if (simulatorMessageCurrent != msg) {                                                   \
             simulatorMessageCurrent = msg;                                                      \
-            if (DVDOpen("TPL/" fileName, &fileInfo) == 1) {                                     \
+            if (DVDOpen(fileName, &fileInfo) == 1) {                                            \
                 simulatorDVDRead(&fileInfo, gpErrorMessageBuffer, OSRoundUp32B(size), 0, NULL); \
             }                                                                                   \
             DVDClose(&fileInfo);                                                                \
