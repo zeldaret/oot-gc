@@ -48,6 +48,7 @@
 #define MCARD_COMMENT "Zelda: Collector's Edition"
 #define MCARD_FILE_SIZE 0xC000
 #define MCARD_FILE_NAME_MM "ZELDA3"
+#define MCARD_COMMENT_MM "Legend of Zelda"
 #elif IS_MM_JP
 #define MCARD_FILE_NAME "ZELDA1"
 #define MCARD_FILE_NAME_MM "ZELDA2"
