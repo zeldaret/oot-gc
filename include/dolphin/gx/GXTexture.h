@@ -14,6 +14,7 @@ void GXInitTexObjCI(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXCITe
                     GXTexWrapMode tWrap, GXBool useMIPmap, u32 tlutName);
 void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter minFilter, GXTexFilter maxFilter, f32 minLOD, f32 maxLOD, f32 lodBias,
                      GXBool doBiasClamp, GXBool doEdgeLOD, GXAnisotropy maxAniso);
+void GXInitTexObjData(GXTexObj* obj, void* image_ptr);
 void* GXGetTexObjData(GXTexObj* tex_obj);
 GXTexFmt GXGetTexObjFmt(GXTexObj* obj);
 GXBool GXGetTexObjMipMap(GXTexObj* obj);

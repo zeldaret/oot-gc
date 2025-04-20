@@ -110,7 +110,7 @@ char* strncpy(char* dst, const char* src, size_t n) {
     return dst;
 }
 
-#if IS_EU
+#if IS_EU || IS_MM
 char* strcat(char* dst, const char* src) {
     const u8* p = (u8*)src - 1;
     u8* q = (u8*)dst - 1;
