@@ -112,7 +112,7 @@ DVDDiskID* DVDGetCurrentDiskID(void);
 bool DVDCompareDiskID(const DVDDiskID* discID1, const DVDDiskID* discID2);
 void __DVDLowSetWAType(u32 type, u32 location);
 bool DVDReadAbsAsyncForBS(DVDCommandBlock* block, void* addr, s32 length, s32 offset, DVDCBCallback callback);
-s32 DVDStopStreamAtEndAsync(DVDCommandBlock* block, DVDCBCallback callback) ;
+s32 DVDStopStreamAtEndAsync(DVDCommandBlock* block, DVDCBCallback callback);
 s32 DVDGetStreamErrorStatusAsync(DVDCommandBlock* block, DVDCBCallback callback);
 
 #define DVDReadAsync(fileInfo, addr, length, offset, callback) \
