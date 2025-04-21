@@ -25,42 +25,70 @@
 #include "stdlib.h"
 #include "string.h"
 
-#if VERSION == MQ_J
+#if IS_MQ
 #define MCARD_FILE_NAME "ZELDA"
-#define MCARD_COMMENT "ゼルダの伝説　時のオカリナＧＣ" // "The Legend of Zelda: Ocarina of Time GC"
 #define MCARD_FILE_SIZE (0xC000 * 2)
-#define MCARD_FILE_NAME_MM "ZELDA3"
-#define MCARD_COMMENT_MM "Legend of Zelda"
-#elif VERSION == MQ_U || VERSION == MQ_E
-#define MCARD_FILE_NAME "ZELDA"
-#define MCARD_COMMENT "Zelda: Ocarina of Time"
-#define MCARD_FILE_SIZE (0xC000 * 2)
-#define MCARD_FILE_NAME_MM "ZELDA3"
-#define MCARD_COMMENT_MM "Legend of Zelda"
-#elif VERSION == CE_J
+#else
 #define MCARD_FILE_NAME "ZELDA1"
+#define MCARD_FILE_SIZE 0xC000
+#endif
+
+#if IS_MM
+#define MCARD_FILE_NAME_MM "ZELDA2"
+#else
+#define MCARD_FILE_NAME_MM "ZELDA3"
+#endif
+
+#if VERSION == CE_J
 #define MCARD_COMMENT "ゼルダコレクション" // "Zelda Collection"
-#define MCARD_FILE_SIZE 0xC000
-#define MCARD_FILE_NAME_MM "ZELDA3"
-#define MCARD_COMMENT_MM "Legend of Zelda"
-#elif VERSION == CE_U || VERSION == CE_E
-#define MCARD_FILE_NAME "ZELDA1"
-#define MCARD_COMMENT "Zelda: Collector's Edition"
-#define MCARD_FILE_SIZE 0xC000
-#define MCARD_FILE_NAME_MM "ZELDA3"
-#define MCARD_COMMENT_MM "Legend of Zelda"
-#elif IS_MM_JP
-#define MCARD_FILE_NAME "ZELDA1"
-#define MCARD_FILE_NAME_MM "ZELDA2"
+#elif VERSION == MQ_J || VERSION == MM_J
 #define MCARD_COMMENT "ゼルダの伝説　時のオカリナＧＣ" // "The Legend of Zelda: Ocarina of Time GC"
-#define MCARD_COMMENT_MM "ゼルダコレクション" // "Zelda Collection"
-#define MCARD_FILE_SIZE 0xC000
-#elif IS_MM_US || IS_MM_EU
-#define MCARD_FILE_NAME "ZELDA1"
-#define MCARD_FILE_NAME_MM "ZELDA2"
+#elif VERSION == CE_E || VERSION == CE_U
+#define MCARD_COMMENT "Zelda: Collector's Edition"
+#else
 #define MCARD_COMMENT "Zelda: Ocarina of Time"
+#endif
+
+#if IS_MM_JP
+#define MCARD_COMMENT_MM "ゼルダコレクション" // "Zelda Collection"
+#elif IS_MM_US || IS_MM_EU
 #define MCARD_COMMENT_MM "Zelda: Collector's Edition"
-#define MCARD_FILE_SIZE 0xC000
+#else
+#define MCARD_COMMENT_MM "Legend of Zelda"
+#endif
+
+#if IS_MM_JP
+#define MCARD_FILE_NAME_STARFOX "Starfox 64"
+#define MCARD_FILE_NAME_MK64 "Mario Kart 64"
+#else
+#define MCARD_FILE_NAME_STARFOX "Starfox"
+#define MCARD_FILE_NAME_MK64 "Mario Kart"
+#endif
+
+#if IS_MM
+#define ROM_IS_PW64(pROM) (romTestCode(pROM, "NPWE") || romTestCode(pROM, "NPWJ"))
+#define ROM_IS_MK64(pROM) (romTestCode(pROM, "NKTE") || romTestCode(pROM, "NKTJ"))
+#define ROM_IS_KIRBY(pROM) (romTestCode(pROM, "NK4E") || romTestCode(pROM, "NK4J"))
+#else
+#define ROM_IS_PW64(pROM) (romTestCode(pROM, "NPWE"))
+#define ROM_IS_MK64(pROM) (romTestCode(pROM, "NKTE"))
+#define ROM_IS_KIRBY(pROM) (romTestCode(pROM, "NK4E"))
+#endif
+
+#if IS_MM_JP || IS_MM_EU
+#define ROM_IS_MM(pROM) (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE") || romTestCode(pROM, "NZSP"))
+#else
+#define ROM_IS_MM(pROM) (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE"))
+#endif
+
+#if IS_OOT_EU || IS_MM
+#define ROM_IS_OOT(pROM) (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || romTestCode(pROM, "NZLP"))
+#define Z_ICON_PATH buf1
+#define Z_BNR_PATH buf2
+#else
+#define ROM_IS_OOT(pROM) (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE"))
+#define Z_ICON_PATH "TPL/z_icon.tpl"
+#define Z_BNR_PATH "TPL/z_bnr.tpl"
 #endif
 
 _XL_OBJECTTYPE gClassSystem = {
@@ -197,50 +225,6 @@ u32 nTickMultiplier = 2;
 f32 fTickScale = 1.0;
 u32 gnFlagZelda;
 
-#if IS_OOT_EU || IS_MM
-#define Z_ICON_PATH buf1
-#define Z_BNR_PATH buf2
-#define ROM_TEST_OOT_EU romTestCode(pROM, "NZLP")
-#else
-#define Z_ICON_PATH "TPL/z_icon.tpl"
-#define Z_BNR_PATH "TPL/z_bnr.tpl"
-#define ROM_TEST_OOT_EU false
-#endif
-
-#if IS_MM_JP
-#define ROM_TEST_PW_JP romTestCode(pROM, "NPWJ")
-#define ROM_TEST_MM_US romTestCode(pROM, "NZSE")
-#define ROM_TEST_MM_EU romTestCode(pROM, "NZSP")
-#define ROM_TEST_MK64_JP romTestCode(pROM, "NKTJ")
-#define ROM_TEST_KIRBY_JP romTestCode(pROM, "NK4J")
-#define MCARD_FILE_NAME_STARFOX "Starfox 64"
-#define MCARD_FILE_NAME_MK64 "Mario Kart 64"
-#elif IS_MM_US
-#define ROM_TEST_PW_JP romTestCode(pROM, "NPWJ")
-#define ROM_TEST_MM_US false
-#define ROM_TEST_MM_EU false
-#define ROM_TEST_MK64_JP romTestCode(pROM, "NKTJ")
-#define ROM_TEST_KIRBY_JP romTestCode(pROM, "NK4J")
-#define MCARD_FILE_NAME_STARFOX "Starfox"
-#define MCARD_FILE_NAME_MK64 "Mario Kart"
-#elif IS_MM_EU
-#define ROM_TEST_PW_JP romTestCode(pROM, "NPWJ")
-#define ROM_TEST_MM_US false
-#define ROM_TEST_MM_EU romTestCode(pROM, "NZSP")
-#define ROM_TEST_MK64_JP romTestCode(pROM, "NKTJ")
-#define ROM_TEST_KIRBY_JP romTestCode(pROM, "NK4J")
-#define MCARD_FILE_NAME_STARFOX "Starfox"
-#define MCARD_FILE_NAME_MK64 "Mario Kart"
-#else
-#define ROM_TEST_PW_JP false
-#define ROM_TEST_MM_US false
-#define ROM_TEST_MM_EU false
-#define ROM_TEST_MK64_JP false
-#define ROM_TEST_KIRBY_JP false
-#define MCARD_FILE_NAME_STARFOX "Starfox"
-#define MCARD_FILE_NAME_MK64 "Mario Kart"
-#endif
-
 static bool systemSetupGameRAM(System* pSystem) {
     char* szExtra;
     bool bExpansion;
@@ -265,13 +249,12 @@ static bool systemSetupGameRAM(System* pSystem) {
     }
 
     // Majora's Mask
-    if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE") || ROM_TEST_MM_EU) {
+    if (ROM_IS_MM(pROM)) {
         bExpansion = true;
     }
 
     // Ocarina of Time or Majora's Mask
-    if (romTestCode(pROM, "CZLJ") || romTestCode(pROM, "CZLE") || ROM_TEST_OOT_EU || romTestCode(pROM, "NZSJ") ||
-        romTestCode(pROM, "NZSE") || ROM_TEST_MM_EU) {
+    if (ROM_IS_OOT(pROM) || ROM_IS_MM(pROM)) {
         switch (nCode) {
 
 #if VERSION == MQ_J
@@ -523,7 +506,7 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         }
 #endif
 
-    } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE") || ROM_TEST_MM_EU) {
+    } else if (ROM_IS_MM(pROM)) {
         // Majora's Mask
         gSystemRomConfigurationList[index].storageDevice = SOT_RAM;
 
@@ -543,7 +526,7 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         }
 #endif
 
-    } else if (romTestCode(pROM, "NPWE") || ROM_TEST_PW_JP) {
+    } else if (ROM_IS_PW64(pROM)) {
         // Pilotwings 64
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
 
@@ -555,7 +538,7 @@ bool systemGetInitialConfiguration(System* pSystem, Rom* pROM, s32 index) {
         // Cruis'n
         gSystemRomConfigurationList[index].storageDevice = 20; // bug?
 
-    } else if (romTestCode(pROM, "NKTE") || ROM_TEST_MK64_JP) {
+    } else if (ROM_IS_MK64(pROM)) {
         // Mario Kart 64
         gSystemRomConfigurationList[index].storageDevice = SOT_RSP;
 
@@ -651,8 +634,7 @@ static bool systemSetupGameALL(System* pSystem) {
         strcpy(buf1, "TPL/SPANISH/");
         strcpy(buf2, "TPL/SPANISH/");
     } else if (gLanguage == 3) {
-        //! @bug: This condition will always be false as `gLanguage` is 4 when using italian as the console's language.
-        //! This has no effect as this path is only used to get the memory card's icon and banner TPL files.
+        //! @bug: This code is never reached because the condition should be `gLanguage == 4` for Italian
         strcpy(buf1, "TPL/ITALIAN/");
         strcpy(buf2, "TPL/ITALIAN/");
 #endif
@@ -941,7 +923,7 @@ static bool systemSetupGameALL(System* pSystem) {
         }
 
         pCPU->nCompileFlag |= 0x110;
-    } else if (romTestCode(pROM, "NZSJ") || romTestCode(pROM, "NZSE") || ROM_TEST_MM_EU) {
+    } else if (ROM_IS_MM(pROM)) {
         // Majora's Mask
         pSystem->eTypeROM = SRT_ZELDA2;
         nSizeSound = 0x1000;
@@ -1079,7 +1061,7 @@ static bool systemSetupGameALL(System* pSystem) {
         }
 
         pCPU->nCompileFlag |= 0x1010;
-    } else if (romTestCode(pROM, "NPWE") || ROM_TEST_PW_JP) {
+    } else if (ROM_IS_PW64(pROM)) {
         // Pilotwings 64
 
 #if IS_OOT_EU || IS_MM
@@ -1285,7 +1267,7 @@ static bool systemSetupGameALL(System* pSystem) {
                 if (!cpuSetCodeHack(pCPU, 0x80029EB8, 0x8C4252CC, -1)) {
                     return false;
                 }
-            } else if (romTestCode(pROM, "NKTE") || ROM_TEST_MK64_JP) {
+            } else if (ROM_IS_MK64(pROM)) {
                 // Mario Kart 64
                 pSystem->eTypeROM = SRT_MARIOKART;
 
@@ -1313,7 +1295,7 @@ static bool systemSetupGameALL(System* pSystem) {
                 mcardOpen(&mCard, "KART", MCARD_FILE_NAME_MK64, mCard.saveIcon, mCard.saveBanner, "KART",
                           &gSystemRomConfigurationList[i].currentControllerConfig, 0x4000, 0x200);
                 pCPU->nCompileFlag |= IS_MM_JP ? 0x110 : 0x10;
-            } else if (romTestCode(pROM, "NK4E") || ROM_TEST_KIRBY_JP) {
+            } else if (ROM_IS_KIRBY(pROM)) {
                 // Kirby 64
 #if IS_MM
                 pSystem->eTypeROM = SRT_KIRBY;
