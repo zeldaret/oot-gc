@@ -378,7 +378,7 @@ config.libs = [
             Object(Linked, "dolphin/gx/GXMisc.c"),
             Object(Linked, "dolphin/gx/GXGeometry.c"),
             Object(Linked, "dolphin/gx/GXFrameBuf.c"),
-            Object(LinkedFor("ce-j", "ce-u", "ce-e"), "dolphin/gx/GXLight.c"),
+            Object(LinkedFor("ce-j", "ce-u", "ce-e", "mm-j", "mm-u", "mm-e"), "dolphin/gx/GXLight.c"),
             Object(Linked, "dolphin/gx/GXTexture.c"),
             Object(Linked, "dolphin/gx/GXBump.c"),
             Object(Linked, "dolphin/gx/GXTev.c"),

@@ -204,6 +204,17 @@ void GXPokeZMode(GXBool doCompare, GXCompare func, GXBool doUpdate) {
     GX_SET_PE_REG(0, reg);
 }
 
+#if IS_MM
+void GXPeekZ(u16 x, u16 y, u32* z) {
+    u32 addr = (u32)OSPhysicalToUncached(0x08000000);
+
+    SET_REG_FIELD(addr, 10, 2, x);
+    SET_REG_FIELD(addr, 10, 12, y);
+    SET_REG_FIELD(addr, 2, 22, 1);
+    *z = *(u32*)addr;
+}
+#endif
+
 GXDrawSyncCallback GXSetDrawSyncCallback(GXDrawSyncCallback callback) {
     GXDrawSyncCallback prevCB;
     bool interrupts;

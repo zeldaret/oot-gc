@@ -305,6 +305,16 @@ void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter minFilter, GXTexFilter maxFilter
     GX_SET_REG(internal->mode1, reg2, 16, 23);
 }
 
+#if IS_MM
+void GXInitTexObjData(GXTexObj* obj, void* image_ptr) {
+    u32 imageBase;
+    GXTexObjPriv* t = (GXTexObjPriv*)obj;
+
+    imageBase = ((u32)image_ptr >> 5) & 0x01FFFFFF;
+    SET_REG_FIELD(t->image3, 21, 0, imageBase);
+}
+#endif
+
 void* GXGetTexObjData(GXTexObj* tex_obj) {
     GXTexObjPriv* t = (GXTexObjPriv*)tex_obj;
     return (void*)(GET_REG_FIELD(t->image3, 21, 0) << 5);
