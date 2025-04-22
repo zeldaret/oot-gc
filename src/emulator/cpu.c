@@ -2,6 +2,7 @@
 #include "dolphin.h"
 #include "emulator/frame.h"
 #include "emulator/library.h"
+#include "emulator/mcardGCN.h"
 #include "emulator/ram.h"
 #include "emulator/rom.h"
 #include "emulator/rsp.h"
@@ -13,6 +14,14 @@
 #include "emulator/xlPostGCN.h"
 #include "macros.h"
 #include "math.h"
+#include "stdio.h"
+
+// Line numbers for different versions
+#if IS_OOT
+#define LN(n) n
+#else
+#define LN(n) (n + 6)
+#endif
 
 static bool cpuHeapReset(u32* array, s32 count);
 static bool cpuDMAUpdateFunction(Cpu* pCPU, s32 start, s32 end);
@@ -133,6 +142,10 @@ static u8 RegimmOpcode[] = {
 
 static void* gHeapTree;
 
+#if IS_MM
+static u8 gRegCount;
+#endif
+
 static s32 ganOpcodeSaveFP1[] = {
     0x8F480018, 0x11000014, 0x00000000, 0x4448F800, 0x00000000,
 };
@@ -165,6 +178,12 @@ s32 ganMapGPR[32] = {
 };
 
 u32 aHeapTreeFlag[125];
+
+#if IS_MM
+u8 gRegList[32];
+
+static inline s32 cpuCountTLB(Cpu* pCPU, s32* pnCount);
+#endif
 
 static bool cpuHackHandler(Cpu* pCPU) {
     u32 nSize;
@@ -346,7 +365,7 @@ bool cpuException(Cpu* pCPU, CpuExceptionCode eCode, s32 nMaskIP) {
     pCPU->nMode &= ~8;
     if (!(pCPU->nMode & 0x10)) {
         if (!cpuHackHandler(pCPU)) {
-            xlPostText("Exception: #### INTERNAL ERROR #### Cannot match exception-handler!", "cpu.c", 923);
+            xlPostText("Exception: #### INTERNAL ERROR #### Cannot match exception-handler!", "cpu.c", LN(923));
         }
         pCPU->nMode |= 0x10;
     }
@@ -909,6 +928,7 @@ bool cpuSetCodeHack(Cpu* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
 bool cpuReset(Cpu* pCPU) {
     s32 iRegister;
     s32 iTLB;
+    s32 i;
 
     pCPU->nTick = 0;
     pCPU->nCountCodeHack = 0;
@@ -983,6 +1003,15 @@ bool cpuReset(Cpu* pCPU) {
     }
 
     pCPU->nCompileFlag = 1;
+
+#if IS_MM
+    gRegCount = 0;
+
+    for (i = 0; i < ARRAY_COUNT(gRegList); i++) {
+        gRegList[i] = 0;
+    }
+#endif
+
     return true;
 }
 

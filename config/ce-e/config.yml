@@ -182,6 +182,7 @@ block_relocations:
 - source: 0x8002FAF0
 - source: 0x8002FB14
 - source: 0x8002FB3C
+- source: 0x8002EFC4
 - source: 0x8002FCD4
 - source: 0x8002FCE0
 - source: 0x8002FD40

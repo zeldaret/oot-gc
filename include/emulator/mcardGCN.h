@@ -155,6 +155,7 @@ typedef struct _MCARD {
 } MemCard; // size = 0x7B8
 
 extern MemCard mCard;
+extern s32 mcardSaveDisplay;
 
 bool mcardReadGameData(MemCard* pMCard);
 bool mcardWriteGameDataReset(MemCard* pMCard);
