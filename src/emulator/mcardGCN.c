@@ -2539,54 +2539,51 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
         }
 #if IS_MM
     } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
-        //! TODO: fake match
-        for (i = (u64)((u32)address / BLOCK_DATA_SIZE);
-             i < (u32)(address + size + BLOCK_DATA_SIZE - 1) / BLOCK_DATA_SIZE; i++) {
+        for (i = (u32)address / BLOCK_DATA_SIZE; i < (u32)(address + size + BLOCK_DATA_SIZE - 1) / BLOCK_DATA_SIZE;
+             i++) {
             pMCard->file.game.writtenBlocks[i] = true;
         }
 
         if (size == 0x80) {
             bool var_r31 = 0;
-            s32 display = mcardSaveDisplay;
-            u32 addr = address;
 
-            if (display != 0 && display != 0x17 && display != 0x18) {
+            if (mcardSaveDisplay != 0 && mcardSaveDisplay != 0x17 && mcardSaveDisplay != 0x18) {
                 mcardOneTime = 1;
             }
 
             if (address == 0x3F80 || address == 0x7F80) {
 #if IS_MM_JP
-                if ((display == 0x1A) || (display == 0x11) || ((display - 0x14) <= 3U))
+                if (mcardSaveDisplay == 0x1A || mcardSaveDisplay == 0x11 || mcardSaveDisplay == 0x14 ||
+                    mcardSaveDisplay == 0x15 || mcardSaveDisplay == 0x16 || mcardSaveDisplay == 0x17)
 #else
-                if ((display == 0x11) || ((display - 0x14) <= 3U))
+                if (mcardSaveDisplay == 0x11 || mcardSaveDisplay == 0x14 || mcardSaveDisplay == 0x15 ||
+                    mcardSaveDisplay == 0x16 || mcardSaveDisplay == 0x17)
 #endif
                 {
                     var_r31 = 1;
-                    if ((mcardOneTime == 0) && (display == 0x17)) {
+                    if (mcardOneTime == 0 && mcardSaveDisplay == 0x17) {
                         var_r31 = 0;
                     }
                     mcardSaveDisplay = 0;
                 }
 #if IS_MM_JP
-            } else if (address == 0x8000 || (address + 0xFFFF0000 == 0)) {
-                if (display == 0x12) {
+            } else if (address == 0x8000 || address == 0x10000) {
+                if (mcardSaveDisplay == 0x12) {
                     ZeldaEraseCamera();
                     mcardLoadZelda2Camera(pMCard, address);
                 }
-            } else if (address == 0xFF80 || addr == 0x7F80) {
-#else
-            } else if (address == 0xFF80 || addr == 0x17F80) {
 #endif
-                if (display == 0x10 || display == 0x12 || display == 0x17) {
+            } else if (address == 0xFF80 || address == 0x17F80) {
+                if (mcardSaveDisplay == 0x10 || mcardSaveDisplay == 0x12 || mcardSaveDisplay == 0x17) {
                     var_r31 = 1;
-                    if ((mcardOneTime == 0) && (display == 0x17)) {
+                    if ((mcardOneTime == 0) && (mcardSaveDisplay == 0x17)) {
                         var_r31 = 0;
                     }
                     mcardSaveDisplay = 0;
                 }
 #if IS_MM_JP
-            } else if (address == 0xBF80 || addr == 0x3F80) {
-                if (display == 0x10) {
+            } else if (address == 0xBF80 || address == 0x13F80) {
+                if (mcardSaveDisplay == 0x10) {
                     mcardSaveDisplay = 0;
                     var_r31 = 1;
                     if (address == 0xBF80) {
@@ -2598,12 +2595,12 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     }
                 }
 #endif
-            } else if ((address == 0x1F80) || (address == 0x5F80)) {
-                if (display == 0x19) {
+            } else if (address == 0x1F80 || address == 0x5F80) {
+                if (mcardSaveDisplay == 0x19) {
                     mcardSaveDisplay = 0;
                     var_r31 = 1;
                 }
-            } else if (address == 0x8000 && display == 0x18) {
+            } else if (address == 0x18000 && mcardSaveDisplay == 0x18) {
                 if (toggle2 == 0) {
                     toggle2 += 1;
                 } else {
@@ -2649,11 +2646,13 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                 }
             }
 
-#if IS_MM_JP
             if (mcardNewStart == 0) {
+#if IS_MM_JP
                 if (mcardEmpty != 0) {
                     mcardEmpty = 0;
-                } else {
+                } else
+#endif
+                {
                     switch (address) {
                         case 0x68:
                         case 0xD8:
@@ -2675,29 +2674,6 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     }
                 }
             }
-#else
-            if (mcardNewStart == 0) {
-                switch (address) {
-                    case 0x68:
-                    case 0xD8:
-                    case 0x148:
-                    case 0x1B8:
-                    case 0x1F8:
-                        pMCard->saveToggle = true;
-                        pMCard->wait = false;
-                        simulatorRumbleStop(0);
-                        mcardOpenDuringGame(pMCard);
-                        if (pMCard->saveToggle == true) {
-                            if (!mcardUpdate()) {
-                                return false;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-#endif
         }
     } else if (gpSystem->eTypeROM == SRT_MARIOKART) {
         if (size == 8) {
@@ -2705,11 +2681,13 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                 mcardNewStart = 0;
             }
 
-#if IS_MM_JP
             if (mcardNewStart == 0) {
+#if IS_MM_JP
                 if (mcardEmpty != 0) {
                     mcardEmpty = 0;
-                } else {
+                } else
+#endif
+                {
                     switch (address) {
                         case 0x1B8:
                         case 0x1F0:
@@ -2729,27 +2707,6 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     }
                 }
             }
-#else
-            if (mcardNewStart == 0) {
-                switch (address) {
-                    case 0x1B8:
-                    case 0x1F0:
-                    case 0x1F8:
-                        pMCard->saveToggle = true;
-                        pMCard->wait = false;
-                        simulatorRumbleStop(0);
-                        mcardOpenDuringGame(pMCard);
-                        if (pMCard->saveToggle == true) {
-                            if (!mcardUpdate()) {
-                                return false;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-#endif
         }
     } else if (gpSystem->eTypeROM == SRT_STARFOX) {
         if (size == 8 && address == 0x1F8) {
@@ -2947,18 +2904,13 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
 #if IS_MM_JP
                 mcardNewStart = true;
                 mcardEmpty = true;
-#elif IS_MM_US
-                mcardNewStart = true;
 #endif
                 pMCard->saveToggle = false;
                 mcardGameSetNoSave(pMCard, gameSize);
                 return true;
             } else if (command == MC_C_CREATE_GAME) {
-#if IS_MM_JP || IS_MM_US
-                mcardNewStart = true;
-#endif
-
 #if IS_MM
+                mcardNewStart = true;
                 if (gSystemRomConfigurationList->storageDevice == SOT_RSP ||
                     gSystemRomConfigurationList->storageDevice == SOT_FLASH) {
                     pMCard->saveToggle = false;
@@ -2966,7 +2918,7 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
                     return true;
                 }
 #endif
-                if (!mcardCheckSpace(pMCard, fileSize + HEADER_SIZE)) {
+                if (!mcardCheckSpace(pMCard, fileSize + (u32)HEADER_SIZE)) {
                     mcardOpenError(pMCard, &command);
                     if (command == MC_C_IPL) {
                         simulatorReset(true, true);
