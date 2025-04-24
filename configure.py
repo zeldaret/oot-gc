@@ -277,7 +277,7 @@ config.libs = [
             Object(Linked, "emulator/mcardGCN.c"),
             Object(Linked, "emulator/codeGCN.c"),
             Object(Linked, "emulator/soundGCN.c"),
-            Object(Linked, "emulator/frame.c"),
+            Object(LinkedFor("mq-j", "mq-u", "mq-e", "ce-j", "ce-u", "ce-e"), "emulator/frame.c"),
             Object(Linked, "emulator/system.c"),
             Object(Linked, "emulator/cpu.c"),
             Object(Linked, "emulator/pif.c"),
