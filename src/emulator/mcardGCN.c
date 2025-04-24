@@ -56,6 +56,8 @@
 #define LN(mq_j, ce_j, mm_j, mm_u) (mm_j)
 #elif VERSION == MM_U
 #define LN(mq_j, ce_j, mm_j, mm_u) (mm_u)
+#elif VERSION == MM_E
+#define LN(mq_j, ce_j, mm_j, mm_u) (mm_u + 75)
 #endif
 
 #if IS_MQ
@@ -1272,14 +1274,36 @@ static bool mcardGameSetNoSave(MemCard* pMCard, s32 size) {
     if (gpSystem->eTypeROM == SRT_ZELDA1) {
         pMCard->soundToggle = true;
     } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
-        char* buffer = pMCard->file.game.buffer + 0x18000;
-        s32* testInt = (s32*)buffer;
+        s32* testInt = (s32*)(pMCard->file.game.buffer + 0x18000);
+#if IS_MM_JP || IS_MM_EU
+        char testChar;
+#endif
 
+#if IS_MM_EU
+        testInt = (s32*)(pMCard->file.game.buffer + 0x18000);
+        testChar = *testInt & 0xF;
+        *testInt = 0xA51D0000;
+
+        if (gLanguage > 3) {
+            *testInt |= 0x100;
+        } else {
+            *testInt |= (gLanguage + 1) * 0x100;
+        }
+
+        if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
+            testChar = 1;
+        } else if (OSGetSoundMode() == OS_SOUND_MODE_STEREO) {
+            testChar = 0;
+        }
+
+        *testInt |= testChar;
+#else
         if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
             *testInt = 0xA51D0101;
         } else if (OSGetSoundMode() == OS_SOUND_MODE_STEREO) {
             *testInt = 0xA51D0100;
         }
+#endif
     }
 
     NO_INLINE();
@@ -1292,6 +1316,9 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
     s32 i;
 #if IS_MM
     s32* testInt;
+#endif
+#if IS_MM_JP || IS_MM_EU
+    char testChar;
 #endif
 
     if (pMCard->saveToggle == true) {
@@ -1376,14 +1403,32 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
                 }
             }
             pMCard->file.game.writtenBlocks[0] = true;
-#if IS_MM
+#if IS_MM_JP || IS_MM_US
         } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
-            char* buffer = pMCard->file.game.buffer + 0x18000;
-            testInt = (s32*)buffer;
+            testInt = (s32*)(pMCard->file.game.buffer + 0x18000);
 
             if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
                 *testInt = 0xA51D0101;
             }
+#elif IS_MM_EU
+        } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
+            testInt = (s32*)(pMCard->file.game.buffer + 0x18000);
+            testChar = *testInt & 0xF;
+            *testInt = 0xA51D0000;
+
+            if (gLanguage > 3) {
+                *testInt |= 0x100;
+            } else {
+                *testInt |= (gLanguage + 1) * 0x100;
+            }
+
+            if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
+                testChar = 1;
+            } else if (OSGetSoundMode() == OS_SOUND_MODE_STEREO && testChar == 1) {
+                testChar = 0;
+            }
+
+            *testInt |= testChar;
 #endif
         }
     } else {
@@ -1399,14 +1444,33 @@ bool mcardGameSet(MemCard* pMCard, char* name) {
                     pMCard->file.game.buffer[0] &= 0xFC;
                 }
             }
-#if IS_MM
+#if IS_MM_JP || IS_MM_US
         } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
-            char* buffer = pMCard->file.game.buffer + 0x18000;
-            testInt = (s32*)buffer;
+            testInt = (s32*)(pMCard->file.game.buffer + 0x18000);
 
             if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
                 *testInt = 0xA51D0101;
             }
+#elif IS_MM_EU
+        }
+        else if (gpSystem->eTypeROM == SRT_ZELDA2) {
+            testInt = (s32*)(pMCard->file.game.buffer + 0x18000);
+            testChar = *testInt & 0xF;
+            *testInt = 0xA51D0000;
+
+            if (gLanguage > 3) {
+                *testInt |= 0x100;
+            } else {
+                *testInt |= (gLanguage + 1) * 0x100;
+            }
+
+            if (OSGetSoundMode() == OS_SOUND_MODE_MONO) {
+                testChar = 1;
+            } else if (OSGetSoundMode() == OS_SOUND_MODE_STEREO && testChar == 1) {
+                testChar = 0;
+            }
+
+            *testInt |= testChar;
 #endif
         }
     }
@@ -2457,9 +2521,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
     }
 
     if (pMCard->saveToggle == true) {
-        //! TODO: fake match
-        for (i = (u64)((u32)address / BLOCK_DATA_SIZE);
-             i < (u32)(address + size + BLOCK_DATA_SIZE - 1) / BLOCK_DATA_SIZE; i++) {
+        for (i = address / BLOCK_DATA_SIZE; i < (address + size - 1 + BLOCK_DATA_SIZE) / BLOCK_DATA_SIZE; i++) {
             pMCard->file.game.writtenBlocks[i] = true;
         }
 
@@ -2509,9 +2571,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
         }
 
         if (pMCard->saveToggle == true) {
-            //! TODO: fake match
-            for (i = (u64)((u32)address / BLOCK_DATA_SIZE);
-                 i < (u32)(address + size + BLOCK_DATA_SIZE - 1) / BLOCK_DATA_SIZE; i++) {
+            for (i = address / BLOCK_DATA_SIZE; i < (address + size - 1 + BLOCK_DATA_SIZE) / BLOCK_DATA_SIZE; i++) {
                 pMCard->file.game.writtenBlocks[i] = true;
             }
 
@@ -2539,8 +2599,7 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
         }
 #if IS_MM
     } else if (gpSystem->eTypeROM == SRT_ZELDA2) {
-        for (i = (u32)address / BLOCK_DATA_SIZE; i < (u32)(address + size + BLOCK_DATA_SIZE - 1) / BLOCK_DATA_SIZE;
-             i++) {
+        for (i = address / BLOCK_DATA_SIZE; i < (address + size - 1 + BLOCK_DATA_SIZE) / BLOCK_DATA_SIZE; i++) {
             pMCard->file.game.writtenBlocks[i] = true;
         }
 
@@ -2555,6 +2614,9 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
 #if IS_MM_JP
                 if (mcardSaveDisplay == 0x1A || mcardSaveDisplay == 0x11 || mcardSaveDisplay == 0x14 ||
                     mcardSaveDisplay == 0x15 || mcardSaveDisplay == 0x16 || mcardSaveDisplay == 0x17)
+#elif IS_MM_EU
+                if (mcardSaveDisplay == 0x11 || mcardSaveDisplay == 0x14 || mcardSaveDisplay == 0x15 ||
+                    mcardSaveDisplay == 0x16)
 #else
                 if (mcardSaveDisplay == 0x11 || mcardSaveDisplay == 0x14 || mcardSaveDisplay == 0x15 ||
                     mcardSaveDisplay == 0x16 || mcardSaveDisplay == 0x17)
@@ -2573,6 +2635,20 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     mcardLoadZelda2Camera(pMCard, address);
                 }
 #endif
+#if IS_MM_EU
+            } else if (address == 0xFF80 || address == 0x17F80) {
+                if (mcardSaveDisplay == 0x10 || mcardSaveDisplay == 0x12) {
+                    var_r31 = 1;
+                    if (mcardSaveDisplay == 0x12) {
+                        ZeldaEraseCamera();
+                        mcardLoadZelda2Camera(pMCard, address - 0x7F80);
+                    }
+                    if ((mcardOneTime == 0) && (mcardSaveDisplay == 0x17)) {
+                        var_r31 = 0;
+                    }
+                    mcardSaveDisplay = 0;
+                }
+#else
             } else if (address == 0xFF80 || address == 0x17F80) {
                 if (mcardSaveDisplay == 0x10 || mcardSaveDisplay == 0x12 || mcardSaveDisplay == 0x17) {
                     var_r31 = 1;
@@ -2581,16 +2657,21 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                     }
                     mcardSaveDisplay = 0;
                 }
-#if IS_MM_JP
+#endif
+#if IS_MM_JP || IS_MM_EU
             } else if (address == 0xBF80 || address == 0x13F80) {
                 if (mcardSaveDisplay == 0x10) {
                     mcardSaveDisplay = 0;
                     var_r31 = 1;
                     if (address == 0xBF80) {
+#if IS_MM_JP
                         DCInvalidateRange(pMCard->file.game.buffer + 0xC000, 0x3FFFU);
+#endif
                         memcpy(pMCard->file.game.buffer + 0xC000, pMCard->file.game.buffer + 0x8000, 0x3FFF);
                     } else {
+#if IS_MM_JP
                         DCInvalidateRange(pMCard->file.game.buffer + 0x14000, 0x3FFFU);
+#endif
                         memcpy(pMCard->file.game.buffer + 0x14000, pMCard->file.game.buffer + 0x10000, 0x3FFF);
                     }
                 }
@@ -2604,9 +2685,16 @@ bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
                 if (toggle2 == 0) {
                     toggle2 += 1;
                 } else {
+                    s32 value;
+
                     mcardSaveDisplay = 0;
                     var_r31 = 1;
-                    switch (((s32*)pMCard->file.game.buffer)[0x6000] & 0xF) {
+#if IS_MM_US
+                    value = ((s32*)pMCard->file.game.buffer)[0x6000] & 0x7;
+#else
+                    value = ((s32*)pMCard->file.game.buffer)[0x6000] & 0xF;
+#endif
+                    switch (value) {
                         case 0:
                             OSSetSoundMode(OS_SOUND_MODE_STEREO);
                             break;
@@ -3002,7 +3090,7 @@ bool mcardOpen(MemCard* pMCard, char* fileName, char* comment, char* icon, char*
                 return true;
             }
         } else {
-#if IS_MM_JP || IS_MM_US
+#if IS_MM
             mcardNewStart = false;
 #endif
             if (!mcardVerifyChecksumFileHeader(pMCard)) {
@@ -3912,7 +4000,12 @@ bool mcardSaveCamera(s32 value) {
     u8* ptr;
 
     pFrame = SYSTEM_FRAME(gpSystem);
+
+#if IS_MM_EU
+    ptr = &((u8*)SYSTEM_RAM(gpSystem)->pBuffer)[0x001E6560];
+#else
     ptr = &((u8*)SYSTEM_RAM(gpSystem)->pBuffer)[0x001EE900];
+#endif
 
     if (!xlHeapTake(&i8Buffer, 0x4600)) {
         return false;
