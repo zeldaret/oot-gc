@@ -1599,49 +1599,49 @@ bool simulatorDrawOKImage(TEXPalette* tplMessage, s32 nX0Message, s32 nY0Message
 }
 #endif
 
-static inline void simulatorDrawErrorMessageImpl(SimulatorMessage simulatorErrorMessage, bool drawBar, s32 percent,
-                                                 TEXPalette* coverOpen, TEXPalette* wrongDisk, TEXPalette* readingDisk,
-                                                 TEXPalette* retryErr, TEXPalette* fatalErr, TEXPalette* noDisk) {
-    switch (simulatorErrorMessage) {
-        case S_M_DISK_COVER_OPEN:
-            simulatorDrawImage(coverOpen, N64_FRAME_WIDTH / 2 - coverOpen->descriptorArray->textureHeader->width / 2,
-                               N64_FRAME_HEIGHT / 2 - coverOpen->descriptorArray->textureHeader->height / 2, drawBar,
-                               percent);
-            break;
-        case S_M_DISK_WRONG_DISK:
-            simulatorDrawImage(wrongDisk, N64_FRAME_WIDTH / 2 - wrongDisk->descriptorArray->textureHeader->width / 2,
-                               N64_FRAME_HEIGHT / 2 - wrongDisk->descriptorArray->textureHeader->height / 2, drawBar,
-                               percent);
-            break;
-        case S_M_DISK_READING_DISK:
-            simulatorDrawImage(
-                readingDisk, N64_FRAME_WIDTH / 2 - readingDisk->descriptorArray->textureHeader->width / 2,
-                N64_FRAME_HEIGHT / 2 - readingDisk->descriptorArray->textureHeader->height / 2, drawBar, percent);
-            break;
-        case S_M_DISK_RETRY_ERROR:
-            simulatorDrawImage(retryErr, N64_FRAME_WIDTH / 2 - retryErr->descriptorArray->textureHeader->width / 2,
-                               N64_FRAME_HEIGHT / 2 - retryErr->descriptorArray->textureHeader->height / 2, drawBar,
-                               percent);
-            break;
-        case S_M_DISK_FATAL_ERROR:
-            simulatorDrawImage(fatalErr, N64_FRAME_WIDTH / 2 - fatalErr->descriptorArray->textureHeader->width / 2,
-                               N64_FRAME_HEIGHT / 2 - fatalErr->descriptorArray->textureHeader->height / 2, drawBar,
-                               percent);
-            break;
-        case S_M_DISK_NO_DISK:
-            simulatorDrawImage(noDisk, N64_FRAME_WIDTH / 2 - noDisk->descriptorArray->textureHeader->width / 2,
-                               N64_FRAME_HEIGHT / 2 - noDisk->descriptorArray->textureHeader->height / 2, drawBar,
-                               percent);
-            break;
-        case S_M_DISK_DEFAULT_ERROR:
-            simulatorDrawImage(fatalErr, N64_FRAME_WIDTH / 2 - fatalErr->descriptorArray->textureHeader->width / 2,
-                               N64_FRAME_HEIGHT / 2 - fatalErr->descriptorArray->textureHeader->height / 2, drawBar,
-                               percent);
-            break;
-        default:
-            break;
+#define simulatorDrawErrorMessageImpl(simulatorErrorMessage, drawBar, percent, coverOpen, wrongDisk, readingDisk,      \
+                                      retryErr, fatalErr, noDisk)                                                      \
+    {                                                                                                                  \
+        switch (simulatorErrorMessage) {                                                                               \
+            case S_M_DISK_COVER_OPEN:                                                                                  \
+                simulatorDrawImage(                                                                                    \
+                    coverOpen, N64_FRAME_WIDTH / 2 - coverOpen->descriptorArray->textureHeader->width / 2,             \
+                    N64_FRAME_HEIGHT / 2 - coverOpen->descriptorArray->textureHeader->height / 2, drawBar, percent);   \
+                break;                                                                                                 \
+            case S_M_DISK_WRONG_DISK:                                                                                  \
+                simulatorDrawImage(                                                                                    \
+                    wrongDisk, N64_FRAME_WIDTH / 2 - wrongDisk->descriptorArray->textureHeader->width / 2,             \
+                    N64_FRAME_HEIGHT / 2 - wrongDisk->descriptorArray->textureHeader->height / 2, drawBar, percent);   \
+                break;                                                                                                 \
+            case S_M_DISK_READING_DISK:                                                                                \
+                simulatorDrawImage(                                                                                    \
+                    readingDisk, N64_FRAME_WIDTH / 2 - readingDisk->descriptorArray->textureHeader->width / 2,         \
+                    N64_FRAME_HEIGHT / 2 - readingDisk->descriptorArray->textureHeader->height / 2, drawBar, percent); \
+                break;                                                                                                 \
+            case S_M_DISK_RETRY_ERROR:                                                                                 \
+                simulatorDrawImage(                                                                                    \
+                    retryErr, N64_FRAME_WIDTH / 2 - retryErr->descriptorArray->textureHeader->width / 2,               \
+                    N64_FRAME_HEIGHT / 2 - retryErr->descriptorArray->textureHeader->height / 2, drawBar, percent);    \
+                break;                                                                                                 \
+            case S_M_DISK_FATAL_ERROR:                                                                                 \
+                simulatorDrawImage(                                                                                    \
+                    fatalErr, N64_FRAME_WIDTH / 2 - fatalErr->descriptorArray->textureHeader->width / 2,               \
+                    N64_FRAME_HEIGHT / 2 - fatalErr->descriptorArray->textureHeader->height / 2, drawBar, percent);    \
+                break;                                                                                                 \
+            case S_M_DISK_NO_DISK:                                                                                     \
+                simulatorDrawImage(noDisk, N64_FRAME_WIDTH / 2 - noDisk->descriptorArray->textureHeader->width / 2,    \
+                                   N64_FRAME_HEIGHT / 2 - noDisk->descriptorArray->textureHeader->height / 2, drawBar, \
+                                   percent);                                                                           \
+                break;                                                                                                 \
+            case S_M_DISK_DEFAULT_ERROR:                                                                               \
+                simulatorDrawImage(                                                                                    \
+                    fatalErr, N64_FRAME_WIDTH / 2 - fatalErr->descriptorArray->textureHeader->width / 2,               \
+                    N64_FRAME_HEIGHT / 2 - fatalErr->descriptorArray->textureHeader->height / 2, drawBar, percent);    \
+                break;                                                                                                 \
+            default:                                                                                                   \
+                break;                                                                                                 \
+        }                                                                                                              \
     }
-}
 
 bool simulatorDrawErrorMessage(SimulatorMessage simulatorErrorMessage, bool drawBar, s32 percent) {
     PADControlMotor(0, PAD_MOTOR_STOP);
@@ -1673,59 +1673,9 @@ bool simulatorDrawErrorMessage(SimulatorMessage simulatorErrorMessage, bool draw
     } else
 #endif
     {
-        switch (simulatorErrorMessage) {
-            case S_M_DISK_COVER_OPEN:
-                simulatorDrawImage(
-                    (TEXPalette*)gcoverOpen,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gcoverOpen)->descriptorArray->textureHeader->height / 2,
-                    drawBar, percent);
-                break;
-            case S_M_DISK_WRONG_DISK:
-                simulatorDrawImage(
-                    (TEXPalette*)gwrongDisk,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gwrongDisk)->descriptorArray->textureHeader->height / 2,
-                    drawBar, percent);
-                break;
-            case S_M_DISK_READING_DISK:
-                simulatorDrawImage(
-                    (TEXPalette*)greadingDisk,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)greadingDisk)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)greadingDisk)->descriptorArray->textureHeader->height / 2,
-                    drawBar, percent);
-                break;
-            case S_M_DISK_RETRY_ERROR:
-                simulatorDrawImage(
-                    (TEXPalette*)gretryErr,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gretryErr)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gretryErr)->descriptorArray->textureHeader->height / 2,
-                    drawBar, percent);
-                break;
-            case S_M_DISK_FATAL_ERROR:
-                simulatorDrawImage(
-                    (TEXPalette*)gfatalErr,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->height / 2,
-                    drawBar, percent);
-                break;
-            case S_M_DISK_NO_DISK:
-                simulatorDrawImage(
-                    (TEXPalette*)gnoDisk,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gnoDisk)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gnoDisk)->descriptorArray->textureHeader->height / 2, drawBar,
-                    percent);
-                break;
-            case S_M_DISK_DEFAULT_ERROR:
-                simulatorDrawImage(
-                    (TEXPalette*)gfatalErr,
-                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->width / 2,
-                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->height / 2,
-                    drawBar, percent);
-                break;
-            default:
-                break;
-        }
+        simulatorDrawErrorMessageImpl(simulatorErrorMessage, drawBar, percent, ((TEXPalette*)gcoverOpen),
+                                      ((TEXPalette*)gwrongDisk), ((TEXPalette*)greadingDisk), ((TEXPalette*)gretryErr),
+                                      ((TEXPalette*)gfatalErr), ((TEXPalette*)gnoDisk));
     }
 
     gbDisplayedError = true;
@@ -1772,17 +1722,6 @@ bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage) {
     return true;
 }
 
-#if IS_MM_EU
-#define simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, descriptor, yes, no)                                 \
-    {                                                                                                             \
-        simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*descriptor)->textureHeader->width / 2, \
-                                N64_FRAME_HEIGHT / 2 - (*descriptor)->textureHeader->height / 2, yes,             \
-                                120 - yes->descriptorArray->textureHeader->width / 2,                             \
-                                180 - yes->descriptorArray->textureHeader->height / 2, no,                        \
-                                200 - no->descriptorArray->textureHeader->width / 2,                              \
-                                180 - no->descriptorArray->textureHeader->height / 2);                            \
-    }
-#else
 #define simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, yes, no)                                                 \
     {                                                                                                                 \
         simulatorDrawYesNoImage(simulatorQuestion,                                                                    \
@@ -1793,12 +1732,11 @@ bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage) {
                                 200 - no->descriptorArray->textureHeader->width / 2,                                  \
                                 180 - no->descriptorArray->textureHeader->height / 2);                                \
     }
-#endif
 
 bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
 #if IS_MM_EU
     TEXDescriptor** descriptor;
-#elif VERSION != MQ_E && VERSION != CE_E
+#elif !IS_OOT_EU
     TEXDescriptor** pNo;
     TEXDescriptor** pYes;
     TEXDescriptor** pQuestion;
@@ -1827,7 +1765,12 @@ bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
     }
 #elif IS_MM_EU
     descriptor = &simulatorQuestion->descriptorArray;
-    simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, descriptor, ((TEXPalette*)gyes), ((TEXPalette*)gno));
+    simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*descriptor)->textureHeader->width / 2,
+                            N64_FRAME_HEIGHT / 2 - (*descriptor)->textureHeader->height / 2, (TEXPalette*)gyes,
+                            120 - ((TEXPalette*)gyes)->descriptorArray->textureHeader->width / 2,
+                            180 - ((TEXPalette*)gyes)->descriptorArray->textureHeader->height / 2, (TEXPalette*)gno,
+                            200 - ((TEXPalette*)gno)->descriptorArray->textureHeader->width / 2,
+                            180 - ((TEXPalette*)gno)->descriptorArray->textureHeader->height / 2);
 #else
     pNo = &((TEXPalette*)gno)->descriptorArray;
     pYes = &((TEXPalette*)gyes)->descriptorArray;
@@ -1870,7 +1813,12 @@ bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
         simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gyes), ((TEXPalette*)gno));
     }
 #elif IS_MM_EU
-    simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, descriptor, ((TEXPalette*)gyes), ((TEXPalette*)gno));
+    simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*descriptor)->textureHeader->width / 2,
+                            N64_FRAME_HEIGHT / 2 - (*descriptor)->textureHeader->height / 2, (TEXPalette*)gyes,
+                            120 - ((TEXPalette*)gyes)->descriptorArray->textureHeader->width / 2,
+                            180 - ((TEXPalette*)gyes)->descriptorArray->textureHeader->height / 2, (TEXPalette*)gno,
+                            200 - ((TEXPalette*)gno)->descriptorArray->textureHeader->width / 2,
+                            180 - ((TEXPalette*)gno)->descriptorArray->textureHeader->height / 2);
 #else
     simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*pQuestion)->textureHeader->width / 2,
                             N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalette*)gyes,
