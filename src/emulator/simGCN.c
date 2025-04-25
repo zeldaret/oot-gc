@@ -1731,6 +1731,11 @@ static inline void simulatorDrawYesNoMessageLoopImpl(TEXPalette* simulatorQuesti
 }
 
 bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
+#if VERSION != CE_E
+    TEXDescriptor** pNo;
+    TEXDescriptor** pYes;
+    TEXDescriptor** pQuestion;
+#endif
     s32 pad[2];
 
     if (*yes == true) {
@@ -1750,11 +1755,20 @@ bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
     } else if (gLanguage == 4) {
         simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gitalian_yes, (TEXPalette*)gitalian_no);
 #endif
-    } else
-#endif
-    {
+    } else {
         simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gyes, (TEXPalette*)gno);
     }
+#else
+    pNo = &((TEXPalette*)gno)->descriptorArray;
+    pYes = &((TEXPalette*)gyes)->descriptorArray;
+    pQuestion = &simulatorQuestion->descriptorArray;
+
+    simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*pQuestion)->textureHeader->width / 2,
+                            N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalette*)gyes,
+                            120 - (*pYes)->textureHeader->width / 2, 180 - (*pYes)->textureHeader->height / 2,
+                            (TEXPalette*)gno, 200 - (*pNo)->textureHeader->width / 2,
+                            180 - (*pNo)->textureHeader->height / 2);
+#endif
 
     if (gButtonDownToggle == true) {
         DEMOPadRead();
@@ -1782,11 +1796,16 @@ bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
     } else if (gLanguage == 4) {
         simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gitalian_yes, (TEXPalette*)gitalian_no);
 #endif
-    } else
-#endif
-    {
+    } else {
         simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gyes, (TEXPalette*)gno);
     }
+#else
+    simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*pQuestion)->textureHeader->width / 2,
+                            N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalette*)gyes,
+                            120 - (*pYes)->textureHeader->width / 2, 180 - (*pYes)->textureHeader->height / 2,
+                            (TEXPalette*)gno, 200 - (*pNo)->textureHeader->width / 2,
+                            180 - (*pNo)->textureHeader->height / 2);
+#endif
 
     if (DemoPad->pst.err == 0) {
         if (DemoPad->pst.button & 0x1100) {
