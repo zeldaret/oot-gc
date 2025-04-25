@@ -1673,9 +1673,59 @@ bool simulatorDrawErrorMessage(SimulatorMessage simulatorErrorMessage, bool draw
     } else
 #endif
     {
-        simulatorDrawErrorMessageImpl(simulatorErrorMessage, drawBar, percent, ((TEXPalette*)gcoverOpen),
-                                      ((TEXPalette*)gwrongDisk), ((TEXPalette*)greadingDisk), ((TEXPalette*)gretryErr),
-                                      ((TEXPalette*)gfatalErr), ((TEXPalette*)gnoDisk));
+        switch (simulatorErrorMessage) {
+            case S_M_DISK_COVER_OPEN:
+                simulatorDrawImage(
+                    (TEXPalette*)gcoverOpen,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gcoverOpen)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gcoverOpen)->descriptorArray->textureHeader->height / 2,
+                    drawBar, percent);
+                break;
+            case S_M_DISK_WRONG_DISK:
+                simulatorDrawImage(
+                    (TEXPalette*)gwrongDisk,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gwrongDisk)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gwrongDisk)->descriptorArray->textureHeader->height / 2,
+                    drawBar, percent);
+                break;
+            case S_M_DISK_READING_DISK:
+                simulatorDrawImage(
+                    (TEXPalette*)greadingDisk,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)greadingDisk)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)greadingDisk)->descriptorArray->textureHeader->height / 2,
+                    drawBar, percent);
+                break;
+            case S_M_DISK_RETRY_ERROR:
+                simulatorDrawImage(
+                    (TEXPalette*)gretryErr,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gretryErr)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gretryErr)->descriptorArray->textureHeader->height / 2,
+                    drawBar, percent);
+                break;
+            case S_M_DISK_FATAL_ERROR:
+                simulatorDrawImage(
+                    (TEXPalette*)gfatalErr,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->height / 2,
+                    drawBar, percent);
+                break;
+            case S_M_DISK_NO_DISK:
+                simulatorDrawImage(
+                    (TEXPalette*)gnoDisk,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gnoDisk)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gnoDisk)->descriptorArray->textureHeader->height / 2, drawBar,
+                    percent);
+                break;
+            case S_M_DISK_DEFAULT_ERROR:
+                simulatorDrawImage(
+                    (TEXPalette*)gfatalErr,
+                    N64_FRAME_WIDTH / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->width / 2,
+                    N64_FRAME_HEIGHT / 2 - ((TEXPalette*)gfatalErr)->descriptorArray->textureHeader->height / 2,
+                    drawBar, percent);
+                break;
+            default:
+                break;
+        }
     }
 
     gbDisplayedError = true;
@@ -1722,16 +1772,33 @@ bool simulatorPrepareMessage(SimulatorMessage simulatorErrorMessage) {
     return true;
 }
 
-static inline void simulatorDrawYesNoMessageLoopImpl(TEXPalette* simulatorQuestion, TEXPalette* yes, TEXPalette* no) {
-    simulatorDrawYesNoImage(
-        simulatorQuestion, N64_FRAME_WIDTH / 2 - simulatorQuestion->descriptorArray->textureHeader->width / 2,
-        N64_FRAME_HEIGHT / 2 - simulatorQuestion->descriptorArray->textureHeader->height / 2, yes,
-        120 - yes->descriptorArray->textureHeader->width / 2, 180 - yes->descriptorArray->textureHeader->height / 2, no,
-        200 - no->descriptorArray->textureHeader->width / 2, 180 - no->descriptorArray->textureHeader->height / 2);
-}
+#if IS_MM_EU
+#define simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, descriptor, yes, no)                                 \
+    {                                                                                                             \
+        simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*descriptor)->textureHeader->width / 2, \
+                                N64_FRAME_HEIGHT / 2 - (*descriptor)->textureHeader->height / 2, yes,             \
+                                120 - yes->descriptorArray->textureHeader->width / 2,                             \
+                                180 - yes->descriptorArray->textureHeader->height / 2, no,                        \
+                                200 - no->descriptorArray->textureHeader->width / 2,                              \
+                                180 - no->descriptorArray->textureHeader->height / 2);                            \
+    }
+#else
+#define simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, yes, no)                                                 \
+    {                                                                                                                 \
+        simulatorDrawYesNoImage(simulatorQuestion,                                                                    \
+                                N64_FRAME_WIDTH / 2 - simulatorQuestion->descriptorArray->textureHeader->width / 2,   \
+                                N64_FRAME_HEIGHT / 2 - simulatorQuestion->descriptorArray->textureHeader->height / 2, \
+                                yes, 120 - yes->descriptorArray->textureHeader->width / 2,                            \
+                                180 - yes->descriptorArray->textureHeader->height / 2, no,                            \
+                                200 - no->descriptorArray->textureHeader->width / 2,                                  \
+                                180 - no->descriptorArray->textureHeader->height / 2);                                \
+    }
+#endif
 
 bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
-#if VERSION != CE_E
+#if IS_MM_EU
+    TEXDescriptor** descriptor;
+#elif VERSION != MQ_E && VERSION != CE_E
     TEXDescriptor** pNo;
     TEXDescriptor** pYes;
     TEXDescriptor** pQuestion;
@@ -1746,18 +1813,21 @@ bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
 
 #if IS_OOT_EU
     if (gLanguage == 1) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)ggerman_yes, (TEXPalette*)ggerman_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)ggerman_yes), ((TEXPalette*)ggerman_no));
     } else if (gLanguage == 2) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gfrench_yes, (TEXPalette*)gfrench_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gfrench_yes), ((TEXPalette*)gfrench_no));
 #if VERSION == CE_E
     } else if (gLanguage == 3) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gspanish_yes, (TEXPalette*)gspanish_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gspanish_yes), ((TEXPalette*)gspanish_no));
     } else if (gLanguage == 4) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gitalian_yes, (TEXPalette*)gitalian_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gitalian_yes), ((TEXPalette*)gitalian_no));
 #endif
     } else {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gyes, (TEXPalette*)gno);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gyes), ((TEXPalette*)gno));
     }
+#elif IS_MM_EU
+    descriptor = &simulatorQuestion->descriptorArray;
+    simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, descriptor, ((TEXPalette*)gyes), ((TEXPalette*)gno));
 #else
     pNo = &((TEXPalette*)gno)->descriptorArray;
     pYes = &((TEXPalette*)gyes)->descriptorArray;
@@ -1787,18 +1857,20 @@ bool simulatorDrawYesNoMessageLoop(TEXPalette* simulatorQuestion, bool* yes) {
 
 #if IS_OOT_EU
     if (gLanguage == 1) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)ggerman_yes, (TEXPalette*)ggerman_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)ggerman_yes), ((TEXPalette*)ggerman_no));
     } else if (gLanguage == 2) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gfrench_yes, (TEXPalette*)gfrench_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gfrench_yes), ((TEXPalette*)gfrench_no));
 #if VERSION == CE_E
     } else if (gLanguage == 3) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gspanish_yes, (TEXPalette*)gspanish_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gspanish_yes), ((TEXPalette*)gspanish_no));
     } else if (gLanguage == 4) {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gitalian_yes, (TEXPalette*)gitalian_no);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gitalian_yes), ((TEXPalette*)gitalian_no));
 #endif
     } else {
-        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, (TEXPalette*)gyes, (TEXPalette*)gno);
+        simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, ((TEXPalette*)gyes), ((TEXPalette*)gno));
     }
+#elif IS_MM_EU
+    simulatorDrawYesNoMessageLoopImpl(simulatorQuestion, descriptor, ((TEXPalette*)gyes), ((TEXPalette*)gno));
 #else
     simulatorDrawYesNoImage(simulatorQuestion, N64_FRAME_WIDTH / 2 - (*pQuestion)->textureHeader->width / 2,
                             N64_FRAME_HEIGHT / 2 - (*pQuestion)->textureHeader->height / 2, (TEXPalette*)gyes,
@@ -1895,35 +1967,31 @@ bool simulatorDrawYesNoMessage(SimulatorMessage simulatorMessage, bool* yes) {
     return false;
 }
 
-static inline void simulatorDrawOKMessageLoopImpl(TEXPalette* simulatorMessage, TEXPalette* yes, TEXPalette* mesgOK) {
-    simulatorDrawOKImage(simulatorMessage,
-                         N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,
-                         N64_FRAME_HEIGHT / 2 - simulatorMessage->descriptorArray->textureHeader->height / 2, mesgOK,
-                         N64_FRAME_WIDTH / 2 - mesgOK->descriptorArray->textureHeader->width / 2,
-                         180 - yes->descriptorArray->textureHeader->height / 2); // bug, copy paste error?
-}
+#define simulatorDrawOKMessageLoopImpl(simulatorMessage, yes, mesgOK)                                             \
+    {                                                                                                             \
+        simulatorDrawOKImage(simulatorMessage,                                                                    \
+                             N64_FRAME_WIDTH / 2 - simulatorMessage->descriptorArray->textureHeader->width / 2,   \
+                             N64_FRAME_HEIGHT / 2 - simulatorMessage->descriptorArray->textureHeader->height / 2, \
+                             mesgOK, N64_FRAME_WIDTH / 2 - mesgOK->descriptorArray->textureHeader->width / 2,     \
+                             180 - yes->descriptorArray->textureHeader->height / 2);                              \
+    } // bug, copy paste error?
 
-#if IS_OOT_EU
-static bool simulatorDrawOKMessageLoop(TEXPalette* simulatorMessage)
-#else
-static inline bool simulatorDrawOKMessageLoop(TEXPalette* simulatorMessage)
-#endif
-{
+static bool simulatorDrawOKMessageLoop(TEXPalette* simulatorMessage) {
 #if IS_OOT_EU
     if (gLanguage == 1) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)ggerman_yes, (TEXPalette*)ggerman_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)ggerman_yes), ((TEXPalette*)ggerman_mesgOK));
     } else if (gLanguage == 2) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gfrench_yes, (TEXPalette*)gfrench_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gfrench_yes), ((TEXPalette*)gfrench_mesgOK));
 #if VERSION == CE_E
     } else if (gLanguage == 3) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gspanish_yes, (TEXPalette*)gspanish_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gspanish_yes), ((TEXPalette*)gspanish_mesgOK));
     } else if (gLanguage == 4) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gitalian_yes, (TEXPalette*)gitalian_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gitalian_yes), ((TEXPalette*)gitalian_mesgOK));
 #endif
     } else
 #endif
     {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gyes, (TEXPalette*)gmesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gyes), ((TEXPalette*)gmesgOK));
     }
 
     if (gButtonDownToggle == true) {
@@ -1938,19 +2006,19 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalette* simulatorMessage)
 
 #if IS_OOT_EU
     if (gLanguage == 1) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)ggerman_yes, (TEXPalette*)ggerman_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)ggerman_yes), ((TEXPalette*)ggerman_mesgOK));
     } else if (gLanguage == 2) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gfrench_yes, (TEXPalette*)gfrench_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gfrench_yes), ((TEXPalette*)gfrench_mesgOK));
 #if VERSION == CE_E
     } else if (gLanguage == 3) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gspanish_yes, (TEXPalette*)gspanish_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gspanish_yes), ((TEXPalette*)gspanish_mesgOK));
     } else if (gLanguage == 4) {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gitalian_yes, (TEXPalette*)gitalian_mesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gitalian_yes), ((TEXPalette*)gitalian_mesgOK));
 #endif
     } else
 #endif
     {
-        simulatorDrawOKMessageLoopImpl(simulatorMessage, (TEXPalette*)gyes, (TEXPalette*)gmesgOK);
+        simulatorDrawOKMessageLoopImpl(simulatorMessage, ((TEXPalette*)gyes), ((TEXPalette*)gmesgOK));
     }
 
     if ((DemoPad->pst.err == PAD_ERR_NONE) && (DemoPad->pst.button & (PAD_BUTTON_START | PAD_BUTTON_A))) {
@@ -1960,11 +2028,6 @@ static inline bool simulatorDrawOKMessageLoop(TEXPalette* simulatorMessage)
     }
 
     PAD_STACK();
-
-    //! PAL TODO: check if this is really needed
-#if IS_OOT_EU
-    NO_INLINE();
-#endif
     return false;
 }
 
