@@ -3063,6 +3063,10 @@ bool xlMain(void) {
 #if IS_OOT_EU
     switch (gLanguage) {
         case 0:
+#if IS_MQ_EU
+        case 4:
+        case 5:
+#endif
             simulatorUnpackTexPalette((TEXPalette*)gcoverOpen);
             simulatorUnpackTexPalette((TEXPalette*)gnoDisk);
             simulatorUnpackTexPalette((TEXPalette*)gretryErr);
@@ -3081,11 +3085,7 @@ bool xlMain(void) {
             simulatorUnpackTexPalette((TEXPalette*)ggerman_fatalErr);
             simulatorUnpackTexPalette((TEXPalette*)ggerman_wrongDisk);
             simulatorUnpackTexPalette((TEXPalette*)ggerman_readingDisk);
-#if IS_MQ_EU
-            simulatorUnpackTexPalette((TEXPalette*)ggerman_bar);
-#else
             simulatorUnpackTexPalette((TEXPalette*)gbar);
-#endif
             simulatorUnpackTexPalette((TEXPalette*)ggerman_yes);
             simulatorUnpackTexPalette((TEXPalette*)ggerman_no);
             simulatorUnpackTexPalette((TEXPalette*)ggerman_mesgOK);
@@ -3097,11 +3097,7 @@ bool xlMain(void) {
             simulatorUnpackTexPalette((TEXPalette*)gfrench_fatalErr);
             simulatorUnpackTexPalette((TEXPalette*)gfrench_wrongDisk);
             simulatorUnpackTexPalette((TEXPalette*)gfrench_readingDisk);
-#if IS_MQ_EU
-            simulatorUnpackTexPalette((TEXPalette*)gfrench_bar);
-#else
             simulatorUnpackTexPalette((TEXPalette*)gbar);
-#endif
             simulatorUnpackTexPalette((TEXPalette*)gfrench_yes);
             simulatorUnpackTexPalette((TEXPalette*)gfrench_no);
             simulatorUnpackTexPalette((TEXPalette*)gfrench_mesgOK);
@@ -3114,11 +3110,7 @@ bool xlMain(void) {
             simulatorUnpackTexPalette((TEXPalette*)gspanish_fatalErr);
             simulatorUnpackTexPalette((TEXPalette*)gspanish_wrongDisk);
             simulatorUnpackTexPalette((TEXPalette*)gspanish_readingDisk);
-#if IS_MQ_EU
-            simulatorUnpackTexPalette((TEXPalette*)gspanish_bar);
-#else
             simulatorUnpackTexPalette((TEXPalette*)gbar);
-#endif
             simulatorUnpackTexPalette((TEXPalette*)gspanish_yes);
             simulatorUnpackTexPalette((TEXPalette*)gspanish_no);
             simulatorUnpackTexPalette((TEXPalette*)gspanish_mesgOK);
@@ -3130,17 +3122,13 @@ bool xlMain(void) {
             simulatorUnpackTexPalette((TEXPalette*)gitalian_fatalErr);
             simulatorUnpackTexPalette((TEXPalette*)gitalian_wrongDisk);
             simulatorUnpackTexPalette((TEXPalette*)gitalian_readingDisk);
-#if IS_MQ_EU
-            simulatorUnpackTexPalette((TEXPalette*)gitalian_bar);
-#else
             simulatorUnpackTexPalette((TEXPalette*)gbar);
-#endif
             simulatorUnpackTexPalette((TEXPalette*)gitalian_yes);
             simulatorUnpackTexPalette((TEXPalette*)gitalian_no);
             simulatorUnpackTexPalette((TEXPalette*)gitalian_mesgOK);
             break;
-#endif
         case 5:
+#endif
         default:
             simulatorUnpackTexPalette((TEXPalette*)gcoverOpen);
             simulatorUnpackTexPalette((TEXPalette*)gnoDisk);

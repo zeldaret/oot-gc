@@ -266,7 +266,7 @@ config.libs = [
             Object(Linked, "emulator/xlHeap.c"),
             Object(LinkedFor("mq-e", "ce-e", "mm-j", "mm-u", "mm-e"), "emulator/xlFile.c"),
             Object(Linked, "emulator/xlObject.c"),
-            Object(LinkedFor("mq-j", "mq-u", "ce-j", "ce-u"), "emulator/simGCN.c"),
+            Object(LinkedFor("mq-j", "mq-u", "mq-e", "ce-j", "ce-u", "ce-e"), "emulator/simGCN.c"),
             Object(Linked, "emulator/movie.c"),
             # THP files except for THPRead.c do not have -inline deferred
             Object(Linked, "emulator/THPPlayer.c", cflags=cflags_base),
