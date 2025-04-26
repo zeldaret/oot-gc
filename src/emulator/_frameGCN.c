@@ -4233,7 +4233,7 @@ bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
                 pFrame->bShrinking |= 0x100;
 
 #if IS_OOT
-                if ((pFrame->bShrinking & ~0xFFFF) == 0)
+                if (((u32)pFrame->bShrinking & ~0xFFFF) == 0)
 #endif
                 {
                     pFrame->bShrinking |= bg.b.tmemW << 16;
