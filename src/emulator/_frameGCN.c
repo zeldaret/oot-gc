@@ -80,13 +80,13 @@ extern u16 gnTempBuffer[];
 #endif
 
 #if IS_MM
-f32 gFarVal;
-f32 gNearVal;
 GXProjectionType gRealProjectionType;
+f32 gNearVal;
+f32 gFarVal;
 
-FrameTexture* gpTexture[8];
-Mtx gTextureMatrix[8];
 Mtx44 gRealProjectionMtx;
+Mtx gTextureMatrix[8];
+FrameTexture* gpTexture[8];
 #endif
 
 static inline bool frameSetProjection(Frame* pFrame, s32 iHint) {
@@ -204,6 +204,7 @@ static bool frameDrawSetupFog_StarFox(Frame* pFrame) {
 }
 #endif
 
+// non-matching for MM
 static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
     GXFogType nFogType;
     f32 rNear;
@@ -293,7 +294,7 @@ static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
             rDMinMax = rNearScale + rMultiplier;
             dminmax = rDMinMax - rNearScale;
 
-            if (gRealProjectionType == 0) {
+            if (gRealProjectionType == GX_PERSPECTIVE) {
                 rMinimum = -gRealProjectionMtx[4][3] / (((rNearScale - 1000.0f) / 1064.0f) + gRealProjectionMtx[4][2]);
             } else {
                 rMinimum = (((rNearScale - 1000.0f) / 1064.0f) - gRealProjectionMtx[4][3]) / gRealProjectionMtx[4][2];
@@ -313,7 +314,7 @@ static bool frameDrawSetupFog_Zelda1(Frame* pFrame) {
                 rNearScale = 1000.0f;
             }
 
-            if (gRealProjectionType == 0) {
+            if (gRealProjectionType == GX_PERSPECTIVE) {
                 rMaximum = -gRealProjectionMtx[4][3] / (((rNearScale - 1000.0f) / 1064.0f) + gRealProjectionMtx[4][2]);
             } else {
                 rMaximum = (((rNearScale - 1000.0f) / 1064.0f) - gRealProjectionMtx[4][3]) / gRealProjectionMtx[4][2];
@@ -1614,6 +1615,7 @@ static inline void frameSetZMode(Frame* pFrame) {
 #endif
 }
 
+// non-matching for MM
 static bool frameDrawSetupSP(Frame* pFrame, s32* pnColors, bool* pbFlag, s32 nVertexCount) {
     f32 rValue23;
     bool bTextureGen;
@@ -2797,6 +2799,7 @@ static bool frameDrawRectFill_Setup(Frame* pFrame, Rectangle* pRectangle) {
     return true;
 }
 
+// non-matching for MM
 static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
     s32 bCopy;
     f32 rDepth;
@@ -2811,9 +2814,10 @@ static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
     f32 rS1;
     f32 rT1;
     s32 pad;
-    static s32 nCounter;
 
 #if IS_OOT
+    static s32 nCounter;
+
     if (gpSystem->eTypeROM == SRT_DRMARIO) {
         if (pRectangle->nX0 == 0 && pRectangle->nY0 == 0 && pRectangle->nX1 == 1308 && pRectangle->nY1 == 20) {
             if (pFrame->aBuffer[FBT_IMAGE].nAddress != 0x3B5000 && pFrame->aBuffer[FBT_IMAGE].nAddress != 0x3DA800 &&
@@ -2944,6 +2948,7 @@ static bool frameDrawRectTexture(Frame* pFrame, Rectangle* pRectangle) {
     return true;
 }
 
+// non-matching for MM
 static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
     Mtx matrix;
     Mtx matrixA;
@@ -2980,9 +2985,9 @@ static bool frameDrawRectTexture_Setup(Frame* pFrame, Rectangle* pRectangle) {
     if (bFlag) {
         for (iIndex = 0; iTile <= nCount; iTile++, iIndex++) {
             if (frameLoadTile(pFrame, &pTexture[iTile], iTile | (iIndex << 4))) {
+#if IS_OOT
                 static bool bSkip;
 
-#if IS_OOT
                 if (gpSystem->eTypeROM == SRT_ZELDA2 && pTexture[iTile]->nAddress == 0x784600 &&
                     pRectangle->nX1 == 1280) {
                     bSkip = true;
@@ -3237,7 +3242,7 @@ bool frameEnd(Frame* pFrame) {
         if ((u32)pFrame->bSnapShot & ~0xFFFF) {
             pFrame->bSnapShot |= 0x10;
         } else {
-            pFrame->bSnapShot = 0;
+            pFrame->bSnapShot &= ~0xFFFF;
         }
 #endif
     }
@@ -3442,6 +3447,7 @@ static void CopyCFB(u16* srcP) {
     while (!sCopyFrameSyncReceived) {}
 }
 
+// non-matching for MM
 void CopyAndConvertCFB(u16* srcP) {
     u16* dataEndP;
     s32 tile;
@@ -3475,6 +3481,7 @@ void CopyAndConvertCFB(u16* srcP) {
 }
 
 #if IS_MM
+static u16 line_1629[N64_FRAME_WIDTH / 4][4][4];
 static LensTexture sLensTex;
 
 void CopyZValue(u32* ptr) {
@@ -3489,7 +3496,7 @@ void CopyZValue(u32* ptr) {
     GXSetColorUpdate(GX_TRUE);
 }
 
-// non-matching
+// non-matching for MM
 void frameCopyLensTexture(Frame* pFrame, Rectangle* pRectangle) {
     // Parameters
     // Frame* pFrame; // r30
@@ -3534,7 +3541,7 @@ void frameCopyLensTexture(Frame* pFrame, Rectangle* pRectangle) {
     sLensTex.alphaComp = pFrame->aColor[2].a;
 }
 
-// non-matching
+// non-matching for MM
 const GXColor color = {0, 0, 255, 255};
 void WriteZValue(Frame* pFrame, u32* ptr) {
     // Parameters
@@ -3636,6 +3643,7 @@ void WriteZValue(Frame* pFrame, u32* ptr) {
 }
 #endif
 
+// non-matching for MM
 static void ZeldaGreyScaleConvert(Frame* pFrame) {
     Mtx matrix;
     void* dataP;
@@ -3708,9 +3716,12 @@ static void ZeldaGreyScaleConvert(Frame* pFrame) {
     frameDrawReset(pFrame, 0x47F2D);
 }
 
+#if IS_OOT
 // Variables from unused function ZeldaDrawFrameHiRes
 static GXTexObj sFrameObj_1660;
+#endif
 
+// non-matching for MM
 void ZeldaDrawFrameShrink(Frame* pFrame, s32 posX, s32 posY, s32 size) {
     Mtx matrix;
 #if IS_OOT
@@ -3834,6 +3845,7 @@ void ZeldaEraseCamera(void) {
 }
 #endif
 
+// non-matching for MM
 void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     Mtx matrix;
     GXColor color;
@@ -3845,8 +3857,6 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     f32 height;
 
 #if IS_MM
-    f32 new_var;
-    f32 new_var2;
     s32 shrink;
 #endif
 
@@ -3858,8 +3868,8 @@ void ZeldaDrawFrameCamera(Frame* pFrame, void* buffer) {
     nY1 = 143.0f;
 
 #if IS_MM
-    width = new_var = 160.0f;
-    height = new_var2 = 112.0f;
+    width = 160.0f;
+    height = 112.0f;
     shrink = pFrame->bShrinking >> 16;
 
     if (shrink != 0) {
@@ -4103,6 +4113,7 @@ bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 n
     return true;
 }
 
+// non-matching for MM
 bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi) {
     u32 i;
     u32 low2;
@@ -4222,7 +4233,7 @@ bool frameHackCIMG_Zelda2_Shrink(Rdp* pRDP, Frame* pFrame, u64** ppnGBI) {
                 pFrame->bShrinking |= 0x100;
 
 #if IS_OOT
-                if ((pFrame->bShrinking & 0xFFFF0000) == 0)
+                if ((pFrame->bShrinking & ~0xFFFF) == 0)
 #endif
                 {
                     pFrame->bShrinking |= bg.b.tmemW << 16;
