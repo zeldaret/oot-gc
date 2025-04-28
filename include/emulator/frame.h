@@ -254,6 +254,17 @@ typedef struct Rectangle {
     /* 0x24 */ f32 rDeltaT;
 } Rectangle; // size = 0x28
 
+typedef struct LensTexture {
+    /* 0x0000 */ u8 lensTexture[64 * 64 * 2];
+    /* 0x2000 */ FrameTexture texture;
+    /* 0x206C */ f32 rS0;
+    /* 0x2070 */ f32 rS1;
+    /* 0x2074 */ f32 rT0;
+    /* 0x2078 */ f32 rT1;
+    /* 0x207C */ u8 alphaComp;
+    /* 0x2080 */ Mtx texMtx;
+} LensTexture; // size = 0x20B0
+
 // __anon_0x24C38
 typedef struct Frame {
     /*   OoT      MM   */
