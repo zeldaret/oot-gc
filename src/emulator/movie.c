@@ -4,7 +4,7 @@
 #include "emulator/system.h"
 #include "emulator/xlCoreGCN.h"
 
-#if IS_CE_US
+#if VERSION == CE_U
 #define MOVIE_FILENAME "us_final_zelda_credits_sound.thp"
 #elif IS_EU
 #define MOVIE_FILENAME "pal_zelda_w_snd.thp"

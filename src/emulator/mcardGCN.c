@@ -2474,14 +2474,18 @@ bool mcardOpenDuringGameError(MemCard* pMCard, MemCardCommand* pCommand) {
 }
 
 #if IS_MM
-static bool mcardNewStart;
 
 #if IS_MM_JP
+static bool mcardNewStart;
 static s32 mcardEmpty;
-#endif
-
 static s32 mcardOneTime;
 s32 mcardSaveDisplay = 0;
+#else
+bool mcardNewStart = false;
+s32 mcardSaveDisplay = 0;
+s32 mcardOneTime = 0;
+#endif
+
 #endif
 
 bool mcardWrite(MemCard* pMCard, s32 address, s32 size, char* data) {
