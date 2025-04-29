@@ -818,9 +818,15 @@ bool romReloadRange(Cpu* pCPU) {
         if (!romLoadRangeBlock(pROM, 0x67E, 0x690, &blockCount, 0x1, &romCacheEnding_ZELDA)) {
             return false;
         }
-        if (!romLoadRangeBlock(pROM, 0x69B, IS_MM_JP ? 0x6A7 : 0x6A6, &blockCount, 0x1, &romCacheEnding_ZELDA)) {
+#if IS_MM_JP
+        if (!romLoadRangeBlock(pROM, 0x69B, 0x6A7, &blockCount, 0x1, &romCacheEnding_ZELDA)) {
             return false;
         }
+#else
+        if (!romLoadRangeBlock(pROM, 0x69B, 0x6A6, &blockCount, 0x1, &romCacheEnding_ZELDA)) {
+            return false;
+        }
+#endif
         if (!romLoadRangeBlock(pROM, 0x6BE, 0x73D, &blockCount, 0x1, &romCacheEnding_ZELDA)) {
             return false;
         }
@@ -1215,7 +1221,7 @@ bool romReloadRange(Cpu* pCPU) {
 #endif
 
 static bool romCacheGame_ZELDA(f32 rProgress) {
-    s32 nSize;
+    int nSize;
     Mtx44 matrix44;
 #if IS_MM
     Mtx matrix;
@@ -1223,11 +1229,6 @@ static bool romCacheGame_ZELDA(f32 rProgress) {
     GXTexObj textureObject;
 
     static s32 iImage;
-
-#if IS_OOT
-    f32 var_f1;
-#endif
-    int pROM;
 
     if (gbDisplayedError) {
         gbDisplayedError = false;
@@ -1276,17 +1277,12 @@ static bool romCacheGame_ZELDA(f32 rProgress) {
         VIWaitForRetrace();
 
 #if IS_OOT
-        if (gbProgress) {
-            var_f1 = (rProgress / 2.0f) + 0.5f;
-        } else {
-            var_f1 = rProgress / 2.0f;
-        }
-        pROM = (s32)(400.0f * var_f1);
+        nSize = 400.0f * (gbProgress ? (rProgress / 2.0f) + 0.5f : rProgress / 2.0f);
 #else
-        pROM = 400.0 * rProgress;
+        nSize = 400.0 * rProgress;
 
-        if (pROM > 400) {
-            pROM = 400;
+        if (nSize > 400) {
+            nSize = 400;
         }
 #endif
 
@@ -1294,7 +1290,7 @@ static bool romCacheGame_ZELDA(f32 rProgress) {
             return false;
         }
 
-        if (!_frameDrawRectangle(SYSTEM_FRAME(gpSystem), 0x8F9B8F7C, 120, 430 + RECT_Y_OFFSET, pROM, 8)) {
+        if (!_frameDrawRectangle(SYSTEM_FRAME(gpSystem), 0x8F9B8F7C, 120, 430 + RECT_Y_OFFSET, nSize, 8)) {
             return false;
         }
     }
@@ -1884,13 +1880,8 @@ bool romCacheGame(Rom* pROM) {
 
         if (bZeldaE || bZeldaJ || bZeldaF || bZeldaG || bZeldaI || bZeldaS) {
             if (gnFlagZelda & 2) {
-                if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {
-                    // pROM->anOffsetBlock = ganOffsetBlock_ZLP;
-                    // pROM->nCountOffsetBlocks = 0xC6;
-                }
+                if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {}
             } else if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {
-                // pROM->anOffsetBlock = ganOffsetBlock_URAZLP;
-                // pROM->nCountOffsetBlocks = 0xC6;
             }
 
             if (bZeldaE) {
@@ -1902,7 +1893,7 @@ bool romCacheGame(Rom* pROM) {
             } else if (bZeldaJ) {
                 szName = gnFlagZelda & 2 ? "zlj.tpl" : "urazlj.tpl";
             } else if (bZeldaI) {
-                szName = gnFlagZelda & 2 ? "zle.tpl" : "urazle.tpl"; // TODO
+                szName = gnFlagZelda & 2 ? "zle.tpl" : "urazle.tpl";
             } else if (bZeldaS) {
                 szName = gnFlagZelda & 2 ? "zle.tpl" : "urazle.tpl";
             } else {
