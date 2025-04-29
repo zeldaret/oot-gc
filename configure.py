@@ -298,7 +298,7 @@ config.libs = [
             Object(LinkedFor("ce-j"), "emulator/_frameGCNcc.c", asm_processor=True),
             Object(Linked, "emulator/_buildtev.c"),
             Object(NotLinked, "emulator/snddvdtrk.c"),
-            Object(NotLinked, "emulator/sndspecial.c"),
+            Object(LinkedFor("mm-j", "mm-u", "mm-e"), "emulator/sndspecial.c"),
         ],
     ),
     DolphinLib(
