@@ -1879,9 +1879,16 @@ bool romCacheGame(Rom* pROM) {
 #endif
 
         if (bZeldaE || bZeldaJ || bZeldaF || bZeldaG || bZeldaI || bZeldaS) {
+            // These if blocks contains code that was probably inside an ifdef,
+            // since the empty if statements are required to match, we're keeping the removed instructions for clarity.
             if (gnFlagZelda & 2) {
-                if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {}
+                if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {
+                    // pROM->anOffsetBlock = ganOffsetBlock_ZLP;
+                    // pROM->nCountOffsetBlocks = 0xC6;
+                }
             } else if (!bZeldaE && !bZeldaJ && (bZeldaE || bZeldaF || bZeldaG || bZeldaI || bZeldaS)) {
+                // pROM->anOffsetBlock = ganOffsetBlock_URAZLP;
+                // pROM->nCountOffsetBlocks = 0xC6;
             }
 
             if (bZeldaE) {
