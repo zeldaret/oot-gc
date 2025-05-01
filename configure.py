@@ -20,6 +20,7 @@ from typing import Any, Dict, List
 
 from tools.project import (
     Object,
+    ProgressCategory,
     ProjectConfig,
     calculate_progress,
     generate_build,
@@ -147,7 +148,7 @@ else:
 
 config.warn_missing_config = True
 config.warn_missing_source = False
-config.progress_all = False
+config.progress_all = True
 
 config.build_dir = args.build_dir
 config.dtk_path = args.dtk
@@ -168,10 +169,10 @@ if args.no_asm:
 ### Tool versions
 
 config.binutils_tag = "2.42-1"
-config.compilers_tag = "20231018"
-config.dtk_tag = "v1.1.3"
-config.objdiff_tag = "v2.3.2"
-config.sjiswrap_tag = "v1.1.1"
+config.compilers_tag = "20240706"
+config.dtk_tag = "v1.4.1"
+config.objdiff_tag = "v2.7.1"
+config.sjiswrap_tag = "v1.2.0"
 config.wibo_tag = "0.6.11"
 config.linker_version = "GC/1.1"
 
@@ -220,7 +221,7 @@ def EmulatorLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "lib": lib_name,
         "mw_version": "GC/1.1",
         "cflags": [*cflags_base, "-inline deferred"],
-        "host": False,
+        "progress_category": "emulator",
         "objects": objects,
     }
 
@@ -229,7 +230,7 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "lib": lib_name,
         "mw_version": "GC/1.2.5n",
         "cflags": cflags_base,
-        "host": False,
+        "progress_category": "dolphin",
         "objects": objects,
     }
 
@@ -238,7 +239,7 @@ def GenericLib(lib_name: str, cflags: List[str], objects: List[Object]) -> Dict[
         "lib": lib_name,
         "mw_version": "GC/1.2.5",
         "cflags": cflags,
-        "host": False,
+        "progress_category": lib_name,
         "objects": objects,
     }
 
@@ -555,6 +556,17 @@ config.libs = [
             Object(Linked, "debugger/odenotstub.c"),
         ]
     ),
+]
+
+# Optional extra categories for progress tracking
+# Adjust as desired for your project
+config.progress_categories = [
+    ProgressCategory("emulator", "Emulator"),
+    ProgressCategory("dolphin", "Dolphin SDK"),
+    ProgressCategory("metrotrk", "MetroTRK"),
+    ProgressCategory("runtime", "Runtime"),
+    ProgressCategory("libc", "Libc"),
+    ProgressCategory("debugger", "Debugger"),
 ]
 
 ### Execute mode
