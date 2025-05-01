@@ -1417,7 +1417,9 @@ def calculate_progress(config: ProjectConfig, version: str) -> None:
             )
 
     for progress in progress_units.values():
-        print_category(progress)
+        # don't print the progress of the libraries
+        if progress.name in {"All", "Emulator"}:
+            print_category(progress)
 
     # Generate and write progress.json
     progress_json: Dict[str, Any] = {}
