@@ -338,13 +338,13 @@ dolphin/os/OSThread.c:
 	.sdata      start:0x8012FB48 end:0x8012FB50
 	.sbss       start:0x8012FFD0 end:0x8012FFE0
 
-dolphin/os/__start.c:
-	.init       start:0x80003100 end:0x80003400
-	.sbss       start:0x8012FFE0 end:0x8012FFE8
-
 dolphin/os/OSTime.c:
 	.text       start:0x800A667C end:0x800A6AA0
 	.data       start:0x800E9E20 end:0x800E9E80
+
+dolphin/os/__start.c:
+	.init       start:0x80003100 end:0x80003400
+	.sbss       start:0x8012FFE0 end:0x8012FFE8
 
 dolphin/os/__ppc_eabi_init.c:
 	.init       start:0x80003400 end:0x80003458

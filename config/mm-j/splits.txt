@@ -338,13 +338,13 @@ dolphin/os/OSThread.c:
 	.sdata      start:0x80145700 end:0x80145708
 	.sbss       start:0x80145B50 end:0x80145B60
 
-dolphin/os/__start.c:
-	.init       start:0x80003100 end:0x80003400
-	.sbss       start:0x80145B60 end:0x80145B68
-
 dolphin/os/OSTime.c:
 	.text       start:0x800ADD1C end:0x800AE140
 	.data       start:0x800FF400 end:0x800FF460
+
+dolphin/os/__start.c:
+	.init       start:0x80003100 end:0x80003400
+	.sbss       start:0x80145B60 end:0x80145B68
 
 dolphin/os/__ppc_eabi_init.c:
 	.init       start:0x80003400 end:0x80003458
@@ -537,12 +537,6 @@ dolphin/demo/DEMOStats.c:
 	.sbss       start:0x80145D90 end:0x80145DF8
 	.sdata2     start:0x80146598 end:0x801465A8
 
-metrotrk/mem_TRK.c:
-	.init       start:0x80003458 end:0x8000347C
-
-metrotrk/__exception.c:
-	.init       start:0x8000347C end:0x800053B0
-
 dolphin/ai/ai.c:
 	.text       start:0x800C4110 end:0x800C4A30
 	.data       start:0x80101868 end:0x801018B0
@@ -688,6 +682,12 @@ metrotrk/targimpl.c:
 	.rodata     start:0x800DF430 end:0x800DF480
 	.data       start:0x80101D88 end:0x80101DB8
 	.bss        start:0x80144250 end:0x801447D0
+
+metrotrk/mem_TRK.c:
+	.init       start:0x80003458 end:0x8000347C
+
+metrotrk/__exception.c:
+	.init       start:0x8000347C end:0x800053B0
 
 metrotrk/dolphin_trk.c:
 	.init       start:0x800053B0 end:0x800053D0
@@ -844,9 +844,6 @@ libc/math_inlines.c:
 	.text       start:0x800DE5FC end:0x800DE68C
 	.sdata2     start:0x80146798 end:0x801467B0
 
-runtime/__mem.c:
-	.init       start:0x800053D0 end:0x80005514
-
 debugger/AmcExi2Stubs.c:
 	.text       start:0x800DE68C end:0x800DE6BC
 
@@ -857,3 +854,6 @@ debugger/DebuggerDriver.c:
 
 debugger/odenotstub.c:
 	.text       start:0x800DF13C end:0x800DF144
+
+runtime/__mem.c:
+	.init       start:0x800053D0 end:0x80005514
