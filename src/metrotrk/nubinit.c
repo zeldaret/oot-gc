@@ -11,6 +11,10 @@ DSError TRKInitializeNub(void) {
     result = TRKInitializeEndian();
 
     if (result == kNoError) {
+        usr_put_initialize();
+    }
+
+    if (result == kNoError) {
         result = TRKInitializeEventQueue();
     }
 
@@ -23,7 +27,14 @@ DSError TRKInitializeNub(void) {
         result = TRKInitializeDispatcher();
     }
 
-    InitializeProgramEndTrap();
+    if (result == kNoError) {
+        // 0xE100 only on v0.1
+        resultTemp = TRKInitializeIntDrivenUART(0xE100, 1, 0, &gTRKInputPendingPtr);
+        TRKTargetSetInputPendingPtr(gTRKInputPendingPtr);
+        if (resultTemp != kNoError) {
+            result = resultTemp;
+        }
+    }
 
     if (result == kNoError) {
         result = TRKInitializeSerialHandler();
@@ -33,14 +44,6 @@ DSError TRKInitializeNub(void) {
         result = TRKInitializeTarget();
     }
 
-    if (result == kNoError) {
-        // 0xE100 only on v0.1
-        resultTemp = TRKInitializeIntDrivenUART(0xE100, 1, 0, &gTRKInputPendingPtr);
-        TRKTargetSetInputPendingPtr(gTRKInputPendingPtr);
-        if (resultTemp != kNoError) {
-            result = resultTemp;
-        }
-    }
     return result;
 }
 
@@ -68,11 +71,6 @@ bool TRKInitializeEndian(void) {
         gTRKBigEndian = false;
     } else {
         result = true;
-    }
-
-    // v0.1 only
-    if (result == false) {
-        usr_put_initialize();
     }
 
     return result;

@@ -485,7 +485,7 @@ config.libs = [
         [
             Object(NotLinked, "metrotrk/mainloop.c"),
             Object(NotLinked, "metrotrk/nubevent.c"),
-            Object(NotLinked, "metrotrk/nubinit.c"),
+            Object(NotLinked, "metrotrk/nubinit.c", extra_cflags=["-enum int"]),
             Object(NotLinked, "metrotrk/msg.c"),
             Object(NotLinked, "metrotrk/msgbuf.c"),
             Object(NotLinked, "metrotrk/serpoll.c"),
@@ -502,7 +502,7 @@ config.libs = [
             Object(NotLinked, "metrotrk/dolphin_trk.c"),
             Object(LinkedFor("ce-j"), "metrotrk/mpc_7xx_603e.c"),
             Object(NotLinked, "metrotrk/main_TRK.c"),
-            Object(NotLinked, "metrotrk/dolphin_trk_glue.c"),
+            Object(NotLinked, "metrotrk/dolphin_trk_glue.c", extra_cflags=["-enum int"]),
             Object(NotLinked, "metrotrk/targcont.c"),
         ]
     ),

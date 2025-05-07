@@ -21,7 +21,7 @@ typedef enum NubEventType {
 } NubEventType;
 
 typedef struct NubEvent {
-    /* 0x00 */ NubEventType fType;
+    /* 0x00 */ u8 fType;
     /* 0x04 */ NubEventID fID;
     /* 0x08 */ MessageBufferID fMessageBufferID;
 } NubEvent; // size = 0x0C
