@@ -4,8 +4,21 @@
 #include "metrotrk/nubevent.h"
 #include "metrotrk/serpoll.h"
 
+void TRKHandleRequestEvent(NubEvent *ev) {
+    TRKDispatchMessage(TRKGetBuffer(ev->fMessageBufferID));
+}
+
+void TRKHandleSupportEvent(NubEvent *ev) {
+    TRKTargetSupportRequest();
+}
+
+void TRKIdle(void) {
+    if (TRKTargetStopped() == 0) {
+        TRKTargetContinue();
+    }
+}
+
 void TRKNubMainLoop(void) {
-    MessageBuffer* msg;
     NubEvent event;
     bool var_r31 = false;
     bool var_r30 = false;
@@ -17,8 +30,7 @@ void TRKNubMainLoop(void) {
                 case kNullEvent:
                     break;
                 case kRequestEvent:
-                    msg = TRKGetBuffer(event.fMessageBufferID);
-                    TRKDispatchMessage(msg);
+                    TRKHandleRequestEvent(&event);
                     break;
                 case kShutdownEvent:
                     var_r31 = true;
@@ -28,7 +40,7 @@ void TRKNubMainLoop(void) {
                     TRKTargetInterrupt(&event);
                     break;
                 case kSupportEvent:
-                    TRKTargetSupportRequest();
+                    TRKHandleSupportEvent(&event);
                     break;
             }
             TRKDestructEvent(&event);
@@ -36,9 +48,7 @@ void TRKNubMainLoop(void) {
             var_r30 = true;
             TRKGetInput();
         } else {
-            if (TRKTargetStopped() == false) {
-                TRKTargetContinue();
-            }
+            TRKIdle();
             var_r30 = false;
         }
     }

@@ -21,16 +21,19 @@ DSError TRKInitializeEventQueue(void) {
     return kNoError;
 }
 
+bool TRKCopyEvent(void* src, void* dst) { TRK_memcpy(src, dst, sizeof(NubEvent)); }
+
 bool TRKGetNextEvent(NubEvent* ev) {
     bool ret = false;
 
     TRKAcquireMutex(&gTRKEventQueue);
 
     if (gTRKEventQueue.fCount > 0) {
-        TRK_memcpy(ev, &gTRKEventQueue.fEventList[gTRKEventQueue.fFirst], sizeof(NubEvent));
+        TRKCopyEvent(ev, &gTRKEventQueue.fEventList[gTRKEventQueue.fFirst]);
         gTRKEventQueue.fCount--;
+        gTRKEventQueue.fFirst++;
 
-        if (++gTRKEventQueue.fFirst == 2) {
+        if (gTRKEventQueue.fFirst == 2) {
             gTRKEventQueue.fFirst = 0;
         }
 
@@ -51,10 +54,11 @@ DSError TRKPostEvent(NubEvent* ev) {
         ret = kEventQueueFull;
     } else {
         evID = (gTRKEventQueue.fFirst + gTRKEventQueue.fCount) % 2;
-        TRK_memcpy(&gTRKEventQueue.fEventList[evID], ev, sizeof(NubEvent));
+        TRKCopyEvent(&gTRKEventQueue.fEventList[evID], ev);
         gTRKEventQueue.fEventList[evID].fID = gTRKEventQueue.fEventID;
+        gTRKEventQueue.fEventID++;
 
-        if (++gTRKEventQueue.fEventID < 256) {
+        if (gTRKEventQueue.fEventID < 256) {
             gTRKEventQueue.fEventID = 256;
         }
 
