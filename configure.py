@@ -234,12 +234,39 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "objects": objects,
     }
 
-def GenericLib(lib_name: str, cflags: List[str], objects: List[Object]) -> Dict[str, Any]:
+def LibC(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
         "mw_version": "GC/1.2.5",
-        "cflags": cflags,
-        "progress_category": lib_name,
+        "cflags": [*cflags_base, "-inline deferred", "-str pool,readonly"],
+        "progress_category": "libc",
+        "objects": objects,
+    }
+
+def RuntimeLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "mw_version": "GC/1.2.5",
+        "cflags": [*cflags_base, "-inline deferred"],
+        "progress_category": "runtime",
+        "objects": objects,
+    }
+
+def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "mw_version": "GC/1.2.5",
+        "cflags": [*cflags_base, "-rostr", "-sdata 0", "-sdata2 0", "-pool off", "-inline off", "-enum min", "-use_lmw_stmw on"],
+        "progress_category": "metrotrk",
+        "objects": objects,
+    }
+
+def DebuggerLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "mw_version": "GC/1.2.5n",
+        "cflags": cflags_base,
+        "progress_category": "debugger",
         "objects": objects,
     }
 
@@ -471,9 +498,8 @@ config.libs = [
             Object(Linked, "dolphin/tex/texPalette.c"),
         ],
     ),
-    GenericLib(
+    MetroTRKLib(
         "metrotrk",
-        cflags_base,
         [
             Object(NotLinked, "metrotrk/mainloop.c"),
             Object(NotLinked, "metrotrk/nubevent.c"),
@@ -498,9 +524,8 @@ config.libs = [
             Object(NotLinked, "metrotrk/targcont.c"),
         ]
     ),
-    GenericLib(
+    RuntimeLib(
         "runtime",
-        [*cflags_base, "-inline deferred"],
         [
             Object(Linked, "runtime/__mem.c"),
             Object(Linked, "runtime/__va_arg.c"),
@@ -508,9 +533,8 @@ config.libs = [
             Object(Linked, "runtime/runtime.c"),
         ]
     ),
-    GenericLib(
+    LibC(
         "libc",
-        [*cflags_base, "-inline deferred", "-str pool,readonly"],
         [
             Object(Linked, "libc/abort_exit.c"),
             Object(Linked, "libc/ansi_files.c"),
@@ -547,12 +571,11 @@ config.libs = [
             Object(Linked, "libc/common_float_tables.c"),
         ]
     ),
-    GenericLib(
+    DebuggerLib(
         "debugger",
-        cflags_base,
         [
             Object(Linked, "debugger/AmcExi2Stubs.c"),
-            Object(NotLinked, "debugger/DebuggerDriver.c"),
+            Object(Linked, "debugger/DebuggerDriver.c", extra_cflags=["-inline deferred"]),
             Object(Linked, "debugger/odenotstub.c"),
         ]
     ),
