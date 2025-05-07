@@ -94,6 +94,8 @@ int InitMetroTRKCommTable(int hwId) {
     }
 }
 
+void TRKUARTInterruptHandler() {}
+
 UARTError TRKInitializeIntDrivenUART(u32 r3, u32 r4, u32 r5, void* r6) {
     gDBCommTable.initialize_func(r6, TRKEXICallBack);
     return kUARTNoError;
@@ -128,5 +130,3 @@ void InitializeProgramEndTrap() {
     ICInvalidateRange(ppcHaltPtr + 4, 4);
     DCFlushRange(ppcHaltPtr + 4, 4);
 }
-
-void TRKUARTInterruptHandler() {}

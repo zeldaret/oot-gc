@@ -238,7 +238,7 @@ def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
         "mw_version": "GC/1.2.5",
-        "cflags": [*cflags_base, "-rostr", "-use_lmw_stmw on", "-func_align 4", "-sdata 0", "-sdata2 0"],
+        "cflags": [*cflags_base, "-rostr", "-sdata 0", "-sdata2 0", "-pool off", "-inline off", "-enum min", "-use_lmw_stmw on"],
         "progress_category": "metrotrk",
         "objects": objects,
     }
