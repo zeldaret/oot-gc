@@ -234,11 +234,20 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "objects": objects,
     }
 
+def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "mw_version": "GC/1.2.5",
+        "cflags": [*cflags_base, "-rostr", "-use_lmw_stmw on", "-func_align 4", "-sdata 0", "-sdata2 0"],
+        "progress_category": "metrotrk",
+        "objects": objects,
+    }
+
 def GenericLib(lib_name: str, cflags: List[str], objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
         "mw_version": "GC/1.2.5",
-        "cflags": cflags,
+        "cflags": [*cflags],
         "progress_category": lib_name,
         "objects": objects,
     }
@@ -471,9 +480,8 @@ config.libs = [
             Object(Linked, "dolphin/tex/texPalette.c"),
         ],
     ),
-    GenericLib(
+    MetroTRKLib(
         "metrotrk",
-        cflags_base,
         [
             Object(NotLinked, "metrotrk/mainloop.c"),
             Object(NotLinked, "metrotrk/nubevent.c"),
@@ -481,18 +489,18 @@ config.libs = [
             Object(NotLinked, "metrotrk/msg.c"),
             Object(NotLinked, "metrotrk/msgbuf.c"),
             Object(NotLinked, "metrotrk/serpoll.c"),
-            Object(NotLinked, "metrotrk/usr_put.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/usr_put.c"),
             Object(NotLinked, "metrotrk/dispatch.c"),
             Object(NotLinked, "metrotrk/msghndlr.c"),
             Object(NotLinked, "metrotrk/support.c"),
-            Object(NotLinked, "metrotrk/mutex_TRK.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/mutex_TRK.c"),
             Object(NotLinked, "metrotrk/notify.c"),
-            Object(NotLinked, "metrotrk/flush_cache.c"),
-            Object(NotLinked, "metrotrk/mem_TRK.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/flush_cache.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/mem_TRK.c"),
             Object(NotLinked, "metrotrk/__exception.c"),
             Object(NotLinked, "metrotrk/targimpl.c"),
             Object(NotLinked, "metrotrk/dolphin_trk.c"),
-            Object(NotLinked, "metrotrk/mpc_7xx_603e.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/mpc_7xx_603e.c"),
             Object(NotLinked, "metrotrk/main_TRK.c"),
             Object(NotLinked, "metrotrk/dolphin_trk_glue.c"),
             Object(NotLinked, "metrotrk/targcont.c"),

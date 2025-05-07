@@ -11,4 +11,8 @@ void __init_user(void);
 void __init_cpp(void);
 extern void __OSFPRInit(void);
 
+// Debugger stack
+extern u8 _db_stack_addr[];
+extern u8 _db_stack_end[];
+
 #endif // _DOLPHIN__PPC_EABI_INIT
