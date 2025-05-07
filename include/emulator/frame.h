@@ -254,6 +254,17 @@ typedef struct Rectangle {
     /* 0x24 */ f32 rDeltaT;
 } Rectangle; // size = 0x28
 
+typedef struct LensTexture {
+    /* 0x0000 */ u8 lensTexture[64 * 64 * 2];
+    /* 0x2000 */ FrameTexture texture;
+    /* 0x206C */ f32 rS0;
+    /* 0x2070 */ f32 rS1;
+    /* 0x2074 */ f32 rT0;
+    /* 0x2078 */ f32 rT1;
+    /* 0x207C */ u8 alphaComp;
+    /* 0x2080 */ Mtx texMtx;
+} LensTexture; // size = 0x20B0
+
 // __anon_0x24C38
 typedef struct Frame {
     /*   OoT      MM   */
@@ -369,6 +380,7 @@ bool _frameDrawRectangle(Frame* pFrame, u32 nColor, s32 nX, s32 nY, s32 nSizeX, 
 
 void ZeldaDrawFrameNoBlend(Frame* pFrame, u16* pData);
 void ZeldaDrawFrame(Frame* pFrame, u16* pData);
+void ZeldaEraseCamera(void);
 bool frameHackTIMG_Zelda(Frame* pFrame, u64** pnGBI, u32* pnCommandLo, u32* pnCommandHi);
 bool frameHackCIMG_Zelda2(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi);
 bool frameHackCIMG_Zelda(Frame* pFrame, FrameBuffer* pBuffer, u64* pnGBI, u32 nCommandLo, u32 nCommandHi);

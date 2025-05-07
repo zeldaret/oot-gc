@@ -73,27 +73,18 @@ extern bool gDVDResetToggle;
 extern bool gbDisplayedError;
 extern bool gButtonDownToggle;
 
-extern void* gpFrame;
-extern void* gpSound;
+extern struct Frame* gpFrame;
+extern struct Sound* gpSound;
 extern System* gpSystem;
 
 extern u32 gz_bnrSize;
 extern u32 gz_iconSize;
 
-extern u8 gcoverOpen[];
-extern u8 gnoDisk[];
-extern u8 gretryErr[];
-extern u8 gfatalErr[];
-extern u8 gwrongDisk[];
-extern u8 greadingDisk[];
-extern u8 gbar[];
-extern u8 gyes[];
-extern u8 yno[];
-extern u8 gmesgOK[];
-
 #if IS_EU
 extern u8 gLanguage;
+#endif
 
+#if IS_OOT_EU
 extern u8 ggerman_coverOpen[];
 extern u8 ggerman_wrongDisk[];
 extern u8 ggerman_readingDisk[];
@@ -139,9 +130,10 @@ extern u8 gitalian_yes[];
 extern u8 gitalian_no[];
 extern u8 gitalian_mesgOK[];
 #endif
-#endif // IS_EU
+#endif // IS_OOT_EU
 
 extern s16 Vert_s16[];
+extern s16 Vert_s16Bar[12];
 extern u32 Colors_u32[];
 extern u8 TexCoords_u8[];
 

@@ -37,14 +37,14 @@ jobs:
       if: matrix.matching
       run: |
         python configure.py --map --binutils /binutils --compilers /compilers
-        ninja all_source build/{mq-j,mq-u,mq-e,ce-j,ce-u,ce-e}/progress.json build/report.json
+        ninja all_source build/{mq-j,mq-u,mq-e,ce-j,ce-u,ce-e,mm-j,mm-u,mm-e}/progress.json build/report.json
 
     # Build the project (non-matching)
     - name: Build (non-matching)
       if: ${{ !matrix.matching }}
       run: |
         python configure.py --map --binutils /binutils --compilers /compilers --non-matching --no-asm-processor
-        ninja all_source build/{mq-j,mq-u,mq-e,ce-j,ce-u,ce-e}/progress.json build/report.json
+        ninja all_source build/{mq-j,mq-u,mq-e,ce-j,ce-u,ce-e,mm-j,mm-u,mm-e}/progress.json build/report.json
 
     # Upload progress if we're on the main branch
     - name: Upload progress
@@ -54,7 +54,7 @@ jobs:
         PROGRESS_SLUG: oot-gc
         PROGRESS_API_KEY: ${{ secrets.PROGRESS_API_KEY }}
       run: |
-        for version in {mq-j,mq-u,mq-e,ce-j,ce-u,ce-e}; do
+        for version in {mq-j,mq-u,mq-e,ce-j,ce-u,ce-e,mm-j,mm-u,mm-e}; do
           python tools/upload_progress.py -b https://progress.decomp.club/ \
             -p $PROGRESS_SLUG -v $version build/$version/progress.json
         done

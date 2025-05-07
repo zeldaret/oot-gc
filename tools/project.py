@@ -1274,7 +1274,6 @@ def generate_objdiff_config(
 
         add_category(version, version)
         if len(build_config["modules"]) > 0:
-            add_category(f"{version}.dol", "DOL")
             if config.progress_modules:
                 add_category(f"{version}.modules", "Modules")
             if config.progress_each_module:
@@ -1348,7 +1347,6 @@ def calculate_progress(config: ProjectConfig, version: str) -> None:
     progress_units: Dict[str, ProgressUnit] = {}
     if config.progress_all:
         progress_units["all"] = ProgressUnit("All")
-    progress_units["dol"] = ProgressUnit("DOL")
     if len(build_config["modules"]) > 0:
         if config.progress_modules:
             progress_units["modules"] = ProgressUnit("Modules")
@@ -1419,7 +1417,9 @@ def calculate_progress(config: ProjectConfig, version: str) -> None:
             )
 
     for progress in progress_units.values():
-        print_category(progress)
+        # don't print the progress of the libraries
+        if progress.name in {"All", "Emulator"}:
+            print_category(progress)
 
     # Generate and write progress.json
     progress_json: Dict[str, Any] = {}

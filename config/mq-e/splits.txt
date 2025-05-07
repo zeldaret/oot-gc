@@ -230,9 +230,6 @@ emulator/_buildtev.c:
 	.sdata      start:0x80158828 end:0x80158838
 	.sdata2     start:0x801594B8 end:0x801594C0
 
-dolphin/os/__start.c:
-	.init       start:0x80003100 end:0x80003354
-
 dolphin/base/PPCArch.c:
 	.text       start:0x8009C2D0 end:0x8009C3B4
 
@@ -327,6 +324,9 @@ dolphin/os/OSThread.c:
 dolphin/os/OSTime.c:
 	.text       start:0x800A2598 end:0x800A29BC
 	.data       start:0x801149C0 end:0x80114A20
+
+dolphin/os/__start.c:
+	.init       start:0x80003100 end:0x80003354
 
 dolphin/os/__ppc_eabi_init.c:
 	.init       start:0x80003354 end:0x800033A8
@@ -518,12 +518,6 @@ dolphin/demo/DEMOStats.c:
 	.sbss       start:0x80158E78 end:0x80158EE0
 	.sdata2     start:0x801595D8 end:0x801595E8
 
-metrotrk/mem_TRK.c:
-	.init       start:0x800033A8 end:0x800033CC
-
-metrotrk/__exception.c:
-	.init       start:0x800033CC end:0x80005300
-
 dolphin/ai/ai.c:
 	.text       start:0x800B7D90 end:0x800B86B0
 	.data       start:0x80116A48 end:0x80116A90
@@ -668,10 +662,19 @@ metrotrk/targimpl.c:
 	.data       start:0x80116F68 end:0x80116F98
 	.bss        start:0x80157950 end:0x80157ED0
 
+metrotrk/mem_TRK.c:
+	.init       start:0x800033A8 end:0x800033CC
+
+metrotrk/__exception.c:
+	.init       start:0x800033CC end:0x80005300
+
 metrotrk/dolphin_trk.c:
 	.init       start:0x80005300 end:0x80005320
 	.text       start:0x800CCAE8 end:0x800CCCDC
 	.data       start:0x80116F98 end:0x80116FD8
+
+libc/ansi_files.c:
+	.data       start:0x80116FF8 end:0x801170D0
 
 metrotrk/mpc_7xx_603e.c:
 	.text       start:0x800CCCDC end:0x800CD04C
@@ -735,12 +738,6 @@ libc/mem_funcs.c:
 
 libc/misc_io.c:
 	.text       start:0x800CE9C8 end:0x800CE9CC
-
-runtime/__mem.c:
-	.init       start:0x80005320 end:0x80005464
-
-libc/ansi_files.c:
-	.data       start:0x80116FF8 end:0x801170D0
 
 libc/printf.c:
 	.text       start:0x800CE9CC end:0x800D03D0
@@ -833,3 +830,6 @@ debugger/DebuggerDriver.c:
 
 debugger/odenotstub.c:
 	.text       start:0x800D2C40 end:0x800D2C48
+
+runtime/__mem.c:
+	.init       start:0x80005320 end:0x80005464

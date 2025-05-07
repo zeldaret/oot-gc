@@ -14,6 +14,9 @@ extract:
 # simGCN.c
 - symbol: gbar
   header: gbar.inc
+# sndspecial.c
+- symbol: special_data
+  header: special_data.inc
 
 block_relocations:
 # systemSetupGameALL

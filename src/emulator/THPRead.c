@@ -5,6 +5,17 @@
 #include "emulator/xlCoreGCN.h"
 #include "macros.h"
 
+extern u8 gcoverOpen[];
+extern u8 gnoDisk[];
+extern u8 gretryErr[];
+extern u8 gfatalErr[];
+extern u8 gwrongDisk[];
+extern u8 greadingDisk[];
+extern u8 gbar[];
+extern u8 gyes[];
+extern u8 gno[];
+extern u8 gmesgOK[];
+
 #define STACK_SIZE 0x1000
 #define BUFFER_COUNT 10
 

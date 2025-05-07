@@ -49,7 +49,7 @@ emulator/simGCN.c:
 	.text       start:0x8000855C end:0x8000EFC0
 	.rodata     start:0x800D4200 end:0x800D4350
 	.data       start:0x800DCAC0 end:0x80136460
-	.bss        start:0x80140840 end:0x801409C0
+	.bss        start:0x80140840 end:0x801459E0
 	.sdata      start:0x80180FF8 end:0x801810C0
 	.sbss       start:0x80181910 end:0x80181950
 	.sdata2     start:0x80182058 end:0x801820B0
@@ -322,13 +322,13 @@ dolphin/os/OSThread.c:
 	.sdata      start:0x80181780 end:0x80181788
 	.sbss       start:0x80181BA8 end:0x80181BB8
 
-dolphin/os/__start.c:
-	.init       start:0x80003100 end:0x80003400
-	.sbss       start:0x80181BB8 end:0x80181BC0
-
 dolphin/os/OSTime.c:
 	.text       start:0x800A34A8 end:0x800A38CC
 	.data       start:0x8013D6E0 end:0x8013D740
+
+dolphin/os/__start.c:
+	.init       start:0x80003100 end:0x80003400
+	.sbss       start:0x80181BB8 end:0x80181BC0
 
 dolphin/os/__ppc_eabi_init.c:
 	.init       start:0x80003400 end:0x80003458

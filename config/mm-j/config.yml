@@ -32,6 +32,9 @@ extract:
   header: gno.inc
 - symbol: gmesgOK
   header: gmesgOK.inc
+# sndspecial.c
+- symbol: special_data
+  header: special_data.inc
 
 block_relocations:
 # systemSetupGameALL
