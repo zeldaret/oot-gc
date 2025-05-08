@@ -6,47 +6,53 @@ void* gTRKInputPendingPtr;
 static FramingState gTRKFramingState;
 
 MessageBufferID TRKTestForPacket() {
-    u8 payloadBuf[0x880];
-    u8 packetBuf[0x40];
-    int bufID;
-    MessageBuffer* msg;
-    MessageBufferID result;
+    int bytes;
+    int batch;
+    int err;
+    MessageBuffer* b;
+    int id;
 
-    if (TRKPollUART() <= 0) {
-        return -1;
-    }
+    bytes = TRKPollUART();
 
-    result = TRK_GetFreeBuffer(&bufID, &msg);
-    TRK_SetBufferPosition(msg, 0);
-
-    if (TRKReadUARTN(packetBuf, sizeof(packetBuf)) == kUARTNoError) {
-        int readSize;
-        TRKAppendBuffer_ui8(msg, packetBuf, sizeof(packetBuf));
-        result = bufID;
-        readSize = *(u32*)(packetBuf) - sizeof(packetBuf);
-
-        if (readSize > 0) {
-            if (TRKReadUARTN(payloadBuf, readSize) == kUARTNoError) {
-                TRKAppendBuffer_ui8(msg, payloadBuf, *(u32*)(packetBuf));
-            } else {
-                TRK_ReleaseBuffer(result);
-                result = -1;
+    if (bytes > 0) {
+        TRK_GetFreeBuffer(&id, &b);
+        if (bytes > 0x880) {
+            for (; bytes > 0; bytes -= batch) {
+                batch = bytes > 0x880 ? 0x880 : bytes;
+                TRKReadUARTN(b->fData, batch);
+            }
+            TRKStandardACK(b, 0xff, 6);
+        } else {
+            err = TRKReadUARTN(b->fData, bytes);
+            if (err == 0) {
+                b->fLength = bytes;
+                return id;
             }
         }
-    } else {
-        TRK_ReleaseBuffer(result);
-        result = -1;
     }
 
-    return result;
+    if (id != -1) {
+        TRK_ReleaseBuffer(id);
+    }
+    return -1;
 }
 
 void TRKGetInput() {
-    MessageBufferID bufID = TRKTestForPacket();
+    MessageBuffer* msgbuffer;
+    MessageBufferID bufID;
+    u8 command;
+
+    bufID = TRKTestForPacket();
 
     if (bufID != -1) {
-        TRKGetBuffer(bufID);
-        TRKProcessInput(bufID);
+        msgbuffer = TRKGetBuffer(bufID);
+        TRK_SetBufferPosition(msgbuffer, 0);
+        TRKReadBuffer1_ui8(msgbuffer, &command);
+        if (command < 0x80) {
+            TRKProcessInput(bufID);
+        } else {
+            TRK_ReleaseBuffer(bufID);
+        }
     }
 }
 
@@ -54,8 +60,8 @@ void TRKProcessInput(MessageBufferID bufID) {
     NubEvent event;
 
     TRKConstructEvent(&event, 2);
-    event.fMessageBufferID = bufID;
     gTRKFramingState.fBufferID = -1;
+    event.fMessageBufferID = bufID;
     TRKPostEvent(&event);
 }
 
