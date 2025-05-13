@@ -3,6 +3,12 @@
 #include "emulator/frame.h"
 #include "emulator/simGCN.h"
 
+#if VERSION == MQ_J
+u16 gnTempBuffer[N64_FRAME_WIDTH * N64_FRAME_HEIGHT];
+u16 gnCopyBuffer[N64_FRAME_WIDTH * N64_FRAME_HEIGHT];
+u16 gnCameraBuffer[ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT];
+#endif
+
 GXTevColorArg gCombinedColor[] = {
     GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXC, GX_CC_C2,   GX_CC_RASC,  GX_CC_KONST, GX_CC_ONE,  GX_CC_APREV,
     GX_CC_TEXA,  GX_CC_TEXA, GX_CC_A2,   GX_CC_RASA, GX_CC_KONST, GX_CC_ZERO,  GX_CC_ZERO, GX_CC_ZERO,
