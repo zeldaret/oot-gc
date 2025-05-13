@@ -8,95 +8,95 @@
 #include "dolphin/types.h"
 
 // Erased
-static s32 MulMatrices(f32 (*aOutMatrix)[4], f32 (*aLeftMatrix)[4], f32 (*aRightMatrix)[4]) {
+static int MulMatrices(f32 (*aOutMatrix)[4], f32 (*aLeftMatrix)[4], f32 (*aRightMatrix)[4]) {
     // Parameters
     // f32 (* aOutMatrix)[4]; // r3
     // f32 (* aLeftMatrix)[4]; // r4
     // f32 (* aRightMatrix)[4]; // r5
 
     // Local variables
-    s32 i; // r8
-    s32 j; // r1+0x0
+    int i; // r8
+    int j; // r1+0x0
 }
 
 // Range: 0x80077790 -> 0x80077850
-static s32 rspSetGeometryMode1(struct __anon_0x5845E* pRSP, s32 nMode) {
+static int rspSetGeometryMode1(struct __anon_0x5845E* pRSP, int nMode) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
-    // s32 nMode; // r1+0xC
+    // int nMode; // r1+0xC
 
     // Local variables
-    s32 nModeFrame; // r5
+    int nModeFrame; // r5
 }
 
 // Range: 0x8007610C -> 0x80077790
-static s32 rspParseGBI_F3DEX1(struct __anon_0x5845E* pRSP, u64** ppnGBI, s32* pbDone) {
+static int rspParseGBI_F3DEX1(struct __anon_0x5845E* pRSP, u64** ppnGBI, int* pbDone) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r31
     // u64** ppnGBI; // r27
-    // s32* pbDone; // r24
+    // int* pbDone; // r24
 
     // Local variables
     f32 matrix[4][4]; // r1+0x3B0
     struct __anon_0x5EBE0 primitive; // r1+0xAC
-    u32 iVertex; // r4
-    u32 bDone; // r24
+    unsigned int iVertex; // r4
+    unsigned int bDone; // r24
     u64* pnGBI; // r28
-    u32 nCommandLo; // r6
-    u32 nCommandHi; // r7
+    unsigned int nCommandLo; // r6
+    unsigned int nCommandHi; // r7
     struct __anon_0x5A89F* pFrame; // r30
-    s32 nAddress; // r5
-    s32 nAddress; // r24
-    s32 nAddress; // r24
-    s32 nAddress; // r24
-    s32 bPush; // r24
+    int nAddress; // r5
+    int nAddress; // r24
+    int nAddress; // r24
+    int nAddress; // r24
+    int bPush; // r24
     u8 nSid2D; // r1+0x8
-    u32 nDLAdrs; // r7
-    u32 nFlag2D; // r1+0x8
+    unsigned int nDLAdrs; // r7
+    unsigned int nFlag2D; // r1+0x8
     union __anon_0x5F2FB bg; // r1+0x80
-    s32 nAddress; // r4
-    s32 nMode; // r24
-    s32 nAddress; // r26
-    s32 nMode; // r1+0x78
-    s32 nAddress; // r5
-    s32 nAddress; // r5
+    int nAddress; // r4
+    int nMode; // r24
+    int nAddress; // r26
+    int nMode; // r1+0x78
+    int nAddress; // r5
+    int nAddress; // r5
     void* pData; // r1+0x74
-    s32 nAddress; // r5
+    int nAddress; // r5
     void* pData; // r1+0x6C
-    s32 nAddress; // r5
+    int nAddress; // r5
     void* pData; // r1+0x68
-    s32 nAddress; // r5
+    int nAddress; // r5
     char* pData; // r1+0x64
-    s32 iLight; // r24
-    s32 nAddress; // r5
-    s32 nAddress; // r24
-    s32 nAddress; // r5
+    int iLight; // r24
+    int nAddress; // r5
+    int nAddress; // r24
+    int nAddress; // r5
     void* pBuffer; // r1+0x60
-    s32 nCount; // r6
-    s32 iVertex0; // r5
-    s32 nAddress; // r5
-    s32 nAddress; // r5
-    s32 nAddress; // r5
-    u32 nVertexStart; // r4
-    u32 nVertexEnd; // r5
-    s32 nWhere; // r1+0x8
-    s32 nData1; // r8
-    s32 nData2; // r1+0x8
-    s32 iRow; // r3
-    s32 iCol; // r4
-    u32 nSid; // r1+0x8
-    s32 nLight; // r1+0x8
-    u32 nData; // r1+0x8
-    u32 nSize; // r3
-    u32 nMove; // r5
-    u32 nData; // r1+0x8
-    u32 nSize; // r3
-    u32 nMove; // r5
-    u32 nValue; // r1+0x8
+    int nCount; // r6
+    int iVertex0; // r5
+    int nAddress; // r5
+    int nAddress; // r5
+    int nAddress; // r5
+    unsigned int nVertexStart; // r4
+    unsigned int nVertexEnd; // r5
+    int nWhere; // r1+0x8
+    int nData1; // r8
+    int nData2; // r1+0x8
+    int iRow; // r3
+    int iCol; // r4
+    unsigned int nSid; // r1+0x8
+    int nLight; // r1+0x8
+    unsigned int nData; // r1+0x8
+    unsigned int nSize; // r3
+    unsigned int nMove; // r5
+    unsigned int nData; // r1+0x8
+    unsigned int nSize; // r3
+    unsigned int nMove; // r5
+    unsigned int nValue; // r1+0x8
     struct __anon_0x575BD* pTask; // r4
-    s32 nAddress; // r5
-    s32 iVertex; // r4
-    s32 nVal; // r1+0x8
+    int nAddress; // r5
+    int iVertex; // r4
+    int nVal; // r1+0x8
 
     // References
     // -> static u8 flagBilerp;
@@ -107,102 +107,102 @@ static s32 rspParseGBI_F3DEX1(struct __anon_0x5845E* pRSP, u64** ppnGBI, s32* pb
 }
 
 // Range: 0x80076024 -> 0x8007610C
-static s32 rspGeometryMode(struct __anon_0x5845E* pRSP, s32 nSet, s32 nClr) {
+static int rspGeometryMode(struct __anon_0x5845E* pRSP, int nSet, int nClr) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
-    // s32 nSet; // r1+0xC
-    // s32 nClr; // r1+0x10
+    // int nSet; // r1+0xC
+    // int nClr; // r1+0x10
 
     // Local variables
-    s32 nMode; // r6
+    int nMode; // r6
 }
 
 // Range: 0x80074454 -> 0x80076024
-static s32 rspParseGBI_F3DEX2(struct __anon_0x5845E* pRSP, u64** ppnGBI, s32* pbDone) {
+static int rspParseGBI_F3DEX2(struct __anon_0x5845E* pRSP, u64** ppnGBI, int* pbDone) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r31
     // u64** ppnGBI; // r27
-    // s32* pbDone; // r25
+    // int* pbDone; // r25
 
     // Local variables
-    s32 iVertex; // r4
-    s32 bDone; // r25
+    int iVertex; // r4
+    int bDone; // r25
     f32 matrix[4][4]; // r1+0x410
     struct __anon_0x5EBE0 primitive; // r1+0x10C
     u64* pnGBI; // r28
-    u32 nCommandLo; // r6
-    u32 nCommandHi; // r1+0x8
+    unsigned int nCommandLo; // r6
+    unsigned int nCommandHi; // r1+0x8
     struct __anon_0x5A89F* pFrame; // r30
-    u32 nData; // r1+0x8
-    u32 nSize; // r6
-    u32 nMove; // r5
-    u32 nData; // r1+0x8
-    u32 nSize; // r6
-    u32 nMove; // r5
-    u32 nValue; // r1+0x8
+    unsigned int nData; // r1+0x8
+    unsigned int nSize; // r6
+    unsigned int nMove; // r5
+    unsigned int nData; // r1+0x8
+    unsigned int nSize; // r6
+    unsigned int nMove; // r5
+    unsigned int nValue; // r1+0x8
     struct __anon_0x575BD* pTask; // r4
-    s32 nAddress; // r5
-    s32 nAddress; // r5
-    s32 nLength; // r27
-    s32 nOffset; // r28
-    s32 nId; // r25
-    s32 nFlag; // r26
-    s32 nAddress; // r29
+    int nAddress; // r5
+    int nAddress; // r5
+    int nLength; // r27
+    int nOffset; // r28
+    int nId; // r25
+    int nFlag; // r26
+    int nAddress; // r29
     void* pData; // r1+0x104
     u16* pnData16; // r3
     s16 nFogStart; // r1+0x8
     s16 nFogEnd; // r1+0x8
-    s32 nDelta; // r3
-    s32 nStart; // r4
+    int nDelta; // r3
+    int nStart; // r4
     char* pLight; // r1+0x100
-    u32 iIndex; // r25
-    s32 bFound; // r5
+    unsigned int iIndex; // r25
+    int bFound; // r5
     void* pData; // r1+0xFC
-    s32 nAddress; // r5
+    int nAddress; // r5
     void* pData; // r1+0xF4
-    s32 iLight; // r25
-    s32 nAddress; // r5
-    s32 nAddress; // r25
-    u32 nSid; // r1+0x8
-    s32 nLight; // r1+0x8
-    s32 nAddress; // r5
-    s32 nMode; // r25
-    s32 nAddress; // r27
-    s32 nSet; // r4
-    s32 nClr; // r5
-    s32 iMatrix; // r25
-    s32 nCount; // r26
-    s32 nVertices; // r26
-    s32 nSrcAdrs; // r1+0x8
-    s32 nDestAdrs; // r27
-    s32 iCount; // r28
-    s32 bFound; // r9
-    u32 iVtxIndex; // r10
+    int iLight; // r25
+    int nAddress; // r5
+    int nAddress; // r25
+    unsigned int nSid; // r1+0x8
+    int nLight; // r1+0x8
+    int nAddress; // r5
+    int nMode; // r25
+    int nAddress; // r27
+    int nSet; // r4
+    int nClr; // r5
+    int iMatrix; // r25
+    int nCount; // r26
+    int nVertices; // r26
+    int nSrcAdrs; // r1+0x8
+    int nDestAdrs; // r27
+    int iCount; // r28
+    int bFound; // r9
+    unsigned int iVtxIndex; // r10
     struct __anon_0x5EC3E destVtx; // r1+0x9C
-    s32 nAddress; // r5
+    int nAddress; // r5
     char* pBuffer; // r1+0x94
-    s32 nCount; // r25
-    s32 iVertex0; // r26
-    s32 nAddress; // r5
-    s32 nAddress; // r5
-    s32 iVertex; // r4
-    s32 nVal; // r1+0x8
-    u32 nVertexStart; // r4
-    u32 nVertexEnd; // r5
-    s32 nAddress; // r5
-    s32 nAddress; // r25
-    s32 nAddress; // r25
-    s32 nAddress; // r25
-    s32 nAddress; // r25
+    int nCount; // r25
+    int iVertex0; // r26
+    int nAddress; // r5
+    int nAddress; // r5
+    int iVertex; // r4
+    int nVal; // r1+0x8
+    unsigned int nVertexStart; // r4
+    unsigned int nVertexEnd; // r5
+    int nAddress; // r5
+    int nAddress; // r25
+    int nAddress; // r25
+    int nAddress; // r25
+    int nAddress; // r25
     union __anon_0x5F2FB bg; // r1+0x68
     union __anon_0x5F2FB bg; // r1+0x40
     char cTempAlpha; // r25
-    s32 nAddress; // r5
+    int nAddress; // r5
     char cTempAlpha; // r25
-    s32 bPush; // r27
+    int bPush; // r27
     u8 nSid2D; // r1+0x8
-    u32 nDLAdrs; // r6
-    u32 nFlag2D; // r1+0x8
+    unsigned int nDLAdrs; // r6
+    unsigned int nFlag2D; // r1+0x8
 
     // References
     // -> struct __anon_0x5E98D* gpSystem;

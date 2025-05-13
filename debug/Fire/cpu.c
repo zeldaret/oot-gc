@@ -9,9 +9,9 @@
 
 typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
-    /* 0x4 */ s32 nSizeObject;
+    /* 0x4 */ int nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
-    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+    /* 0xC */ int (*pfEvent)(void*, int, void*);
 } __anon_0x3CBBE; // size = 0x10
 
 // size = 0x10, address = 0x800EB658
@@ -48,115 +48,115 @@ static u8 RegimmOpcode[32];
 void* gHeapTree;
 
 // size = 0x14, address = 0x800EBE28
-static u32 ganOpcodeSaveFP1[5];
+static unsigned int ganOpcodeSaveFP1[5];
 
 // size = 0x14, address = 0x800EBE3C
-static u32 ganOpcodeSaveFP2_0[5];
+static unsigned int ganOpcodeSaveFP2_0[5];
 
 // size = 0xC, address = 0x800EBE50
-static u32 ganOpcodeSaveFP2_1[3];
+static unsigned int ganOpcodeSaveFP2_1[3];
 
 // size = 0x14, address = 0x800EBE5C
-static u32 ganOpcodeLoadFP[5];
+static unsigned int ganOpcodeLoadFP[5];
 
 // size = 0x80, address = 0x800EBE70
-s32 ganMapGPR[32];
+int ganMapGPR[32];
 
 // size = 0x4, address = 0x801356E4
-static s32 cpuCompile_DSLLV_function;
+static int cpuCompile_DSLLV_function;
 
 // size = 0x4, address = 0x801356E8
-static s32 cpuCompile_DSRLV_function;
+static int cpuCompile_DSRLV_function;
 
 // size = 0x4, address = 0x801356EC
-static s32 cpuCompile_DSRAV_function;
+static int cpuCompile_DSRAV_function;
 
 // size = 0x4, address = 0x801356F0
-static s32 cpuCompile_DMULT_function;
+static int cpuCompile_DMULT_function;
 
 // size = 0x4, address = 0x801356F4
-static s32 cpuCompile_DMULTU_function;
+static int cpuCompile_DMULTU_function;
 
 // size = 0x4, address = 0x801356F8
-static s32 cpuCompile_DDIV_function;
+static int cpuCompile_DDIV_function;
 
 // size = 0x4, address = 0x801356FC
-static s32 cpuCompile_DDIVU_function;
+static int cpuCompile_DDIVU_function;
 
 // size = 0x4, address = 0x80135700
-static s32 cpuCompile_DADD_function;
+static int cpuCompile_DADD_function;
 
 // size = 0x4, address = 0x80135704
-static s32 cpuCompile_DADDU_function;
+static int cpuCompile_DADDU_function;
 
 // size = 0x4, address = 0x80135708
-static s32 cpuCompile_DSUB_function;
+static int cpuCompile_DSUB_function;
 
 // size = 0x4, address = 0x8013570C
-static s32 cpuCompile_DSUBU_function;
+static int cpuCompile_DSUBU_function;
 
 // size = 0x4, address = 0x80135710
-static s32 cpuCompile_S_SQRT_function;
+static int cpuCompile_S_SQRT_function;
 
 // size = 0x4, address = 0x80135714
-static s32 cpuCompile_D_SQRT_function;
+static int cpuCompile_D_SQRT_function;
 
 // size = 0x4, address = 0x80135718
-static s32 cpuCompile_W_CVT_SD_function;
+static int cpuCompile_W_CVT_SD_function;
 
 // size = 0x4, address = 0x8013571C
-static s32 cpuCompile_L_CVT_SD_function;
+static int cpuCompile_L_CVT_SD_function;
 
 // size = 0x4, address = 0x80135720
-static s32 cpuCompile_CEIL_W_function;
+static int cpuCompile_CEIL_W_function;
 
 // size = 0x4, address = 0x80135724
-static s32 cpuCompile_FLOOR_W_function;
+static int cpuCompile_FLOOR_W_function;
 
 // size = 0x4, address = 0x80135728
-static s32 cpuCompile_ROUND_W_function;
+static int cpuCompile_ROUND_W_function;
 
 // size = 0x4, address = 0x8013572C
-static s32 cpuCompile_TRUNC_W_function;
+static int cpuCompile_TRUNC_W_function;
 
 // size = 0x4, address = 0x80135730
-static s32 cpuCompile_LB_function;
+static int cpuCompile_LB_function;
 
 // size = 0x4, address = 0x80135734
-static s32 cpuCompile_LH_function;
+static int cpuCompile_LH_function;
 
 // size = 0x4, address = 0x80135738
-static s32 cpuCompile_LW_function;
+static int cpuCompile_LW_function;
 
 // size = 0x4, address = 0x8013573C
-static s32 cpuCompile_LBU_function;
+static int cpuCompile_LBU_function;
 
 // size = 0x4, address = 0x80135740
-static s32 cpuCompile_LHU_function;
+static int cpuCompile_LHU_function;
 
 // size = 0x4, address = 0x80135744
-static s32 cpuCompile_SB_function;
+static int cpuCompile_SB_function;
 
 // size = 0x4, address = 0x80135748
-static s32 cpuCompile_SH_function;
+static int cpuCompile_SH_function;
 
 // size = 0x4, address = 0x8013574C
-static s32 cpuCompile_SW_function;
+static int cpuCompile_SW_function;
 
 // size = 0x4, address = 0x80135750
-static s32 cpuCompile_LDC_function;
+static int cpuCompile_LDC_function;
 
 // size = 0x4, address = 0x80135754
-static s32 cpuCompile_SDC_function;
+static int cpuCompile_SDC_function;
 
 // size = 0x4, address = 0x80135758
-static s32 cpuCompile_LWL_function;
+static int cpuCompile_LWL_function;
 
 // size = 0x4, address = 0x8013575C
-static s32 cpuCompile_LWR_function;
+static int cpuCompile_LWR_function;
 
 // size = 0x1F4, address = 0x80130A58
-u32 aHeapTreeFlag[125];
+unsigned int aHeapTreeFlag[125];
 
 typedef enum __anon_0x3D79A {
     SM_NONE = -1,
@@ -165,10 +165,10 @@ typedef enum __anon_0x3D79A {
 } __anon_0x3D79A;
 
 typedef struct __anon_0x3D7FC {
-    /* 0x0 */ s32 nSize;
-    /* 0x4 */ s32 nOffsetRAM;
-    /* 0x8 */ s32 nOffsetROM;
-    /* 0xC */ s32 (*pCallback)();
+    /* 0x0 */ int nSize;
+    /* 0x4 */ int nOffsetRAM;
+    /* 0x8 */ int nOffsetROM;
+    /* 0xC */ int (*pCallback)();
 } __anon_0x3D7FC; // size = 0x10
 
 typedef enum __anon_0x3D8AD {
@@ -212,7 +212,7 @@ typedef enum __anon_0x3D9D9 {
 typedef struct __anon_0x3DB14 {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
-    /* 0x08 */ s32 bException;
+    /* 0x08 */ int bException;
     /* 0x0C */ enum __anon_0x3D79A eMode;
     /* 0x10 */ struct __anon_0x3D7FC romCopy;
     /* 0x20 */ enum __anon_0x3D8AD eTypeROM;
@@ -220,38 +220,38 @@ typedef struct __anon_0x3DB14 {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ enum __anon_0x3D9D9 storageDevice;
     /* 0x74 */ u8 anException[16];
-    /* 0x84 */ s32 bJapaneseVersion;
+    /* 0x84 */ int bJapaneseVersion;
 } __anon_0x3DB14; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x3DB14* gpSystem;
 
 typedef struct __anon_0x3DE78 {
-    /* 0x0 */ s32 nOffsetHost;
-    /* 0x4 */ s32 nAddressN64;
+    /* 0x0 */ int nOffsetHost;
+    /* 0x4 */ int nAddressN64;
 } __anon_0x3DE78; // size = 0x8
 
 typedef struct cpu_callerID {
-    /* 0x0 */ s32 N64address;
-    /* 0x4 */ s32 GCNaddress;
+    /* 0x0 */ int N64address;
+    /* 0x4 */ int GCNaddress;
 } __anon_0x3DEDE; // size = 0x8
 
 typedef struct cpu_function {
     /* 0x00 */ void* pnBase;
     /* 0x04 */ void* pfCode;
-    /* 0x08 */ s32 nCountJump;
+    /* 0x08 */ int nCountJump;
     /* 0x0C */ struct __anon_0x3DE78* aJump;
-    /* 0x10 */ s32 nAddress0;
-    /* 0x14 */ s32 nAddress1;
+    /* 0x10 */ int nAddress0;
+    /* 0x14 */ int nAddress1;
     /* 0x18 */ struct cpu_callerID* block;
-    /* 0x1C */ s32 callerID_total;
-    /* 0x20 */ s32 callerID_flag;
-    /* 0x24 */ u32 nChecksum;
-    /* 0x28 */ s32 timeToLive;
-    /* 0x2C */ s32 memory_size;
-    /* 0x30 */ s32 heapID;
-    /* 0x34 */ s32 heapWhere;
-    /* 0x38 */ s32 treeheapWhere;
+    /* 0x1C */ int callerID_total;
+    /* 0x20 */ int callerID_flag;
+    /* 0x24 */ unsigned int nChecksum;
+    /* 0x28 */ int timeToLive;
+    /* 0x2C */ int memory_size;
+    /* 0x30 */ int heapID;
+    /* 0x34 */ int heapWhere;
+    /* 0x38 */ int treeheapWhere;
     /* 0x3C */ struct cpu_function* prev;
     /* 0x40 */ struct cpu_function* left;
     /* 0x44 */ struct cpu_function* right;
@@ -270,8 +270,8 @@ typedef union __anon_0x3E22D {
     /* 0x2 */ s16 _1s16;
     /* 0x4 */ s16 _2s16;
     /* 0x6 */ s16 s16;
-    /* 0x0 */ s32 _0s32;
-    /* 0x4 */ s32 s32;
+    /* 0x0 */ int _0s32;
+    /* 0x4 */ int s32;
     /* 0x0 */ s64 s64;
     /* 0x0 */ u8 _0u8;
     /* 0x1 */ u8 _1u8;
@@ -285,8 +285,8 @@ typedef union __anon_0x3E22D {
     /* 0x2 */ u16 _1u16;
     /* 0x4 */ u16 _2u16;
     /* 0x6 */ u16 u16;
-    /* 0x0 */ u32 _0u32;
-    /* 0x4 */ u32 u32;
+    /* 0x0 */ unsigned int _0u32;
+    /* 0x4 */ unsigned int u32;
     /* 0x0 */ u64 u64;
 } __anon_0x3E22D;
 
@@ -294,51 +294,51 @@ typedef union __anon_0x3E641 {
     /* 0x0 */ f32 _0f32;
     /* 0x4 */ f32 f32;
     /* 0x0 */ f64 f64;
-    /* 0x0 */ s32 _0s32;
-    /* 0x4 */ s32 s32;
+    /* 0x0 */ int _0s32;
+    /* 0x4 */ int s32;
     /* 0x0 */ s64 s64;
-    /* 0x0 */ u32 _0u32;
-    /* 0x4 */ u32 u32;
+    /* 0x0 */ unsigned int _0u32;
+    /* 0x4 */ unsigned int u32;
     /* 0x0 */ u64 u64;
 } __anon_0x3E641;
 
 typedef struct __anon_0x3EB4F {
-    /* 0x00 */ s32 nType;
+    /* 0x00 */ int nType;
     /* 0x04 */ void* pObject;
-    /* 0x08 */ s32 nOffsetAddress;
-    /* 0x0C */ s32 (*pfGet8)(void*, u32, char*);
-    /* 0x10 */ s32 (*pfGet16)(void*, u32, s16*);
-    /* 0x14 */ s32 (*pfGet32)(void*, u32, s32*);
-    /* 0x18 */ s32 (*pfGet64)(void*, u32, s64*);
-    /* 0x1C */ s32 (*pfPut8)(void*, u32, char*);
-    /* 0x20 */ s32 (*pfPut16)(void*, u32, s16*);
-    /* 0x24 */ s32 (*pfPut32)(void*, u32, s32*);
-    /* 0x28 */ s32 (*pfPut64)(void*, u32, s64*);
-    /* 0x2C */ u32 nAddressPhysical0;
-    /* 0x30 */ u32 nAddressPhysical1;
+    /* 0x08 */ int nOffsetAddress;
+    /* 0x0C */ int (*pfGet8)(void*, unsigned int, char*);
+    /* 0x10 */ int (*pfGet16)(void*, unsigned int, s16*);
+    /* 0x14 */ int (*pfGet32)(void*, unsigned int, int*);
+    /* 0x18 */ int (*pfGet64)(void*, unsigned int, s64*);
+    /* 0x1C */ int (*pfPut8)(void*, unsigned int, char*);
+    /* 0x20 */ int (*pfPut16)(void*, unsigned int, s16*);
+    /* 0x24 */ int (*pfPut32)(void*, unsigned int, int*);
+    /* 0x28 */ int (*pfPut64)(void*, unsigned int, s64*);
+    /* 0x2C */ unsigned int nAddressPhysical0;
+    /* 0x30 */ unsigned int nAddressPhysical1;
 } __anon_0x3EB4F; // size = 0x34
 
 typedef struct cpu_treeRoot {
     /* 0x00 */ u16 total;
-    /* 0x04 */ s32 total_memory;
-    /* 0x08 */ s32 root_address;
-    /* 0x0C */ s32 start_range;
-    /* 0x10 */ s32 end_range;
-    /* 0x14 */ s32 cache_miss;
-    /* 0x18 */ s32 cache[20];
+    /* 0x04 */ int total_memory;
+    /* 0x08 */ int root_address;
+    /* 0x0C */ int start_range;
+    /* 0x10 */ int end_range;
+    /* 0x14 */ int cache_miss;
+    /* 0x18 */ int cache[20];
     /* 0x68 */ struct cpu_function* left;
     /* 0x6C */ struct cpu_function* right;
-    /* 0x70 */ s32 kill_limit;
-    /* 0x74 */ s32 kill_number;
-    /* 0x78 */ s32 side;
+    /* 0x70 */ int kill_limit;
+    /* 0x74 */ int kill_number;
+    /* 0x78 */ int side;
     /* 0x7C */ struct cpu_function* restore;
-    /* 0x80 */ s32 restore_side;
+    /* 0x80 */ int restore_side;
 } __anon_0x3EE1D; // size = 0x84
 
 typedef struct __anon_0x3F080 {
-    /* 0x0 */ u32 nAddress;
-    /* 0x4 */ u32 nOpcodeOld;
-    /* 0x8 */ u32 nOpcodeNew;
+    /* 0x0 */ unsigned int nAddress;
+    /* 0x4 */ unsigned int nOpcodeOld;
+    /* 0x8 */ unsigned int nOpcodeNew;
 } __anon_0x3F080; // size = 0xC
 
 typedef struct OSContext {
@@ -370,77 +370,77 @@ typedef struct OSAlarm {
 } __anon_0x3F402; // size = 0x28
 
 typedef struct cpu_optimize {
-    /* 0x00 */ u32 validCheck;
-    /* 0x04 */ u32 destGPR_check;
-    /* 0x08 */ s32 destGPR;
-    /* 0x0C */ s32 destGPR_mapping;
-    /* 0x10 */ u32 destFPR_check;
-    /* 0x14 */ s32 destFPR;
-    /* 0x18 */ u32 addr_check;
-    /* 0x1C */ s32 addr_last;
-    /* 0x20 */ u32 checkType;
-    /* 0x24 */ u32 checkNext;
+    /* 0x00 */ unsigned int validCheck;
+    /* 0x04 */ unsigned int destGPR_check;
+    /* 0x08 */ int destGPR;
+    /* 0x0C */ int destGPR_mapping;
+    /* 0x10 */ unsigned int destFPR_check;
+    /* 0x14 */ int destFPR;
+    /* 0x18 */ unsigned int addr_check;
+    /* 0x1C */ int addr_last;
+    /* 0x20 */ unsigned int checkType;
+    /* 0x24 */ unsigned int checkNext;
 } __anon_0x3F51D; // size = 0x28
 
 typedef struct _CPU {
-    /* 0x00000 */ s32 nMode;
-    /* 0x00004 */ s32 nTick;
+    /* 0x00000 */ int nMode;
+    /* 0x00004 */ int nTick;
     /* 0x00008 */ void* pHost;
     /* 0x00010 */ s64 nLo;
     /* 0x00018 */ s64 nHi;
-    /* 0x00020 */ s32 nCountAddress;
-    /* 0x00024 */ s32 iDeviceDefault;
-    /* 0x00028 */ u32 nPC;
-    /* 0x0002C */ u32 nWaitPC;
-    /* 0x00030 */ u32 nCallLast;
+    /* 0x00020 */ int nCountAddress;
+    /* 0x00024 */ int iDeviceDefault;
+    /* 0x00028 */ unsigned int nPC;
+    /* 0x0002C */ unsigned int nWaitPC;
+    /* 0x00030 */ unsigned int nCallLast;
     /* 0x00034 */ struct cpu_function* pFunctionLast;
-    /* 0x00038 */ s32 nReturnAddrLast;
-    /* 0x0003C */ s32 survivalTimer;
+    /* 0x00038 */ int nReturnAddrLast;
+    /* 0x0003C */ int survivalTimer;
     /* 0x00040 */ union __anon_0x3E22D aGPR[32];
     /* 0x00140 */ union __anon_0x3E641 aFPR[32];
     /* 0x00240 */ u64 aTLB[48][5];
-    /* 0x009C0 */ s32 anFCR[32];
+    /* 0x009C0 */ int anFCR[32];
     /* 0x00A40 */ s64 anCP0[32];
-    /* 0x00B40 */ s32 (*pfStep)(struct _CPU*);
-    /* 0x00B44 */ s32 (*pfJump)(struct _CPU*);
-    /* 0x00B48 */ s32 (*pfCall)(struct _CPU*);
-    /* 0x00B4C */ s32 (*pfIdle)(struct _CPU*);
-    /* 0x00B50 */ s32 (*pfRam)(struct _CPU*);
-    /* 0x00B54 */ s32 (*pfRamF)(struct _CPU*);
-    /* 0x00B58 */ u32 nTickLast;
-    /* 0x00B5C */ u32 nRetrace;
-    /* 0x00B60 */ u32 nRetraceUsed;
+    /* 0x00B40 */ int (*pfStep)(struct _CPU*);
+    /* 0x00B44 */ int (*pfJump)(struct _CPU*);
+    /* 0x00B48 */ int (*pfCall)(struct _CPU*);
+    /* 0x00B4C */ int (*pfIdle)(struct _CPU*);
+    /* 0x00B50 */ int (*pfRam)(struct _CPU*);
+    /* 0x00B54 */ int (*pfRamF)(struct _CPU*);
+    /* 0x00B58 */ unsigned int nTickLast;
+    /* 0x00B5C */ unsigned int nRetrace;
+    /* 0x00B60 */ unsigned int nRetraceUsed;
     /* 0x00B64 */ struct __anon_0x3EB4F* apDevice[256];
     /* 0x00F64 */ u8 aiDevice[65536];
     /* 0x10F64 */ void* gHeap1;
     /* 0x10F68 */ void* gHeap2;
-    /* 0x10F6C */ u32 aHeap1Flag[192];
-    /* 0x1126C */ u32 aHeap2Flag[13];
+    /* 0x10F6C */ unsigned int aHeap1Flag[192];
+    /* 0x1126C */ unsigned int aHeap2Flag[13];
     /* 0x112A0 */ struct cpu_treeRoot* gTree;
     /* 0x112A4 */ struct _CPU_ADDRESS aAddressCache[256];
-    /* 0x11EA4 */ s32 nCountCodeHack;
+    /* 0x11EA4 */ int nCountCodeHack;
     /* 0x11EA8 */ struct __anon_0x3F080 aCodeHack[32];
     /* 0x12028 */ s64 nTimeRetrace;
     /* 0x12030 */ struct OSAlarm alarmRetrace;
-    /* 0x12058 */ u32 nFlagRAM;
-    /* 0x1205C */ u32 nFlagCODE;
-    /* 0x12060 */ u32 nCompileFlag;
+    /* 0x12058 */ unsigned int nFlagRAM;
+    /* 0x1205C */ unsigned int nFlagCODE;
+    /* 0x12060 */ unsigned int nCompileFlag;
     /* 0x12064 */ struct cpu_optimize nOptimize;
 } __anon_0x3F6CA; // size = 0x12090
 
 typedef struct cpu_disk_node {
-    /* 0x00 */ u32 functionLength;
-    /* 0x04 */ u32 checksum;
-    /* 0x08 */ s32 startAddress;
-    /* 0x0C */ s32 endAddress;
-    /* 0x10 */ u32 specialFlag;
-    /* 0x14 */ u32 frequency;
-    /* 0x18 */ u32 inCatalog;
-    /* 0x1C */ u32* length;
-    /* 0x20 */ u32 size;
-    /* 0x24 */ u32 GCNsize;
-    /* 0x28 */ u32* N64code;
-    /* 0x2C */ u32* GCNcode;
+    /* 0x00 */ unsigned int functionLength;
+    /* 0x04 */ unsigned int checksum;
+    /* 0x08 */ int startAddress;
+    /* 0x0C */ int endAddress;
+    /* 0x10 */ unsigned int specialFlag;
+    /* 0x14 */ unsigned int frequency;
+    /* 0x18 */ unsigned int inCatalog;
+    /* 0x1C */ unsigned int* length;
+    /* 0x20 */ unsigned int size;
+    /* 0x24 */ unsigned int GCNsize;
+    /* 0x28 */ unsigned int* N64code;
+    /* 0x2C */ unsigned int* GCNcode;
     /* 0x30 */ struct cpu_disk_node* prev;
     /* 0x34 */ struct cpu_disk_node* left;
     /* 0x38 */ struct cpu_disk_node* right;
@@ -461,33 +461,33 @@ typedef enum __anon_0x43B0A {
 } __anon_0x43B0A;
 
 typedef struct __anon_0x43B69 {
-    /* 0x0 */ s32 iCache;
-    /* 0x4 */ u32 nSize;
-    /* 0x8 */ u32 nTickUsed;
+    /* 0x0 */ int iCache;
+    /* 0x4 */ unsigned int nSize;
+    /* 0x8 */ unsigned int nTickUsed;
     /* 0xC */ char keep;
 } __anon_0x43B69; // size = 0x10
 
 typedef struct __anon_0x43C7D {
-    /* 0x00 */ s32 bWait;
-    /* 0x04 */ s32 (*pCallback)();
+    /* 0x00 */ int bWait;
+    /* 0x04 */ int (*pCallback)();
     /* 0x08 */ u8* pTarget;
-    /* 0x0C */ u32 nSize;
-    /* 0x10 */ u32 nOffset;
+    /* 0x0C */ unsigned int nSize;
+    /* 0x10 */ unsigned int nOffset;
 } __anon_0x43C7D; // size = 0x14
 
 typedef struct __anon_0x43D5D {
-    /* 0x00 */ s32 bWait;
-    /* 0x04 */ s32 bDone;
-    /* 0x08 */ s32 nResult;
+    /* 0x00 */ int bWait;
+    /* 0x04 */ int bDone;
+    /* 0x08 */ int nResult;
     /* 0x0C */ u8* anData;
-    /* 0x10 */ s32 (*pCallback)();
-    /* 0x14 */ s32 iCache;
-    /* 0x18 */ s32 iBlock;
-    /* 0x1C */ s32 nOffset;
-    /* 0x20 */ u32 nOffset0;
-    /* 0x24 */ u32 nOffset1;
-    /* 0x28 */ u32 nSize;
-    /* 0x2C */ u32 nSizeRead;
+    /* 0x10 */ int (*pCallback)();
+    /* 0x14 */ int iCache;
+    /* 0x18 */ int iBlock;
+    /* 0x1C */ int nOffset;
+    /* 0x20 */ unsigned int nOffset0;
+    /* 0x24 */ unsigned int nOffset1;
+    /* 0x28 */ unsigned int nSize;
+    /* 0x2C */ unsigned int nSizeRead;
 } __anon_0x43D5D; // size = 0x30
 
 typedef struct DVDDiskID {
@@ -525,38 +525,38 @@ typedef struct DVDFileInfo {
 typedef struct __anon_0x443F6 {
     /* 0x00000 */ void* pHost;
     /* 0x00004 */ void* pBuffer;
-    /* 0x00008 */ s32 bFlip;
-    /* 0x0000C */ s32 bLoad;
+    /* 0x00008 */ int bFlip;
+    /* 0x0000C */ int bLoad;
     /* 0x00010 */ char acNameFile[513];
-    /* 0x00214 */ u32 nSize;
+    /* 0x00214 */ unsigned int nSize;
     /* 0x00218 */ enum __anon_0x43B0A eModeLoad;
     /* 0x0021C */ struct __anon_0x43B69 aBlock[4096];
-    /* 0x1021C */ u32 nTick;
+    /* 0x1021C */ unsigned int nTick;
     /* 0x10220 */ u8* pCacheRAM;
     /* 0x10224 */ u8 anBlockCachedRAM[1024];
     /* 0x10624 */ u8 anBlockCachedARAM[2046];
     /* 0x10E24 */ struct __anon_0x43C7D copy;
     /* 0x10E38 */ struct __anon_0x43D5D load;
-    /* 0x10E68 */ s32 nCountBlockRAM;
-    /* 0x10E6C */ s32 nSizeCacheRAM;
+    /* 0x10E68 */ int nCountBlockRAM;
+    /* 0x10E6C */ int nSizeCacheRAM;
     /* 0x10E70 */ u8 acHeader[64];
-    /* 0x10EB0 */ u32* anOffsetBlock;
-    /* 0x10EB4 */ s32 nCountOffsetBlocks;
+    /* 0x10EB0 */ unsigned int* anOffsetBlock;
+    /* 0x10EB4 */ int nCountOffsetBlocks;
     /* 0x10EB8 */ struct DVDFileInfo fileInfo;
-    /* 0x10EF4 */ s32 offsetToRom;
+    /* 0x10EF4 */ int offsetToRom;
 } __anon_0x443F6; // size = 0x10EF8
 
 // size = 0x0, address = 0x800F3E78
-s32 __float_nan[];
+int __float_nan[];
 
 // size = 0x0, address = 0x800F3E7C
-s32 __float_huge[];
+int __float_huge[];
 
 // size = 0x4, address = 0x80134E64
 f32 fTickScale;
 
 // size = 0x4, address = 0x80134E60
-u32 nTickMultiplier;
+unsigned int nTickMultiplier;
 
 typedef enum __anon_0x44829 {
     RUM_NONE = 0,
@@ -608,8 +608,8 @@ typedef enum __anon_0x45AE1 {
 } __anon_0x45AE1;
 
 typedef struct _CPU_ADDRESS {
-    /* 0x0 */ s32 nN64;
-    /* 0x4 */ s32 nHost;
+    /* 0x0 */ int nN64;
+    /* 0x4 */ int nHost;
     /* 0x8 */ struct cpu_function* pFunction;
 } __anon_0x45F28; // size = 0xC
 
@@ -617,7 +617,7 @@ typedef struct _CPU_ADDRESS {
 struct _XL_OBJECTTYPE gClassRAM;
 
 // Erased
-static s32 cpuHackIdle(struct _CPU* pCPU) {
+static int cpuHackIdle(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
 
@@ -626,252 +626,252 @@ static s32 cpuHackIdle(struct _CPU* pCPU) {
 }
 
 // Erased
-static s32 cpuHackCacheInstruction(struct _CPU* pCPU) {
+static int cpuHackCacheInstruction(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    u32* pnCode; // r1+0x10
+    unsigned int* pnCode; // r1+0x10
 }
 
 // Range: 0x80036658 -> 0x80036870
-static s32 cpuHackHandler(struct _CPU* pCPU) {
+static int cpuHackHandler(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r27
 
     // Local variables
-    u32 nSize; // r1+0x10
-    u32* pnCode; // r1+0xC
-    s32 iCode; // r3
-    s32 iSave1; // r30
-    s32 iSave2; // r29
-    s32 iLoad; // r28
+    unsigned int nSize; // r1+0x10
+    unsigned int* pnCode; // r1+0xC
+    int iCode; // r3
+    int iSave1; // r30
+    int iSave2; // r29
+    int iLoad; // r28
 
     // References
-    // -> static u32 ganOpcodeLoadFP[5];
-    // -> static u32 ganOpcodeSaveFP2_1[3];
-    // -> static u32 ganOpcodeSaveFP2_0[5];
-    // -> static u32 ganOpcodeSaveFP1[5];
+    // -> static unsigned int ganOpcodeLoadFP[5];
+    // -> static unsigned int ganOpcodeSaveFP2_1[3];
+    // -> static unsigned int ganOpcodeSaveFP2_0[5];
+    // -> static unsigned int ganOpcodeSaveFP1[5];
     // -> struct _XL_OBJECTTYPE gClassRAM;
 }
 
 // Erased
-static s32 cpuMakeCachedAddress(struct _CPU* pCPU, s32 nAddressN64, s32 nAddressHost, struct cpu_function* pFunction) {
+static int cpuMakeCachedAddress(struct _CPU* pCPU, int nAddressN64, int nAddressHost, struct cpu_function* pFunction) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32 nAddressN64; // r1+0x4
-    // s32 nAddressHost; // r1+0x8
+    // int nAddressN64; // r1+0x4
+    // int nAddressHost; // r1+0x8
     // struct cpu_function* pFunction; // r1+0xC
 
     // Local variables
-    s32 iAddress; // r7
+    int iAddress; // r7
     struct _CPU_ADDRESS* aAddressCache; // r9
 }
 
 // Range: 0x800365C4 -> 0x80036658
-s32 cpuFreeCachedAddress(struct _CPU* pCPU, s32 nAddress0, s32 nAddress1) {
+int cpuFreeCachedAddress(struct _CPU* pCPU, int nAddress0, int nAddress1) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32 nAddress0; // r1+0x4
-    // s32 nAddress1; // r1+0x8
+    // int nAddress0; // r1+0x4
+    // int nAddress1; // r1+0x8
 
     // Local variables
-    s32 iAddress; // r10
-    s32 iAddressNext; // r11
-    s32 nAddressN64; // r1+0x0
+    int iAddress; // r10
+    int iAddressNext; // r11
+    int nAddressN64; // r1+0x0
     struct _CPU_ADDRESS* aAddressCache; // r12
 }
 
 // Range: 0x800363E8 -> 0x800365C4
-static s32 cpuFindCachedAddress(struct _CPU* pCPU, s32 nAddressN64, s32* pnAddressHost) {
+static int cpuFindCachedAddress(struct _CPU* pCPU, int nAddressN64, int* pnAddressHost) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
-    // s32 nAddressN64; // r1+0xC
-    // s32* pnAddressHost; // r1+0x10
+    // int nAddressN64; // r1+0xC
+    // int* pnAddressHost; // r1+0x10
 
     // Local variables
-    s32 iAddress; // r10
+    int iAddress; // r10
     struct cpu_function* pFunction; // r1+0x8
     struct _CPU_ADDRESS addressFound; // r1+0x14
     struct _CPU_ADDRESS* aAddressCache; // r6
 }
 
 // Range: 0x8003630C -> 0x800363E8
-s32 cpuTestInterrupt(struct _CPU* pCPU, s32 nMaskIP) {
+int cpuTestInterrupt(struct _CPU* pCPU, int nMaskIP) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
-    // s32 nMaskIP; // r31
+    // int nMaskIP; // r31
 }
 
 // Erased
-static s32 cpuResetInterrupt(struct _CPU* pCPU, s32 nMaskIP) {
+static int cpuResetInterrupt(struct _CPU* pCPU, int nMaskIP) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32 nMaskIP; // r1+0x4
+    // int nMaskIP; // r1+0x4
 }
 
 // Range: 0x8003604C -> 0x8003630C
-s32 cpuException(struct _CPU* pCPU, enum __anon_0x45AE1 eCode, s32 nMaskIP) {
+int cpuException(struct _CPU* pCPU, enum __anon_0x45AE1 eCode, int nMaskIP) {
     // Parameters
     // struct _CPU* pCPU; // r27
     // enum __anon_0x45AE1 eCode; // r28
-    // s32 nMaskIP; // r29
+    // int nMaskIP; // r29
 }
 
 // Range: 0x80035F3C -> 0x8003604C
-static s32 cpuMakeDevice(struct _CPU* pCPU, s32* piDevice, void* pObject, s32 nOffset, u32 nAddress0, u32 nAddress1,
-                         s32 nType) {
+static int cpuMakeDevice(struct _CPU* pCPU, int* piDevice, void* pObject, int nOffset, unsigned int nAddress0,
+                         unsigned int nAddress1, int nType) {
     // Parameters
     // struct _CPU* pCPU; // r25
-    // s32* piDevice; // r1+0xC
+    // int* piDevice; // r1+0xC
     // void* pObject; // r26
-    // s32 nOffset; // r27
-    // u32 nAddress0; // r28
-    // u32 nAddress1; // r29
-    // s32 nType; // r30
+    // int nOffset; // r27
+    // unsigned int nAddress0; // r28
+    // unsigned int nAddress1; // r29
+    // int nType; // r30
 
     // Local variables
     struct __anon_0x3EB4F* pDevice; // r1+0x28
-    s32 iDevice; // r31
+    int iDevice; // r31
 }
 
 // Range: 0x80035E98 -> 0x80035F3C
-static s32 cpuFreeDevice(struct _CPU* pCPU, s32 iDevice) {
+static int cpuFreeDevice(struct _CPU* pCPU, int iDevice) {
     // Parameters
     // struct _CPU* pCPU; // r29
-    // s32 iDevice; // r30
+    // int iDevice; // r30
 
     // Local variables
-    s32 iAddress; // r4
+    int iAddress; // r4
 }
 
 // Erased
-static s32 cpuWipeDevices(struct _CPU* pCPU, s32 bFree) {
+static int cpuWipeDevices(struct _CPU* pCPU, int bFree) {
     // Parameters
     // struct _CPU* pCPU; // r28
-    // s32 bFree; // r29
+    // int bFree; // r29
 
     // Local variables
-    s32 iDevice; // r30
+    int iDevice; // r30
 }
 
 // Range: 0x80035CD0 -> 0x80035E98
-static s32 cpuMapAddress(struct _CPU* pCPU, s32* piDevice, u32 nVirtual, u32 nPhysical, s32 nSize) {
+static int cpuMapAddress(struct _CPU* pCPU, int* piDevice, unsigned int nVirtual, unsigned int nPhysical, int nSize) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* piDevice; // r31
-    // u32 nVirtual; // r28
-    // u32 nPhysical; // r6
-    // s32 nSize; // r29
+    // int* piDevice; // r31
+    // unsigned int nVirtual; // r28
+    // unsigned int nPhysical; // r6
+    // int nSize; // r29
 
     // Local variables
-    s32 iDeviceTarget; // r1+0x1C
-    s32 iDeviceSource; // r5
-    u32 nAddressVirtual0; // r5
-    u32 nAddressVirtual1; // r6
+    int iDeviceTarget; // r1+0x1C
+    int iDeviceSource; // r5
+    unsigned int nAddressVirtual0; // r5
+    unsigned int nAddressVirtual1; // r6
 }
 
 // Erased
-static s32 cpuCountTLB(struct _CPU* pCPU, s32* pnCount) {
+static int cpuCountTLB(struct _CPU* pCPU, int* pnCount) {
     // Parameters
     // struct _CPU* pCPU; // r3
-    // s32* pnCount; // r1+0x4
+    // int* pnCount; // r1+0x4
 
     // Local variables
-    s32 iEntry; // r8
-    s32 nCount; // r9
+    int iEntry; // r8
+    int nCount; // r9
 }
 
 // Range: 0x800359EC -> 0x80035CD0
-static s32 cpuSetTLB(struct _CPU* pCPU, s32 iEntry) {
+static int cpuSetTLB(struct _CPU* pCPU, int iEntry) {
     // Parameters
     // struct _CPU* pCPU; // r28
-    // s32 iEntry; // r1+0xC
+    // int iEntry; // r1+0xC
 
     // Local variables
-    s32 iDevice; // r1+0x10
-    u32 nMask; // r1+0x8
-    u32 nVirtual; // r27
-    u32 nPhysical; // r30
+    int iDevice; // r1+0x10
+    unsigned int nMask; // r1+0x8
+    unsigned int nVirtual; // r27
+    unsigned int nPhysical; // r30
 }
 
 // Erased
-static s32 cpuGetTLB(struct _CPU* pCPU, s32 iEntry) {
+static int cpuGetTLB(struct _CPU* pCPU, int iEntry) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32 iEntry; // r1+0x4
+    // int iEntry; // r1+0x4
 }
 
 // Erased
-static s32 cpuFindTLB(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuFindTLB(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // u64 nAddressVirtual; // r1+0x8
-    // u32* pnAddressPhysical; // r1+0x10
+    // unsigned int* pnAddressPhysical; // r1+0x10
 
     // Local variables
-    s32 iEntry; // r12
-    u32 nMask; // r1+0x0
-    u32 nVirtual; // r1+0x0
+    int iEntry; // r12
+    unsigned int nMask; // r1+0x0
+    unsigned int nVirtual; // r1+0x0
 }
 
 // Erased
-static s32 cpuVirtualToPhysical_User32(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuVirtualToPhysical_User32(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // u64 nAddressVirtual; // r1+0x8
-    // u32* pnAddressPhysical; // r1+0x10
+    // unsigned int* pnAddressPhysical; // r1+0x10
 }
 
 // Erased
-static s32 cpuVirtualToPhysical_User64(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuVirtualToPhysical_User64(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // u64 nAddressVirtual; // r1+0x8
-    // u32* pnAddressPhysical; // r1+0x10
+    // unsigned int* pnAddressPhysical; // r1+0x10
 }
 
 // Erased
-static s32 cpuVirtualToPhysical_Super32(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuVirtualToPhysical_Super32(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // u64 nAddressVirtual; // r1+0x8
-    // u32* pnAddressPhysical; // r1+0x10
+    // unsigned int* pnAddressPhysical; // r1+0x10
 }
 
 // Erased
-static s32 cpuVirtualToPhysical_Super64(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuVirtualToPhysical_Super64(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // u64 nAddressVirtual; // r1+0x8
-    // u32* pnAddressPhysical; // r1+0x10
+    // unsigned int* pnAddressPhysical; // r1+0x10
 }
 
 // Erased
-static s32 cpuVirtualToPhysical_Kernel32(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuVirtualToPhysical_Kernel32(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // u64 nAddressVirtual; // r1+0x8
-    // u32* pnAddressPhysical; // r1+0x10
+    // unsigned int* pnAddressPhysical; // r1+0x10
 }
 
 // Erased
-static s32 cpuVirtualToPhysical_Kernel64(struct _CPU* pCPU, u64 nAddressVirtual, u32* pnAddressPhysical) {
+static int cpuVirtualToPhysical_Kernel64(struct _CPU* pCPU, u64 nAddressVirtual, unsigned int* pnAddressPhysical) {
     // Parameters
     // struct _CPU* pCPU; // r28
     // u64 nAddressVirtual; // r30
-    // u32* pnAddressPhysical; // r31
+    // unsigned int* pnAddressPhysical; // r31
 }
 
 // Range: 0x80035914 -> 0x800359EC
-static s32 cpuGetMode(u64 nStatus, enum __anon_0x44AE9* peMode) {
+static int cpuGetMode(u64 nStatus, enum __anon_0x44AE9* peMode) {
     // Parameters
     // u64 nStatus; // r1+0x0
     // enum __anon_0x44AE9* peMode; // r1+0x8
 }
 
 // Range: 0x800357D0 -> 0x80035914
-static s32 cpuGetSize(u64 nStatus, enum __anon_0x42F73* peSize, enum __anon_0x44AE9* peMode) {
+static int cpuGetSize(u64 nStatus, enum __anon_0x42F73* peSize, enum __anon_0x44AE9* peMode) {
     // Parameters
     // u64 nStatus; // r29
     // enum __anon_0x42F73* peSize; // r30
@@ -882,14 +882,14 @@ static s32 cpuGetSize(u64 nStatus, enum __anon_0x42F73* peSize, enum __anon_0x44
 }
 
 // Erased
-static s32 cpuSetCP0_Config(struct _CPU* pCPU, u32 nConfig) {
+static int cpuSetCP0_Config(struct _CPU* pCPU, unsigned int nConfig) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // u32 nConfig; // r1+0x4
+    // unsigned int nConfig; // r1+0x4
 }
 
 // Range: 0x8003573C -> 0x800357D0
-static s32 cpuSetCP0_Status(struct _CPU* pCPU, u64 nStatus) {
+static int cpuSetCP0_Status(struct _CPU* pCPU, u64 nStatus) {
     // Parameters
     // struct _CPU* pCPU; // r29
     // u64 nStatus; // r31
@@ -902,132 +902,134 @@ static s32 cpuSetCP0_Status(struct _CPU* pCPU, u64 nStatus) {
 }
 
 // Range: 0x80035570 -> 0x8003573C
-s32 cpuSetRegisterCP0(struct _CPU* pCPU, s32 iRegister, s64 nData) {
+int cpuSetRegisterCP0(struct _CPU* pCPU, int iRegister, s64 nData) {
     // Parameters
     // struct _CPU* pCPU; // r26
-    // s32 iRegister; // r27
+    // int iRegister; // r27
     // s64 nData; // r29
 
     // Local variables
-    s32 bFlag; // r30
+    int bFlag; // r30
 
     // References
     // -> static s64 ganMaskSetCP0[32];
 }
 
 // Range: 0x800352C8 -> 0x80035570
-s32 cpuGetRegisterCP0(struct _CPU* pCPU, s32 iRegister, s64* pnData) {
+int cpuGetRegisterCP0(struct _CPU* pCPU, int iRegister, s64* pnData) {
     // Parameters
     // struct _CPU* pCPU; // r3
-    // s32 iRegister; // r1+0xC
+    // int iRegister; // r1+0xC
     // s64* pnData; // r1+0x10
 
     // Local variables
-    s32 bFlag; // r1+0x8
+    int bFlag; // r1+0x8
 
     // References
     // -> static s64 ganMaskGetCP0[32];
 }
 
 // Range: 0x8003522C -> 0x800352C8
-s32 __cpuERET(struct _CPU* pCPU) {
+int __cpuERET(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
 }
 
 // Range: 0x80035218 -> 0x8003522C
-s32 __cpuBreak(struct _CPU* pCPU) {
+int __cpuBreak(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
 }
 
 // Erased
-static s32 cpuGetOpcodeText() {}
+static int cpuGetOpcodeText() {}
 
 // Range: 0x80035068 -> 0x80035218
-s32 cpuMapObject(struct _CPU* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nType) {
+int cpuMapObject(struct _CPU* pCPU, void* pObject, unsigned int nAddress0, unsigned int nAddress1, int nType) {
     // Parameters
     // struct _CPU* pCPU; // r31
     // void* pObject; // r27
-    // u32 nAddress0; // r28
-    // u32 nAddress1; // r29
-    // s32 nType; // r30
+    // unsigned int nAddress0; // r28
+    // unsigned int nAddress1; // r29
+    // int nType; // r30
 
     // Local variables
-    s32 iDevice; // r1+0x24
-    s32 iAddress; // r4
-    u32 nAddressVirtual0; // r5
-    u32 nAddressVirtual1; // r6
+    int iDevice; // r1+0x24
+    int iAddress; // r4
+    unsigned int nAddressVirtual0; // r5
+    unsigned int nAddressVirtual1; // r6
 }
 
 // Range: 0x80035050 -> 0x80035068
-s32 cpuSetDeviceGet(struct __anon_0x3EB4F* pDevice, s32 (*pfGet8)(void*, u32, char*), s32 (*pfGet16)(void*, u32, s16*),
-                    s32 (*pfGet32)(void*, u32, s32*), s32 (*pfGet64)(void*, u32, s64*)) {
+int cpuSetDeviceGet(struct __anon_0x3EB4F* pDevice, int (*pfGet8)(void*, unsigned int, char*),
+                    int (*pfGet16)(void*, unsigned int, s16*), int (*pfGet32)(void*, unsigned int, int*),
+                    int (*pfGet64)(void*, unsigned int, s64*)) {
     // Parameters
     // struct __anon_0x3EB4F* pDevice; // r1+0x4
-    // s32 (* pfGet8)(void*, u32, char*); // r1+0x8
-    // s32 (* pfGet16)(void*, u32, s16*); // r1+0xC
-    // s32 (* pfGet32)(void*, u32, s32*); // r1+0x10
-    // s32 (* pfGet64)(void*, u32, s64*); // r1+0x14
+    // int (* pfGet8)(void*, unsigned int, char*); // r1+0x8
+    // int (* pfGet16)(void*, unsigned int, s16*); // r1+0xC
+    // int (* pfGet32)(void*, unsigned int, int*); // r1+0x10
+    // int (* pfGet64)(void*, unsigned int, s64*); // r1+0x14
 }
 
 // Range: 0x80035038 -> 0x80035050
-s32 cpuSetDevicePut(struct __anon_0x3EB4F* pDevice, s32 (*pfPut8)(void*, u32, char*), s32 (*pfPut16)(void*, u32, s16*),
-                    s32 (*pfPut32)(void*, u32, s32*), s32 (*pfPut64)(void*, u32, s64*)) {
+int cpuSetDevicePut(struct __anon_0x3EB4F* pDevice, int (*pfPut8)(void*, unsigned int, char*),
+                    int (*pfPut16)(void*, unsigned int, s16*), int (*pfPut32)(void*, unsigned int, int*),
+                    int (*pfPut64)(void*, unsigned int, s64*)) {
     // Parameters
     // struct __anon_0x3EB4F* pDevice; // r1+0x4
-    // s32 (* pfPut8)(void*, u32, char*); // r1+0x8
-    // s32 (* pfPut16)(void*, u32, s16*); // r1+0xC
-    // s32 (* pfPut32)(void*, u32, s32*); // r1+0x10
-    // s32 (* pfPut64)(void*, u32, s64*); // r1+0x14
+    // int (* pfPut8)(void*, unsigned int, char*); // r1+0x8
+    // int (* pfPut16)(void*, unsigned int, s16*); // r1+0xC
+    // int (* pfPut32)(void*, unsigned int, int*); // r1+0x10
+    // int (* pfPut64)(void*, unsigned int, s64*); // r1+0x14
 }
 
 // Range: 0x80034FCC -> 0x80035038
-s32 cpuSetCodeHack(struct _CPU* pCPU, s32 nAddress, s32 nOpcodeOld, s32 nOpcodeNew) {
+int cpuSetCodeHack(struct _CPU* pCPU, int nAddress, int nOpcodeOld, int nOpcodeNew) {
     // Parameters
     // struct _CPU* pCPU; // r3
-    // s32 nAddress; // r1+0x4
-    // s32 nOpcodeOld; // r1+0x8
-    // s32 nOpcodeNew; // r1+0xC
+    // int nAddress; // r1+0x4
+    // int nOpcodeOld; // r1+0x8
+    // int nOpcodeNew; // r1+0xC
 
     // Local variables
-    s32 iHack; // r9
+    int iHack; // r9
 }
 
 // Range: 0x80034AE8 -> 0x80034FCC
-s32 cpuReset(struct _CPU* pCPU) {
+int cpuReset(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
-    s32 iTLB; // r1+0x8
+    int iRegister; // r1+0x8
+    int iTLB; // r1+0x8
 
     // References
     // -> void* gHeapTree;
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Erased
-static s32 cpuGetXPC(struct _CPU* pCPU, s32* pnPC, s32* pnLo, s32* pnHi) {
+static int cpuGetXPC(struct _CPU* pCPU, signed int* pnPC, signed int* pnLo, signed int* pnHi) {
     // Parameters
     // struct _CPU* pCPU; // r28
-    // s32* pnPC; // r29
-    // s32* pnLo; // r30
-    // s32* pnHi; // r31
+    // signed int* pnPC; // r29
+    // signed int* pnLo; // r30
+    // signed int* pnHi; // r31
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Erased
-static s32 cpuGetGPR(struct _CPU* pCPU, s32* anRegister) {
+static int cpuGetGPR(struct _CPU* pCPU, signed int* anRegister) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* anRegister; // r31
+    // signed int* anRegister; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
     enum __anon_0x42F73 eSize; // r1+0x18
 
     // References
@@ -1035,47 +1037,47 @@ static s32 cpuGetGPR(struct _CPU* pCPU, s32* anRegister) {
 }
 
 // Erased
-static s32 cpuGetCP0(struct _CPU* pCPU, s32* anRegister) {
+static int cpuGetCP0(struct _CPU* pCPU, signed int* anRegister) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* anRegister; // r31
+    // signed int* anRegister; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Erased
-static s32 cpuGetFPR(struct _CPU* pCPU, f64* arRegister, s32 bDouble) {
+static int cpuGetFPR(struct _CPU* pCPU, f64* arRegister, int bDouble) {
     // Parameters
     // struct _CPU* pCPU; // r29
     // f64* arRegister; // r30
-    // s32 bDouble; // r31
+    // int bDouble; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Erased
-static s32 cpuGetFCR(struct _CPU* pCPU, s32* anRegister) {
+static int cpuGetFCR(struct _CPU* pCPU, int* anRegister) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* anRegister; // r31
+    // int* anRegister; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Range: 0x80034A6C -> 0x80034AE8
-s32 cpuSetXPC(struct _CPU* pCPU, s64 nPC, s64 nLo, s64 nHi) {
+int cpuSetXPC(struct _CPU* pCPU, s64 nPC, s64 nLo, s64 nHi) {
     // Parameters
     // struct _CPU* pCPU; // r26
     // s64 nPC; // r0
@@ -1087,13 +1089,13 @@ s32 cpuSetXPC(struct _CPU* pCPU, s64 nPC, s64 nLo, s64 nHi) {
 }
 
 // Erased
-static s32 cpuSetGPR(struct _CPU* pCPU, s32* anRegister) {
+static int cpuSetGPR(struct _CPU* pCPU, signed int* anRegister) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* anRegister; // r31
+    // signed int* anRegister; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
     enum __anon_0x42F73 eSize; // r1+0x18
 
     // References
@@ -1101,214 +1103,215 @@ static s32 cpuSetGPR(struct _CPU* pCPU, s32* anRegister) {
 }
 
 // Erased
-static s32 cpuSetCP0(struct _CPU* pCPU, s32* anRegister) {
+static int cpuSetCP0(struct _CPU* pCPU, signed int* anRegister) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* anRegister; // r31
+    // signed int* anRegister; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Erased
-static s32 cpuSetFPR(struct _CPU* pCPU, f64* arRegister, s32 bDouble) {
+static int cpuSetFPR(struct _CPU* pCPU, f64* arRegister, int bDouble) {
     // Parameters
     // struct _CPU* pCPU; // r29
     // f64* arRegister; // r30
-    // s32 bDouble; // r31
+    // int bDouble; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Erased
-static s32 cpuSetFCR(struct _CPU* pCPU, s32* anRegister) {
+static int cpuSetFCR(struct _CPU* pCPU, int* anRegister) {
     // Parameters
     // struct _CPU* pCPU; // r30
-    // s32* anRegister; // r31
+    // int* anRegister; // r31
 
     // Local variables
-    s32 iRegister; // r1+0x8
+    int iRegister; // r1+0x8
 
     // References
     // -> struct _XL_OBJECTTYPE gClassCPU;
 }
 
 // Range: 0x80034864 -> 0x80034A6C
-s32 cpuEvent(struct _CPU* pCPU, s32 nEvent, void* pArgument) {
+int cpuEvent(struct _CPU* pCPU, int nEvent, void* pArgument) {
     // Parameters
     // struct _CPU* pCPU; // r28
-    // s32 nEvent; // r1+0xC
+    // int nEvent; // r1+0xC
     // void* pArgument; // r1+0x10
 }
 
 // Range: 0x800347F8 -> 0x80034864
-s32 cpuGetAddressOffset(struct _CPU* pCPU, s32* pnOffset, u32 nAddress) {
+int cpuGetAddressOffset(struct _CPU* pCPU, int* pnOffset, unsigned int nAddress) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32* pnOffset; // r1+0x4
-    // u32 nAddress; // r1+0x8
+    // int* pnOffset; // r1+0x4
+    // unsigned int nAddress; // r1+0x8
 
     // Local variables
-    s32 iDevice; // r1+0x0
+    int iDevice; // r1+0x0
 }
 
 // Range: 0x80034780 -> 0x800347F8
-s32 cpuGetAddressBuffer(struct _CPU* pCPU, void* ppBuffer, u32 nAddress) {
+int cpuGetAddressBuffer(struct _CPU* pCPU, void* ppBuffer, unsigned int nAddress) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
     // void* ppBuffer; // r4
-    // u32 nAddress; // r5
+    // unsigned int nAddress; // r5
 
     // Local variables
     struct __anon_0x3EB4F* pDevice; // r1+0x8
 }
 
 // Range: 0x800345F0 -> 0x80034780
-s32 cpuGetOffsetAddress(struct _CPU* pCPU, u32* anAddress, s32* pnCount, u32 nOffset, u32 nSize) {
+int cpuGetOffsetAddress(struct _CPU* pCPU, unsigned int* anAddress, int* pnCount, unsigned int nOffset,
+                        unsigned int nSize) {
     // Parameters
     // struct _CPU* pCPU; // r3
-    // u32* anAddress; // r1+0xC
-    // s32* pnCount; // r1+0x10
-    // u32 nOffset; // r1+0x14
-    // u32 nSize; // r1+0x18
+    // unsigned int* anAddress; // r1+0xC
+    // int* pnCount; // r1+0x10
+    // unsigned int nOffset; // r1+0x14
+    // unsigned int nSize; // r1+0x18
 
     // Local variables
-    s32 iEntry; // r1+0x8
-    s32 iAddress; // r7
-    u32 nAddress; // r1+0x8
-    u32 nMask; // r1+0x8
-    u32 nSizeMapped; // r26
+    int iEntry; // r1+0x8
+    int iAddress; // r7
+    unsigned int nAddress; // r1+0x8
+    unsigned int nMask; // r1+0x8
+    unsigned int nSizeMapped; // r26
 }
 
 // Range: 0x80034564 -> 0x800345F0
-s32 cpuInvalidateCache(struct _CPU* pCPU, s32 nAddress0, s32 nAddress1) {
+int cpuInvalidateCache(struct _CPU* pCPU, int nAddress0, int nAddress1) {
     // Parameters
     // struct _CPU* pCPU; // r29
-    // s32 nAddress0; // r30
-    // s32 nAddress1; // r31
+    // int nAddress0; // r30
+    // int nAddress1; // r31
 }
 
 // Range: 0x80034324 -> 0x80034564
-s32 cpuGetFunctionChecksum(struct _CPU* pCPU, u32* pnChecksum, struct cpu_function* pFunction) {
+int cpuGetFunctionChecksum(struct _CPU* pCPU, unsigned int* pnChecksum, struct cpu_function* pFunction) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
-    // u32* pnChecksum; // r30
+    // unsigned int* pnChecksum; // r30
     // struct cpu_function* pFunction; // r31
 
     // Local variables
-    s32 nSize; // r10
-    u32* pnBuffer; // r1+0x18
-    u32 nChecksum; // r11
-    u32 nData; // r12
+    int nSize; // r10
+    unsigned int* pnBuffer; // r1+0x18
+    unsigned int nChecksum; // r11
+    unsigned int nData; // r12
 }
 
 // Range: 0x80034288 -> 0x80034324
-static s32 cpuHeapReset(u32* array, s32 count) {
+static int cpuHeapReset(unsigned int* array, int count) {
     // Parameters
-    // u32* array; // r3
-    // s32 count; // r1+0x4
+    // unsigned int* array; // r3
+    // int count; // r1+0x4
 
     // Local variables
-    s32 i; // r6
+    int i; // r6
 }
 
 // Range: 0x80034028 -> 0x80034288
-s32 cpuHeapTake(void* heap, struct _CPU* pCPU, struct cpu_function* pFunction, s32 memory_size) {
+int cpuHeapTake(void* heap, struct _CPU* pCPU, struct cpu_function* pFunction, int memory_size) {
     // Parameters
     // void* heap; // r3
     // struct _CPU* pCPU; // r1+0xC
     // struct cpu_function* pFunction; // r1+0x10
-    // s32 memory_size; // r6
+    // int memory_size; // r6
 
     // Local variables
-    s32 done; // r12
-    s32 second; // r7
-    u32* anPack; // r8
-    s32 nPackCount; // r9
-    s32 nBlockCount; // r10
-    s32 nOffset; // r27
-    s32 nCount; // r26
-    s32 iPack; // r1+0x8
-    u32 nPack; // r25
-    u32 nMask; // r24
-    u32 nMask0; // r23
+    int done; // r12
+    int second; // r7
+    unsigned int* anPack; // r8
+    int nPackCount; // r9
+    int nBlockCount; // r10
+    int nOffset; // r27
+    int nCount; // r26
+    int iPack; // r1+0x8
+    unsigned int nPack; // r25
+    unsigned int nMask; // r24
+    unsigned int nMask0; // r23
 }
 
 // Range: 0x80033F3C -> 0x80034028
-s32 cpuHeapFree(struct _CPU* pCPU, struct cpu_function* pFunction) {
+int cpuHeapFree(struct _CPU* pCPU, struct cpu_function* pFunction) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
     // struct cpu_function* pFunction; // r4
 
     // Local variables
-    u32* anPack; // r8
-    s32 iPack; // r1+0x8
-    u32 nMask; // r6
+    unsigned int* anPack; // r8
+    int iPack; // r1+0x8
+    unsigned int nMask; // r6
 }
 
 // Range: 0x80033E88 -> 0x80033F3C
-static s32 cpuTreeTake(void* heap, s32* where) {
+static int cpuTreeTake(void* heap, int* where) {
     // Parameters
     // void* heap; // r1+0x0
-    // s32* where; // r1+0x4
+    // int* where; // r1+0x4
 
     // Local variables
-    s32 done; // r5
-    s32 nOffset; // r8
-    s32 nCount; // r1+0x0
-    s32 iPack; // r1+0x0
-    u32 nPack; // r9
-    u32 nMask; // r10
-    u32 nMask0; // r1+0x0
+    int done; // r5
+    int nOffset; // r8
+    int nCount; // r1+0x0
+    int iPack; // r1+0x0
+    unsigned int nPack; // r9
+    unsigned int nMask; // r10
+    unsigned int nMask0; // r1+0x0
 
     // References
     // -> void* gHeapTree;
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Erased
-static s32 cpuTreeFree(struct cpu_function* pFunction) {
+static int cpuTreeFree(struct cpu_function* pFunction) {
     // Parameters
     // struct cpu_function* pFunction; // r1+0x0
 
     // Local variables
-    u32* anPack; // r1+0x0
-    s32 iPack; // r1+0x0
-    u32 nMask; // r5
+    unsigned int* anPack; // r1+0x0
+    int iPack; // r1+0x0
+    unsigned int nMask; // r5
 
     // References
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Range: 0x80033304 -> 0x80033E88
-s32 cpuFindFunction(struct _CPU* pCPU, s32 theAddress, struct cpu_function** tree_node) {
+int cpuFindFunction(struct _CPU* pCPU, int theAddress, struct cpu_function** tree_node) {
     // Parameters
     // struct _CPU* pCPU; // r22
-    // s32 theAddress; // r1+0x38
+    // int theAddress; // r1+0x38
     // struct cpu_function** tree_node; // r28
 
     // Local variables
     struct __anon_0x3EB4F** apDevice; // r26
     u8* aiDevice; // r27
-    u32 opcode; // r1+0x34
+    unsigned int opcode; // r1+0x34
     u8 follow; // r1+0x3D
     u8 valid; // r16
     u8 check; // r1+0x3C
     u8 end_flag; // r18
     u8 save_restore; // r14
     u8 alert; // r15
-    s32 beginAddress; // r21
-    s32 cheat_address; // r17
-    s32 current_address; // r31
-    s32 temp_address; // r30
-    s32 branch; // r1+0x8
+    int beginAddress; // r21
+    int cheat_address; // r17
+    int current_address; // r31
+    int temp_address; // r30
+    int branch; // r1+0x8
 
     // References
     // -> static u8 Opcode[64];
@@ -1317,95 +1320,95 @@ s32 cpuFindFunction(struct _CPU* pCPU, s32 theAddress, struct cpu_function** tre
 }
 
 // Range: 0x800331A4 -> 0x80033304
-static s32 cpuDMAUpdateFunction(struct _CPU* pCPU, s32 start, s32 end) {
+static int cpuDMAUpdateFunction(struct _CPU* pCPU, int start, int end) {
     // Parameters
     // struct _CPU* pCPU; // r28
-    // s32 start; // r29
-    // s32 end; // r30
+    // int start; // r29
+    // int end; // r30
 
     // Local variables
     struct cpu_treeRoot* root; // r1+0x8
-    s32 count; // r1+0x8
-    s32 cancel; // r5
+    int count; // r1+0x8
+    int cancel; // r5
 }
 
 // Erased
-static void treeCallerInit(struct cpu_callerID* block, s32 total) {
+static void treeCallerInit(struct cpu_callerID* block, int total) {
     // Parameters
     // struct cpu_callerID* block; // r3
-    // s32 total; // r1+0x4
+    // int total; // r1+0x4
 
     // Local variables
-    s32 count; // r6
+    int count; // r6
 }
 
 // Erased
-static s32 treeCallerKill(struct _CPU* pCPU, struct cpu_function* kill) {
+static int treeCallerKill(struct _CPU* pCPU, struct cpu_function* kill) {
     // Parameters
     // struct _CPU* pCPU; // r29
     // struct cpu_function* kill; // r30
 
     // Local variables
-    s32 left; // r1+0x14
-    s32 right; // r1+0x10
+    int left; // r1+0x14
+    int right; // r1+0x10
     struct cpu_treeRoot* root; // r31
 }
 
 // Range: 0x800330A0 -> 0x800331A4
-static s32 treeCallerCheck(struct _CPU* pCPU, struct cpu_function* tree, s32 flag, s32 nAddress0, s32 nAddress1) {
+static int treeCallerCheck(struct _CPU* pCPU, struct cpu_function* tree, int flag, int nAddress0, int nAddress1) {
     // Parameters
     // struct _CPU* pCPU; // r24
     // struct cpu_function* tree; // r25
-    // s32 flag; // r26
-    // s32 nAddress0; // r27
-    // s32 nAddress1; // r28
+    // int flag; // r26
+    // int nAddress0; // r27
+    // int nAddress1; // r28
 
     // Local variables
-    s32 count; // r30
-    s32 saveGCN; // r6
-    s32 saveN64; // r1+0x8
-    s32* addr_function; // r1+0x8
-    s32* addr_call; // r29
+    int count; // r30
+    int saveGCN; // r6
+    int saveN64; // r1+0x8
+    int* addr_function; // r1+0x8
+    int* addr_call; // r29
 }
 
 // Range: 0x80033048 -> 0x800330A0
-static s32 treeInit(struct _CPU* pCPU, s32 root_address) {
+static int treeInit(struct _CPU* pCPU, int root_address) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32 root_address; // r1+0x4
+    // int root_address; // r1+0x4
 
     // Local variables
     struct cpu_treeRoot* root; // r1+0x0
 }
 
 // Range: 0x80032F2C -> 0x80033048
-static s32 treeInitNode(struct cpu_function** tree, struct cpu_function* prev, s32 start, s32 end) {
+static int treeInitNode(struct cpu_function** tree, struct cpu_function* prev, int start, int end) {
     // Parameters
     // struct cpu_function** tree; // r30
     // struct cpu_function* prev; // r31
-    // s32 start; // r28
-    // s32 end; // r29
+    // int start; // r28
+    // int end; // r29
 
     // Local variables
     struct cpu_function* node; // r1+0x1C
-    s32 where; // r1+0x18
+    int where; // r1+0x18
 }
 
 // Range: 0x80032C84 -> 0x80032F2C
-static s32 treeKill(struct _CPU* pCPU) {
+static int treeKill(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r28
 
     // Local variables
     struct cpu_treeRoot* root; // r1+0x8
-    s32 count; // r29
+    int count; // r29
 
     // References
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Range: 0x800329D4 -> 0x80032C84
-static s32 treeKillNodes(struct _CPU* pCPU, struct cpu_function* tree) {
+static int treeKillNodes(struct _CPU* pCPU, struct cpu_function* tree) {
     // Parameters
     // struct _CPU* pCPU; // r24
     // struct cpu_function* tree; // r25
@@ -1413,14 +1416,14 @@ static s32 treeKillNodes(struct _CPU* pCPU, struct cpu_function* tree) {
     // Local variables
     struct cpu_function* current; // r27
     struct cpu_function* kill; // r28
-    s32 count; // r26
+    int count; // r26
 
     // References
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Range: 0x80032674 -> 0x800329D4
-static s32 treeDeleteNode(struct _CPU* pCPU, struct cpu_function** top, struct cpu_function* kill) {
+static int treeDeleteNode(struct _CPU* pCPU, struct cpu_function** top, struct cpu_function* kill) {
     // Parameters
     // struct _CPU* pCPU; // r30
     // struct cpu_function** top; // r1+0xC
@@ -1433,49 +1436,49 @@ static s32 treeDeleteNode(struct _CPU* pCPU, struct cpu_function** top, struct c
     struct cpu_function* connect; // r1+0x8
 
     // References
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Erased
-static s32 treeRebuild(struct _CPU* pCPU, s32 start_address, struct cpu_function** node) {
+static int treeRebuild(struct _CPU* pCPU, int start_address, struct cpu_function** node) {
     // Parameters
     // struct _CPU* pCPU; // r29
-    // s32 start_address; // r30
+    // int start_address; // r30
     // struct cpu_function** node; // r31
 }
 
 // Erased
-static s32 treeInsertAndReturn(struct _CPU* pCPU, s32 start, s32 end, struct cpu_function** ppFunction) {
+static int treeInsertAndReturn(struct _CPU* pCPU, int start, int end, struct cpu_function** ppFunction) {
     // Parameters
     // struct _CPU* pCPU; // r3
-    // s32 start; // r28
-    // s32 end; // r29
+    // int start; // r28
+    // int end; // r29
     // struct cpu_function** ppFunction; // r30
 
     // Local variables
     struct cpu_treeRoot* root; // r31
-    s32 flag; // r3
+    int flag; // r3
 }
 
 // Range: 0x80032558 -> 0x80032674
-s32 treeInsert(struct _CPU* pCPU, s32 start, s32 end) {
+int treeInsert(struct _CPU* pCPU, int start, int end) {
     // Parameters
     // struct _CPU* pCPU; // r3
-    // s32 start; // r29
-    // s32 end; // r30
+    // int start; // r29
+    // int end; // r30
 
     // Local variables
     struct cpu_treeRoot* root; // r31
     struct cpu_function* current; // r1+0x14
-    s32 flag; // r3
+    int flag; // r3
 }
 
 // Range: 0x80032470 -> 0x80032558
-static s32 treeInsertNode(struct cpu_function** tree, s32 start, s32 end, struct cpu_function** ppFunction) {
+static int treeInsertNode(struct cpu_function** tree, int start, int end, struct cpu_function** ppFunction) {
     // Parameters
     // struct cpu_function** tree; // r31
-    // s32 start; // r8
-    // s32 end; // r7
+    // int start; // r8
+    // int end; // r7
     // struct cpu_function** ppFunction; // r30
 
     // Local variables
@@ -1484,7 +1487,7 @@ static s32 treeInsertNode(struct cpu_function** tree, s32 start, s32 end, struct
 }
 
 // Range: 0x800322D8 -> 0x80032470
-static s32 treeBalance(struct cpu_treeRoot* root) {
+static int treeBalance(struct cpu_treeRoot* root) {
     // Parameters
     // struct cpu_treeRoot* root; // r1+0x0
 
@@ -1492,47 +1495,47 @@ static s32 treeBalance(struct cpu_treeRoot* root) {
     struct cpu_function* tree; // r8
     struct cpu_function* current; // r4
     struct cpu_function* save; // r6
-    s32 total; // r9
-    s32 count; // r7
+    int total; // r9
+    int count; // r7
 }
 
 // Range: 0x800320EC -> 0x800322D8
-static s32 treeAdjustRoot(struct _CPU* pCPU, s32 new_end) {
+static int treeAdjustRoot(struct _CPU* pCPU, int new_end) {
     // Parameters
     // struct _CPU* pCPU; // r23
-    // s32 new_end; // r24
+    // int new_end; // r24
 
     // Local variables
-    s32 old_root; // r1+0x8
-    s32 new_root; // r30
-    s32 kill_start; // r29
-    s32 check1; // r1+0x8
-    s32 check2; // r28
+    int old_root; // r1+0x8
+    int new_root; // r30
+    int kill_start; // r29
+    int check1; // r1+0x8
+    int check2; // r28
     u16 total; // r27
-    s32 total_memory; // r26
-    s32 address; // r22
+    int total_memory; // r26
+    int address; // r22
     struct cpu_treeRoot* root; // r25
     struct cpu_function* node; // r1+0x18
     struct cpu_function* change; // r1+0x14
 }
 
 // Erased
-static s32 treeSearch(struct _CPU* pCPU, s32 target, struct cpu_function** node) {
+static int treeSearch(struct _CPU* pCPU, int target, struct cpu_function** node) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x8
-    // s32 target; // r4
+    // int target; // r4
     // struct cpu_function** node; // r5
 
     // Local variables
     struct cpu_treeRoot* root; // r1+0x8
-    s32 flag; // r3
+    int flag; // r3
 }
 
 // Range: 0x80032088 -> 0x800320EC
-static s32 treeSearchNode(struct cpu_function* tree, s32 target, struct cpu_function** node) {
+static int treeSearchNode(struct cpu_function* tree, int target, struct cpu_function** node) {
     // Parameters
     // struct cpu_function* tree; // r3
-    // s32 target; // r1+0x4
+    // int target; // r1+0x4
     // struct cpu_function** node; // r1+0x8
 
     // Local variables
@@ -1540,12 +1543,12 @@ static s32 treeSearchNode(struct cpu_function* tree, s32 target, struct cpu_func
 }
 
 // Range: 0x800318F0 -> 0x80032088
-static s32 treeKillRange(struct _CPU* pCPU, struct cpu_function* tree, s32 start, s32 end) {
+static int treeKillRange(struct _CPU* pCPU, struct cpu_function* tree, int start, int end) {
     // Parameters
     // struct _CPU* pCPU; // r31
     // struct cpu_function* tree; // r24
-    // s32 start; // r25
-    // s32 end; // r26
+    // int start; // r25
+    // int end; // r26
 
     // Local variables
     struct cpu_treeRoot* root; // r29
@@ -1554,33 +1557,33 @@ static s32 treeKillRange(struct _CPU* pCPU, struct cpu_function* tree, s32 start
     struct cpu_function* save1; // r3
     struct cpu_function* save2; // r4
     struct cpu_function* connect; // r5
-    s32 update; // r28
-    s32 count; // r27
+    int update; // r28
+    int count; // r27
 
     // References
-    // -> u32 aHeapTreeFlag[125];
+    // -> unsigned int aHeapTreeFlag[125];
 }
 
 // Range: 0x80031860 -> 0x800318F0
-static s32 treeKillReason(struct _CPU* pCPU, s32* value) {
+static int treeKillReason(struct _CPU* pCPU, int* value) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
-    // s32* value; // r1+0x4
+    // int* value; // r1+0x4
 }
 
 // Range: 0x8003174C -> 0x80031860
-static s32 treeTimerCheck(struct _CPU* pCPU) {
+static int treeTimerCheck(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r30
 
     // Local variables
     struct cpu_treeRoot* root; // r1+0x8
-    s32 begin; // r1+0x10
-    s32 end; // r1+0xC
+    int begin; // r1+0x10
+    int end; // r1+0xC
 }
 
 // Erased
-static s32 treeCleanUpCheck(struct _CPU* pCPU, struct cpu_function* node) {
+static int treeCleanUpCheck(struct _CPU* pCPU, struct cpu_function* node) {
     // Parameters
     // struct _CPU* pCPU; // r29
     // struct cpu_function* node; // r30
@@ -1590,18 +1593,18 @@ static s32 treeCleanUpCheck(struct _CPU* pCPU, struct cpu_function* node) {
 }
 
 // Range: 0x8003161C -> 0x8003174C
-static s32 treeCleanUp(struct _CPU* pCPU, struct cpu_treeRoot* root) {
+static int treeCleanUp(struct _CPU* pCPU, struct cpu_treeRoot* root) {
     // Parameters
     // struct _CPU* pCPU; // r29
     // struct cpu_treeRoot* root; // r31
 
     // Local variables
-    s32 done; // r3
-    s32 complete; // r30
+    int done; // r3
+    int complete; // r30
 }
 
 // Range: 0x8003133C -> 0x8003161C
-static s32 treeCleanNodes(struct _CPU* pCPU, struct cpu_function* top) {
+static int treeCleanNodes(struct _CPU* pCPU, struct cpu_function* top) {
     // Parameters
     // struct _CPU* pCPU; // r27
     // struct cpu_function* top; // r1+0xC
@@ -1610,26 +1613,26 @@ static s32 treeCleanNodes(struct _CPU* pCPU, struct cpu_function* top) {
     struct cpu_function** current; // r30
     struct cpu_function* kill; // r29
     struct cpu_treeRoot* root; // r1+0x8
-    s32 kill_limit; // r28
+    int kill_limit; // r28
 }
 
 // Erased
-static s32 treeForceCleanUp(struct _CPU* pCPU, struct cpu_function* node, s32 kill_value) {
+static int treeForceCleanUp(struct _CPU* pCPU, struct cpu_function* node, int kill_value) {
     // Parameters
     // struct _CPU* pCPU; // r3
     // struct cpu_function* node; // r1+0xC
-    // s32 kill_value; // r5
+    // int kill_value; // r5
 
     // Local variables
     struct cpu_treeRoot* root; // r31
 }
 
 // Range: 0x80031168 -> 0x8003133C
-static s32 treeForceCleanNodes(struct _CPU* pCPU, struct cpu_function* tree, s32 kill_limit) {
+static int treeForceCleanNodes(struct _CPU* pCPU, struct cpu_function* tree, int kill_limit) {
     // Parameters
     // struct _CPU* pCPU; // r28
     // struct cpu_function* tree; // r1+0xC
-    // s32 kill_limit; // r29
+    // int kill_limit; // r29
 
     // Local variables
     struct cpu_function* current; // r31
@@ -1637,90 +1640,90 @@ static s32 treeForceCleanNodes(struct _CPU* pCPU, struct cpu_function* tree, s32
 }
 
 // Erased
-static s32 treePrint(struct _CPU* pCPU) {
+static int treePrint(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r29
 
     // Local variables
     struct cpu_treeRoot* root; // r1+0x8
-    s32 left; // r1+0x10
-    s32 right; // r1+0xC
+    int left; // r1+0x10
+    int right; // r1+0xC
 }
 
 // Range: 0x80030F84 -> 0x80031168
-static s32 treePrintNode(struct _CPU* pCPU, struct cpu_function* tree, s32 print_flag, s32* left, s32* right) {
+static int treePrintNode(struct _CPU* pCPU, struct cpu_function* tree, int print_flag, int* left, int* right) {
     // Parameters
     // struct _CPU* pCPU; // r21
     // struct cpu_function* tree; // r22
-    // s32 print_flag; // r1+0x10
-    // s32* left; // r23
-    // s32* right; // r24
+    // int print_flag; // r1+0x10
+    // int* left; // r23
+    // int* right; // r24
 
     // Local variables
     struct cpu_function* current; // r27
-    s32 flag; // r26
-    s32 level; // r25
+    int flag; // r26
+    int level; // r25
 
     // References
-    // -> s32 ganMapGPR[32];
+    // -> int ganMapGPR[32];
 }
 
 // Erased
-static s32 treeMemory(struct _CPU* pCPU) {
+static int treeMemory(struct _CPU* pCPU) {
     // Parameters
     // struct _CPU* pCPU; // r1+0x0
 }
 
 // Range: 0x80030E70 -> 0x80030F84
-static s32 cpuOpcodeChecksum(u32 opcode) {
+static int cpuOpcodeChecksum(unsigned int opcode) {
     // Parameters
-    // u32 opcode; // r1+0x0
+    // unsigned int opcode; // r1+0x0
 
     // Local variables
-    s32 flag; // r5
+    int flag; // r5
 }
 
 // Erased
-static s32 cpuDoubleCheckSameChecksum(struct cpu_disk_node* pDisk, s32 start) {
+static int cpuDoubleCheckSameChecksum(struct cpu_disk_node* pDisk, int start) {
     // Parameters
     // struct cpu_disk_node* pDisk; // r30
-    // s32 start; // r4
+    // int start; // r4
 
     // Local variables
-    s32 count; // r1+0x8
-    s32 instruction; // r1+0x8
-    u32* last; // r31
-    u32* current; // r1+0x10
+    int count; // r1+0x8
+    int instruction; // r1+0x8
+    unsigned int* last; // r31
+    unsigned int* current; // r1+0x10
 
     // References
     // -> struct __anon_0x3DB14* gpSystem;
 }
 
 // Erased
-static s32 cpuCheckOpcodeHack(struct _CPU* pCPU, s32 startAddress, s32 instruction) {
+static int cpuCheckOpcodeHack(struct _CPU* pCPU, int startAddress, int instruction) {
     // Parameters
     // struct _CPU* pCPU; // r29
-    // s32 startAddress; // r30
-    // s32 instruction; // r31
+    // int startAddress; // r30
+    // int instruction; // r31
 
     // Local variables
-    s32 iHack; // r1+0x8
-    u32* opcode; // r1+0x14
+    int iHack; // r1+0x8
+    unsigned int* opcode; // r1+0x14
 }
 
 // Erased
-static s32 cpuUpdateDiskChecksum(u32* checksum, s32 startAddress, s32 endAddress) {
+static int cpuUpdateDiskChecksum(unsigned int* checksum, int startAddress, int endAddress) {
     // Parameters
-    // u32* checksum; // r29
-    // s32 startAddress; // r4
-    // s32 endAddress; // r1+0x10
+    // unsigned int* checksum; // r29
+    // int startAddress; // r4
+    // int endAddress; // r1+0x10
 
     // Local variables
-    s32 count; // r31
-    s32 instruction; // r30
-    s32 check; // r1+0x8
-    u32* opcode; // r1+0x14
-    u32 part; // r27
+    int count; // r31
+    int instruction; // r30
+    int check; // r1+0x8
+    unsigned int* opcode; // r1+0x14
+    unsigned int part; // r27
 
     // References
     // -> struct __anon_0x3DB14* gpSystem;
