@@ -323,7 +323,7 @@ config.libs = [
             Object(Linked, "emulator/serial.c"),
             Object(LinkedFor("mq-j", "mq-u", "mq-e", "ce-j", "ce-u", "ce-e"), "emulator/library.c"),
             Object(Linked, "emulator/peripheral.c"),
-            Object(LinkedFor("ce-j"), "emulator/_frameGCNcc.c", asm_processor=True),
+            Object(Linked, "emulator/_frameGCNcc.c"),
             Object(Linked, "emulator/_buildtev.c"),
             Object(NotLinked, "emulator/snddvdtrk.c"),
             Object(LinkedFor("mm-j", "mm-u", "mm-e"), "emulator/sndspecial.c"),
