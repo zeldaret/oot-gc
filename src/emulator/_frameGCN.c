@@ -57,20 +57,18 @@ bool gNoSwapBuffer = false;
 static s32 gnCountMapHack;
 
 #if VERSION == MQ_J
-//! TODO: move to the appropriate header once it's figured out
-extern u16 gnCameraBuffer[];
-extern u16 gnCopyBuffer[];
+// Defined in _frameGCNcc.c
 extern u16 gnTempBuffer[];
-#endif
+extern u16 gnCopyBuffer[];
+extern u16 gnCameraBuffer[];
 
-#if VERSION == MQ_J
-#define CAMERA_BUFFER gnCameraBuffer
-#define COPY_BUFFER gnCopyBuffer
 #define TEMP_BUFFER gnTempBuffer
+#define COPY_BUFFER gnCopyBuffer
+#define CAMERA_BUFFER gnCameraBuffer
 #else
-#define CAMERA_BUFFER pFrame->nCameraBuffer
-#define COPY_BUFFER pFrame->nCopyBuffer
 #define TEMP_BUFFER pFrame->nTempBuffer
+#define COPY_BUFFER pFrame->nCopyBuffer
+#define CAMERA_BUFFER pFrame->nCameraBuffer
 #endif
 
 #if VERSION == MM_J
