@@ -181,10 +181,10 @@ typedef enum __anon_0x8A896 {
 } __anon_0x8A896;
 
 typedef struct __anon_0x8A8FE {
-    /* 0x0 */ s32 nSize;
-    /* 0x4 */ s32 nOffsetRAM;
-    /* 0x8 */ s32 nOffsetROM;
-    /* 0xC */ s32 (*pCallback)();
+    /* 0x0 */ int nSize;
+    /* 0x4 */ int nOffsetRAM;
+    /* 0x8 */ int nOffsetROM;
+    /* 0xC */ int (*pCallback)();
 } __anon_0x8A8FE; // size = 0x10
 
 typedef enum __anon_0x8A9AF {
@@ -228,7 +228,7 @@ typedef enum __anon_0x8AAE1 {
 typedef struct __anon_0x8AC22 {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
-    /* 0x08 */ s32 bException;
+    /* 0x08 */ int bException;
     /* 0x0C */ enum __anon_0x8A896 eMode;
     /* 0x10 */ struct __anon_0x8A8FE romCopy;
     /* 0x20 */ enum __anon_0x8A9AF eTypeROM;
@@ -236,7 +236,7 @@ typedef struct __anon_0x8AC22 {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ enum __anon_0x8AAE1 storageDevice;
     /* 0x74 */ u8 anException[16];
-    /* 0x84 */ s32 bJapaneseVersion;
+    /* 0x84 */ int bJapaneseVersion;
 } __anon_0x8AC22; // size = 0x88
 
 // size = 0x4, address = 0x80135600

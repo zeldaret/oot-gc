@@ -8,33 +8,33 @@
 #include "dolphin/types.h"
 
 // size = 0x4, address = 0x801355A8
-static u32* gpHeap;
+static unsigned int* gpHeap;
 
 // size = 0x4, address = 0x801355AC
-static u32* gpHeapBlockFirst;
+static unsigned int* gpHeapBlockFirst;
 
 // size = 0x4, address = 0x801355B0
-static u32* gpHeapBlockLast;
+static unsigned int* gpHeapBlockLast;
 
 // size = 0x4, address = 0x801355B4
-static s32 gnHeapTakeCount;
+static int gnHeapTakeCount;
 
 // size = 0x4, address = 0x801355B8
-static s32 gnHeapFreeCount;
+static int gnHeapFreeCount;
 
 // size = 0x4, address = 0x801355BC
-static s32 gnHeapTakeCacheCount;
+static int gnHeapTakeCacheCount;
 
 // size = 0x580, address = 0x800F3FB0
-static u32* gapHeapBlockCache[11][32];
+static unsigned int* gapHeapBlockCache[11][32];
 
 // size = 0x4, address = 0x801355C0
-s32 gnSizeHeap;
+int gnSizeHeap;
 
 // Erased
-static s32 xlHeapTestBlock(u32 nBlock) {
+static int xlHeapTestBlock(unsigned int nBlock) {
     // Parameters
-    // u32 nBlock; // r1+0x0
+    // unsigned int nBlock; // r1+0x0
 }
 
 // Erased
@@ -43,183 +43,183 @@ static void xlHeapShowStatistics() {}
 // Erased
 static void xlHeapStatisticsReset() {
     // References
-    // -> static s32 gnHeapFreeCount;
-    // -> static s32 gnHeapTakeCount;
-    // -> static s32 gnHeapTakeCacheCount;
+    // -> static int gnHeapFreeCount;
+    // -> static int gnHeapTakeCount;
+    // -> static int gnHeapTakeCacheCount;
 }
 
 // Range: 0x800079C0 -> 0x80007BC0
-static s32 xlHeapBlockCacheGet(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
+static int xlHeapBlockCacheGet(int nSize, unsigned int** ppBlock, int* pnBlockSize) {
     // Parameters
-    // s32 nSize; // r1+0x0
-    // u32** ppBlock; // r1+0x4
-    // s32* pnBlockSize; // r1+0x8
+    // int nSize; // r1+0x0
+    // unsigned int** ppBlock; // r1+0x4
+    // int* pnBlockSize; // r1+0x8
 
     // Local variables
-    s32 nBlockCachedSize; // r1+0x0
-    s32 nBlock; // r8
-    s32 nBlockSize; // r9
-    s32 nBlockBest; // r10
-    s32 nBlockBestSize; // r11
-    u32* pBlock; // r12
+    int nBlockCachedSize; // r1+0x0
+    int nBlock; // r8
+    int nBlockSize; // r9
+    int nBlockBest; // r10
+    int nBlockBestSize; // r11
+    unsigned int* pBlock; // r12
 
     // References
-    // -> static s32 gnHeapTakeCacheCount;
-    // -> static u32* gapHeapBlockCache[11][32];
+    // -> static int gnHeapTakeCacheCount;
+    // -> static unsigned int* gapHeapBlockCache[11][32];
 }
 
 // Range: 0x80007758 -> 0x800079C0
-static s32 xlHeapBlockCacheAdd(u32* pBlock) {
+static int xlHeapBlockCacheAdd(unsigned int* pBlock) {
     // Parameters
-    // u32* pBlock; // r1+0x0
+    // unsigned int* pBlock; // r1+0x0
 
     // Local variables
-    s32 nSize; // r6
-    s32 nBlock; // r7
-    s32 nBlockSize; // r1+0x0
-    s32 nBlockCachedSize; // r1+0x0
-    u32* pBlockCached; // r8
+    int nSize; // r6
+    int nBlock; // r7
+    int nBlockSize; // r1+0x0
+    int nBlockCachedSize; // r1+0x0
+    unsigned int* pBlockCached; // r8
 
     // References
-    // -> static u32* gapHeapBlockCache[11][32];
+    // -> static unsigned int* gapHeapBlockCache[11][32];
 }
 
 // Range: 0x8000764C -> 0x80007758
-static s32 xlHeapBlockCacheClear(u32* pBlock) {
+static int xlHeapBlockCacheClear(unsigned int* pBlock) {
     // Parameters
-    // u32* pBlock; // r1+0x0
+    // unsigned int* pBlock; // r1+0x0
 
     // Local variables
-    s32 nSize; // r1+0x0
-    s32 nBlock; // r6
-    s32 nBlockSize; // r1+0x0
+    int nSize; // r1+0x0
+    int nBlock; // r6
+    int nBlockSize; // r1+0x0
 
     // References
-    // -> static u32* gapHeapBlockCache[11][32];
+    // -> static unsigned int* gapHeapBlockCache[11][32];
 }
 
 // Range: 0x80007540 -> 0x8000764C
-static s32 xlHeapBlockCacheReset() {
+static int xlHeapBlockCacheReset() {
     // Local variables
-    s32 nBlockSize; // r1+0x8
-    u32* pBlock; // r30
-    u32 nBlock; // r1+0x8
+    int nBlockSize; // r1+0x8
+    unsigned int* pBlock; // r30
+    unsigned int nBlock; // r1+0x8
 
     // References
-    // -> static u32* gpHeapBlockFirst;
-    // -> static u32* gapHeapBlockCache[11][32];
-    // -> static s32 gnHeapFreeCount;
-    // -> static s32 gnHeapTakeCount;
-    // -> static s32 gnHeapTakeCacheCount;
+    // -> static unsigned int* gpHeapBlockFirst;
+    // -> static unsigned int* gapHeapBlockCache[11][32];
+    // -> static int gnHeapFreeCount;
+    // -> static int gnHeapTakeCount;
+    // -> static int gnHeapTakeCacheCount;
 }
 
 // Range: 0x8000743C -> 0x80007540
-static s32 xlHeapFindUpperBlock(s32 nSize, u32** ppBlock, s32* pnBlockSize) {
+static int xlHeapFindUpperBlock(int nSize, unsigned int** ppBlock, int* pnBlockSize) {
     // Parameters
-    // s32 nSize; // r28
-    // u32** ppBlock; // r29
-    // s32* pnBlockSize; // r30
+    // int nSize; // r28
+    // unsigned int** ppBlock; // r29
+    // int* pnBlockSize; // r30
 
     // Local variables
-    s32 nBlockSize; // r3
-    u32 nBlock; // r4
-    u32* pBlock; // r7
-    u32* pBlockBest; // r31
-    u32* pBlockNext; // r27
+    int nBlockSize; // r3
+    unsigned int nBlock; // r4
+    unsigned int* pBlock; // r7
+    unsigned int* pBlockBest; // r31
+    unsigned int* pBlockNext; // r27
 
     // References
-    // -> static u32* gpHeapBlockLast;
-    // -> static u32* gpHeapBlockFirst;
+    // -> static unsigned int* gpHeapBlockLast;
+    // -> static unsigned int* gpHeapBlockFirst;
 }
 
 // Range: 0x800071B4 -> 0x8000743C
-s32 xlHeapTake(void* ppHeap, s32 nByteCount) {
+int xlHeapTake(void* ppHeap, int nByteCount) {
     // Parameters
     // void* ppHeap; // r26
-    // s32 nByteCount; // r1+0xC
+    // int nByteCount; // r1+0xC
 
     // Local variables
-    s32 bValid; // r30
-    u32 nSizeExtra; // r29
-    u32 iTry; // r28
-    s32 nSize; // r27
-    s32 nBlockSize; // r1+0x14
-    s32 nBlockNextSize; // r28
-    s32 nBlockNextNextSize; // r30
-    u32 nBlock; // r6
-    u32* pBlock; // r1+0x10
-    u32* pBlockNext; // r31
-    u32* pBlockNextNext; // r3
+    int bValid; // r30
+    unsigned int nSizeExtra; // r29
+    unsigned int iTry; // r28
+    int nSize; // r27
+    int nBlockSize; // r1+0x14
+    int nBlockNextSize; // r28
+    int nBlockNextNextSize; // r30
+    unsigned int nBlock; // r6
+    unsigned int* pBlock; // r1+0x10
+    unsigned int* pBlockNext; // r31
+    unsigned int* pBlockNextNext; // r3
 
     // References
-    // -> static s32 gnHeapTakeCount;
-    // -> static u32* gpHeapBlockLast;
-    // -> static u32* gpHeapBlockFirst;
+    // -> static int gnHeapTakeCount;
+    // -> static unsigned int* gpHeapBlockLast;
+    // -> static unsigned int* gpHeapBlockFirst;
 }
 
 // Range: 0x80007098 -> 0x800071B4
-s32 xlHeapFree(void* ppHeap) {
+int xlHeapFree(void* ppHeap) {
     // Parameters
     // void* ppHeap; // r31
 
     // Local variables
-    s32 nBlockSize; // r30
-    s32 nBlockNextSize; // r29
-    u32* pBlock; // r28
-    u32* pBlockNext; // r3
+    int nBlockSize; // r30
+    int nBlockNextSize; // r29
+    unsigned int* pBlock; // r28
+    unsigned int* pBlockNext; // r3
 
     // References
-    // -> static s32 gnHeapFreeCount;
-    // -> static u32* gpHeapBlockLast;
-    // -> static u32* gpHeapBlockFirst;
+    // -> static int gnHeapFreeCount;
+    // -> static unsigned int* gpHeapBlockLast;
+    // -> static unsigned int* gpHeapBlockFirst;
 }
 
 // Erased
-static s32 xlHeapTest(void* pHeap) {
+static int xlHeapTest(void* pHeap) {
     // Parameters
     // void* pHeap; // r1+0x0
 
     // Local variables
-    u32* pBlock; // r3
+    unsigned int* pBlock; // r3
 }
 
 // Range: 0x80006F68 -> 0x80007098
-s32 xlHeapCompact() {
+int xlHeapCompact() {
     // Local variables
-    s32 nCount; // r1+0x8
-    s32 nBlockLarge; // r1+0x8
-    s32 nBlockSize; // r4
-    s32 nBlockNextSize; // r3
-    s32 anBlockLarge[6]; // r1+0x8
-    u32 nBlock; // r1+0x8
-    u32* pBlock; // r5
-    u32* pBlockPrevious; // r6
-    u32 nBlockNext; // r7
-    u32* pBlockNext; // r8
+    int nCount; // r1+0x8
+    int nBlockLarge; // r1+0x8
+    int nBlockSize; // r4
+    int nBlockNextSize; // r3
+    int anBlockLarge[6]; // r1+0x8
+    unsigned int nBlock; // r1+0x8
+    unsigned int* pBlock; // r5
+    unsigned int* pBlockPrevious; // r6
+    unsigned int nBlockNext; // r7
+    unsigned int* pBlockNext; // r8
 
     // References
-    // -> static u32* gpHeapBlockFirst;
+    // -> static unsigned int* gpHeapBlockFirst;
 }
 
 // Range: 0x80006AF0 -> 0x80006F68
-s32 xlHeapCopy(void* pHeapTarget, void* pHeapSource, s32 nByteCount) {
+int xlHeapCopy(void* pHeapTarget, void* pHeapSource, int nByteCount) {
     // Parameters
     // void* pHeapTarget; // r3
     // void* pHeapSource; // r4
-    // s32 nByteCount; // r5
+    // int nByteCount; // r5
 
     // Local variables
     u8* pSource8; // r4
     u8* pTarget8; // r3
-    u32* pSource32; // r4
-    u32* pTarget32; // r3
+    unsigned int* pSource32; // r4
+    unsigned int* pTarget32; // r3
 }
 
 // Erased
-static s32 xlHeapFill8(void* pHeap, s32 nByteCount, u8 nData) {
+static int xlHeapFill8(void* pHeap, int nByteCount, u8 nData) {
     // Parameters
     // void* pHeap; // r3
-    // s32 nByteCount; // r4
+    // int nByteCount; // r4
     // u8 nData; // r1+0x8
 
     // Local variables
@@ -227,10 +227,10 @@ static s32 xlHeapFill8(void* pHeap, s32 nByteCount, u8 nData) {
 }
 
 // Erased
-static s32 xlHeapFill16(void* pHeap, s32 nByteCount, u16 nData) {
+static int xlHeapFill16(void* pHeap, int nByteCount, u16 nData) {
     // Parameters
     // void* pHeap; // r3
-    // s32 nByteCount; // r6
+    // int nByteCount; // r6
     // u16 nData; // r1+0x8
 
     // Local variables
@@ -238,57 +238,57 @@ static s32 xlHeapFill16(void* pHeap, s32 nByteCount, u16 nData) {
 }
 
 // Range: 0x80006908 -> 0x80006AF0
-s32 xlHeapFill32(void* pHeap, s32 nByteCount, u32 nData) {
+int xlHeapFill32(void* pHeap, int nByteCount, unsigned int nData) {
     // Parameters
     // void* pHeap; // r3
-    // s32 nByteCount; // r6
-    // u32 nData; // r1+0x8
+    // int nByteCount; // r6
+    // unsigned int nData; // r1+0x8
 
     // Local variables
-    u32* pnTarget; // r3
+    unsigned int* pnTarget; // r3
 }
 
 // Range: 0x80006870 -> 0x80006908
-s32 xlHeapGetFree(s32* pnFreeBytes) {
+int xlHeapGetFree(int* pnFreeBytes) {
     // Parameters
-    // s32* pnFreeBytes; // r31
+    // int* pnFreeBytes; // r31
 
     // Local variables
-    s32 nBlockSize; // r3
-    s32 nFree; // r5
-    s32 nCount; // r1+0x8
-    u32* pBlock; // r6
-    u32 nBlock; // r7
+    int nBlockSize; // r3
+    int nFree; // r5
+    int nCount; // r1+0x8
+    unsigned int* pBlock; // r6
+    unsigned int nBlock; // r7
 
     // References
-    // -> static u32* gpHeapBlockLast;
-    // -> static u32* gpHeapBlockFirst;
+    // -> static unsigned int* gpHeapBlockLast;
+    // -> static unsigned int* gpHeapBlockFirst;
 }
 
 // Range: 0x800066B0 -> 0x80006870
-s32 xlHeapSetup(void* pHeap, s32 nSizeBytes) {
+int xlHeapSetup(void* pHeap, int nSizeBytes) {
     // Parameters
     // void* pHeap; // r6
-    // s32 nSizeBytes; // r1+0xC
+    // int nSizeBytes; // r1+0xC
 
     // Local variables
-    s32 nSizeWords; // r5
+    int nSizeWords; // r5
 
     // References
-    // -> static u32* gpHeapBlockLast;
-    // -> static u32* gpHeapBlockFirst;
-    // -> static u32* gpHeap;
-    // -> s32 gnSizeHeap;
+    // -> static unsigned int* gpHeapBlockLast;
+    // -> static unsigned int* gpHeapBlockFirst;
+    // -> static unsigned int* gpHeap;
+    // -> int gnSizeHeap;
 }
 
 // Range: 0x80006648 -> 0x800066B0
-s32 xlHeapReset() {
+int xlHeapReset() {
     // Local variables
-    s32 nBlockSize; // r6
+    int nBlockSize; // r6
 
     // References
-    // -> static u32* gpHeapBlockLast;
-    // -> static u32* gpHeapBlockFirst;
-    // -> static u32* gpHeap;
-    // -> s32 gnSizeHeap;
+    // -> static unsigned int* gpHeapBlockLast;
+    // -> static unsigned int* gpHeapBlockFirst;
+    // -> static unsigned int* gpHeap;
+    // -> int gnSizeHeap;
 }
