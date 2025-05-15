@@ -4733,6 +4733,15 @@ static bool rspParseJPEG_DecodeZ(Rsp* pRSP, RspTask* pTask) {
     return true;
 }
 
+static inline bool frameFillVertex(Frame* pFrame, s32 nIndex, s16 nX, s16 nY, s16 nZ, f32 rS, f32 rT) {
+    pFrame->aVertex[nIndex].vec.x = nX;
+    pFrame->aVertex[nIndex].vec.y = nY;
+    pFrame->aVertex[nIndex].vec.z = nZ;
+    pFrame->aVertex[nIndex].rS = rS;
+    pFrame->aVertex[nIndex].rT = rT;
+    return true;
+}
+
 // Matches but data doesn't
 #ifndef NON_MATCHING
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/Matrix4by4Identity.s")
@@ -4899,6 +4908,28 @@ bool rspSetImage(Frame* pFrame, Rsp* pRSP, s32 nFormat, s32 nWidth, s32 nSize, s
         return false;
     }
 
+    return true;
+}
+
+static inline bool rspLoadBlock(Frame* pFrame, Tile* pTile, s32 nX0, s32 nY0, s32 nX1, s32 nY1) {
+    pTile->nX0 = nX0;
+    pTile->nY0 = nY0;
+    pTile->nX1 = nX1;
+    pTile->nY1 = nY1;
+    if (!frameLoadTMEM(pFrame, FLT_BLOCK, 0)) {
+        return false;
+    }
+    return true;
+}
+
+static inline bool rspLoadTile(Frame* pFrame, Tile* pTile, s32 nX0, s32 nY0, s32 nX1, s32 nY1) {
+    pTile->nX0 = nX0;
+    pTile->nY0 = nY0;
+    pTile->nX1 = nX1;
+    pTile->nY1 = nY1;
+    if (!frameLoadTMEM(pFrame, FLT_TILE, 0)) {
+        return false;
+    }
     return true;
 }
 
@@ -5410,11 +5441,85 @@ bool rspFillObjTxtr(Rsp* pRSP, s32 nAddress, uObjTxtr* pTxtr, u32* pLoadType) {
     return true;
 }
 
-static bool rspObjLoadTxtr(Rsp* pRSP, Frame* pFrame, s32 nAddress);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjLoadTxtr.s")
+static bool rspObjLoadTxtr(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
+    u32 nSizDefine;
+    u32 nLoadType;
+    s32 nAddr;
+    Tile* pTile;
+    FrameBuffer* pBuffer;
+    uObjTxtr objTxtr;
+
+    pTile = pFrame->aTile;
+    pBuffer = &pFrame->aBuffer[FBT_IMAGE];
+    if (!rspFillObjTxtr(pRSP, nAddress, &objTxtr, &nLoadType)) {
+        return false;
+    }
+
+    switch (nLoadType) {
+        case G_OBJLT_TXTRBLOCK:
+            pBuffer->nFormat = 0;
+            pBuffer->nWidth = 1;
+            if (objTxtr.block.tsize > 0x3FF) {
+                objTxtr.block.tsize = objTxtr.block.tsize / 2;
+                nSizDefine = G_IM_SIZ_32b;
+            } else {
+                nSizDefine = G_IM_SIZ_16b;
+            }
+            pBuffer->nSize = nSizDefine;
+            nAddr = SEGMENT_ADDRESS(pRSP, objTxtr.block.image);
+            pBuffer->nAddress = nAddr;
+            if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pBuffer->pData, nAddr, NULL)) {
+                return false;
+            }
+            if (!frameSetBuffer(pFrame, FBT_IMAGE)) {
+                return false;
+            }
+            if (!rspSetTile(pFrame, pTile, nSizDefine, objTxtr.block.tmem, 0, G_IM_FMT_RGBA, 0, 0, 0, 0, 0, 0)) {
+                return false;
+            }
+            if (!rspLoadBlock(pFrame, pTile, 0, 0, objTxtr.block.tsize << 2, objTxtr.block.tline)) {
+                return false;
+            }
+            pFrame->n2dLoadTexType = nLoadType;
+            break;
+        case G_OBJLT_TXTRTILE:
+            if (!rspSetImage(pFrame, pRSP, 0, objTxtr.tile.twidth, 2, objTxtr.tile.image)) {
+                return false;
+            }
+            !pFrame; // fake
+            if (!rspSetTile(pFrame, pTile, G_IM_SIZ_16b, 0, 0, G_IM_FMT_RGBA, 0, 0, 0, 0, 0, 0)) {
+                return false;
+            }
+            if (!rspLoadTile(pFrame, pTile, 0, 0, objTxtr.tile.twidth << 2, objTxtr.tile.theight)) {
+                return false;
+            }
+            pFrame->n2dLoadTexType = nLoadType;
+            pFrame->nLastX0 = 0;
+            pFrame->nLastY0 = 0;
+            pFrame->nLastX1 = objTxtr.tile.twidth << 2;
+            pFrame->nLastY1 = objTxtr.tile.theight;
+            break;
+        case G_OBJLT_TLUT:
+            if (!rspSetImage(pFrame, pRSP, G_IM_FMT_RGBA, 1, G_IM_SIZ_16b, objTxtr.tlut.image)) {
+                return false;
+            }
+            if (!rspSetTile(pFrame, pTile, G_IM_SIZ_4b, objTxtr.tlut.phead, 0, G_IM_FMT_RGBA, 0, 0, 0, 0, 0, 0)) {
+                return false;
+            }
+            if (!frameLoadTLUT(pFrame, objTxtr.tlut.pnum, 0)) {
+                return false;
+            }
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
 
 // Matches but data doesn't
 #ifndef NON_MATCHING
+static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjRectangle.s")
 #else
 static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
@@ -5448,18 +5553,20 @@ static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
         nTexTrim2 += 1;
         nTexTrim5 += 12;
     }
+
     objSprite.s.imageW += nTexTrim5;
     objSprite.s.imageH += nTexTrim5;
     pFrame->nLastX1 += nTexTrim2;
+
     if (pTile->nSize != 0) {
         switch (objSprite.s.imageSiz) {
-            case 3:
+            case G_IM_SIZ_32b:
                 nSizLineBytes = 2;
                 break;
-            case 2:
+            case G_IM_SIZ_16b:
                 nSizLineBytes = 2;
                 break;
-            case 1:
+            case G_IM_SIZ_8b:
                 nSizLineBytes = 1;
                 break;
             default:
@@ -5483,13 +5590,13 @@ static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
         return false;
     }
     if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
-        if (!rspSetTileSize(pFrame, pTile, 0, 0, ((objSprite.s.imageW >> 5) - 1) * 4,
-                            ((objSprite.s.imageH >> 5) - 1) * 4)) {
+        if (!rspSetTileSize(pFrame, pTile, 0, 0, ((objSprite.s.imageW >> 5) - 1) << 2,
+                            ((objSprite.s.imageH >> 5) - 1) << 2)) {
             return false;
         }
     } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
-        if (!rspSetTileSize(pFrame, pTile, (pFrame->nLastX0 >> 5) * 4, (pFrame->nLastY0 >> 5) * 4,
-                            (pFrame->nLastX1 >> 5) * 4, (pFrame->nLastY1 >> 5) * 4)) {
+        if (!rspSetTileSize(pFrame, pTile, (pFrame->nLastX0 >> 5) << 2, (pFrame->nLastY0 >> 5) << 2,
+                            (pFrame->nLastX1 >> 5) << 2, (pFrame->nLastY1 >> 5) << 2)) {
             return false;
         }
     }
@@ -5526,9 +5633,398 @@ static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
 }
 #endif
 
+// Matches but data doesn't
+#ifndef NON_MATCHING
+static bool rspObjSprite(Rsp* pRSP, Frame* pFrame, s32 nAddress);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjSprite.s")
+#else
+static bool rspObjSprite(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
+    u16 nSizLineBytes;
+    f32 fLeft;
+    f32 fRight;
+    f32 fTop;
+    f32 fBottom;
+    f32 fTexRight;
+    f32 fTexBottom;
+    f32 fTexLeft;
+    f32 fTexTop;
+    f32 fScaleX;
+    f32 fScaleY;
+    f32 fSpriteWidth;
+    f32 fSpriteHeight;
+    s32 nTexTrim2;
+    s32 nTexTrim5;
+    s32 nClampSetting;
+    uObjSprite objSprite;
+    Tile* pTile;
+    s32 pad[2];
+    Primitive primitive;
+    f32 mtxTransL[3][4];
+    f32 mtxTransW[3][4];
+    f32 mtxScale[3][4];
+    f32 mtxTemp[3][4];
+    f32 mtxOut[3][4];
+    Vec vecIn;
+    Vec vecOut;
 
+    nTexTrim2 = 0;
+    nTexTrim5 = 0;
+    pTile = &pFrame->aTile[0];
+    if (!rspFillObjSprite(pRSP, nAddress, &objSprite)) {
+        return false;
+    }
+
+    nClampSetting = pRSP->nMode2D & 1;
+    if (pRSP->nMode2D & 0x10) {
+        nTexTrim2 = -2;
+        nTexTrim5 = -16;
+    } else if (pRSP->nMode2D & 0x20) {
+        nTexTrim2 = -4;
+        nTexTrim5 = -32;
+    }
+    if (pRSP->nMode2D & 0x40) {
+        nTexTrim2 += 1;
+        nTexTrim5 += 12;
+    }
+
+    objSprite.s.imageW += nTexTrim5;
+    objSprite.s.imageH += nTexTrim5;
+    pFrame->nLastX1 += nTexTrim2;
+
+    if (pTile->nSize != 0) {
+        switch (objSprite.s.imageSiz) {
+            case G_IM_SIZ_32b:
+                nSizLineBytes = 2;
+                break;
+            case G_IM_SIZ_16b:
+                nSizLineBytes = 2;
+                break;
+            case G_IM_SIZ_8b:
+                nSizLineBytes = 1;
+                break;
+            default:
+                return false;
+        }
+        if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
+            pTile->nSizeX = ((objSprite.s.imageW >> 5) * nSizLineBytes + 7) >> 3;
+        } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
+            pTile->nSizeX = (((pFrame->nLastX1 - pFrame->nLastX0 + 1) >> 5) * nSizLineBytes + 7) >> 3;
+        }
+    } else {
+        if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
+            pTile->nSizeX = ((objSprite.s.imageW >> 6) + 7) >> 3;
+        } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
+            pTile->nSizeX = (((pFrame->nLastX1 - pFrame->nLastX0) >> 6) + 7) >> 3;
+        }
+    }
+
+    if (!rspSetTile(pFrame, pTile, objSprite.s.imageSiz, 0, objSprite.s.imagePal, objSprite.s.imageFmt, 0, 0,
+                    nClampSetting, nClampSetting, 0, 0)) {
+        return false;
+    }
+
+    if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
+        if (!rspSetTileSize(pFrame, pTile, 0, 0, ((objSprite.s.imageW >> 5) - 1) << 2,
+                            ((objSprite.s.imageH >> 5) - 1) << 2)) {
+            return false;
+        }
+    } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
+        if (!rspSetTileSize(pFrame, pTile, (pFrame->nLastX0 >> 5) << 2, (pFrame->nLastY0 >> 5) << 2,
+                            (pFrame->nLastX1 >> 5) << 2, (pFrame->nLastY1 >> 5) << 2)) {
+            return false;
+        }
+    }
+
+    fSpriteWidth = objSprite.s.imageW / 32.0f;
+    fSpriteHeight = objSprite.s.imageH / 32.0f;
+    if (objSprite.s.imageFlags & 1) {
+        fTexRight = 0.0f;
+        fTexLeft = (2.0f * fSpriteWidth) - 2.0f;
+    } else {
+        fTexLeft = 0.0f;
+        fTexRight = (2.0f * fSpriteWidth) - 2.0f;
+    }
+    if (objSprite.s.imageFlags & 0x10) {
+        fTexBottom = 0.0f;
+        fTexTop = (2.0f * fSpriteHeight) - 2.0f;
+    } else {
+        fTexTop = 0.0f;
+        fTexBottom = (2.0f * fSpriteHeight) - 2.0f;
+    }
+    fLeft = -fSpriteWidth / 2.0f;
+    fRight = fSpriteWidth / 2.0f;
+    fTop = fSpriteHeight / 2.0f;
+    fBottom = -fSpriteHeight / 2.0f;
+    fScaleX = (1024.0f / objSprite.s.scaleW) * pFrame->rScaleX;
+    fScaleY = (1024.0f / objSprite.s.scaleH) * pFrame->rScaleY;
+
+    frameFillVertex(pFrame, 0, fLeft, fTop, 0, fTexLeft, fTexTop);
+    frameFillVertex(pFrame, 1, fRight, fTop, 0, fTexRight, fTexTop);
+    frameFillVertex(pFrame, 2, fRight, fBottom, 0, fTexRight, fTexBottom);
+    frameFillVertex(pFrame, 3, fLeft, fBottom, 0, fTexLeft, fTexBottom);
+
+    primitive.anData[0] = 0;
+    primitive.anData[1] = 1;
+    primitive.anData[2] = 2;
+    primitive.anData[3] = 0;
+    primitive.anData[4] = 2;
+    primitive.anData[5] = 3;
+    primitive.nCount = 6;
+
+    if (!frameSetMode(pFrame, FMT_TEXTURE2, 1)) {
+        return false;
+    }
+    if (!frameSetMode(pFrame, FMT_TEXTURE1, 0xFFFFFFFF)) {
+        return false;
+    }
+    if (!frameSetMode(pFrame, FMT_GEOMETRY, pFrame->aMode[1] & ~0xAD)) {
+        return false;
+    }
+    if (!frameSetMatrix(pFrame, pRSP->aMatrixOrtho, FMT_PROJECTION, true, false, 0)) {
+        return false;
+    }
+
+    PSMTXIdentity(mtxTransL);
+    PSMTXIdentity(mtxTransW);
+    PSMTXIdentity(mtxScale);
+    PSMTXTrans(mtxTransL, fSpriteWidth / 2.0f + objSprite.s.objX / 4.0f,
+               -fSpriteHeight / 2.0f - objSprite.s.objY / 4.0f, 0.0f);
+    PSMTXTrans(mtxTransW, -pFrame->anSizeX[1] / 2.0f + pRSP->twoDValues.fX * pFrame->rScaleX,
+               pFrame->anSizeY[1] / 2.0f + pRSP->twoDValues.fY * pFrame->rScaleY, 0.0f);
+    mtxScale[0][0] = fScaleX * pRSP->twoDValues.aRotations[0][0];
+    mtxScale[1][0] = -fScaleX * pRSP->twoDValues.aRotations[1][0];
+    mtxScale[0][1] = -fScaleY * pRSP->twoDValues.aRotations[0][1];
+    mtxScale[1][1] = fScaleY * pRSP->twoDValues.aRotations[1][1];
+    PSMTXConcat(mtxScale, mtxTransL, mtxTemp);
+    PSMTXConcat(mtxTransW, mtxTemp, mtxOut);
+
+    vecIn.x = fLeft;
+    vecIn.y = fTop;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 0, vecOut.x, vecOut.y, vecOut.z, fTexLeft, fTexTop);
+
+    vecIn.x = fRight;
+    vecIn.y = fTop;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 1, vecOut.x, vecOut.y, vecOut.z, fTexRight, fTexTop);
+
+    vecIn.x = fRight;
+    vecIn.y = fBottom;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 2, vecOut.x, vecOut.y, vecOut.z, fTexRight, fTexBottom);
+
+    vecIn.x = fLeft;
+    vecIn.y = fBottom;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 3, vecOut.x, vecOut.y, vecOut.z, fTexLeft, fTexBottom);
+
+    if (!pFrame->aDraw[1](pFrame, &primitive)) {
+        return false;
+    }
+    if (!frameSetMode(pFrame, FMT_TEXTURE2, 0)) {
+        return false;
+    }
+    return true;
+}
+#endif
+
+// Matches but data doesn't
+#ifndef NON_MATCHING
+bool rspObjRectangleR(Rsp* pRSP, Frame* pFrame, s32 nAddress);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjRectangleR.s")
+#else
+bool rspObjRectangleR(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
+    u16 nSizLineBytes;
+    f32 fLeft;
+    f32 fRight;
+    f32 fTop;
+    f32 fBottom;
+    f32 fTexRight;
+    f32 fTexBottom;
+    f32 fTexLeft;
+    f32 fTexTop;
+    f32 fScaleX;
+    f32 fScaleY;
+    s32 nTexTrim2;
+    s32 nTexTrim5;
+    f32 fSpriteWidth;
+    f32 fSpriteHeight;
+    s32 nClampSetting;
+    uObjSprite objSprite;
+    s32 pad2[2];
+    Tile* pTile;
+    Primitive primitive;
+    f32 mtxTransL[3][4];
+    f32 mtxTransW[3][4];
+    f32 mtxScale[3][4];
+    f32 mtxTemp[3][4];
+    f32 mtxOut[3][4];
+    Vec vecIn;
+    Vec vecOut;
+
+    nTexTrim2 = 0;
+    nTexTrim5 = 0;
+    pTile = &pFrame->aTile[0];
+    if (!rspFillObjSprite(pRSP, nAddress, &objSprite)) {
+        return false;
+    }
+
+    nClampSetting = pRSP->nMode2D & 1;
+    if (pRSP->nMode2D & 0x10) {
+        nTexTrim2 = -2;
+        nTexTrim5 = -16;
+    } else if (pRSP->nMode2D & 0x20) {
+        nTexTrim2 = -4;
+        nTexTrim5 = -32;
+    }
+    if (pRSP->nMode2D & 0x40) {
+        nTexTrim2 += 1;
+        nTexTrim5 += 12;
+    }
+
+    objSprite.s.imageW += nTexTrim5;
+    objSprite.s.imageH += nTexTrim5;
+    pFrame->nLastX1 += nTexTrim2;
+
+    if (pTile->nSize != 0) {
+        switch (objSprite.s.imageSiz) {
+            case G_IM_SIZ_32b:
+                nSizLineBytes = 2;
+                break;
+            case G_IM_SIZ_16b:
+                nSizLineBytes = 2;
+                break;
+            case G_IM_SIZ_8b:
+                nSizLineBytes = 1;
+                break;
+            default:
+                return false;
+        }
+        if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
+            pTile->nSizeX = ((objSprite.s.imageW >> 5) * nSizLineBytes + 7) >> 3;
+        } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
+            pTile->nSizeX = ((((pFrame->nLastX1 - pFrame->nLastX0) >> 2) + 1) * nSizLineBytes + 7) >> 3;
+        }
+    } else {
+        if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
+            pTile->nSizeX = ((objSprite.s.imageW >> 6) + 7) >> 3;
+        } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
+            pTile->nSizeX = (((pFrame->nLastX1 - pFrame->nLastX0) >> 6) + 7) >> 3;
+        }
+    }
+
+    if (!rspSetTile(pFrame, pTile, objSprite.s.imageSiz, 0, objSprite.s.imagePal, objSprite.s.imageFmt, 0, 0,
+                    nClampSetting, nClampSetting, 0, 0)) {
+        return false;
+    }
+
+    if (pFrame->n2dLoadTexType == G_OBJLT_TXTRBLOCK) {
+        if (!rspSetTileSize(pFrame, pTile, 0, 0, ((objSprite.s.imageW >> 5) - 1) << 2,
+                            ((objSprite.s.imageH >> 5) - 1) << 2)) {
+            return false;
+        }
+    } else if (pFrame->n2dLoadTexType == G_OBJLT_TXTRTILE) {
+        if (!rspSetTileSize(pFrame, pTile, (pFrame->nLastX0 >> 2) << 2, (pFrame->nLastY0 >> 2) << 2,
+                            (pFrame->nLastX1 >> 2) << 2, (pFrame->nLastY1 >> 2) << 2)) {
+            return false;
+        }
+    }
+
+    fSpriteWidth = objSprite.s.imageW / 32.0f;
+    fSpriteHeight = objSprite.s.imageH / 32.0f;
+    if (objSprite.s.imageFlags & 1) {
+        fTexRight = 0.0f;
+        fTexLeft = (2.0f * fSpriteWidth) - 2.0f;
+    } else {
+        fTexLeft = 0.0f;
+        fTexRight = (2.0f * fSpriteWidth) - 2.0f;
+    }
+    if (objSprite.s.imageFlags & 0x10) {
+        fTexBottom = 0.0f;
+        fTexTop = (2.0f * fSpriteHeight) - 2.0f;
+    } else {
+        fTexTop = 0.0f;
+        fTexBottom = (2.0f * fSpriteHeight) - 2.0f;
+    }
+    fLeft = -fSpriteWidth / 2.0f;
+    fRight = (1024.0f / objSprite.s.scaleW) * fSpriteWidth / 2.0f;
+    fTop = fSpriteHeight / 2.0f;
+    fBottom = (1024.0f / objSprite.s.scaleH) * -fSpriteHeight / 2.0f;
+
+    frameFillVertex(pFrame, 0, fLeft, fTop, 0, fTexLeft, fTexTop);
+    frameFillVertex(pFrame, 1, fRight, fTop, 0, fTexRight, fTexTop);
+    frameFillVertex(pFrame, 2, fRight, fBottom, 0, fTexRight, fTexBottom);
+    frameFillVertex(pFrame, 3, fLeft, fBottom, 0, fTexLeft, fTexBottom);
+
+    primitive.anData[0] = 0;
+    primitive.anData[1] = 1;
+    primitive.anData[2] = 2;
+    primitive.anData[3] = 0;
+    primitive.anData[4] = 2;
+    primitive.anData[5] = 3;
+    primitive.nCount = 6;
+
+    if (!frameSetMode(pFrame, FMT_TEXTURE2, 1)) {
+        return false;
+    }
+    if (!frameSetMode(pFrame, FMT_TEXTURE1, 0xFFFFFFFF)) {
+        return false;
+    }
+    if (!frameSetMode(pFrame, FMT_GEOMETRY, pFrame->aMode[1] & ~0xAD)) {
+        return false;
+    }
+    if (!frameSetMatrix(pFrame, pRSP->aMatrixOrtho, FMT_PROJECTION, true, false, 0)) {
+        return false;
+    }
+    PSMTXIdentity(mtxTransL);
+    PSMTXIdentity(mtxTransW);
+    PSMTXIdentity(mtxScale);
+    PSMTXTrans(mtxTransL, fSpriteWidth / 2.0f + objSprite.s.objX / 4.0f,
+               -fSpriteHeight / 2.0f - objSprite.s.objY / 4.0f, 0.0f);
+    PSMTXTrans(mtxTransW, -pFrame->anSizeX[1] / 2.0f + pRSP->twoDValues.fX * pFrame->rScaleX,
+               pFrame->anSizeY[1] / 2.0f + pRSP->twoDValues.fY * pFrame->rScaleY, 0.0f);
+    mtxScale[0][0] = pRSP->twoDValues.fBaseScaleX * pFrame->rScaleX;
+    mtxScale[1][1] = pRSP->twoDValues.fBaseScaleY * pFrame->rScaleY;
+    PSMTXConcat(mtxScale, mtxTransL, mtxTemp);
+    PSMTXConcat(mtxTransW, mtxTemp, mtxOut);
+
+    vecIn.x = fLeft;
+    vecIn.y = fTop;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 0, vecOut.x, vecOut.y, vecOut.z, fTexLeft, fTexTop);
+
+    vecIn.x = fRight;
+    vecIn.y = fTop;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 1, vecOut.x, vecOut.y, vecOut.z, fTexRight, fTexTop);
+
+    vecIn.x = fRight;
+    vecIn.y = fBottom;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 2, vecOut.x, vecOut.y, vecOut.z, fTexRight, fTexBottom);
+
+    vecIn.x = fLeft;
+    vecIn.y = fBottom;
+    vecIn.z = 0.0f;
+    PSMTXMultVec(mtxOut, &vecIn, &vecOut);
+    frameFillVertex(pFrame, 3, vecOut.x, vecOut.y, vecOut.z, fTexLeft, fTexBottom);
+
+    if (!pFrame->aDraw[1](pFrame, &primitive)) {
+        return false;
+    }
+    if (!frameSetMode(pFrame, FMT_TEXTURE2, 0)) {
+        return false;
+    }
+    return true;
+}
+#endif
 
 bool rspBgRectCopy(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     uObjBg bg;
