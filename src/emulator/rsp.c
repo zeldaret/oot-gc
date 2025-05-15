@@ -5985,13 +5985,13 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
             aBigBuffer[i * 8 + j] = nFUData >> (int)(56 - j * 8);
         }
 
-        if (((nFUData >> 32) & 0xFFFFFFFF) != 0x52535020) { // "RSP "
+        if (((nFUData >> 32) & 0xFFFFFFFF) != 'RSP ') {
             continue;
         }
 
-        if (((nFUData >> 8) & 0xFFFFFF) == 0x476678) { // "Gfx"
+        if (((nFUData >> 8) & 0xFFFFFF) == 'Gfx') {
             nFUData = pFUData[i + 1];
-            if ((nFUData & 0xFFFF) == 0x4633) { // "F3"
+            if ((nFUData & 0xFFFF) == 'F3') {
                 nFUData = pFUData[i + 2];
                 temp_r22 = (nFUData >> 48) & 0xFF;
                 acUCodeName[0] = 'F';
@@ -6046,7 +6046,7 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
                 } else {
                     continue;
                 }
-            } else if ((nFUData & 0xFFFF) == 0x4C33) { // "L3"
+            } else if ((nFUData & 0xFFFF) == 'L3') {
                 nFUData = pFUData[i + 2];
                 acUCodeName[0] = 'L';
                 acUCodeName[1] = '3';
@@ -6082,7 +6082,7 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
                     break;
                 } else if ((nFUData & 0xFF) == 'Z') {
                     nFUData = pFUData[i + 2];
-                    if (((nFUData >> 32) & 0xFFFFFFFF) == 0x536F7274) { // "Sort"
+                    if (((nFUData >> 32) & 0xFFFFFFFF) == 'Sort') {
                         acUCodeName[6] = (nFUData >> 8) & 0xFF;
                         acUCodeName[7] = (nFUData >> 0) & 0xFF;
 
@@ -6102,7 +6102,7 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
             }
         }
 
-        if (((nFUData >> 16) & 0xFFFF) == 0x5357) { // "SW"
+        if (((nFUData >> 16) & 0xFFFF) == 'SW') {
             nFUData = pFUData[i + 2];
 
             acUCodeName[0] = 'F';
@@ -6129,7 +6129,7 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
             eType = RUT_FAST3D;
             nCountVertex = 32;
             break;
-        } else if ((pFUData[i + 1] & 0xFFFF) == 0x5332) { // "S2"
+        } else if ((pFUData[i + 1] & 0xFFFF) == 'S2') {
             acUCodeName[0] = 'S';
             acUCodeName[1] = '2';
             acUCodeName[2] = 'D';
