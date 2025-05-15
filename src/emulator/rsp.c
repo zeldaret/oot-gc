@@ -5659,11 +5659,11 @@ static bool rspObjSprite(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     Tile* pTile;
     s32 pad[2];
     Primitive primitive;
-    f32 mtxTransL[3][4];
-    f32 mtxTransW[3][4];
-    f32 mtxScale[3][4];
-    f32 mtxTemp[3][4];
-    f32 mtxOut[3][4];
+    Mtx mtxTransL;
+    Mtx mtxTransW;
+    Mtx mtxScale;
+    Mtx mtxTemp;
+    Mtx mtxOut;
     Vec vecIn;
     Vec vecOut;
 
@@ -5858,11 +5858,11 @@ bool rspObjRectangleR(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     s32 pad2[2];
     Tile* pTile;
     Primitive primitive;
-    f32 mtxTransL[3][4];
-    f32 mtxTransW[3][4];
-    f32 mtxScale[3][4];
-    f32 mtxTemp[3][4];
-    f32 mtxOut[3][4];
+    Mtx mtxTransL;
+    Mtx mtxTransW;
+    Mtx mtxScale;
+    Mtx mtxTemp;
+    Mtx mtxOut;
     Vec vecIn;
     Vec vecOut;
 
