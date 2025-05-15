@@ -5930,7 +5930,7 @@ static inline bool rspSetupUCode(Rsp* pRSP) {
 
 static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
     s32 nCountVertex;
-    __anon_0x5B8F2* pUCode;
+    RspUCode* pUCode;
     RspUCodeType eType;
     void* pListNode;
     s32 nOffsetCode;
@@ -5955,7 +5955,7 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
     nCheckSum = 0;
 
     while (pListNode != NULL) {
-        pUCode = (__anon_0x5B8F2*)NODE_DATA(pListNode);
+        pUCode = (RspUCode*)NODE_DATA(pListNode);
         if (pUCode->nOffsetCode == nOffsetCode && pUCode->nOffsetData == nOffsetData) {
             pRSP->eTypeUCode = pUCode->eType;
             pRSP->nCountVertex = pUCode->nCountVertex;
@@ -6912,7 +6912,7 @@ bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
 }
 
 bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
-    __anon_0x5B8F2* pUCode;
+    RspUCode* pUCode;
     void* pListNode;
     s32 nOffsetUCode0;
     s32 nOffsetUCode1;
@@ -6925,7 +6925,7 @@ bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
         s32 offset0;
         s32 offset1;
 
-        pUCode = (__anon_0x5B8F2*)NODE_DATA(pListNode);
+        pUCode = (RspUCode*)NODE_DATA(pListNode);
         pListNode = NODE_NEXT(pListNode);
 
         if (pUCode->nOffsetCode < pUCode->nOffsetData) {

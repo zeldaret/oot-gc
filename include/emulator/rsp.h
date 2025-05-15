@@ -172,7 +172,7 @@ typedef struct __anon_0x583EE {
     /* 0x4 */ s16 v;
 } __anon_0x583EE; // size = 0x6
 
-typedef struct __anon_0x5B8F2 {
+typedef struct RspUCode {
     /* 0x00 */ s32 nOffsetCode;
     /* 0x04 */ s32 nLengthCode;
     /* 0x08 */ s32 nOffsetData;
@@ -181,7 +181,7 @@ typedef struct __anon_0x5B8F2 {
     /* 0x50 */ u64 nUCodeCheckSum;
     /* 0x58 */ s32 nCountVertex;
     /* 0x5C */ RspUCodeType eType;
-} __anon_0x5B8F2; // size = 0x60
+} RspUCode; // size = 0x60
 
 // __anon_0x5845E
 typedef struct Rsp {
