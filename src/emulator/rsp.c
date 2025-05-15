@@ -6136,7 +6136,7 @@ static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
             acUCodeName[3] = 'E';
             acUCodeName[4] = 'X';
             acUCodeName[5] = '2';
-            acUCodeName[6] = 0;
+            acUCodeName[6] = '\0';
 
             pRSP->nVersionUCode = 0;
             eType = RUT_S2DEX2;
