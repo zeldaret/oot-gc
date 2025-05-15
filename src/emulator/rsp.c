@@ -221,6 +221,12 @@ static s16 TMEMSHIFT[4] = {
     0x0040,
 };
 
+#if VERSION == MQ_J
+u16 gnTempBuffer[N64_FRAME_WIDTH * N64_FRAME_HEIGHT];
+u16 gnCopyBuffer[N64_FRAME_WIDTH * N64_FRAME_HEIGHT];
+u16 gnCameraBuffer[ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT];
+#endif
+
 const f32 D_80136038 = 0.25f;
 const f32 D_8013603C = 1024.0f;
 const f32 D_80136040 = 0.03125f;
@@ -7273,7 +7279,7 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                             u8 cTempAlpha = pFrame->cBlurAlpha;
 
                             pFrame->cBlurAlpha = 220;
-                            ZeldaDrawFrame(pFrame, pFrame->nCopyBuffer);
+                            ZeldaDrawFrame(pFrame, COPY_BUFFER);
                             pFrame->cBlurAlpha = cTempAlpha;
                             pFrame->bPauseBGDrawn = true;
                         }
@@ -7305,7 +7311,7 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                             u8 cTempAlpha = pFrame->cBlurAlpha;
 
                             pFrame->cBlurAlpha = 220;
-                            ZeldaDrawFrame(pFrame, pFrame->nCopyBuffer);
+                            ZeldaDrawFrame(pFrame, COPY_BUFFER);
                             pFrame->cBlurAlpha = cTempAlpha;
                             pFrame->bPauseBGDrawn = true;
                         }

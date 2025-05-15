@@ -418,4 +418,18 @@ bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassRSP;
 
+#if VERSION == MQ_J
+extern u16 gnTempBuffer[];
+extern u16 gnCopyBuffer[];
+extern u16 gnCameraBuffer[];
+
+#define TEMP_BUFFER gnTempBuffer
+#define COPY_BUFFER gnCopyBuffer
+#define CAMERA_BUFFER gnCameraBuffer
+#else
+#define TEMP_BUFFER pFrame->nTempBuffer
+#define COPY_BUFFER pFrame->nCopyBuffer
+#define CAMERA_BUFFER pFrame->nCameraBuffer
+#endif
+
 #endif
