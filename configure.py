@@ -237,7 +237,7 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-        "mw_version": "GC/1.2.5",
+        "mw_version": "GC/1.1",
         "cflags": [*cflags_base, "-rostr", "-sdata 0", "-sdata2 0", "-pool off", "-inline off", "-enum min", "-use_lmw_stmw on"],
         "progress_category": "metrotrk",
         "objects": objects,
@@ -483,15 +483,15 @@ config.libs = [
     MetroTRKLib(
         "metrotrk",
         [
-            Object(NotLinked, "metrotrk/mainloop.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/mainloop.c"),
             Object(NotLinked, "metrotrk/nubevent.c"),
-            Object(NotLinked, "metrotrk/nubinit.c", extra_cflags=["-enum int"]),
-            Object(NotLinked, "metrotrk/msg.c"),
-            Object(NotLinked, "metrotrk/msgbuf.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/nubinit.c", extra_cflags=["-enum int"]),
+            Object(LinkedFor("ce-j"), "metrotrk/msg.c"),
+            Object(NotLinked, "metrotrk/msgbuf.c", extra_cflags=["-enum int", "-inline on,noauto"]),
             Object(NotLinked, "metrotrk/serpoll.c"),
             Object(LinkedFor("ce-j"), "metrotrk/usr_put.c"),
             Object(NotLinked, "metrotrk/dispatch.c"),
-            Object(NotLinked, "metrotrk/msghndlr.c"),
+            Object(NotLinked, "metrotrk/msghndlr.c", extra_cflags=["-enum int"]),
             Object(NotLinked, "metrotrk/support.c"),
             Object(LinkedFor("ce-j"), "metrotrk/mutex_TRK.c"),
             Object(NotLinked, "metrotrk/notify.c"),
@@ -503,7 +503,7 @@ config.libs = [
             Object(LinkedFor("ce-j"), "metrotrk/mpc_7xx_603e.c"),
             Object(NotLinked, "metrotrk/main_TRK.c"),
             Object(NotLinked, "metrotrk/dolphin_trk_glue.c", extra_cflags=["-enum int"]),
-            Object(NotLinked, "metrotrk/targcont.c"),
+            Object(LinkedFor("ce-j"), "metrotrk/targcont.c"),
         ]
     ),
     GenericLib(

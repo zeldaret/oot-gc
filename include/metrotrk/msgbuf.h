@@ -36,16 +36,6 @@ DSError TRK_SetBufferPosition(MessageBuffer*, u32);
 DSError TRK_AppendBuffer(MessageBuffer*, const void*, size_t);
 DSError TRK_ReadBuffer(MessageBuffer*, void*, size_t);
 
-inline DSError TRKAppendBuffer1_ui8(MessageBuffer* buffer, const u8 data) {
-    if (buffer->fPosition >= kMessageBufferSize) {
-        return kMessageBufferOverflow;
-    }
-
-    buffer->fData[buffer->fPosition++] = data;
-    buffer->fLength++;
-    return kNoError;
-}
-
 DSError TRKAppendBuffer1_ui16(MessageBuffer* buffer, const u16 data);
 DSError TRKAppendBuffer1_ui32(MessageBuffer* buffer, const u32 data);
 DSError TRKAppendBuffer1_ui64(MessageBuffer* buffer, const u64 data);

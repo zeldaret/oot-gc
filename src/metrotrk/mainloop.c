@@ -4,13 +4,9 @@
 #include "metrotrk/nubevent.h"
 #include "metrotrk/serpoll.h"
 
-void TRKHandleRequestEvent(NubEvent *ev) {
-    TRKDispatchMessage(TRKGetBuffer(ev->fMessageBufferID));
-}
+void TRKHandleRequestEvent(NubEvent* ev) { TRKDispatchMessage(TRKGetBuffer(ev->fMessageBufferID)); }
 
-void TRKHandleSupportEvent(NubEvent *ev) {
-    TRKTargetSupportRequest();
-}
+void TRKHandleSupportEvent(NubEvent* ev) { TRKTargetSupportRequest(); }
 
 void TRKIdle(void) {
     if (TRKTargetStopped() == 0) {

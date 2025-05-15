@@ -52,7 +52,7 @@ DSError TRKTerminateNub(void) {
     return kNoError;
 }
 
-void TRKNubWelcome(void) { TRK_board_display("MetroTRK for Revolution v0.1"); }
+void TRKNubWelcome(void) { TRK_board_display("MetroTRK for Dolphin v0.5"); }
 
 bool TRKInitializeEndian(void) {
     u8 bendian[4];
