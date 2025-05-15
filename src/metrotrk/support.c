@@ -2,8 +2,7 @@
 #include "dolphin/os.h"
 #include "metrotrk/msgcmd.h"
 
-DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply,
-                           bool read) {
+DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
     DSError error;
     int replyBufferId;
     MessageBuffer* replyBuffer;

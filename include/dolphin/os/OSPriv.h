@@ -1,8 +1,8 @@
 #ifndef _DOLPHIN_OSPRIV
 #define _DOLPHIN_OSPRIV
 
-#include "dolphin/os/OSTime.h"
 #include "dolphin/os/OSException.h"
+#include "dolphin/os/OSTime.h"
 
 __OSExceptionHandler __OSGetExceptionHandler(__OSException exception);
 __OSExceptionHandler __OSSetExceptionHandler(__OSException exception, __OSExceptionHandler handler);
