@@ -394,6 +394,17 @@ typedef union uObjTxtr {
     s64 force_structure_alignment;
 } uObjTxtr;
 
+typedef struct zVtxDest {
+    /* 0x0 */ s16 sx;
+    /* 0x2 */ s16 sy;
+    /* 0x4 */ int invw;
+    /* 0x8 */ s16 xi;
+    /* 0xA */ s16 yi;
+    /* 0xC */ u8 cc;
+    /* 0xD */ u8 fog;
+    /* 0xE */ s16 wi;
+} zVtxDest; // size = 0x10
+
 bool rspFillObjBg(Rsp* pRSP, s32 nAddress, uObjBg* pBg);
 bool rspSetImage(struct Frame* pFrame, Rsp* pRSP, s32 nFormat, s32 nWidth, s32 nSize, s32 nImage);
 bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, uObjBg* pBg);
