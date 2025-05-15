@@ -7527,8 +7527,448 @@ inline bool rspPopDL(Rsp* pRSP) {
     }
 }
 
-static bool rspFindUCode(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFindUCode.s")
+static inline bool rspSetupUCode(Rsp* pRSP) {
+    Frame* pFrame;
+
+    pFrame = SYSTEM_FRAME(pRSP->pHost);
+    if (pRSP->eTypeUCode == RUT_L3DEX1 || pRSP->eTypeUCode == RUT_L3DEX2) {
+        frameSetFill(pFrame, false);
+    } else {
+        frameSetFill(pFrame, true);
+    }
+    return true;
+}
+
+static bool rspFindUCode(Rsp* pRSP, RspTask* pTask) {
+    s32 nCountVertex;
+    RspUCode* pUCode;
+    RspUCodeType eType;
+    void* pListNode;
+    s32 nOffsetCode;
+    s32 nOffsetData;
+    u64 nFUData;
+    u64* pFUData;
+    u64* pFUCode;
+    u64 nCheckSum;
+    u32 nLengthData;
+    u32 i;
+    u32 j;
+    u32 nLengthCode;
+    s32 pad2[6];
+    char aBigBuffer[4096];
+    char acUCodeName[64];
+    char temp_r22;
+    char temp_r15;
+
+    nOffsetCode = pTask->nOffsetCode & 0x7FFFFF;
+    nOffsetData = pTask->nOffsetData & 0x7FFFFF;
+    pListNode = pRSP->pListUCode->pNodeHead;
+    nCheckSum = 0;
+
+    while (pListNode != NULL) {
+        pUCode = (RspUCode*)NODE_DATA(pListNode);
+        if (pUCode->nOffsetCode == nOffsetCode && pUCode->nOffsetData == nOffsetData) {
+            pRSP->eTypeUCode = pUCode->eType;
+            pRSP->nCountVertex = pUCode->nCountVertex;
+            rspSetupUCode(pRSP);
+            return true;
+        }
+        pListNode = NODE_NEXT(pListNode);
+    }
+
+    nLengthData = pTask->nLengthData;
+    nLengthCode = pTask->nLengthCode;
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pFUData, nOffsetData, NULL)) {
+        return false;
+    }
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pFUCode, nOffsetCode, NULL)) {
+        return false;
+    }
+
+    eType = RUT_NONE;
+    for (i = 0; i < (nLengthCode >> 3); i++) {
+        nCheckSum += pFUCode[i];
+    }
+
+    for (i = 0; i < (nLengthData >> 3); i++) {
+        nFUData = pFUData[i];
+        for (j = 0; j < 8; j++) {
+            aBigBuffer[i * 8 + j] = nFUData >> (int)(56 - j * 8);
+        }
+
+        if (((nFUData >> 32) & 0xFFFFFFFF) != 'RSP ') {
+            continue;
+        }
+
+        if (((nFUData >> 8) & 0xFFFFFF) == 'Gfx') {
+            nFUData = pFUData[i + 1];
+            if ((nFUData & 0xFFFF) == 'F3') {
+                nFUData = pFUData[i + 2];
+                temp_r22 = (nFUData >> 48) & 0xFF;
+                acUCodeName[0] = 'F';
+                acUCodeName[1] = '3';
+                acUCodeName[2] = (nFUData >> 56) & 0xFF;
+                acUCodeName[3] = (nFUData >> 48) & 0xFF;
+                acUCodeName[4] = (nFUData >> 40) & 0xFF;
+                acUCodeName[5] = (nFUData >> 32) & 0xFF;
+
+                nFUData = pFUData[i + 3];
+                if (((nFUData >> 24) & 0xFF) == '0' || ((nFUData >> 24) & 0xFF) == '1') {
+                    temp_r15 = (nFUData >> 24) & 0xFF;
+                    acUCodeName[6] = (nFUData >> 24) & 0xFF;
+                    acUCodeName[7] = (nFUData >> 16) & 0xFF;
+                    acUCodeName[8] = (nFUData >> 8) & 0xFF;
+                    acUCodeName[9] = (nFUData >> 0) & 0xFF;
+                    acUCodeName[10] = '\0';
+
+                    if (temp_r22 == 'Z') {
+                        pRSP->nVersionUCode = 0;
+                        eType = RUT_ZSORT;
+                        nCountVertex = 64;
+                    } else {
+                        if (temp_r15 == '0') {
+                            pRSP->nVersionUCode = 2;
+                        } else {
+                            pRSP->nVersionUCode = 0;
+                        }
+                        eType = RUT_F3DEX1;
+                        nCountVertex = 32;
+                    }
+                    break;
+                } else if ((nFUData & 0xFF) == '2') {
+                    acUCodeName[6] = nFUData & 0xFF;
+
+                    nFUData = pFUData[i + 4];
+                    acUCodeName[7] = (nFUData >> 56) & 0xFF;
+                    acUCodeName[8] = (nFUData >> 48) & 0xFF;
+                    acUCodeName[9] = (nFUData >> 40) & 0xFF;
+                    acUCodeName[10] = '\0';
+
+                    if (temp_r22 == 'Z') {
+                        pRSP->nVersionUCode = 4;
+                        eType = RUT_F3DEX2;
+                        nCountVertex = 64;
+                    } else {
+                        pRSP->nVersionUCode = 0;
+                        eType = RUT_F3DEX2;
+                        nCountVertex = 64;
+                    }
+                    break;
+                } else {
+                    continue;
+                }
+            } else if ((nFUData & 0xFFFF) == 'L3') {
+                nFUData = pFUData[i + 2];
+                acUCodeName[0] = 'L';
+                acUCodeName[1] = '3';
+                acUCodeName[2] = (nFUData >> 56) & 0xFF;
+                acUCodeName[3] = (nFUData >> 48) & 0xFF;
+                acUCodeName[4] = (nFUData >> 40) & 0xFF;
+                acUCodeName[5] = (nFUData >> 32) & 0xFF;
+
+                nFUData = pFUData[i + 3];
+                if (((nFUData >> 24) & 0xFF) == '0' || ((nFUData >> 24) & 0xFF) == '1') {
+                    acUCodeName[6] = (nFUData >> 24) & 0xFF;
+                    acUCodeName[7] = (nFUData >> 16) & 0xFF;
+                    acUCodeName[8] = (nFUData >> 8) & 0xFF;
+                    acUCodeName[9] = (nFUData >> 0) & 0xFF;
+                    acUCodeName[10] = '\0';
+
+                    pRSP->nVersionUCode = 0;
+                    eType = RUT_L3DEX1;
+                    nCountVertex = 32;
+                    break;
+                } else if ((nFUData & 0xFF) == '2') {
+                    acUCodeName[6] = nFUData & 0xFF;
+
+                    nFUData = pFUData[i + 4];
+                    acUCodeName[7] = (nFUData >> 56) & 0xFF;
+                    acUCodeName[8] = (nFUData >> 48) & 0xFF;
+                    acUCodeName[9] = (nFUData >> 40) & 0xFF;
+                    acUCodeName[10] = '\0';
+
+                    pRSP->nVersionUCode = 0;
+                    eType = RUT_L3DEX2;
+                    nCountVertex = 32;
+                    break;
+                } else if ((nFUData & 0xFF) == 'Z') {
+                    nFUData = pFUData[i + 2];
+                    if (((nFUData >> 32) & 0xFFFFFFFF) == 'Sort') {
+                        acUCodeName[6] = (nFUData >> 8) & 0xFF;
+                        acUCodeName[7] = (nFUData >> 0) & 0xFF;
+
+                        nFUData = pFUData[i + 3];
+                        acUCodeName[8] = (nFUData >> 56) & 0xFF;
+                        acUCodeName[9] = (nFUData >> 48) & 0xFF;
+                        acUCodeName[10] = '\0';
+
+                        pRSP->nVersionUCode = 3;
+                        eType = RUT_ZSORT;
+                        nCountVertex = 64;
+                        // bug? missing "break;"
+                    }
+                } else {
+                    continue;
+                }
+            }
+        }
+
+        if (((nFUData >> 16) & 0xFFFF) == 'SW') {
+            nFUData = pFUData[i + 2];
+
+            acUCodeName[0] = 'F';
+            acUCodeName[1] = 'a';
+            acUCodeName[2] = 's';
+            acUCodeName[3] = 't';
+            acUCodeName[4] = '3';
+            acUCodeName[5] = 'D';
+            acUCodeName[6] = ' ';
+            acUCodeName[7] = (nFUData >> 56) & 0xFF;
+            acUCodeName[8] = (nFUData >> 48) & 0xFF;
+            acUCodeName[9] = (nFUData >> 40) & 0xFF;
+            acUCodeName[10] = (nFUData >> 32) & 0xFF;
+            acUCodeName[11] = '\0';
+
+            if (nCheckSum == 0x3DDCC2B9DE351A0A) {
+                pRSP->nVersionUCode = 1;
+            } else if (nCheckSum == 0x8B9D7CFA7270C5A4) {
+                pRSP->nVersionUCode = 5;
+            } else {
+                pRSP->nVersionUCode = 0;
+            }
+
+            eType = RUT_FAST3D;
+            nCountVertex = 32;
+            break;
+        } else if ((pFUData[i + 1] & 0xFFFF) == 'S2') {
+            acUCodeName[0] = 'S';
+            acUCodeName[1] = '2';
+            acUCodeName[2] = 'D';
+            acUCodeName[3] = 'E';
+            acUCodeName[4] = 'X';
+            acUCodeName[5] = '2';
+            acUCodeName[6] = '\0';
+
+            pRSP->nVersionUCode = 0;
+            eType = RUT_S2DEX2;
+            nCountVertex = 0;
+            break;
+        }
+    }
+
+    if (eType == RUT_NONE) {
+        for (i = 0; i < nLengthData - 34; i++) {
+            if (!(aBigBuffer[i + 0] == 'R' && aBigBuffer[i + 1] == 'S' && aBigBuffer[i + 2] == 'P')) {
+                continue;
+            }
+
+            if (aBigBuffer[i + 4] == 'S' && aBigBuffer[i + 5] == 'W') {
+                acUCodeName[0] = 'F';
+                acUCodeName[1] = 'A';
+                acUCodeName[2] = 'S';
+                acUCodeName[3] = 'T';
+                acUCodeName[4] = '3';
+                acUCodeName[5] = 'D';
+                acUCodeName[6] = ' ';
+                acUCodeName[7] = aBigBuffer[i + 16];
+                acUCodeName[8] = aBigBuffer[i + 17];
+                acUCodeName[9] = aBigBuffer[i + 18];
+                acUCodeName[10] = aBigBuffer[i + 19];
+                acUCodeName[11] = '\0';
+
+                if (nCheckSum == 0x3DDCC2B9DE351A0A) {
+                    pRSP->nVersionUCode = 1;
+                } else if (nCheckSum == 0x8B9D7CFA7270C5A4) {
+                    pRSP->nVersionUCode = 5;
+                } else {
+                    pRSP->nVersionUCode = 1;
+                }
+                eType = RUT_FAST3D;
+                nCountVertex = 32;
+                break;
+            } else if (aBigBuffer[i + 4] == 'G' && aBigBuffer[i + 5] == 'f' && aBigBuffer[i + 6] == 'x') {
+                if (aBigBuffer[i + 14] == 'F' && aBigBuffer[i + 15] == '3') {
+                    acUCodeName[0] = 'F';
+                    acUCodeName[1] = '3';
+                    acUCodeName[2] = aBigBuffer[i + 16];
+                    acUCodeName[3] = aBigBuffer[i + 17];
+                    acUCodeName[4] = aBigBuffer[i + 18];
+                    acUCodeName[5] = aBigBuffer[i + 19];
+                    acUCodeName[6] = ' ';
+
+                    if (aBigBuffer[i + 28] == '0' || aBigBuffer[i + 28] == '1') {
+                        acUCodeName[7] = aBigBuffer[i + 28];
+                        acUCodeName[8] = aBigBuffer[i + 29];
+                        acUCodeName[9] = aBigBuffer[i + 30];
+                        acUCodeName[10] = aBigBuffer[i + 31];
+                        acUCodeName[11] = '\0';
+
+                        if (aBigBuffer[i + 17] == 'Z') {
+                            pRSP->nVersionUCode = 0;
+                            eType = RUT_ZSORT;
+                            nCountVertex = 64;
+                        } else {
+                            if (aBigBuffer[i + 28] == '0') {
+                                pRSP->nVersionUCode = 2;
+                            } else {
+                                pRSP->nVersionUCode = 0;
+                            }
+                            eType = RUT_F3DEX1;
+                            nCountVertex = 32;
+                        }
+                        break;
+                    } else if (aBigBuffer[i + 31] == '2') {
+                        acUCodeName[7] = aBigBuffer[i + 31];
+                        acUCodeName[8] = aBigBuffer[i + 32];
+                        acUCodeName[9] = aBigBuffer[i + 33];
+                        acUCodeName[10] = aBigBuffer[i + 34];
+                        acUCodeName[11] = '\0';
+
+                        if (aBigBuffer[i + 17] == 'Z') {
+                            pRSP->nVersionUCode = 4;
+                            eType = RUT_F3DEX2;
+                            nCountVertex = 64;
+                        } else {
+                            pRSP->nVersionUCode = 0;
+                            eType = RUT_F3DEX2;
+                            nCountVertex = 64;
+                        }
+                        break;
+                    }
+                } else if (aBigBuffer[i + 14] == 'L' && aBigBuffer[i + 15] == '3') {
+                    acUCodeName[0] = 'L';
+                    acUCodeName[1] = '3';
+                    acUCodeName[2] = aBigBuffer[i + 16];
+                    acUCodeName[3] = aBigBuffer[i + 17];
+                    acUCodeName[4] = aBigBuffer[i + 18];
+                    acUCodeName[5] = ' ';
+
+                    if (aBigBuffer[i + 28] == '0' || aBigBuffer[i + 28] == '1') {
+                        acUCodeName[6] = aBigBuffer[i + 28];
+                        acUCodeName[7] = aBigBuffer[i + 29];
+                        acUCodeName[8] = aBigBuffer[i + 30];
+                        acUCodeName[9] = aBigBuffer[i + 31];
+                        acUCodeName[10] = '\0';
+
+                        pRSP->nVersionUCode = 0;
+                        eType = RUT_L3DEX1;
+                        nCountVertex = 32;
+                        break;
+                    } else if (aBigBuffer[i + 31] == '2') {
+                        acUCodeName[6] = aBigBuffer[i + 31];
+                        acUCodeName[7] = aBigBuffer[i + 32];
+                        acUCodeName[8] = aBigBuffer[i + 33];
+                        acUCodeName[9] = aBigBuffer[i + 34];
+                        acUCodeName[10] = '\0';
+
+                        pRSP->nVersionUCode = 0;
+                        eType = RUT_L3DEX2;
+                        nCountVertex = 32;
+                        break;
+                    }
+                } else if (aBigBuffer[i + 14] == 'S' && aBigBuffer[i + 15] == '2' && aBigBuffer[i + 16] == 'D' &&
+                           aBigBuffer[i + 17] == 'E' && aBigBuffer[i + 18] == 'X') {
+                    acUCodeName[0] = 'S';
+                    acUCodeName[1] = '2';
+                    acUCodeName[2] = 'D';
+                    acUCodeName[3] = 'E';
+                    acUCodeName[4] = 'X';
+                    acUCodeName[5] = ' ';
+
+                    if (aBigBuffer[i + 21] == '0' || aBigBuffer[i + 21] == '1') {
+                        acUCodeName[6] = aBigBuffer[i + 21];
+                        acUCodeName[7] = aBigBuffer[i + 22];
+                        acUCodeName[8] = aBigBuffer[i + 23];
+                        acUCodeName[9] = aBigBuffer[i + 24];
+                        acUCodeName[10] = '\0';
+
+                        pRSP->nVersionUCode = 0;
+                        eType = RUT_S2DEX1;
+                        nCountVertex = 0;
+                        break;
+                    } else if (aBigBuffer[i + 31] == '2') {
+                        acUCodeName[6] = aBigBuffer[i + 31];
+                        acUCodeName[7] = aBigBuffer[i + 32];
+                        acUCodeName[8] = aBigBuffer[i + 33];
+                        acUCodeName[9] = aBigBuffer[i + 34];
+                        acUCodeName[10] = '\0';
+
+                        pRSP->nVersionUCode = 0;
+                        eType = RUT_S2DEX2;
+                        nCountVertex = 0;
+                        break;
+                    }
+                }
+
+                if (aBigBuffer[i + 14] == 'Z' && aBigBuffer[i + 15] == 'S' && aBigBuffer[i + 16] == 'o' &&
+                    aBigBuffer[i + 17] == 'r' && aBigBuffer[i + 18] == 't') {
+                    acUCodeName[0] = 'Z';
+                    acUCodeName[1] = 'S';
+                    acUCodeName[2] = 'o';
+                    acUCodeName[3] = 'r';
+                    acUCodeName[4] = 't';
+                    acUCodeName[5] = ' ';
+                    acUCodeName[6] = aBigBuffer[i + 22];
+                    acUCodeName[7] = aBigBuffer[i + 23];
+                    acUCodeName[8] = aBigBuffer[i + 24];
+                    acUCodeName[9] = aBigBuffer[i + 25];
+                    acUCodeName[10] = '\0';
+
+                    pRSP->nVersionUCode = 3;
+                    eType = RUT_ZSORT;
+                    nCountVertex = 64;
+                    // bug? missing "break;"
+                }
+            }
+        }
+    }
+
+    if (eType == RUT_NONE) {
+        if (nCheckSum == 0x3DDCC2B9DE351A0A) {
+            pRSP->nVersionUCode = 1;
+        } else if (nCheckSum == 0x8B9D7CFA7270C5A4) {
+            pRSP->nVersionUCode = 5;
+        } else {
+            pRSP->nVersionUCode = 0;
+        }
+        acUCodeName[0] = 'F';
+        acUCodeName[1] = 'A';
+        acUCodeName[2] = 'S';
+        acUCodeName[3] = 'T';
+        acUCodeName[4] = '3';
+        acUCodeName[5] = 'D';
+        acUCodeName[6] = '?';
+        acUCodeName[7] = '\0';
+
+        eType = RUT_FAST3D;
+        nCountVertex = 32;
+    }
+
+    if (!xlListMakeItem(pRSP->pListUCode, (void**)&pUCode)) {
+        return false;
+    }
+
+    pUCode->eType = eType;
+    pUCode->nCountVertex = nCountVertex;
+    pUCode->nOffsetCode = nOffsetCode;
+    pUCode->nLengthCode = nLengthCode;
+    pUCode->nOffsetData = nOffsetData;
+    pUCode->nLengthData = nLengthData;
+
+    pRSP->eTypeUCode = pUCode->eType;
+    pRSP->nCountVertex = pUCode->nCountVertex;
+    if (pRSP->nVersionUCode == 5) {
+        pRSP->n2TriMult = 2;
+    } else {
+        pRSP->n2TriMult = 1;
+    }
+
+    strcpy(pUCode->acUCodeName, acUCodeName);
+    pUCode->nUCodeCheckSum = nCheckSum;
+    rspSetupUCode(pRSP);
+
+    return true;
+}
 
 static bool rspSaveYield(Rsp* pRSP) {
     int iData;
@@ -8083,7 +8523,7 @@ bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
 }
 
 bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
-    __anon_0x5B8F2* pUCode;
+    RspUCode* pUCode;
     void* pListNode;
     s32 nOffsetUCode0;
     s32 nOffsetUCode1;
@@ -8096,7 +8536,7 @@ bool rspInvalidateCache(Rsp* pRSP, s32 nOffset0, s32 nOffset1) {
         s32 offset0;
         s32 offset1;
 
-        pUCode = (__anon_0x5B8F2*)NODE_DATA(pListNode);
+        pUCode = (RspUCode*)NODE_DATA(pListNode);
         pListNode = NODE_NEXT(pListNode);
 
         if (pUCode->nOffsetCode < pUCode->nOffsetData) {
