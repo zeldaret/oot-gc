@@ -60,8 +60,8 @@ void TRKProcessInput(MessageBufferID bufID) {
     NubEvent event;
 
     TRKConstructEvent(&event, 2);
-    gTRKFramingState.fBufferID = -1;
     event.fMessageBufferID = bufID;
+    gTRKFramingState.fBufferID = -1;
     TRKPostEvent(&event);
 }
 
