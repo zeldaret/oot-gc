@@ -9,9 +9,9 @@
 
 typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
-    /* 0x4 */ s32 nSizeObject;
+    /* 0x4 */ int nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
-    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+    /* 0xC */ int (*pfEvent)(void*, int, void*);
 } __anon_0x83C1D; // size = 0x10
 
 // size = 0x10, address = 0x800EFFBC
@@ -19,19 +19,19 @@ struct _XL_OBJECTTYPE gClassPeripheral;
 
 typedef struct __anon_0x83D15 {
     /* 0x00 */ void* pHost;
-    /* 0x04 */ s32 nStatus;
-    /* 0x08 */ s32 nSizeGet;
-    /* 0x0C */ s32 nSizePut;
-    /* 0x10 */ s32 nLatency1;
-    /* 0x14 */ s32 nLatency2;
-    /* 0x18 */ s32 nRelease1;
-    /* 0x1C */ s32 nRelease2;
-    /* 0x20 */ s32 nSizePage1;
-    /* 0x24 */ s32 nSizePage2;
-    /* 0x28 */ s32 nAddressRAM;
-    /* 0x2C */ s32 nAddressROM;
-    /* 0x30 */ s32 nWidthPulse1;
-    /* 0x34 */ s32 nWidthPulse2;
+    /* 0x04 */ int nStatus;
+    /* 0x08 */ int nSizeGet;
+    /* 0x0C */ int nSizePut;
+    /* 0x10 */ int nLatency1;
+    /* 0x14 */ int nLatency2;
+    /* 0x18 */ int nRelease1;
+    /* 0x1C */ int nRelease2;
+    /* 0x20 */ int nSizePage1;
+    /* 0x24 */ int nSizePage2;
+    /* 0x28 */ int nAddressRAM;
+    /* 0x2C */ int nAddressROM;
+    /* 0x30 */ int nWidthPulse1;
+    /* 0x34 */ int nWidthPulse2;
 } __anon_0x83D15; // size = 0x38
 
 typedef enum __anon_0x8415D {
@@ -62,10 +62,10 @@ typedef enum __anon_0x843DE {
 } __anon_0x843DE;
 
 typedef struct __anon_0x84447 {
-    /* 0x0 */ s32 nSize;
-    /* 0x4 */ s32 nOffsetRAM;
-    /* 0x8 */ s32 nOffsetROM;
-    /* 0xC */ s32 (*pCallback)();
+    /* 0x0 */ int nSize;
+    /* 0x4 */ int nOffsetRAM;
+    /* 0x8 */ int nOffsetROM;
+    /* 0xC */ int (*pCallback)();
 } __anon_0x84447; // size = 0x10
 
 typedef enum __anon_0x844F8 {
@@ -88,7 +88,7 @@ typedef enum __anon_0x844F8 {
 typedef struct __anon_0x8464B {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
-    /* 0x08 */ s32 bException;
+    /* 0x08 */ int bException;
     /* 0x0C */ enum __anon_0x843DE eMode;
     /* 0x10 */ struct __anon_0x84447 romCopy;
     /* 0x20 */ enum __anon_0x844F8 eTypeROM;
@@ -96,14 +96,14 @@ typedef struct __anon_0x8464B {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ enum __anon_0x8415D storageDevice;
     /* 0x74 */ u8 anException[16];
-    /* 0x84 */ s32 bJapaneseVersion;
+    /* 0x84 */ int bJapaneseVersion;
 } __anon_0x8464B; // size = 0x88
 
 // size = 0x4, address = 0x80135600
 struct __anon_0x8464B* gpSystem;
 
 // Range: 0x80097D58 -> 0x80097D9C
-static s32 peripheralDMA_Complete() {
+static int peripheralDMA_Complete() {
     // Local variables
     struct __anon_0x83D15* pPeripheral; // r3
 
@@ -112,47 +112,47 @@ static s32 peripheralDMA_Complete() {
 }
 
 // Range: 0x80097D50 -> 0x80097D58
-s32 peripheralPut8() {}
+int peripheralPut8() {}
 
 // Range: 0x80097D48 -> 0x80097D50
-s32 peripheralPut16() {}
+int peripheralPut16() {}
 
 // Range: 0x800979C4 -> 0x80097D48
-s32 peripheralPut32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
+int peripheralPut32(struct __anon_0x83D15* pPeripheral, unsigned int nAddress, int* pData) {
     // Parameters
     // struct __anon_0x83D15* pPeripheral; // r30
-    // u32 nAddress; // r1+0xC
-    // s32* pData; // r1+0x10
+    // unsigned int nAddress; // r1+0xC
+    // int* pData; // r1+0x10
 
     // Local variables
-    s32 bFlag; // r31
+    int bFlag; // r31
     enum __anon_0x8415D storageDevice; // r1+0x14
 }
 
 // Range: 0x800979BC -> 0x800979C4
-s32 peripheralPut64() {}
+int peripheralPut64() {}
 
 // Range: 0x800979B4 -> 0x800979BC
-s32 peripheralGet8() {}
+int peripheralGet8() {}
 
 // Range: 0x800979AC -> 0x800979B4
-s32 peripheralGet16() {}
+int peripheralGet16() {}
 
 // Range: 0x800978AC -> 0x800979AC
-s32 peripheralGet32(struct __anon_0x83D15* pPeripheral, u32 nAddress, s32* pData) {
+int peripheralGet32(struct __anon_0x83D15* pPeripheral, unsigned int nAddress, int* pData) {
     // Parameters
     // struct __anon_0x83D15* pPeripheral; // r1+0x0
-    // u32 nAddress; // r1+0x4
-    // s32* pData; // r1+0x8
+    // unsigned int nAddress; // r1+0x4
+    // int* pData; // r1+0x8
 }
 
 // Range: 0x800978A4 -> 0x800978AC
-s32 peripheralGet64() {}
+int peripheralGet64() {}
 
 // Range: 0x8009779C -> 0x800978A4
-s32 peripheralEvent(struct __anon_0x83D15* pPeripheral, s32 nEvent, void* pArgument) {
+int peripheralEvent(struct __anon_0x83D15* pPeripheral, int nEvent, void* pArgument) {
     // Parameters
     // struct __anon_0x83D15* pPeripheral; // r30
-    // s32 nEvent; // r1+0xC
+    // int nEvent; // r1+0xC
     // void* pArgument; // r31
 }

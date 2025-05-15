@@ -172,7 +172,7 @@ typedef struct __anon_0x583EE {
     /* 0x4 */ s16 v;
 } __anon_0x583EE; // size = 0x6
 
-typedef struct __anon_0x5B8F2 {
+typedef struct RspUCode {
     /* 0x00 */ s32 nOffsetCode;
     /* 0x04 */ s32 nLengthCode;
     /* 0x08 */ s32 nOffsetData;
@@ -181,7 +181,7 @@ typedef struct __anon_0x5B8F2 {
     /* 0x50 */ u64 nUCodeCheckSum;
     /* 0x58 */ s32 nCountVertex;
     /* 0x5C */ RspUCodeType eType;
-} __anon_0x5B8F2; // size = 0x60
+} RspUCode; // size = 0x60
 
 // __anon_0x5845E
 typedef struct Rsp {
@@ -394,6 +394,17 @@ typedef union uObjTxtr {
     s64 force_structure_alignment;
 } uObjTxtr;
 
+typedef struct zVtxDest {
+    /* 0x0 */ s16 sx;
+    /* 0x2 */ s16 sy;
+    /* 0x4 */ int invw;
+    /* 0x8 */ s16 xi;
+    /* 0xA */ s16 yi;
+    /* 0xC */ u8 cc;
+    /* 0xD */ u8 fog;
+    /* 0xE */ s16 wi;
+} zVtxDest; // size = 0x10
+
 bool rspFillObjBg(Rsp* pRSP, s32 nAddress, uObjBg* pBg);
 bool rspSetImage(struct Frame* pFrame, Rsp* pRSP, s32 nFormat, s32 nWidth, s32 nSize, s32 nImage);
 bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, uObjBg* pBg);
@@ -406,5 +417,19 @@ bool rspUpdate(Rsp* pRSP, RspUpdateMode eMode);
 bool rspEvent(Rsp* pRSP, s32 nEvent, void* pArgument);
 
 extern _XL_OBJECTTYPE gClassRSP;
+
+#if VERSION == MQ_J
+extern u16 gnTempBuffer[];
+extern u16 gnCopyBuffer[];
+extern u16 gnCameraBuffer[];
+
+#define TEMP_BUFFER gnTempBuffer
+#define COPY_BUFFER gnCopyBuffer
+#define CAMERA_BUFFER gnCameraBuffer
+#else
+#define TEMP_BUFFER pFrame->nTempBuffer
+#define COPY_BUFFER pFrame->nCopyBuffer
+#define CAMERA_BUFFER pFrame->nCameraBuffer
+#endif
 
 #endif

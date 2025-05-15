@@ -827,6 +827,8 @@ debugger/AmcExi2Stubs.c:
 
 debugger/DebuggerDriver.c:
 	.text       start:0x800D21C0 end:0x800D2C40
+	.sdata      start:0x80158998 end:0x80158999
+	.sbss       start:0x801590C8 end:0x801590DD
 
 debugger/odenotstub.c:
 	.text       start:0x800D2C40 end:0x800D2C48

@@ -15,7 +15,6 @@ typedef struct DBInterface {
 extern DBInterface* __DBInterface;
 
 void DBInit(void);
-void DBInitComm(int* inputFlagPtr, int* mtrCallback);
 void DBPrintf(char* format, ...);
 
 #endif

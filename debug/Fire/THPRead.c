@@ -112,16 +112,16 @@ static u8 ReadThreadStack[4096];
 static f32 gOrthoMtx[4][4];
 
 // size = 0x4, address = 0x80135644
-s32 gMovieErrorToggle;
+int gMovieErrorToggle;
 
 // size = 0x4, address = 0x80135648
-static s32 toggle$184;
+static int toggle$184;
 
 // size = 0x4, address = 0x8013564C
-static s32 gbReset;
+static int gbReset;
 
 // size = 0x4, address = 0x80135650
-static u32 gnTickReset;
+static unsigned int gnTickReset;
 
 typedef struct DVDDiskID {
     /* 0x0 */ char gameName[4];
@@ -204,7 +204,7 @@ typedef struct __anon_0x166D4 {
 typedef struct __anon_0x1675E {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
-    /* 0x8 */ s32 isValid;
+    /* 0x8 */ int isValid;
 } __anon_0x1675E; // size = 0xC
 
 typedef struct __anon_0x16849 {
@@ -214,14 +214,14 @@ typedef struct __anon_0x16849 {
     /* 0x080 */ struct __anon_0x164E4 videoInfo;
     /* 0x08C */ struct __anon_0x16564 audioInfo;
     /* 0x09C */ void* thpWork;
-    /* 0x0A0 */ s32 open;
+    /* 0x0A0 */ int open;
     /* 0x0A4 */ u8 state;
     /* 0x0A5 */ u8 internalState;
     /* 0x0A6 */ u8 playFlag;
     /* 0x0A7 */ u8 audioExist;
     /* 0x0A8 */ s32 dvdError;
     /* 0x0AC */ s32 videoError;
-    /* 0x0B0 */ s32 onMemory;
+    /* 0x0B0 */ int onMemory;
     /* 0x0B4 */ u8* movieData;
     /* 0x0B8 */ s32 initOffset;
     /* 0x0BC */ s32 initReadSize;
@@ -384,9 +384,9 @@ typedef struct _GXColor {
 } __anon_0x17F8F; // size = 0x4
 
 // Range: 0x80012850 -> 0x80012F20
-s32 movieGXInit() {
+int movieGXInit() {
     // Local variables
-    s32 i; // r31
+    int i; // r31
     struct _GXColor GX_DEFAULT_BG; // r1+0x58
     struct _GXColor BLACK; // r1+0x54
     struct _GXColor WHITE; // r1+0x50
@@ -394,7 +394,7 @@ s32 movieGXInit() {
 }
 
 // Range: 0x80012334 -> 0x80012850
-s32 movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {
+int movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {
     // Parameters
     // struct __anon_0x17E8D* tpl; // r25
     // s16 nX0; // r26
@@ -415,7 +415,7 @@ s32 movieDrawImage(struct __anon_0x17E8D* tpl, s16 nX0, s16 nY0) {
 }
 
 // Range: 0x80012170 -> 0x80012334
-s32 movieDrawErrorMessage(enum __anon_0x17564 movieMessage) {
+int movieDrawErrorMessage(enum __anon_0x17564 movieMessage) {
     // Parameters
     // enum __anon_0x17564 movieMessage; // r1+0x8
 
@@ -429,23 +429,23 @@ s32 movieDrawErrorMessage(enum __anon_0x17564 movieMessage) {
 }
 
 // Range: 0x80011F10 -> 0x80012170
-s32 movieDVDShowError(s32 nStatus) {
+int movieDVDShowError(int nStatus) {
     // Parameters
-    // s32 nStatus; // r1+0x8
+    // int nStatus; // r1+0x8
 
     // Local variables
     enum __anon_0x17564 nMessage; // r31
 
     // References
-    // -> static u32 gnTickReset;
-    // -> static s32 gbReset;
+    // -> static unsigned int gnTickReset;
+    // -> static int gbReset;
     // -> struct __anon_0x171A2 DemoPad[4];
-    // -> static s32 toggle$184;
-    // -> s32 gMovieErrorToggle;
+    // -> static int toggle$184;
+    // -> int gMovieErrorToggle;
 }
 
 // Range: 0x80011E60 -> 0x80011F10
-s32 movieDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
+int movieDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32 nOffset) {
     // Parameters
     // struct DVDFileInfo* pFileInfo; // r26
     // void* anData; // r27
@@ -453,38 +453,38 @@ s32 movieDVDRead(struct DVDFileInfo* pFileInfo, void* anData, s32 nSizeRead, s32
     // s32 nOffset; // r29
 
     // Local variables
-    s32 nStatus; // r31
-    s32 bRetry; // r30
+    int nStatus; // r31
+    int bRetry; // r30
 
     // References
-    // -> s32 gMovieErrorToggle;
+    // -> int gMovieErrorToggle;
 }
 
 // Range: 0x80011CAC -> 0x80011E60
-s32 movieTestReset(s32 IPL, s32 forceMenu) {
+int movieTestReset(int IPL, int forceMenu) {
     // Parameters
-    // s32 IPL; // r29
-    // s32 forceMenu; // r30
+    // int IPL; // r29
+    // int forceMenu; // r30
 
     // Local variables
-    u32 bFlag; // r1+0x8
-    u32 nTick; // r1+0x8
+    unsigned int bFlag; // r1+0x8
+    unsigned int nTick; // r1+0x8
 
     // References
-    // -> static u32 gnTickReset;
-    // -> static s32 gbReset;
+    // -> static unsigned int gnTickReset;
+    // -> static int gbReset;
     // -> struct __anon_0x171A2 DemoPad[4];
 }
 
 // Range: 0x80011C0C -> 0x80011CAC
-void movieReset(s32 IPL, s32 forceMenu) {
+void movieReset(int IPL, int forceMenu) {
     // Parameters
-    // s32 IPL; // r30
-    // s32 forceMenu; // r31
+    // int IPL; // r30
+    // int forceMenu; // r31
 }
 
 // Range: 0x80011B60 -> 0x80011C0C
-s32 CreateReadThread(s32 priority) {
+int CreateReadThread(s32 priority) {
     // Parameters
     // s32 priority; // r3
 
@@ -526,7 +526,7 @@ static void* Reader() {
     // -> static struct OSThread ReadThread;
     // -> struct __anon_0x16849 ActivePlayer;
     // -> static struct OSMessageQueue ReadedBufferQueue;
-    // -> s32 gMovieErrorToggle;
+    // -> int gMovieErrorToggle;
     // -> static struct OSMessageQueue FreeReadBufferQueue;
 }
 

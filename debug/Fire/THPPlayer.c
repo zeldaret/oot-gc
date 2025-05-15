@@ -11,7 +11,7 @@
 static u16 VolumeTable[128];
 
 // size = 0x4, address = 0x80135618
-static s32 Initialized;
+static int Initialized;
 
 // size = 0x40, address = 0x800F96E0
 static s32 WorkBuffer[16];
@@ -204,7 +204,7 @@ typedef struct __anon_0x109FA {
 typedef struct __anon_0x10A84 {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
-    /* 0x8 */ s32 isValid;
+    /* 0x8 */ int isValid;
 } __anon_0x10A84; // size = 0xC
 
 typedef struct __anon_0x10B6F {
@@ -214,14 +214,14 @@ typedef struct __anon_0x10B6F {
     /* 0x080 */ struct __anon_0x1080A videoInfo;
     /* 0x08C */ struct __anon_0x1088A audioInfo;
     /* 0x09C */ void* thpWork;
-    /* 0x0A0 */ s32 open;
+    /* 0x0A0 */ int open;
     /* 0x0A4 */ u8 state;
     /* 0x0A5 */ u8 internalState;
     /* 0x0A6 */ u8 playFlag;
     /* 0x0A7 */ u8 audioExist;
     /* 0x0A8 */ s32 dvdError;
     /* 0x0AC */ s32 videoError;
-    /* 0x0B0 */ s32 onMemory;
+    /* 0x0B0 */ int onMemory;
     /* 0x0B4 */ u8* movieData;
     /* 0x0B8 */ s32 initOffset;
     /* 0x0BC */ s32 initReadSize;
@@ -290,13 +290,13 @@ static s32 THPPlayerGetVolume() {
 }
 
 // Erased
-static s32 THPPlayerSetVolume(s32 vol, s32 time) {
+static int THPPlayerSetVolume(s32 vol, s32 time) {
     // Parameters
     // s32 vol; // r28
     // s32 time; // r29
 
     // Local variables
-    s32 old; // r3
+    int old; // r3
     s32 samplePerMs; // r30
 
     // References
@@ -328,7 +328,7 @@ static void MixAudio(s16* destination, s16* source, u32 sample) {
 // Range: 0x80010888 -> 0x80010A00
 static void THPAudioMixCallback() {
     // Local variables
-    s32 old; // r30
+    int old; // r30
 
     // References
     // -> static s32 SoundBufferIndex;
@@ -346,7 +346,7 @@ void THPPlayerDrawDone() {
 
     // References
     // -> static struct OSMessageQueue UsedTextureSetQueue;
-    // -> static s32 Initialized;
+    // -> static int Initialized;
 }
 
 // Erased
@@ -386,7 +386,7 @@ static f32 THPPlayerGetFrameRate() {
 }
 
 // Erased
-static s32 THPPlayerGetAudioInfo(struct __anon_0x1088A* audioInfo) {
+static int THPPlayerGetAudioInfo(struct __anon_0x1088A* audioInfo) {
     // Parameters
     // struct __anon_0x1088A* audioInfo; // r3
 
@@ -395,7 +395,7 @@ static s32 THPPlayerGetAudioInfo(struct __anon_0x1088A* audioInfo) {
 }
 
 // Erased
-static s32 THPPlayerGetVideoInfo(struct __anon_0x1080A* videoInfo) {
+static int THPPlayerGetVideoInfo(struct __anon_0x1080A* videoInfo) {
     // Parameters
     // struct __anon_0x1080A* videoInfo; // r3
 
@@ -417,7 +417,7 @@ s32 THPPlayerDrawCurrentFrame(struct _GXRenderModeObj* rmode, u32 x, u32 y, u32 
 }
 
 // Range: 0x800105F8 -> 0x8001071C
-static s32 ProperTimingForGettingNextFrame() {
+static int ProperTimingForGettingNextFrame() {
     // Local variables
     s32 frameRate; // r30
 
@@ -426,7 +426,7 @@ static s32 ProperTimingForGettingNextFrame() {
 }
 
 // Range: 0x8001058C -> 0x800105F8
-static s32 ProperTimingForStart() {
+static int ProperTimingForStart() {
     // References
     // -> struct __anon_0x10B6F ActivePlayer;
 }
@@ -447,9 +447,9 @@ static void PlayControl(u32 retraceCount) {
 }
 
 // Erased
-static s32 THPPlayerSkip() {
+static int THPPlayerSkip() {
     // Local variables
-    s32 old; // r3
+    int old; // r3
     s32 frameNumber; // r3
     s32 audioGet; // r29
     s32 videoGet; // r1+0x8
@@ -459,7 +459,7 @@ static s32 THPPlayerSkip() {
 }
 
 // Erased
-static s32 THPPlayerPause() {
+static int THPPlayerPause() {
     // References
     // -> struct __anon_0x10B6F ActivePlayer;
 }
@@ -475,13 +475,13 @@ static void THPPlayerStop() {
 }
 
 // Range: 0x80010294 -> 0x800102F0
-s32 THPPlayerPlay() {
+int THPPlayerPlay() {
     // References
     // -> struct __anon_0x10B6F ActivePlayer;
 }
 
 // Range: 0x80010020 -> 0x80010294
-s32 THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack) {
+int THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack) {
     // Parameters
     // s32 frameNum; // r29
     // s32 playFlag; // r26
@@ -499,16 +499,16 @@ s32 THPPlayerPrepare(s32 frameNum, s32 playFlag, s32 audioTrack) {
 }
 
 // Range: 0x8000FFF0 -> 0x80010020
-void PrepareReady(s32 flag) {
+void PrepareReady(int flag) {
     // Parameters
-    // s32 flag; // r4
+    // int flag; // r4
 
     // References
     // -> static struct OSMessageQueue PrepareReadyQueue;
 }
 
 // Erased
-static s32 WaitUntilPrepare() {
+static int WaitUntilPrepare() {
     // Local variables
     void* msg; // r1+0x8
 
@@ -531,7 +531,7 @@ static void InitAllMessageQueue() {
 }
 
 // Range: 0x8000FCE8 -> 0x8000FF24
-s32 THPPlayerSetBuffer(u8* buffer) {
+int THPPlayerSetBuffer(u8* buffer) {
     // Parameters
     // u8* buffer; // r1+0x8
 
@@ -555,16 +555,16 @@ u32 THPPlayerCalcNeedMemory() {
 }
 
 // Erased
-static s32 THPPlayerClose() {
+static int THPPlayerClose() {
     // References
     // -> struct __anon_0x10B6F ActivePlayer;
 }
 
 // Range: 0x8000F9C8 -> 0x8000FC40
-s32 THPPlayerOpen(char* fileName, s32 onMemory) {
+int THPPlayerOpen(char* fileName, int onMemory) {
     // Parameters
     // char* fileName; // r21
-    // s32 onMemory; // r30
+    // int onMemory; // r30
 
     // Local variables
     s32 offset; // r22
@@ -573,29 +573,29 @@ s32 THPPlayerOpen(char* fileName, s32 onMemory) {
     // References
     // -> struct __anon_0x10B6F ActivePlayer;
     // -> static s32 WorkBuffer[16];
-    // -> static s32 Initialized;
+    // -> static int Initialized;
 }
 
 // Erased
 static void THPPlayerQuit() {
     // Local variables
-    s32 old; // r31
+    int old; // r31
 
     // References
-    // -> static s32 Initialized;
+    // -> static int Initialized;
     // -> static void (* OldAIDCallback)();
 }
 
 // Range: 0x8000F890 -> 0x8000F9C8
-s32 THPPlayerInit(s32 audioSystem) {
+int THPPlayerInit(s32 audioSystem) {
     // Parameters
     // s32 audioSystem; // r30
 
     // Local variables
-    s32 old; // r30
+    int old; // r30
 
     // References
-    // -> static s32 Initialized;
+    // -> static int Initialized;
     // -> static s32 SoundBufferIndex;
     // -> static s16 SoundBuffer[2][320];
     // -> static s32 AudioSystem;

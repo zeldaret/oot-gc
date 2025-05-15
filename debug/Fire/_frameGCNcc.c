@@ -148,10 +148,10 @@ typedef enum __anon_0x8573D {
 } __anon_0x8573D;
 
 typedef struct __anon_0x857A7 {
-    /* 0x0 */ s32 nSize;
-    /* 0x4 */ s32 nOffsetRAM;
-    /* 0x8 */ s32 nOffsetROM;
-    /* 0xC */ s32 (*pCallback)();
+    /* 0x0 */ int nSize;
+    /* 0x4 */ int nOffsetRAM;
+    /* 0x8 */ int nOffsetROM;
+    /* 0xC */ int (*pCallback)();
 } __anon_0x857A7; // size = 0x10
 
 typedef enum __anon_0x85858 {
@@ -195,7 +195,7 @@ typedef enum __anon_0x8598C {
 typedef struct __anon_0x85ACF {
     /* 0x00 */ void* pFrame;
     /* 0x04 */ void* pSound;
-    /* 0x08 */ s32 bException;
+    /* 0x08 */ int bException;
     /* 0x0C */ enum __anon_0x8573D eMode;
     /* 0x10 */ struct __anon_0x857A7 romCopy;
     /* 0x20 */ enum __anon_0x85858 eTypeROM;
@@ -203,7 +203,7 @@ typedef struct __anon_0x85ACF {
     /* 0x68 */ u64 nAddressBreak;
     /* 0x70 */ enum __anon_0x8598C storageDevice;
     /* 0x74 */ u8 anException[16];
-    /* 0x84 */ s32 bJapaneseVersion;
+    /* 0x84 */ int bJapaneseVersion;
 } __anon_0x85ACF; // size = 0x88
 
 // size = 0x4, address = 0x80135600
@@ -217,11 +217,11 @@ typedef struct __anon_0x85D00 {
 } __anon_0x85D00; // size = 0x10
 
 typedef struct __anon_0x85D9A {
-    /* 0x00 */ s32 nSize;
-    /* 0x04 */ s32 nWidth;
-    /* 0x08 */ s32 nFormat;
+    /* 0x00 */ int nSize;
+    /* 0x04 */ int nWidth;
+    /* 0x08 */ int nFormat;
     /* 0x0C */ void* pData;
-    /* 0x10 */ s32 nAddress;
+    /* 0x10 */ int nAddress;
 } __anon_0x85D9A; // size = 0x14
 
 typedef struct __anon_0x85EDB {
@@ -231,7 +231,7 @@ typedef struct __anon_0x85EDB {
 } __anon_0x85EDB; // size = 0xC
 
 typedef struct __anon_0x85F4B {
-    /* 0x00 */ s32 bTransformed;
+    /* 0x00 */ int bTransformed;
     /* 0x04 */ struct __anon_0x85EDB rVecOrigTowards;
     /* 0x10 */ f32 rColorR;
     /* 0x14 */ f32 rColorG;
@@ -248,7 +248,7 @@ typedef struct __anon_0x85F4B {
 } __anon_0x85F4B; // size = 0x3C
 
 typedef struct __anon_0x8617B {
-    /* 0x00 */ s32 bTransformed;
+    /* 0x00 */ int bTransformed;
     /* 0x04 */ struct __anon_0x85EDB rS;
     /* 0x10 */ struct __anon_0x85EDB rT;
     /* 0x1C */ struct __anon_0x85EDB rSRaw;
@@ -266,7 +266,7 @@ typedef struct __anon_0x86264 {
 typedef union __anon_0x863C3 {
     /* 0x0 */ u8 u8[4096];
     /* 0x0 */ u16 u16[2048];
-    /* 0x0 */ u32 u32[1024];
+    /* 0x0 */ unsigned int u32[1024];
     /* 0x0 */ u64 u64[512];
 } __anon_0x863C3;
 
@@ -319,20 +319,20 @@ typedef enum _GXTexWrapMode {
 } __anon_0x86768;
 
 typedef struct _FRAME_TEXTURE {
-    /* 0x00 */ s32 nMode;
-    /* 0x04 */ s32 iPackPixel;
-    /* 0x08 */ s32 iPackColor;
-    /* 0x0C */ s32 nFrameLast;
+    /* 0x00 */ int nMode;
+    /* 0x04 */ int iPackPixel;
+    /* 0x08 */ int iPackColor;
+    /* 0x0C */ int nFrameLast;
     /* 0x10 */ s16 nSizeX;
     /* 0x12 */ s16 nSizeY;
-    /* 0x14 */ u32 nAddress;
-    /* 0x18 */ u32 nCodePixel;
-    /* 0x1C */ u32 nCodeColor;
+    /* 0x14 */ unsigned int nAddress;
+    /* 0x18 */ unsigned int nCodePixel;
+    /* 0x1C */ unsigned int nCodeColor;
     /* 0x20 */ struct _FRAME_TEXTURE* pTextureNext;
-    /* 0x24 */ u32 nData0;
-    /* 0x28 */ u32 nData1;
-    /* 0x2C */ u32 nData2;
-    /* 0x30 */ u32 nData3;
+    /* 0x24 */ unsigned int nData0;
+    /* 0x28 */ unsigned int nData1;
+    /* 0x2C */ unsigned int nData2;
+    /* 0x30 */ unsigned int nData3;
     /* 0x34 */ enum _GXTexFmt eFormat;
     /* 0x38 */ struct _GXTlutObj objectTLUT;
     /* 0x44 */ struct _GXTexObj objectTexture;
@@ -341,11 +341,11 @@ typedef struct _FRAME_TEXTURE {
 } __anon_0x867D1; // size = 0x6C
 
 typedef struct __anon_0x86B2E {
-    /* 0x00 */ s32 nSize;
-    /* 0x04 */ s32 nTMEM;
-    /* 0x08 */ s32 iTLUT;
-    /* 0x0C */ s32 nSizeX;
-    /* 0x10 */ s32 nFormat;
+    /* 0x00 */ int nSize;
+    /* 0x04 */ int nTMEM;
+    /* 0x08 */ int iTLUT;
+    /* 0x0C */ int nSizeX;
+    /* 0x10 */ int nFormat;
     /* 0x14 */ s16 nMaskS;
     /* 0x16 */ s16 nMaskT;
     /* 0x18 */ s16 nModeS;
@@ -356,7 +356,7 @@ typedef struct __anon_0x86B2E {
     /* 0x22 */ s16 nY0;
     /* 0x24 */ s16 nX1;
     /* 0x26 */ s16 nY1;
-    /* 0x28 */ u32 nCodePixel;
+    /* 0x28 */ unsigned int nCodePixel;
 } __anon_0x86B2E; // size = 0x2C
 
 typedef enum __anon_0x86E10 {
@@ -366,93 +366,93 @@ typedef enum __anon_0x86E10 {
 } __anon_0x86E10;
 
 typedef struct __anon_0x86E99 {
-    /* 0x00 */ s32 nCount;
+    /* 0x00 */ int nCount;
     /* 0x04 */ f32 rScale;
     /* 0x08 */ f32 rAspect;
     /* 0x0C */ f32 rFieldOfViewY;
     /* 0x10 */ f32 rClipNear;
     /* 0x14 */ f32 rClipFar;
-    /* 0x18 */ u32 nAddressFloat;
-    /* 0x1C */ u32 nAddressFixed;
+    /* 0x18 */ unsigned int nAddressFloat;
+    /* 0x1C */ unsigned int nAddressFixed;
     /* 0x20 */ enum __anon_0x86E10 eProjection;
 } __anon_0x86E99; // size = 0x24
 
 typedef struct __anon_0x87050 {
-    /* 0x00000 */ u32 anCIMGAddresses[8];
+    /* 0x00000 */ unsigned int anCIMGAddresses[8];
     /* 0x00020 */ u16 nNumCIMGAddresses;
-    /* 0x00024 */ s32 bBlurOn;
-    /* 0x00028 */ s32 bHackPause;
-    /* 0x0002C */ s32 nHackCount;
-    /* 0x00030 */ s32 nFrameCounter;
-    /* 0x00034 */ s32 bPauseThisFrame;
-    /* 0x00038 */ s32 bCameFromBomberNotes;
-    /* 0x0003C */ s32 bInBomberNotes;
-    /* 0x00040 */ s32 bShrinking;
-    /* 0x00044 */ s32 bSnapShot;
-    /* 0x00048 */ s32 bUsingLens;
+    /* 0x00024 */ int bBlurOn;
+    /* 0x00028 */ int bHackPause;
+    /* 0x0002C */ int nHackCount;
+    /* 0x00030 */ int nFrameCounter;
+    /* 0x00034 */ int bPauseThisFrame;
+    /* 0x00038 */ int bCameFromBomberNotes;
+    /* 0x0003C */ int bInBomberNotes;
+    /* 0x00040 */ int bShrinking;
+    /* 0x00044 */ int bSnapShot;
+    /* 0x00048 */ int bUsingLens;
     /* 0x0004C */ u8 cBlurAlpha;
-    /* 0x00050 */ s32 bBlurredThisFrame;
-    /* 0x00054 */ s32 nFrameCIMGCalls;
-    /* 0x00058 */ s32 bModifyZBuffer;
-    /* 0x0005C */ s32 bOverrideDepth;
-    /* 0x00060 */ s32 nZBufferSets;
-    /* 0x00064 */ s32 nLastFrameZSets;
-    /* 0x00068 */ s32 bPauseBGDrawn;
-    /* 0x0006C */ s32 bFrameOn;
-    /* 0x00070 */ s32 bBackBufferDrawn;
-    /* 0x00074 */ s32 bGrabbedFrame;
+    /* 0x00050 */ int bBlurredThisFrame;
+    /* 0x00054 */ int nFrameCIMGCalls;
+    /* 0x00058 */ int bModifyZBuffer;
+    /* 0x0005C */ int bOverrideDepth;
+    /* 0x00060 */ int nZBufferSets;
+    /* 0x00064 */ int nLastFrameZSets;
+    /* 0x00068 */ int bPauseBGDrawn;
+    /* 0x0006C */ int bFrameOn;
+    /* 0x00070 */ int bBackBufferDrawn;
+    /* 0x00074 */ int bGrabbedFrame;
     /* 0x00078 */ u64* pnGBI;
-    /* 0x0007C */ u32 nFlag;
+    /* 0x0007C */ unsigned int nFlag;
     /* 0x00080 */ f32 rScaleX;
     /* 0x00084 */ f32 rScaleY;
-    /* 0x00088 */ u32 nCountFrames;
-    /* 0x0008C */ u32 nMode;
-    /* 0x00090 */ u32 aMode[10];
+    /* 0x00088 */ unsigned int nCountFrames;
+    /* 0x0008C */ unsigned int nMode;
+    /* 0x00090 */ unsigned int aMode[10];
     /* 0x000B8 */ struct __anon_0x85D00 viewport;
     /* 0x000C8 */ struct __anon_0x85D9A aBuffer[4];
-    /* 0x00118 */ u32 nOffsetDepth0;
-    /* 0x0011C */ u32 nOffsetDepth1;
-    /* 0x00120 */ s32 nWidthLine;
+    /* 0x00118 */ unsigned int nOffsetDepth0;
+    /* 0x0011C */ unsigned int nOffsetDepth1;
+    /* 0x00120 */ int nWidthLine;
     /* 0x00124 */ f32 rDepth;
     /* 0x00128 */ f32 rDelta;
-    /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
-    /* 0x0013C */ s32 nCountLight;
+    /* 0x0012C */ int (*aDraw[4])(void*, void*);
+    /* 0x0013C */ int nCountLight;
     /* 0x00140 */ struct __anon_0x85F4B aLight[8];
     /* 0x00320 */ struct __anon_0x8617B lookAt;
-    /* 0x00354 */ s32 nCountVertex;
+    /* 0x00354 */ int nCountVertex;
     /* 0x00358 */ struct __anon_0x86264 aVertex[80];
     /* 0x00C18 */ struct __anon_0x86460 TMEM;
     /* 0x01C18 */ void* aPixelData;
     /* 0x01C1C */ void* aColorData;
-    /* 0x01C20 */ s32 nBlocksPixel;
-    /* 0x01C24 */ s32 nBlocksMaxPixel;
-    /* 0x01C28 */ s32 nBlocksColor;
-    /* 0x01C2C */ s32 nBlocksMaxColor;
-    /* 0x01C30 */ s32 nBlocksTexture;
-    /* 0x01C34 */ s32 nBlocksMaxTexture;
-    /* 0x01C38 */ u32 anPackPixel[48];
-    /* 0x01CF8 */ u32 anPackColor[320];
-    /* 0x021F8 */ u32 nAddressLoad;
-    /* 0x021FC */ u32 nCodePixel;
-    /* 0x02200 */ u32 nTlutCode[16];
+    /* 0x01C20 */ int nBlocksPixel;
+    /* 0x01C24 */ int nBlocksMaxPixel;
+    /* 0x01C28 */ int nBlocksColor;
+    /* 0x01C2C */ int nBlocksMaxColor;
+    /* 0x01C30 */ int nBlocksTexture;
+    /* 0x01C34 */ int nBlocksMaxTexture;
+    /* 0x01C38 */ unsigned int anPackPixel[48];
+    /* 0x01CF8 */ unsigned int anPackColor[320];
+    /* 0x021F8 */ unsigned int nAddressLoad;
+    /* 0x021FC */ unsigned int nCodePixel;
+    /* 0x02200 */ unsigned int nTlutCode[16];
     /* 0x02240 */ struct _FRAME_TEXTURE aTexture[2048];
-    /* 0x38240 */ u32 anTextureUsed[64];
+    /* 0x38240 */ unsigned int anTextureUsed[64];
     /* 0x38340 */ struct _FRAME_TEXTURE* apTextureCached[4096];
-    /* 0x3C340 */ s32 iTileLoad;
-    /* 0x3C344 */ u32 n2dLoadTexType;
-    /* 0x3C348 */ s32 nLastX0;
-    /* 0x3C34C */ s32 nLastY0;
-    /* 0x3C350 */ s32 nLastX1;
-    /* 0x3C354 */ s32 nLastY1;
+    /* 0x3C340 */ int iTileLoad;
+    /* 0x3C344 */ unsigned int n2dLoadTexType;
+    /* 0x3C348 */ int nLastX0;
+    /* 0x3C34C */ int nLastY0;
+    /* 0x3C350 */ int nLastX1;
+    /* 0x3C354 */ int nLastY1;
     /* 0x3C358 */ struct __anon_0x86B2E aTile[8];
-    /* 0x3C4B8 */ s32 anSizeX[2];
-    /* 0x3C4C0 */ s32 anSizeY[2];
-    /* 0x3C4C8 */ s32 iHintMatrix;
-    /* 0x3C4CC */ s32 iMatrixModel;
-    /* 0x3C4D0 */ s32 iHintProjection;
+    /* 0x3C4B8 */ int anSizeX[2];
+    /* 0x3C4C0 */ int anSizeY[2];
+    /* 0x3C4C8 */ int iHintMatrix;
+    /* 0x3C4CC */ int iMatrixModel;
+    /* 0x3C4D0 */ int iHintProjection;
     /* 0x3C4D4 */ f32 matrixView[4][4];
-    /* 0x3C514 */ s32 iHintLast;
-    /* 0x3C518 */ s32 iHintHack;
+    /* 0x3C514 */ int iHintLast;
+    /* 0x3C518 */ int iHintHack;
     /* 0x3C51C */ enum __anon_0x86E10 eTypeProjection;
     /* 0x3C520 */ f32 aMatrixModel[10][4][4];
     /* 0x3C7A0 */ f32 matrixProjection[4][4];
@@ -463,10 +463,10 @@ typedef struct __anon_0x87050 {
     /* 0x3D122 */ u8 lastTile;
     /* 0x3D123 */ u8 iTileDrawn;
     /* 0x3D124 */ struct _GXColor aColor[5];
-    /* 0x3D138 */ u32 nModeVtx;
+    /* 0x3D138 */ unsigned int nModeVtx;
     /* 0x3D13C */ u16* nTempBuffer;
     /* 0x3D140 */ u16* nCopyBuffer;
-    /* 0x3D144 */ u32* nLensBuffer;
+    /* 0x3D144 */ unsigned int* nLensBuffer;
     /* 0x3D148 */ u16* nCameraBuffer;
 } __anon_0x87050; // size = 0x3D150
 
@@ -550,7 +550,7 @@ static void SetTableTevStages(struct __anon_0x87050* pFrame, struct CombineModeT
 
     // Local variables
     s32 i; // r23
-    s32 iStart; // r1+0x8
+    int iStart; // r1+0x8
     struct _GXColor color; // r1+0x30
     struct TevOrder* toP; // r6
     struct TevColorOp* tcP; // r22
@@ -562,9 +562,9 @@ static void SetTableTevStages(struct __anon_0x87050* pFrame, struct CombineModeT
 }
 
 // Erased
-static void OutputCCMode(s32 cycle, u32 tempColor, u32 tempAlpha) {
+static void OutputCCMode(int cycle, u32 tempColor, u32 tempAlpha) {
     // Parameters
-    // s32 cycle; // r1+0x8
+    // int cycle; // r1+0x8
     // u32 tempColor; // r1+0xC
     // u32 tempAlpha; // r1+0x10
 
@@ -597,10 +597,10 @@ static void CheckNewCCMode(struct __anon_0x87050* pFrame, s32 numCycles) {
 }
 
 // Range: 0x800981E0 -> 0x800983A0
-void SetNumTexGensChans(struct __anon_0x87050* pFrame, s32 numCycles) {
+void SetNumTexGensChans(struct __anon_0x87050* pFrame, int numCycles) {
     // Parameters
     // struct __anon_0x87050* pFrame; // r1+0x8
-    // s32 numCycles; // r1+0xC
+    // int numCycles; // r1+0xC
 
     // Local variables
     u8 nColor[4]; // r1+0x14
@@ -614,16 +614,16 @@ void SetNumTexGensChans(struct __anon_0x87050* pFrame, s32 numCycles) {
 }
 
 // Range: 0x80097E5C -> 0x800981E0
-void SetTevStages(struct __anon_0x87050* pFrame, s32 cycle) {
+void SetTevStages(struct __anon_0x87050* pFrame, int cycle) {
     // Parameters
     // struct __anon_0x87050* pFrame; // r1+0x8
-    // s32 cycle; // r17
+    // int cycle; // r17
 
     // Local variables
     u8 nColor[4]; // r1+0x5C
     u8 nAlpha[4]; // r1+0x58
-    u32 tempColor; // r6
-    u32 tempAlpha; // r9
+    unsigned int tempColor; // r6
+    unsigned int tempAlpha; // r9
     enum _GXTevColorArg colorArg[4]; // r1+0x48
     enum _GXTevAlphaArg alphaArg[4]; // r1+0x38
     enum _GXTevStageID tevStages[5]; // r1+0x24

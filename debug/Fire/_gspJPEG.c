@@ -8,13 +8,13 @@
 #include "dolphin/types.h"
 
 // Range: 0x800801C0 -> 0x80080AA4
-static s32 rspCreateJPEGArrays(struct __anon_0x5845E* pRSP) {
+static int rspCreateJPEGArrays(struct __anon_0x5845E* pRSP) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
 }
 
 // Erased
-static s32 rspDestroyJPEGArrays() {}
+static int rspDestroyJPEGArrays() {}
 
 // Erased
 static void rspConvertBufferToRGBA(u8* buf, struct __anon_0x58360* rgba) {
@@ -29,8 +29,8 @@ static void rspConvertRGBAtoYUV(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x8
 
     // Local variables
-    s32 i; // r30
-    s32 j; // r1+0x8
+    int i; // r30
+    int j; // r1+0x8
     s32 Y; // r20
     s32 U; // r20
     s32 V; // r12
@@ -42,7 +42,7 @@ static void rspYUVtoDCTBuf(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x0
 
     // Local variables
-    s32 i; // r1+0x0
+    int i; // r1+0x0
 }
 
 // Range: 0x8007F668 -> 0x8007F938
@@ -51,66 +51,66 @@ static void rspDCT(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x8
 
     // Local variables
-    s32 c; // r1+0xA4
-    s32 i; // r1+0xA0
-    s32 j; // r1+0x8
-    s32 dd; // r6
+    int c; // r1+0xA4
+    int i; // r1+0xA0
+    int j; // r1+0x8
+    int dd; // r6
     s16 t[8][8]; // r1+0x1C
 }
 
 // Range: 0x8007F4EC -> 0x8007F668
-static void rspQuantize(struct __anon_0x5845E* pRSP, s32 scale) {
+static void rspQuantize(struct __anon_0x5845E* pRSP, int scale) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
-    // s32 scale; // r1+0xC
+    // int scale; // r1+0xC
 
     // Local variables
-    s32 c; // r29
-    s32 i; // r28
-    s32 j; // r27
+    int c; // r29
+    int i; // r28
+    int j; // r27
     s16 q; // r6
     s16 s; // r1+0x8
 }
 
 // Erased
-static void rspZigzagData(struct __anon_0x5845E* pRSP, u8** databuf, s32 n, s32* preDc) {
+static void rspZigzagData(struct __anon_0x5845E* pRSP, u8** databuf, int n, int* preDc) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
     // u8** databuf; // r1+0xC
-    // s32 n; // r1+0x10
-    // s32* preDc; // r1+0x14
+    // int n; // r1+0x10
+    // int* preDc; // r1+0x14
 
     // Local variables
     s16 Ac; // r30
-    s32 i; // r6
-    s32 z; // r7
+    int i; // r6
+    int z; // r7
 }
 
 // Erased
-static void rspUndoZigzagData(struct __anon_0x5845E* pRSP, u8** databuf, s32 n, s32* preDc) {
+static void rspUndoZigzagData(struct __anon_0x5845E* pRSP, u8** databuf, int n, int* preDc) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
     // u8** databuf; // r1+0xC
-    // s32 n; // r1+0x10
-    // s32* preDc; // r1+0x14
+    // int n; // r1+0x10
+    // int* preDc; // r1+0x14
 
     // Local variables
     s16 Dc; // r12
     s16 Ac; // r12
-    s32 i; // r7
-    s32 z; // r31
+    int i; // r7
+    int z; // r31
 }
 
 // Range: 0x8007F368 -> 0x8007F4EC
-void rspUndoQuantize(struct __anon_0x5845E* pRSP, s32 scale) {
+void rspUndoQuantize(struct __anon_0x5845E* pRSP, int scale) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
-    // s32 scale; // r1+0xC
+    // int scale; // r1+0xC
 
     // Local variables
-    s32 c; // r29
-    s32 i; // r28
-    s32 j; // r27
+    int c; // r29
+    int i; // r28
+    int j; // r27
     s16 q; // r6
     s16 s; // r1+0x8
 }
@@ -121,10 +121,10 @@ void rspUndoDCT(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x8
 
     // Local variables
-    s32 c; // r1+0xA4
-    s32 i; // r1+0xA0
-    s32 j; // r5
-    s32 dd; // r6
+    int c; // r1+0xA4
+    int i; // r1+0xA0
+    int j; // r5
+    int dd; // r6
     s16 t[8][8]; // r1+0x1C
 }
 
@@ -134,8 +134,8 @@ void rspUndoYUVtoDCTBuf(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x8
 
     // Local variables
-    s32 i; // r1+0x8
-    s32 j; // r1+0x8
+    int i; // r1+0x8
+    int j; // r1+0x8
 }
 
 // Range: 0x8007E744 -> 0x8007E8F4
@@ -145,12 +145,12 @@ void rspFormatYUV(struct __anon_0x5845E* pRSP, char* imgBuf) {
     // char* imgBuf; // r4
 
     // Local variables
-    s32 i; // r10
-    s32 j; // r11
+    int i; // r10
+    int j; // r11
 }
 
 // Range: 0x8007DD0C -> 0x8007E744
-static s32 rspParseJPEG_Encode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
+static int rspParseJPEG_Encode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r19
     // struct __anon_0x575BD* pTask; // r16
@@ -158,42 +158,42 @@ static s32 rspParseJPEG_Encode(struct __anon_0x5845E* pRSP, struct __anon_0x575B
     // Local variables
     u8* temp; // r24
     u8* temp2; // r23
-    s32 i; // r10
-    s32 j; // r11
-    s32 x; // r22
-    s32 y; // r21
+    int i; // r10
+    int j; // r11
+    int x; // r22
+    int y; // r21
     u8* system_imb; // r1+0x30
     u8* system_cfb; // r1+0x2C
-    s32 scale; // r20
+    int scale; // r20
 }
 
 // Range: 0x8007D4C0 -> 0x8007DD0C
-static s32 rspParseJPEG_Decode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
+static int rspParseJPEG_Decode(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r30
     // struct __anon_0x575BD* pTask; // r20
 
     // Local variables
-    s32 i; // r3
-    s32 y; // r25
+    int i; // r3
+    int y; // r25
     u8* temp; // r31
     u8* temp2; // r26
     u64* system_imb; // r1+0x1C
-    s32 size; // r21
-    s32 scale; // r22
+    int size; // r21
+    int scale; // r22
 }
 
 // Range: 0x8007D1C8 -> 0x8007D4C0
-static s32 rspCreateJPEGArraysZ(struct __anon_0x5845E* pRSP, s32 qYAddress, s32 qCbAddress, s32 qCrAddress) {
+static int rspCreateJPEGArraysZ(struct __anon_0x5845E* pRSP, int qYAddress, int qCbAddress, int qCrAddress) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r24
-    // s32 qYAddress; // r4
-    // s32 qCbAddress; // r25
-    // s32 qCrAddress; // r26
+    // int qYAddress; // r4
+    // int qCbAddress; // r25
+    // int qCrAddress; // r26
 }
 
 // Erased
-static s32 rspDestroyJPEGArraysZ() {}
+static int rspDestroyJPEGArraysZ() {}
 
 // Range: 0x8007CEF8 -> 0x8007D1C8
 static void rspDCTZ(struct __anon_0x5845E* pRSP) {
@@ -201,10 +201,10 @@ static void rspDCTZ(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x8
 
     // Local variables
-    s32 c; // r1+0xA4
-    s32 i; // r1+0xA0
-    s32 j; // r1+0x8
-    s32 dd; // r6
+    int c; // r1+0xA4
+    int i; // r1+0xA0
+    int j; // r1+0x8
+    int dd; // r6
     s16 t[8][8]; // r1+0x1C
 }
 
@@ -215,8 +215,8 @@ static void rspQuantizeZ(struct __anon_0x5845E* pRSP, s16* dataBuf) {
     // s16* dataBuf; // r1+0xC
 
     // Local variables
-    s32 c; // r12
-    s32 i; // r1+0x8
+    int c; // r12
+    int i; // r1+0x8
 }
 
 // Range: 0x8007C3A4 -> 0x8007C8CC
@@ -226,7 +226,7 @@ void rspZigzagDataZ(struct __anon_0x5845E* pRSP, s16* dataBuf) {
     // s16* dataBuf; // r4
 
     // Local variables
-    s32 c; // r1+0x8
+    int c; // r1+0x8
 }
 
 // Range: 0x8007BDD8 -> 0x8007C3A4
@@ -236,8 +236,8 @@ void rspUndoQuantizeZ(struct __anon_0x5845E* pRSP, s16* dataBuf) {
     // s16* dataBuf; // r1+0xC
 
     // Local variables
-    s32 c; // r12
-    s32 i; // r1+0x8
+    int c; // r12
+    int i; // r1+0x8
 }
 
 // Range: 0x8007B9B0 -> 0x8007BDD8
@@ -247,7 +247,7 @@ void rspUndoZigzagDataZ(struct __anon_0x5845E* pRSP, s16* dataBuf) {
     // s16* dataBuf; // r4
 
     // Local variables
-    s32 c; // r1+0x8
+    int c; // r1+0x8
 }
 
 // Range: 0x8007B6E0 -> 0x8007B9B0
@@ -256,93 +256,93 @@ void rspUndoDCTZ(struct __anon_0x5845E* pRSP) {
     // struct __anon_0x5845E* pRSP; // r1+0x8
 
     // Local variables
-    s32 c; // r1+0xA4
-    s32 i; // r1+0xA0
-    s32 j; // r5
-    s32 dd; // r6
+    int c; // r1+0xA4
+    int i; // r1+0xA0
+    int j; // r5
+    int dd; // r6
     s16 t[8][8]; // r1+0x1C
 }
 
 // Range: 0x8007B64C -> 0x8007B6E0
-s32 rspUndoLoadColorBufferZ(s32 r, s32 g, s32 b, s16* imgBuf, s32 index) {
+int rspUndoLoadColorBufferZ(int r, int g, int b, s16* imgBuf, int index) {
     // Parameters
-    // s32 r; // r3
-    // s32 g; // r1+0x8
-    // s32 b; // r4
+    // int r; // r3
+    // int g; // r1+0x8
+    // int b; // r4
     // s16* imgBuf; // r1+0x10
-    // s32 index; // r1+0x14
+    // int index; // r1+0x14
 }
 
 // Range: 0x8007B244 -> 0x8007B64C
-s32 rspUndoRecon420Z(struct __anon_0x5845E* pRSP, s16* imgBuf) {
+int rspUndoRecon420Z(struct __anon_0x5845E* pRSP, s16* imgBuf) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r30
     // s16* imgBuf; // r29
 
     // Local variables
-    s32 i; // r1+0x8
-    s32 j; // r24
-    s32 r; // r1+0x8
-    s32 g; // r1+0x8
-    s32 b; // r1+0x8
-    s32 y; // r7
-    s32 u; // r5
-    s32 v; // r1+0x8
+    int i; // r1+0x8
+    int j; // r24
+    int r; // r1+0x8
+    int g; // r1+0x8
+    int b; // r1+0x8
+    int y; // r7
+    int u; // r5
+    int v; // r1+0x8
 }
 
 // Erased
-static s32 rspLoadColorBufferZ(s32* r, s32* g, s32* b, s16* imgBuf, s32 index) {
+static int rspLoadColorBufferZ(int* r, int* g, int* b, s16* imgBuf, int index) {
     // Parameters
-    // s32* r; // r1+0x4
-    // s32* g; // r1+0x8
-    // s32* b; // r1+0xC
+    // int* r; // r1+0x4
+    // int* g; // r1+0x8
+    // int* b; // r1+0xC
     // s16* imgBuf; // r1+0x10
-    // s32 index; // r1+0x14
+    // int index; // r1+0x14
 }
 
 // Range: 0x8007AE64 -> 0x8007B244
-s32 rspRecon420Z(struct __anon_0x5845E* pRSP, s16* imgBuf) {
+int rspRecon420Z(struct __anon_0x5845E* pRSP, s16* imgBuf) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r1+0x8
     // s16* imgBuf; // r1+0xC
 
     // Local variables
-    s32 i; // r1+0x10
-    s32 j; // r26
-    s32 r; // r10
-    s32 g; // r7
-    s32 b; // r11
-    s32 y; // r6
-    s32 u; // r9
-    s32 v; // r1+0x8
+    int i; // r1+0x10
+    int j; // r26
+    int r; // r10
+    int g; // r7
+    int b; // r11
+    int y; // r6
+    int u; // r9
+    int v; // r1+0x8
 }
 
 // Range: 0x8007AD68 -> 0x8007AE64
-static s32 rspParseJPEG_EncodeZ(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
+static int rspParseJPEG_EncodeZ(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r28
     // struct __anon_0x575BD* pTask; // r4
 
     // Local variables
-    s32 y; // r31
+    int y; // r31
     s16* temp; // r1+0x8
     s16* temp2; // r30
     u64* system_imb; // r1+0x20
-    u32* infoStruct; // r1+0x1C
-    s32 size; // r29
+    unsigned int* infoStruct; // r1+0x1C
+    int size; // r29
 }
 
 // Range: 0x8007AC6C -> 0x8007AD68
-static s32 rspParseJPEG_DecodeZ(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
+static int rspParseJPEG_DecodeZ(struct __anon_0x5845E* pRSP, struct __anon_0x575BD* pTask) {
     // Parameters
     // struct __anon_0x5845E* pRSP; // r28
     // struct __anon_0x575BD* pTask; // r4
 
     // Local variables
-    s32 y; // r31
+    int y; // r31
     s16* temp; // r1+0x8
     s16* temp2; // r30
     u64* system_imb; // r1+0x20
-    u32* infoStruct; // r1+0x1C
-    s32 size; // r29
+    unsigned int* infoStruct; // r1+0x1C
+    int size; // r29
 }

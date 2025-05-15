@@ -9,9 +9,9 @@
 
 typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
-    /* 0x4 */ s32 nSizeObject;
+    /* 0x4 */ int nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
-    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+    /* 0xC */ int (*pfEvent)(void*, int, void*);
 } __anon_0x1F88E; // size = 0x10
 
 // size = 0x10, address = 0x800EA7C8
@@ -56,12 +56,12 @@ typedef struct DVDFileInfo {
 } __anon_0x1FDCE; // size = 0x3C
 
 typedef struct tXL_FILE {
-    /* 0x00 */ s32 iBuffer;
+    /* 0x00 */ int iBuffer;
     /* 0x04 */ void* pData;
     /* 0x08 */ void* pBuffer;
-    /* 0x0C */ s32 nAttributes;
-    /* 0x10 */ s32 nSize;
-    /* 0x14 */ s32 nOffset;
+    /* 0x0C */ int nAttributes;
+    /* 0x10 */ int nSize;
+    /* 0x14 */ int nOffset;
     /* 0x18 */ enum __anon_0x1F980 eType;
     /* 0x1C */ struct DVDFileInfo info;
 } __anon_0x1FE86; // size = 0x58
@@ -70,56 +70,56 @@ typedef struct tXL_FILE {
 static void* gpBufferFunction;
 
 // size = 0x4, address = 0x80135684
-static u32* ganDataCode;
+static unsigned int* ganDataCode;
 
 typedef struct _CODE_CACHE_NODE {
-    /* 0x0 */ s32 checksum;
-    /* 0x4 */ s32 length;
+    /* 0x0 */ int checksum;
+    /* 0x4 */ int length;
     /* 0x8 */ struct _CODE_CACHE_NODE* next;
     /* 0xC */ struct _CODE_CACHE_NODE* child;
 } __anon_0x20141; // size = 0x10
 
 // Erased
-static s32 hioInitSend() {}
+static int hioInitSend() {}
 
 // Erased
-static s32 hioCallbackDevice() {}
+static int hioCallbackDevice() {}
 
 // Erased
 static void hioCallback() {}
 
 // Erased
-static s32 hioSendBuffer() {}
+static int hioSendBuffer() {}
 
 // Erased
-static s32 hioInit() {}
+static int hioInit() {}
 
 // Erased
-static s32 codeSendFilePart() {}
+static int codeSendFilePart() {}
 
 // Erased
-static s32 codeCheckCatalog(s32 nAddress0, s32 nAddress1) {
+static int codeCheckCatalog(int nAddress0, int nAddress1) {
     // Parameters
-    // s32 nAddress0; // r4
-    // s32 nAddress1; // r5
+    // int nAddress0; // r4
+    // int nAddress1; // r5
 
     // Local variables
-    s32 iFunction; // r1+0x8
-    s32 instruction; // r31
-    u32 checksum; // r1+0x14
+    int iFunction; // r1+0x8
+    int instruction; // r31
+    unsigned int checksum; // r1+0x14
 
     // References
-    // -> static u32 gnCountFunction;
-    // -> static u32* ganDataCode;
-    // -> static s32 gCatalogLoaded;
+    // -> static unsigned int gnCountFunction;
+    // -> static unsigned int* ganDataCode;
+    // -> static int gCatalogLoaded;
 }
 
 // Range: 0x8001C444 -> 0x8001C498
-s32 codeEvent(s32 nEvent) {
+int codeEvent(int nEvent) {
     // Parameters
-    // s32 nEvent; // r1+0x4
+    // int nEvent; // r1+0x4
 
     // References
-    // -> static u32* ganDataCode;
+    // -> static unsigned int* ganDataCode;
     // -> static void* gpBufferFunction;
 }
