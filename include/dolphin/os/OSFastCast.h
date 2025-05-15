@@ -12,6 +12,8 @@
 #define OS_FASTCAST_S8 4
 #define OS_FASTCAST_S16 5
 
+#ifndef NO_FASTCAST
+
 static inline void OSInitFastCast(void) {
 #ifdef __MWERKS__
     // clang-format off
@@ -185,5 +187,7 @@ static inline void OSf32tou8(f32* in, u8* out) { *out = __OSf32tou8(*in); }
 static inline void OSf32tou16(f32* in, u16* out) { *out = __OSf32tou16(*in); }
 static inline void OSf32tos8(f32* in, s8* out) { *out = __OSf32tos8(*in); }
 static inline void OSf32tos16(f32* in, s16* out) { *out = __OSf32tos16(*in); }
+
+#endif
 
 #endif // _DOLPHIN_OSFASTCAST

@@ -12,13 +12,6 @@
 extern void __TRK_copy_vectors();
 extern void __TRKreset();
 
-static bool IsTRKConnected;
-static u32 g_CurrentSequence;
-
-bool GetTRKConnected() { return IsTRKConnected; }
-
-void SetTRKConnected(bool value) { IsTRKConnected = value; }
-
 void TRKMessageIntoReply(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError) {
     TRKResetBuffer(b, true);
 
@@ -738,22 +731,4 @@ DSError TRKDoStop(MessageBuffer* b) {
     }
 
     return TRKStandardACK(b, kDSReplyACK, kDSReplyError);
-}
-
-DSError TRKDoSetOption(MessageBuffer* b) {
-    u8 options = DSFetch_u8(&b->fData[12]);
-
-    if (b->fData[8] == 1) {
-        usr_puts_serial("\nMetroTRK Option : SerialIO - ");
-
-        if (options != 0) {
-            usr_puts_serial("Enable\n");
-        } else {
-            usr_puts_serial("Disable\n");
-        }
-
-        SetUseSerialIO(options);
-    }
-
-    return TRKStandardACK(b, kDSReplyACK, kDSReplyNoError);
 }

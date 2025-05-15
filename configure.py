@@ -491,7 +491,7 @@ config.libs = [
             Object(NotLinked, "metrotrk/serpoll.c"),
             Object(LinkedFor("ce-j"), "metrotrk/usr_put.c"),
             Object(NotLinked, "metrotrk/dispatch.c"),
-            Object(NotLinked, "metrotrk/msghndlr.c", extra_cflags=["-enum int"]),
+            Object(NotLinked, "metrotrk/msghndlr.c", extra_cflags=["-enum int", "-proc 603e", "-DNO_FASTCAST"]),
             Object(NotLinked, "metrotrk/support.c"),
             Object(LinkedFor("ce-j"), "metrotrk/mutex_TRK.c"),
             Object(NotLinked, "metrotrk/notify.c"),

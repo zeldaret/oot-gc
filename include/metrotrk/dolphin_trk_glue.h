@@ -16,8 +16,6 @@ typedef enum {
     HARDWARE_BBA = 2
 } HardwareType;
 
-typedef signed long OSInterrupt;
-
 typedef int (*DBCommFunc)();
 typedef int (*DBCommInitFunc)(void*, __OSInterruptHandler);
 typedef int (*DBCommReadFunc)(u8*, int);
