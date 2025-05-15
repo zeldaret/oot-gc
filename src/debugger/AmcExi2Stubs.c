@@ -1,17 +1,17 @@
 #include "debugger.h"
 
-void EXI2_Init(void) {}
+void EXI2_Init(volatile u8** param_1, __OSInterruptHandler param_2)) {}
 
-void EXI2_EnableInterrupts(void) {}
+int EXI2_EnableInterrupts(void) {}
 
-bool EXI2_Poll(void) { return false; }
+int EXI2_Poll(void) { return false; }
 
-AmcExiError EXI2_ReadN(void) { return AMC_EXI_NO_ERROR; }
+int EXI2_ReadN(void* param1, u32 param2) { return AMC_EXI_NO_ERROR; }
 
-AmcExiError EXI2_WriteN(void) { return AMC_EXI_NO_ERROR; }
+int EXI2_WriteN(const void* data, u32 size) { return AMC_EXI_NO_ERROR; }
 
-void EXI2_Reserve(void) {}
+int EXI2_Reserve(void) {}
 
-void EXI2_Unreserve(void) {}
+int EXI2_Unreserve(void) {}
 
 bool AMC_IsStub(void) { return true; }

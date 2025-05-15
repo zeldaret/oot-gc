@@ -228,7 +228,7 @@ void DBInitComm(volatile u8** param_1, __OSInterruptHandler param_2) {
     OSRestoreInterrupts(enabled);
 }
 
-void DBInitInterrupts(void) {
+int DBInitInterrupts(void) {
     __OSMaskInterrupts(0x18000);
     __OSMaskInterrupts(0x40);
     DBGCallback = MWCallback;
@@ -236,7 +236,7 @@ void DBInitInterrupts(void) {
     __OSUnmaskInterrupts(0x40);
 }
 
-u32 DBQueryData(void) {
+int DBQueryData(void) {
     bool enable;
 
     EXIInputFlag = 0;
@@ -299,6 +299,6 @@ int DBWrite(const void* data, u32 size) {
     return 0;
 }
 
-void DBOpen(void) {}
+int DBOpen(void) {}
 
-void DBClose(void) {}
+int DBClose(void) {}

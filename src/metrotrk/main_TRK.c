@@ -13,7 +13,5 @@ int TRK_main(void) {
         TRKNubMainLoop();
     }
 
-    TRK_mainError = TRKTerminateNub();
-
-    return TRK_mainError;
+    return TRK_mainError = TRKTerminateNub();
 }

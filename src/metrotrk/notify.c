@@ -3,7 +3,7 @@
 #include "metrotrk/support.h"
 #include "metrotrk/targimpl.h"
 
-DSError TRKDoNotifyStopped(MessageCommandID cmdId) {
+DSError TRKDoNotifyStopped(u8 cmdId) {
     int sp8;
     int spC;
     MessageBuffer* buffer;
@@ -12,6 +12,14 @@ DSError TRKDoNotifyStopped(MessageCommandID cmdId) {
     result = TRK_GetFreeBuffer(&spC, &buffer);
 
     if (result == kNoError) {
+        if (buffer->fPosition >= kMessageBufferSize) {
+            result = kMessageBufferOverflow;
+        } else {
+            result = kNoError;
+            buffer->fData[buffer->fPosition++] = cmdId;
+            buffer->fLength++;
+        }
+
         if (result == kNoError) {
             if (cmdId == kDSNotifyStopped) {
                 TRKTargetAddStopInfo(buffer);
