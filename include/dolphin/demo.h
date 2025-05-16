@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DEMO_H_
-#define _DOLPHIN_DEMO_H_
+#ifndef _DOLPHIN_DEMO_H
+#define _DOLPHIN_DEMO_H
 
 #include "dolphin/demo/DEMOInit.h"
 #include "dolphin/demo/DEMOPad.h"

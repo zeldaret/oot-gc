@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_H_
-#define _DOLPHIN_H_
+#ifndef _DOLPHIN_H
+#define _DOLPHIN_H
 
 #include "dolphin/ai.h"
 #include "dolphin/ar.h"

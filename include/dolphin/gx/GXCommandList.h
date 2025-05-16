@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXCOMMANDLIST_H_
-#define _DOLPHIN_GX_GXCOMMANDLIST_H_
+#ifndef _DOLPHIN_GX_GXCOMMANDLIST_H
+#define _DOLPHIN_GX_GXCOMMANDLIST_H
 
 #include "dolphin/types.h"
 

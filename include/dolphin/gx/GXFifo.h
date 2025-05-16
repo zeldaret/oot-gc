@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXFIFO_H_
-#define _DOLPHIN_GX_GXFIFO_H_
+#ifndef _DOLPHIN_GX_GXFIFO_H
+#define _DOLPHIN_GX_GXFIFO_H
 
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/os/OSThread.h"

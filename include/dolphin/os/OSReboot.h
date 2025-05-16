@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSREBOOT_H_
-#define _DOLPHIN_OSREBOOT_H_
+#ifndef _DOLPHIN_OS_OSREBOOT_H
+#define _DOLPHIN_OS_OSREBOOT_H
 
 #include "dolphin/types.h"
 

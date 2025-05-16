@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSSEMAPHORE_H_
-#define _DOLPHIN_OSSEMAPHORE_H_
+#ifndef _DOLPHIN_OS_OSSEMAPHORE_H
+#define _DOLPHIN_OS_OSSEMAPHORE_H
 
 #include "dolphin/os/OSThread.h"
 

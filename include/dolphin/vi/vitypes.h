@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_VITYPES_H_
-#define _DOLPHIN_VITYPES_H_
+#ifndef _DOLPHIN_VI_VITYPES_H
+#define _DOLPHIN_VI_VITYPES_H
 
 #include "dolphin/types.h"
 

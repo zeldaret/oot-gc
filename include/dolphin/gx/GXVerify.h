@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXVERIFY_H_
-#define _DOLPHIN_GX_GXVERIFY_H_
+#ifndef _DOLPHIN_GX_GXVERIFY_H
+#define _DOLPHIN_GX_GXVERIFY_H
 
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"

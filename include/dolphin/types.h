@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_TYPES_H_
-#define _DOLPHIN_TYPES_H_
+#ifndef _DOLPHIN_TYPES_H
+#define _DOLPHIN_TYPES_H
 
 typedef signed char s8;
 typedef unsigned char u8;

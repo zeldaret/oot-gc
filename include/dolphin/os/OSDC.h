@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSDC_H_
-#define _DOLPHIN_OSDC_H_
+#ifndef _DOLPHIN_OS_OSDC_H
+#define _DOLPHIN_OS_OSDC_H
 
 #ifdef __cplusplus
 extern "C" {

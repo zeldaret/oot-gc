@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_THP_H_
-#define _DOLPHIN_THP_H_
+#ifndef _DOLPHIN_THP_H
+#define _DOLPHIN_THP_H
 
 #include "dolphin/types.h"
 

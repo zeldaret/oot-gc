@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_CARD_H_
-#define _DOLPHIN_CARD_H_
+#ifndef _DOLPHIN_CARD_H
+#define _DOLPHIN_CARD_H
 
 #include "dolphin/dsp.h"
 #include "dolphin/dvd.h"

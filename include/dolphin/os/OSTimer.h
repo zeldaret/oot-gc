@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSTIMER_H_
-#define _DOLPHIN_OSTIMER_H_
+#ifndef _DOLPHIN_OS_OSTIMER_H
+#define _DOLPHIN_OS_OSTIMER_H
 
 #include "dolphin/types.h"
 

@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSMEMORY_H_
-#define _DOLPHIN_OSMEMORY_H_
+#ifndef _DOLPHIN_OS_OSMEMORY_H
+#define _DOLPHIN_OS_OSMEMORY_H
 
 #include "dolphin/types.h"
 

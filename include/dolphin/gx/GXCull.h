@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXCULL_H_
-#define _DOLPHIN_GX_GXCULL_H_
+#ifndef _DOLPHIN_GX_GXCULL_H
+#define _DOLPHIN_GX_GXCULL_H
 
 #include "dolphin/gx/GXEnum.h"
 

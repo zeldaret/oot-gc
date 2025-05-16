@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSALARM_H_
-#define _DOLPHIN_OSALARM_H_
+#ifndef _DOLPHIN_OS_OSALARM_H
+#define _DOLPHIN_OS_OSALARM_H
 
 #include "dolphin/os/OSContext.h"
 #include "dolphin/types.h"

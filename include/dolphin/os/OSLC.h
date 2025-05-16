@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSLC_H_
-#define _DOLPHIN_OSLC_H_
+#ifndef _DOLPHIN_OS_OSLC_H
+#define _DOLPHIN_OS_OSLC_H
 
 #include "dolphin/types.h"
 

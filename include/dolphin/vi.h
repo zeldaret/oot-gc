@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_VI_H_
-#define _DOLPHIN_VI_H_
+#ifndef _DOLPHIN_VI_H
+#define _DOLPHIN_VI_H
 
 #include "dolphin/vi/vifuncs.h"
 #include "dolphin/vi/vitypes.h"

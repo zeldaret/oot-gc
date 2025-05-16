@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXMANAGE_H_
-#define _DOLPHIN_GX_GXMANAGE_H_
+#ifndef _DOLPHIN_GX_GXMANAGE_H
+#define _DOLPHIN_GX_GXMANAGE_H
 
 #include "dolphin/gx/GXFifo.h"
 

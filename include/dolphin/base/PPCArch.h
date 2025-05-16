@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_PPCARCH
-#define _DOLPHIN_PPCARCH
+#ifndef _DOLPHIN_BASE_PPCARCH_H
+#define _DOLPHIN_BASE_PPCARCH_H
 
 #include "dolphin/types.h"
 

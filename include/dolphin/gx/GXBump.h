@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXBUMP_H_
-#define _DOLPHIN_GX_GXBUMP_H_
+#ifndef _DOLPHIN_GX_GXBUMP_H
+#define _DOLPHIN_GX_GXBUMP_H
 
 #include "dolphin/gx/GXEnum.h"
 

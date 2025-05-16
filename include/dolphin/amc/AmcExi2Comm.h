@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_AMC_AMCEXI2COMM_H_
-#define _DOLPHIN_AMC_AMCEXI2COMM_H_
+#ifndef _DOLPHIN_AMC_AMCEXI2COMM_H
+#define _DOLPHIN_AMC_AMCEXI2COMM_H
 
 #include "dolphin/amc/AmcTypes.h"
 #include "dolphin/os.h"

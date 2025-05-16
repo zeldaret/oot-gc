@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXCPU2EFB_H_
-#define _DOLPHIN_GX_GXCPU2EFB_H_
+#ifndef _DOLPHIN_GX_GXCPU2EFB_H
+#define _DOLPHIN_GX_GXCPU2EFB_H
 
 #include "dolphin/gx/GXEnum.h"
 

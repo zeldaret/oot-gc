@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_EXI_H_
-#define _DOLPHIN_EXI_H_
+#ifndef _DOLPHIN_EXI_H
+#define _DOLPHIN_EXI_H
 
 #include "dolphin/os.h"
 

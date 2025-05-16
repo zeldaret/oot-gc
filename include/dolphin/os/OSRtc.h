@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSRTC_H_
-#define _DOLPHIN_OSRTC_H_
+#ifndef _DOLPHIN_OS_OSRTC_H
+#define _DOLPHIN_OS_OSRTC_H
 
 #include "dolphin/types.h"
 

@@ -1,5 +1,5 @@
-#ifndef _CHARPIPELINE_TEXPALETTE_H_
-#define _CHARPIPELINE_TEXPALETTE_H_
+#ifndef _TEXPALETTE_H
+#define _TEXPALETTE_H
 
 #include "dolphin/gx/GXStruct.h"
 

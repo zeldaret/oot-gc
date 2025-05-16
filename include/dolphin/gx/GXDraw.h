@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXDRAW_H_
-#define _DOLPHIN_GX_GXDRAW_H_
+#ifndef _DOLPHIN_GX_GXDRAW_H
+#define _DOLPHIN_GX_GXDRAW_H
 
 #include "dolphin/types.h"
 

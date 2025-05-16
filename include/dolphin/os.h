@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OS_H_
-#define _DOLPHIN_OS_H_
+#ifndef _DOLPHIN_OS_H
+#define _DOLPHIN_OS_H
 
 #include "dolphin/gx/GXStruct.h"
 #include "dolphin/types.h"

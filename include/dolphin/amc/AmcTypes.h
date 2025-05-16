@@ -1,5 +1,5 @@
-#ifndef _INCLUDE_DOLPHIN_AMCTYPES_H_
-#define _INCLUDE_DOLPHIN_AMCTYPES_H_
+#ifndef _DOLPHIN_AMC_AMCTYPES_H
+#define _DOLPHIN_AMC_AMCTYPES_H
 
 #include "dolphin/os.h"
 

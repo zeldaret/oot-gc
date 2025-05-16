@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DEMOPAD_H_
-#define _DOLPHIN_DEMOPAD_H_
+#ifndef _DOLPHIN_DEMO_DEMOPAD_H
+#define _DOLPHIN_DEMO_DEMOPAD_H
 
 #include "dolphin/pad.h"
 

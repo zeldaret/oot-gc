@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSERROR_H_
-#define _DOLPHIN_OSERROR_H_
+#ifndef _DOLPHIN_OS_OSERROR_H
+#define _DOLPHIN_OS_OSERROR_H
 
 #include "dolphin/os/OSContext.h"
 

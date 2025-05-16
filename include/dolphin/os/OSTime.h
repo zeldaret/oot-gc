@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSTIME_H_
-#define _DOLPHIN_OSTIME_H_
+#ifndef _DOLPHIN_OS_OSTIME_H
+#define _DOLPHIN_OS_OSTIME_H
 
 #include "dolphin/types.h"
 

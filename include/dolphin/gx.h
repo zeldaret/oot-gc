@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_H_
-#define _DOLPHIN_GX_H_
+#ifndef _DOLPHIN_GX_H
+#define _DOLPHIN_GX_H
 
 #include "dolphin/gx/GXBump.h"
 #include "dolphin/gx/GXCommandList.h"

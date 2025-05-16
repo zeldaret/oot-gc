@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSFONT_H_
-#define _DOLPHIN_OSFONT_H_
+#ifndef _DOLPHIN_OS_OSFONT_H
+#define _DOLPHIN_OS_OSFONT_H
 
 #include "dolphin/os/OSUtf.h"
 #include "dolphin/types.h"

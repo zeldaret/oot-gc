@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSMESSAGE_H_
-#define _DOLPHIN_OSMESSAGE_H_
+#ifndef _DOLPHIN_OS_OSMESSAGE_H
+#define _DOLPHIN_OS_OSMESSAGE_H
 
 #include "dolphin/os/OSThread.h"
 

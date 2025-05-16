@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_GX_GXDISPLIST_H_
-#define _DOLPHIN_GX_GXDISPLIST_H_
+#ifndef _DOLPHIN_GX_GXDISPLIST_H
+#define _DOLPHIN_GX_GXDISPLIST_H
 
 #include "dolphin/types.h"
 

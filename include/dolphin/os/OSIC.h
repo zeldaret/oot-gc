@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSIC_H_
-#define _DOLPHIN_OSIC_H_
+#ifndef _DOLPHIN_OS_OSIC_H
+#define _DOLPHIN_OS_OSIC_H
 
 #ifdef __cplusplus
 extern "C" {

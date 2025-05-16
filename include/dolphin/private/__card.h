@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_CARD_INTERNAL_H_
-#define _DOLPHIN_CARD_INTERNAL_H_
+#ifndef _DOLPHIN_CARD_INTERNAL_H
+#define _DOLPHIN_CARD_INTERNAL_H
 
 #include "dolphin/card.h"
 #include "dolphin/exi.h"

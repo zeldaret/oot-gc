@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DVD_INTERNAL_H_
-#define _DOLPHIN_DVD_INTERNAL_H_
+#ifndef _DOLPHIN_DVD_INTERNAL_H
+#define _DOLPHIN_DVD_INTERNAL_H
 
 #include "dolphin/dvd.h"
 #include "dolphin/os.h"

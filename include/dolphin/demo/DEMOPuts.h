@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DEMOPUTS_H_
-#define _DOLPHIN_DEMOPUTS_H_
+#ifndef _DOLPHIN_DEMO_DEMOPUTS_H
+#define _DOLPHIN_DEMO_DEMOPUTS_H
 
 #include "dolphin/gx.h"
 #include "dolphin/os.h"

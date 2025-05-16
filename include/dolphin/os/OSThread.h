@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSTHREAD_H_
-#define _DOLPHIN_OSTHREAD_H_
+#ifndef _DOLPHIN_OS_OSTHREAD_H
+#define _DOLPHIN_OS_OSTHREAD_H
 
 #include "dolphin/os/OSContext.h"
 

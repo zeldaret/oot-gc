@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSEXCEPTION_H_
-#define _DOLPHIN_OSEXCEPTION_H_
+#ifndef _DOLPHIN_OS_OSEXCEPTION_H
+#define _DOLPHIN_OS_OSEXCEPTION_H
 
 #include "dolphin/os/OSContext.h"
 #include "dolphin/types.h"

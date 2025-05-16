@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DEMOINIT_H_
-#define _DOLPHIN_DEMOINIT_H_
+#ifndef _DOLPHIN_DEMO_DEMOINIT_H
+#define _DOLPHIN_DEMO_DEMOINIT_H
 
 #include "dolphin/gx.h"
 

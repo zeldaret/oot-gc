@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DBINTERFACE_H_
-#define _DOLPHIN_DBINTERFACE_H_
+#ifndef _DOLPHIN_DB_DBINTERFACE_H
+#define _DOLPHIN_DB_DBINTERFACE_H
 
 #include "dolphin/os.h"
 

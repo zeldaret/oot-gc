@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSRESETSW_H_
-#define _DOLPHIN_OSRESETSW_H_
+#ifndef _DOLPHIN_OS_OSRESETSW_H
+#define _DOLPHIN_OS_OSRESETSW_H
 
 #include "dolphin/types.h"
 

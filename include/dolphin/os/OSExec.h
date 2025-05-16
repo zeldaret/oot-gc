@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_OSEXEC_H_
-#define _DOLPHIN_OSEXEC_H_
+#ifndef _DOLPHIN_OS_OSEXEC_H
+#define _DOLPHIN_OS_OSEXEC_H
 
 #include "dolphin/types.h"
 

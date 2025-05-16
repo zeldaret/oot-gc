@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DB_H_
-#define _DOLPHIN_DB_H_
+#ifndef _DOLPHIN_DB_H
+#define _DOLPHIN_DB_H
 
 #include "dolphin/db/DBInterface.h"
 #include "dolphin/types.h"

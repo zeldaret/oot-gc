@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_DSP_H_
-#define _DOLPHIN_DSP_H_
+#ifndef _DOLPHIN_DSP_H
+#define _DOLPHIN_DSP_H
 
 #include "dolphin/os.h"
 
