@@ -225,7 +225,7 @@ DSError TRKDoReadMemory(MessageBuffer* buf) {
     TRKMessageIntoReply(buf, kDSReplyACK, kDSReplyNoError);
     if (error == kNoError) {
         sp10 = spA;
-        error = TRKTargetAccessMemory(buffer, &spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
+        error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
         spA = sp10;
 
         if (error == kNoError) {
@@ -300,7 +300,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
         error = TRK_ReadBuffer(b, buffer, sp10);
 
         if (error == kNoError) {
-            error = TRKTargetAccessMemory(buffer, &spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
+            error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
         }
 
         spA = sp10;

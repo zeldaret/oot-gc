@@ -5,10 +5,10 @@
 DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
     DSError error;
     int replyBufferId;
+    u32 length;
     MessageBuffer* replyBuffer;
     int bufferId;
     MessageBuffer* buffer;
-    u32 length;
     u32 done;
     u8 replyIOResult;
     u16 replyLength;
