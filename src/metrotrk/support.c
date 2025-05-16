@@ -13,8 +13,6 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
     u8 replyIOResult;
     u16 replyLength;
     bool exit;
-    DSError var_r5;
-    int var_r6;
 
     if (data == NULL || *count == 0) {
         return kParameterError;

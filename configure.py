@@ -509,7 +509,7 @@ config.libs = [
             Object(NotLinked, "metrotrk/serpoll.c"),
             Object(LinkedFor("ce-j"), "metrotrk/usr_put.c"),
             Object(NotLinked, "metrotrk/dispatch.c"),
-            Object(NotLinked, "metrotrk/msghndlr.c", extra_cflags=["-enum int"]),
+            Object(NotLinked, "metrotrk/msghndlr.c", extra_cflags=["-enum int", "-inline on,noauto"]),
             Object(NotLinked, "metrotrk/support.c", extra_cflags=["-enum int", "-inline on,noauto"]),
             Object(LinkedFor("ce-j"), "metrotrk/mutex_TRK.c"),
             Object(NotLinked, "metrotrk/notify.c", extra_cflags=["-enum int", "-inline on,noauto"]),

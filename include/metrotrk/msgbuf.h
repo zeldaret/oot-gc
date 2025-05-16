@@ -31,7 +31,7 @@ DSError TRK_InitializeMessageBuffers(void);
 DSError TRK_GetFreeBuffer(int*, MessageBuffer**);
 MessageBuffer* TRKGetBuffer(int);
 void TRK_ReleaseBuffer(int);
-void TRKResetBuffer(MessageBuffer*, bool);
+void TRKResetBuffer(MessageBuffer*, u8);
 DSError TRK_SetBufferPosition(MessageBuffer*, u32);
 DSError TRK_AppendBuffer(MessageBuffer*, const void*, size_t);
 DSError TRK_ReadBuffer(MessageBuffer*, void*, size_t);

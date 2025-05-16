@@ -72,7 +72,7 @@ void TRK_ReleaseBuffer(int index) {
     }
 }
 
-void TRKResetBuffer(MessageBuffer* buf, bool keepData) {
+void TRKResetBuffer(MessageBuffer* buf, u8 keepData) {
     buf->fLength = 0;
     buf->fPosition = 0;
 

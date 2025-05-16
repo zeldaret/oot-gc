@@ -89,43 +89,19 @@ DSError TRKDoVersions(MessageBuffer* buf) {
     error = TRKTargetVersions(&version);
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = version.kernelMajor;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, version.kernelMajor);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = version.kernelMinor;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, version.kernelMinor);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = version.protocolMajor;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, version.protocolMajor);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = version.protocolMinor;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, version.protocolMinor);
     }
 
     if (error != kNoError) {
@@ -152,13 +128,7 @@ DSError TRKDoSupportMask(MessageBuffer* buf) {
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = 2;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, 2);
     }
 
     if (error != kNoError) {
@@ -180,73 +150,31 @@ DSError TRKDoCPUType(MessageBuffer* buf) {
     error = TRKTargetCPUType(&type);
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.cpuMajor;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.cpuMajor);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.cpuMinor;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.cpuMinor);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.bigEndian;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.bigEndian);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.defaultTypeSize;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.defaultTypeSize);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.fpTypeSize;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.fpTypeSize);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.extended1TypeSize;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.extended1TypeSize);
     }
 
     if (error == kNoError) {
-        if (buf->fPosition >= kMessageBufferSize) {
-            error = kMessageBufferOverflow;
-        } else {
-            error = kNoError;
-            buf->fData[buf->fPosition++] = type.extended2TypeSize;
-            buf->fLength++;
-        }
+        error = TRKAppendBuffer1_ui8(buf, type.extended2TypeSize);
     }
 
     if (error != kNoError) {
