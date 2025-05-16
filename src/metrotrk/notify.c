@@ -12,13 +12,7 @@ DSError TRKDoNotifyStopped(u8 cmdId) {
     result = TRK_GetFreeBuffer(&spC, &buffer);
 
     if (result == kNoError) {
-        if (buffer->fPosition >= kMessageBufferSize) {
-            result = kMessageBufferOverflow;
-        } else {
-            result = kNoError;
-            buffer->fData[buffer->fPosition++] = cmdId;
-            buffer->fLength++;
-        }
+        result = TRKAppendBuffer1_ui8(buffer, cmdId);
 
         if (result == kNoError) {
             if (cmdId == kDSNotifyStopped) {

@@ -665,7 +665,7 @@ metrotrk/targimpl.c:
 metrotrk/mem_TRK.c:
 	.init       start:0x800033A8 end:0x800033CC
 
-metrotrk/__exception.c:
+metrotrk/__exception.s:
 	.init       start:0x800033CC end:0x80005300
 
 metrotrk/dolphin_trk.c:

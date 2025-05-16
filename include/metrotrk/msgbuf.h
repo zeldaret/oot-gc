@@ -59,6 +59,16 @@ DSError TRKReadBuffer_ui32(MessageBuffer* buffer, u32* data, int count);
 DSError TRKReadBuffer_ui64(MessageBuffer* buffer, u64* data, int count);
 DSError TRKReadBuffer_ui128(MessageBuffer* buffer, u128* data, int count);
 
+static inline DSError TRKAppendBuffer1_ui8(MessageBuffer* buffer, const u8 data) {
+    if (buffer->fPosition >= kMessageBufferSize) {
+        return kMessageBufferOverflow;
+    }
+
+    buffer->fData[buffer->fPosition++] = data;
+    buffer->fLength++;
+    return kNoError;
+}
+
 extern TRKMsgBufs gTRKMsgBufs;
 
 #ifdef __cplusplus

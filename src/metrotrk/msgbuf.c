@@ -155,16 +155,6 @@ DSError TRK_ReadBuffer(MessageBuffer* buf, void* data, size_t length) {
     return error;
 }
 
-static inline DSError TRKAppendBuffer1_ui8(MessageBuffer* buffer, const u8 data) {
-    if (buffer->fPosition >= kMessageBufferSize) {
-        return kMessageBufferOverflow;
-    }
-
-    buffer->fData[buffer->fPosition++] = data;
-    buffer->fLength++;
-    return kNoError;
-}
-
 DSError TRKAppendBuffer1_ui16(MessageBuffer* buffer, const u16 data) {
     u8* bigEndianData;
     u8* byteData;

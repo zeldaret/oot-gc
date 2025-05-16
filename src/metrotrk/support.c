@@ -34,22 +34,7 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
         error = TRK_GetFreeBuffer(&bufferId, &buffer);
 
         if (error == kNoError) {
-            if (buffer->fPosition >= kMessageBufferSize) {
-                var_r5 = kMessageBufferOverflow;
-            } else {
-
-                if (read != 0) {
-                    var_r6 = 0xD1;
-                } else {
-                    var_r6 = 0xD0;
-                }
-
-                var_r5 = kNoError;
-                buffer->fData[buffer->fPosition++] = var_r6;
-                buffer->fLength++;
-            }
-
-            error = var_r5;
+            error = TRKAppendBuffer1_ui8(buffer, read != 0 ? 0xD1 : 0xD0);
         }
 
         if (error == kNoError) {
