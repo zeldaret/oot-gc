@@ -516,7 +516,7 @@ config.libs = [
             Object(LinkedFor("ce-j"), "metrotrk/flush_cache.c"),
             Object(LinkedFor("ce-j"), "metrotrk/mem_TRK.c"),
             Object(LinkedFor("ce-j"), "metrotrk/__exception.s"),
-            Object(NotLinked, "metrotrk/targimpl.c", extra_cflags=["-proc gekko"]),
+            Object(NotLinked, "metrotrk/targimpl.c", extra_cflags=["-enum int"]),
             Object(NotLinked, "metrotrk/dolphin_trk.c"),
             Object(LinkedFor("ce-j"), "metrotrk/mpc_7xx_603e.c"),
             Object(LinkedFor("ce-j"), "metrotrk/main_TRK.c"),

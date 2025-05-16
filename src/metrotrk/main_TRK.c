@@ -3,7 +3,7 @@
 
 static int TRK_mainError;
 
-int TRKTargetCPUMinorType(void) { return 0x54; }
+u8 TRKTargetCPUMinorType(void) { return 0x54; }
 
 int TRK_main(void) {
     TRK_mainError = TRKInitializeNub();

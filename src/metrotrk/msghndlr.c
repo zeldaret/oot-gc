@@ -535,7 +535,7 @@ DSError TRKDoFlushCache(MessageBuffer* b) {
     }
 
     if (error == kNoError) {
-        error = TRKTargetFlushCache(sp9, (void*)spC, (void*)sp10);
+        error = TRKTargetFlushCache(sp9, spC, sp10);
     }
 
     if (error == kNoError) {

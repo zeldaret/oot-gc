@@ -58,7 +58,7 @@ DSError TRKTargetSingleStep(u32, bool);
 DSError TRKTargetStepOutOfRange(u32, u32, bool);
 u32 TRKTargetGetPC(void);
 DSError TRKTargetSupportRequest(void);
-DSError TRKTargetFlushCache(u8, void*, void*);
+DSError TRKTargetFlushCache(u8, u32, u32);
 bool TRKTargetStopped(void);
 void TRKTargetSetStopped(bool);
 DSError TRKTargetStop(void);
