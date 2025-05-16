@@ -162,6 +162,7 @@ emulator/rdb.c:
 emulator/rsp.c:
 	.text       start:0x800713B0 end:0x8008CA14
 	.data       start:0x800EF6E0 end:0x800EFB90
+	.bss        start:0x80131FB0 end:0x80186FB0
 	.sdata      start:0x8018B550 end:0x8018B578
 	.sbss       start:0x8018BA18 end:0x8018BA40
 	.sdata2     start:0x8018C278 end:0x8018C2B8
@@ -214,7 +215,6 @@ emulator/peripheral.c:
 emulator/_frameGCNcc.c:
 	.text       start:0x80097564 end:0x80097E6C
 	.data       start:0x800F1618 end:0x800F1920
-	.bss        start:0x80131FB0 end:0x80186FB0
 	.sdata      start:0x8018B600 end:0x8018B690
 
 emulator/_buildtev.c:

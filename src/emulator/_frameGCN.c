@@ -56,23 +56,6 @@ bool gNoSwapBuffer = false;
 
 static s32 gnCountMapHack;
 
-#if VERSION == MQ_J
-//! TODO: move to the appropriate header once it's figured out
-extern u16 gnCameraBuffer[];
-extern u16 gnCopyBuffer[];
-extern u16 gnTempBuffer[];
-#endif
-
-#if VERSION == MQ_J
-#define CAMERA_BUFFER gnCameraBuffer
-#define COPY_BUFFER gnCopyBuffer
-#define TEMP_BUFFER gnTempBuffer
-#else
-#define CAMERA_BUFFER pFrame->nCameraBuffer
-#define COPY_BUFFER pFrame->nCopyBuffer
-#define TEMP_BUFFER pFrame->nTempBuffer
-#endif
-
 #if VERSION == MM_J
 #define CAMERA_BUFFER_SIZE (ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT)
 #else

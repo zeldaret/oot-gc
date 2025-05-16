@@ -11,7 +11,7 @@
 u8 gTgPcTPL[32897];
 
 // size = 0x4, address = 0x80135580
-static s32 gnCountArgument;
+static int gnCountArgument;
 
 // size = 0x4, address = 0x80135584
 static char** gaszArgument;
@@ -85,7 +85,7 @@ struct _GXTexObj g_texMap[4];
 struct _GXRenderModeObj* rmode;
 
 // size = 0x4, address = 0x80135420
-s32 __OSCurrHeap;
+int __OSCurrHeap;
 
 // size = 0x4, address = 0x80135A94
 void* DemoFrameBuffer1;
@@ -184,16 +184,16 @@ static void xlCoreInit(struct _GXRenderModeObj* mode) {
     // -> void* DemoFrameBuffer1;
     // -> static void* DefaultFifo;
     // -> static struct __anon_0x238* DefaultFifoObj;
-    // -> s32 __OSCurrHeap;
+    // -> int __OSCurrHeap;
 }
 
 // Range: 0x80005DC8 -> 0x80005E04
-s32 xlCoreReset() {
+int xlCoreReset() {
     // References
     // -> static void* gArenaHi;
     // -> static void* gArenaLo;
     // -> static void* gpHeap;
-    // -> s32 __OSCurrHeap;
+    // -> int __OSCurrHeap;
 }
 
 // Range: 0x80005C54 -> 0x80005DC8
@@ -203,7 +203,7 @@ static void xlCoreInitRenderMode(struct _GXRenderModeObj* mode) {
 
     // Local variables
     char* szText; // r31
-    s32 iArgument; // r5
+    int iArgument; // r5
 
     // References
     // -> static struct _GXRenderModeObj rmodeobj;
@@ -211,7 +211,7 @@ static void xlCoreInitRenderMode(struct _GXRenderModeObj* mode) {
     // -> struct _GXRenderModeObj GXMpal480IntDf;
     // -> struct _GXRenderModeObj GXPal528IntDf;
     // -> struct _GXRenderModeObj GXNtsc480Prog;
-    // -> static s32 gnCountArgument;
+    // -> static int gnCountArgument;
     // -> static char** gaszArgument;
     // -> struct _GXRenderModeObj GXNtsc480IntDf;
 }
@@ -252,46 +252,46 @@ static void xlCoreInitVI() {
 }
 
 // Range: 0x80005918 -> 0x80005920
-s32 xlCoreGetArgumentCount() {
+int xlCoreGetArgumentCount() {
     // References
-    // -> static s32 gnCountArgument;
+    // -> static int gnCountArgument;
 }
 
 // Range: 0x800058E4 -> 0x80005918
-s32 xlCoreGetArgument(s32 iArgument, char** pszArgument) {
+int xlCoreGetArgument(int iArgument, char** pszArgument) {
     // Parameters
-    // s32 iArgument; // r1+0x0
+    // int iArgument; // r1+0x0
     // char** pszArgument; // r1+0x4
 
     // References
     // -> static char** gaszArgument;
-    // -> static s32 gnCountArgument;
+    // -> static int gnCountArgument;
 }
 
 // Range: 0x800058DC -> 0x800058E4
-s32 xlCoreHiResolution() {}
+int xlCoreHiResolution() {}
 
 // Erased
-static s32 xlCoreEnableFPExceptions() {
+static int xlCoreEnableFPExceptions() {
     // Local variables
     f64 control; // r1+0x8
     union DoubleLongLong d; // r1+0x8
 }
 
 // Erased
-static s32 xlCoreGetUpper24MB(void* ppBuffer) {
+static int xlCoreGetUpper24MB(void* ppBuffer) {
     // Parameters
     // void* ppBuffer; // r1+0x0
 }
 
 // Range: 0x80005674 -> 0x800058DC
-s32 main(s32 nCount, char** aszArgument) {
+int main(int nCount, char** aszArgument) {
     // Parameters
-    // s32 nCount; // r1+0x8
+    // int nCount; // r1+0x8
     // char** aszArgument; // r1+0xC
 
     // Local variables
-    s32 nSize; // r31
+    int nSize; // r31
     void* pHeap; // r27
     s32 nSizeHeap; // r3
     struct __anon_0xD1E* tdp; // r1+0x8
@@ -299,7 +299,7 @@ s32 main(s32 nCount, char** aszArgument) {
     u32 i; // r26
 
     // References
-    // -> s32 __OSCurrHeap;
+    // -> int __OSCurrHeap;
     // -> static void* gpHeap;
     // -> struct _GXTexObj g_texMap[4];
     // -> u8 gTgPcTPL[32897];
@@ -310,7 +310,7 @@ s32 main(s32 nCount, char** aszArgument) {
     // -> static void* DefaultFifo;
     // -> static struct __anon_0x238* DefaultFifoObj;
     // -> static char** gaszArgument;
-    // -> static s32 gnCountArgument;
+    // -> static int gnCountArgument;
 }
 
 // Range: 0x800055A0 -> 0x80005674

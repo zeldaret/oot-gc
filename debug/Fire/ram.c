@@ -9,9 +9,9 @@
 
 typedef struct _XL_OBJECTTYPE {
     /* 0x0 */ char* szName;
-    /* 0x4 */ s32 nSizeObject;
+    /* 0x4 */ int nSizeObject;
     /* 0x8 */ struct _XL_OBJECTTYPE* pClassBase;
-    /* 0xC */ s32 (*pfEvent)(void*, s32, void*);
+    /* 0xC */ int (*pfEvent)(void*, int, void*);
 } __anon_0x4BEF6; // size = 0x10
 
 // size = 0x10, address = 0x800ED6C8
@@ -20,166 +20,166 @@ struct _XL_OBJECTTYPE gClassRAM;
 typedef struct __anon_0x4BFE7 {
     /* 0x0 */ void* pHost;
     /* 0x4 */ void* pBuffer;
-    /* 0x8 */ u32 nSize;
+    /* 0x8 */ unsigned int nSize;
 } __anon_0x4BFE7; // size = 0xC
 
 // Range: 0x8006D3A4 -> 0x8006D3AC
-static s32 ramPutControl8() {}
+static int ramPutControl8() {}
 
 // Range: 0x8006D39C -> 0x8006D3A4
-static s32 ramPutControl16() {}
+static int ramPutControl16() {}
 
 // Range: 0x8006D368 -> 0x8006D39C
-static s32 ramPutControl32(u32 nAddress) {
+static int ramPutControl32(unsigned int nAddress) {
     // Parameters
-    // u32 nAddress; // r1+0x4
+    // unsigned int nAddress; // r1+0x4
 }
 
 // Range: 0x8006D360 -> 0x8006D368
-static s32 ramPutControl64() {}
+static int ramPutControl64() {}
 
 // Range: 0x8006D358 -> 0x8006D360
-static s32 ramGetControl8() {}
+static int ramGetControl8() {}
 
 // Range: 0x8006D350 -> 0x8006D358
-static s32 ramGetControl16() {}
+static int ramGetControl16() {}
 
 // Range: 0x8006D31C -> 0x8006D350
-static s32 ramGetControl32(u32 nAddress) {
+static int ramGetControl32(unsigned int nAddress) {
     // Parameters
-    // u32 nAddress; // r1+0x4
+    // unsigned int nAddress; // r1+0x4
 }
 
 // Range: 0x8006D314 -> 0x8006D31C
-static s32 ramGetControl64() {}
+static int ramGetControl64() {}
 
 // Range: 0x8006D30C -> 0x8006D314
-static s32 ramPutRI8() {}
+static int ramPutRI8() {}
 
 // Range: 0x8006D304 -> 0x8006D30C
-static s32 ramPutRI16() {}
+static int ramPutRI16() {}
 
 // Range: 0x8006D2D0 -> 0x8006D304
-static s32 ramPutRI32(u32 nAddress) {
+static int ramPutRI32(unsigned int nAddress) {
     // Parameters
-    // u32 nAddress; // r1+0x4
+    // unsigned int nAddress; // r1+0x4
 }
 
 // Range: 0x8006D2C8 -> 0x8006D2D0
-static s32 ramPutRI64() {}
+static int ramPutRI64() {}
 
 // Range: 0x8006D2C0 -> 0x8006D2C8
-static s32 ramGetRI8() {}
+static int ramGetRI8() {}
 
 // Range: 0x8006D2B8 -> 0x8006D2C0
-static s32 ramGetRI16() {}
+static int ramGetRI16() {}
 
 // Range: 0x8006D284 -> 0x8006D2B8
-static s32 ramGetRI32(u32 nAddress) {
+static int ramGetRI32(unsigned int nAddress) {
     // Parameters
-    // u32 nAddress; // r1+0x4
+    // unsigned int nAddress; // r1+0x4
 }
 
 // Range: 0x8006D27C -> 0x8006D284
-static s32 ramGetRI64() {}
+static int ramGetRI64() {}
 
 // Range: 0x8006D258 -> 0x8006D27C
-static s32 ramPut8(struct __anon_0x4BFE7* pRAM, u32 nAddress, char* pData) {
+static int ramPut8(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, char* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r6
+    // unsigned int nAddress; // r6
     // char* pData; // r1+0x8
 }
 
 // Range: 0x8006D230 -> 0x8006D258
-static s32 ramPut16(struct __anon_0x4BFE7* pRAM, u32 nAddress, s16* pData) {
+static int ramPut16(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, s16* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r6
+    // unsigned int nAddress; // r6
     // s16* pData; // r1+0x8
 }
 
 // Range: 0x8006D208 -> 0x8006D230
-static s32 ramPut32(struct __anon_0x4BFE7* pRAM, u32 nAddress, s32* pData) {
+static int ramPut32(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, int* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r6
-    // s32* pData; // r1+0x8
+    // unsigned int nAddress; // r6
+    // int* pData; // r1+0x8
 }
 
 // Range: 0x8006D1D4 -> 0x8006D208
-static s32 ramPut64(struct __anon_0x4BFE7* pRAM, u32 nAddress, s64* pData) {
+static int ramPut64(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, s64* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r4
+    // unsigned int nAddress; // r4
     // s64* pData; // r1+0x8
 }
 
 // Range: 0x8006D1A4 -> 0x8006D1D4
-static s32 ramGet8(struct __anon_0x4BFE7* pRAM, u32 nAddress, char* pData) {
+static int ramGet8(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, char* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r4
+    // unsigned int nAddress; // r4
     // char* pData; // r1+0x8
 }
 
 // Range: 0x8006D170 -> 0x8006D1A4
-static s32 ramGet16(struct __anon_0x4BFE7* pRAM, u32 nAddress, s16* pData) {
+static int ramGet16(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, s16* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r4
+    // unsigned int nAddress; // r4
     // s16* pData; // r1+0x8
 }
 
 // Range: 0x8006D13C -> 0x8006D170
-static s32 ramGet32(struct __anon_0x4BFE7* pRAM, u32 nAddress, s32* pData) {
+static int ramGet32(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, int* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r4
-    // s32* pData; // r1+0x8
+    // unsigned int nAddress; // r4
+    // int* pData; // r1+0x8
 }
 
 // Range: 0x8006D0F8 -> 0x8006D13C
-static s32 ramGet64(struct __anon_0x4BFE7* pRAM, u32 nAddress, s64* pData) {
+static int ramGet64(struct __anon_0x4BFE7* pRAM, unsigned int nAddress, s64* pData) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32 nAddress; // r4
+    // unsigned int nAddress; // r4
     // s64* pData; // r1+0x8
 }
 
 // Range: 0x8006D0A0 -> 0x8006D0F8
-s32 ramGetBuffer(struct __anon_0x4BFE7* pRAM, void* ppRAM, u32 nOffset, u32* pnSize) {
+int ramGetBuffer(struct __anon_0x4BFE7* pRAM, void* ppRAM, unsigned int nOffset, unsigned int* pnSize) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
     // void* ppRAM; // r1+0x4
-    // u32 nOffset; // r5
-    // u32* pnSize; // r1+0xC
+    // unsigned int nOffset; // r5
+    // unsigned int* pnSize; // r1+0xC
 }
 
 // Range: 0x8006D058 -> 0x8006D0A0
-s32 ramWipe(struct __anon_0x4BFE7* pRAM) {
+int ramWipe(struct __anon_0x4BFE7* pRAM) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r3
 }
 
 // Range: 0x8006CFE8 -> 0x8006D058
-s32 ramSetSize(struct __anon_0x4BFE7* pRAM, u32 nSize) {
+int ramSetSize(struct __anon_0x4BFE7* pRAM, unsigned int nSize) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r30
-    // u32 nSize; // r31
+    // unsigned int nSize; // r31
 }
 
 // Range: 0x8006CFD0 -> 0x8006CFE8
-s32 ramGetSize(struct __anon_0x4BFE7* pRAM, u32* pnSize) {
+int ramGetSize(struct __anon_0x4BFE7* pRAM, unsigned int* pnSize) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r1+0x0
-    // u32* pnSize; // r1+0x4
+    // unsigned int* pnSize; // r1+0x4
 }
 
 // Range: 0x8006CD98 -> 0x8006CFD0
-s32 ramEvent(struct __anon_0x4BFE7* pRAM, s32 nEvent, void* pArgument) {
+int ramEvent(struct __anon_0x4BFE7* pRAM, int nEvent, void* pArgument) {
     // Parameters
     // struct __anon_0x4BFE7* pRAM; // r30
-    // s32 nEvent; // r1+0xC
+    // int nEvent; // r1+0xC
     // void* pArgument; // r31
 }

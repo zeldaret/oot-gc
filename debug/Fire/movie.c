@@ -11,7 +11,7 @@
 u8* gBufferP;
 
 // size = 0x4, address = 0x80135420
-s32 __OSCurrHeap;
+int __OSCurrHeap;
 
 typedef enum __anon_0xEF02 {
     VI_TVMODE_NTSC_INT = 0,
@@ -60,7 +60,7 @@ void MovieInit() {
 
     // References
     // -> u8* gBufferP;
-    // -> s32 __OSCurrHeap;
+    // -> int __OSCurrHeap;
 }
 
 // Erased
@@ -76,5 +76,5 @@ void MovieDraw() {
 static void MovieDestroy() {
     // References
     // -> u8* gBufferP;
-    // -> s32 __OSCurrHeap;
+    // -> int __OSCurrHeap;
 }

@@ -190,14 +190,14 @@ typedef struct __anon_0x1999C {
     /* 0x080 */ struct __anon_0x196BC videoInfo;
     /* 0x08C */ struct __anon_0x1973C audioInfo;
     /* 0x09C */ void* thpWork;
-    /* 0x0A0 */ s32 open;
+    /* 0x0A0 */ int open;
     /* 0x0A4 */ u8 state;
     /* 0x0A5 */ u8 internalState;
     /* 0x0A6 */ u8 playFlag;
     /* 0x0A7 */ u8 audioExist;
     /* 0x0A8 */ s32 dvdError;
     /* 0x0AC */ s32 videoError;
-    /* 0x0B0 */ s32 onMemory;
+    /* 0x0B0 */ int onMemory;
     /* 0x0B4 */ u8* movieData;
     /* 0x0B8 */ s32 initOffset;
     /* 0x0BC */ s32 initReadSize;
@@ -226,7 +226,7 @@ struct __anon_0x1999C ActivePlayer;
 typedef struct __anon_0x19FA4 {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
-    /* 0x8 */ s32 isValid;
+    /* 0x8 */ int isValid;
 } __anon_0x19FA4; // size = 0xC
 
 // Range: 0x80013410 -> 0x80013440
@@ -278,7 +278,7 @@ static void VideoDecode(struct __anon_0x19FA4* readBuffer) {
     u32 i; // r27
     u32* compSizePtr; // r26
     u8* ptr; // r25
-    s32 old; // r3
+    int old; // r3
 
     // References
     // -> static s32 First;
@@ -293,7 +293,7 @@ static void* VideoDecoderForOnMemory(void* ptr) {
 
     // Local variables
     struct __anon_0x19FA4 readBuffer; // r1+0x10
-    s32 old; // r3
+    int old; // r3
     s32 tmp; // r4
     s32 size; // r29
     s32 readFrame; // r28
@@ -307,7 +307,7 @@ static void* VideoDecoderForOnMemory(void* ptr) {
 static void* VideoDecoder() {
     // Local variables
     struct __anon_0x19FA4* readBuffer; // r28
-    s32 old; // r3
+    int old; // r3
 
     // References
     // -> struct __anon_0x1999C ActivePlayer;
@@ -328,7 +328,7 @@ void VideoDecodeThreadStart() {
 }
 
 // Range: 0x80012F20 -> 0x80013004
-s32 CreateVideoDecodeThread(s32 priority, u8* ptr) {
+int CreateVideoDecodeThread(s32 priority, u8* ptr) {
     // Parameters
     // s32 priority; // r8
     // u8* ptr; // r5

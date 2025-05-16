@@ -187,14 +187,14 @@ typedef struct __anon_0x13BA7 {
     /* 0x080 */ struct __anon_0x138C7 videoInfo;
     /* 0x08C */ struct __anon_0x13947 audioInfo;
     /* 0x09C */ void* thpWork;
-    /* 0x0A0 */ s32 open;
+    /* 0x0A0 */ int open;
     /* 0x0A4 */ u8 state;
     /* 0x0A5 */ u8 internalState;
     /* 0x0A6 */ u8 playFlag;
     /* 0x0A7 */ u8 audioExist;
     /* 0x0A8 */ s32 dvdError;
     /* 0x0AC */ s32 videoError;
-    /* 0x0B0 */ s32 onMemory;
+    /* 0x0B0 */ int onMemory;
     /* 0x0B4 */ u8* movieData;
     /* 0x0B8 */ s32 initOffset;
     /* 0x0BC */ s32 initReadSize;
@@ -223,7 +223,7 @@ struct __anon_0x13BA7 ActivePlayer;
 typedef struct __anon_0x14130 {
     /* 0x0 */ u8* ptr;
     /* 0x4 */ s32 frameNumber;
-    /* 0x8 */ s32 isValid;
+    /* 0x8 */ int isValid;
 } __anon_0x14130; // size = 0xC
 
 // Range: 0x80011108 -> 0x80011138
@@ -318,7 +318,7 @@ void AudioDecodeThreadStart() {
 }
 
 // Range: 0x80010D9C -> 0x80010E7C
-s32 CreateAudioDecodeThread(s32 priority, u8* ptr) {
+int CreateAudioDecodeThread(s32 priority, u8* ptr) {
     // Parameters
     // s32 priority; // r8
     // u8* ptr; // r5
