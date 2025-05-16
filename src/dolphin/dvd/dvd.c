@@ -941,7 +941,7 @@ bool DVDReadAbsAsyncPrio(DVDCommandBlock* block, void* addr, s32 length, s32 off
 }
 
 #if IS_MM
-s32 DVDSeekAbsAsyncPrio(DVDCommandBlock* block, s32 offset, DVDCBCallback callback, s32 prio) {
+int DVDSeekAbsAsyncPrio(DVDCommandBlock* block, s32 offset, DVDCBCallback callback, s32 prio) {
     int idle;
 
     block->command = DVD_COMMAND_SEEK;
@@ -981,7 +981,7 @@ bool DVDReadDiskID(DVDCommandBlock* block, DVDDiskID* diskID, DVDCBCallback call
 }
 
 #if IS_MM
-s32 DVDPrepareStreamAbsAsync(DVDCommandBlock* block, u32 length, u32 offset, DVDCBCallback callback) {
+int DVDPrepareStreamAbsAsync(DVDCommandBlock* block, u32 length, u32 offset, DVDCBCallback callback) {
     int idle;
 
     block->command = DVD_COMMAND_INITSTREAM;
@@ -1002,7 +1002,7 @@ bool DVDCancelStreamAsync(DVDCommandBlock* block, DVDCBCallback callback) {
 }
 
 #if IS_MM
-s32 DVDStopStreamAtEndAsync(DVDCommandBlock* block, DVDCBCallback callback) {
+int DVDStopStreamAtEndAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     s32 idle;
 
     block->command = DVD_COMMAND_STOP_STREAM_AT_END;
@@ -1011,7 +1011,7 @@ s32 DVDStopStreamAtEndAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     return idle;
 }
 
-s32 DVDGetStreamErrorStatusAsync(DVDCommandBlock* block, DVDCBCallback callback) {
+int DVDGetStreamErrorStatusAsync(DVDCommandBlock* block, DVDCBCallback callback) {
     s32 idle;
 
     block->command = DVD_COMMAND_REQUEST_AUDIO_ERROR;

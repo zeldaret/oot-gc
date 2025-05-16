@@ -251,6 +251,14 @@ void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, 
     SET_REG_FIELD(t->mode1, 8, 8, lmax);
 }
 
+void GXInitTexObjData(GXTexObj* obj, void* image_ptr) {
+    u32 imageBase;
+    __GXTexObjInt* t = (__GXTexObjInt*)obj;
+
+    imageBase = ((u32)image_ptr >> 5) & 0x01FFFFFF;
+    SET_REG_FIELD(t->image3, 21, 0, imageBase);
+}
+
 void* GXGetTexObjData(const GXTexObj* to) {
     const __GXTexObjInt* t = (const __GXTexObjInt*)to;
 
