@@ -1,9 +1,9 @@
 #include "metrotrk/dolphin_trk_glue.h"
 #include "debugger.h"
+#include "dolphin/amc/AmcExi2Comm.h"
 #include "metrotrk/mem_TRK.h"
 #include "metrotrk/targimpl.h"
 #include "metrotrk/trk.h"
-#include "dolphin/amc/AmcExi2Comm.h"
 
 static DBCommTable gDBCommTable = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
