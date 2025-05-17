@@ -255,7 +255,7 @@ def RuntimeLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-        "mw_version": "GC/1.1.1",
+        "mw_version": "GC/1.1u",
         "cflags": [*cflags_base, "-rostr", "-proc gekko", "-sdata 0", "-sdata2 0", "-pool off", "-inline on,noauto", "-enum int", "-use_lmw_stmw on"],
         "progress_category": "metrotrk",
         "objects": objects,
