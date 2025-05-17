@@ -255,13 +255,8 @@ def RuntimeLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-
-        # this is actually a patched 1.1 version to make this library match
         "mw_version": "GC/1.1.1",
-
-        # `-proc gekko` doesn't really match well, and we define `NO_FASTCAST` because of ASM that can't compile on non-gekko processors
-        "cflags": [*cflags_base, "-rostr", "-proc 603e", "-DNO_FASTCAST", "-sdata 0", "-sdata2 0", "-pool off", "-inline off", "-enum min", "-use_lmw_stmw on"],
-
+        "cflags": [*cflags_base, "-rostr", "-proc gekko", "-sdata 0", "-sdata2 0", "-pool off", "-inline on,noauto", "-enum int", "-use_lmw_stmw on"],
         "progress_category": "metrotrk",
         "objects": objects,
     }
@@ -508,24 +503,24 @@ config.libs = [
         [
             Object(Linked, "metrotrk/mainloop.c"),
             Object(Linked, "metrotrk/nubevent.c"),
-            Object(Linked, "metrotrk/nubinit.c", extra_cflags=["-enum int"]),
+            Object(Linked, "metrotrk/nubinit.c"),
             Object(Linked, "metrotrk/msg.c"),
-            Object(Linked, "metrotrk/msgbuf.c", extra_cflags=["-enum int", "-inline on,noauto"]),
+            Object(Linked, "metrotrk/msgbuf.c"),
             Object(Linked, "metrotrk/serpoll.c"),
             Object(Linked, "metrotrk/usr_put.c"),
             Object(Linked, "metrotrk/dispatch.c"),
-            Object(Linked, "metrotrk/msghndlr.c", extra_cflags=["-enum int", "-inline on,noauto"]),
-            Object(Linked, "metrotrk/support.c", extra_cflags=["-enum int", "-inline on,noauto"]),
+            Object(Linked, "metrotrk/msghndlr.c"),
+            Object(Linked, "metrotrk/support.c"),
             Object(Linked, "metrotrk/mutex_TRK.c"),
-            Object(Linked, "metrotrk/notify.c", extra_cflags=["-enum int", "-inline on,noauto"]),
+            Object(Linked, "metrotrk/notify.c"),
             Object(Linked, "metrotrk/flush_cache.c"),
             Object(Linked, "metrotrk/mem_TRK.c"),
             Object(Linked, "metrotrk/__exception.s"),
-            Object(Linked, "metrotrk/targimpl.c", extra_cflags=["-enum int", "-inline on,noauto"]),
+            Object(Linked, "metrotrk/targimpl.c"),
             Object(Linked, "metrotrk/dolphin_trk.c"),
             Object(Linked, "metrotrk/mpc_7xx_603e.c"),
             Object(Linked, "metrotrk/main_TRK.c"),
-            Object(Linked, "metrotrk/dolphin_trk_glue.c", extra_cflags=["-enum int"]),
+            Object(Linked, "metrotrk/dolphin_trk_glue.c"),
             Object(Linked, "metrotrk/targcont.c"),
         ]
     ),

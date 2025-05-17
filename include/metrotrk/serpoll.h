@@ -21,7 +21,7 @@ typedef enum ReceiverState {
 typedef struct FramingState {
     /* 0x00 */ MessageBufferID fBufferID;
     /* 0x04 */ MessageBuffer* fBuffer;
-    /* 0x08 */ ReceiverState fReceiveState;
+    /* 0x08 */ u8 fReceiveState;
     /* 0x0C */ int fEscape;
     /* 0x10 */ FCSType fFCS;
 } FramingState; // size = 0x11
