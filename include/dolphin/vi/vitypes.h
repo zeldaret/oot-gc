@@ -1,5 +1,5 @@
-#ifndef _DOLPHIN_VITYPES_H_
-#define _DOLPHIN_VITYPES_H_
+#ifndef _DOLPHIN_VI_VITYPES_H
+#define _DOLPHIN_VI_VITYPES_H
 
 #include "dolphin/types.h"
 
@@ -17,9 +17,6 @@
 #define VI_DEBUG_PAL 4
 #define VI_EURGB60 5
 #define VI_GCA 6
-
-typedef void (*VIRetraceCallback)(u32 retraceCount);
-typedef void (*VIPositionCallback)(s16 x, s16 y);
 
 typedef enum VITVMode {
     VI_TVMODE_NTSC_INT = 0, // VI_TVMODE(VI_NTSC, VI_INTERLACE)
@@ -40,69 +37,12 @@ typedef enum VITVMode {
     VI_TVMODE_GCA_PROG = 26, // VI_TVMODE(VI_GCA, VI_PROGRESSIVE)
 } VITVMode;
 
-typedef enum VIXFBMode {
+typedef enum {
     VI_XFBMODE_SF = 0,
     VI_XFBMODE_DF
 } VIXFBMode;
 
-typedef struct VITimingInfo {
-    /* 0x00 */ u8 equ;
-    /* 0x02 */ u16 acv;
-    /* 0x04 */ u16 prbOdd;
-    /* 0x06 */ u16 prbEven;
-    /* 0x08 */ u16 psbOdd;
-    /* 0x0A */ u16 psbEven;
-    /* 0x0C */ u8 bs1;
-    /* 0x0D */ u8 bs2;
-    /* 0x0E */ u8 bs3;
-    /* 0x0F */ u8 bs4;
-    /* 0x10 */ u16 be1;
-    /* 0x12 */ u16 be2;
-    /* 0x14 */ u16 be3;
-    /* 0x16 */ u16 be4;
-    /* 0x18 */ u16 numHalfLines;
-    /* 0x1A */ u16 hlw;
-    /* 0x1C */ u8 hsy;
-    /* 0x1D */ u8 hcs;
-    /* 0x1E */ u8 hce;
-    /* 0x1F */ u8 hbe640;
-    /* 0x20 */ u16 hbs640;
-    /* 0x24 */ u8 hbeCCIR656;
-    /* 0x26 */ u16 hbsCCIR656;
-} VITimingInfo; // size = 0x28
-
-typedef struct VIPositionInfo {
-    /* 0x00 */ u16 dispPosX;
-    /* 0x02 */ u16 dispPosY;
-    /* 0x04 */ u16 dispSizeX;
-    /* 0x06 */ u16 dispSizeY;
-    /* 0x08 */ u16 adjDispPosX;
-    /* 0x0A */ u16 adjDispPosY;
-    /* 0x0C */ u16 adjDispSizeY;
-    /* 0x0E */ u16 adjPanPosY;
-    /* 0x10 */ u16 adjPanSizeY;
-    /* 0x12 */ u16 fbSizeX;
-    /* 0x14 */ u16 fbSizeY;
-    /* 0x16 */ u16 panPosX;
-    /* 0x18 */ u16 panPosY;
-    /* 0x1A */ u16 panSizeX;
-    /* 0x1C */ u16 panSizeY;
-    /* 0x20 */ VIXFBMode xfbMode;
-    /* 0x24 */ u32 nonInter;
-    /* 0x28 */ u32 tv;
-    /* 0x2C */ u8 wordPerLine;
-    /* 0x2D */ u8 std;
-    /* 0x2E */ u8 wpl;
-    /* 0x30 */ u32 bufAddr;
-    /* 0x34 */ u32 tfbb;
-    /* 0x38 */ u32 bfbb;
-    /* 0x3C */ u8 xof;
-    /* 0x40 */ bool isBlack;
-    /* 0x44 */ bool is3D;
-    /* 0x48 */ u32 rbufAddr;
-    /* 0x4C */ u32 rtfbb;
-    /* 0x50 */ u32 rbfbb;
-    /* 0x54 */ VITimingInfo* timing;
-} VIPositionInfo; // size = 0x58
+typedef void (*VIRetraceCallback)(u32 retraceCount);
+typedef void (*VIPositionCallback)(s16 x, s16 y);
 
 #endif

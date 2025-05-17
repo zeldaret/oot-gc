@@ -1,5 +1,7 @@
 #include "dolphin/card.h"
 
+#include "dolphin/private/__card.h"
+
 bool __CARDCompareFileName(CARDDir* entry, const char* fileName) {
     char* entName;
     char c1;
@@ -89,7 +91,7 @@ s32 __CARDIsReadable(CARDControl* card, CARDDir* entry) {
 }
 #endif
 
-s32 __CARDGetFileNo(CARDControl* card, char* fileName, s32* outFileNo) {
+s32 __CARDGetFileNo(CARDControl* card, const char* fileName, s32* outFileNo) {
     CARDDir* dir;
     CARDDir* entry;
     s32 fileNo;
@@ -115,7 +117,7 @@ s32 __CARDGetFileNo(CARDControl* card, char* fileName, s32* outFileNo) {
     return CARD_RESULT_NOFILE;
 }
 
-s32 CARDOpen(s32 chan, char* fileName, CARDFileInfo* fileInfo) {
+s32 CARDOpen(s32 chan, const char* fileName, CARDFileInfo* fileInfo) {
     CARDControl* card;
     CARDDir* dir;
     CARDDir* ent;

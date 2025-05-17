@@ -74,7 +74,7 @@ void DEMOPadRead() {
     DemoNumValidPads = 0;
     for (i = 0; i < 4; i++) {
         if (Pad[i].err == 0 || Pad[i].err == -3) {
-            DemoNumValidPads += 1;
+            DemoNumValidPads++;
         } else if (Pad[i].err == -1) {
             ResetReq |= PadChanMask[i];
         }

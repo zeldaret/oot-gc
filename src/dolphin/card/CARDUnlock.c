@@ -1,6 +1,8 @@
 #include "dolphin/card.h"
 #include "dolphin/dsp.h"
 
+#include "dolphin/private/__card.h"
+
 static void InitCallback(void* task);
 static void DoneCallback(void* task);
 
@@ -148,7 +150,7 @@ s32 DummyLen() {
 
     tmp = CARDRand();
     tmp &= 0x0000001F;
-    tmp += 1;
+    tmp++;
     while ((tmp < 4) && (max < 10)) {
         tick = OSGetTick();
         tmp = (s32)(tick << wk);
@@ -159,7 +161,7 @@ s32 DummyLen() {
         CARDSrand((u32)tmp);
         tmp = CARDRand();
         tmp &= 0x0000001F;
-        tmp += 1;
+        tmp++;
         max++;
     }
     if (tmp < 4) {
@@ -190,14 +192,14 @@ s32 __CARDUnlock(s32 channel, u8 flashID[12]) {
 
     CARDControl* card;
     DSPTaskInfo* task;
-    CARDDecodeParameters* param;
+    CARDDecParam* param;
     u8* input;
     u8* output;
 
     card = &__CARDBlock[channel];
     task = &card->task;
-    param = (CARDDecodeParameters*)card->workArea;
-    input = (u8*)((u8*)param + sizeof(CARDDecodeParameters));
+    param = (CARDDecParam*)card->workArea;
+    input = (u8*)((u8*)param + sizeof(CARDDecParam));
     input = (u8*)OSRoundUp32B(input);
     output = input + 32;
 
@@ -267,7 +269,7 @@ s32 __CARDUnlock(s32 channel, u8 flashID[12]) {
 
     DCFlushRange(input, 8);
     DCInvalidateRange(output, 4);
-    DCFlushRange(param, sizeof(CARDDecodeParameters));
+    DCFlushRange(param, sizeof(CARDDecParam));
 
     task->priority = 255;
     task->iram_mmem_addr = (u16*)OSPhysicalToCached(CardData);
@@ -292,7 +294,7 @@ void InitCallback(void* dspTask) {
     s32 chan;
     CARDControl* card;
     DSPTaskInfo* task;
-    CARDDecodeParameters* param;
+    CARDDecParam* param;
 
     task = dspTask;
     for (chan = 0; chan < 2; ++chan) {
@@ -301,7 +303,7 @@ void InitCallback(void* dspTask) {
             break;
         }
     }
-    param = (CARDDecodeParameters*)card->workArea;
+    param = (CARDDecParam*)card->workArea;
 
     DSPSendMailToDSP(0xFF000000);
     while (DSPCheckMailToDSP()) {}
@@ -325,7 +327,7 @@ void DoneCallback(void* dspTask) {
     CARDControl* card;
     s32 result;
     DSPTaskInfo* task;
-    CARDDecodeParameters* param;
+    CARDDecParam* param;
 
     u8* input;
     u8* output;
@@ -337,8 +339,8 @@ void DoneCallback(void* dspTask) {
         }
     }
 
-    param = (CARDDecodeParameters*)card->workArea;
-    input = (u8*)((u8*)param + sizeof(CARDDecodeParameters));
+    param = (CARDDecParam*)card->workArea;
+    input = (u8*)((u8*)param + sizeof(CARDDecParam));
     input = (u8*)OSRoundUp32B(input);
     output = input + 32;
 

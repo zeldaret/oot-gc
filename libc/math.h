@@ -28,6 +28,9 @@ f32 sinf(f32 x);
 f32 cosf(f32 x);
 f32 tanf(f32 x);
 f32 log10f(f32);
+f32 powf(f32 x, f32 y);
+f32 acosf(f32);
+f32 atan2f(f32 x, f32 y);
 
 static inline f64 fabs(f64 x) { return __fabs(x); }
 

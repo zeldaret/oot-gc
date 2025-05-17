@@ -1,7 +1,8 @@
-#include "dolphin/OSRtcPriv.h"
 #include "dolphin/exi.h"
 #include "dolphin/os.h"
 #include "macros.h"
+
+#include "dolphin/private/__os.h"
 
 #define RTC_CMD_READ 0x20000000
 #define RTC_CMD_WRITE 0xA0000000

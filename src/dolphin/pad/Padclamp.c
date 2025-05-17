@@ -2,19 +2,6 @@
 #include "dolphin/types.h"
 #include "math.h"
 
-typedef struct PADClampRegion {
-    u8 minTrigger;
-    u8 maxTrigger;
-    s8 minStick;
-    s8 maxStick;
-    s8 xyStick;
-    s8 minSubstick;
-    s8 maxSubstick;
-    s8 xySubstick;
-    s8 radStick;
-    s8 radSubstick;
-} PADClampRegion;
-
 static const PADClampRegion ClampRegion = {
     // Triggers
     30,

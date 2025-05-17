@@ -1,5 +1,7 @@
 #include "dolphin/card.h"
 
+#include "dolphin/private/__card.h"
+
 static void BlockReadCallback(s32 channel, s32 result) {
     CARDControl* card;
     CARDCallback callback;
@@ -34,7 +36,7 @@ error:
     }
 }
 
-int __CARDRead(s32 channel, u32 addr, s32 length, void* dst, CARDCallback callback) {
+s32 __CARDRead(s32 channel, u32 addr, s32 length, void* dst, CARDCallback callback) {
     CARDControl* card;
     card = &__CARDBlock[channel];
     if (!card->attached) {

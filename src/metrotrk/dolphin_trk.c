@@ -38,6 +38,10 @@ void __TRK_copy_vectors(void);
 
 INIT void __TRKreset(void) { __TRK_copy_vectors(); }
 
+// Debugger stack
+extern u8 _db_stack_addr[];
+extern u8 _db_stack_end[];
+
 // r5: hardware id
 ASM void InitMetroTRK(void) {
 #ifdef __MWERKS__ // clang-format off

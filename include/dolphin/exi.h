@@ -1,9 +1,11 @@
-#ifndef _DOLPHIN_EXI_H_
-#define _DOLPHIN_EXI_H_
+#ifndef _DOLPHIN_EXI_H
+#define _DOLPHIN_EXI_H
 
-#include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
-#include "dolphin/types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define EXI_MEMORY_CARD_59 0x00000004
 #define EXI_MEMORY_CARD_123 0x00000008
@@ -34,12 +36,18 @@
 
 #define EXI_MODEM 0x02020000
 #define EXI_ETHER 0x04020200
+#define EXI_MIC 0x04060000
+#define EXI_AD16 0x04120000
+#define EXI_RS232C 0x04040404
 #define EXI_ETHER_VIEWER 0x04220001
 #define EXI_STREAM_HANGER 0x04130000
 
 #define EXI_MARLIN 0x03010000
 
 #define EXI_IS_VIEWER 0x05070000
+
+#define EXI_READ 0
+#define EXI_WRITE 1
 
 #define EXI_FREQ_1M 0
 #define EXI_FREQ_2M 1
@@ -48,18 +56,23 @@
 #define EXI_FREQ_16M 4
 #define EXI_FREQ_32M 5
 
-#define EXI_READ 0
-#define EXI_WRITE 1
-
-#define EXI_STATE_IDLE 0x00
-#define EXI_STATE_DMA 0x01
-#define EXI_STATE_IMM 0x02
-#define EXI_STATE_BUSY (EXI_STATE_DMA | EXI_STATE_IMM)
-#define EXI_STATE_SELECTED 0x04
-#define EXI_STATE_ATTACHED 0x08
-#define EXI_STATE_LOCKED 0x10
-
 typedef void (*EXICallback)(s32 chan, OSContext* context);
+typedef struct EXIControl {
+    EXICallback exiCallback;
+    EXICallback tcCallback;
+    EXICallback extCallback;
+    volatile u32 state;
+    int immLen;
+    u8* immBuf;
+    u32 dev;
+    u32 id;
+    s32 idTime;
+    int items;
+    struct {
+        u32 dev;
+        EXICallback callback;
+    } queue[3];
+} EXIControl;
 
 EXICallback EXISetExiCallback(s32 channel, EXICallback callback);
 
@@ -77,13 +90,14 @@ s32 EXIProbeEx(s32 channel);
 bool EXIAttach(s32 channel, EXICallback callback);
 bool EXIDetach(s32 channel);
 u32 EXIGetState(s32 channel);
+s32 EXIGetID(s32 channel, u32 device, u32* id);
+void EXIProbeReset(void);
+int EXISelectSD(s32 chan, u32 dev, u32 freq);
 s32 EXIGetType(s32 chan, u32 dev, u32* type);
 char* EXIGetTypeString(u32 type);
-u32 EXIClearInterrupts(s32 chan, bool exi, bool tc, bool ext);
-s32 EXIGetID(s32 channel, u32 device, u32* id);
 
-s32 InitializeUART(u32 baudRate);
-s32 ReadUARTN(void* buf, u32 length);
-s32 WriteUARTN(const void* buf, u32 len);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

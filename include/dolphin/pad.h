@@ -1,7 +1,11 @@
-#ifndef _DOLPHIN_PAD_H_
-#define _DOLPHIN_PAD_H_
+#ifndef _DOLPHIN_PAD_H
+#define _DOLPHIN_PAD_H
 
 #include "dolphin/types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define PAD_SPEC_0 0
 #define PAD_SPEC_1 1
@@ -13,11 +17,6 @@
 #define PAD_MOTOR_STOP 0
 #define PAD_MOTOR_RUMBLE 1
 #define PAD_MOTOR_STOP_HARD 2
-
-#define PAD_CHAN0 0
-#define PAD_CHAN1 1
-#define PAD_CHAN2 2
-#define PAD_CHAN3 3
 
 #define PAD_CHAN0_BIT 0x80000000
 #define PAD_CHAN1_BIT 0x40000000
@@ -49,7 +48,7 @@
 #define PAD_ERR_NOT_READY -2
 #define PAD_ERR_TRANSFER -3
 
-typedef void (*PADSamplingCallback)(void);
+#define RES_WIRELESS_LITE 0x40000
 
 typedef struct PADStatus {
     /* 0x00 */ u16 button;
@@ -64,16 +63,46 @@ typedef struct PADStatus {
     /* 0x0A */ s8 err;
 } PADStatus;
 
-extern u32 __PADFixBits;
+typedef struct PADClampRegion {
+    u8 minTrigger;
+    u8 maxTrigger;
+    s8 minStick;
+    s8 maxStick;
+    s8 xyStick;
+    s8 minSubstick;
+    s8 maxSubstick;
+    s8 xySubstick;
+    s8 radStick;
+    s8 radSubstick;
+} PADClampRegion;
 
-bool PADInit(void);
-u32 PADRead(PADStatus* status);
+typedef void (*PADSamplingCallback)(void);
+
+// Pad
+int PADReset(u32 mask);
 bool PADRecalibrate(u32 mask);
-bool PADReset(u32 mask);
+bool PADInit();
+u32 PADRead(PADStatus* status);
+void PADSetSamplingRate(u32 msec);
+void __PADTestSamplingRate(u32 tvmode);
+void PADControlAllMotors(const u32* commandArray);
 void PADControlMotor(s32 chan, u32 command);
 void PADSetSpec(u32 spec);
-void PADClamp(PADStatus* status);
+u32 PADGetSpec();
+int PADGetType(s32 chan, u32* type);
+bool PADSync(void);
+void PADSetAnalogMode(u32 mode);
 bool __PADDisableRecalibration(bool disable);
+bool PADIsBarrel(s32 chan);
+
 PADSamplingCallback PADSetSamplingCallback(PADSamplingCallback callback);
+
+// Padclamp
+void PADClamp(PADStatus* status);
+void PADClampCircle(PADStatus* status);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

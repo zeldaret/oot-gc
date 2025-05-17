@@ -1,6 +1,8 @@
-#include "dolphin/OSRtcPriv.h"
 #include "dolphin/card.h"
 #include "dolphin/hw_regs.h"
+
+#include "dolphin/private/__card.h"
+#include "dolphin/private/__os.h"
 
 static void FormatCallback(s32 channel, s32 result) {
     CARDControl* card;

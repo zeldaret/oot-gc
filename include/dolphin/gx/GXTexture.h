@@ -1,35 +1,54 @@
-#ifndef _DOLPHIN_GX_GXTEXTURE_H_
-#define _DOLPHIN_GX_GXTEXTURE_H_
+#ifndef _DOLPHIN_GX_GXTEXTURE_H
+#define _DOLPHIN_GX_GXTEXTURE_H
 
 #include "dolphin/gx/GXEnum.h"
 #include "dolphin/gx/GXStruct.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef GXTexRegion* (*GXTexRegionCallback)(GXTexObj* t_obj, GXTexMapID id);
 typedef GXTlutRegion* (*GXTlutRegionCallback)(u32 idx);
 
-void __GetImageTileCount(GXTexFmt format, u16 width, u16 height, u32* a, u32* b, u32* c);
-void GXInitTexObj(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXTexFmt format, GXTexWrapMode sWrap,
-                  GXTexWrapMode tWrap, GXBool useMIPmap);
-void GXInitTexObjCI(GXTexObj* obj, void* imagePtr, u16 width, u16 height, GXCITexFmt format, GXTexWrapMode sWrap,
-                    GXTexWrapMode tWrap, GXBool useMIPmap, u32 tlutName);
-void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter minFilter, GXTexFilter maxFilter, f32 minLOD, f32 maxLOD, f32 lodBias,
-                     GXBool doBiasClamp, GXBool doEdgeLOD, GXAnisotropy maxAniso);
+u32 GXGetTexBufferSize(u16 width, u16 height, u32 format, u8 mipmap, u8 max_lod);
+void GXInitTexObj(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXTexFmt format, GXTexWrapMode wrap_s,
+                  GXTexWrapMode wrap_t, u8 mipmap);
+void GXInitTexObjCI(GXTexObj* obj, void* image_ptr, u16 width, u16 height, GXCITexFmt format, GXTexWrapMode wrap_s,
+                    GXTexWrapMode wrap_t, u8 mipmap, u32 tlut_name);
+void GXInitTexObjLOD(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias,
+                     GXBool bias_clamp, GXBool do_edge_lod, GXAnisotropy max_aniso);
 void GXInitTexObjData(GXTexObj* obj, void* image_ptr);
-void* GXGetTexObjData(GXTexObj* tex_obj);
-GXTexFmt GXGetTexObjFmt(GXTexObj* obj);
-GXBool GXGetTexObjMipMap(GXTexObj* obj);
-void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID map);
-void GXLoadTexObj(GXTexObj* obj, GXTexMapID map);
-void GXInitTlutObj(GXTlutObj* obj, void* table, GXTlutFmt format, u16 numEntries);
-void GXLoadTlut(GXTlutObj* obj, u32 tlutName);
-void GXInitTexCacheRegion(GXTexRegion* region, GXBool is32bMIPmap, u32 memEven, GXTexCacheSize sizeEven, u32 memOdd,
-                          GXTexCacheSize sizeOdd);
-void GXInitTlutRegion(GXTlutRegion* region, u32 memAddr, GXTlutSize tlutSize);
+void GXInitTexObjWrapMode(GXTexObj* obj, GXTexWrapMode s, GXTexWrapMode t);
+void GXInitTexObjTlut(GXTexObj* obj, u32 tlut_name);
+void GXInitTexObjUserData(GXTexObj* obj, void* user_data);
+void* GXGetTexObjUserData(const GXTexObj* obj);
+void GXLoadTexObjPreLoaded(GXTexObj* obj, GXTexRegion* region, GXTexMapID id);
+void GXLoadTexObj(GXTexObj* obj, GXTexMapID id);
+void GXInitTlutObj(GXTlutObj* tlut_obj, void* lut, GXTlutFmt fmt, u16 n_entries);
+void GXLoadTlut(GXTlutObj* tlut_obj, u32 tlut_name);
+void GXInitTexCacheRegion(GXTexRegion* region, u8 is_32b_mipmap, u32 tmem_even, GXTexCacheSize size_even, u32 tmem_odd,
+                          GXTexCacheSize size_odd);
+void GXInitTexPreLoadRegion(GXTexRegion* region, u32 tmem_even, u32 size_even, u32 tmem_odd, u32 size_odd);
+void GXInitTlutRegion(GXTlutRegion* region, u32 tmem_addr, GXTlutSize tlut_size);
+void GXInvalidateTexRegion(GXTexRegion* region);
 void GXInvalidateTexAll(void);
-GXTexRegionCallback GXSetTexRegionCallback(GXTexRegionCallback func);
-GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback func);
-void __SetSURegs(u32 texImgIndex, u32 setUpRegIndex);
-void __GXSetSUTexRegs(void);
-void __GXSetTmemConfig(u32 config);
+GXTexRegionCallback GXSetTexRegionCallback(GXTexRegionCallback f);
+GXTlutRegionCallback GXSetTlutRegionCallback(GXTlutRegionCallback f);
+void GXPreLoadEntireTexture(GXTexObj* tex_obj, GXTexRegion* region);
+void GXSetTexCoordScaleManually(GXTexCoordID coord, u8 enable, u16 ss, u16 ts);
+void GXSetTexCoordCylWrap(GXTexCoordID coord, u8 s_enable, u8 t_enable);
+void GXSetTexCoordBias(GXTexCoordID coord, u8 s_enable, u8 t_enable);
+void GXInitTexObjFilter(GXTexObj* obj, GXTexFilter min_filt, GXTexFilter mag_filt);
+void GXInitTexObjMaxLOD(GXTexObj* obj, f32 max_lod);
+void GXInitTexObjMinLOD(GXTexObj* obj, f32 min_lod);
+void GXInitTexObjLODBias(GXTexObj* obj, f32 lod_bias);
+void GXInitTexObjBiasClamp(GXTexObj* obj, u8 bias_clamp);
+void GXInitTexObjEdgeLOD(GXTexObj* obj, u8 do_edge_lod);
+void GXInitTexObjMaxAniso(GXTexObj* obj, GXAnisotropy max_aniso);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

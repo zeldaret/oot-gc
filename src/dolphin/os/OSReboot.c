@@ -1,8 +1,9 @@
 #include "dolphin/ai.h"
 #include "dolphin/dvd.h"
 #include "dolphin/os.h"
-#include "dolphin/os/OSBootInfo.h"
 #include "macros.h"
+
+#include "dolphin/private/__os.h"
 
 typedef struct ApploaderHeader {
     // total size: 0x20
@@ -27,11 +28,11 @@ extern u32 BOOT_REGION_START AT_ADDRESS(0x812FDFF0);
 extern u32 BOOT_REGION_END AT_ADDRESS(0x812FDFEC);
 extern u32 OS_RESET_CODE AT_ADDRESS(0x800030F0);
 extern u8 OS_REBOOT_BOOL AT_ADDRESS(0x800030E2); // unknown function, set to true by __OSReboot
-extern s32 __OSIsGcam;
+extern int __OSIsGcam;
 
 static volatile bool Prepared = false;
 
-void __OSDoHotReset(int);
+void __OSDoHotReset(u32 resetCode);
 
 #if IS_MQ
 static void ReadApploader(void* addr, long length, long offset) {

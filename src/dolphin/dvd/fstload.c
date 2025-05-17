@@ -2,19 +2,13 @@
 #include "dolphin/os.h"
 #include "dolphin/types.h"
 
-struct bb2struct {
-    u32 _00;
-    u32 offset;
-    s32 length;
-    u32 maxLength;
-    void* addr;
-};
+#include "dolphin/private/__dvd.h"
+
+static u8 bb2Buf[63];
 
 static u32 status;
-static struct bb2struct* bb2;
-static u8* idTmp;
-static u8 bb2Buf[0x3F];
-static u8 block[0x30];
+static DVDBB2* bb2;
+static DVDDiskID* idTmp;
 
 struct DiskInfo {
     s8 Gamecode[4];
@@ -36,10 +30,11 @@ static void cb(s32 type, DVDCommandBlock* cmdBlock) {
                 break;
             case 1:
                 status = 2;
-                DVDReadAbsAsyncForBS(cmdBlock, bb2->addr, OSRoundUp32B(bb2->length), bb2->offset, cb);
+                DVDReadAbsAsyncForBS(cmdBlock, bb2->FSTAddress, OSRoundUp32B(bb2->FSTLength), bb2->FSTPosition, cb);
                 break;
         }
     } else if (type == -1) {
+        return;
     } else if (type == -4) {
         status = 0;
         DVDReset();
@@ -48,36 +43,57 @@ static void cb(s32 type, DVDCommandBlock* cmdBlock) {
 }
 
 void __fstLoad(void) {
-    int status;
-    char* onStr;
-    u8 idBuffer[64];
+    OSBootInfo* bootInfo;
+    DVDDiskID* id;
+    u8 idTmpBuf[63];
+    s32 state;
     void* arenaHi;
-    struct DiskInfo* di;
+    static DVDCommandBlock block;
 
     arenaHi = OSGetArenaHi();
-    idTmp = (void*)OSRoundUp32B(idBuffer);
+    bootInfo = (void*)OSPhysicalToCached(0);
+    idTmp = (void*)OSRoundUp32B(idTmpBuf);
     bb2 = (void*)OSRoundUp32B(bb2Buf);
+
     DVDReset();
     DVDReadDiskID(&block, idTmp, cb);
-    do {
-        status = DVDGetDriveStatus();
-    } while (status != DVD_STATE_END);
-    di = (void*)OS_BASE_CACHED;
-    di->FSTLocationInRam = bb2->addr;
-    di->FSTMaxLength = bb2->maxLength;
-    memcpy(di, idTmp, 32);
-    OSReport("\n");
-    OSReport("  Game Name ... %c%c%c%c\n", di->Gamecode[0], di->Gamecode[1], di->Gamecode[2], di->Gamecode[3]);
-    OSReport("  Company ..... %c%c\n", di->Company[0], di->Company[1]);
-    OSReport("  Disk # ...... %d\n", di->DiskID);
-    OSReport("  Game ver .... %d\n", di->Version);
-    if (di->Streaming == 0) {
-        onStr = "OFF";
-    } else {
-        onStr = "ON";
+
+    while (1) {
+        state = DVDGetDriveStatus();
+        if (state == 0) {
+            break;
+        }
+
+        // weird switch that seemingly wont do anything but break out of its own switch. What was this for? Early DVD
+        // development pre-hardware?
+        switch (state) {
+            case DVD_STATE_FATAL_ERROR:
+                break;
+            case DVD_STATE_BUSY:
+                break;
+            case DVD_STATE_WAITING:
+                break;
+            case DVD_STATE_COVER_CLOSED:
+                break;
+            case DVD_STATE_NO_DISK:
+                break;
+            case DVD_STATE_COVER_OPEN:
+                break;
+            case DVD_STATE_MOTOR_STOPPED:
+                break;
+        }
     }
-    OSReport("  Streaming ... %s\n", onStr);
+
+    bootInfo->FSTLocation = (void*)bb2->FSTAddress;
+    bootInfo->FSTMaxLength = bb2->FSTMaxLength;
+    id = &bootInfo->DVDDiskID;
+    memcpy(id, idTmp, 0x20);
     OSReport("\n");
-    OSSetArenaHi(bb2->addr);
-    return;
+    OSReport("  Game Name ... %c%c%c%c\n", id->gameName[0], id->gameName[1], id->gameName[2], id->gameName[3]);
+    OSReport("  Company ..... %c%c\n", id->company[0], id->company[1]);
+    OSReport("  Disk # ...... %d\n", id->diskNumber);
+    OSReport("  Game ver .... %d\n", id->gameVersion);
+    OSReport("  Streaming ... %s\n", !(id->streaming) ? "OFF" : "ON");
+    OSReport("\n");
+    OSSetArenaHi(bb2->FSTAddress);
 }

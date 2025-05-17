@@ -1,7 +1,7 @@
+#include "dolphin/texPalette.h"
 #include "dolphin/dvd.h"
 #include "dolphin/gx.h"
 #include "dolphin/os.h"
-#include "dolphin/tex.h"
 #include "macros.h"
 
 #define PALETTE_VERSION 0x20AF30

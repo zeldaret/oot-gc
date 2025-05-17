@@ -2,6 +2,8 @@
 #include "dolphin/exi.h"
 #include "dolphin/types.h"
 
+#include "dolphin/private/__card.h"
+
 #if IS_MQ
 const char* __CARDVersion = "<< Dolphin SDK - CARD\trelease build: Sep  5 2002 05:35:20 (0x2301) >>";
 #else

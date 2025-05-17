@@ -217,13 +217,13 @@ static void CheckMailBox(void) {
     }
 }
 
-void DBInitComm(volatile u8** param_1, __OSInterruptHandler param_2) {
+void DBInitComm(int* inputFlagPtr, int* mtrCallback) {
     bool enabled;
 
     enabled = OSDisableInterrupts();
     pEXIInputFlag = &EXIInputFlag;
-    *param_1 = pEXIInputFlag;
-    MTRCallback = param_2;
+    *inputFlagPtr = (int)pEXIInputFlag;
+    MTRCallback = (__OSInterruptHandler)mtrCallback;
     DBGEXIInit();
     OSRestoreInterrupts(enabled);
 }

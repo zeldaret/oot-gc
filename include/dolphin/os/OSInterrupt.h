@@ -1,10 +1,15 @@
-#ifndef _DOLPHIN_OSINTERRUPT
-#define _DOLPHIN_OSINTERRUPT
+#ifndef _DOLPHIN_OS_OSINTERRUPT_H
+#define _DOLPHIN_OS_OSINTERRUPT_H
 
-#include "dolphin/os/OSContext.h"
-#include "dolphin/os/OSPriv.h"
+#include "dolphin/os/OSException.h"
 #include "dolphin/types.h"
-#include "string.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef s16 __OSInterrupt;
+typedef u32 OSInterruptMask;
 
 #define __OS_INTERRUPT_MEM_0 0
 #define __OS_INTERRUPT_MEM_1 1
@@ -42,6 +47,8 @@
 #define OS_INTERRUPTMASK_MEM_2 OS_INTERRUPTMASK(__OS_INTERRUPT_MEM_2)
 #define OS_INTERRUPTMASK_MEM_3 OS_INTERRUPTMASK(__OS_INTERRUPT_MEM_3)
 #define OS_INTERRUPTMASK_MEM_ADDRESS OS_INTERRUPTMASK(__OS_INTERRUPT_MEM_ADDRESS)
+#define OS_INTERRUPTMASK_MEM_RESET \
+    (OS_INTERRUPTMASK_MEM_0 | OS_INTERRUPTMASK_MEM_1 | OS_INTERRUPTMASK_MEM_2 | OS_INTERRUPTMASK_MEM_3)
 #define OS_INTERRUPTMASK_MEM                                                                             \
     (OS_INTERRUPTMASK_MEM_0 | OS_INTERRUPTMASK_MEM_1 | OS_INTERRUPTMASK_MEM_2 | OS_INTERRUPTMASK_MEM_3 | \
      OS_INTERRUPTMASK_MEM_ADDRESS)
@@ -82,23 +89,25 @@
      OS_INTERRUPTMASK_PI_ERROR | OS_INTERRUPTMASK_PI_VI | OS_INTERRUPTMASK_PI_PE_TOKEN |                  \
      OS_INTERRUPTMASK_PI_PE_FINISH | OS_INTERRUPTMASK_PI_DEBUG | OS_INTERRUPTMASK_PI_HSP)
 
-typedef s16 __OSInterrupt;
 typedef void (*__OSInterruptHandler)(__OSInterrupt interrupt, OSContext* context);
-
-typedef u32 OSInterruptMask;
 
 extern volatile __OSInterrupt __OSLastInterrupt;
 extern volatile u32 __OSLastInterruptSrr0;
 extern volatile OSTime __OSLastInterruptTime;
 
-bool OSDisableInterrupts(void);
-bool OSRestoreInterrupts(register bool level);
 __OSInterruptHandler __OSSetInterruptHandler(__OSInterrupt interrupt, __OSInterruptHandler handler);
+
 __OSInterruptHandler __OSGetInterruptHandler(__OSInterrupt interrupt);
-void __OSInterruptInit(void);
-u32 SetInterruptMask(OSInterruptMask mask, OSInterruptMask current);
-OSInterruptMask __OSMaskInterrupts(OSInterruptMask global);
-OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask global);
+
 void __OSDispatchInterrupt(__OSException exception, OSContext* context);
 
-#endif // _DOLPHIN_OSINTERRUPT
+OSInterruptMask OSGetInterruptMask(void);
+OSInterruptMask OSSetInterruptMask(OSInterruptMask mask);
+OSInterruptMask __OSMaskInterrupts(OSInterruptMask mask);
+OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask mask);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

@@ -4,6 +4,8 @@
 #include "macros.h"
 #include "stdio.h"
 
+#include "dolphin/private/__os.h"
+
 OSErrorHandler __OSErrorTable[OS_ERROR_MAX];
 
 #define FPSCR_ENABLE (FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE)
@@ -43,7 +45,7 @@ OSErrorHandler OSSetErrorHandler(OSError error, OSErrorHandler handler) {
     oldHandler = __OSErrorTable[error];
     __OSErrorTable[error] = handler;
 
-    if (error == OS_ERROR_FPE) {
+    if (error == __OS_EXCEPTION_FLOATING_POINT_EXCEPTION) {
         u32 msr;
         u32 fpscr;
         OSThread* thread;
@@ -102,11 +104,11 @@ void __OSUnhandledException(__OSException exception, OSContext* context, u32 dsi
         OSReport("Non-recoverable Exception %d", exception);
     } else {
         if (exception == __OS_EXCEPTION_PROGRAM && (context->srr1 & (0x80000000 >> 11)) &&
-            __OSErrorTable[OS_ERROR_FPE] != 0) {
+            __OSErrorTable[__OS_EXCEPTION_FLOATING_POINT_EXCEPTION] != 0) {
             u32 fpscr;
             u32 msr;
 
-            exception = OS_ERROR_FPE;
+            exception = __OS_EXCEPTION_FLOATING_POINT_EXCEPTION;
 
             msr = PPCMfmsr();
             PPCMtmsr(msr | MSR_FP);
@@ -183,7 +185,7 @@ void __OSUnhandledException(__OSException exception, OSContext* context, u32 dsi
                      "at or around 0x%x (read from SRR0)\n",
                      context->srr0, dar);
             break;
-        case OS_ERROR_PROTECTION:
+        case __OS_EXCEPTION_MEMORY_PROTECTION:
             OSReport("\n");
             OSReport("AI DMA Address =   0x%04x%04x\n", __DSPRegs[0x00000018], __DSPRegs[0x00000018 + 1]);
             OSReport("ARAM DMA Address = 0x%04x%04x\n", __DSPRegs[0x00000010], __DSPRegs[0x00000010 + 1]);

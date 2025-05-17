@@ -1,5 +1,9 @@
 #include "dolphin/card.h"
 
+#include "dolphin/private/__card.h"
+
+#define TRUNC(n, a) (((u32)(n)) & ~((a) - 1))
+
 s32 __CARDSeek(CARDFileInfo* fileInfo, s32 length, s32 offset, CARDControl** outCard) {
     CARDControl* card;
     CARDDir* dir;

@@ -3,6 +3,8 @@
 #include "dolphin/os.h"
 #include "dolphin/types.h"
 
+#include "dolphin/private/__dsp.h"
+
 bool __DSP_init_flag;
 
 #if IS_MQ

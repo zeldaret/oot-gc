@@ -3,6 +3,8 @@
 #include "dolphin/os.h"
 #include "macros.h"
 
+#include "dolphin/private/__dvd.h"
+
 static bool FirstRead = true;
 static volatile bool StopAtNextInt = false;
 static u32 LastLength = 0;
@@ -420,7 +422,7 @@ WEAK DVDLowCallback DVDLowClearCallback() {
     return old;
 }
 
-WEAK void __DVDLowSetWAType(u32 type, u32 location) {
+WEAK void __DVDLowSetWAType(u32 type, s32 location) {
     bool enabled;
     enabled = OSDisableInterrupts();
     WorkAroundType = type;
@@ -428,7 +430,7 @@ WEAK void __DVDLowSetWAType(u32 type, u32 location) {
     OSRestoreInterrupts(enabled);
 }
 
-bool __DVDLowTestAlarm(OSAlarm* alarm) {
+bool __DVDLowTestAlarm(const OSAlarm* alarm) {
     if (alarm == &AlarmForBreak) {
         return true;
     } else if (alarm == &AlarmForTimeout) {
