@@ -12,6 +12,7 @@
 #define OS_FASTCAST_S8 4
 #define OS_FASTCAST_S16 5
 
+// this is required to compile metrotrk files since it's not using the gekko processor in the compile commands
 #ifndef NO_FASTCAST
 
 static inline void OSInitFastCast(void) {

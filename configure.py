@@ -255,8 +255,13 @@ def RuntimeLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
+
+        # this is actually a patched 1.1 version to make this library match
         "mw_version": "GC/1.1.1",
+
+        # `-proc gekko` doesn't really match well, and we define `NO_FASTCAST` because of ASM that can't compile on non-gekko processors
         "cflags": [*cflags_base, "-rostr", "-proc 603e", "-DNO_FASTCAST", "-sdata 0", "-sdata2 0", "-pool off", "-inline off", "-enum min", "-use_lmw_stmw on"],
+
         "progress_category": "metrotrk",
         "objects": objects,
     }
