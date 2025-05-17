@@ -59,6 +59,4 @@ typedef int bool;
 #include "libc/stdio.h"
 #include "libc/string.h"
 
-#include "cmath.h"
-
 #endif
