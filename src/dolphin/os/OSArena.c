@@ -1,4 +1,4 @@
-#include "dolphin/os/OSArena.h"
+#include "dolphin/private/__os.h"
 
 #define ROUND(n, a) (((u32)(n) + (a) - 1) & ~((a) - 1))
 #define TRUNC(n, a) (((u32)(n)) & ~((a) - 1))

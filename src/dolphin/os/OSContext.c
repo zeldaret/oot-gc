@@ -1,11 +1,9 @@
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/db.h"
 #include "dolphin/os.h"
-#include "dolphin/os/OSPriv.h"
 #include "macros.h"
 
-volatile OSContext* __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED | 0x00D4);
-volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED | 0x00D8);
+#include "dolphin/private/__os.h"
 
 static ASM void __OSLoadFPUContext(register u32 unknown, register OSContext* fpuContext) {
 #ifdef __MWERKS__ // clang-format off

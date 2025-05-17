@@ -1,5 +1,7 @@
 #include "dolphin/card.h"
 
+#include "dolphin/private/__card.h"
+
 CARDDir* __CARDGetDirBlock(CARDControl* card) { return card->currentDir; }
 
 static void WriteCallback(s32 channel, s32 result) {

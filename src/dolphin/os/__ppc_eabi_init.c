@@ -1,9 +1,10 @@
-#include "dolphin/__ppc_eabi_init.h"
 #include "dolphin/base/PPCArch.h"
+#include "dolphin/private/__os.h"
 #include "macros.h"
 
 void __OSPSInit(void);
 void __OSCacheInit(void);
+void __init_cpp(void);
 
 ASM void __init_hardware(void){
 #ifdef __MWERKS__ // clang-format off

@@ -1,5 +1,7 @@
 #include "dolphin/gx.h"
 
+#include "dolphin/private/__gx.h"
+
 void GXSetGPMetric(GXPerf0 perf0, GXPerf1 perf1) {
     u32 reg;
 

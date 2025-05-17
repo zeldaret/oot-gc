@@ -2,10 +2,12 @@
 #include "dolphin/os.h"
 #include "macros.h"
 
+#include "dolphin/private/__os.h"
+
 #define TRUNC(n, a) (((u32)(n)) & ~((a) - 1))
 #define ROUND(n, a) (((u32)(n) + (a) - 1) & ~((a) - 1))
 
-extern OSErrorHandler __OSErrorTable[16];
+extern OSErrorHandler __OSErrorTable[OS_ERROR_MAX];
 
 static bool OnReset(bool final);
 
@@ -36,12 +38,12 @@ static void MEMIntrruptHandler(__OSInterrupt interrupt, OSContext* context) {
     addr = (((u32)__MEMRegs[0x12] & 0x3FF) << 16) | __MEMRegs[0x11];
     __MEMRegs[0x10] = 0;
 
-    if (__OSErrorTable[OS_ERROR_PROTECTION]) {
-        __OSErrorTable[OS_ERROR_PROTECTION](OS_ERROR_PROTECTION, context, cause, addr);
+    if (__OSErrorTable[__OS_EXCEPTION_MEMORY_PROTECTION]) {
+        __OSErrorTable[__OS_EXCEPTION_MEMORY_PROTECTION](__OS_EXCEPTION_MEMORY_PROTECTION, context, cause, addr);
         return;
     }
 
-    __OSUnhandledException(OS_ERROR_PROTECTION, context, cause, addr);
+    __OSUnhandledException(__OS_EXCEPTION_MEMORY_PROTECTION, context, cause, addr);
 }
 
 ASM void Config24MB(void) {

@@ -1,4 +1,5 @@
 #include "emulator/THPPlayer.h"
+#include "dolphin.h"
 #include "emulator/THPAudioDecode.h"
 #include "emulator/THPDraw.h"
 #include "emulator/THPRead.h"

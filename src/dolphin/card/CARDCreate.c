@@ -1,5 +1,7 @@
 #include "dolphin/card.h"
 
+#include "dolphin/private/__card.h"
+
 static void CreateCallbackFat(s32 channel, s32 result) {
     CARDControl* card;
     CARDDir* dir;
@@ -46,7 +48,7 @@ error:
     }
 }
 
-s32 CARDCreateAsync(s32 channel, char* fileName, u32 size, CARDFileInfo* fileInfo, CARDCallback callback) {
+s32 CARDCreateAsync(s32 channel, const char* fileName, u32 size, CARDFileInfo* fileInfo, CARDCallback callback) {
     CARDControl* card;
     CARDDir* dir;
     CARDDir* ent;

@@ -1,7 +1,8 @@
 #include "dolphin/base/PPCArch.h"
-#include "dolphin/os/OSPriv.h"
 #include "dolphin/os/OSReset.h"
 #include "macros.h"
+
+#include "dolphin/private/__os.h"
 
 static struct OSAlarmQueue {
     OSAlarm* head;

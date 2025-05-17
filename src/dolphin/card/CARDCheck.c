@@ -1,5 +1,7 @@
-#include "dolphin/OSRtcPriv.h"
 #include "dolphin/card.h"
+
+#include "dolphin/private/__card.h"
+#include "dolphin/private/__os.h"
 
 void __CARDCheckSum(void* ptr, int length, u16* checksum, u16* checksumInv) {
     u16* p;

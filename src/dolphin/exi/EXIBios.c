@@ -17,13 +17,13 @@ static u32 IDSerialPort1;
 #define REG_MAX 5
 #define REG(chan, idx) (__EXIRegs[((chan) * REG_MAX) + (idx)])
 
-#define STATE_IDLE 0x00
-#define STATE_DMA 0x01
-#define STATE_IMM 0x02
-#define STATE_BUSY (STATE_DMA | STATE_IMM)
-#define STATE_SELECTED 0x04
-#define STATE_ATTACHED 0x08
-#define STATE_LOCKED 0x10
+#define STATE_IDLE 0
+#define STATE_DMA 1
+#define STATE_IMM 2
+#define STATE_BUSY 3
+#define STATE_SELECTED 4
+#define STATE_ATTACHED 8
+#define STATE_LOCKED 16
 
 #define EXI_0CR(tstart, dma, rw, tlen) \
     ((((u32)(tstart)) << 0) | (((u32)(dma)) << 1) | (((u32)(rw)) << 2) | (((u32)(tlen)) << 4))
@@ -31,26 +31,10 @@ static u32 IDSerialPort1;
 #define CPR_CS(x) ((1u << (x)) << 7)
 #define CPR_CLK(x) ((x) << 4)
 
-typedef struct EXIControl {
-    EXICallback exiCallback;
-    EXICallback tcCallback;
-    EXICallback extCallback;
-    vu32 state;
-    int immLen;
-    u8* immBuf;
-    u32 dev;
-    u32 id;
-    s32 idTime;
-    int items;
-    struct {
-        u32 dev;
-        EXICallback callback;
-    } queue[MAX_DEV];
-} EXIControl;
-
 static EXIControl Ecb[MAX_CHAN];
 
-s32 __EXIProbeStartTime[2] AT_ADDRESS(OS_BASE_CACHED | 0x30C0);
+u32 EXIClearInterrupts(s32 chan, int exi, int tc, int ext);
+static int __EXIProbe(s32 chan);
 
 static void SetExiInterruptMask(s32 chan, EXIControl* exi) {
     EXIControl* exi2;
@@ -187,8 +171,6 @@ bool EXIDma(s32 chan, void* buf, s32 len, u32 type, EXICallback callback) {
 
 extern u32 __OSGetDIConfig(void);
 
-vu16 __OSDeviceCode AT_ADDRESS(OS_BASE_CACHED | 0x30E6);
-
 bool EXISync(s32 chan) {
     EXIControl* exi = &Ecb[chan];
     bool rc = false;
@@ -270,7 +252,7 @@ static bool __EXIProbe(s32 chan) {
     rc = true;
     enabled = OSDisableInterrupts();
     cpr = REG(chan, 0);
-    if (!(exi->state & EXI_STATE_ATTACHED)) {
+    if (!(exi->state & STATE_ATTACHED)) {
         if (cpr & 0x00000800) {
             EXIClearInterrupts(chan, false, false, true);
             __EXIProbeStartTime[chan] = exi->idTime = 0;
@@ -324,7 +306,7 @@ static inline bool __EXIAttach(s32 chan, EXICallback extCallback) {
     bool enabled;
 
     enabled = OSDisableInterrupts();
-    if ((exi->state & EXI_STATE_ATTACHED) || __EXIProbe(chan) == false) {
+    if ((exi->state & STATE_ATTACHED) || __EXIProbe(chan) == false) {
         OSRestoreInterrupts(enabled);
         return false;
     }

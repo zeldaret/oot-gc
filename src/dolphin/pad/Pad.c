@@ -39,7 +39,10 @@ static u32 RecalibrateBits;
 static u32 WaitingBits;
 static u32 CheckingBits;
 static u32 PendingBits;
+
+#if IS_CE
 static u32 BarrelBits;
+#endif
 
 static void (*SamplingCallback)(void);
 
@@ -81,21 +84,17 @@ static inline void PADDisable(s32 chan) {
     OSRestoreInterrupts(enabled);
 }
 
-static inline void DoReset(void) {
+static void DoReset() {
     u32 chanBit;
 
     ResettingChan = __cntlzw(ResettingBits);
-    if (ResettingChan == 32) {
-        return;
+    if (ResettingChan != 32) {
+        chanBit = (PAD_CHAN0_BIT >> ResettingChan);
+        ResettingBits &= ~chanBit;
+
+        memset(&Origin[ResettingChan], 0, sizeof(PADStatus));
+        SIGetTypeAsync(ResettingChan, PADTypeAndStatusCallback);
     }
-
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-
-    chanBit = PAD_CHAN0_BIT >> ResettingChan;
-    ResettingBits &= ~chanBit;
-
-    memset(&Origin[ResettingChan], 0, sizeof(PADStatus));
-    SIGetTypeAsync(ResettingChan, (SITypeAndStatusCallback)PADTypeAndStatusCallback);
 }
 
 static void UpdateOrigin(s32 chan) {
@@ -144,8 +143,6 @@ static void UpdateOrigin(s32 chan) {
 }
 
 static void PADOriginCallback(s32 chan, u32 error, OSContext* context) {
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-    ASSERT(chan == ResettingChan);
     if (!(error & (SI_ERROR_UNDER_RUN | SI_ERROR_OVER_RUN | SI_ERROR_NO_RESPONSE | SI_ERROR_COLLISION))) {
         UpdateOrigin(ResettingChan);
         PADEnable(ResettingChan);
@@ -154,7 +151,6 @@ static void PADOriginCallback(s32 chan, u32 error, OSContext* context) {
 }
 
 static void PADOriginUpdateCallback(s32 chan, u32 error, OSContext* context) {
-    ASSERT(0 <= chan && chan < SI_MAX_CHAN);
 
     if (!(EnabledBits & (PAD_CHAN0_BIT >> chan))) {
         return;
@@ -170,9 +166,6 @@ static void PADOriginUpdateCallback(s32 chan, u32 error, OSContext* context) {
 }
 
 static void PADProbeCallback(s32 chan, u32 error, OSContext* context) {
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-    ASSERT(chan == ResettingChan);
-    ASSERT((Type[chan] & SI_WIRELESS_CONT_MASK) == SI_WIRELESS_CONT && !(Type[chan] & SI_WIRELESS_LITE));
     if (!(error & (SI_ERROR_UNDER_RUN | SI_ERROR_OVER_RUN | SI_ERROR_NO_RESPONSE | SI_ERROR_COLLISION))) {
         PADEnable(ResettingChan);
         WaitingBits |= PAD_CHAN0_BIT >> ResettingChan;
@@ -185,9 +178,6 @@ static void PADTypeAndStatusCallback(s32 chan, u32 type) {
     u32 recalibrate;
     bool rc = true;
     u32 error;
-
-    ASSERT(0 <= ResettingChan && ResettingChan < SI_MAX_CHAN);
-    ASSERT(chan == ResettingChan);
 
     chanBit = PAD_CHAN0_BIT >> ResettingChan;
     error = type & 0xFF;
@@ -267,9 +257,6 @@ bool PADReset(u32 mask) {
     bool enabled;
     u32 diableBits;
 
-    ASSERTMSG((mask & ~(PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT)) == 0,
-              "PADReset(): invalid mask");
-
     enabled = OSDisableInterrupts();
 
     mask |= PendingBits;
@@ -293,6 +280,10 @@ bool PADReset(u32 mask) {
         DoReset();
     }
     OSRestoreInterrupts(enabled);
+
+#if IS_CE
+    NO_INLINE();
+#endif
     return true;
 }
 
@@ -300,8 +291,6 @@ bool PADRecalibrate(u32 mask) {
     bool enabled;
     u32 disableBits;
 
-    ASSERTMSG((mask & ~(PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT)) == 0,
-              "PADReset(): invalid mask");
     enabled = OSDisableInterrupts();
 
     mask |= PendingBits;
@@ -324,6 +313,10 @@ bool PADRecalibrate(u32 mask) {
         DoReset();
     }
     OSRestoreInterrupts(enabled);
+
+#if IS_CE
+    NO_INLINE();
+#endif
     return true;
 }
 
@@ -409,7 +402,7 @@ u32 PADRead(PADStatus* status) {
 
                 if (!(CheckingBits & chanBit)) {
                     CheckingBits |= chanBit;
-                    SIGetTypeAsync(chan, (SITypeAndStatusCallback)PADReceiveCheckCallback);
+                    SIGetTypeAsync(chan, PADReceiveCheckCallback);
                 }
                 continue;
             }

@@ -1,5 +1,6 @@
-#include "dolphin/os/OSPriv.h"
 #include "intrinsics.h"
+
+#include "dolphin/private/__os.h"
 
 static vu32 RunQueueBits;
 static volatile bool RunQueueHint;
@@ -12,17 +13,12 @@ static OSContext IdleContext;
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to);
 static OSSwitchThreadCallback SwitchThreadCallback = DefaultSwitchThreadCallback;
 
-OSThread* __OSCurrentThread AT_ADDRESS(OS_BASE_CACHED + 0x00E4);
-OSThreadQueue __OSActiveThreadQueue AT_ADDRESS(OS_BASE_CACHED + 0x00DC);
-volatile OSContext __OSCurrentContext AT_ADDRESS(OS_BASE_CACHED + 0x00D4);
-volatile OSContext* __OSFPUContext AT_ADDRESS(OS_BASE_CACHED + 0x00D8);
-
 static void DefaultSwitchThreadCallback(OSThread* from, OSThread* to) {}
 
 extern u8 _stack_addr[];
 extern u8 _stack_end[];
 extern u32 __OSFpscrEnableBits;
-extern OSErrorHandler __OSErrorTable[OS_ERROR_MAX + 2]; // fake?
+extern OSErrorHandler __OSErrorTable[OS_ERROR_MAX];
 
 #define AddTail(queue, thread, link)    \
     do {                                \

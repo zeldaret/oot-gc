@@ -1,8 +1,14 @@
-#include "dolphin/__start.h"
 #include "__ppc_eabi_linker.h"
-#include "dolphin/__ppc_eabi_init.h"
+#include "dolphin/db/DBInterface.h"
+#include "dolphin/os.h"
 #include "macros.h"
 #include "string.h"
+
+#include "dolphin/private/__os.h"
+
+extern void InitMetroTRK();
+extern int main(int argc, char* argv[]);
+extern void exit(int);
 
 u16 Pad3Button AT_ADDRESS(PAD3_BUTTON_ADDR);
 
@@ -10,7 +16,7 @@ u16 Pad3Button AT_ADDRESS(PAD3_BUTTON_ADDR);
 static u8 Debug_BBA = 0;
 #endif
 
-void __check_pad3(void) {
+INIT void __check_pad3(void) {
     if ((Pad3Button & 0x0EEF) == 0x0EEF) {
         OSResetSystem(OS_RESET_RESTART, 0, false);
     }
@@ -36,8 +42,8 @@ WEAK ASM void __start(void) {
     lis r6, EXCEPTIONMASK_ADDR@ha
     addi r6, r6, EXCEPTIONMASK_ADDR@l
     stw r0, 0(r6)
-    lis r6, BOOTINFO2_ADDR@ha
-    addi r6, r6, BOOTINFO2_ADDR@l
+    lis r6, OS_BI2_DEBUG_ADDRESS@ha
+    addi r6, r6, OS_BI2_DEBUG_ADDRESS@l
     lwz r6, 0(r6)
 
 _check_TRK:
@@ -86,8 +92,8 @@ _goto_inittrk:
     blrl
 
 _goto_main:
-    lis r6, BOOTINFO2_ADDR@ha
-    addi r6, r6, BOOTINFO2_ADDR@l
+    lis r6, OS_BI2_DEBUG_ADDRESS@ha
+    addi r6, r6, OS_BI2_DEBUG_ADDRESS@l
     lwz r5, 0(r6)
     cmplwi r5, 0
     beq+ _no_args
@@ -120,8 +126,8 @@ _no_args:
 _end_of_parseargs:
     bl DBInit
     bl OSInit
-    lis r4, DVD_DEVICECODE_ADDR@ha
-    addi r4, r4, DVD_DEVICECODE_ADDR@l
+    lis r4, OS_DVD_DEVICECODE@ha
+    addi r4, r4, OS_DVD_DEVICECODE@l
     lhz r3, 0(r4)
     andi. r5, r3, 0x8000
     beq _check_pad3

@@ -1,14 +1,14 @@
 #include "dolphin/os.h"
-#include "dolphin/DVDPriv.h"
 #include "dolphin/base/PPCArch.h"
 #include "dolphin/db.h"
 #include "dolphin/exi.h"
-#include "dolphin/os/OSBootInfo.h"
-#include "dolphin/os/OSPriv.h"
 #include "dolphin/si.h"
 #include "intrinsics.h"
 #include "macros.h"
 #include "string.h"
+
+#include "dolphin/private/__dvd.h"
+#include "dolphin/private/__os.h"
 
 extern OSTime __OSGetSystemTime(void);
 extern void __OSInitSystemCall(void);
@@ -32,9 +32,6 @@ extern char _db_stack_end[];
 #define OS_DEBUG_ADDRESS_2 0x800030E9
 #define OS_CURRENTCONTEXT_PADDR 0x00C0
 
-extern char* __OSResetSWInterruptHandler[];
-
-vu16 __OSDeviceCode AT_ADDRESS(OS_BASE_CACHED | 0x30E6);
 static DVDDriveInfo DriveInfo ATTRIBUTE_ALIGN(32);
 static DVDCommandBlock DriveBlock;
 
@@ -53,19 +50,6 @@ extern u8 __ArenaHi[];
 extern u8 __ArenaLo[];
 extern u32 __DVDLongFileNameFlag;
 extern u32 __PADSpec;
-
-#define OS_EXCEPTIONTABLE_ADDR 0x3000
-#define OS_DBJUMPPOINT_ADDR 0x60
-// memory locations for important stuff
-#define OS_CACHED_REGION_PREFIX 0x8000
-#define OS_BI2_DEBUG_ADDRESS 0x800000F4
-#define OS_BI2_DEBUGFLAG_OFFSET 0xC
-#define PAD3_BUTTON_ADDR 0x800030E4
-#define OS_DVD_DEVICECODE 0x800030E6
-#define DEBUGFLAG_ADDR 0x800030E8
-#define OS_DEBUG_ADDRESS_2 0x800030E9
-#define DB_EXCEPTIONRET_OFFSET 0xC
-#define DB_EXCEPTIONDEST_OFFSET 0x8
 
 void OSDefaultExceptionHandler(__OSException exception, OSContext* context);
 extern bool __DBIsExceptionMarked(__OSException);

@@ -1,10 +1,11 @@
-#ifndef _DOLPHIN_OS_OSTIME_H_
-#define _DOLPHIN_OS_OSTIME_H_
+#ifndef _DOLPHIN_OS_OSTIME_H
+#define _DOLPHIN_OS_OSTIME_H
 
 #include "dolphin/types.h"
 
-typedef s64 OSTime;
-typedef u32 OSTick;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Time base frequency = 1/4 bus clock
 #define OS_TIME_SPEED (OS_BUS_CLOCK / 4)
@@ -34,9 +35,10 @@ typedef u32 OSTick;
 
 #define BIAS 0xB2575
 
-OSTime OSGetTime(void);
-OSTick OSGetTick(void);
-OSTime __OSGetSystemTime(void);
-void OSTicksToCalendarTime(OSTime ticks, struct OSCalendarTime* td);
+#define __OSSystemTime (OSTime*)0x800030D8
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // _DOLPHIN_OSTIME_H_

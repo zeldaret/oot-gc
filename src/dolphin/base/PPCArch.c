@@ -2,14 +2,6 @@
 #include "dolphin/types.h"
 #include "macros.h"
 
-union FpscrUnion {
-    f64 f;
-    struct {
-        u32 fpscr_pad;
-        u32 fpscr;
-    } u;
-};
-
 void PPCMthid0(u32 newHID0);
 
 ASM u32 PPCMfmsr(void){
