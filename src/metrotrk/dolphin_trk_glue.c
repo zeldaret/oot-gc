@@ -3,6 +3,7 @@
 #include "metrotrk/mem_TRK.h"
 #include "metrotrk/targimpl.h"
 #include "metrotrk/trk.h"
+#include "dolphin/amc/AmcExi2Comm.h"
 
 static DBCommTable gDBCommTable = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
@@ -59,24 +60,24 @@ int InitMetroTRKCommTable(int hwId) {
 
     if (hwId == HARDWARE_NDEV) {
         isStub = Hu_IsStub();
-        gDBCommTable.initialize_func = DBInitComm;
-        gDBCommTable.initinterrupts_func = DBInitInterrupts;
-        gDBCommTable.peek_func = DBQueryData;
-        gDBCommTable.read_func = DBRead;
-        gDBCommTable.write_func = DBWrite;
-        gDBCommTable.open_func = DBOpen;
-        gDBCommTable.close_func = DBClose;
+        gDBCommTable.initialize_func = (DBCommInitFunc)DBInitComm;
+        gDBCommTable.initinterrupts_func = (DBCommFunc)DBInitInterrupts;
+        gDBCommTable.peek_func = (DBCommFunc)DBQueryData;
+        gDBCommTable.read_func = (DBCommReadFunc)DBRead;
+        gDBCommTable.write_func = (DBCommWriteFunc)DBWrite;
+        gDBCommTable.open_func = (DBCommFunc)DBOpen;
+        gDBCommTable.close_func = (DBCommFunc)DBClose;
         return isStub;
     }
 
     isStub = AMC_IsStub();
-    gDBCommTable.initialize_func = EXI2_Init;
-    gDBCommTable.initinterrupts_func = EXI2_EnableInterrupts;
-    gDBCommTable.peek_func = EXI2_Poll;
-    gDBCommTable.read_func = EXI2_ReadN;
-    gDBCommTable.write_func = EXI2_WriteN;
-    gDBCommTable.open_func = EXI2_Reserve;
-    gDBCommTable.close_func = EXI2_Unreserve;
+    gDBCommTable.initialize_func = (DBCommInitFunc)EXI2_Init;
+    gDBCommTable.initinterrupts_func = (DBCommFunc)EXI2_EnableInterrupts;
+    gDBCommTable.peek_func = (DBCommFunc)EXI2_Poll;
+    gDBCommTable.read_func = (DBCommReadFunc)EXI2_ReadN;
+    gDBCommTable.write_func = (DBCommWriteFunc)EXI2_WriteN;
+    gDBCommTable.open_func = (DBCommFunc)EXI2_Reserve;
+    gDBCommTable.close_func = (DBCommFunc)EXI2_Unreserve;
     return isStub;
 }
 

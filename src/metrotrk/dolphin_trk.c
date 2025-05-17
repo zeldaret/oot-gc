@@ -1,4 +1,3 @@
-#include "dolphin/__ppc_eabi_init.h"
 #include "dolphin/os.h"
 #include "dolphin/types.h"
 #include "macros.h"

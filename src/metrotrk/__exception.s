@@ -11,7 +11,7 @@ glabel gTRKInterruptVectorTable
 
     .skip 208
 
-    b       __TRK_reset
+    b       __TRKreset
 
     .skip 252
 
