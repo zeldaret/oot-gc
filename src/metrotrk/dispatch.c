@@ -16,11 +16,11 @@ DispatchCallback gTRKDispatchTable[] = {
     TRKDoUnsupported,   TRKDoUnsupported,    TRKDoUnsupported, TRKDoUnsupported, TRKDoReadMemory,  TRKDoWriteMemory,
     TRKDoReadRegisters, TRKDoWriteRegisters, TRKDoUnsupported, TRKDoUnsupported, TRKDoFlushCache,  TRKDoUnsupported,
     TRKDoContinue,      TRKDoStep,           TRKDoStop,        TRKDoUnsupported, TRKDoUnsupported, TRKDoUnsupported,
-    TRKDoUnsupported,   TRKDoUnsupported,
+    TRKDoUnsupported,   TRKDoUnsupported, NULL, NULL
 };
 
 DSError TRKInitializeDispatcher(void) {
-    gTRKDispatchTableSize = ARRAY_COUNT(gTRKDispatchTable);
+    gTRKDispatchTableSize = ARRAY_COUNT(gTRKDispatchTable) - 2;
     return kNoError;
 }
 
