@@ -83,7 +83,7 @@ ASM void __TRK_set_MSR(register u32 val){
 #endif // clang-format on
 }
 
-DSError TRKValidMemory32(const void* addr, size_t length, u8 readWriteable) {
+DSError TRKValidMemory32(const void* addr, size_t length, int readWriteable) {
     DSError err = kInvalidMemory;
     const u8* start;
     const u8* end;
@@ -98,8 +98,8 @@ DSError TRKValidMemory32(const void* addr, size_t length, u8 readWriteable) {
 
     for (i = 0; i < (int)(sizeof(gTRKMemMap) / sizeof(memRange)); i++) {
         if (start <= (const u8*)gTRKMemMap[i].end && end >= (const u8*)gTRKMemMap[i].start) {
-            if ((readWriteable == kValidMemoryReadable && !gTRKMemMap[i].readable) ||
-                (readWriteable == kValidMemoryWriteable && !gTRKMemMap[i].writeable)) {
+            if (((u8)readWriteable == kValidMemoryReadable && !gTRKMemMap[i].readable) ||
+                ((u8)readWriteable == kValidMemoryWriteable && !gTRKMemMap[i].writeable)) {
                 err = kInvalidMemory;
             } else {
                 err = kNoError;
@@ -326,12 +326,11 @@ DSError TRKTargetAccessExtended1(u32 firstRegister, u32 lastRegister, MessageBuf
 
 DSError TRKTargetAccessExtended2(u32 firstRegister, u32 lastRegister, MessageBuffer* b, size_t* registersLengthPtr,
                                  bool read) {
+    u32 value_buf[2];
     TRKExceptionStatus savedException;
     u32 i;
-    u32 value_buf0[1];
-    u32 value_buf[2];
     DSError err;
-    u32 access_func[10];
+    u32 value_buf0[1];
 
     if (lastRegister > 0x1f) {
         return kInvalidRegister;
@@ -602,8 +601,8 @@ set:
 
 void TRKPostInterruptEvent(void) {
     NubEventType eventType;
-    u32 inst;
     NubEvent event;
+    u32 inst;
 
     if (gTRKState.inputActivated) {
         gTRKState.inputActivated = false;
@@ -1030,12 +1029,10 @@ DSError TRKPPCAccessFPRegister(void* srcDestPtr, u32 fpr, bool read) {
 }
 
 DSError TRKPPCAccessSpecialReg(void* srcDestPtr, u32* instructionData, bool read) {
-    RegAccessFunc accessFunc;
-    instructionData[9] = INSTR_BLR; // Set the last entry as blr
-    TRK_flush_cache((u32)instructionData, 0x28);
+    instructionData[4] = INSTR_BLR; // Set the last entry as blr
+    TRK_flush_cache((u32)instructionData, 0x14);
     // Call the instruction data array as code
-    accessFunc = (RegAccessFunc)instructionData;
-    accessFunc(srcDestPtr, TRKvalue128_temp);
+    ((RegAccessFunc)instructionData)(srcDestPtr, TRKvalue128_temp);
     return kNoError;
 }
 

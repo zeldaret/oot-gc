@@ -3,10 +3,10 @@
 #include "metrotrk/targimpl.h"
 
 DSError TRKDoNotifyStopped(u8 cmdId) {
-    int sp8;
-    int spC;
-    MessageBuffer* buffer;
     DSError result;
+    int sp8;
+    MessageBuffer* buffer;
+    int spC;
 
     result = TRKGetFreeBuffer(&spC, &buffer);
 

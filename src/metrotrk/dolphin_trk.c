@@ -115,11 +115,10 @@ static void TRK_copy_vector(u32 offset) {
 void __TRK_copy_vectors(void) {
     int i;
     u32 data;
-    u32* data_ptr;
 
-    data_ptr = TRKTargetTranslate((u32*)0x44);
+    data = *(u32*)TRKTargetTranslate((u32*)0x44);
 
-    for (i = 0, data = *data_ptr; i <= ARRAY_COUNT(TRK_ISR_OFFSETS) - 1; i++) {
+    for (i = 0; i <= ARRAY_COUNT(TRK_ISR_OFFSETS) - 1; i++) {
         if ((data & (1 << i)) != 0) {
             TRK_copy_vector(TRK_ISR_OFFSETS[i]);
         }

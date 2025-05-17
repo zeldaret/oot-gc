@@ -218,7 +218,7 @@ DSError TRKDoReadMemory(MessageBuffer* buf) {
         return TRKStandardACK(buf, kDSReplyACK, kDSReplyUnsupportedOptionError);
     }
 
-    if (spA > kMessageBufferSize) {
+    if (spA > 0x800) {
         return TRKStandardACK(buf, kDSReplyACK, kDSReplyParameterError);
     }
 
@@ -291,7 +291,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyUnsupportedOptionError);
     }
 
-    if (b->fLength != spA + 8 || spA > kMessageBufferSize) {
+    if (b->fLength != spA + 8 || spA > 0x800) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyParameterError);
     }
 
@@ -300,7 +300,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
         error = TRKReadBuffer(b, buffer, sp10);
 
         if (error == kNoError) {
-            error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
+            error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 0);
         }
 
         spA = sp10;
@@ -454,16 +454,16 @@ DSError TRKDoWriteRegisters(MessageBuffer* b) {
 
     switch (sp9) {
         case 0:
-            error = TRKTargetAccessDefault((u32)spA, (u32)spC, b, &sp10, 1);
+            error = TRKTargetAccessDefault((u32)spA, (u32)spC, b, &sp10, 0);
             break;
         case 1:
-            error = TRKTargetAccessFP((u32)spA, (u32)spC, b, &sp10, 1);
+            error = TRKTargetAccessFP((u32)spA, (u32)spC, b, &sp10, 0);
             break;
         case 2:
-            error = TRKTargetAccessExtended1((u32)spA, (u32)spC, b, &sp10, 1);
+            error = TRKTargetAccessExtended1((u32)spA, (u32)spC, b, &sp10, 0);
             break;
         case 3:
-            error = TRKTargetAccessExtended2((u32)spA, (u32)spC, b, &sp10, 1);
+            error = TRKTargetAccessExtended2((u32)spA, (u32)spC, b, &sp10, 0);
             break;
         default:
             error = kUnsupportedError;
