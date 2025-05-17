@@ -1,8 +1,10 @@
 #include "metrotrk/support.h"
 #include "dolphin/os.h"
 #include "metrotrk/msgcmd.h"
+#include "metrotrk/msg.h"
 
 DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
+    MessageBuffer *new_var;
     DSError error;
     int replyBufferId;
     u32 length;
@@ -51,11 +53,12 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
             if (need_reply) {
                 replyLength = 0;
                 replyIOResult = 0;
-
-                error = TRK_RequestSend(buffer, &replyBufferId, read ? 5 : 5, 3, !(read && file_handle == 0));
+                
+                error = (0, TRK_RequestSend(buffer, &replyBufferId, read ? 5 : 5, 3, !(read && file_handle == 0)));
                 if (error == kNoError) {
                     replyBuffer = (MessageBuffer*)TRKGetBuffer(replyBufferId);
-                    TRK_SetBufferPosition(replyBuffer, 2);
+                    new_var = replyBuffer;
+                    TRK_SetBufferPosition(new_var, 2);
                 }
 
                 if (error == kNoError) {
