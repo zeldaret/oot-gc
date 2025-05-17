@@ -15,15 +15,15 @@ MessageBufferID TRKTestForPacket() {
     bytes = TRKPollUART();
 
     if (bytes > 0) {
-        TRK_GetFreeBuffer(&id, &b);
+        TRKGetFreeBuffer(&id, &b);
         if (bytes > 0x880) {
             for (; bytes > 0; bytes -= batch) {
                 batch = bytes > 0x880 ? 0x880 : bytes;
-                TRKReadUARTN(b->fData, batch);
+                TRK_ReadUARTN(b->fData, batch);
             }
             TRKStandardACK(b, 0xff, 6);
         } else {
-            err = TRKReadUARTN(b->fData, bytes);
+            err = TRK_ReadUARTN(b->fData, bytes);
             if (err == 0) {
                 b->fLength = bytes;
                 return id;
@@ -32,7 +32,7 @@ MessageBufferID TRKTestForPacket() {
     }
 
     if (id != -1) {
-        TRK_ReleaseBuffer(id);
+        TRKReleaseBuffer(id);
     }
     return -1;
 }
@@ -46,12 +46,12 @@ void TRKGetInput() {
 
     if (bufID != -1) {
         msgbuffer = TRKGetBuffer(bufID);
-        TRK_SetBufferPosition(msgbuffer, 0);
+        TRKSetBufferPosition(msgbuffer, 0);
         TRKReadBuffer1_ui8(msgbuffer, &command);
         if (command < 0x80) {
             TRKProcessInput(bufID);
         } else {
-            TRK_ReleaseBuffer(bufID);
+            TRKReleaseBuffer(bufID);
         }
     }
 }

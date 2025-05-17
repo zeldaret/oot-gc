@@ -75,4 +75,4 @@ void TRKConstructEvent(NubEvent* event, int eventType) {
     event->fMessageBufferID = -1;
 }
 
-void TRKDestructEvent(NubEvent* event) { TRK_ReleaseBuffer(event->fMessageBufferID); }
+void TRKDestructEvent(NubEvent* event) { TRKReleaseBuffer(event->fMessageBufferID); }

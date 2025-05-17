@@ -10,7 +10,7 @@
 #include "metrotrk/targimpl.h"
 
 extern void __TRK_copy_vectors();
-extern void __TRKreset();
+extern void __TRK_reset();
 
 void TRKMessageIntoReply(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError) {
     TRKResetBuffer(b, true);
@@ -31,7 +31,7 @@ static DSError TRKSendACK(MessageBuffer* b) {
     s32 i = 3;
 
     while (i > 0) {
-        error = TRK_MessageSend(b);
+        error = TRKMessageSend(b);
         i--;
 
         if (error == kNoError) {
@@ -67,7 +67,7 @@ DSError TRKDoDisconnect(MessageBuffer* b) {
 
 DSError TRKDoReset(MessageBuffer* b) {
     TRKStandardACK(b, kDSReplyACK, kDSReplyNoError);
-    __TRKreset();
+    __TRK_reset();
     return kNoError;
 }
 
@@ -124,7 +124,7 @@ DSError TRKDoSupportMask(MessageBuffer* buf) {
     error = TRKTargetSupportMask(&mask);
 
     if (error == kNoError) {
-        error = TRK_AppendBuffer(buf, &mask, sizeof(DSSupportMask));
+        error = TRKAppendBuffer(buf, &mask, sizeof(DSSupportMask));
     }
 
     if (error == kNoError) {
@@ -198,7 +198,7 @@ DSError TRKDoReadMemory(MessageBuffer* buf) {
         return TRKStandardACK(buf, kDSReplyACK, kDSReplyPacketSizeError);
     }
 
-    TRK_SetBufferPosition(buf, 0);
+    TRKSetBufferPosition(buf, 0);
 
     error = TRKReadBuffer1_ui8(buf, &sp8);
 
@@ -233,7 +233,7 @@ DSError TRKDoReadMemory(MessageBuffer* buf) {
         }
 
         if (error == kNoError) {
-            error = TRK_AppendBuffer(buf, buffer, sp10);
+            error = TRKAppendBuffer(buf, buffer, sp10);
         }
     }
 
@@ -271,7 +271,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyPacketSizeError);
     }
 
-    TRK_SetBufferPosition(b, 0);
+    TRKSetBufferPosition(b, 0);
 
     error = TRKReadBuffer1_ui8(b, &sp8);
 
@@ -297,7 +297,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
 
     if (error == kNoError) {
         sp10 = spA;
-        error = TRK_ReadBuffer(b, buffer, sp10);
+        error = TRKReadBuffer(b, buffer, sp10);
 
         if (error == kNoError) {
             error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
@@ -347,7 +347,7 @@ DSError TRKDoReadRegisters(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyPacketSizeError);
     }
 
-    TRK_SetBufferPosition(b, 0);
+    TRKSetBufferPosition(b, 0);
 
     error = TRKReadBuffer1_ui8(b, &sp8);
 
@@ -428,7 +428,7 @@ DSError TRKDoWriteRegisters(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyPacketSizeError);
     }
 
-    TRK_SetBufferPosition(b, 0);
+    TRKSetBufferPosition(b, 0);
 
     error = TRKReadBuffer1_ui8(b, &sp8);
 
@@ -511,7 +511,7 @@ DSError TRKDoFlushCache(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, 2);
     }
 
-    TRK_SetBufferPosition(b, 0);
+    TRKSetBufferPosition(b, 0);
     error = TRKReadBuffer1_ui8(b, &sp8);
 
     if (error == kNoError) {
@@ -587,7 +587,7 @@ DSError TRKDoStep(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyPacketSizeError);
     }
 
-    TRK_SetBufferPosition(b, 0);
+    TRKSetBufferPosition(b, 0);
 
     error = TRKReadBuffer1_ui8(b, &sp8);
 

@@ -35,7 +35,7 @@ extern int TRK_main(void);
 extern int InitMetroTRKCommTable(int hwId);
 void __TRK_copy_vectors(void);
 
-INIT void __TRKreset(void) { __TRK_copy_vectors(); }
+INIT void __TRK_reset(void) { __TRK_copy_vectors(); }
 
 // Debugger stack
 extern u8 _db_stack_addr[];

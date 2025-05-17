@@ -3,7 +3,7 @@
 #include "metrotrk/msg.h"
 #include "metrotrk/msgcmd.h"
 
-DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
+DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
     MessageBuffer* new_var;
     DSError error;
     int replyBufferId;
@@ -31,7 +31,7 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
             length = *count - done;
         }
 
-        error = TRK_GetFreeBuffer(&bufferId, &buffer);
+        error = TRKGetFreeBuffer(&bufferId, &buffer);
 
         if (error == kNoError) {
             error = TRKAppendBuffer1_ui8(buffer, read != 0 ? 0xD1 : 0xD0);
@@ -54,11 +54,11 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
                 replyLength = 0;
                 replyIOResult = 0;
 
-                error = (0, TRK_RequestSend(buffer, &replyBufferId, read ? 5 : 5, 3, !(read && file_handle == 0)));
+                error = (0, TRKRequestSend(buffer, &replyBufferId, read ? 5 : 5, 3, !(read && file_handle == 0)));
                 if (error == kNoError) {
                     replyBuffer = (MessageBuffer*)TRKGetBuffer(replyBufferId);
                     new_var = replyBuffer;
-                    TRK_SetBufferPosition(new_var, 2);
+                    TRKSetBufferPosition(new_var, 2);
                 }
 
                 if (error == kNoError) {
@@ -91,13 +91,13 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
                 }
 
                 *io_result = (DSIOResult)replyIOResult;
-                TRK_ReleaseBuffer(replyBufferId);
+                TRKReleaseBuffer(replyBufferId);
             } else {
-                error = TRK_MessageSend(buffer);
+                error = TRKMessageSend(buffer);
             }
         }
 
-        TRK_ReleaseBuffer(bufferId);
+        TRKReleaseBuffer(bufferId);
         done += length;
     }
 
@@ -105,7 +105,7 @@ DSError TRK_SuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resu
     return error;
 }
 
-DSError TRK_RequestSend(MessageBuffer* msgBuf, int* bufferId, u32 p1, u32 p2, int p3) {
+DSError TRKRequestSend(MessageBuffer* msgBuf, int* bufferId, u32 p1, u32 p2, int p3) {
     int error = kNoError;
     MessageBuffer* buffer;
     u32 timer;
@@ -117,7 +117,7 @@ DSError TRK_RequestSend(MessageBuffer* msgBuf, int* bufferId, u32 p1, u32 p2, in
     *bufferId = -1;
 
     for (tries = p2 + 1; tries != 0 && *bufferId == -1 && error == kNoError; tries--) {
-        error = TRK_MessageSend(msgBuf);
+        error = TRKMessageSend(msgBuf);
         if (error == kNoError) {
             if (p3) {
                 timer = 0;
@@ -138,7 +138,7 @@ DSError TRK_RequestSend(MessageBuffer* msgBuf, int* bufferId, u32 p1, u32 p2, in
                 badReply = false;
 
                 buffer = TRKGetBuffer(*bufferId);
-                TRK_SetBufferPosition(buffer, 0);
+                TRKSetBufferPosition(buffer, 0);
 
                 if ((error = TRKReadBuffer1_ui8(buffer, &msg_command)) != kNoError) {
                     break;
@@ -165,7 +165,7 @@ DSError TRK_RequestSend(MessageBuffer* msgBuf, int* bufferId, u32 p1, u32 p2, in
                     }
                 }
                 if (error != kNoError || badReply) {
-                    TRK_ReleaseBuffer(*bufferId);
+                    TRKReleaseBuffer(*bufferId);
                     *bufferId = -1;
                 }
             }

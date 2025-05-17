@@ -36,7 +36,7 @@ void TRKUARTInterruptHandler();
 UARTError TRK_InitializeIntDrivenUART(u32, u32, void*);
 void EnableEXI2Interrupts();
 int TRKPollUART();
-UARTError TRKReadUARTN(void*, u32);
+UARTError TRK_ReadUARTN(void*, u32);
 UARTError TRK_WriteUARTN(const void*, u32);
 void ReserveEXI2Port(void);
 void UnreserveEXI2Port(void);

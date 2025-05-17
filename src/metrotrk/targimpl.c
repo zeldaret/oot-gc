@@ -920,8 +920,8 @@ DSError TRKTargetSupportRequest(void) {
 
     length = (size_t*)gTRKCPUState.Default.GPR[5];
 
-    err = TRK_SuppAccessFile((u8)gTRKCPUState.Default.GPR[4], (u8*)gTRKCPUState.Default.GPR[6], length, &io_result, 1,
-                             (command == kDSReadFile));
+    err = TRKSuppAccessFile((u8)gTRKCPUState.Default.GPR[4], (u8*)gTRKCPUState.Default.GPR[6], length, &io_result, 1,
+                            (command == kDSReadFile));
 
     if ((io_result == kDSIONoError) && (err != kNoError)) {
         io_result = kDSIOError;

@@ -8,7 +8,7 @@ DSError TRKDoNotifyStopped(u8 cmdId) {
     MessageBuffer* buffer;
     DSError result;
 
-    result = TRK_GetFreeBuffer(&spC, &buffer);
+    result = TRKGetFreeBuffer(&spC, &buffer);
 
     if (result == kNoError) {
         result = TRKAppendBuffer1_ui8(buffer, cmdId);
@@ -21,13 +21,13 @@ DSError TRKDoNotifyStopped(u8 cmdId) {
             }
         }
 
-        result = TRK_RequestSend(buffer, &sp8, 2, 3, 1);
+        result = TRKRequestSend(buffer, &sp8, 2, 3, 1);
 
         if (result == kNoError) {
-            TRK_ReleaseBuffer(sp8);
+            TRKReleaseBuffer(sp8);
         }
 
-        TRK_ReleaseBuffer(spC);
+        TRKReleaseBuffer(spC);
     }
 
     return result;

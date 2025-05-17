@@ -28,13 +28,13 @@ typedef struct TRKMsgBufs {
 } TRKMsgBufs; // size = 0x19A4
 
 DSError TRK_InitializeMessageBuffers(void);
-DSError TRK_GetFreeBuffer(int*, MessageBuffer**);
+DSError TRKGetFreeBuffer(int*, MessageBuffer**);
 MessageBuffer* TRKGetBuffer(int);
-void TRK_ReleaseBuffer(int);
+void TRKReleaseBuffer(int);
 void TRKResetBuffer(MessageBuffer*, u8);
-DSError TRK_SetBufferPosition(MessageBuffer*, u32);
-DSError TRK_AppendBuffer(MessageBuffer*, const void*, size_t);
-DSError TRK_ReadBuffer(MessageBuffer*, void*, size_t);
+DSError TRKSetBufferPosition(MessageBuffer*, u32);
+DSError TRKAppendBuffer(MessageBuffer*, const void*, size_t);
+DSError TRKReadBuffer(MessageBuffer*, void*, size_t);
 
 DSError TRKAppendBuffer1_ui16(MessageBuffer* buffer, const u16 data);
 DSError TRKAppendBuffer1_ui32(MessageBuffer* buffer, const u32 data);

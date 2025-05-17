@@ -14,7 +14,7 @@ typedef struct TRKPacketSeq {
     /* 0x02 */ u8 unk02[6];
 } TRKPacketSeq; // size = 0x08
 
-DSError TRK_MessageSend(MessageBuffer* buf);
+DSError TRKMessageSend(MessageBuffer* buf);
 
 #ifdef __cplusplus
 }

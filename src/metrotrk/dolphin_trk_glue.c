@@ -92,7 +92,7 @@ void EnableEXI2Interrupts() { gDBCommTable.initinterrupts_func(); }
 
 int TRKPollUART() { return gDBCommTable.peek_func(); }
 
-UARTError TRKReadUARTN(void* bytes, u32 limit) {
+UARTError TRK_ReadUARTN(void* bytes, u32 limit) {
     int r3 = gDBCommTable.read_func(bytes, limit);
     return !r3 ? 0 : -1;
 }

@@ -28,7 +28,7 @@ DSError TRKDispatchMessage(MessageBuffer* buffer) {
     DSError result = kDispatchError;
     u8 command;
 
-    TRK_SetBufferPosition(buffer, 0);
+    TRKSetBufferPosition(buffer, 0);
     TRKReadBuffer1_ui8(buffer, &command);
 
     if (command < gTRKDispatchTableSize) {
