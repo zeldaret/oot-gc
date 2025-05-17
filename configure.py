@@ -510,7 +510,7 @@ config.libs = [
             Object(Linked, "metrotrk/nubevent.c"),
             Object(Linked, "metrotrk/nubinit.c", extra_cflags=["-enum int"]),
             Object(Linked, "metrotrk/msg.c"),
-            Object(NotLinked, "metrotrk/msgbuf.c", extra_cflags=["-enum int", "-inline on,noauto"]),
+            Object(Linked, "metrotrk/msgbuf.c", extra_cflags=["-enum int", "-inline on,noauto"]),
             Object(Linked, "metrotrk/serpoll.c"),
             Object(Linked, "metrotrk/usr_put.c"),
             Object(Linked, "metrotrk/dispatch.c"),
