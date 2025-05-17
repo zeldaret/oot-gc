@@ -42,7 +42,7 @@ static DSError TRKSendACK(MessageBuffer* b) {
     return error;
 }
 
-static DSError TRKStandardACK(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError) {
+DSError TRKStandardACK(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError) {
     TRKMessageIntoReply(b, commandId, replyError);
 
     //! TODO: fake return?
