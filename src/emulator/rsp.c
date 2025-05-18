@@ -1215,7 +1215,7 @@ static bool rspAPoleFilter1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     pDMEM16 = pRSP->anAudioBuffer;
     nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pStateAddress, nSrcAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pStateAddress, nSrcAddress, NULL)) {
         return false;
     }
 
@@ -1414,7 +1414,7 @@ static bool rspAResample1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     nSrcStep = nCommandHi & 0xFFFF;
     flags = (nCommandHi >> 16) & 0xFF;
     nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nSrcAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pData, nSrcAddress, NULL)) {
         return false;
     }
 
@@ -1479,7 +1479,7 @@ static inline bool rspASaveBuffer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     u32* pData;
     s32 nAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
 
-    if (ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nAddress, &nSize)) {
+    if (ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pData, nAddress, &nSize)) {
         xlHeapCopy(pData, &pRSP->anAudioBuffer[pRSP->nAudioDMEMOut[0]], nSize * sizeof(s16));
     }
 
@@ -1586,7 +1586,7 @@ static bool rspParseABI(Rsp* pRSP, RspTask* pTask) {
 
     if (!(pRSP->eTypeAudioUCode == RUT_ABI1 || pRSP->eTypeAudioUCode == RUT_ABI2 ||
           pRSP->eTypeAudioUCode == RUT_UNKNOWN)) {
-        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pFUCode, pTask->nOffsetCode, NULL)) {
+        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pFUCode, pTask->nOffsetCode, NULL)) {
             return false;
         }
 
@@ -1671,7 +1671,7 @@ static bool rspParseABI1(Rsp* pRSP, RspTask* pTask) {
     u32 nSize;
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pABI32, pTask->nOffsetMBI, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
         return false;
     }
     pABILast32 = pABI32 + (nSize >> 2);
@@ -2272,7 +2272,7 @@ static bool rspAResample2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     nSrcStep = nCommandHi & 0xFFFF;
     flags = (nCommandHi >> 16) & 0xFF;
     nSrcAddress = AUDIO_SEGMENT_ADDRESS(pRSP, nCommandLo);
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nSrcAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pData, nSrcAddress, NULL)) {
         return false;
     }
 
@@ -2545,7 +2545,7 @@ static bool rspParseABI2(Rsp* pRSP, RspTask* pTask) {
     s32 pad[4];
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pABI32, pTask->nOffsetMBI, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
         return false;
     }
     pABILast32 = pABI32 + (nSize >> 2);
@@ -3152,7 +3152,7 @@ static bool rspParseABI3(Rsp* pRSP, RspTask* pTask) {
     u32 nSize;
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pABI32, pTask->nOffsetMBI, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
         return false;
     }
     pABILast32 = pABI32 + (nSize >> 2);
@@ -4714,11 +4714,11 @@ static bool rspParseJPEG_EncodeZ(Rsp* pRSP, RspTask* pTask) {
     s32 size;
     s32 pad2[3];
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &infoStruct, pTask->nOffsetMBI, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&infoStruct, pTask->nOffsetMBI, NULL)) {
         return false;
     }
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &system_imb, infoStruct[0], NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_imb, infoStruct[0], NULL)) {
         return false;
     }
 
@@ -4747,11 +4747,11 @@ static bool rspParseJPEG_DecodeZ(Rsp* pRSP, RspTask* pTask) {
     s32 size;
     s32 pad2[3];
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &infoStruct, pTask->nOffsetMBI, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&infoStruct, pTask->nOffsetMBI, NULL)) {
         return false;
     }
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &system_imb, infoStruct[0], NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_imb, infoStruct[0], NULL)) {
         return false;
     }
 
@@ -4810,7 +4810,7 @@ static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, uObjSprite* pSprite) {
     u8* pnData8;
     u8* pObjSprite;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjSprite, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pObjSprite, nAddress, NULL)) {
         return false;
     }
 
@@ -4841,7 +4841,7 @@ bool rspFillObjBgScale(Rsp* pRSP, s32 nAddress, uObjBg* pBg) {
     u16* pnData16;
     u32* pnData32;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjBg, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pObjBg, nAddress, NULL)) {
         return false;
     }
 
@@ -4876,7 +4876,7 @@ bool rspFillObjBg(Rsp* pRSP, s32 nAddress, uObjBg* pBg) {
     u16* pnData16;
     u32* pnData32;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjBg, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pObjBg, nAddress, NULL)) {
         return false;
     }
 
@@ -5431,7 +5431,7 @@ bool rspFillObjTxtr(Rsp* pRSP, s32 nAddress, uObjTxtr* pTxtr, u32* pLoadType) {
     u8* pTxtrBlock;
     u32 nLoadType;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pTxtrBlock, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pTxtrBlock, nAddress, NULL)) {
         return false;
     }
 
@@ -6151,7 +6151,7 @@ static inline bool rspObjSubMatrix(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     s16 nX;
     s16 nY;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjSubMtx, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pObjSubMtx, nAddress, NULL)) {
         return false;
     }
 
@@ -6186,7 +6186,7 @@ static bool rspObjMatrix(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     s16 nX;
     s16 nY;
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pObjMtx, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pObjMtx, nAddress, NULL)) {
         return false;
     }
 
@@ -6486,7 +6486,7 @@ static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                         s32 iLight = (((nCommandHi >> 16) & 0xFF) - 0x86) >> 1;
                         s32 nAddress = SEGMENT_ADDRESS(pRSP, nCommandLo);
 
-                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pData, nAddress, NULL)) {
+                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pData, nAddress, NULL)) {
                             return false;
                         }
                         if (!frameSetLight(pFrame, iLight, pData)) {
@@ -7209,14 +7209,14 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                                     }
 
                                     if (bFound) {
-                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pLight, nAddress, NULL)) {
+                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pLight, nAddress, NULL)) {
                                             return false;
                                         }
                                         if (!frameSetLight(pFrame, iIndex, pLight)) {
                                             return false;
                                         }
                                     } else if (pRSP->nNumZSortLights < 7 && pRSP->nAmbientLightAddress != 0) {
-                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pLight, nAddress, NULL)) {
+                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pLight, nAddress, NULL)) {
                                             return false;
                                         }
                                         if (!frameSetLight(pFrame, pRSP->nNumZSortLights, pLight)) {
@@ -7227,7 +7227,7 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                                     }
 
                                     if (pRSP->nAmbientLightAddress != 0) {
-                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pLight, pRSP->nAmbientLightAddress,
+                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pLight, pRSP->nAmbientLightAddress,
                                                           NULL)) {
                                             return false;
                                         }
@@ -7531,7 +7531,7 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                 s32 iVertex0 = ((nCommandHi & 0xFF) >> 1) - nCount;
                 s32 nAddress = SEGMENT_ADDRESS(pRSP, nCommandLo);
 
-                if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pBuffer, nAddress, NULL)) {
+                if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pBuffer, nAddress, NULL)) {
                     return false;
                 }
                 if (!frameLoadVertex(pFrame, pBuffer, iVertex0, nCount)) {
@@ -7882,7 +7882,7 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
     u16 nLower;
 
     rScale = 1.0f / 65536.0f;
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &pMtx, nAddress, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pMtx, nAddress, NULL)) {
         return false;
     }
 

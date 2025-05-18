@@ -278,7 +278,7 @@ int DBWrite(const void* data, u32 size) {
     ++SendCount;
 
     value = ((SendCount & 1) ? 0x1000 : 0);
-    while (!DBGWrite(value | 0x1C000, data, ALIGN_NEXT(size, 4)))
+    while (!DBGWrite(value | 0x1C000, (u32*)data, ALIGN_NEXT(size, 4)))
         ;
 
     do {

@@ -227,6 +227,10 @@ static inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
         }                              \
     } while (0)
 
+// Note: the original compiler (GC/1.1) doesn't understand this but it's useful for modding as it helps reducing the
+// compiling time.
+#pragma optimization_level 1
+
 /**
  * @brief The main MIPS->PPC Dynamic recompiler.
  *
@@ -276,7 +280,7 @@ static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* an
     prev = 0;
     update = false;
 
-    if (ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &pnOpcode, *pnAddress, NULL)) {
+    if (ramGetBuffer(SYSTEM_RAM(pCPU->pHost), (void**)&pnOpcode, *pnAddress, NULL)) {
         nAddress = *pnAddress;
         nOpcode = pnOpcode[0];
         nOpcodeNext = pnOpcode[1];
@@ -6063,6 +6067,8 @@ static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* an
     }
 }
 
+#pragma optimization_level reset
+
 /**
  * @brief Creates a new recompiled function block.
  *
@@ -8375,7 +8381,7 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
     aiDevice = pCPU->aiDevice;
     apDevice = pCPU->apDevice;
 
-    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &opcode, nAddressN64, NULL);
+    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), (void**)&opcode, nAddressN64, NULL);
     nOpcode = *opcode;
     pCPU->nPC = nAddressN64 + 4;
     if (nOpcode == 0xACBF011C) { // sw $ra,0x11C($a1)
@@ -10025,7 +10031,7 @@ static s32 cpuExecuteLoadStore(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAddr
     interpret = 0;
     check2 = 0x90C30000 + OFFSETOF(pCPU, nWaitPC);
 
-    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &opcode, nAddressN64, NULL);
+    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), (void**)&opcode, nAddressN64, NULL);
 
     address = pCPU->aGPR[MIPS_RS(*opcode)].s32 + MIPS_IMM_S16(*opcode);
     device = pCPU->aiDevice[(u32)(address) >> 16];
@@ -10306,7 +10312,7 @@ static s32 cpuExecuteLoadStoreF(Cpu* pCPU, s32 nCount, s32 nAddressN64, s32 nAdd
     interpret = 0;
     check2 = 0x90C30000 + OFFSETOF(pCPU, nWaitPC);
 
-    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), &opcode, nAddressN64, NULL);
+    ramGetBuffer(SYSTEM_RAM(pCPU->pHost), (void**)&opcode, nAddressN64, NULL);
 
     address = pCPU->aGPR[MIPS_RS(*opcode)].s32 + MIPS_IMM_S16(*opcode);
     device = pCPU->aiDevice[(u32)(address) >> 16];
