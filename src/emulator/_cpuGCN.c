@@ -227,7 +227,7 @@ static inline void cpuCompileNOP(s32* anCode, s32* iCode, s32 number) {
         }                              \
     } while (0)
 
-// Note: the original compiler (GC/1.1) doesn't understand this but it's useful for modding as it helps reducing the
+// Note: the original compiler (GC/1.1) doesn't understand this but it's useful for modding as it helps reduce the
 // compiling time.
 #pragma optimization_level 1
 

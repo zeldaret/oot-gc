@@ -5173,11 +5173,13 @@ static bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->nCameraBuffer = NULL;
             if (((gpSystem->eTypeROM == SRT_PANEL) || (gpSystem->eTypeROM == SRT_ZELDA2) ||
                  (gpSystem->eTypeROM == SRT_DRMARIO)) &&
-                !xlHeapTake((void**)&pFrame->nTempBuffer, 0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
+                !xlHeapTake((void**)&pFrame->nTempBuffer,
+                            0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
                 return false;
             }
             if ((gpSystem->eTypeROM == SRT_ZELDA2) &&
-                !xlHeapTake((void**)&pFrame->nCopyBuffer, 0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
+                !xlHeapTake((void**)&pFrame->nCopyBuffer,
+                            0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
                 return false;
             }
 #if IS_OOT

@@ -7227,8 +7227,8 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
                                     }
 
                                     if (pRSP->nAmbientLightAddress != 0) {
-                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pLight, pRSP->nAmbientLightAddress,
-                                                          NULL)) {
+                                        if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pLight,
+                                                          pRSP->nAmbientLightAddress, NULL)) {
                                             return false;
                                         }
                                         if (!frameSetLight(pFrame, pRSP->nNumZSortLights, pLight)) {
