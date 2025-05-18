@@ -53,6 +53,8 @@
 #define G_TX_WRAP (1 << 0)
 #define G_TX_CLAMP (1 << 1)
 
+struct Frame;
+
 typedef enum RspAudioUCodeType {
     RUT_NOCODE = -1,
     RUT_ABI1 = 0,

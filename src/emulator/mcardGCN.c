@@ -381,12 +381,12 @@ static bool mcardVerifyChecksumFileHeader(MemCard* pMCard) {
     if (!mcardReadyFile(pMCard)) {
         return false;
     }
-    if (!xlHeapTake(&buffer, HEADER_SIZE | 0x30000000)) {
+    if (!xlHeapTake((void**)&buffer, HEADER_SIZE | 0x30000000)) {
         return false;
     }
 
     if (!mcardReadAnywhereNoTime(pMCard, 0, HEADER_SIZE, buffer)) {
-        if (!xlHeapFree(&buffer)) {
+        if (!xlHeapFree((void**)&buffer)) {
             return false;
         }
         mcardFinishCard(pMCard);
@@ -396,14 +396,14 @@ static bool mcardVerifyChecksumFileHeader(MemCard* pMCard) {
     DCInvalidateRange(buffer, HEADER_SIZE);
 
     if (!mcardCheckChecksumFileHeader(pMCard, buffer)) {
-        if (!xlHeapFree(&buffer)) {
+        if (!xlHeapFree((void**)&buffer)) {
             return false;
         }
         mcardFinishCard(pMCard);
         return false;
     }
 
-    if (!xlHeapFree(&buffer)) {
+    if (!xlHeapFree((void**)&buffer)) {
         return false;
     }
     mcardFinishCard(pMCard);
@@ -1554,7 +1554,7 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
         if (!mcardReadyFile(pMCard)) {
             return false;
         }
-        if (!xlHeapTake(&buffer, totalSize | 0x30000000)) {
+        if (!xlHeapTake((void**)&buffer, totalSize | 0x30000000)) {
             return false;
         }
         memset(buffer, 0, totalSize);
@@ -1681,7 +1681,7 @@ bool mcardFileCreate(MemCard* pMCard, char* name, char* comment, char* icon, cha
             return false;
         }
 
-        if (!xlHeapFree(&buffer)) {
+        if (!xlHeapFree((void**)&buffer)) {
             return false;
         }
 

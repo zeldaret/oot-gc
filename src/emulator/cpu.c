@@ -1451,7 +1451,7 @@ bool cpuFindFunction(Cpu* pCPU, s32 theAddress, CpuFunction** tree_node) {
     if (pCPU->gTree == NULL) {
         check = 0;
         pCPU->survivalTimer = 1;
-        if (!xlHeapTake(&pCPU->gTree, sizeof(CpuTreeRoot))) {
+        if (!xlHeapTake((void**)&pCPU->gTree, sizeof(CpuTreeRoot))) {
             return false;
         }
         treeInit(pCPU, 0x80150002);
