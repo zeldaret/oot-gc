@@ -1,6 +1,7 @@
 #include "dolphin/pad.h"
 #include "dolphin/os.h"
 #include "dolphin/si.h"
+#include "intrinsics.h"
 
 #if IS_MQ
 const char* __PADVersion = "<< Dolphin SDK - PAD\trelease build: Sep  5 2002 05:34:02 (0x2301) >>";

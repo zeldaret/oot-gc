@@ -303,7 +303,7 @@ ASM void LCQueueWait(register u32 len) {
 #endif // clang-format on
 }
 
-static inline void L2Disable(void) {
+void L2Disable(void) {
     __sync();
     PPCMtl2cr(PPCMfl2cr() & ~0x80000000);
     __sync();

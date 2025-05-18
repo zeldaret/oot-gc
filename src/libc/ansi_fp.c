@@ -1,13 +1,5 @@
 #include "ansi_fp.h"
-
-#define __HI(x) (((int*)&x)[0])
-#define __LO(x) (((int*)&x)[1])
-
-#define FP_NAN 1
-#define FP_INFINITE 2
-#define FP_ZERO 3
-#define FP_NORMAL 4
-#define FP_SUBNORMAL 5
+#include "math.h"
 
 // TODO: somehow make this work with math.h
 inline int fpclassify(double x) {

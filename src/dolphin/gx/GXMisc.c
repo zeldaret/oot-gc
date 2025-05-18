@@ -123,7 +123,7 @@ void GXSetDrawDone(void) {
     OSRestoreInterrupts(enabled);
 }
 
-static void GXWaitDrawDone(void) {
+void GXWaitDrawDone(void) {
     bool interrupts;
     interrupts = OSDisableInterrupts();
     while (!DrawDone) {
