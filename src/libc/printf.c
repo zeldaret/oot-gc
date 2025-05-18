@@ -853,7 +853,7 @@ static int __pformatter(void* (*WriteProc)(void*, const char*, size_t), void* Wr
                     wchar_t* wcs_ptr = va_arg(arg, wchar_t*);
 
                     if (wcs_ptr == NULL) {
-                        wcs_ptr = L"";
+                        wcs_ptr = (wchar_t*)L"";
                     }
 
                     if ((num_chars = wcstombs(buff, wcs_ptr, sizeof(buff))) < 0) {

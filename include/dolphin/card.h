@@ -268,6 +268,7 @@ s32 CARDErase(CARDFileInfo* fileInfo, s32 length, s32 offset);
 
 // CARDFormat
 s32 CARDFormat(s32 chan);
+s32 CARDFormatAsync(s32 chan, CARDCallback callback);
 
 // CARDMount
 int CARDProbe(s32 chan);

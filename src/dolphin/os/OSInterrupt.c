@@ -3,6 +3,8 @@
 #include "intrinsics.h"
 #include "macros.h"
 
+#include "dolphin/private/__os.h"
+
 static ASM void ExternalInterruptHandler(register __OSException exception, register OSContext* context);
 
 extern void __RAS_OSDisableInterrupts_begin(void);

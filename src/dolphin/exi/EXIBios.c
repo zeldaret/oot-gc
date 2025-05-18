@@ -33,6 +33,7 @@ static u32 IDSerialPort1;
 
 static EXIControl Ecb[MAX_CHAN];
 
+void __OSEnableBarnacle(s32 chan, u32 dev);
 u32 EXIClearInterrupts(s32 chan, int exi, int tc, int ext);
 static int __EXIProbe(s32 chan);
 

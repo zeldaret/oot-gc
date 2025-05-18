@@ -1,10 +1,11 @@
 #include "dolphin/db.h"
+#include "dolphin/base/PPCArch.h"
 #include "dolphin/os.h"
 
 DBInterface* __DBInterface = NULL;
 int DBVerbose;
 
-static void __DBExceptionDestination(void);
+void __DBExceptionDestination(void);
 
 void DBInit(void) {
     __DBInterface = (DBInterface*)OSPhysicalToCached(OS_DBINTERFACE_ADDR);

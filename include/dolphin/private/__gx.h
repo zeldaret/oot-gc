@@ -181,11 +181,15 @@ extern "C" {
     } while (0)
 
 // above doesn't seem to work with GX, only can get it to work with this
+#ifdef __MWERKS__
 #define __SET_REG_FIELD(reg, size, shift, val)                                                                         \
     do {                                                                                                               \
         ASSERTMSGLINE(UNK_LINE, ((u32)(val) & ~((1 << (size)) - 1)) == 0, "GX Internal: Register field out of range"); \
         (reg) = ((u32)__rlwimi((u32)(reg), (val), (shift), 32 - (shift) - (size), 31 - (shift)));                      \
     } while (0)
+#else
+#define __SET_REG_FIELD(reg, size, shift, val) __OLD_SET_REG_FIELD(reg, size, shift, val)
+#endif
 
 #if IS_MQ
 #define SET_REG_FIELD(reg, size, shift, val) __OLD_SET_REG_FIELD(reg, size, shift, val)

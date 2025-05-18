@@ -1,5 +1,7 @@
+#include "dolphin/base/PPCArch.h"
 #include "dolphin/os.h"
 #include "dolphin/thp.h"
+#include "intrinsics.h"
 
 char* __THPVersion = "<< Dolphin SDK - THP\trelease build: Aug 27 2002 20:42:01 >>";
 

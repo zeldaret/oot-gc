@@ -21,6 +21,11 @@ static inline bool frameGetMatrixHint(Frame* pFrame, u32 nAddress, s32* piHint);
 static bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument);
 void PSMTX44MultVecNoW(Mtx44 m, Vec3f* src, Vec3f* dst);
 
+static inline bool frameFreePixels(Frame* pFrame, FrameTexture* pTexture);
+static bool frameMakeTexture(Frame* pFrame, FrameTexture** ppTexture);
+static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTextureCode, Tile* pTile);
+static bool frameMakePixels(Frame* pFrame, FrameTexture* pTexture, Tile* pTile, bool bReload);
+
 _XL_OBJECTTYPE gClassFrame = {
     "Frame-Buffer",
     sizeof(Frame),
