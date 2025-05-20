@@ -3,7 +3,7 @@
 
 #include "dolphin/os/OSInterrupt.h"
 #include "dolphin/types.h"
-#include "metrotrk/UART.h"
+#include "metrotrk/dserror.h"
 #include "stddef.h"
 
 #ifdef __cplusplus
@@ -32,17 +32,17 @@ typedef struct DBCommTable {
 } DBCommTable; // size = 0x1C
 
 int InitMetroTRKCommTable(int);
-void TRKUARTInterruptHandler();
-UARTError TRK_InitializeIntDrivenUART(u32, u32, void*);
-void EnableEXI2Interrupts();
-int TRKPollUART();
-UARTError TRK_ReadUARTN(void*, u32);
-UARTError TRK_WriteUARTN(const void*, u32);
+void TRKUARTInterruptHandler(void);
+DSError TRK_InitializeIntDrivenUART(u32, u32, void*);
+void EnableEXI2Interrupts(void);
+int TRKPollUART(void);
+DSError TRK_ReadUARTN(void*, u32);
+DSError TRK_WriteUARTN(const void*, u32);
 void ReserveEXI2Port(void);
 void UnreserveEXI2Port(void);
 void TRK_board_display(char*);
-void InitializeProgramEndTrap();
-UARTError TRKInitializeIntDrivenUART(u32 r3, u32 r4, u32 r5, void* r6);
+void InitializeProgramEndTrap(void);
+DSError TRKInitializeIntDrivenUART(u32 r3, u32 r4, u32 r5, void* r6);
 
 #ifdef __cplusplus
 }

@@ -16,7 +16,7 @@ glabel gTRKInterruptVectorTable
     .skip 252
 
     mtspr   0x111, r2
-    mfspr   r2, 0x1a
+    mfspr   r2, 0x1A
     icbi    0, r2
     mfdar   r2
     dcbi    0, r2
@@ -24,14 +24,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x200
     rfi     
 
@@ -40,14 +40,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x300
     rfi     
 
@@ -56,14 +56,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x400
     rfi     
 
@@ -72,14 +72,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x500
     rfi     
 
@@ -88,14 +88,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x600
     rfi     
 
@@ -104,14 +104,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x700
     rfi     
 
@@ -120,14 +120,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x800
     rfi     
 
@@ -136,14 +136,14 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x900
     rfi     
 
@@ -152,15 +152,15 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0xc00
+    mtspr   0x1A, r3
+    li      r3, 0xC00
     rfi     
 
     .skip 204
@@ -168,15 +168,15 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0xd00
+    mtspr   0x1A, r3
+    li      r3, 0xD00
     rfi     
 
     .skip 204
@@ -184,15 +184,15 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0xe00
+    mtspr   0x1A, r3
+    li      r3, 0xE00
     rfi     
 
     .skip 204
@@ -204,30 +204,30 @@ glabel gTRKInterruptVectorTable
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0xf20
+    mtspr   0x1A, r3
+    li      r3, 0xF20
     rfi     
 
 lbl_800043D0:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0xf00
+    mtspr   0x1A, r3
+    li      r3, 0xF00
     rfi     
 
     .skip 120
@@ -246,19 +246,19 @@ lbl_800043D0:
     mtspr   0x111, r2
 lbl_800044AC:
     mfspr   r2, 0x112
-    mtcrf   0xff, r2
+    mtcrf   0xFF, r2
     mfspr   r2, 0x111
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1000
     rfi     
 
@@ -278,19 +278,19 @@ lbl_800044AC:
     mtspr   0x111, r2
 lbl_800045AC:
     mfspr   r2, 0x112
-    mtcrf   0xff, r2
+    mtcrf   0xFF, r2
     mfspr   r2, 0x111
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1100
     rfi     
 
@@ -310,19 +310,19 @@ lbl_800045AC:
     mtspr   0x111, r2
 lbl_800046AC:
     mfspr   r2, 0x112
-    mtcrf   0xff, r2
+    mtcrf   0xFF, r2
     mfspr   r2, 0x111
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1200
     rfi     
 
@@ -331,14 +331,14 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1300
     rfi     
 
@@ -347,14 +347,14 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1400
     rfi     
 
@@ -363,14 +363,14 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1600
     rfi     
 
@@ -379,14 +379,14 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
+    mtspr   0x1A, r3
     li      r3, 0x1700
     rfi     
 
@@ -395,15 +395,15 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0x1c00
+    mtspr   0x1A, r3
+    li      r3, 0x1C00
     rfi     
 
     .skip 204
@@ -411,15 +411,15 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0x1d00
+    mtspr   0x1A, r3
+    li      r3, 0x1D00
     rfi     
 
     .skip 204
@@ -427,15 +427,15 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0x1e00
+    mtspr   0x1A, r3
+    li      r3, 0x1E00
     rfi     
 
     .skip 204
@@ -443,13 +443,13 @@ lbl_800046AC:
     mtspr   0x111, r2
     mtspr   0x112, r3
     mtspr   0x113, r4
-    mfspr   r2, 0x1a
-    mfspr   r4, 0x1b
+    mfspr   r2, 0x1A
+    mfspr   r4, 0x1B
     mfmsr   r3
     ori     r3, r3, 0x30
-    mtspr   0x1b, r3
+    mtspr   0x1B, r3
     lis     r3, TRKInterruptHandler@h
     ori     r3, r3, TRKInterruptHandler@l
-    mtspr   0x1a, r3
-    li      r3, 0x1f00
+    mtspr   0x1A, r3
+    li      r3, 0x1F00
     rfi     

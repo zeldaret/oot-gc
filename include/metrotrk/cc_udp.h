@@ -9,15 +9,15 @@ extern "C" {
 #endif
 
 int udp_cc_initialize(void* flagOut, __OSInterruptHandler handler);
-int udp_cc_shutdown();
-int udp_cc_open();
-int udp_cc_close();
+int udp_cc_shutdown(void);
+int udp_cc_open(void);
+int udp_cc_close(void);
 int udp_cc_read(u8* dest, int size);
 int udp_cc_write(const u8* src, int size);
-int udp_cc_pre_continue();
-int udp_cc_post_stop();
-int udp_cc_peek();
-int udp_cc_initinterrupts();
+int udp_cc_pre_continue(void);
+int udp_cc_post_stop(void);
+int udp_cc_peek(void);
+int udp_cc_initinterrupts(void);
 
 #ifdef __cplusplus
 }

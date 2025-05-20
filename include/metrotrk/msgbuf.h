@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+typedef unsigned char u128[16];
 typedef int MessageBufferID;
 
 #define TRKMessageBufferGet(buf, type, offset) (*(type*)(buf->data + offset))

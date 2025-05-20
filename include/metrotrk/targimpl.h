@@ -39,7 +39,7 @@ typedef struct DSCPUType {
 
 void TRKTargetSetStopped(bool);
 void TRKTargetSetInputPendingPtr(void*);
-DSError TRKTargetAccessMemory(void*, void*, size_t*, MemoryAccessOptions, bool);
+DSError TRKTargetAccessMemory(void*, u32, size_t*, MemoryAccessOptions, bool);
 DSError TRKTargetAccessDefault(u32, u32, MessageBuffer*, size_t*, bool);
 DSError TRKTargetAccessFP(u32 firstRegister, u32 lastRegister, MessageBuffer* b, size_t* registerStorageSize, s32 read);
 DSError TRKTargetAccessExtended1(u32 firstRegister, u32 lastRegister, MessageBuffer* b, size_t* registerStorageSize,
@@ -62,7 +62,7 @@ DSError TRKTargetFlushCache(u8, u32, u32);
 bool TRKTargetStopped(void);
 void TRKTargetSetStopped(bool);
 DSError TRKTargetStop(void);
-void* TRKTargetTranslate(u32*);
+u32 TRKTargetTranslate(u32 addr);
 void TRKInterruptHandler(u16);
 void TRKTargetSetInputPendingPtr(void*);
 DSError TRKTargetCPUType(DSCPUType* cpuType);

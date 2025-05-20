@@ -21,7 +21,7 @@ DSError TRKInitializeEventQueue(void) {
     return kNoError;
 }
 
-bool TRKCopyEvent(void* src, void* dst) { TRK_memcpy(src, dst, sizeof(NubEvent)); }
+void* TRKCopyEvent(void* src, void* dst) { return TRK_memcpy(src, dst, sizeof(NubEvent)); }
 
 bool TRKGetNextEvent(NubEvent* ev) {
     bool ret = false;

@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 typedef enum DSError {
+    kError = -0x0001,
     kNoError = 0x0000,
     kStepError = 0x0001,
     kParameterError = 0x0002,

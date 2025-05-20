@@ -9,8 +9,8 @@
 #include "metrotrk/target_options.h"
 #include "metrotrk/targimpl.h"
 
-extern void __TRK_copy_vectors();
-extern void __TRK_reset();
+extern void __TRK_copy_vectors(void);
+extern void __TRK_reset(void);
 
 void TRKMessageIntoReply(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError) {
     TRKResetBuffer(b, true);
@@ -44,8 +44,6 @@ static DSError TRKSendACK(MessageBuffer* b) {
 
 DSError TRKStandardACK(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError) {
     TRKMessageIntoReply(b, commandId, replyError);
-
-    //! TODO: fake return?
     return TRKSendACK(b);
 }
 
@@ -105,7 +103,7 @@ DSError TRKDoVersions(MessageBuffer* buf) {
     }
 
     if (error != kNoError) {
-        return TRKStandardACK(buf, 0x80, 3);
+        return TRKStandardACK(buf, kDSReplyACK, kDSReplyCWDSError);
     }
 
     return TRKSendACK(buf);
@@ -185,7 +183,7 @@ DSError TRKDoCPUType(MessageBuffer* buf) {
 }
 
 DSError TRKDoReadMemory(MessageBuffer* buf) {
-    u8 buffer[0x804] ATTRIBUTE_ALIGN(32);
+    u8 buffer[0x800] ATTRIBUTE_ALIGN(32);
     size_t sp10;
     u32 spC;
     u16 spA;
@@ -218,14 +216,14 @@ DSError TRKDoReadMemory(MessageBuffer* buf) {
         return TRKStandardACK(buf, kDSReplyACK, kDSReplyUnsupportedOptionError);
     }
 
-    if (spA > 0x800) {
+    if (spA > sizeof(buffer)) {
         return TRKStandardACK(buf, kDSReplyACK, kDSReplyParameterError);
     }
 
     TRKMessageIntoReply(buf, kDSReplyACK, kDSReplyNoError);
     if (error == kNoError) {
         sp10 = spA;
-        error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
+        error = TRKTargetAccessMemory(buffer, spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 1);
         spA = sp10;
 
         if (error == kNoError) {
@@ -258,7 +256,7 @@ DSError TRKDoReadMemory(MessageBuffer* buf) {
 }
 
 DSError TRKDoWriteMemory(MessageBuffer* b) {
-    u8 buffer[0x804] ATTRIBUTE_ALIGN(32);
+    u8 buffer[0x800] ATTRIBUTE_ALIGN(32);
     size_t sp10;
     u32 spC;
     u16 spA;
@@ -291,7 +289,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyUnsupportedOptionError);
     }
 
-    if (b->fLength != spA + 8 || spA > 0x800) {
+    if (b->fLength != spA + 8 || spA > sizeof(buffer)) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyParameterError);
     }
 
@@ -300,7 +298,7 @@ DSError TRKDoWriteMemory(MessageBuffer* b) {
         error = TRKReadBuffer(b, buffer, sp10);
 
         if (error == kNoError) {
-            error = TRKTargetAccessMemory(buffer, (void*)spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 0);
+            error = TRKTargetAccessMemory(buffer, spC, &sp10, sp9 & 8 ? kUserMemory : kDebuggerMemory, 0);
         }
 
         spA = sp10;
@@ -363,7 +361,7 @@ DSError TRKDoReadRegisters(MessageBuffer* b) {
         error = TRKReadBuffer1_ui16(b, &spC);
     }
 
-    if (TRKTargetStopped() == false) {
+    if (!TRKTargetStopped()) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyNotStopped);
     }
 
@@ -444,7 +442,7 @@ DSError TRKDoWriteRegisters(MessageBuffer* b) {
         error = TRKReadBuffer1_ui16(b, &spC);
     }
 
-    if (TRKTargetStopped() == false) {
+    if (!TRKTargetStopped()) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyNotStopped);
     }
 
@@ -508,7 +506,7 @@ DSError TRKDoFlushCache(MessageBuffer* b) {
     DSError error;
 
     if (b->fLength != 0xA) {
-        return TRKStandardACK(b, kDSReplyACK, 2);
+        return TRKStandardACK(b, kDSReplyACK, kDSReplyPacketSizeError);
     }
 
     TRKSetBufferPosition(b, 0);
@@ -526,7 +524,7 @@ DSError TRKDoFlushCache(MessageBuffer* b) {
         error = TRKReadBuffer1_ui32(b, &sp10);
     }
 
-    if (TRKTargetStopped() == 0) {
+    if (!TRKTargetStopped()) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyNotStopped);
     }
 
@@ -595,7 +593,7 @@ DSError TRKDoStep(MessageBuffer* b) {
         error = TRKReadBuffer1_ui8(b, &sp9);
     }
 
-    if (TRKTargetStopped() == false) {
+    if (!TRKTargetStopped()) {
         return TRKStandardACK(b, kDSReplyACK, kDSReplyNotStopped);
     }
 

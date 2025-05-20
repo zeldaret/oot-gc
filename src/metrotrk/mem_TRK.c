@@ -6,10 +6,12 @@
 void TRK_fill_mem(void* dest, int val, size_t count);
 
 INIT void* TRK_memcpy(void* dest, const void* src, size_t count) {
-    u8* s;
-    u8* d;
+    u8* s = (u8*)src - 1;
+    u8* d = (u8*)dest - 1;
 
-    for (s = (u8*)src - 1, d = (u8*)dest - 1, count++; --count;) {
+    count++;
+
+    while (--count) {
         *++d = *++s;
     }
 }
@@ -22,16 +24,15 @@ INIT void* TRK_memset(void* dest, int val, size_t count) {
 void TRK_fill_mem(void* dest, int val, size_t count) {
     u32 v = (u8)val;
     u32 i;
-
     union {
         u8* cpd;
         u32* lpd;
     } dstu;
 
-    dstu.cpd = (((u8*)dest) - 1);
+    dstu.cpd = (u8*)dest - 1;
 
     if (count >= 32) {
-        i = ((~(u32)dstu.cpd) & 3);
+        i = ~(u32)dstu.cpd & 3;
 
         if (i) {
             count -= i;

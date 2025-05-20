@@ -5,14 +5,13 @@
 #include "metrotrk/serpoll.h"
 
 DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
-    MessageBuffer* new_var;
+    MessageBuffer* replyBuffer;
     int replyBufferId;
     u32 length;
-    MessageBuffer* replyBuffer;
     MessageBuffer* buffer;
     int bufferId;
     DSError error;
-    u32 done;
+    u32 i;
     u16 replyLength;
     u8 replyIOResult;
     bool exit;
@@ -23,19 +22,19 @@ DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resul
 
     exit = false;
     *io_result = kDSIONoError;
-    done = 0;
+    i = 0;
     error = kNoError;
-    while (!exit && done < *count && error == kNoError && *io_result == 0) {
-        if (*count - done > 0x800) {
+    while (!exit && i < *count && error == kNoError && *io_result == 0) {
+        if (*count - i > 0x800) {
             length = 0x800;
         } else {
-            length = *count - done;
+            length = *count - i;
         }
 
         error = TRKGetFreeBuffer(&bufferId, &buffer);
 
         if (error == kNoError) {
-            error = TRKAppendBuffer1_ui8(buffer, read != 0 ? 0xD1 : 0xD0);
+            error = TRKAppendBuffer1_ui8(buffer, read ? kDSReadFile : kDSWriteFile);
         }
 
         if (error == kNoError) {
@@ -47,7 +46,7 @@ DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resul
         }
 
         if (!read && error == kNoError) {
-            error = TRKAppendBuffer_ui8(buffer, data + done, length);
+            error = TRKAppendBuffer_ui8(buffer, data + i, length);
         }
 
         if (error == kNoError) {
@@ -55,11 +54,12 @@ DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resul
                 replyLength = 0;
                 replyIOResult = 0;
 
+                //! TODO: fake match
                 error = (0, TRKRequestSend(buffer, &replyBufferId, read ? 5 : 5, 3, !(read && file_handle == 0)));
+
                 if (error == kNoError) {
                     replyBuffer = (MessageBuffer*)TRKGetBuffer(replyBufferId);
-                    new_var = replyBuffer;
-                    TRKSetBufferPosition(new_var, 2);
+                    TRKSetBufferPosition(replyBuffer, 2);
                 }
 
                 if (error == kNoError) {
@@ -79,7 +79,7 @@ DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resul
                     }
 
                     if (replyLength <= length) {
-                        error = TRKReadBuffer_ui8(replyBuffer, data + done, replyLength);
+                        error = TRKReadBuffer_ui8(replyBuffer, data + i, replyLength);
                     }
                 }
 
@@ -99,10 +99,10 @@ DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_resul
         }
 
         TRKReleaseBuffer(bufferId);
-        done += length;
+        i += length;
     }
 
-    *count = done;
+    *count = i;
     return error;
 }
 

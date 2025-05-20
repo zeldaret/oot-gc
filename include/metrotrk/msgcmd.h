@@ -39,7 +39,7 @@ typedef enum MessageCommandID {
     kDSSetOption = 0x17,
     kDSContinue = 0x18,
     kDSStep = 0x19,
-    kDSStop = 0x1a,
+    kDSStop = 0x1A,
     kDSReplyACK = 0x80,
     kDSReplyNAK = 0xFF,
     kDSNotifyStopped = 0x90,
@@ -145,15 +145,15 @@ typedef enum MessageCommandID {
 #define DS_CPU_M68K_68328 0x26
 #define DS_CPU_M68K_68EZ328 0x28
 #define DS_CPU_M68K_68VZ328 0x29
-#define DS_CPU_M68K_68340 0x2a
-#define DS_CPU_M68K_68360 0x2c
+#define DS_CPU_M68K_68340 0x2A
+#define DS_CPU_M68K_68360 0x2C
 
 #define DS_CPU_M68K_CF5102 0x80
 #define DS_CPU_M68K_CF5202 0x82
 #define DS_CPU_M68K_CF5204 0x84
 #define DS_CPU_M68K_CF5206 0x86
 #define DS_CPU_M68K_CF5206E 0x88
-#define DS_CPU_M68K_CF5307 0x8a
+#define DS_CPU_M68K_CF5307 0x8A
 
 /*
 ** MCore CPU minor types.

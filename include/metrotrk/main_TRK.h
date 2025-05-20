@@ -8,7 +8,7 @@ extern "C" {
 #endif
 
 u8 TRKTargetCPUMinorType(void);
-int TRK_main();
+int TRK_main(void);
 
 #ifdef __cplusplus
 }

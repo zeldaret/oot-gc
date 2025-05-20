@@ -10,7 +10,7 @@ static FramingState gTRKFramingState;
 MessageBufferID TRKTestForPacket(void) {
     int bytes;
     int batch;
-    int err;
+    DSError err;
     MessageBuffer* b;
     int id;
 
@@ -23,10 +23,10 @@ MessageBufferID TRKTestForPacket(void) {
                 batch = bytes > 0x880 ? 0x880 : bytes;
                 TRK_ReadUARTN(b->fData, batch);
             }
-            TRKStandardACK(b, 0xff, 6);
+            TRKStandardACK(b, kDSReplyNAK, 6);
         } else {
             err = TRK_ReadUARTN(b->fData, bytes);
-            if (err == 0) {
+            if (err == kNoError) {
                 b->fLength = bytes;
                 return id;
             }

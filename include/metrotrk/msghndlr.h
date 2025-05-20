@@ -25,7 +25,7 @@ typedef struct msgbuf_t {
     /* 0x10 */ u8 unk10[0x30];
 } msgbuf_t; // size = 0x40
 
-bool GetTRKConnected();
+bool GetTRKConnected(void);
 DSError TRKDoConnect(MessageBuffer* buf);
 DSError TRKDoDisconnect(MessageBuffer* buf);
 DSError TRKDoReset(MessageBuffer* buf);

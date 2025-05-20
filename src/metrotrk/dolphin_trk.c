@@ -107,19 +107,19 @@ initCommTableSuccess:
 
 void EnableMetroTRKInterrupts() { EnableEXI2Interrupts(); }
 
-void* TRKTargetTranslate(u32* addr) { return (void*)(((u32)addr & 0x3FFFFFFF) | BOOTINFO); }
+u32 TRKTargetTranslate(u32 addr) { return ((addr & 0x3FFFFFFF) | BOOTINFO); }
 
 static void TRK_copy_vector(u32 offset) {
-    void* destPtr = TRKTargetTranslate((u32*)offset);
-    TRK_memcpy(destPtr, (void*)(gTRKInterruptVectorTable + offset), EXCEPTION_SIZE);
-    TRK_flush_cache((u32)destPtr, EXCEPTION_SIZE);
+    u32 destPtr = TRKTargetTranslate(offset);
+    TRK_memcpy((void*)destPtr, (void*)(gTRKInterruptVectorTable + offset), EXCEPTION_SIZE);
+    TRK_flush_cache(destPtr, EXCEPTION_SIZE);
 }
 
 void __TRK_copy_vectors(void) {
     int i;
     u32 data;
 
-    data = *(u32*)TRKTargetTranslate((u32*)0x44);
+    data = *(u32*)TRKTargetTranslate(0x44);
 
     for (i = 0; i <= ARRAY_COUNT(TRK_ISR_OFFSETS) - 1; i++) {
         if ((data & (1 << i)) != 0) {

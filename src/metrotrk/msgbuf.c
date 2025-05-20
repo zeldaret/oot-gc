@@ -4,10 +4,7 @@
 
 TRKMsgBufs gTRKMsgBufs;
 
-static void TRKSetBufferUsed(MessageBuffer* b, bool state) {
-    b->fInUse = state;
-    NO_INLINE();
-}
+static void TRKSetBufferUsed(MessageBuffer* b, bool state) { b->fInUse = state; }
 
 DSError TRKInitializeMessageBuffers(void) {
     int i;
@@ -128,7 +125,6 @@ DSError TRKAppendBuffer(MessageBuffer* buf, const void* data, size_t length) {
     buf->fPosition += length;
     buf->fLength = buf->fPosition;
 
-    NO_INLINE();
     return error;
 }
 
@@ -190,7 +186,6 @@ DSError TRKAppendBuffer1_ui32(MessageBuffer* buffer, const u32 data) {
         bigEndianData[3] = byteData[0];
     }
 
-    NO_INLINE();
     return TRKAppendBuffer(buffer, (const void*)bigEndianData, sizeof(data));
 }
 
@@ -240,10 +235,7 @@ DSError TRKAppendBuffer_ui32(MessageBuffer* buffer, const u32* data, int count) 
     return err;
 }
 
-DSError TRKReadBuffer1_ui8(MessageBuffer* buffer, u8* data) {
-    NO_INLINE();
-    return TRKReadBuffer(buffer, (void*)data, 1);
-}
+DSError TRKReadBuffer1_ui8(MessageBuffer* buffer, u8* data) { return TRKReadBuffer(buffer, (void*)data, 1); }
 
 DSError TRKReadBuffer1_ui16(MessageBuffer* buffer, u16* data) {
     DSError err;

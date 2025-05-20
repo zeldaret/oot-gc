@@ -7,8 +7,8 @@
 extern "C" {
 #endif
 
-void TRKSaveExtended1Block();
-void TRKRestoreExtended1Block();
+void TRKSaveExtended1Block(void);
+void TRKRestoreExtended1Block(void);
 
 #ifdef __cplusplus
 }

@@ -34,31 +34,31 @@ typedef struct ProcessorRestoreFlags_PPC {
 extern ProcessorRestoreFlags_PPC gTRKRestoreFlags;
 extern ProcessorState_PPC gTRKCPUState;
 
-u32 __TRK_get_MSR();
+u32 __TRK_get_MSR(void);
 void __TRK_set_MSR(register u32 val);
-u32 __TRK_get_PVR();
-u32 __TRK_get_IBAT0U();
-u32 __TRK_get_IBAT0L();
-u32 __TRK_get_IBAT1U();
-u32 __TRK_get_IBAT1L();
-u32 __TRK_get_IBAT2U();
-u32 __TRK_get_IBAT2L();
-u32 __TRK_get_IBAT3U();
-u32 __TRK_get_IBAT3L();
-u32 __TRK_get_DBAT0U();
-u32 __TRK_get_DBAT0L();
-u32 __TRK_get_DBAT1U();
-u32 __TRK_get_DBAT1L();
-u32 __TRK_get_DBAT2U();
-u32 __TRK_get_DBAT2L();
-u32 __TRK_get_DBAT3U();
-u32 __TRK_get_DBAT3L();
+u32 __TRK_get_PVR(void);
+u32 __TRK_get_IBAT0U(void);
+u32 __TRK_get_IBAT0L(void);
+u32 __TRK_get_IBAT1U(void);
+u32 __TRK_get_IBAT1L(void);
+u32 __TRK_get_IBAT2U(void);
+u32 __TRK_get_IBAT2L(void);
+u32 __TRK_get_IBAT3U(void);
+u32 __TRK_get_IBAT3L(void);
+u32 __TRK_get_DBAT0U(void);
+u32 __TRK_get_DBAT0L(void);
+u32 __TRK_get_DBAT1U(void);
+u32 __TRK_get_DBAT1L(void);
+u32 __TRK_get_DBAT2U(void);
+u32 __TRK_get_DBAT2L(void);
+u32 __TRK_get_DBAT3U(void);
+u32 __TRK_get_DBAT3L(void);
 
 DSError TRKPPCAccessSPR(void* srcDestPtr, u32 spr, bool read);
 DSError TRKPPCAccessPairedSingleRegister(void* srcDestPtr, u32 psr, bool read);
 DSError TRKPPCAccessFPRegister(void* srcDestPtr, u32 fpr, bool read);
 DSError TRKPPCAccessSpecialReg(void* srcDestPtr, u32* instructionData, bool read);
-void TRKPostInterruptEvent();
+void TRKPostInterruptEvent(void);
 u32 ConvertAddress(u32);
 
 #ifdef __cplusplus
