@@ -169,7 +169,7 @@ if args.no_asm:
 ### Tool versions
 
 config.binutils_tag = "2.42-1"
-config.compilers_tag = "20240706"
+config.compilers_tag = "20250520"
 config.dtk_tag = "v1.4.1"
 config.objdiff_tag = "v2.7.1"
 config.sjiswrap_tag = "v1.2.0"
@@ -255,7 +255,7 @@ def RuntimeLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-        "mw_version": "GC/1.1u",
+        "mw_version": "GC/1.1p1",
         "cflags": [*cflags_base, "-rostr", "-proc gekko", "-sdata 0", "-sdata2 0", "-pool off", "-inline on,noauto", "-enum int", "-use_lmw_stmw on"],
         "progress_category": "metrotrk",
         "objects": objects,
