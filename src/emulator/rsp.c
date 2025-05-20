@@ -4981,11 +4981,11 @@ static bool rspParseJPEG_Encode(Rsp* pRSP, RspTask* pTask) {
     preDc[2] = 0;
 
     rspCreateJPEGArrays(pRSP);
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &system_imb, pTask->nOffsetMBI, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_imb, pTask->nOffsetMBI, NULL)) {
         return false;
     }
 
-    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), &system_cfb, pTask->nOffsetBuffer, NULL)) {
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_cfb, pTask->nOffsetBuffer, NULL)) {
         return false;
     }
 
