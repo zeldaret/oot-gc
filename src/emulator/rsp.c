@@ -4667,6 +4667,13 @@ static bool rspCreateJPEGArrays(Rsp* pRSP) {
     return true;
 }
 
+static inline void rspConvertBufferToRGBA(u8* buf, struct __anon_0x58360* rgba) {
+    rgba->a = 1;
+    rgba->r = (buf[0] >> 3) & 0x1F;
+    rgba->g = ((buf[0] << 2) | (buf[1] >> 6)) & 0x1F;
+    rgba->b = (buf[1] >> 1) & 0x1F;
+}
+
 static void rspConvertRGBAtoYUV(Rsp* pRSP) {
     int i;
     int j;
@@ -4801,6 +4808,42 @@ static void rspQuantize(Rsp* pRSP, s32 scale) {
     }
 }
 
+static inline void rspZigzagData(Rsp* pRSP, u8** databuf, int n, int* preDc) {
+    s16 Dc;
+    s16 Ac;
+    int i;
+    int z;
+
+    Dc = pRSP->dctBuf[n * 64] - preDc[0];
+    preDc[0] += Dc;
+    *(*databuf)++ = (Dc >> 8) & 0xFF;
+    *(*databuf)++ = Dc & 0xFF;
+
+    for (z = 1; z < 64; z++) {
+        i = pRSP->Zigzag[z];
+        Ac = pRSP->dctBuf[n * 64 + (i & 7) * 8 + (i >> 3)];
+        *(*databuf)++ = (Ac >> 8) & 0xFF;
+        *(*databuf)++ = Ac & 0xFF;
+    }
+}
+
+static inline void rspUndoZigzagData(Rsp* pRSP, u8** databuf, int n, int* preDc) {
+    s16 Dc;
+    s16 Ac;
+    int i;
+    int z;
+
+    Dc = (*(*databuf)++ << 8) | *(*databuf)++;
+    pRSP->dctBuf[n * 64] = Dc + preDc[0];
+    preDc[0] += Dc;
+
+    for (z = 1; z < 64; z++) {
+        i = pRSP->Zigzag[z];
+        Ac = ((*(*databuf)++ & 0xFF) << 8) | *(*databuf)++;
+        pRSP->dctBuf[n * 64 + (i & 7) * 8 + (i >> 3)] = Ac;
+    }
+}
+
 void rspUndoQuantize(Rsp* pRSP, s32 scale) {
     s32 c;
     s32 i;
@@ -4919,11 +4962,99 @@ void rspUndoYUVtoDCTBuf(Rsp* pRSP) {
 void rspFormatYUV(Rsp* pRSP, char* imgBuf);
 #pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFormatYUV.s")
 
-static bool rspParseJPEG_Encode(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_Encode.s")
+static bool rspParseJPEG_Encode(Rsp* pRSP, RspTask* pTask) {
+    int preDc[3];
+    u8* temp;
+    u8* temp2;
+    int i;
+    int j;
+    int x;
+    int y;
+    u8* system_imb;
+    u8* system_cfb;
+    int scale;
+    int width;
+    int height;
 
-static bool rspParseJPEG_Decode(Rsp* pRSP, RspTask* pTask);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseJPEG_Decode.s")
+    preDc[0] = 0;
+    preDc[1] = 0;
+    preDc[2] = 0;
+
+    rspCreateJPEGArrays(pRSP);
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_imb, pTask->nOffsetMBI, NULL)) {
+        return false;
+    }
+
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_cfb, pTask->nOffsetBuffer, NULL)) {
+        return false;
+    }
+
+    width = pTask->nLengthMBI + 1;
+    height = pTask->nLengthYield + 1;
+    scale = pTask->nLengthStack;
+    temp = system_imb;
+    temp2 = system_cfb;
+
+    for (y = 0; y < height * 16; y += 16) {
+        for (x = 0; x < width * 16; x += 16) {
+            for (i = 0; i < 16; i++) {
+                for (j = 0; j < 16; j++) {
+                    rspConvertBufferToRGBA(&temp2[((y + i) * (width << 4) + (x + j)) * 2], &pRSP->rgbaBuf[i * 16 + j]);
+                }
+            }
+            rspConvertRGBAtoYUV(pRSP);
+            rspYUVtoDCTBuf(pRSP);
+            rspDCT(pRSP);
+            rspQuantize(pRSP, scale);
+            for (i = 0; i < 4; i++) {
+                rspZigzagData(pRSP, &temp, i, &preDc[0]);
+            }
+            rspZigzagData(pRSP, &temp, i++, &preDc[1]);
+            rspZigzagData(pRSP, &temp, i++, &preDc[2]);
+        }
+    }
+
+    return true;
+}
+
+static bool rspParseJPEG_Decode(Rsp* pRSP, RspTask* pTask) {
+    int preDc[3];
+    int i;
+    int y;
+    u8* temp;
+    u8* temp2;
+    u64* system_imb;
+    int size;
+    int scale;
+
+    rspCreateJPEGArrays(pRSP);
+    if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&system_imb, pTask->nOffsetMBI, NULL)) {
+        return false;
+    }
+
+    preDc[0] = 0;
+    preDc[1] = 0;
+    preDc[2] = 0;
+
+    temp2 = temp = (u8*)system_imb;
+    size = pTask->nLengthMBI;
+    scale = pTask->nLengthYield;
+
+    for (y = 0; y < size; y++) {
+        for (i = 0; i < 4; i++) {
+            rspUndoZigzagData(pRSP, &temp, i, &preDc[0]);
+        }
+        rspUndoZigzagData(pRSP, &temp, i++, &preDc[1]);
+        rspUndoZigzagData(pRSP, &temp, i++, &preDc[2]);
+        rspUndoQuantize(pRSP, scale);
+        rspUndoDCT(pRSP);
+        rspUndoYUVtoDCTBuf(pRSP);
+        rspFormatYUV(pRSP, (char*)temp2);
+        temp2 += 0x300;
+    }
+
+    return true;
+}
 
 static bool rspCreateJPEGArraysZ(Rsp* pRSP, s32 qYAddress, s32 qCbAddress, s32 qCrAddress) {
     pRSP->Coeff = (s32*)pRSP->pDMEM;
