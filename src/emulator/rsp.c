@@ -19,26 +19,12 @@ _XL_OBJECTTYPE gClassRSP = {
 s32 cmask_tab[8] = {0x7, 0xE, 0xC, 0xC, 0x0, 0x0, 0x0, 0x0};
 s32 emask_tab[8] = {0x0, 0x1, 0x3, 0x3, 0x7, 0x7, 0x7, 0x7};
 
-static s16 TMEMSIZE[5] = {
-    0x0200, 0x0200, 0x0100, 0x0200, 0x0200,
-};
-
-char D_800EE27C[40] = "FrameComplete: Yielded task pending...\n";
-
-static bool nFirstTime_2148 = true;
-static bool nFirstTime_2648 = true;
-static bool nFirstTime_2757 = true;
-static bool nFirstTime_2796 = true;
-
-static s32 counter;
-
-// TODO: initialize as 0 << 2
-static u16 scissorX0;
-static u16 scissorY0;
+static u16 scissorX0 = 0 << 2;
+static u16 scissorY0 = 0 << 2;
 static u16 scissorX1 = N64_FRAME_WIDTH << 2;
 static u16 scissorY1 = N64_FRAME_HEIGHT << 2;
-
 static u8 flagBilerp;
+
 static u32 rdpSetTimg_w0;
 static u32 rdpSetTile_w0;
 static u16 tmemSliceWmax;
@@ -48,39 +34,11 @@ static u16 imagePtrX0;
 static u32 imageTop;
 static s16 tmemSrcLines;
 
-static s16 TMEMMASK[4] = {
-    0x01FF,
-    0x00FF,
-    0x007F,
-    0x003F,
-};
-
-static s16 TMEMSHIFT[4] = {
-    0x0200,
-    0x0100,
-    0x0080,
-    0x0040,
-};
-
 #if VERSION == MQ_J
 u16 gnTempBuffer[N64_FRAME_WIDTH * N64_FRAME_HEIGHT];
 u16 gnCopyBuffer[N64_FRAME_WIDTH * N64_FRAME_HEIGHT];
 u16 gnCameraBuffer[ZELDA2_CAMERA_WIDTH * ZELDA2_CAMERA_HEIGHT];
 #endif
-
-const f32 D_80136038 = 0.25f;
-const f32 D_8013603C = 1024.0f;
-const f32 D_80136040 = 0.03125f;
-const f64 D_80136048 = 4503601774854144.0;
-const f64 D_80136050 = 4503599627370496.0;
-const f32 D_80136058 = 1.0f;
-const f32 D_8013605C = 0.0f;
-const f32 D_80136060 = 0.5f;
-const f32 D_80136064 = 2.0f;
-const f32 D_80136068 = -1.0;
-const f32 D_8013606C = 65536.0f;
-const f32 D_80136070 = 0.0009765625f;
-const f32 D_80136074 = 1.52587890625e-05;
 
 static bool rspInitAudioDMEM1(Rsp* pRSP);
 static bool rspInitAudioDMEM2(Rsp* pRSP);
@@ -1752,6 +1710,7 @@ static bool rspParseABI1(Rsp* pRSP, RspTask* pTask) {
     u32* pABI32;
     u32* pABILast32;
     u32 nSize;
+    static bool nFirstTime = true;
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
     if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
@@ -1759,8 +1718,8 @@ static bool rspParseABI1(Rsp* pRSP, RspTask* pTask) {
     }
     pABILast32 = pABI32 + (nSize >> 2);
 
-    if (nFirstTime_2148) {
-        nFirstTime_2148 = false;
+    if (nFirstTime) {
+        nFirstTime = false;
     }
 
     while (pABI32 < pABILast32) {
@@ -2471,6 +2430,7 @@ static bool rspAFirFilter2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     s32 stateAddr;
     s16 anMatrix[8];
     s16 anInputVec[15];
+    static s32 counter;
 
     filterState = (s32)pRSP->nAudioScratchOffset >> 1;
     filterTable = filterState + 16;
@@ -2981,6 +2941,7 @@ static bool rspParseABI2(Rsp* pRSP, RspTask* pTask) {
     u32* pABILast32;
     u32 nSize;
     s32 pad[4];
+    static bool nFirstTime = true;
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
     if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
@@ -2988,8 +2949,8 @@ static bool rspParseABI2(Rsp* pRSP, RspTask* pTask) {
     }
     pABILast32 = pABI32 + (nSize >> 2);
 
-    if (nFirstTime_2648) {
-        nFirstTime_2648 = false;
+    if (nFirstTime) {
+        nFirstTime = false;
     }
 
     while (pABI32 < pABILast32) {
@@ -3677,6 +3638,7 @@ static bool rspParseABI3(Rsp* pRSP, RspTask* pTask) {
     u32* pABI32;
     u32* pABILast32;
     u32 nSize;
+    static bool nFirstTime = true;
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
     if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
@@ -3684,8 +3646,8 @@ static bool rspParseABI3(Rsp* pRSP, RspTask* pTask) {
     }
     pABILast32 = pABI32 + (nSize >> 2);
 
-    if (nFirstTime_2757) {
-        nFirstTime_2757 = false;
+    if (nFirstTime) {
+        nFirstTime = false;
     }
 
     while (pABI32 < pABILast32) {
@@ -4187,6 +4149,7 @@ static bool rspParseABI4(Rsp* pRSP, RspTask* pTask) {
     u32* pABILast32;
     u32 nSize;
     s32 pad[2];
+    static bool nFirstTime = true;
 
     nSize = pTask->nLengthMBI & 0x7FFFFF;
     if (!ramGetBuffer(SYSTEM_RAM(pRSP->pHost), (void**)&pABI32, pTask->nOffsetMBI, NULL)) {
@@ -4194,8 +4157,8 @@ static bool rspParseABI4(Rsp* pRSP, RspTask* pTask) {
     }
     pABILast32 = pABI32 + (nSize >> 2);
 
-    if (nFirstTime_2796) {
-        nFirstTime_2796 = false;
+    if (nFirstTime) {
+        nFirstTime = false;
     }
 
     while (pABI32 < pABILast32) {
@@ -5916,10 +5879,9 @@ static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, uObjBg* pBG) {
         s32 imageLYoffset, frameLYoffset;
         s32 imageLHidden, frameLHidden;
         s32 frameLYslice;
-        // TODO: make in-function static
-        // static s16 TMEMSIZE[] = { 512, 512, 256, 512, 512 };
-        // static s16 TMEMMASK[] = { 0x1FF, 0xFF, 0x7F, 0x3F };
-        // static s16 TMEMSHIFT[] = { 0x200, 0x100, 0x80, 0x40 };
+        static s16 TMEMSIZE[] = { 512, 512, 256, 512, 512 };
+        static s16 TMEMMASK[] = { 0x1FF, 0xFF, 0x7F, 0x3F };
+        static s16 TMEMSHIFT[] = { 0x200, 0x100, 0x80, 0x40 };
 
         tmemSize = TMEMSIZE[pBG->s.imageFmt];
         tmemMask = TMEMMASK[pBG->s.imageSiz];
@@ -9660,7 +9622,7 @@ bool rspEnableABI(Rsp* pRSP, bool bFlag) {
 
 bool rspFrameComplete(Rsp* pRSP) {
     if (pRSP->yield.bValid) {
-        OSReport(D_800EE27C);
+        OSReport("FrameComplete: Yielded task pending...\n");
     }
 
     pRSP->nMode |= 4;
