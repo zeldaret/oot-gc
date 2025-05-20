@@ -205,14 +205,14 @@ ASM void __init_registers(void) {
 #endif // clang-format on
 }
 
-inline static void __copy_rom_section(void* dst, const void* src, unsigned long size) {
+void __copy_rom_section(void* dst, const void* src, unsigned long size) {
     if (size && (dst != src)) {
         memcpy(dst, src, size);
         __flush_cache(dst, size);
     }
 }
 
-inline static void __init_bss_section(void* dst, unsigned long size) {
+void __init_bss_section(void* dst, unsigned long size) {
     if (size) {
         memset(dst, 0, size);
     }

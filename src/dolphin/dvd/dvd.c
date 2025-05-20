@@ -1119,7 +1119,7 @@ int DVDSetAutoInvalidation(int newValue) {
     return oldValue;
 }
 
-static inline void DVDPause() {
+void DVDPause() {
     bool level;
     level = OSDisableInterrupts();
     PauseFlag = true;
@@ -1288,7 +1288,7 @@ s32 DVDCancel(volatile DVDCommandBlock* block) {
 
 static void cbForCancelSync(s32 result, DVDCommandBlock* block) { OSWakeupThread(&__DVDThreadQueue); }
 
-static inline bool DVDCancelAllAsync(DVDCBCallback callback) {
+bool DVDCancelAllAsync(DVDCBCallback callback) {
     bool enabled;
     DVDCommandBlock* p;
     bool retVal;

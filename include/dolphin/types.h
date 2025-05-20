@@ -39,10 +39,8 @@ typedef int bool;
 #elif defined(__GNUC__)
 // #define AT_ADDRESS(addr) __attribute__((address((addr))))
 #define AT_ADDRESS(addr) // was removed in GCC. define in linker script instead.
-#elif __INTELLISENSE__
-#define AT_ADDRESS(addr)
 #else
-#error unknown compiler
+#define AT_ADDRESS(addr)
 #endif
 
 #ifdef __MWERKS__
@@ -55,9 +53,9 @@ typedef int bool;
 #define NULL ((void*)0)
 #endif
 
-#include "libc/ctype.h"
-#include "libc/stdarg.h"
-#include "libc/stdio.h"
-#include "libc/string.h"
+#include "ctype.h"
+#include "stdarg.h"
+#include "stdio.h"
+#include "string.h"
 
 #endif

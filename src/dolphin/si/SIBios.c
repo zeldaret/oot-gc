@@ -1,5 +1,6 @@
 #include "dolphin/os.h"
 #include "dolphin/si.h"
+#include "dolphin/vi.h"
 
 #include "dolphin/private/__os.h"
 #include "dolphin/private/__si.h"

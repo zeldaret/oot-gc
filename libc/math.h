@@ -23,6 +23,7 @@ f64 pow(f64 x, f64 y);
 f64 ceil(f64 x);
 f64 floor(f64 x);
 f64 copysign(f64 x, f64 y);
+f64 frexp(f64 x, int* eptr);
 
 f32 sinf(f32 x);
 f32 cosf(f32 x);

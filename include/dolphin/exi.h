@@ -95,6 +95,9 @@ void EXIProbeReset(void);
 int EXISelectSD(s32 chan, u32 dev, u32 freq);
 s32 EXIGetType(s32 chan, u32 dev, u32* type);
 char* EXIGetTypeString(u32 type);
+s32 InitializeUART(u32 baudRate);
+s32 ReadUARTN(void* buf, u32 len);
+s32 WriteUARTN(const void* buf, u32 len);
 
 #ifdef __cplusplus
 }

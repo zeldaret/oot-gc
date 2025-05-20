@@ -3,6 +3,7 @@
 #include "dolphin/os.h"
 #include "macros.h"
 
+#include "dolphin/private/__dvd.h"
 #include "dolphin/private/__os.h"
 
 typedef struct ApploaderHeader {

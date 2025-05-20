@@ -1,6 +1,7 @@
 #include "dolphin/vi.h"
 #include "dolphin/hw_regs.h"
 #include "dolphin/os.h"
+#include "dolphin/si.h"
 #include "intrinsics.h"
 #include "macros.h"
 

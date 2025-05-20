@@ -51,7 +51,7 @@ void OSRegisterResetFunction(OSResetFunctionInfo* func) {
     tmp->next = func;
 }
 
-static int __OSCallResetFunctions(bool final) {
+int __OSCallResetFunctions(bool final) {
     OSResetFunctionInfo* iter;
     s32 retCode = 0;
 
