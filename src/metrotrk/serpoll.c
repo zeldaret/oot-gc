@@ -1,8 +1,8 @@
 #include "metrotrk/serpoll.h"
+#include "metrotrk/dolphin_trk_glue.h"
 #include "metrotrk/msgbuf.h"
 #include "metrotrk/msghndlr.h"
 #include "metrotrk/nubevent.h"
-#include "metrotrk/dolphin_trk_glue.h"
 
 void* gTRKInputPendingPtr;
 static FramingState gTRKFramingState;

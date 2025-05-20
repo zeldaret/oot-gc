@@ -2,12 +2,12 @@
 #include "dolphin/types.h"
 #include "macros.h"
 #include "metrotrk/__exception.h"
+#include "metrotrk/dolphin_trk_glue.h"
+#include "metrotrk/flush_cache.h"
+#include "metrotrk/mem_TRK.h"
 #include "metrotrk/mpc_7xx_603e.h"
 #include "metrotrk/ppc_except.h"
 #include "metrotrk/ppc_targimpl.h"
-#include "metrotrk/dolphin_trk_glue.h"
-#include "metrotrk/mem_TRK.h"
-#include "metrotrk/flush_cache.h"
 
 #define BOOTINFO 0x80000000
 #define MEM2_CACHED 0x90000000
