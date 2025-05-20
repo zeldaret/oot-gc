@@ -2,6 +2,7 @@
 #include "dolphin/os.h"
 #include "metrotrk/msg.h"
 #include "metrotrk/msgcmd.h"
+#include "metrotrk/serpoll.h"
 
 DSError TRKSuppAccessFile(u32 file_handle, u8* data, size_t* count, u8* io_result, bool need_reply, bool read) {
     MessageBuffer* new_var;

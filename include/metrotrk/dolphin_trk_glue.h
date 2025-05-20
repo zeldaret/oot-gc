@@ -42,6 +42,7 @@ void ReserveEXI2Port(void);
 void UnreserveEXI2Port(void);
 void TRK_board_display(char*);
 void InitializeProgramEndTrap();
+UARTError TRKInitializeIntDrivenUART(u32 r3, u32 r4, u32 r5, void* r6);
 
 #ifdef __cplusplus
 }

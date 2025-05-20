@@ -12,6 +12,7 @@
 #include "metrotrk/ppc_targimpl.h"
 #include "metrotrk/support.h"
 
+DSError TRKDoNotifyStopped(u8 cmdId);
 static bool TRKTargetCheckStep(void);
 
 #define BOOTINFO 0x80000000

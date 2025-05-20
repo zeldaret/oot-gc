@@ -5,6 +5,9 @@
 #include "metrotrk/mpc_7xx_603e.h"
 #include "metrotrk/ppc_except.h"
 #include "metrotrk/ppc_targimpl.h"
+#include "metrotrk/dolphin_trk_glue.h"
+#include "metrotrk/mem_TRK.h"
+#include "metrotrk/flush_cache.h"
 
 #define BOOTINFO 0x80000000
 #define MEM2_CACHED 0x90000000
@@ -109,7 +112,7 @@ void* TRKTargetTranslate(u32* addr) { return (void*)(((u32)addr & 0x3FFFFFFF) | 
 static void TRK_copy_vector(u32 offset) {
     void* destPtr = TRKTargetTranslate((u32*)offset);
     TRK_memcpy(destPtr, (void*)(gTRKInterruptVectorTable + offset), EXCEPTION_SIZE);
-    TRK_flush_cache(destPtr, EXCEPTION_SIZE);
+    TRK_flush_cache((u32)destPtr, EXCEPTION_SIZE);
 }
 
 void __TRK_copy_vectors(void) {

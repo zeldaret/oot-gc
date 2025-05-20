@@ -3,6 +3,7 @@
 #include "metrotrk/msgbuf.h"
 #include "metrotrk/nubevent.h"
 #include "metrotrk/serpoll.h"
+#include "metrotrk/targimpl.h"
 
 void TRKHandleRequestEvent(NubEvent* ev) { TRKDispatchMessage(TRKGetBuffer(ev->fMessageBufferID)); }
 

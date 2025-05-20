@@ -65,6 +65,7 @@ DSError TRKTargetStop(void);
 void* TRKTargetTranslate(u32*);
 void TRKInterruptHandler(u16);
 void TRKTargetSetInputPendingPtr(void*);
+DSError TRKTargetCPUType(DSCPUType* cpuType);
 
 #ifdef __cplusplus
 }

@@ -40,6 +40,7 @@ DSError TRKDoContinue(MessageBuffer* buf);
 DSError TRKDoStep(MessageBuffer* buf);
 DSError TRKDoStop(MessageBuffer* buf);
 DSError TRKDoSetOption(MessageBuffer* buf);
+DSError TRKStandardACK(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError);
 
 #ifdef __cplusplus
 }

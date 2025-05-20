@@ -30,6 +30,7 @@ void TRKGetInput(void);
 void TRKProcessInput(int);
 DSError TRKInitializeSerialHandler(void);
 DSError TRKTerminateSerialHandler(void);
+MessageBufferID TRKTestForPacket(void);
 
 extern void* gTRKInputPendingPtr;
 

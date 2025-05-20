@@ -35,6 +35,7 @@ void TRKResetBuffer(MessageBuffer*, u8);
 DSError TRKSetBufferPosition(MessageBuffer*, u32);
 DSError TRKAppendBuffer(MessageBuffer*, const void*, size_t);
 DSError TRKReadBuffer(MessageBuffer*, void*, size_t);
+DSError TRKInitializeMessageBuffers(void);
 
 DSError TRKAppendBuffer1_ui16(MessageBuffer* buffer, const u16 data);
 DSError TRKAppendBuffer1_ui32(MessageBuffer* buffer, const u32 data);

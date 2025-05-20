@@ -1,5 +1,6 @@
 #include "metrotrk/main_TRK.h"
 #include "metrotrk/mainloop.h"
+#include "metrotrk/nubinit.h"
 
 static int TRK_mainError;
 

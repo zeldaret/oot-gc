@@ -1,11 +1,13 @@
 #include "metrotrk/serpoll.h"
 #include "metrotrk/msgbuf.h"
+#include "metrotrk/msghndlr.h"
 #include "metrotrk/nubevent.h"
+#include "metrotrk/dolphin_trk_glue.h"
 
 void* gTRKInputPendingPtr;
 static FramingState gTRKFramingState;
 
-MessageBufferID TRKTestForPacket() {
+MessageBufferID TRKTestForPacket(void) {
     int bytes;
     int batch;
     int err;
