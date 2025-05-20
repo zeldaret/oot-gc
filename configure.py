@@ -169,7 +169,7 @@ if args.no_asm:
 ### Tool versions
 
 config.binutils_tag = "2.42-1"
-config.compilers_tag = "20240706"
+config.compilers_tag = "20250520"
 config.dtk_tag = "v1.4.1"
 config.objdiff_tag = "v2.7.1"
 config.sjiswrap_tag = "v1.2.0"
@@ -255,8 +255,8 @@ def RuntimeLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 def MetroTRKLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
         "lib": lib_name,
-        "mw_version": "GC/1.2.5",
-        "cflags": [*cflags_base, "-rostr", "-sdata 0", "-sdata2 0", "-pool off", "-inline off", "-enum min", "-use_lmw_stmw on"],
+        "mw_version": "GC/1.1p1",
+        "cflags": [*cflags_base, "-rostr", "-sdata 0", "-sdata2 0", "-pool off", "-inline on,noauto", "-use_lmw_stmw on"],
         "progress_category": "metrotrk",
         "objects": objects,
     }
@@ -501,27 +501,27 @@ config.libs = [
     MetroTRKLib(
         "metrotrk",
         [
-            Object(NotLinked, "metrotrk/mainloop.c"),
-            Object(NotLinked, "metrotrk/nubevent.c"),
-            Object(NotLinked, "metrotrk/nubinit.c"),
-            Object(NotLinked, "metrotrk/msg.c"),
-            Object(NotLinked, "metrotrk/msgbuf.c"),
-            Object(NotLinked, "metrotrk/serpoll.c"),
-            Object(NotLinked, "metrotrk/usr_put.c"),
-            Object(NotLinked, "metrotrk/dispatch.c"),
-            Object(NotLinked, "metrotrk/msghndlr.c"),
-            Object(NotLinked, "metrotrk/support.c"),
-            Object(NotLinked, "metrotrk/mutex_TRK.c"),
-            Object(NotLinked, "metrotrk/notify.c"),
-            Object(NotLinked, "metrotrk/flush_cache.c"),
-            Object(NotLinked, "metrotrk/mem_TRK.c"),
-            Object(NotLinked, "metrotrk/__exception.c"),
-            Object(NotLinked, "metrotrk/targimpl.c"),
-            Object(NotLinked, "metrotrk/dolphin_trk.c"),
-            Object(NotLinked, "metrotrk/mpc_7xx_603e.c"),
-            Object(NotLinked, "metrotrk/main_TRK.c"),
-            Object(NotLinked, "metrotrk/dolphin_trk_glue.c"),
-            Object(NotLinked, "metrotrk/targcont.c"),
+            Object(Linked, "metrotrk/mainloop.c"),
+            Object(Linked, "metrotrk/nubevent.c"),
+            Object(Linked, "metrotrk/nubinit.c"),
+            Object(Linked, "metrotrk/msg.c"),
+            Object(Linked, "metrotrk/msgbuf.c"),
+            Object(Linked, "metrotrk/serpoll.c"),
+            Object(Linked, "metrotrk/usr_put.c"),
+            Object(Linked, "metrotrk/dispatch.c"),
+            Object(Linked, "metrotrk/msghndlr.c"),
+            Object(Linked, "metrotrk/support.c"),
+            Object(Linked, "metrotrk/mutex_TRK.c"),
+            Object(Linked, "metrotrk/notify.c"),
+            Object(Linked, "metrotrk/flush_cache.c"),
+            Object(Linked, "metrotrk/mem_TRK.c"),
+            Object(Linked, "metrotrk/__exception.s"),
+            Object(Linked, "metrotrk/targimpl.c"),
+            Object(Linked, "metrotrk/dolphin_trk.c"),
+            Object(Linked, "metrotrk/mpc_7xx_603e.c"),
+            Object(Linked, "metrotrk/main_TRK.c"),
+            Object(Linked, "metrotrk/dolphin_trk_glue.c"),
+            Object(Linked, "metrotrk/targcont.c"),
         ]
     ),
     RuntimeLib(

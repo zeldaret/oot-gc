@@ -617,11 +617,12 @@ metrotrk/mainloop.c:
 
 metrotrk/nubevent.c:
 	.text       start:0x800C8E38 end:0x800C9094
-	.bss        start:0x80155F50 end:0x80155F80
+	.bss        start:0x80155F50 end:0x80155F78
 
 metrotrk/nubinit.c:
 	.text       start:0x800C9094 end:0x800C9228
 	.rodata     start:0x800D2FA0 end:0x800D2FC0
+	.bss        start:0x80155F78 end:0x80155F80
 
 metrotrk/msg.c:
 	.text       start:0x800C9228 end:0x800C9250
@@ -632,7 +633,7 @@ metrotrk/msgbuf.c:
 
 metrotrk/serpoll.c:
 	.text       start:0x800C9A98 end:0x800C9C60
-	.bss        start:0x80157930 end:0x80157950
+	.bss        start:0x80157930 end:0x80157948
 
 metrotrk/usr_put.c:
 	.text       start:0x800C9C60 end:0x800C9C64
@@ -640,6 +641,7 @@ metrotrk/usr_put.c:
 metrotrk/dispatch.c:
 	.text       start:0x800C9C64 end:0x800C9CFC
 	.data       start:0x80116EE0 end:0x80116F68
+	.bss        start:0x80157948 end:0x80157950
 
 metrotrk/msghndlr.c:
 	.text       start:0x800C9CFC end:0x800CAF68
@@ -665,16 +667,13 @@ metrotrk/targimpl.c:
 metrotrk/mem_TRK.c:
 	.init       start:0x800033A8 end:0x800033CC
 
-metrotrk/__exception.c:
+metrotrk/__exception.s:
 	.init       start:0x800033CC end:0x80005300
 
 metrotrk/dolphin_trk.c:
 	.init       start:0x80005300 end:0x80005320
 	.text       start:0x800CCAE8 end:0x800CCCDC
 	.data       start:0x80116F98 end:0x80116FD8
-
-libc/ansi_files.c:
-	.data       start:0x80116FF8 end:0x801170D0
 
 metrotrk/mpc_7xx_603e.c:
 	.text       start:0x800CCCDC end:0x800CD04C
@@ -685,6 +684,10 @@ metrotrk/main_TRK.c:
 
 metrotrk/dolphin_trk_glue.c:
 	.text       start:0x800CD09C end:0x800CD3F4
+	.data       start:0x80116FD8 end:0x80116FF8
+
+libc/ansi_files.c:
+	.data       start:0x80116FF8 end:0x801170D0
 
 metrotrk/targcont.c:
 	.text       start:0x800CD3F4 end:0x800CD428

@@ -10,7 +10,7 @@ extern "C" {
 
 typedef enum {
     AMC_EXI_NO_ERROR = 0,
-    AMC_EXI_UNSELECTED,
+    AMC_EXI_UNSELECTED = 1,
 } AmcExiError;
 
 // ---------------------------------------------------------------------------
