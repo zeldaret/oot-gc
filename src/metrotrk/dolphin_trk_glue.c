@@ -94,12 +94,12 @@ int TRKPollUART() { return gDBCommTable.peek_func(); }
 
 DSError TRK_ReadUARTN(void* bytes, u32 limit) {
     int r3 = gDBCommTable.read_func(bytes, limit);
-    return !r3 ? kNoError : kError;
+    return !r3 ? kNoError : kUARTError;
 }
 
 DSError TRK_WriteUARTN(const void* bytes, u32 length) {
     int r3 = gDBCommTable.write_func(bytes, length);
-    return !r3 ? kNoError : kError;
+    return !r3 ? kNoError : kUARTError;
 }
 
 void ReserveEXI2Port() { gDBCommTable.open_func(); }
