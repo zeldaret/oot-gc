@@ -4232,6 +4232,8 @@ static bool rspParseABI4(Rsp* pRSP, RspTask* pTask) {
             case 24:
                 rspADistFilter2(pRSP, nCommandLo, nCommandHi);
                 break;
+            case 25:
+                break;
             case 26:
                 rspAWMEMCopy2(pRSP, nCommandLo, nCommandHi);
                 break;
@@ -9289,8 +9291,6 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
                         pRSP->nStatus &= ~0x1;
                         pTask = RSP_TASK(pRSP);
                         switch (pTask->nType) {
-                            case 0:
-                                break;
                             case 1:
                                 if (pRSP->yield.bValid) {
                                     if (!rspLoadYield(pRSP)) {
