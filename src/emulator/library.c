@@ -2,7 +2,6 @@
 #include "emulator/audio.h"
 #include "emulator/cpu.h"
 #include "emulator/frame.h"
-#include "emulator/library_jumptables.h"
 #include "emulator/peripheral.h"
 #include "emulator/pif.h"
 #include "emulator/ram.h"

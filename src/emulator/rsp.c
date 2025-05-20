@@ -3,7 +3,6 @@
 #include "emulator/frame.h"
 #include "emulator/ram.h"
 #include "emulator/rdp.h"
-#include "emulator/rsp_jumptables.h"
 #include "emulator/simGCN.h"
 #include "emulator/system.h"
 #include "emulator/xlHeap.h"
@@ -25,164 +24,6 @@ static s16 TMEMSIZE[5] = {
 };
 
 char D_800EE27C[40] = "FrameComplete: Yielded task pending...\n";
-
-#ifndef NON_MATCHING
-// rspGet32
-void* jtbl_800EE2A4[29] = {
-    &lbl_800721A4, &lbl_80072218, &lbl_80072218, &lbl_80072218, &lbl_800721B0, &lbl_80072218,
-    &lbl_80072218, &lbl_80072218, &lbl_800721BC, &lbl_80072218, &lbl_80072218, &lbl_80072218,
-    &lbl_800721C8, &lbl_80072218, &lbl_80072218, &lbl_80072218, &lbl_800721D4, &lbl_80072218,
-    &lbl_80072218, &lbl_80072218, &lbl_800721E4, &lbl_80072218, &lbl_80072218, &lbl_80072218,
-    &lbl_800721F4, &lbl_80072218, &lbl_80072218, &lbl_80072218, &lbl_80072204,
-};
-#else
-void* jtbl_800EE2A4[29] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspPut32
-void* jtbl_800EE318[8] = {
-    &lbl_80072718, &lbl_80072580, &lbl_800725B4, &lbl_800725E8,
-    &lbl_80072608, &lbl_80072670, &lbl_800726D8, &lbl_800726F8,
-};
-#else
-void* jtbl_800EE318[8] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspPut32
-void* jtbl_800EE338[29] = {
-    &lbl_8007241C, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007242C, &lbl_80072948,
-    &lbl_80072948, &lbl_80072948, &lbl_8007243C, &lbl_80072948, &lbl_80072948, &lbl_80072948,
-    &lbl_800724AC, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_80072534, &lbl_80072948,
-    &lbl_80072948, &lbl_80072948, &lbl_80072998, &lbl_80072948, &lbl_80072948, &lbl_80072948,
-    &lbl_80072998, &lbl_80072948, &lbl_80072948, &lbl_80072948, &lbl_8007293C,
-};
-#else
-void* jtbl_800EE338[29] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI
-void* jtbl_800EE3AC[11] = {
-    &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AE8, &lbl_80072AC0,
-    &lbl_80072AD4, &lbl_80072AC0, &lbl_80072AD4, &lbl_80072AC0, &lbl_80072AD4,
-};
-#else
-void* jtbl_800EE3AC[11] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI_F3DEX2
-void* jtbl_800EE3D8[13] = {
-    &lbl_80075608, &lbl_8007600C, &lbl_8007600C, &lbl_8007600C, &lbl_80075630, &lbl_8007600C, &lbl_8007600C,
-    &lbl_8007600C, &lbl_8007600C, &lbl_8007600C, &lbl_8007600C, &lbl_8007600C, &lbl_8007600C,
-};
-#else
-void* jtbl_800EE3D8[13] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI_F3DEX2
-void* jtbl_800EE40C[15] = {
-    &lbl_8007600C, &lbl_800750A4, &lbl_80074F84, &lbl_800750A4, &lbl_8007600C,
-    &lbl_800750A4, &lbl_80074FB0, &lbl_800750A4, &lbl_80074FC4, &lbl_800750A4,
-    &lbl_80075020, &lbl_800750A4, &lbl_8007600C, &lbl_800750A4, &lbl_8007600C,
-};
-#else
-void* jtbl_800EE40C[15] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI_F3DEX2
-void* jtbl_800EE448[13] = {
-    &lbl_80074A78, &lbl_80074D04, &lbl_8007600C, &lbl_80074D04, &lbl_80074C44, &lbl_80074D04, &lbl_80074CA4,
-    &lbl_80074D04, &lbl_8007600C, &lbl_80074D04, &lbl_8007600C, &lbl_80074D04, &lbl_800749F0,
-};
-#else
-void* jtbl_800EE448[13] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI_F3DEX1
-void* jtbl_800EE47C[13] = {
-    &lbl_80077440, &lbl_80077778, &lbl_80077778, &lbl_80077778, &lbl_80077468, &lbl_80077778, &lbl_80077778,
-    &lbl_80077778, &lbl_80077778, &lbl_80077778, &lbl_80077778, &lbl_80077778, &lbl_80077778,
-};
-#else
-void* jtbl_800EE47C[13] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI_F3DEX1
-void* jtbl_800EE4B0[15] = {
-    &lbl_80076D14, &lbl_80076F5C, &lbl_80076E3C, &lbl_80076F5C, &lbl_80077778,
-    &lbl_80076F5C, &lbl_80076E84, &lbl_80076F5C, &lbl_80076E94, &lbl_80076F5C,
-    &lbl_80076EF0, &lbl_80076F5C, &lbl_80077778, &lbl_80076F5C, &lbl_80077778,
-};
-#else
-void* jtbl_800EE4B0[15] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseGBI_F3DEX1
-void* jtbl_800EE4EC[31] = {
-    &lbl_80076698, &lbl_8007685C, &lbl_800766EC, &lbl_8007685C, &lbl_80076744, &lbl_8007685C, &lbl_8007679C,
-    &lbl_8007685C, &lbl_8007679C, &lbl_8007685C, &lbl_8007679C, &lbl_8007685C, &lbl_8007679C, &lbl_8007685C,
-    &lbl_8007679C, &lbl_8007685C, &lbl_8007679C, &lbl_8007685C, &lbl_8007679C, &lbl_8007685C, &lbl_8007679C,
-    &lbl_8007685C, &lbl_80077778, &lbl_8007685C, &lbl_80077778, &lbl_8007685C, &lbl_80077778, &lbl_8007685C,
-    &lbl_80077778, &lbl_8007685C, &lbl_800767FC,
-};
-#else
-void* jtbl_800EE4EC[31] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseABI4
-void* jtbl_800EE568[27] = {
-    &lbl_8008118C, &lbl_80080B40, &lbl_80080B50, &lbl_8008117C, &lbl_80080B6C, &lbl_80080B7C, &lbl_80080B8C,
-    &lbl_8008117C, &lbl_80080CF4, &lbl_8008117C, &lbl_80080D20, &lbl_80080D4C, &lbl_80080DB0, &lbl_80080DC0,
-    &lbl_80080E2C, &lbl_80080E3C, &lbl_80080E58, &lbl_80080E98, &lbl_80080FFC, &lbl_80081048, &lbl_80081058,
-    &lbl_800810A4, &lbl_800810F0, &lbl_8008111C, &lbl_8008112C, &lbl_8008118C, &lbl_8008113C,
-};
-#else
-void* jtbl_800EE568[27] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseABI3
-void* jtbl_800EE5D4[23] = {
-    &lbl_80082B60, &lbl_800826C0, &lbl_800826D0, &lbl_80082B50, &lbl_80082B50, &lbl_80082764,
-    &lbl_80082B50, &lbl_800827D0, &lbl_800827E4, &lbl_80082B50, &lbl_800827F4, &lbl_80082830,
-    &lbl_80082894, &lbl_800828A4, &lbl_8008291C, &lbl_8008292C, &lbl_80082948, &lbl_80082990,
-    &lbl_80082B04, &lbl_800826F8, &lbl_80082708, &lbl_80082774, &lbl_80082B40,
-};
-#else
-void* jtbl_800EE5D4[23] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseABI2
-void* jtbl_800EE630[24] = {
-    &lbl_80084950, &lbl_80084338, &lbl_80084360, &lbl_8008437C, &lbl_8008438C, &lbl_8008439C,
-    &lbl_800843AC, &lbl_80084514, &lbl_80084524, &lbl_80084550, &lbl_80084590, &lbl_800845BC,
-    &lbl_80084620, &lbl_80084630, &lbl_80084640, &lbl_80084650, &lbl_8008466C, &lbl_800846AC,
-    &lbl_80084810, &lbl_8008485C, &lbl_8008486C, &lbl_800848B8, &lbl_80084904, &lbl_80084930,
-};
-#else
-void* jtbl_800EE630[24] = {0};
-#endif
-
-#ifndef NON_MATCHING
-// rspParseABI1
-void* jtbl_800EE690[16] = {
-    &lbl_80088B18, &lbl_80088890, &lbl_8008889C, &lbl_80088AD8, &lbl_800888C4, &lbl_80088AE4,
-    &lbl_80088914, &lbl_80088970, &lbl_80088984, &lbl_80088AF0, &lbl_80088990, &lbl_800889CC,
-    &lbl_80088A38, &lbl_80088A44, &lbl_80088AFC, &lbl_80088ABC,
-};
-#else
-void* jtbl_800EE690[16] = {0};
-#endif
 
 static bool nFirstTime_2148 = true;
 static bool nFirstTime_2648 = true;
@@ -1905,10 +1746,6 @@ static bool rspParseABI(Rsp* pRSP, RspTask* pTask) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI1.s")
-#else
 static bool rspParseABI1(Rsp* pRSP, RspTask* pTask) {
     u32 nCommandLo;
     u32 nCommandHi;
@@ -1985,7 +1822,6 @@ static bool rspParseABI1(Rsp* pRSP, RspTask* pTask) {
 
     return true;
 }
-#endif
 
 static bool rspInitAudioDMEM2(Rsp* pRSP) {
     pRSP->anAudioBuffer = pRSP->pDMEM;
@@ -3138,10 +2974,6 @@ static bool rspAPCM8Dec2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI2.s")
-#else
 static bool rspParseABI2(Rsp* pRSP, RspTask* pTask) {
     u32 nCommandLo;
     u32 nCommandHi;
@@ -3250,7 +3082,6 @@ static bool rspParseABI2(Rsp* pRSP, RspTask* pTask) {
     PAD_STACK();
     return true;
 }
-#endif
 
 static bool rspInitAudioDMEM3(Rsp* pRSP) {
     pRSP->anAudioBuffer = pRSP->pDMEM;
@@ -3840,10 +3671,6 @@ static inline bool rspADMEMCopy(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI3.s")
-#else
 static bool rspParseABI3(Rsp* pRSP, RspTask* pTask) {
     u32 nCommandLo;
     u32 nCommandHi;
@@ -3933,7 +3760,6 @@ static bool rspParseABI3(Rsp* pRSP, RspTask* pTask) {
     PAD_STACK();
     return true;
 }
-#endif
 
 static bool rspInitAudioDMEM4(Rsp* pRSP) {
     pRSP->anAudioBuffer = pRSP->pDMEM;
@@ -4354,10 +4180,6 @@ static inline bool rspADMEMMove4(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseABI4.s")
-#else
 static bool rspParseABI4(Rsp* pRSP, RspTask* pTask) {
     u32 nCommandLo;
     u32 nCommandHi;
@@ -4459,7 +4281,6 @@ static bool rspParseABI4(Rsp* pRSP, RspTask* pTask) {
     PAD_STACK();
     return true;
 }
-#endif
 
 static bool rspCreateJPEGArrays(Rsp* pRSP) {
     pRSP->Coeff = (s32*)pRSP->pDMEM;
@@ -5634,10 +5455,6 @@ static inline bool frameFillVertex(Frame* pFrame, s32 nIndex, s16 nX, s16 nY, s1
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/Matrix4by4Identity.s")
-#else
 static bool Matrix4by4Identity(Mtx44Ptr matrix4b4) {
     matrix4b4[0][0] = 1.0f;
     matrix4b4[1][0] = 0.0f;
@@ -5658,7 +5475,6 @@ static bool Matrix4by4Identity(Mtx44Ptr matrix4b4) {
 
     return true;
 }
-#endif
 
 static bool rspFillObjSprite(Rsp* pRSP, s32 nAddress, uObjSprite* pSprite) {
     u16* pnData16;
@@ -5984,11 +5800,6 @@ static inline bool guS2DEmuSetScissor(u32 ulx, u32 uly, u32 lrx, u32 lry, u8 fla
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, uObjBg* pBG);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/guS2DEmuBgRect1Cyc.s")
-#else
 // Similar to
 // https://github.com/decompals/ultralib/blob/1616482098e51d2e1906e198bf1bde14e8fc5e90/src/gu/us2dex_emu.c#L177
 static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, uObjBg* pBG) {
@@ -6278,7 +6089,6 @@ static bool guS2DEmuBgRect1Cyc(Rsp* pRSP, Frame* pFrame, uObjBg* pBG) {
         }
     }
 }
-#endif
 
 bool rspFillObjTxtr(Rsp* pRSP, s32 nAddress, uObjTxtr* pTxtr, u32* pLoadType) {
     u32* pnData32;
@@ -6410,11 +6220,6 @@ static bool rspObjLoadTxtr(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjRectangle.s")
-#else
 static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     s32 pad;
     u16 nSizLineBytes;
@@ -6524,13 +6329,7 @@ static bool rspObjRectangle(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     }
     return true;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspObjSprite(Rsp* pRSP, Frame* pFrame, s32 nAddress);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjSprite.s")
-#else
 static bool rspObjSprite(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     u16 nSizLineBytes;
     f32 fLeft;
@@ -6723,13 +6522,7 @@ static bool rspObjSprite(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     }
     return true;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspObjRectangleR(Rsp* pRSP, Frame* pFrame, s32 nAddress);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjRectangleR.s")
-#else
 bool rspObjRectangleR(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     u16 nSizLineBytes;
     f32 fLeft;
@@ -6917,7 +6710,6 @@ bool rspObjRectangleR(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     }
     return true;
 }
-#endif
 
 static inline bool rspObjLoadTxRect(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     if (!rspObjLoadTxtr(pRSP, pFrame, nAddress)) {
@@ -7023,11 +6815,6 @@ static inline bool rspObjSubMatrix(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspObjMatrix(Rsp* pRSP, Frame* pFrame, s32 nAddress);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspObjMatrix.s")
-#else
 static bool rspObjMatrix(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     u32* pnData32;
     u16* pnData16;
@@ -7067,13 +6854,7 @@ static bool rspObjMatrix(Rsp* pRSP, Frame* pFrame, s32 nAddress) {
     pRSP->twoDValues.fBaseScaleY = 1024.0f / nBaseScaleY;
     return true;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspSetupS2DEX(Rsp* pRSP);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspSetupS2DEX.s")
-#else
 static bool rspSetupS2DEX(Rsp* pRSP) {
     f32 fL;
     f32 fR;
@@ -7112,7 +6893,6 @@ static bool rspSetupS2DEX(Rsp* pRSP) {
 
     return true;
 }
-#endif
 
 static bool rspSetGeometryMode1(Rsp* pRSP, s32 nMode) {
     s32 nModeFrame = 0;
@@ -7156,11 +6936,6 @@ static bool rspSetGeometryMode1(Rsp* pRSP, s32 nMode) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX1.s")
-#else
 static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
     Mtx44 matrix;
     Primitive primitive;
@@ -7824,7 +7599,6 @@ static bool rspParseGBI_F3DEX1(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
     PAD_STACK();
     return true;
 }
-#endif
 
 static bool rspGeometryMode(Rsp* pRSP, s32 nSet, s32 nClr) {
     s32 nMode = 0;
@@ -7872,11 +7646,6 @@ static bool rspGeometryMode(Rsp* pRSP, s32 nSet, s32 nClr) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI_F3DEX2.s")
-#else
 static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
     s32 iVertex;
     bool bDone = false;
@@ -8720,12 +8489,7 @@ static bool rspParseGBI_F3DEX2(Rsp* pRSP, u64** ppnGBI, bool* pbDone) {
     PAD_STACK();
     return true;
 }
-#endif
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspLoadMatrix.s")
-#else
 static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
     s32* pMtx;
     s32 nDataA;
@@ -8847,7 +8611,6 @@ static bool rspLoadMatrix(Rsp* pRSP, s32 nAddress, Mtx44 matrix) {
 
     return true;
 }
-#endif
 
 inline bool rspSetDL(Rsp* pRSP, s32 nOffsetRDRAM, bool bPush) {
     s32 nAddress;
@@ -9404,11 +9167,6 @@ static bool rspParseGBI_Setup(Rsp* pRSP, RspTask* pTask) {
     return true;
 }
 
-// Matches but data doesn't
-#ifndef NON_MATCHING
-static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspParseGBI.s")
-#else
 static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
     bool bDone;
     s32 nStatus;
@@ -9479,7 +9237,6 @@ static bool rspParseGBI(Rsp* pRSP, bool* pbDone, s32 nCount) {
 
     return true;
 }
-#endif
 
 bool rspPut8(Rsp* pRSP, u32 nAddress, s8* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
@@ -9511,10 +9268,6 @@ bool rspPut16(Rsp* pRSP, u32 nAddress, s16* pData) {
     return true;
 }
 
-// matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspPut32.s")
-#else
 bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
     RspTask* pTask;
     s32 nData;
@@ -9745,7 +9498,6 @@ bool rspPut32(Rsp* pRSP, u32 nAddress, s32* pData) {
     PAD_STACK();
     return true;
 }
-#endif
 
 bool rspPut64(Rsp* pRSP, u32 nAddress, s64* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
@@ -9792,10 +9544,6 @@ bool rspGet16(Rsp* pRSP, u32 nAddress, s16* pData) {
     return true;
 }
 
-// matches but data doesn't
-#ifndef NON_MATCHING
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspGet32.s")
-#else
 bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
         case RSP_REG_ADDR_HI(SP_DMEM_START):
@@ -9853,7 +9601,6 @@ bool rspGet32(Rsp* pRSP, u32 nAddress, s32* pData) {
 
     return true;
 }
-#endif
 
 bool rspGet64(Rsp* pRSP, u32 nAddress, s64* pData) {
     switch ((nAddress >> 0xC) & 0xFFF) {
