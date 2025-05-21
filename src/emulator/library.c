@@ -2865,6 +2865,8 @@ bool osEepromLongWrite(Cpu* pCPU) {
 
 #if IS_MM
 bool osGetCount(Cpu* pCPU) {
+    // 1.1574 is 46.875MHz / 40.5MHz, where 46.875MHz is the N64 tick rate (half the CPU clock speed of 93.75MHz)
+    // and 40.5MHz is the GameCube tick rate (1/4 the bus clock speed of 162MHz)
     pCPU->anCP0[9] = OSGetTime() * 1.1574;
     pCPU->aGPR[2].s64 = pCPU->anCP0[9];
     return true;
