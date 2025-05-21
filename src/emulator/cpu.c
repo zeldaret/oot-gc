@@ -839,6 +839,8 @@ bool cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nT
             pCPU->aiDevice[iAddress] = iDevice;
         }
     } else {
+        //! @bug: nAddress0 should not be added to nOffset (0x80000000) here. The start address
+        //! is computed as nAddress0 + nOffset, so essentially the address gets added twice.
         if (!cpuMakeDevice(pCPU, &iDevice, pObject, nAddress0 + 0x80000000, nAddress0, nAddress1, nType)) {
             return false;
         }
@@ -852,6 +854,8 @@ bool cpuMapObject(Cpu* pCPU, void* pObject, u32 nAddress0, u32 nAddress1, s32 nT
             iAddress++;
         }
 
+        //! @bug: nAddress0 should not be added to nOffset (0x60000000) here. The start address
+        //! is computed as nAddress0 + nOffset, so essentially the address gets added twice.
         if (!cpuMakeDevice(pCPU, &iDevice, pObject, nAddress0 + 0x60000000, nAddress0, nAddress1, nType)) {
             return false;
         }

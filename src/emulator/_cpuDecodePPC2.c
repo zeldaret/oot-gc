@@ -689,6 +689,9 @@ static bool cpuCompile_CEIL_W(Cpu* pCPU, s32* addressGCN) {
     }
     *addressGCN = (s32)compile;
 
+    //! @bug: This code truncates its input toward zero (via fctiwz), and adds 1
+    //! if the input was positive. This almost works but is not correct for
+    //! positive integer inputs.
     compile[count++] = 0x9421FFE0; // stwu    r1,-32(r1)
     compile[count++] = 0xC8030000 + (OFFSETOF(pCPU, aFPR) & 0xFFFF); // lfd     f0,0(r3)
     compile[count++] = 0xFC010040; // fcmpo   cr0,f1,f0
@@ -720,6 +723,9 @@ static bool cpuCompile_FLOOR_W(Cpu* pCPU, s32* addressGCN) {
     }
     *addressGCN = (s32)compile;
 
+    //! @bug: This code truncates its input toward zero (via fctiwz), and subtracts 1
+    //! if the input was negative. This almost works but is not correct for
+    //! negative integer inputs.
     compile[count++] = 0x9421FFE0; // stwu    r1,-32(r1)
     compile[count++] = 0xC8030000 + (OFFSETOF(pCPU, aFPR) & 0xFFFF); // lfd     f0,0(r3)
     compile[count++] = 0xFC010040; // fcmpo   cr0,f1,f0
