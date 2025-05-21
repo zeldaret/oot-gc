@@ -3770,6 +3770,13 @@ static bool cpuGetPPC(Cpu* pCPU, s32* pnAddress, CpuFunction* pFunction, s32* an
                                     case 0x20: // cvt.s.d
                                         iRegisterA = MIPS_FD(nOpcode);
                                         iRegisterB = MIPS_FS(nOpcode);
+                                        //! @bug: This generates a lfd instruction to store a double into f1, followed
+                                        //! by a stfs instruction to read it out as a float. This is not defined
+                                        //! according to the processor documentation, and in practice it rounds the
+                                        //! double towards zero instead of rounding to nearest. In the Wii VC version of
+                                        //! Super Mario 64, this is the cause of the infamous rising platforms in Bowser
+                                        //! in the Fire Sea. See also
+                                        //! https://dolphin-emu.org/blog/2018/07/06/dolphin-progress-report-june-2018/#floating-up-to-zero
                                         EMIT_PPC(iCode, 0xC8230000 + OFFSETOF(pCPU, aFPR[iRegisterB]));
                                         EMIT_PPC(iCode, 0xD0230000 + (OFFSETOF(pCPU, aFPR[iRegisterA]) + 4));
                                         break;
@@ -8697,12 +8704,14 @@ static s32 cpuExecuteOpcode(Cpu* pCPU, s32 nCount0, s32 nAddressN64, s32 nAddres
                         break;
                     case 0x10: // bltzal
                         if (pCPU->aGPR[MIPS_RS(nOpcode)].s32 < 0) {
+                            //! @bug: The return address should be stored in $ra even if the branch is not taken.
                             pCPU->aGPR[31].s32 = pCPU->nPC + 4;
                             pCPU->nWaitPC = pCPU->nCallLast = pCPU->nPC + MIPS_IMM_S16(nOpcode) * 4;
                         }
                         break;
                     case 0x11: // bgezal
                         if (pCPU->aGPR[MIPS_RS(nOpcode)].s32 >= 0) {
+                            //! @bug: The return address should be stored in $ra even if the branch is not taken.
                             pCPU->aGPR[31].s32 = pCPU->nPC + 4;
                             pCPU->nWaitPC = pCPU->nCallLast = pCPU->nPC + MIPS_IMM_S16(nOpcode) * 4;
                         }

@@ -74,7 +74,8 @@ void TRKResetBuffer(MessageBuffer* buf, u8 keepData) {
     buf->fPosition = 0;
 
     if (!keepData) {
-        TRK_memcpy(buf->fData, 0, kMessageBufferSize);
+        //! @bug: should be TRK_memset, not TRK_memcpy
+        TRK_memcpy(buf->fData, (const void*)0, kMessageBufferSize);
     }
 }
 

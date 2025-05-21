@@ -1520,7 +1520,7 @@ static bool rspAEnvMixer1(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
                     anAuxL = temp;
                 }
 
-                // bug: anAuxR is not added here
+                //! @bug: anAuxR is not added here
                 temp = (((((s64)volR * (s64)state[7]) >> 15) * (s64)anIn) >> 15);
                 if (temp > 0x7FFF) {
                     anAuxR = 0x7FFF;
@@ -3121,7 +3121,7 @@ static bool rspAPCM8Dec2(Rsp* pRSP, u32 nCommandLo, u32 nCommandHi) {
 
     for (i = 0; i < count; i += 16) {
         for (s = 0; s < 8; s++) {
-            // bug: only accesses even bytes of input
+            //! @bug: only accesses even bytes of input
             vtmp0[s] = (u16)(*((char*)&pRSP->anAudioBuffer[(i / 2) + s + inpp + 0]) << 8);
             vtmp1[s] = (u16)(*((char*)&pRSP->anAudioBuffer[(i / 2) + s + inpp + 4]) << 8);
         }

@@ -3534,7 +3534,7 @@ static bool libraryFindFunctions(Library* pLibrary) {
     for (iFunction = 0;
          iFunction < ARRAY_COUNTU(gaFunction) && gaFunction[iFunction].pfLibrary != (LibraryFuncImpl)__osPopThread;
          iFunction++) {}
-    // bug: Tests if nAddressEnqueueThread + 8 != -1 instead of nAddressEnqueueThread != -1
+    //! @bug: Tests if nAddressEnqueueThread + 8 != -1 instead of nAddressEnqueueThread != -1
     if (iFunction < ARRAY_COUNTU(gaFunction) && (nAddress = nAddressEnqueueThread + 8) != -1) {
         do {
             CPU_DEVICE_GET32(apDevice, aiDevice, nAddress, &nOpcode);
