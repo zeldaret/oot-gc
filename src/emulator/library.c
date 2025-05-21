@@ -2842,6 +2842,14 @@ bool osEepromLongWrite(Cpu* pCPU) {
     return true;
 }
 
+#if IS_MM
+bool osGetCount(Cpu* pCPU) {
+    pCPU->anCP0[9] = OSGetTime() * 1.1574;
+    pCPU->aGPR[2].s64 = pCPU->anCP0[9];
+    return true;
+}
+#endif
+
 bool starfoxCopy(Cpu* pCPU) {
     s32* A0;
     s32 A1;
@@ -2964,6 +2972,14 @@ bool dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     return true;
 }
 
+#if IS_MM
+bool dmaSoundRomHandler_ZELDA2(Cpu* pCPU) { return dmaSoundRomHandler_ZELDA1(pCPU); }
+#endif
+
+#if VERSION == MM_U || VERSION == MM_E
+bool flashRomIDCheck(Cpu* pCPU) { return true; }
+#endif
+
 bool osViSwapBuffer_Entry(Cpu* pCPU) {
     static u32 nAddress = 0xFFFFFFFF;
 
@@ -2987,7 +3003,7 @@ bool zeldaLoadSZS_Exit(Cpu* pCPU) {
     return true;
 }
 
-LibraryFunc gaFunction[54] = {
+LibraryFunc gaFunction[] = {
     {
         "send_mesg",
         (LibraryFuncImpl)send_mesg,
@@ -3224,6 +3240,13 @@ LibraryFunc gaFunction[54] = {
         (LibraryFuncImpl)osEepromLongWrite,
         {0x00000039, 0xED7A2E0B, 0x00000044, 0xF6B9E6BD, 0x0000004F, 0x5B919EF9},
     },
+#if IS_MM
+    {
+        "osGetCount",
+        (LibraryFuncImpl)osGetCount,
+        {0x00000003, 0x00010000},
+    },
+#endif
     {
         "starfoxCopy",
         (LibraryFuncImpl)starfoxCopy,
@@ -3234,11 +3257,13 @@ LibraryFunc gaFunction[54] = {
         (LibraryFuncImpl)GenPerspective_1080,
         {0x0000002F, 0x3879CA27},
     },
+#if IS_OOT
     {
         "pictureSnap_Zelda2",
         (LibraryFuncImpl)pictureSnap_Zelda2,
         {0x000001F0, 0xC2739708},
     },
+#endif
     {
         "dmaSoundRomHandler_ZELDA1",
         (LibraryFuncImpl)dmaSoundRomHandler_ZELDA1,
@@ -3249,6 +3274,7 @@ LibraryFunc gaFunction[54] = {
         (LibraryFuncImpl)osViSwapBuffer_Entry,
         {0x00000011, 0x5147109A, 0x00000038, 0xBF405C09, 0x00000014, 0x745C58FD, 0x00000013, 0x6467CCEE},
     },
+#if IS_OOT
     {
         "zeldaLoadSZS_Entry",
         (LibraryFuncImpl)zeldaLoadSZS_Entry,
@@ -3259,6 +3285,7 @@ LibraryFunc gaFunction[54] = {
         (LibraryFuncImpl)zeldaLoadSZS_Exit,
         {0},
     },
+#endif
 };
 
 static bool libraryFindException(Library* pLibrary, bool bException) {
@@ -3645,12 +3672,23 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     }
                     bFlag = MIPS_OP(pnCode[0]) == 0x1F ? 0 : 1;
                 }
-            } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osViSwapBuffer_Entry) {
+            }
+#if IS_MM
+            else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osGetCount) {
+                if (MIPS_RD(nOpcode) != 0x09) {
+                    bFlag = false;
+                }
+            }
+#endif
+            else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)osViSwapBuffer_Entry) {
                 if (bFlag) {
                     bReturn = false;
                     if ((nOpcode & 0xFFFF0000) != 0x27BD0000) {
                         xlPostText("TestFunction: INTERNAL ERROR: osViSwapBuffer: No ADDIU opcode: 0x%08x", "library.c",
-                                   6971, nOpcode);
+                                   VERSION == MM_J   ? 7043
+                                   : VERSION == MM_U ? 7052
+                                                     : 6971,
+                                   nOpcode);
                     } else {
                         pLibrary->nAddStackSwap = MIPS_IMM_S16(nOpcode);
                     }
@@ -3685,6 +3723,29 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     }
                 }
             }
+#if IS_MM
+            else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)dmaSoundRomHandler_ZELDA2) {
+                if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA2) {
+                    bFlag = false;
+                }
+            }
+#endif
+
+#if VERSION == MM_U || VERSION == MM_E
+            else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)flashRomIDCheck) {
+                if (((System*)pLibrary->pHost)->eTypeROM != SRT_ZELDA2) {
+                    bFlag = false;
+                } else {
+                    pnCodeTemp = pnCode;
+                    for (iCode = 0; iCode < nSizeCode; iCode++) {
+                        if (pnCodeTemp[iCode] == 0x2402FFFF) {
+                            pnCodeTemp[iCode] = 0x24020000;
+                        }
+                    }
+                    return true;
+                }
+            }
+#endif
 
             if (bFlag) {
                 pFunction->timeToLive = 0;
@@ -3761,6 +3822,11 @@ bool libraryFunctionReplaced(Library* pLibrary, s32 iFunction) {
     } else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)zeldaLoadSZS_Exit) {
         return false;
     }
+#if VERSION == MM_U || VERSION == MM_E
+    else if (gaFunction[iFunction].pfLibrary == (LibraryFuncImpl)flashRomIDCheck) {
+        return false;
+    }
+#endif
     return true;
 }
 

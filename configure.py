@@ -321,7 +321,7 @@ config.libs = [
             Object(Linked, "emulator/audio.c"),
             Object(Linked, "emulator/video.c"),
             Object(Linked, "emulator/serial.c"),
-            Object(LinkedFor("mq-j", "mq-u", "mq-e", "ce-j", "ce-u", "ce-e"), "emulator/library.c"),
+            Object(LinkedFor("mq-j", "mq-u", "mq-e", "ce-j", "ce-u", "ce-e", "mm-j"), "emulator/library.c"),
             Object(Linked, "emulator/peripheral.c"),
             Object(Linked, "emulator/_frameGCNcc.c"),
             Object(Linked, "emulator/_buildtev.c"),
