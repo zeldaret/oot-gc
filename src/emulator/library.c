@@ -2863,11 +2863,13 @@ bool osEepromLongWrite(Cpu* pCPU) {
     return true;
 }
 
+#if IS_MM
 bool osGetCount(Cpu* pCPU) {
     pCPU->anCP0[9] = OSGetTime() * 1.1574;
     pCPU->aGPR[2].s64 = pCPU->anCP0[9];
     return true;
 }
+#endif
 
 bool starfoxCopy(Cpu* pCPU) {
     s32* A0;
