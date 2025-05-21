@@ -18,6 +18,27 @@
 #include "math.h"
 #include "string.h"
 
+// Line numbers for different versions
+#if VERSION == MQ_J
+#define LN(ce_j, mm_j) ce_j
+#elif VERSION == MQ_U
+#define LN(ce_j, mm_j) ce_j
+#elif VERSION == MQ_E
+#define LN(ce_j, mm_j) ce_j
+#elif VERSION == CE_J
+#define LN(ce_j, mm_j) ce_j
+#elif VERSION == CE_U
+#define LN(ce_j, mm_j) ce_j
+#elif VERSION == CE_E
+#define LN(ce_j, mm_j) ce_j
+#elif VERSION == MM_J
+#define LN(ce_j, mm_j) mm_j
+#elif VERSION == MM_U
+#define LN(ce_j, mm_j) (mm_j + 9)
+#elif VERSION == MM_E
+#define LN(ce_j, mm_j) mm_j
+#endif
+
 static bool send_mesg(Cpu* pCPU);
 static bool __osEnqueueThread(Cpu* pCPU);
 static bool __osDispatchThread(Cpu* pCPU);
@@ -2842,13 +2863,11 @@ bool osEepromLongWrite(Cpu* pCPU) {
     return true;
 }
 
-#if IS_MM
 bool osGetCount(Cpu* pCPU) {
     pCPU->anCP0[9] = OSGetTime() * 1.1574;
     pCPU->aGPR[2].s64 = pCPU->anCP0[9];
     return true;
 }
-#endif
 
 bool starfoxCopy(Cpu* pCPU) {
     s32* A0;
@@ -2972,13 +2991,9 @@ bool dmaSoundRomHandler_ZELDA1(Cpu* pCPU) {
     return true;
 }
 
-#if IS_MM
 bool dmaSoundRomHandler_ZELDA2(Cpu* pCPU) { return dmaSoundRomHandler_ZELDA1(pCPU); }
-#endif
 
-#if VERSION == MM_U || VERSION == MM_E
 bool flashRomIDCheck(Cpu* pCPU) { return true; }
-#endif
 
 bool osViSwapBuffer_Entry(Cpu* pCPU) {
     static u32 nAddress = 0xFFFFFFFF;
@@ -3685,10 +3700,7 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
                     bReturn = false;
                     if ((nOpcode & 0xFFFF0000) != 0x27BD0000) {
                         xlPostText("TestFunction: INTERNAL ERROR: osViSwapBuffer: No ADDIU opcode: 0x%08x", "library.c",
-                                   VERSION == MM_J   ? 7043
-                                   : VERSION == MM_U ? 7052
-                                                     : 6971,
-                                   nOpcode);
+                                   LN(6971, 7043), nOpcode);
                     } else {
                         pLibrary->nAddStackSwap = MIPS_IMM_S16(nOpcode);
                     }
