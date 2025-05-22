@@ -101,7 +101,6 @@ To get objdiff to work properly you also need to add the path to the folder cont
 ### objdiff
 
 For local decompilation testing, start the objdiff GUI and open this directory as the project directory.
-Currently `objdiff` may not work properly on files using asm-processor (i.e. files with `asm_processor=True` in `configure.py`).
 
 ### asm-differ (diff.py)
 
