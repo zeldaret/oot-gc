@@ -39,7 +39,7 @@ typedef struct Sound {
     /* 0xA0 */ void* apDataBeep[SOUND_BEEP_COUNT];
     /* 0xAC */ s32 iBufferPlay;
     /* 0xB0 */ s32 iBufferMake;
-    /* 0xB4 */ SoundPlayMode eMode;
+    /* 0xB4 */ volatile SoundPlayMode eMode;
     /* 0xB8 */ void* pBufferZero;
     /* 0xBC */ void* pBufferHold;
     /* 0xC0 */ void* pBufferRampUp;

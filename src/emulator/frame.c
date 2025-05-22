@@ -475,7 +475,7 @@ bool frameSetMode(Frame* pFrame, FrameModeType eType, u32 nMode) {
         nModeChanged = pFrame->aMode[eType] ^ nMode;
     } else {
         nModeChanged = 0xFFFFFFFF;
-        *((volatile u32*)&pFrame->nMode) |= (1 << eType);
+        pFrame->nMode |= 1 << eType;
     }
 
     nFlag = 0;
@@ -596,9 +596,7 @@ bool frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bLo
                 bLoad = false;
             }
 
-            // TODO: fake volatile
-            if (bLoad || !(*(volatile u32*)&pFrame->nMode & 0x4000000) ||
-                (*(volatile u32*)&pFrame->nMode & 0x10000000)) {
+            if (bLoad || !(pFrame->nMode & 0x4000000) || (pFrame->nMode & 0x10000000)) {
                 if (matrix[0][0] == 1.0f && matrix[0][1] == 0.0f && matrix[0][2] == 0.0f && matrix[0][3] == 0.0f &&
                     matrix[1][0] == 0.0f && matrix[1][1] == 1.0f && matrix[1][2] == 0.0f && matrix[1][3] == 0.0f &&
                     matrix[2][0] == 0.0f && matrix[2][1] == 0.0f && matrix[2][2] == 1.0f && matrix[2][3] == 0.0f &&
@@ -617,7 +615,7 @@ bool frameSetMatrix(Frame* pFrame, Mtx44 matrix, FrameMatrixType eType, bool bLo
                 if (!frameGetMatrixHint(pFrame, nAddressN64 | 0x80000000, &pFrame->iHintProjection)) {
                     pFrame->iHintProjection = -1;
                 }
-            } else if (*(volatile u32*)&pFrame->nMode & 0x8000000) {
+            } else if (pFrame->nMode & 0x8000000) {
                 PSMTX44Concat(matrix, pFrame->matrixProjectionExtra, pFrame->matrixProjectionExtra);
             } else {
                 pFrame->nMode |= 0x8000000;
@@ -767,8 +765,7 @@ bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
 
     matrixModel = pFrame->aMatrixModel[pFrame->iMatrixModel];
     if (pFrame->nMode & 0x08000000) {
-        // TODO: volatile hacks
-        if (!(*(volatile u32*)&pFrame->nMode & 0x400000)) {
+        if (!(pFrame->nMode & 0x400000)) {
             PSMTX44Concat(matrixModel, pFrame->matrixProjectionExtra, pFrame->matrixView);
             pFrame->nMode |= 0x400000;
             if (pFrame->iHintProjection != -1) {
@@ -779,8 +776,7 @@ bool frameLoadVertex(Frame* pFrame, void* pBuffer, s32 iVertex0, s32 nCount) {
             }
         }
         matrixView = pFrame->matrixView;
-        // TODO: volatile hacks
-    } else if (!(*(volatile u32*)&pFrame->nMode & 0x400000) && pFrame->iHintProjection != -1) {
+    } else if (!(pFrame->nMode & 0x400000) && pFrame->iHintProjection != -1) {
         if (!frameScaleMatrix(pFrame->matrixView, matrixModel, pFrame->aMatrixHint[pFrame->iHintProjection].rScale)) {
             return false;
         }

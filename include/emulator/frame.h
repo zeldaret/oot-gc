@@ -300,7 +300,7 @@ typedef struct Frame {
     /* 0x00080 0x00070 */ f32 rScaleX;
     /* 0x00084 0x00074 */ f32 rScaleY;
     /* 0x00088 0x00078 */ u32 nCountFrames;
-    /* 0x0008C 0x0007C */ u32 nMode;
+    /* 0x0008C 0x0007C */ volatile u32 nMode;
     /* 0x00090 0x00080 */ u32 aMode[FMT_COUNT];
     /* 0x000B8 0x000A8 */ Viewport viewport;
     /* 0x000C8 0x000B8 */ FrameBuffer aBuffer[FBT_COUNT];
