@@ -1510,7 +1510,7 @@ static bool frameLoadTexture(Frame* pFrame, FrameTexture* pTexture, s32 iTexture
 bool frameDrawSetup2D(Frame* pFrame) {
     Mtx44 matrix44;
 
-    if (!(*(volatile u32*)&pFrame->nMode & 0x40000000)) {
+    if (!(pFrame->nMode & 0x40000000)) {
         pFrame->nMode |= 0x40000000;
 
         GXSetViewport(0.0f, 0.0f, pFrame->anSizeX[1], pFrame->anSizeY[1], 0.0f, 1.0f);
@@ -2716,7 +2716,7 @@ static bool frameDrawRectFill(Frame* pFrame, Rectangle* pRectangle) {
             pFrame->aColor[FCT_FILL].b == 0xF0 && pFrame->aColor[FCT_FILL].a == 0x00) {
             bFlag = true;
         }
-        if (bFlag && !(*(volatile u32*)&pFrame->nMode & 0x100000)) {
+        if (bFlag && !(pFrame->nMode & 0x100000)) {
             pFrame->nMode |= 0x100000;
             return true;
         }

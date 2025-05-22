@@ -179,8 +179,7 @@ bool soundPlayBuffer(Sound* pSound) {
             pSound->iBufferPlay = (iBuffer + 1) % 16;
         }
         pSound->eMode = SPM_PLAY;
-        //! TODO: fake match on the following condition?
-    } else if ((*((volatile SoundPlayMode*)&pSound->eMode) == SPM_RAMPQUEUED) || (pSound->eMode == SPM_RAMPPLAYED)) {
+    } else if (pSound->eMode == SPM_RAMPQUEUED || pSound->eMode == SPM_RAMPPLAYED) {
         pData = pSound->pBufferZero;
         nSize = pSound->nSizeZero;
         pSound->eMode = SPM_RAMPPLAYED;
