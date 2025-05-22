@@ -2282,8 +2282,10 @@ static bool romCopyUpdate(Rom* pROM) {
         pBlock->nTickUsed = ++pROM->nTick;
 
         if (pBlock->nSize != 0) {
-            if (pBlock->iCache < 0 && !romSetBlockCache(pROM, iBlock, 0)) {
-                return false;
+            if (pBlock->iCache < 0) {
+                if (!romSetBlockCache(pROM, iBlock, 0)) {
+                    return false;
+                }
             }
         } else {
             if (!romMakeFreeCache(pROM, &iCache, 0)) {
@@ -2423,15 +2425,17 @@ static bool romLoadFullOrPart(Rom* pROM) {
             pROM->anBlockCachedARAM[i] = 0;
         }
 
+        if ((s32)pROM->nSize < pROM->nSizeCacheRAM + 0xFFA000) {
 #if IS_MM_JP
-        if ((s32)pROM->nSize < (pROM->nSizeCacheRAM + 0xFFA000) && !romCacheAllBlocks(pROM, szName)) {
-            return false;
-        }
+            if (!romCacheAllBlocks(pROM, szName)) {
+                return false;
+            }
 #else
-        if ((s32)pROM->nSize < (pROM->nSizeCacheRAM + 0xFFA000) && !romCacheAllBlocks(pROM)) {
-            return false;
-        }
+            if (!romCacheAllBlocks(pROM)) {
+                return false;
+            }
 #endif
+        }
     } else {
         s32 i;
         u32 temp_r28;
@@ -2713,15 +2717,19 @@ bool romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFu
             return false;
         }
 
-        if ((pCallback != NULL) && !pCallback()) {
-            return false;
+        if (pCallback != NULL) {
+            if (!pCallback()) {
+                return false;
+            }
         }
 
         return true;
     }
 
-    if (pROM->bLoad && !romCopyLoad(pROM)) {
-        return false;
+    if (pROM->bLoad) {
+        if (!romCopyLoad(pROM)) {
+            return false;
+        }
     }
 
     if (((nOffset + nSize) > pROM->nSize) && ((nSize = pROM->nSize - nOffset) < 0)) {
@@ -2729,8 +2737,10 @@ bool romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFu
     }
 
     if (pROM->eModeLoad == RLM_PART) {
-        if (romCopyLoop(pROM, pTarget, nOffset, nSize, pCallback) && !romLoadUpdate(pROM)) {
-            return false;
+        if (romCopyLoop(pROM, pTarget, nOffset, nSize, pCallback)) {
+            if (!romLoadUpdate(pROM)) {
+                return false;
+            }
         }
 
         if (!romCopyUpdate(pROM)) {
@@ -2745,8 +2755,10 @@ bool romCopy(Rom* pROM, void* pTarget, s32 nOffset, s32 nSize, UnknownCallbackFu
             return false;
         }
 
-        if ((pCallback != NULL) && !pCallback()) {
-            return false;
+        if (pCallback != NULL) {
+            if (!pCallback()) {
+                return false;
+            }
         }
 
         return true;
@@ -2778,8 +2790,10 @@ bool romCopyImmediate(Rom* pROM, void* pTarget, s32 nOffsetROM, s32 nSize) {
         return false;
     }
 
-    if (pROM->bLoad && !romCopyLoad(pROM)) {
-        return false;
+    if (pROM->bLoad) {
+        if (!romCopyLoad(pROM)) {
+            return false;
+        }
     }
 
     nOffsetROM = nOffsetROM & 0x07FFFFFF;
@@ -3072,8 +3086,10 @@ bool romEvent(Rom* pROM, s32 nEvent, void* pArgument) {
             pROM->pCacheRAM = NULL;
             break;
         case 3:
-            if ((pROM->pBuffer != NULL) && (pROM->pBuffer != pROM->pCacheRAM) && (!xlHeapFree(&pROM->pBuffer))) {
-                return false;
+            if (pROM->pBuffer != NULL && pROM->pBuffer != pROM->pCacheRAM) {
+                if (!xlHeapFree(&pROM->pBuffer)) {
+                    return false;
+                }
             }
             break;
         case 0x1002:

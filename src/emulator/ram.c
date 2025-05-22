@@ -221,8 +221,10 @@ bool ramGetBuffer(Ram* pRAM, void** ppRAM, u32 nOffset, u32* pnSize) {
 }
 
 bool ramWipe(Ram* pRAM) {
-    if (pRAM->nSize != 0 && !xlHeapFill32(pRAM->pBuffer, pRAM->nSize, 0)) {
-        return false;
+    if (pRAM->nSize != 0) {
+        if (!xlHeapFill32(pRAM->pBuffer, pRAM->nSize, 0)) {
+            return false;
+        }
     }
 
     return true;

@@ -3782,11 +3782,17 @@ bool libraryTestFunction(Library* pLibrary, CpuFunction* pFunction) {
 }
 
 static bool librarySearch(Library* pLibrary, CpuFunction* pFunction) {
-    if (pFunction->left != NULL && !librarySearch(pLibrary, pFunction->left)) {
-        return false;
-    } else if (pFunction->right != NULL && !librarySearch(pLibrary, pFunction->right)) {
-        return false;
-    } else if (!libraryTestFunction(pLibrary, pFunction)) {
+    if (pFunction->left != NULL) {
+        if (!librarySearch(pLibrary, pFunction->left)) {
+            return false;
+        }
+    }
+    if (pFunction->right != NULL) {
+        if (!librarySearch(pLibrary, pFunction->right)) {
+            return false;
+        }
+    }
+    if (!libraryTestFunction(pLibrary, pFunction)) {
         return false;
     }
     return true;
@@ -3807,10 +3813,15 @@ static inline bool libraryUpdate(Library* pLibrary)
     }
 
     if (pCPU->gTree != NULL) {
-        if (pCPU->gTree->left != NULL && !librarySearch(pLibrary, pCPU->gTree->left)) {
-            return false;
-        } else if (pCPU->gTree->right != NULL && !librarySearch(pLibrary, pCPU->gTree->right)) {
-            return false;
+        if (pCPU->gTree->left != NULL) {
+            if (!librarySearch(pLibrary, pCPU->gTree->left)) {
+                return false;
+            }
+        }
+        if (pCPU->gTree->right != NULL) {
+            if (!librarySearch(pLibrary, pCPU->gTree->right)) {
+                return false;
+            }
         }
     }
 
