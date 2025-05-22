@@ -313,7 +313,7 @@ config.libs = [
             Object(Linked, "emulator/rom.c"),
             Object(Linked, "emulator/rdp.c"),
             Object(Linked, "emulator/rdb.c"),
-            Object(LinkedFor("ce-j"), "emulator/rsp.c", asm_processor=True),
+            Object(LinkedFor("ce-j"), "emulator/rsp.c"),
             Object(Linked, "emulator/mips.c"),
             Object(Linked, "emulator/disk.c"),
             Object(Linked, "emulator/flash.c"),
