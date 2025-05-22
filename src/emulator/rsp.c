@@ -4959,8 +4959,32 @@ void rspUndoYUVtoDCTBuf(Rsp* pRSP) {
     }
 }
 
-void rspFormatYUV(Rsp* pRSP, char* imgBuf);
-#pragma GLOBAL_ASM("asm/non_matchings/rsp/rspFormatYUV.s")
+void rspFormatYUV(Rsp* pRSP, char* imgBuf) {
+    int i;
+    int j;
+
+    for (j = 0; j < 16; j++) {
+        for (i = 0; i < 16; i += 8) {
+            // fake?
+            imgBuf[j * 32 + i * 2 + 0] = pRSP->yuvBuf[j * 16 + (i + 8) + 0 - 8].u;
+            imgBuf[j * 32 + i * 2 + 1] = pRSP->yuvBuf[j * 16 + (i + 8) + 0 - 8].y;
+            imgBuf[j * 32 + i * 2 + 2] = pRSP->yuvBuf[j * 16 + (i + 8) + 0 - 8].v;
+            imgBuf[j * 32 + i * 2 + 3] = pRSP->yuvBuf[j * 16 + (i + 8) + 1 - 8].y;
+            imgBuf[j * 32 + i * 2 + 4] = pRSP->yuvBuf[j * 16 + (i + 8) + 2 - 8].u;
+            imgBuf[j * 32 + i * 2 + 5] = pRSP->yuvBuf[j * 16 + (i + 8) + 2 - 8].y;
+            imgBuf[j * 32 + i * 2 + 6] = pRSP->yuvBuf[j * 16 + (i + 8) + 2 - 8].v;
+            imgBuf[j * 32 + i * 2 + 7] = pRSP->yuvBuf[j * 16 + (i + 8) + 3 - 8].y;
+            imgBuf[j * 32 + i * 2 + 8] = pRSP->yuvBuf[j * 16 + (i + 8) + 4 - 8].u;
+            imgBuf[j * 32 + i * 2 + 9] = pRSP->yuvBuf[j * 16 + (i + 8) + 4 - 8].y;
+            imgBuf[j * 32 + i * 2 + 10] = pRSP->yuvBuf[j * 16 + (i + 8) + 4 - 8].v;
+            imgBuf[j * 32 + i * 2 + 11] = pRSP->yuvBuf[j * 16 + (i + 8) + 5 - 8].y;
+            imgBuf[j * 32 + i * 2 + 12] = pRSP->yuvBuf[j * 16 + (i + 8) + 6 - 8].u;
+            imgBuf[j * 32 + i * 2 + 13] = pRSP->yuvBuf[j * 16 + (i + 8) + 6 - 8].y;
+            imgBuf[j * 32 + i * 2 + 14] = pRSP->yuvBuf[j * 16 + (i + 8) + 6 - 8].v;
+            imgBuf[j * 32 + i * 2 + 15] = pRSP->yuvBuf[j * 16 + (i + 8) + 7 - 8].y;
+        }
+    }
+}
 
 static bool rspParseJPEG_Encode(Rsp* pRSP, RspTask* pTask) {
     int preDc[3];
