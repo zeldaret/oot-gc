@@ -526,8 +526,10 @@ bool simulatorDVDShowError(s32 nStatus, void* anData, s32 nSizeRead, u32 nOffset
             if (!simulatorTestReset(false, false, true, false)) {
                 return false;
             }
-        } else if ((nStatus != -1) && (!simulatorTestReset(true, false, true, false))) {
-            return false;
+        } else if (nStatus != -1) {
+            if (!simulatorTestReset(true, false, true, false)) {
+                return false;
+            }
         }
 #endif
 
@@ -2759,8 +2761,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_coverOpen, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gcoverOpen != NULL && !xlHeapFree((void**)&gcoverOpen)) {
-            return false;
+        if (gcoverOpen != NULL) {
+            if (!xlHeapFree((void**)&gcoverOpen)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gcoverOpen, size | 0x30000000)) {
@@ -2777,8 +2781,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_readingDisk, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (greadingDisk != NULL && !xlHeapFree((void**)&greadingDisk)) {
-            return false;
+        if (greadingDisk != NULL) {
+            if (!xlHeapFree((void**)&greadingDisk)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&greadingDisk, size | 0x30000000)) {
@@ -2795,8 +2801,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_wrongDisk, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gwrongDisk != NULL && !xlHeapFree((void**)&gwrongDisk)) {
-            return false;
+        if (gwrongDisk != NULL) {
+            if (!xlHeapFree((void**)&gwrongDisk)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gwrongDisk, size | 0x30000000)) {
@@ -2813,8 +2821,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_noDisk, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gnoDisk != NULL && !xlHeapFree((void**)&gnoDisk)) {
-            return false;
+        if (gnoDisk != NULL) {
+            if (!xlHeapFree((void**)&gnoDisk)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gnoDisk, size | 0x30000000)) {
@@ -2831,8 +2841,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_retryErr, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gretryErr != NULL && !xlHeapFree((void**)&gretryErr)) {
-            return false;
+        if (gretryErr != NULL) {
+            if (!xlHeapFree((void**)&gretryErr)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gretryErr, size | 0x30000000)) {
@@ -2849,8 +2861,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_fatalErr, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gfatalErr != NULL && !xlHeapFree((void**)&gfatalErr)) {
-            return false;
+        if (gfatalErr != NULL) {
+            if (!xlHeapFree((void**)&gfatalErr)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gfatalErr, size | 0x30000000)) {
@@ -2867,8 +2881,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_yes, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gyes != NULL && !xlHeapFree((void**)&gyes)) {
-            return false;
+        if (gyes != NULL) {
+            if (!xlHeapFree((void**)&gyes)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gyes, size | 0x30000000)) {
@@ -2885,8 +2901,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_no, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gno != NULL && !xlHeapFree((void**)&gno)) {
-            return false;
+        if (gno != NULL) {
+            if (!xlHeapFree((void**)&gno)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gno, size | 0x30000000)) {
@@ -2903,8 +2921,10 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_mesgOK, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (gmesgOK != NULL && !xlHeapFree((void**)&gmesgOK)) {
-            return false;
+        if (gmesgOK != NULL) {
+            if (!xlHeapFree((void**)&gmesgOK)) {
+                return false;
+            }
         }
 
         if (!xlHeapTake((void**)&gmesgOK, size | 0x30000000)) {

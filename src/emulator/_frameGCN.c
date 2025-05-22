@@ -5171,25 +5171,30 @@ static bool frameEvent(Frame* pFrame, s32 nEvent, void* pArgument) {
             pFrame->nLensBuffer = NULL;
 #endif
             pFrame->nCameraBuffer = NULL;
-            if (((gpSystem->eTypeROM == SRT_PANEL) || (gpSystem->eTypeROM == SRT_ZELDA2) ||
-                 (gpSystem->eTypeROM == SRT_DRMARIO)) &&
-                !xlHeapTake((void**)&pFrame->nTempBuffer,
-                            0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
-                return false;
+            if (gpSystem->eTypeROM == SRT_PANEL || gpSystem->eTypeROM == SRT_ZELDA2 ||
+                gpSystem->eTypeROM == SRT_DRMARIO) {
+                if (!xlHeapTake((void**)&pFrame->nTempBuffer,
+                                0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
+                    return false;
+                }
             }
-            if ((gpSystem->eTypeROM == SRT_ZELDA2) &&
-                !xlHeapTake((void**)&pFrame->nCopyBuffer,
-                            0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
-                return false;
+            if (gpSystem->eTypeROM == SRT_ZELDA2) {
+                if (!xlHeapTake((void**)&pFrame->nCopyBuffer,
+                                0x30000000 | (N64_FRAME_WIDTH * N64_FRAME_HEIGHT * sizeof(u16)))) {
+                    return false;
+                }
             }
 #if IS_OOT
-            if ((gpSystem->eTypeROM == SRT_ZELDA2) && !xlHeapTake((void**)&pFrame->nLensBuffer, 0x30000000 | 0x4B000)) {
-                return false;
+            if (gpSystem->eTypeROM == SRT_ZELDA2) {
+                if (!xlHeapTake((void**)&pFrame->nLensBuffer, 0x30000000 | 0x4B000)) {
+                    return false;
+                }
             }
 #endif
-            if (gpSystem->eTypeROM == SRT_ZELDA2 &&
-                !xlHeapTake((void**)&pFrame->nCameraBuffer, 0x30000000 | CAMERA_BUFFER_SIZE)) {
-                return false;
+            if (gpSystem->eTypeROM == SRT_ZELDA2) {
+                if (!xlHeapTake((void**)&pFrame->nCameraBuffer, 0x30000000 | CAMERA_BUFFER_SIZE)) {
+                    return false;
+                }
             }
             break;
 #endif

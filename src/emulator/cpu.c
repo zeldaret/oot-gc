@@ -984,22 +984,28 @@ bool cpuReset(Cpu* pCPU) {
     if (!cpuHeapReset(pCPU->aHeap1Flag, ARRAY_COUNT(pCPU->aHeap1Flag))) {
         return false;
     }
-    if (pCPU->gHeap1 == NULL && !xlHeapTake(&pCPU->gHeap1, 0x300000 | 0x30000000)) {
-        return false;
+    if (pCPU->gHeap1 == NULL) {
+        if (!xlHeapTake(&pCPU->gHeap1, 0x300000 | 0x30000000)) {
+            return false;
+        }
     }
 
     if (!cpuHeapReset(pCPU->aHeap2Flag, ARRAY_COUNT(pCPU->aHeap2Flag))) {
         return false;
     }
-    if (pCPU->gHeap2 == NULL && !xlHeapTake(&pCPU->gHeap2, 0x104000 | 0x30000000)) {
-        return false;
+    if (pCPU->gHeap2 == NULL) {
+        if (!xlHeapTake(&pCPU->gHeap2, 0x104000 | 0x30000000)) {
+            return false;
+        }
     }
 
     if (!cpuHeapReset(aHeapTreeFlag, ARRAY_COUNT(aHeapTreeFlag))) {
         return false;
     }
-    if (gHeapTree == NULL && !xlHeapTake(&gHeapTree, 0x46500 | 0x30000000)) {
-        return false;
+    if (gHeapTree == NULL) {
+        if (!xlHeapTake(&gHeapTree, 0x46500 | 0x30000000)) {
+            return false;
+        }
     }
 
     if (pCPU->gTree != NULL) {

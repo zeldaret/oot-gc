@@ -21,25 +21,35 @@ s32 gVolumeCurve[257] ATTRIBUTE_ALIGN(32);
 bool soundWipeBuffers(Sound* pSound) {
     s32 iBuffer;
 
-    if (pSound->pBufferZero != NULL && !xlHeapFree(&pSound->pBufferZero)) {
-        return false;
+    if (pSound->pBufferZero != NULL) {
+        if (!xlHeapFree(&pSound->pBufferZero)) {
+            return false;
+        }
     }
 
-    if (pSound->pBufferHold != NULL && !xlHeapFree(&pSound->pBufferHold)) {
-        return false;
+    if (pSound->pBufferHold != NULL) {
+        if (!xlHeapFree(&pSound->pBufferHold)) {
+            return false;
+        }
     }
 
-    if (pSound->pBufferRampUp != NULL && !xlHeapFree(&pSound->pBufferRampUp)) {
-        return false;
+    if (pSound->pBufferRampUp != NULL) {
+        if (!xlHeapFree(&pSound->pBufferRampUp)) {
+            return false;
+        }
     }
 
-    if (pSound->pBufferRampDown != NULL && !xlHeapFree(&pSound->pBufferRampDown)) {
-        return false;
+    if (pSound->pBufferRampDown != NULL) {
+        if (!xlHeapFree(&pSound->pBufferRampDown)) {
+            return false;
+        }
     }
 
     for (iBuffer = 0; iBuffer < 16; iBuffer++) {
-        if (pSound->apBuffer[iBuffer] != NULL && !xlHeapFree(&pSound->apBuffer[iBuffer])) {
-            return false;
+        if (pSound->apBuffer[iBuffer] != NULL) {
+            if (!xlHeapFree(&pSound->apBuffer[iBuffer])) {
+                return false;
+            }
         }
     }
 
@@ -252,8 +262,10 @@ bool soundMakeBuffer(Sound* pSound) {
 
     OSRestoreInterrupts(bFlag);
 
-    if (pSound->eMode != SPM_PLAY && !soundMakeRamp(pSound, iBuffer, SR_INCREASE)) {
-        return false;
+    if (pSound->eMode != SPM_PLAY) {
+        if (!soundMakeRamp(pSound, iBuffer, SR_INCREASE)) {
+            return false;
+        }
     }
 
     if (!soundMakeRamp(pSound, iBuffer, SR_DECREASE)) {
