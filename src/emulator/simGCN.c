@@ -2781,165 +2781,164 @@ bool simulatorPreloadDiskMessages(void) {
     if (DVDOpen(path_readingDisk, &fileInfo)) {
         size = (fileInfo.length + 0x1F) & ~0x1F;
 
-        if (greadingDisk != NULL)
+        if (greadingDisk != NULL) {
             if (!xlHeapFree((void**)&greadingDisk)) {
                 return false;
             }
-    }
+        }
 
-    if (!xlHeapTake((void**)&greadingDisk, size | 0x30000000)) {
-        return false;
-    }
-
-    DVDReadPrio(&fileInfo, greadingDisk, size, 0, 2);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)greadingDisk);
-}
-else {
-    return false;
-}
-
-if (DVDOpen(path_wrongDisk, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
-
-    if (gwrongDisk != NULL) {
-        if (!xlHeapFree((void**)&gwrongDisk)) {
+        if (!xlHeapTake((void**)&greadingDisk, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gwrongDisk, size | 0x30000000)) {
+        DVDReadPrio(&fileInfo, greadingDisk, size, 0, 2);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)greadingDisk);
+    } else {
         return false;
     }
 
-    DVDReadPrio(&fileInfo, gwrongDisk, size, 0, 2);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gwrongDisk);
-} else {
-    return false;
-}
+    if (DVDOpen(path_wrongDisk, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-if (DVDOpen(path_noDisk, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
+        if (gwrongDisk != NULL) {
+            if (!xlHeapFree((void**)&gwrongDisk)) {
+                return false;
+            }
+        }
 
-    if (gnoDisk != NULL) {
-        if (!xlHeapFree((void**)&gnoDisk)) {
+        if (!xlHeapTake((void**)&gwrongDisk, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gnoDisk, size | 0x30000000)) {
+        DVDReadPrio(&fileInfo, gwrongDisk, size, 0, 2);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gwrongDisk);
+    } else {
         return false;
     }
 
-    DVDReadPrio(&fileInfo, gnoDisk, size, 0, 2);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gnoDisk);
-} else {
-    return false;
-}
+    if (DVDOpen(path_noDisk, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-if (DVDOpen(path_retryErr, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
+        if (gnoDisk != NULL) {
+            if (!xlHeapFree((void**)&gnoDisk)) {
+                return false;
+            }
+        }
 
-    if (gretryErr != NULL) {
-        if (!xlHeapFree((void**)&gretryErr)) {
+        if (!xlHeapTake((void**)&gnoDisk, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gretryErr, size | 0x30000000)) {
+        DVDReadPrio(&fileInfo, gnoDisk, size, 0, 2);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gnoDisk);
+    } else {
         return false;
     }
 
-    simulatorDVDRead(&fileInfo, gretryErr, size, 0, NULL);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gretryErr);
-} else {
-    return false;
-}
+    if (DVDOpen(path_retryErr, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-if (DVDOpen(path_fatalErr, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
+        if (gretryErr != NULL) {
+            if (!xlHeapFree((void**)&gretryErr)) {
+                return false;
+            }
+        }
 
-    if (gfatalErr != NULL) {
-        if (!xlHeapFree((void**)&gfatalErr)) {
+        if (!xlHeapTake((void**)&gretryErr, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gfatalErr, size | 0x30000000)) {
+        simulatorDVDRead(&fileInfo, gretryErr, size, 0, NULL);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gretryErr);
+    } else {
         return false;
     }
 
-    simulatorDVDRead(&fileInfo, gfatalErr, size, 0, NULL);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gfatalErr);
-} else {
-    return false;
-}
+    if (DVDOpen(path_fatalErr, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-if (DVDOpen(path_yes, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
+        if (gfatalErr != NULL) {
+            if (!xlHeapFree((void**)&gfatalErr)) {
+                return false;
+            }
+        }
 
-    if (gyes != NULL) {
-        if (!xlHeapFree((void**)&gyes)) {
+        if (!xlHeapTake((void**)&gfatalErr, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gyes, size | 0x30000000)) {
+        simulatorDVDRead(&fileInfo, gfatalErr, size, 0, NULL);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gfatalErr);
+    } else {
         return false;
     }
 
-    simulatorDVDRead(&fileInfo, gyes, size, 0, NULL);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gyes);
-} else {
-    return false;
-}
+    if (DVDOpen(path_yes, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-if (DVDOpen(path_no, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
+        if (gyes != NULL) {
+            if (!xlHeapFree((void**)&gyes)) {
+                return false;
+            }
+        }
 
-    if (gno != NULL) {
-        if (!xlHeapFree((void**)&gno)) {
+        if (!xlHeapTake((void**)&gyes, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gno, size | 0x30000000)) {
+        simulatorDVDRead(&fileInfo, gyes, size, 0, NULL);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gyes);
+    } else {
         return false;
     }
 
-    simulatorDVDRead(&fileInfo, gno, size, 0, NULL);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gno);
-} else {
-    return false;
-}
+    if (DVDOpen(path_no, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-if (DVDOpen(path_mesgOK, &fileInfo)) {
-    size = (fileInfo.length + 0x1F) & ~0x1F;
+        if (gno != NULL) {
+            if (!xlHeapFree((void**)&gno)) {
+                return false;
+            }
+        }
 
-    if (gmesgOK != NULL) {
-        if (!xlHeapFree((void**)&gmesgOK)) {
+        if (!xlHeapTake((void**)&gno, size | 0x30000000)) {
             return false;
         }
-    }
 
-    if (!xlHeapTake((void**)&gmesgOK, size | 0x30000000)) {
+        simulatorDVDRead(&fileInfo, gno, size, 0, NULL);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gno);
+    } else {
         return false;
     }
 
-    simulatorDVDRead(&fileInfo, gmesgOK, size, 0, NULL);
-    DVDClose(&fileInfo);
-    simulatorUnpackTexPalette((TEXPalette*)gmesgOK);
-} else {
-    return false;
-}
+    if (DVDOpen(path_mesgOK, &fileInfo)) {
+        size = (fileInfo.length + 0x1F) & ~0x1F;
 
-return true;
+        if (gmesgOK != NULL) {
+            if (!xlHeapFree((void**)&gmesgOK)) {
+                return false;
+            }
+        }
+
+        if (!xlHeapTake((void**)&gmesgOK, size | 0x30000000)) {
+            return false;
+        }
+
+        simulatorDVDRead(&fileInfo, gmesgOK, size, 0, NULL);
+        DVDClose(&fileInfo);
+        simulatorUnpackTexPalette((TEXPalette*)gmesgOK);
+    } else {
+        return false;
+    }
+
+    return true;
 }
 #endif
 

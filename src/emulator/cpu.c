@@ -994,7 +994,7 @@ bool cpuReset(Cpu* pCPU) {
         return false;
     }
     if (pCPU->gHeap2 == NULL) {
-        if (!xlHeapTake(&pCPU->gHeap2, 0x300000 | 0x30000000)) {
+        if (!xlHeapTake(&pCPU->gHeap2, 0x104000 | 0x30000000)) {
             return false;
         }
     }
@@ -1003,7 +1003,7 @@ bool cpuReset(Cpu* pCPU) {
         return false;
     }
     if (gHeapTree == NULL) {
-        if (!xlHeapTake(gHeapTree, 0x300000 | 0x30000000)) {
+        if (!xlHeapTake(&gHeapTree, 0x46500 | 0x30000000)) {
             return false;
         }
     }
