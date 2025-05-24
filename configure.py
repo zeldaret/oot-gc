@@ -319,7 +319,7 @@ config.libs = [
             Object(Linked, "emulator/peripheral.c"),
             Object(Linked, "emulator/_frameGCNcc.c"),
             Object(Linked, "emulator/_buildtev.c"),
-            Object(NotLinked, "emulator/snddvdtrk.c"),
+            Object(LinkedFor("mm-j", "mm-u", "mm-e"), "emulator/snddvdtrk.c"),
             Object(LinkedFor("mm-j", "mm-u", "mm-e"), "emulator/sndspecial.c"),
         ],
     ),
